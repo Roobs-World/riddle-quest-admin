@@ -1,0 +1,21 @@
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (21.389482ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.391356ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (8.999419ms)
+✔ rejects imports between different target owners (4.4396ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (3.032595ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.478461ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.845917ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.975959ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (3.784921ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (5.408166ms)
+✔ aggregates violations in deterministic file and source order (1.280566ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166.157661
+Web Target boundary audit passed (318 files, 1381 module references).

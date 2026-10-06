@@ -1,0 +1,67 @@
+{
+  "mode": "development",
+  "cases": 3,
+  "checks": 22,
+  "failures": [
+    {
+      "scenario": "initial",
+      "name": "one admitted context read per mounted lifetime",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "scenario": "provider",
+      "name": "one admitted context read per mounted lifetime",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "scenario": "provider",
+      "name": "replacement removes old context standings during commit",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "retained-signal",
+      "name": "one admitted context read per mounted lifetime",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "scenario": "retained-signal",
+      "name": "replacement removes old context standings during commit",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "retained-signal",
+      "name": "retired context callback starts no new read",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "retained-signal",
+      "name": "retired context callback cannot clear replacement rows",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Context standings must retain independent projection ownership
+
+7 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-owner-2026-10-06/probe-minimal.mjs:10:425 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 7,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

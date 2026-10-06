@@ -190,7 +190,7 @@ export function GameFrameApp({
   const stateRef = useRef(state);
   stateRef.current = state;
   /** Current target continuation hook supplies modal pending state and its guarded action. */
-  const recovery = useAttemptRecovery({capability: isFacebookWebTarget ? attemptRecovery : undefined, stateRef, dispatch});
+  const recovery = useAttemptRecovery({capability: isFacebookWebTarget ? attemptRecovery : undefined, state, dispatch});
 
   useOfflineDialog(online, offlineDialogRef);
 

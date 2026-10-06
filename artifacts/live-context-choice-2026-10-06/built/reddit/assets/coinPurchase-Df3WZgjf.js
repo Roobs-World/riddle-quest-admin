@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`बहुत बढ़िया`,COINS_SUFFIX:`सिक्के`,TAP_CHEST_TO_COLLECT:`अपने सिक्के लेने के लिए संदूक पर टैप करें`,TITLE:`सिक्के जुड़ गए!`},n={CoinPurchase:t}})))()}r();export{n as default};

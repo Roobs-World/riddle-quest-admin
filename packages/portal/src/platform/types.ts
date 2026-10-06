@@ -466,6 +466,8 @@ export type OverlayCapability = {
     playerId: string; /** Stores surface. */
     /** Stores surface. */
     surface: HTMLElement;
+    /** Retires partial initialization while original provider operations remain observed. */
+    signal?: AbortSignal;
   }): Promise<PlatformResult<() => Promise<void>>>;
 };
 
@@ -483,8 +485,8 @@ export type TournamentCapability = {
 export type ContextBoardCapability = {
   /** Invalidates current rows immediately when the owning provider context changes. */
   onContextChange?(callback: () => void): () => void;
-  /** Lists validated standings, or null when the provider has no active social context. */
-  list(locale: RaceLocale): Promise<ListFacebookContextBoardResponse | null>;
+  /** Lists validated standings or null for absent social context; cancellation retires admission while membership settles. */
+  list(locale: RaceLocale, signal?: AbortSignal): Promise<ListFacebookContextBoardResponse | null>;
   /** Records an idempotent run, or returns null when no social context can receive it. */
   record(runId: string, locale: RaceLocale): Promise<RecordFacebookContextRunResponse | null>;
 };

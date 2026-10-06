@@ -1,0 +1,27 @@
+FAIL src/play/race/__tests__/RaceSessionDraftReload.test.ts
+  ● restores full fr native graphemes after disposing the same question
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "ä́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́̈́",
+    +   "",
+      ]
+
+      314 |   const store = memory(), first = open(run, store);
+      315 |   first.session.input("text", text);expect(first.session.getSnapshot().currentLetters).toEqual(letters);first.session.dispose();
+    > 316 |   expect(open(run, store).session.getSnapshot().currentLetters).toEqual(letters);
+          |                                                                 ^
+      317 | });
+      318 |
+
+      at src/play/race/__tests__/RaceSessionDraftReload.test.ts:316:65
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 60 passed, 61 total
+Snapshots:   0 total
+Time:        0.352 s
+Ran all test suites matching src/play/race/__tests__/RaceSessionDraftReload.test.ts.

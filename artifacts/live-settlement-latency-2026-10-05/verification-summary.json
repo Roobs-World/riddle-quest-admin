@@ -1,0 +1,62 @@
+{
+  "goal": "active",
+  "measurements": [
+    {
+      "winnerSeat": 0,
+      "retryDeletion": false,
+      "beforeMs": 800,
+      "afterMs": 800,
+      "beforeReads": 10,
+      "afterReads": 8
+    },
+    {
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "beforeMs": 1000,
+      "afterMs": 800,
+      "beforeReads": 11,
+      "afterReads": 9
+    },
+    {
+      "winnerSeat": 0,
+      "retryDeletion": true,
+      "beforeMs": 1600,
+      "afterMs": 1600,
+      "beforeReads": 20,
+      "afterReads": 16
+    },
+    {
+      "winnerSeat": 1,
+      "retryDeletion": true,
+      "beforeMs": 2000,
+      "afterMs": 1600,
+      "beforeReads": 22,
+      "afterReads": 18
+    }
+  ],
+  "scope": "real service and engine under 200ms simulated document reads; emulator verifies real transaction semantics, not production internet latency",
+  "freshDeletionReadPerParticipantPerAttempt": true,
+  "backendUnitTests": 1586,
+  "backendUnitSuites": 129,
+  "liveEmulatorTests": 136,
+  "liveEmulatorSuites": 7,
+  "latencyTests": 8,
+  "deletionOrderCases": 4,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25555,
+  "tsdocFiles": 1145,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "stableSourceInputs": 2343,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 14,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

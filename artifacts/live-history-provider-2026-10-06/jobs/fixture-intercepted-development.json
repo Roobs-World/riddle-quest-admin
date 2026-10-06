@@ -1,0 +1,8 @@
+{
+  "name": "fixture-intercepted-development",
+  "status": "terminal",
+  "exitCode": 1,
+  "logs": [
+    "fixture-intercepted-development.log"
+  ]
+}

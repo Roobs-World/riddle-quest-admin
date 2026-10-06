@@ -1,0 +1,55 @@
+{
+  "goal": "active",
+  "change": "Race guess and current/preloaded evaluation answer refinements reject text above the existing 128-unit bound before Unicode normalization or segmentation.",
+  "reproduction": {
+    "inputUnits": 4096,
+    "schemas": [
+      "guess",
+      "prompt",
+      "preload"
+    ],
+    "rejectedBeforeAndAfter": true,
+    "normalizedUnitsBeforePerSchema": 4096,
+    "normalizedUnitsAfterPerSchema": 0,
+    "segmentedUnitsBeforePerSchema": 4096,
+    "segmentedUnitsAfterPerSchema": 0
+  },
+  "matchingRedCases": 6,
+  "newCoreCases": 13,
+  "controls": "Oversized ASCII and one-grapheme combining sequences perform no normalization/segmentation; 128-unit seven-grapheme originals pass without rewriting; eight-slot bounded strings fail; guess trimming precedes the bound. Existing Unicode SDK gameplay verifies hints, original evaluations, scoring, replay and balances.",
+  "limitations": "No end-to-end latency claim. Trimming still scans guess input. In-bound text retains the existing Unicode segmentation semantics. Oversized text can gain the generic refinement issue in addition to its existing raw-length failure.",
+  "coreTests": 351,
+  "coreSuites": 37,
+  "backendUnitTests": 1669,
+  "backendUnitSuites": 134,
+  "emulatorTests": 401,
+  "emulatorSuites": 27,
+  "pinnedNode22UnicodeSdkTests": 10,
+  "portalFocusedTests": 37,
+  "portalFocusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": [
+    "core",
+    "backend",
+    "portal"
+  ],
+  "downstreamBackendLint": "passed",
+  "coreLint": "No configured core lint command; initial root invocation failure is documented. Core types and tests passed.",
+  "tsdocDeclarations": 26056,
+  "tsdocFiles": 1167,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2365,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 18,
+  "resolvedToolingFailures": [
+    "core-lint-unconfigured"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

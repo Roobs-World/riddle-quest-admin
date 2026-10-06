@@ -1,0 +1,343 @@
+  console.error
+    ◇ injected env (12) from .env
+
+      2 | /** Keeps real local demo-emulator runs independent of deployment credentials and project overrides. */
+      3 | const isDemoEmulatorTest = /^demo-/.test(process.env.GCLOUD_PROJECT || "") && /^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST || "");
+    > 4 | if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                                            ^
+      5 |
+      6 | // Ensure Jest environment is properly detected by iapConfig
+      7 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:4:44)
+
+(node:420612) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL src/__tests__/race/raceAnswerInputShape.test.ts
+  ● rejects fresh catalog answers containing an uneditable   slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable 	 slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable 
+ slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable 
+ slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable   slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable   slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable 　 slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable   slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects fresh catalog answers containing an uneditable ﻿ slot
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      24 |   /** Actual pool validation must not offer an answer that the actual editor discards. */
+      25 |   const result = validateRacePool(pool(`a${space}b`), {locale: "en", categoryId: "history"});
+    > 26 |   expect(result.valid).toBe(false); expect(result.issues).toEqual(expect.arrayContaining([expect.objectContaining({code: "missing_metadata"})]));
+         |                        ^
+      27 | });
+      28 |
+      29 | it.each(spaces)("rejects an immutable new opponent source containing an uneditable %s slot", space => {
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:26:24
+
+  ● rejects an immutable new opponent source containing an uneditable   slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable 	 slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable 
+ slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable 
+ slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable   slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable   slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable 　 slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable   slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+  ● rejects an immutable new opponent source containing an uneditable ﻿ slot
+
+    expect(received).toThrow(expected)
+
+    Expected asymmetric matcher: ObjectContaining {"code": "data-loss"}
+
+    Received function did not throw
+
+      30 |   /** Both recorded and live new-entry guards must cover the same input shape. */
+      31 |   const source = riddle(`a${space}b`);
+    > 32 |   expect(() => assertRaceDeckCompatible([source], "en")).toThrow(expect.objectContaining({code: "data-loss"}));
+         |                                                          ^
+      33 |   expect(source.answer).toBe(`a${space}b`);
+      34 | });
+      35 |
+
+      at src/__tests__/race/raceAnswerInputShape.test.ts:32:58
+
+Test Suites: 1 failed, 1 total
+Tests:       18 failed, 10 passed, 28 total
+Snapshots:   0 total
+Time:        0.361 s
+Ran all test suites.

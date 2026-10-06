@@ -1,0 +1,48 @@
+{
+  "examples": 16,
+  "whitespaceCases": 9,
+  "supportedNonwhitespaceControls": 7,
+  "assertions": 152,
+  "sourceFiles": 30,
+  "sourceUnchanged": true,
+  "main": {
+    "kind": "space",
+    "answer": "a b",
+    "discarded": true,
+    "sourceUnits": 3,
+    "sourceGraphemes": [
+      "a",
+      " ",
+      "b"
+    ],
+    "editorLetters": [
+      "a",
+      "b",
+      ""
+    ],
+    "editedGuess": "ab",
+    "allSlotsFilled": false,
+    "catalogIssues": [],
+    "frozenDeckCompatible": true,
+    "sharedEvaluationAccepted": true,
+    "transportAccepted": true,
+    "engine": {
+      "accepted": false,
+      "code": "invalid-argument",
+      "message": "Guess must contain exactly 3 characters."
+    }
+  },
+  "hintRecovery": {
+    "firstHint": "a",
+    "secondHint": " ",
+    "paidHints": 2,
+    "penaltyMs": 30000,
+    "editorLetters": [
+      "a",
+      " ",
+      "b"
+    ],
+    "guess": "a b",
+    "isCorrect": true
+  }
+}

@@ -1,0 +1,58 @@
+FAIL src/__tests__/race/raceLiveDeckCompatibility.it.test.ts
+  ● recovers and settles an already-accepted public match despite incompatible future content
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "coins": 250,
+    +   "coins": 200,
+        "stats": Object {
+          "multiplayerGamesPlayed": 1,
+          "multiplayerWins": 1,
+        },
+      }
+
+      187 |   expect(terminal.phase).toBe("result");
+      188 |   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
+    > 189 |   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 250,
+          |                                                     ^
+      190 |     stats: {multiplayerGamesPlayed: 1, multiplayerWins: entry === "bot" ? 0 : 1}});
+      191 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(entry === "bot" ? 100 : 125);
+      192 |   /** Later terminal reads do not grant badges or victory coins again. */
+
+      at src/__tests__/race/raceLiveDeckCompatibility.it.test.ts:189:53
+
+  ● recovers and settles an already-accepted private match despite incompatible future content
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "coins": 250,
+    +   "coins": 200,
+        "stats": Object {
+          "multiplayerGamesPlayed": 1,
+          "multiplayerWins": 1,
+        },
+      }
+
+      187 |   expect(terminal.phase).toBe("result");
+      188 |   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
+    > 189 |   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 250,
+          |                                                     ^
+      190 |     stats: {multiplayerGamesPlayed: 1, multiplayerWins: entry === "bot" ? 0 : 1}});
+      191 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(entry === "bot" ? 100 : 125);
+      192 |   /** Later terminal reads do not grant badges or victory coins again. */
+
+      at src/__tests__/race/raceLiveDeckCompatibility.it.test.ts:189:53
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 23 passed, 25 total
+Snapshots:   0 total
+Time:        5.083 s
+Ran all test suites.

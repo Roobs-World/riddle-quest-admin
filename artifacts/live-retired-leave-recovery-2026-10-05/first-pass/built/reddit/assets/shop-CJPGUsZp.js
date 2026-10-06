@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` monet`,LOADING_TEXT:`Zagruzka magazina...`,NO_PACKS_AVAILABLE:`Pakety monet nedostuny v dannyy moment.`,PURCHASE_BUTTON:`KUPIT`,TITLE:`MAGAZIN MONET`,YOUR_BALANCE:`Vash balans`},n={CoinShop:t}})))()}r();export{n as default};

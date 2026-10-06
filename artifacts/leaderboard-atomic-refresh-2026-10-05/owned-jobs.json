@@ -1,0 +1,74 @@
+[
+  {
+    "name": "red-emulator",
+    "sessionId": 73857,
+    "exitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "focused-preflight",
+    "sessionId": 36121,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator",
+    "sessionId": 67030,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-preflight",
+    "sessionId": 31768,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 41742,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 70407,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": 21972,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 33498,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 82660,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-focused",
+    "sessionId": 92771,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 84427,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "focused-trace-capture",
+    "sessionId": 45963,
+    "exitCode": 0,
+    "status": "terminal"
+  }
+]

@@ -1,0 +1,28 @@
+  console.info
+    {"elapsedMs":800,"reads":["direct:users/player-1/singlePlayerSessions/11e594f481958c10e3015d0bf0447a22f068a8a647f475df15ce2c7ab4b8f3f1","transaction:users/player-1/singlePlayerSessions/11e594f481958c10e3015d0bf0447a22f068a8a647f475df15ce2c7ab4b8f3f1","transaction:users/player-1"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/singlePlayerSkipPreparationLatency.test.ts
+  ● prepares skipped Classic content with one parallel transaction read stage
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 600
+    Received: 800
+
+      59 |     const start = Date.now(); const pending = skip(); await jest.runAllTimersAsync(); const result = await pending;
+      60 |     if (process.env.SINGLE_PLAYER_SKIP_TRACE) console.info(JSON.stringify({elapsedMs: Date.now() - start, reads: mockReads}));
+    > 61 |     expect(Date.now() - start).toBe(600);
+         |                                ^
+      62 |     expect(mockReads).toHaveLength(2);
+      63 |     expect(result).toMatchObject({success: true, costDeducted: 100, newCoins: 450, newProgress: {classicIndex: 2}});
+      64 |     expect(result).not.toHaveProperty("classicSupply");
+
+      at Object.<anonymous> (src/__tests__/singlePlayerSkipPreparationLatency.test.ts:61:32)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        0.429 s, estimated 1 s
+Ran all test suites matching src/__tests__/singlePlayerSkipPreparationLatency.test.ts.

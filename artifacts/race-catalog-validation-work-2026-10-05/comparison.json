@@ -1,0 +1,54 @@
+[
+  {
+    "name": "combining",
+    "sourceAnswerUnits": 200000,
+    "sourceAnswerBytes": 300000,
+    "baselineAnswerNormalizationCalls": 2,
+    "fixedAnswerNormalizationCalls": 0,
+    "baselineAnswerNormalizationUnits": 400000,
+    "fixedAnswerNormalizationUnits": 0,
+    "baselineMedianMs": 3.4812430000000063,
+    "fixedMedianMs": 0.3454035000000033,
+    "resultUnchanged": true,
+    "samplesEach": 20
+  },
+  {
+    "name": "fullwidth",
+    "sourceAnswerUnits": 200000,
+    "sourceAnswerBytes": 600000,
+    "baselineAnswerNormalizationCalls": 2,
+    "fixedAnswerNormalizationCalls": 0,
+    "baselineAnswerNormalizationUnits": 400000,
+    "fixedAnswerNormalizationUnits": 0,
+    "baselineMedianMs": 2.5814995000000067,
+    "fixedMedianMs": 0.3315279999999916,
+    "resultUnchanged": true,
+    "samplesEach": 20
+  },
+  {
+    "name": "joined-emoji",
+    "sourceAnswerUnits": 110000,
+    "sourceAnswerBytes": 250000,
+    "baselineAnswerNormalizationCalls": 2,
+    "fixedAnswerNormalizationCalls": 0,
+    "baselineAnswerNormalizationUnits": 220000,
+    "fixedAnswerNormalizationUnits": 0,
+    "baselineMedianMs": 2.0819684999999595,
+    "fixedMedianMs": 0.3935354999999845,
+    "resultUnchanged": true,
+    "samplesEach": 20
+  },
+  {
+    "name": "minimum",
+    "sourceAnswerUnits": 129,
+    "sourceAnswerBytes": 129,
+    "baselineAnswerNormalizationCalls": 2,
+    "fixedAnswerNormalizationCalls": 0,
+    "baselineAnswerNormalizationUnits": 258,
+    "fixedAnswerNormalizationUnits": 0,
+    "baselineMedianMs": 0.2646509999999864,
+    "fixedMedianMs": 0.3020919999999876,
+    "resultUnchanged": true,
+    "samplesEach": 20
+  }
+]

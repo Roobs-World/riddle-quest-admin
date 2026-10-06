@@ -1,0 +1,17 @@
+{
+  "name": "share-production",
+  "command": [
+    "env",
+    "TOURNAMENT_SHARE_MODE=production",
+    "TOURNAMENT_SHARE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-projection-2026-10-06/share-production",
+    "node",
+    "packages/portal/scripts/verify-live-tournament-share-browser.mjs"
+  ],
+  "logs": [
+    "share-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791261831.6088107,
+  "exitCode": 0,
+  "finishedAt": 1791261853.7022386
+}

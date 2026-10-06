@@ -1,0 +1,21 @@
+{
+  "name": "history-production",
+  "command": [
+    "env",
+    "LIVE_HISTORY_MODE=production",
+    "LIVE_HISTORY_REPORT_DIR=../../artifacts/live-rematch-owner-2026-10-06/history-production",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-live-history-provider-browser.mjs"
+  ],
+  "logs": [
+    "history-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791254442.4759395,
+  "exitCode": 0,
+  "finishedAt": 1791254451.5323856
+}

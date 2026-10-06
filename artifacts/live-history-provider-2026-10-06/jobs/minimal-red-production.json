@@ -1,0 +1,8 @@
+{
+  "name": "minimal-red-production",
+  "status": "terminal",
+  "exitCode": 1,
+  "logs": [
+    "red-production.log"
+  ]
+}

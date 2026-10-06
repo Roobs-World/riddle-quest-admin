@@ -1,0 +1,301 @@
+[
+  {
+    "name": "builds",
+    "command": [
+      "bash",
+      "artifacts/live-overlay-owner-2026-10-06/builds.sh"
+    ],
+    "logs": [
+      "builds.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258668.3692744,
+    "exitCode": 0,
+    "finishedAt": 1791258694.828842
+  },
+  {
+    "name": "built-browser",
+    "command": [
+      "bash",
+      "artifacts/live-overlay-owner-2026-10-06/built-browser.sh"
+    ],
+    "logs": [
+      "built-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258742.9501998,
+    "exitCode": 0,
+    "finishedAt": 1791258848.4866345
+  },
+  {
+    "name": "choice-development",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_MODE=development",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/choice-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-choice-browser.mjs"
+    ],
+    "logs": [
+      "choice-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258685.7551348,
+    "exitCode": 0,
+    "finishedAt": 1791258697.675864
+  },
+  {
+    "name": "choice-production",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_MODE=production",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/choice-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-choice-browser.mjs"
+    ],
+    "logs": [
+      "choice-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258713.0473416,
+    "exitCode": 0,
+    "finishedAt": 1791258723.645227
+  },
+  {
+    "name": "chromium-development",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_BROWSER=chromium",
+      "OVERLAY_OWNER_MODE=development",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/chromium-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-overlay-owner-browser.mjs"
+    ],
+    "logs": [
+      "chromium-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258668.134974,
+    "exitCode": 0,
+    "finishedAt": 1791258682.8549697
+  },
+  {
+    "name": "chromium-production",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_BROWSER=chromium",
+      "OVERLAY_OWNER_MODE=production",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/chromium-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-overlay-owner-browser.mjs"
+    ],
+    "logs": [
+      "chromium-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258682.8710313,
+    "exitCode": 0,
+    "finishedAt": 1791258696.1105711
+  },
+  {
+    "name": "context-development",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=development",
+      "LIVE_CONTEXT_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/context-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "context-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258667.7376611,
+    "exitCode": 0,
+    "finishedAt": 1791258685.7355943
+  },
+  {
+    "name": "context-production",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=production",
+      "LIVE_CONTEXT_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/context-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "context-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258697.6909225,
+    "exitCode": 0,
+    "finishedAt": 1791258713.0322819
+  },
+  {
+    "name": "facebook-built-browser",
+    "command": [
+      "env",
+      "PORTAL_BROWSER_TESTS=1",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand",
+      "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"
+    ],
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258743.0428681,
+    "exitCode": 1,
+    "finishedAt": 1791258765.521474
+  },
+  {
+    "name": "firefox-development",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_BROWSER=firefox",
+      "OVERLAY_OWNER_MODE=development",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/firefox-development",
+      "OVERLAY_OWNER_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-overlay-owner-browser.mjs"
+    ],
+    "logs": [
+      "firefox-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258696.1270685,
+    "exitCode": 0,
+    "finishedAt": 1791258714.4153855
+  },
+  {
+    "name": "firefox-production",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_BROWSER=firefox",
+      "OVERLAY_OWNER_MODE=production",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/firefox-production",
+      "OVERLAY_OWNER_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-overlay-owner-browser.mjs"
+    ],
+    "logs": [
+      "firefox-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258714.4307182,
+    "exitCode": 0,
+    "finishedAt": 1791258732.034262
+  },
+  {
+    "name": "minimal-final-baseline-development",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_MODE=development",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/minimal-final-baseline-development",
+      "OVERLAY_OWNER_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/owned-00-before.txt",
+      "OVERLAY_OWNER_BASELINE_ADAPTER_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/owned-01-before.txt",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258723.661812,
+    "exitCode": 1,
+    "finishedAt": 1791258724.9638312
+  },
+  {
+    "name": "minimal-final-baseline-production",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_MODE=production",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/minimal-final-baseline-production",
+      "OVERLAY_OWNER_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/owned-00-before.txt",
+      "OVERLAY_OWNER_BASELINE_ADAPTER_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/owned-01-before.txt",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258726.2643044,
+    "exitCode": 1,
+    "finishedAt": 1791258727.4938066
+  },
+  {
+    "name": "minimal-final-green-development",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_MODE=development",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/minimal-final-green-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258724.9793706,
+    "exitCode": 0,
+    "finishedAt": 1791258726.2491302
+  },
+  {
+    "name": "minimal-final-green-production",
+    "command": [
+      "env",
+      "OVERLAY_OWNER_MODE=production",
+      "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/minimal-final-green-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258727.5087492,
+    "exitCode": 0,
+    "finishedAt": 1791258728.7681024
+  },
+  {
+    "name": "portal-units",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand"
+    ],
+    "logs": [
+      "portal-units.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258670.5504382,
+    "exitCode": 0,
+    "finishedAt": 1791258680.785038
+  },
+  {
+    "name": "static",
+    "command": [
+      "bash",
+      "artifacts/live-overlay-owner-2026-10-06/static.sh"
+    ],
+    "logs": [
+      "static.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791258667.9427767,
+    "exitCode": 0,
+    "finishedAt": 1791258670.5296762
+  }
+]

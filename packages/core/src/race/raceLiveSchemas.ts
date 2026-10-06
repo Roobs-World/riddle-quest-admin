@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {RaceGuessTextSchema} from "./raceTextSchemas";
 import {RaceCategoryIdSchema, RaceLocaleSchema} from "./raceDefinitionSchemas";
 import {RaceRunViewSchema, type SocialReportCategory} from "./raceSchemas";
 import type {ListLiveRaceHistoryResponse} from "./raceLiveHistorySchemas";
@@ -16,6 +17,10 @@ export const LiveRaceChallengeIdSchema = z.string().regex(/^live_[a-f0-9]{64}$/)
 /** One authenticated, idempotent queue entry. */
 export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
   requestId: z.string().min(8).max(160), createChallenge: z.boolean().optional(),
+  /** Modern clients durably retire this join intent rather than an unconditionally shared ticket. */
+  retirementAware: z.literal(true).optional(),
+  /** Precondition only: verified authentication still exclusively selects the account. */
+  expectedOwnerId: z.string().min(1).max(128).optional(),
   challengeId: LiveRaceChallengeIdSchema.optional(),
   /** Facebook adapter captures its synchronized SDK context; other providers must reject this selector. */
   facebookContextId: z.string().min(1).max(256).regex(/^[A-Za-z0-9._:-]+$/).optional(),
@@ -26,7 +31,7 @@ export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId
 /** Commands identify an owned seat and never supply scores or clock values. */
 export const UpdateLiveRaceSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
   action: z.enum(["poll", "guess", "hint", "skip", "leave"]), requestId: z.string().min(8).max(160),
-  riddleId: z.string().min(1).max(160).optional(), guess: z.string().trim().min(1).max(128).optional()}).strict()
+  riddleId: z.string().min(1).max(160).optional(), guess: RaceGuessTextSchema.optional()}).strict()
   .refine(input => input.action !== "guess" || Boolean(input.guess && input.riddleId))
   .refine(input => !["hint", "skip"].includes(input.action) || Boolean(input.riddleId));
 /** Identity is projected from authenticated account data. */
@@ -65,10 +70,22 @@ export type JoinLiveRace = z.infer<typeof JoinLiveRaceSchema>;
 export type UpdateLiveRace = z.infer<typeof UpdateLiveRaceSchema>;
 /** Viewer-specific lobby and gameplay snapshot. */
 export type LiveRaceView = z.infer<typeof LiveRaceViewSchema>;
+/** Retirement identifies only the caller's original join, never a rival or arbitrary ticket. */
+export const RetireLiveRaceJoinSchema = z.object({requestId: z.string().min(8).max(160),
+  /** Rejects a delayed delivery after target authentication changes; never selects another account. */
+  expectedOwnerId: z.string().min(1).max(128).optional()}).strict();
+/** A newer accepted join supersedes cleanup without ending its shared account ticket. */
+export const RetireLiveRaceJoinResponseSchema = z.object({status: z.enum(["retired", "superseded"])}).strict();
+/** Stable join identity used by target-owned background retirement. */
+export type RetireLiveRaceJoin = z.infer<typeof RetireLiveRaceJoinSchema>;
+/** Strict acknowledgement carries no gameplay or economy facts. */
+export type RetireLiveRaceJoinResponse = z.infer<typeof RetireLiveRaceJoinResponseSchema>;
 /** Platform adapter owns the authenticated transport. */
 export type LiveRaceCapability = {
+  /** Retires an original join intent without cancelling a newer journey's recovered seat. */
+  retireJoin?(input: RetireLiveRaceJoin): Promise<RetireLiveRaceJoinResponse>;
   /** Creates or recovers a private rematch without accepting a rival account identifier. */
-  rematch?(input: Pick<JoinLiveRace, "locale" | "categoryId" | "requestId"> & {
+  rematch?(input: Pick<JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {
     /** Caller-owned retained terminal seat. */ rematchOfTicketId: string;
   }): Promise<LiveRaceView>;
   /** Reads only the authenticated account's retained terminal seats in the selected language. */

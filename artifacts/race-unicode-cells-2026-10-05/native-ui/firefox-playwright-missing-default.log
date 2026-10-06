@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Executable doesn't exist at /home/craig-beswetherick/.cache/ms-playwright/firefox-1543/firefox/firefox
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     npx playwright install                                 ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+    at /home/craig-beswetherick/Documents/riddle-quest/artifacts/race-unicode-cells-2026-10-05/native-ui/run-firefox.mjs:3:27 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.17.0

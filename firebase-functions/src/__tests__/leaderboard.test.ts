@@ -2,7 +2,7 @@
  * Unit tests for firebase-functions/src/gameplay/leaderboard.ts
  *
  * Covers:
- *  - updateLeaderboardEntry: writes correct data, omits avatarUrl when absent
+ *  - updateLeaderboardEntry: projects current authority atomically and removes absent avatars
  *  - getLeaderboard callable: auth guard, type validation, correct ordering,
  *    limit capping, empty result set
  */
@@ -28,6 +28,22 @@ jest.mock("../jest/jestAccountDeletion", () => ({
 
 /** Provides mock set behavior. */
 const mockSet = jest.fn().mockResolvedValue(undefined);
+/** Each writer attempt gets a fresh canonical profile. */
+const mockTransactionGet = jest.fn();
+/** Models one masked SDK account read while retaining the canonical snapshot/error injector. */
+const mockTransactionGetAll = jest.fn(async (ref: unknown, _options: unknown) => [await mockTransactionGet(ref)]);
+/** Public rows are replaced atomically, including removal of obsolete identity fields. */
+const mockTransactionSet = jest.fn();
+/** Transaction callback seam exercises retry reads without caching account snapshots. */
+const mockRunTransaction = jest.fn(async (operation: (transaction: {
+  /** Reads authority on each attempt. */
+  get: typeof mockTransactionGet;
+  /** Reads one canonical document with the public field mask. */
+  getAll: typeof mockTransactionGetAll;
+  /** Replaces the public row. */
+  set: typeof mockTransactionSet;
+}) => Promise<unknown>) =>
+  operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet}));
 /** Provides mock order by behavior. */
 const mockOrderBy = jest.fn();
 /** Provides mock leaderboard limit behavior. */
@@ -40,12 +56,21 @@ const mockUsersLimit = jest.fn();
 const mockUsersWhere = jest.fn();
 /** Orders authoritative account statistics. */
 const mockUsersOrderBy = jest.fn();
+/** Selects only public fields required by canonical rankings. */
+const mockUsersSelect = jest.fn();
 /** Provides mock users get behavior. */
 const mockUsersGet = jest.fn();
 /** Provides mock users doc behavior. */
 const mockUsersDoc = jest.fn();
 /** Provides mock users doc get behavior. */
 const mockUsersDocGet = jest.fn();
+/** Canonical display snapshots are independent from copied leaderboard rows in regressions. */
+const mockProfileDocs = new Map<string, Record<string, unknown>>();
+/** Mirrors the SDK's argument order while ignoring the trailing read-options object. */
+const mockReadProfiles = async (...refs: Array<{
+  /** A document argument has an ID; a read-options argument does not. */
+  id?: string;
+}>) => refs.flatMap(ref => ref.id === undefined ? [] : [{exists: true, id: ref.id, data: () => mockProfileDocs.get(ref.id!)}]);
 /** Provides mock get all behavior. */
 const mockGetAll = jest.fn();
 /** Provides mock batch set behavior. */
@@ -75,6 +100,7 @@ const mockUsersQuery = {
   where: mockUsersWhere,
   orderBy: mockUsersOrderBy,
   limit: mockUsersLimit,
+  select: mockUsersSelect,
   get: mockUsersGet,
 };
 
@@ -96,6 +122,7 @@ const mockCollection = jest.fn((collectionName: string) => {
       where: mockUsersWhere,
       orderBy: mockUsersOrderBy,
       limit: mockUsersLimit,
+      select: mockUsersSelect,
       doc: mockUsersDoc,
     };
   }
@@ -105,7 +132,7 @@ const mockCollection = jest.fn((collectionName: string) => {
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   apps: [],
-  firestore: jest.fn(() => ({collection: mockCollection, batch: mockBatch, getAll: mockGetAll})),
+  firestore: jest.fn(() => ({collection: mockCollection, batch: mockBatch, getAll: mockGetAll, runTransaction: mockRunTransaction})),
 }));
 
 // â”€â”€ firebase-functions/v2/https mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -163,7 +190,10 @@ function makeEntry(overrides: Partial<LeaderboardEntry> = {}): LeaderboardEntry 
 /** Creates snapshot. */
 function makeSnapshot(entries: LeaderboardEntry[]) {
   return {
-    docs: entries.map((e) => ({id: e.userId, data: () => e})),
+    docs: entries.map((e) => {
+      mockProfileDocs.set(e.userId, {username: e.username, avatarUrl: e.avatarUrl});
+      return {id: e.userId, data: () => e};
+    }),
   };
 }
 
@@ -174,73 +204,90 @@ function makeSnapshot(entries: LeaderboardEntry[]) {
 describe("updateLeaderboardEntry", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTransactionGet.mockReset().mockResolvedValue({exists: true, data: () => ({username: "Alice", stats: {level: 2, xp: 300, totalWins: 6, bestStreak: 3}})});
   });
 
-  it("writes the correct entry document", async () => {
-    await updateLeaderboardEntry("uid-1", "Alice", {level: 2, xp: 300, totalWins: 6, bestStreak: 3});
-
-    expect(mockDoc).toHaveBeenCalledWith("uid-1");
-    expect(mockSet).toHaveBeenCalledWith(
-      expect.objectContaining({
-        userId: "uid-1",
-        subjectUserId: "uid-1",
-        username: "Alice",
-        level: 2,
-        xp: 300,
-        progressScore: 2_000_000_300,
-        totalWins: 6,
-        bestStreak: 3,
-      }),
-      {merge: true},
-    );
+  it("writes a complete canonical row in the account transaction", async () => {
+    await updateLeaderboardEntry("uid-1");
+    expect(mockTransactionGet).toHaveBeenCalledWith(expect.objectContaining({path: "users/uid-1"}));
+    expect(mockTransactionGetAll).toHaveBeenCalledWith(expect.objectContaining({path: "users/uid-1"}),
+      {fieldMask: ["username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"]});
+    expect(mockTransactionSet).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({
+      userId: "uid-1", subjectUserId: "uid-1", username: "Alice", level: 2, xp: 300,
+      progressScore: 2_000_000_300, totalWins: 6, bestStreak: 3,
+    }));
+    // A replacement clears absent avatars instead of retaining them through merge.
+    expect(mockTransactionSet.mock.calls[0]).toHaveLength(2);
+    expect(mockSet).not.toHaveBeenCalled();
   });
 
-  it("includes avatarUrl when provided", async () => {
-    await updateLeaderboardEntry(
-      "uid-2",
-      "Bob",
-      {level: 1, xp: 100, totalWins: 2, bestStreak: 1},
-      "https://example.com/avatar.jpg",
-    );
-
-    expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({avatarUrl: "https://example.com/avatar.jpg"}), {
-      merge: true,
-    });
+  it("includes the current canonical avatar", async () => {
+    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({username: "Bob", avatarUrl: "https://example.com/avatar.jpg"})});
+    await updateLeaderboardEntry("uid-2");
+    expect(mockTransactionSet).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({avatarUrl: "https://example.com/avatar.jpg"}));
   });
 
-  it("omits avatarUrl when null", async () => {
-    await updateLeaderboardEntry("uid-3", "Carol", {level: 1, xp: 50, totalWins: 1, bestStreak: 1}, null);
-
-    /** Provides call arg behavior. */
-    const callArg = mockSet.mock.calls[0][0] as LeaderboardEntry;
-    expect(callArg.avatarUrl).toBeUndefined();
+  it.each([null, undefined])("omits removed canonical avatar %s from its replacement", async avatarUrl => {
+    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({username: "Carol", avatarUrl})});
+    await updateLeaderboardEntry("uid-3");
+    expect(mockTransactionSet.mock.calls[0][1]).not.toHaveProperty("avatarUrl");
   });
 
-  it("omits avatarUrl when undefined", async () => {
-    await updateLeaderboardEntry("uid-4", "Dave", {level: 1, xp: 50, totalWins: 1, bestStreak: 1});
-
-    /** Provides call arg behavior. */
-    const callArg = mockSet.mock.calls[0][0] as LeaderboardEntry;
-    expect(callArg.avatarUrl).toBeUndefined();
+  it("does not write or log a successful update when the canonical account is missing", async () => {
+    mockTransactionGet.mockResolvedValueOnce({exists: false});
+    await updateLeaderboardEntry("uid-4");
+    expect(mockTransactionSet).not.toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  it("sets a numeric updatedAt timestamp", async () => {
-    /** Provides before behavior. */
+  it("sets a numeric updatedAt timestamp and logs only after commit", async () => {
+    /** The committed row records a timestamp inside the observed call interval. */
     const before = Date.now();
-    await updateLeaderboardEntry("uid-5", "Eve", {level: 1, xp: 0, totalWins: 0, bestStreak: 0});
-    /** Provides after behavior. */
-    const after = Date.now();
-
-    /** Provides call arg behavior. */
-    const callArg = mockSet.mock.calls[0][0] as LeaderboardEntry;
-    expect(callArg.updatedAt).toBeGreaterThanOrEqual(before);
-    expect(callArg.updatedAt).toBeLessThanOrEqual(after);
+    await updateLeaderboardEntry("uid-5");
+    expect(mockTransactionSet.mock.calls[0][1].updatedAt).toBeGreaterThanOrEqual(before);
+    expect(mockTransactionSet.mock.calls[0][1].updatedAt).toBeLessThanOrEqual(Date.now());
+    expect(mockLoggerInfo).toHaveBeenCalledTimes(1);
   });
 
-  it("logs an info message after writing", async () => {
-    await updateLeaderboardEntry("uid-6", "Frank", {level: 1, xp: 0, totalWins: 0, bestStreak: 0});
+  it("reads changed canonical fields again on a transaction retry", async () => {
+    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({username: "Old", stats: {level: 1, totalWins: 2}})})
+      .mockResolvedValueOnce({exists: true, data: () => ({username: "Current", stats: {level: 3, totalWins: 8}})});
+    mockRunTransaction.mockImplementationOnce(async operation => {
+      await operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
+      return operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
+    });
+    await updateLeaderboardEntry("uid-6");
+    expect(mockTransactionGet).toHaveBeenCalledTimes(2);
+    expect(mockTransactionSet).toHaveBeenLastCalledWith(mockDocRef, expect.objectContaining({username: "Current", level: 3, totalWins: 8}));
+    expect(mockLoggerInfo).toHaveBeenCalledTimes(1);
+  });
 
-    expect(mockLoggerInfo).toHaveBeenCalledWith(expect.stringContaining("uid-6"));
+  it("keeps a fieldless canonical account live and publishes existing public defaults", async () => {
+    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({coins: 550})});
+    await updateLeaderboardEntry("uid-empty");
+    expect(mockTransactionGetAll).toHaveBeenCalledTimes(1);
+    expect(mockTransactionSet).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({userId: "uid-empty", subjectUserId: "uid-empty",
+      username: "Player", level: 1, xp: 0, totalWins: 0, bestStreak: 0, multiplayerWins: 0}));
+  });
+
+  it("does not reuse first-attempt membership when the account is gone on retry", async () => {
+    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({username: "First attempt"})}).mockResolvedValueOnce({exists: false});
+    mockRunTransaction.mockImplementationOnce(async operation => {
+      await operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
+      return operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
+    });
+    await updateLeaderboardEntry("uid-deleted");
+    expect(mockTransactionGetAll).toHaveBeenCalledTimes(2);
+    // One queued first-attempt write is discarded by the transaction boundary, with no second write or success log.
+    expect(mockTransactionSet).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
+  it("propagates a canonical read failure without publishing a partial row", async () => {
+    mockTransactionGet.mockRejectedValueOnce(new Error("account unavailable"));
+    await expect(updateLeaderboardEntry("uid-7")).rejects.toThrow("account unavailable");
+    expect(mockTransactionSet).not.toHaveBeenCalled();
+    expect(mockLoggerError).toHaveBeenCalled();
   });
 });
 
@@ -255,21 +302,16 @@ describe("getLeaderboard callable", () => {
     mockUsersGet.mockReset();
     mockUsersDocGet.mockReset();
     mockGetAll.mockReset();
+    mockProfileDocs.clear();
     // Re-apply chain because clearAllMocks resets return values
     mockOrderBy.mockReturnValue(mockLeaderboardQuery);
     mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
     mockUsersLimit.mockReturnValue(mockUsersQuery);
+    mockUsersSelect.mockReturnValue(mockUsersQuery);
     mockUsersWhere.mockReturnValue(mockUsersQuery);
     mockUsersOrderBy.mockReturnValue(mockUsersQuery);
     mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
-    mockGetAll.mockImplementation(
-      async (
-        ...refs: Array<{
-          /** Stores id. */
-          id: string;
-        }>
-      ) => refs.map((ref) => ({exists: true, id: ref.id})),
-    );
+    mockGetAll.mockImplementation(mockReadProfiles);
     mockUsersDocGet.mockResolvedValue({
       exists: false,
       data: () => ({}),
@@ -281,6 +323,50 @@ describe("getLeaderboard callable", () => {
     // getLeaderboard is assigned by onCall mock â€” call the registered handler
     return mockOnCall({auth, data});
   }
+
+  it.each(["xp", "totalWins", "bestStreak"] as const)("uses current display fields for %s with one existing batch read", async type => {
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([
+      makeEntry({userId: "u1", username: "Old name", avatarUrl: "https://example.com/old.png", level: 3, xp: 50}),
+      makeEntry({userId: "u2", username: "Other", level: 2}),
+    ]));
+    mockProfileDocs.set("u1", {username: "Current name", avatarUrl: "https://example.com/current.png", stats: {level: 99}});
+    /** Existing score order and values remain projection-owned; only current public identity is hydrated. */
+    const result = await callGetLeaderboard({uid: "viewer"}, {type});
+    expect(result.entries).toMatchObject([
+      {userId: "u1", username: "Current name", avatarUrl: "https://example.com/current.png", level: 3, xp: 50},
+      {userId: "u2", username: "Other", level: 2},
+    ]);
+    expect(mockGetAll).toHaveBeenCalledTimes(1);
+    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u1"}), expect.objectContaining({id: "u2"}),
+      {fieldMask: ["username", "displayName", "avatarUrl"]});
+    expect(mockUsersDocGet).not.toHaveBeenCalled();
+    expect(mockSet).not.toHaveBeenCalled();
+    expect(mockBatchCommit).not.toHaveBeenCalled();
+  });
+
+  it.each([undefined, null, "", "   "])("never reuses a copied avatar when current avatar is %s", async avatarUrl => {
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({avatarUrl: "https://example.com/old.png"})]));
+    mockProfileDocs.set("user-1", {username: "Current name", avatarUrl});
+    expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]).not.toHaveProperty("avatarUrl");
+  });
+
+  it.each([
+    {profile: {username: "  ", displayName: "Current display name"}, expected: "Current display name"},
+    {profile: {username: "", displayName: "  "}, expected: "Player"},
+    {profile: {username: " Current username ", displayName: "Other display name"}, expected: "Current username"},
+  ])("uses canonical name fallback $expected without restoring a copied name", async ({profile, expected}) => {
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({username: "Earlier name"})]));
+    mockProfileDocs.set("user-1", profile);
+    expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]?.username).toBe(expected);
+  });
+
+  it("rejects mismatched subjects before reading canonical display data", async () => {
+    /** Canonical ownership is proven by document IDs and embedded subject IDs, never matching display fields. */
+    const valid = makeSnapshot([makeEntry({userId: "u2", username: "Other"})]).docs;
+    mockLeaderboardGet.mockResolvedValueOnce({docs: [{id: "u1", data: () => ({...makeEntry({userId: "u1"}), subjectUserId: "u2"})}, ...valid]});
+    expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries).toEqual([expect.objectContaining({userId: "u2"})]);
+    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}), {fieldMask: ["username", "displayName", "avatarUrl"]});
+  });
 
   it("throws unauthenticated when auth is missing", async () => {
     await expect(callGetLeaderboard(null, {type: "xp"})).rejects.toMatchObject({
@@ -330,6 +416,7 @@ describe("getLeaderboard callable", () => {
     ]});
     /** Indexed account rankings returned by the callable. */
     const result = await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins", limit: 25});
+    expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
     expect(mockUsersWhere).toHaveBeenCalledWith("stats.multiplayerWins", ">", 0);
     expect(mockUsersOrderBy).toHaveBeenCalledWith("stats.multiplayerWins", "desc");
     expect(mockUsersLimit).toHaveBeenCalledWith(25);
@@ -458,6 +545,7 @@ describe("getLeaderboard callable", () => {
     expect(typedResult.entries[0].userId).toBe("u1");
     expect(typedResult.entries[1].userId).toBe("u2");
     expect(mockUsersLimit).toHaveBeenCalledWith(1000);
+    expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
     expect(mockBatchSet).not.toHaveBeenCalled();
     expect(mockBatchCommit).not.toHaveBeenCalled();
   });
@@ -470,14 +558,8 @@ describe("getLeaderboard callable", () => {
       makeEntry({userId: "u2", username: "Other", xp: 600, progressScore: 2_000_000_600}),
     ];
     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
-    mockGetAll.mockImplementationOnce(
-      async (
-        ...refs: Array<{
-          /** Stores id. */
-          id: string;
-        }>
-      ) => refs.map((ref) => ({exists: ref.id !== "legacy-u1", id: ref.id})),
-    );
+    mockGetAll.mockImplementationOnce(async (...refs: Parameters<typeof mockReadProfiles>) =>
+      (await mockReadProfiles(...refs)).map(document => ({...document, exists: document.id !== "legacy-u1"})));
 
     /** Provides result behavior. */
     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
@@ -492,6 +574,7 @@ describe("getLeaderboard callable", () => {
   });
 
   it("suppresses a noncanonical row even when its embedded user is live", async () => {
+    mockProfileDocs.set("u2", {username: "Other"});
     mockLeaderboardGet.mockResolvedValueOnce({
       docs: [
         {
@@ -514,6 +597,6 @@ describe("getLeaderboard callable", () => {
     };
 
     expect(typedResult.entries).toEqual([expect.objectContaining({userId: "u2", username: "Other"})]);
-    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}));
+    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}), {fieldMask: ["username", "displayName", "avatarUrl"]});
   });
 });

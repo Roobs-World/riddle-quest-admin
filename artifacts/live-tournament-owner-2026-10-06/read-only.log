@@ -1,0 +1,55 @@
+{
+  "mode": "development",
+  "cases": 3,
+  "checks": 16,
+  "failures": [
+    {
+      "scenario": "provider",
+      "name": "replacement retires old standings before commit",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "provider",
+      "name": "replacement retires old native share controls before commit",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "pending-share",
+      "name": "replacement retires old standings before commit",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "pending-share",
+      "name": "replacement retires old native share controls before commit",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "pending-share",
+      "name": "retired native failure cannot reach replacement board",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Tournament board must admit only owned reads and feedback
+
+5 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-owner-2026-10-06/probe-minimal.mjs:9:425 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 5,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

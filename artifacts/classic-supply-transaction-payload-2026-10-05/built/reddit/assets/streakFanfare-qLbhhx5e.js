@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`Munten`,CONTINUE_BUTTON:`Blijf doorgaan`,STREAK_SUFFIX:`-Dagreeks`,TITLE:`Streepje vergroot!`},n={StreakFanfare:t}})))()}r();export{n as default};

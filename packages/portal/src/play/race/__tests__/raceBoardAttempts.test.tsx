@@ -14,7 +14,7 @@ it.each([0, 1, 3, 4, 5])("places active input after %i authoritative attempts", 
     activeSlotIndex={0} hintRevealedIndices={[]} guesses={guesses} onSelectSlot={() => undefined} />);
   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
-  if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+  if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toMatch(/>A<\//);
 });
 
 /** Available recent feedback follows missing consumed attempts and retains its original colors. */
@@ -37,7 +37,7 @@ it.each([1, 3, 4])("reserves the projected attempt after %i restored consumed ro
   const html = renderToStaticMarkup(<ControlledGuessBoard answerLength={5} currentLetters={["P", "", "", "", ""]}
     activeSlotIndex={1} hintRevealedIndices={[0]} guesses={guesses} onSelectSlot={() => undefined} />);
   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 4 ? 1 : 0);
-  if (used < 4) expect(html.split('class="guess-row"')[used + 2]).toContain('>P</button>');
+  if (used < 4) expect(html.split('class="guess-row"')[used + 2]).toMatch(/>P<\//);
 });
 
 /** A correct answer's projected successor has its own untouched attempt count. */

@@ -1,0 +1,1 @@
+import{t as e}from"./facebook-CsKXB-V0.js";e();

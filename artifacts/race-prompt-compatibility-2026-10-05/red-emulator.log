@@ -1,0 +1,101 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-race-prompt-compatibility", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 35853.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/race-prompt-compatibility-2026-10-05/probe.config.cjs --runInBand
+FAIL src/__tests__/race/racePromptCompatibility.it.test.ts
+  ● hides an incompatible clue before exposing a category or deck
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 1
+
+      Array [
+    +   "history",
+        "music",
+      ]
+
+      39 | it.each(["Q".repeat(2001), " "+"Q".repeat(2001)+" ", "   ", undefined, null, 42])("hides an incompatible clue before exposing a category or deck", async text => {
+      40 |   await db.doc(path("history", 0)).update({text: text === undefined ? FieldValue.delete() : text});
+    > 41 |   expect((await listRaceCategoriesForLocale("en", db)).categories.map(category => category.categoryId)).toEqual(["music"]);
+         |                                                                                                         ^
+      42 |   /** The production loader retains invalid eligible content so deck selection rejects the same category. */
+      43 |   const records = await loadEligibleContent(db, "en", "history");
+      44 |   expect(() => buildDeterministicRaceDeck(records, {locale: "en", categoryId: "history", seed: "incompatible-prompt"})).toThrow("missing_metadata");
+
+      at src/__tests__/race/racePromptCompatibility.it.test.ts:41:105
+
+  ● hides an incompatible clue before exposing a category or deck
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 1
+
+      Array [
+    +   "history",
+        "music",
+      ]
+
+      39 | it.each(["Q".repeat(2001), " "+"Q".repeat(2001)+" ", "   ", undefined, null, 42])("hides an incompatible clue before exposing a category or deck", async text => {
+      40 |   await db.doc(path("history", 0)).update({text: text === undefined ? FieldValue.delete() : text});
+    > 41 |   expect((await listRaceCategoriesForLocale("en", db)).categories.map(category => category.categoryId)).toEqual(["music"]);
+         |                                                                                                         ^
+      42 |   /** The production loader retains invalid eligible content so deck selection rejects the same category. */
+      43 |   const records = await loadEligibleContent(db, "en", "history");
+      44 |   expect(() => buildDeterministicRaceDeck(records, {locale: "en", categoryId: "history", seed: "incompatible-prompt"})).toThrow("missing_metadata");
+
+      at src/__tests__/race/racePromptCompatibility.it.test.ts:41:105
+
+  ● rejects an oversized clue before committing a live seat with private lobby false
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"opponent": null, "phase": "searching", "player": {"avatarUrl": null, "bot": false, "correctCount": 0, "displayName": "Prompt Alice", "level": 1}, "result": null, "rewardCoins": 0, "run": null, "searchEndsAtMs": 1800000060000, "serverNowMs": 1800000000000, "startsAtMs": null, "ticketId": "bf416816e75c2e314c10246edf801d4c9217d321447f5a68b729fd65aa5768ca"}
+
+      49 |   /** Real matchmaking must abort all pending writes when the pool cannot produce a public prompt. */
+      50 |   const before = (await db.doc(`users/${A}`).get()).data();
+    > 51 |   await expect(joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "oversized-live-clue", createChallenge}, {db, nowMs: NOW})).rejects.toThrow("missing_metadata");
+         |         ^
+      52 |   for (const collection of ["liveRaceTickets", "liveRacePlayers", "liveRaceQueues", "liveRaceSignals", "liveRaceMatches"]) expect((await db.collection(collection).get()).empty).toBe(true);
+      53 |   expect((await db.doc(`users/${A}`).get()).data()).toEqual(before);
+      54 | });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/racePromptCompatibility.it.test.ts:51:9
+
+  ● rejects an oversized clue before committing a live seat with private lobby true
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"challengeId": "live_bf416816e75c2e314c10246edf801d4c9217d321447f5a68b729fd65aa5768ca", "opponent": null, "phase": "searching", "player": {"avatarUrl": null, "bot": false, "correctCount": 0, "displayName": "Prompt Alice", "level": 1}, "result": null, "rewardCoins": 0, "run": null, "searchEndsAtMs": 1800000900000, "serverNowMs": 1800000000000, "startsAtMs": null, "ticketId": "bf416816e75c2e314c10246edf801d4c9217d321447f5a68b729fd65aa5768ca"}
+
+      49 |   /** Real matchmaking must abort all pending writes when the pool cannot produce a public prompt. */
+      50 |   const before = (await db.doc(`users/${A}`).get()).data();
+    > 51 |   await expect(joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "oversized-live-clue", createChallenge}, {db, nowMs: NOW})).rejects.toThrow("missing_metadata");
+         |         ^
+      52 |   for (const collection of ["liveRaceTickets", "liveRacePlayers", "liveRaceQueues", "liveRaceSignals", "liveRaceMatches"]) expect((await db.collection(collection).get()).empty).toBe(true);
+      53 |   expect((await db.doc(`users/${A}`).get()).data()).toEqual(before);
+      54 | });
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/racePromptCompatibility.it.test.ts:51:9
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 6 passed, 10 total
+Snapshots:   0 total
+Time:        2.182 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config ../artifacts/race-prompt-compatibility-2026-10-05/probe.config.cjs --runInBand" exited with code 1

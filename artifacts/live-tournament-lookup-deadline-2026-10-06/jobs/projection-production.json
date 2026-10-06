@@ -1,0 +1,17 @@
+{
+  "name": "projection-production",
+  "command": [
+    "env",
+    "TOURNAMENT_PROJECTION_MODE=production",
+    "TOURNAMENT_PROJECTION_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/projection-production",
+    "node",
+    "packages/portal/scripts/verify-live-tournament-projection-browser.mjs"
+  ],
+  "logs": [
+    "projection-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791262419.7762587,
+  "exitCode": 0,
+  "finishedAt": 1791262438.7278483
+}

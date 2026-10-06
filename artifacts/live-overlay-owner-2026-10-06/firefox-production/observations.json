@@ -1,0 +1,3596 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-2"
+      ],
+      [
+        "alpha",
+        "player-2"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-2"
+      ],
+      [
+        "alpha",
+        "player-2"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "player",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "method",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "uncommitted replacement retains original overlay surface",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "init-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "picture-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "name-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "show-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-2"
+      ],
+      [
+        "alpha",
+        "player-2"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-2"
+      ],
+      [
+        "alpha",
+        "player-2"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "player",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "uncommitted replacement retains original overlay surface",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-2"
+      ],
+      [
+        "alpha",
+        "player-2"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-2"
+      ],
+      [
+        "alpha",
+        "player-2"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "player",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "beta",
+        "player-1"
+      ],
+      [
+        "beta",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1,
+      2
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "method",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "uncommitted replacement retains original overlay surface",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only the current provider player owns visible views",
+    "actual": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "player-1"
+      ],
+      [
+        "alpha",
+        "player-1"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "only committed ownership changes replace provider host",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "retired initialization never starts another native profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "retired native player views never show",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "init-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "picture-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0
+    ],
+    "expected": [
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "name-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "SDK creation targets only the isolated owned mount",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "only committed ownership changes replace provider host",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "only the current provider player owns visible views",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "independent history identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "independent modal identity survives overlay operations",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "independent history query remains singular",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "every allocated native view is destroyed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "every allocated native view is dismissed exactly once",
+    "actual": [
+      0,
+      1
+    ],
+    "expected": [
+      0,
+      1
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "closed overlay host stays detached",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "show-failure",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

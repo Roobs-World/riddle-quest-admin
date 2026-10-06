@@ -1,0 +1,7682 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-fb31c872-9161-493f-9121-3bcfac165381"
+    ],
+    "expected": [
+      "guess-fb31c872-9161-493f-9121-3bcfac165381"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-fb31c872-9161-493f-9121-3bcfac165381",
+    "expected": "guess-fb31c872-9161-493f-9121-3bcfac165381"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-80ea07b6-f537-4906-991d-821ed410fdf8"
+    ],
+    "expected": [
+      "hint-80ea07b6-f537-4906-991d-821ed410fdf8"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-80ea07b6-f537-4906-991d-821ed410fdf8",
+    "expected": "hint-80ea07b6-f537-4906-991d-821ed410fdf8"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-6931575e-f4ce-4577-b411-aafd3d372582"
+    ],
+    "expected": [
+      "continue-6931575e-f4ce-4577-b411-aafd3d372582"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-6931575e-f4ce-4577-b411-aafd3d372582",
+    "expected": "continue-6931575e-f4ce-4577-b411-aafd3d372582"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-62d23026-bf65-4136-9acd-9a0a39d90cdd"
+    ],
+    "expected": [
+      "skip-62d23026-bf65-4136-9acd-9a0a39d90cdd"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-62d23026-bf65-4136-9acd-9a0a39d90cdd",
+    "expected": "skip-62d23026-bf65-4136-9acd-9a0a39d90cdd"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-0d431605-eddd-4ca3-a4c9-7d2ce24f159d"
+    ],
+    "expected": [
+      "guess-0d431605-eddd-4ca3-a4c9-7d2ce24f159d"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-0d431605-eddd-4ca3-a4c9-7d2ce24f159d",
+    "expected": "guess-0d431605-eddd-4ca3-a4c9-7d2ce24f159d"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-fad26f13-f2d4-46fb-a428-07d33d793400"
+    ],
+    "expected": [
+      "hint-fad26f13-f2d4-46fb-a428-07d33d793400"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-fad26f13-f2d4-46fb-a428-07d33d793400",
+    "expected": "hint-fad26f13-f2d4-46fb-a428-07d33d793400"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-3f0dcbf2-712c-4620-8319-bb0768860984"
+    ],
+    "expected": [
+      "continue-3f0dcbf2-712c-4620-8319-bb0768860984"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-3f0dcbf2-712c-4620-8319-bb0768860984",
+    "expected": "continue-3f0dcbf2-712c-4620-8319-bb0768860984"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-d3ffb205-4cdb-42a4-b80a-6964c5b6eebb"
+    ],
+    "expected": [
+      "skip-d3ffb205-4cdb-42a4-b80a-6964c5b6eebb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-d3ffb205-4cdb-42a4-b80a-6964c5b6eebb",
+    "expected": "skip-d3ffb205-4cdb-42a4-b80a-6964c5b6eebb"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-62c56248-20db-4c1d-80ca-cac4b2edf8bb"
+    ],
+    "expected": [
+      "guess-62c56248-20db-4c1d-80ca-cac4b2edf8bb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-62c56248-20db-4c1d-80ca-cac4b2edf8bb",
+    "expected": "guess-62c56248-20db-4c1d-80ca-cac4b2edf8bb"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-2a279903-e581-44ec-8642-7e703714e873"
+    ],
+    "expected": [
+      "hint-2a279903-e581-44ec-8642-7e703714e873"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-2a279903-e581-44ec-8642-7e703714e873",
+    "expected": "hint-2a279903-e581-44ec-8642-7e703714e873"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-ced3992f-183f-4b90-97a5-2eb3dcdd82cb"
+    ],
+    "expected": [
+      "continue-ced3992f-183f-4b90-97a5-2eb3dcdd82cb"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-ced3992f-183f-4b90-97a5-2eb3dcdd82cb",
+    "expected": "continue-ced3992f-183f-4b90-97a5-2eb3dcdd82cb"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-00ffe127-6b55-4a0b-974e-148d65afdc11"
+    ],
+    "expected": [
+      "skip-00ffe127-6b55-4a0b-974e-148d65afdc11"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-00ffe127-6b55-4a0b-974e-148d65afdc11",
+    "expected": "skip-00ffe127-6b55-4a0b-974e-148d65afdc11"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-0064bc17-8a4f-4f55-aff8-70e961f6ea98"
+    ],
+    "expected": [
+      "guess-0064bc17-8a4f-4f55-aff8-70e961f6ea98"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-0064bc17-8a4f-4f55-aff8-70e961f6ea98",
+    "expected": "guess-0064bc17-8a4f-4f55-aff8-70e961f6ea98"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-afbad0dd-9881-455e-a3aa-f04db97bd465"
+    ],
+    "expected": [
+      "hint-afbad0dd-9881-455e-a3aa-f04db97bd465"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-afbad0dd-9881-455e-a3aa-f04db97bd465",
+    "expected": "hint-afbad0dd-9881-455e-a3aa-f04db97bd465"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-9b687e43-ba9e-43c4-b9d7-56ce4e7eba90"
+    ],
+    "expected": [
+      "continue-9b687e43-ba9e-43c4-b9d7-56ce4e7eba90"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-9b687e43-ba9e-43c4-b9d7-56ce4e7eba90",
+    "expected": "continue-9b687e43-ba9e-43c4-b9d7-56ce4e7eba90"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-9974eb84-0fd9-4c0a-b201-9a138b20c852"
+    ],
+    "expected": [
+      "skip-9974eb84-0fd9-4c0a-b201-9a138b20c852"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-9974eb84-0fd9-4c0a-b201-9a138b20c852",
+    "expected": "skip-9974eb84-0fd9-4c0a-b201-9a138b20c852"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "logout:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-02f610f4-47c7-440d-80d0-8a6b42db79d1",
+      "guess-02f610f4-47c7-440d-80d0-8a6b42db79d1"
+    ],
+    "expected": [
+      "guess-02f610f4-47c7-440d-80d0-8a6b42db79d1",
+      "guess-02f610f4-47c7-440d-80d0-8a6b42db79d1"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-02f610f4-47c7-440d-80d0-8a6b42db79d1",
+    "expected": "guess-02f610f4-47c7-440d-80d0-8a6b42db79d1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-d5d29a60-74bb-4c80-a430-bdab9ec5b7c2",
+      "hint-d5d29a60-74bb-4c80-a430-bdab9ec5b7c2"
+    ],
+    "expected": [
+      "hint-d5d29a60-74bb-4c80-a430-bdab9ec5b7c2",
+      "hint-d5d29a60-74bb-4c80-a430-bdab9ec5b7c2"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-d5d29a60-74bb-4c80-a430-bdab9ec5b7c2",
+    "expected": "hint-d5d29a60-74bb-4c80-a430-bdab9ec5b7c2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-2eae2212-c744-447f-8892-63c7628f1cb7",
+      "continue-2eae2212-c744-447f-8892-63c7628f1cb7"
+    ],
+    "expected": [
+      "continue-2eae2212-c744-447f-8892-63c7628f1cb7",
+      "continue-2eae2212-c744-447f-8892-63c7628f1cb7"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-2eae2212-c744-447f-8892-63c7628f1cb7",
+    "expected": "continue-2eae2212-c744-447f-8892-63c7628f1cb7"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-76e6ec1f-c73d-4d6f-8fcd-1dd8d6372789",
+      "skip-76e6ec1f-c73d-4d6f-8fcd-1dd8d6372789"
+    ],
+    "expected": [
+      "skip-76e6ec1f-c73d-4d6f-8fcd-1dd8d6372789",
+      "skip-76e6ec1f-c73d-4d6f-8fcd-1dd8d6372789"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-76e6ec1f-c73d-4d6f-8fcd-1dd8d6372789",
+    "expected": "skip-76e6ec1f-c73d-4d6f-8fcd-1dd8d6372789"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-4a80396e-05b1-4eb5-bc6c-1255c63f1d65",
+      "guess-4a80396e-05b1-4eb5-bc6c-1255c63f1d65"
+    ],
+    "expected": [
+      "guess-4a80396e-05b1-4eb5-bc6c-1255c63f1d65",
+      "guess-4a80396e-05b1-4eb5-bc6c-1255c63f1d65"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-4a80396e-05b1-4eb5-bc6c-1255c63f1d65",
+    "expected": "guess-4a80396e-05b1-4eb5-bc6c-1255c63f1d65"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-f87ac362-dd73-4fdd-b94d-03a9e10439a0",
+      "hint-f87ac362-dd73-4fdd-b94d-03a9e10439a0"
+    ],
+    "expected": [
+      "hint-f87ac362-dd73-4fdd-b94d-03a9e10439a0",
+      "hint-f87ac362-dd73-4fdd-b94d-03a9e10439a0"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-f87ac362-dd73-4fdd-b94d-03a9e10439a0",
+    "expected": "hint-f87ac362-dd73-4fdd-b94d-03a9e10439a0"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-59a0cbe0-2806-4b92-bd00-d6105f4d54ac",
+      "continue-59a0cbe0-2806-4b92-bd00-d6105f4d54ac"
+    ],
+    "expected": [
+      "continue-59a0cbe0-2806-4b92-bd00-d6105f4d54ac",
+      "continue-59a0cbe0-2806-4b92-bd00-d6105f4d54ac"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-59a0cbe0-2806-4b92-bd00-d6105f4d54ac",
+    "expected": "continue-59a0cbe0-2806-4b92-bd00-d6105f4d54ac"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-47a5458e-334f-40c6-8a61-afafb3aaf02a",
+      "skip-47a5458e-334f-40c6-8a61-afafb3aaf02a"
+    ],
+    "expected": [
+      "skip-47a5458e-334f-40c6-8a61-afafb3aaf02a",
+      "skip-47a5458e-334f-40c6-8a61-afafb3aaf02a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-47a5458e-334f-40c6-8a61-afafb3aaf02a",
+    "expected": "skip-47a5458e-334f-40c6-8a61-afafb3aaf02a"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-1f4b4a42-3a1d-4829-a50b-1fe49f87429c",
+      "guess-1f4b4a42-3a1d-4829-a50b-1fe49f87429c"
+    ],
+    "expected": [
+      "guess-1f4b4a42-3a1d-4829-a50b-1fe49f87429c",
+      "guess-1f4b4a42-3a1d-4829-a50b-1fe49f87429c"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-1f4b4a42-3a1d-4829-a50b-1fe49f87429c",
+    "expected": "guess-1f4b4a42-3a1d-4829-a50b-1fe49f87429c"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-02092d3f-a782-4076-b7ef-d3dc0873e0c7",
+      "hint-02092d3f-a782-4076-b7ef-d3dc0873e0c7"
+    ],
+    "expected": [
+      "hint-02092d3f-a782-4076-b7ef-d3dc0873e0c7",
+      "hint-02092d3f-a782-4076-b7ef-d3dc0873e0c7"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-02092d3f-a782-4076-b7ef-d3dc0873e0c7",
+    "expected": "hint-02092d3f-a782-4076-b7ef-d3dc0873e0c7"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-0af2f6c1-8cfe-416f-bdcd-5cf23c37fa5c",
+      "continue-0af2f6c1-8cfe-416f-bdcd-5cf23c37fa5c"
+    ],
+    "expected": [
+      "continue-0af2f6c1-8cfe-416f-bdcd-5cf23c37fa5c",
+      "continue-0af2f6c1-8cfe-416f-bdcd-5cf23c37fa5c"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-0af2f6c1-8cfe-416f-bdcd-5cf23c37fa5c",
+    "expected": "continue-0af2f6c1-8cfe-416f-bdcd-5cf23c37fa5c"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-c433bce5-dd4e-4133-b05c-36b681c2ce23",
+      "skip-c433bce5-dd4e-4133-b05c-36b681c2ce23"
+    ],
+    "expected": [
+      "skip-c433bce5-dd4e-4133-b05c-36b681c2ce23",
+      "skip-c433bce5-dd4e-4133-b05c-36b681c2ce23"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-c433bce5-dd4e-4133-b05c-36b681c2ce23",
+    "expected": "skip-c433bce5-dd4e-4133-b05c-36b681c2ce23"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "none:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-e585251c-444f-4553-aeb1-c0a5a2409137"
+    ],
+    "expected": [
+      "guess-e585251c-444f-4553-aeb1-c0a5a2409137"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-e585251c-444f-4553-aeb1-c0a5a2409137",
+    "expected": "guess-e585251c-444f-4553-aeb1-c0a5a2409137"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-1459a1fd-4bb7-440d-befc-eb683310cc40"
+    ],
+    "expected": [
+      "hint-1459a1fd-4bb7-440d-befc-eb683310cc40"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-1459a1fd-4bb7-440d-befc-eb683310cc40",
+    "expected": "hint-1459a1fd-4bb7-440d-befc-eb683310cc40"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-9cb903ca-c557-4b06-a83d-68f1f4f94c11"
+    ],
+    "expected": [
+      "continue-9cb903ca-c557-4b06-a83d-68f1f4f94c11"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-9cb903ca-c557-4b06-a83d-68f1f4f94c11",
+    "expected": "continue-9cb903ca-c557-4b06-a83d-68f1f4f94c11"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-739b741d-031a-45da-a2f2-db8e0143e75f"
+    ],
+    "expected": [
+      "skip-739b741d-031a-45da-a2f2-db8e0143e75f"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-739b741d-031a-45da-a2f2-db8e0143e75f",
+    "expected": "skip-739b741d-031a-45da-a2f2-db8e0143e75f"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-abd61e2d-5dd0-4b83-8adf-82b3395f1c76"
+    ],
+    "expected": [
+      "guess-abd61e2d-5dd0-4b83-8adf-82b3395f1c76"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-abd61e2d-5dd0-4b83-8adf-82b3395f1c76",
+    "expected": "guess-abd61e2d-5dd0-4b83-8adf-82b3395f1c76"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-1e5be0dc-1713-4e56-a06a-e195d89cf917"
+    ],
+    "expected": [
+      "hint-1e5be0dc-1713-4e56-a06a-e195d89cf917"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-1e5be0dc-1713-4e56-a06a-e195d89cf917",
+    "expected": "hint-1e5be0dc-1713-4e56-a06a-e195d89cf917"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-73b9c6a0-cf13-4965-8092-27cd6c17df94"
+    ],
+    "expected": [
+      "continue-73b9c6a0-cf13-4965-8092-27cd6c17df94"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-73b9c6a0-cf13-4965-8092-27cd6c17df94",
+    "expected": "continue-73b9c6a0-cf13-4965-8092-27cd6c17df94"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-a5392b69-73f0-4db0-a3ee-16c9f364322e"
+    ],
+    "expected": [
+      "skip-a5392b69-73f0-4db0-a3ee-16c9f364322e"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-a5392b69-73f0-4db0-a3ee-16c9f364322e",
+    "expected": "skip-a5392b69-73f0-4db0-a3ee-16c9f364322e"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-5805886e-200f-4f9a-9f07-80ce9b2de43f"
+    ],
+    "expected": [
+      "guess-5805886e-200f-4f9a-9f07-80ce9b2de43f"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-5805886e-200f-4f9a-9f07-80ce9b2de43f",
+    "expected": "guess-5805886e-200f-4f9a-9f07-80ce9b2de43f"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-6ab7b787-6e97-4e6e-a75e-57d36d613f8a"
+    ],
+    "expected": [
+      "hint-6ab7b787-6e97-4e6e-a75e-57d36d613f8a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-6ab7b787-6e97-4e6e-a75e-57d36d613f8a",
+    "expected": "hint-6ab7b787-6e97-4e6e-a75e-57d36d613f8a"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-384699dc-e02c-4056-a999-a08d5c8f4d33"
+    ],
+    "expected": [
+      "continue-384699dc-e02c-4056-a999-a08d5c8f4d33"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-384699dc-e02c-4056-a999-a08d5c8f4d33",
+    "expected": "continue-384699dc-e02c-4056-a999-a08d5c8f4d33"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-8fa472b5-5918-4e70-91d6-b73ec27b1594"
+    ],
+    "expected": [
+      "skip-8fa472b5-5918-4e70-91d6-b73ec27b1594"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-8fa472b5-5918-4e70-91d6-b73ec27b1594",
+    "expected": "skip-8fa472b5-5918-4e70-91d6-b73ec27b1594"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-c834bda6-a5a7-4bbb-a631-24af2098d718"
+    ],
+    "expected": [
+      "guess-c834bda6-a5a7-4bbb-a631-24af2098d718"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-c834bda6-a5a7-4bbb-a631-24af2098d718",
+    "expected": "guess-c834bda6-a5a7-4bbb-a631-24af2098d718"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-23fc9695-c363-4573-88a2-99cf0c85f197"
+    ],
+    "expected": [
+      "hint-23fc9695-c363-4573-88a2-99cf0c85f197"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-23fc9695-c363-4573-88a2-99cf0c85f197",
+    "expected": "hint-23fc9695-c363-4573-88a2-99cf0c85f197"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-cb7dc0fe-2803-4892-ac73-1aa64b8460ad"
+    ],
+    "expected": [
+      "continue-cb7dc0fe-2803-4892-ac73-1aa64b8460ad"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-cb7dc0fe-2803-4892-ac73-1aa64b8460ad",
+    "expected": "continue-cb7dc0fe-2803-4892-ac73-1aa64b8460ad"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-c49d6ba5-df8d-48c2-af56-f5ca9e1a09ba"
+    ],
+    "expected": [
+      "skip-c49d6ba5-df8d-48c2-af56-f5ca9e1a09ba"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-c49d6ba5-df8d-48c2-af56-f5ca9e1a09ba",
+    "expected": "skip-c49d6ba5-df8d-48c2-af56-f5ca9e1a09ba"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-5716cdfc-e947-4bd5-8e56-d731214bf1a4",
+      "guess-5716cdfc-e947-4bd5-8e56-d731214bf1a4"
+    ],
+    "expected": [
+      "guess-5716cdfc-e947-4bd5-8e56-d731214bf1a4",
+      "guess-5716cdfc-e947-4bd5-8e56-d731214bf1a4"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-5716cdfc-e947-4bd5-8e56-d731214bf1a4",
+    "expected": "guess-5716cdfc-e947-4bd5-8e56-d731214bf1a4"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-5a27ab67-f83d-4610-b380-63bce0164e07",
+      "hint-5a27ab67-f83d-4610-b380-63bce0164e07"
+    ],
+    "expected": [
+      "hint-5a27ab67-f83d-4610-b380-63bce0164e07",
+      "hint-5a27ab67-f83d-4610-b380-63bce0164e07"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-5a27ab67-f83d-4610-b380-63bce0164e07",
+    "expected": "hint-5a27ab67-f83d-4610-b380-63bce0164e07"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-39a37ce8-819a-4cee-8389-4c534318f042",
+      "continue-39a37ce8-819a-4cee-8389-4c534318f042"
+    ],
+    "expected": [
+      "continue-39a37ce8-819a-4cee-8389-4c534318f042",
+      "continue-39a37ce8-819a-4cee-8389-4c534318f042"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-39a37ce8-819a-4cee-8389-4c534318f042",
+    "expected": "continue-39a37ce8-819a-4cee-8389-4c534318f042"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-3f87b635-6b06-470e-83cb-bde1a481c52d",
+      "skip-3f87b635-6b06-470e-83cb-bde1a481c52d"
+    ],
+    "expected": [
+      "skip-3f87b635-6b06-470e-83cb-bde1a481c52d",
+      "skip-3f87b635-6b06-470e-83cb-bde1a481c52d"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-3f87b635-6b06-470e-83cb-bde1a481c52d",
+    "expected": "skip-3f87b635-6b06-470e-83cb-bde1a481c52d"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-fa5ad0c7-a4ad-4935-93a0-2555783b10b9",
+      "guess-fa5ad0c7-a4ad-4935-93a0-2555783b10b9"
+    ],
+    "expected": [
+      "guess-fa5ad0c7-a4ad-4935-93a0-2555783b10b9",
+      "guess-fa5ad0c7-a4ad-4935-93a0-2555783b10b9"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-fa5ad0c7-a4ad-4935-93a0-2555783b10b9",
+    "expected": "guess-fa5ad0c7-a4ad-4935-93a0-2555783b10b9"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-c7a04000-75d2-4892-a730-966e1cac97b4",
+      "hint-c7a04000-75d2-4892-a730-966e1cac97b4"
+    ],
+    "expected": [
+      "hint-c7a04000-75d2-4892-a730-966e1cac97b4",
+      "hint-c7a04000-75d2-4892-a730-966e1cac97b4"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-c7a04000-75d2-4892-a730-966e1cac97b4",
+    "expected": "hint-c7a04000-75d2-4892-a730-966e1cac97b4"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-18ca7268-e729-4a12-bac6-0ae4669f9580",
+      "continue-18ca7268-e729-4a12-bac6-0ae4669f9580"
+    ],
+    "expected": [
+      "continue-18ca7268-e729-4a12-bac6-0ae4669f9580",
+      "continue-18ca7268-e729-4a12-bac6-0ae4669f9580"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-18ca7268-e729-4a12-bac6-0ae4669f9580",
+    "expected": "continue-18ca7268-e729-4a12-bac6-0ae4669f9580"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-4361e685-f019-4f1b-82a2-78a3fff529be",
+      "skip-4361e685-f019-4f1b-82a2-78a3fff529be"
+    ],
+    "expected": [
+      "skip-4361e685-f019-4f1b-82a2-78a3fff529be",
+      "skip-4361e685-f019-4f1b-82a2-78a3fff529be"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-4361e685-f019-4f1b-82a2-78a3fff529be",
+    "expected": "skip-4361e685-f019-4f1b-82a2-78a3fff529be"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-0bf28e99-32bd-480d-ac7e-b89f3c51660f",
+      "guess-0bf28e99-32bd-480d-ac7e-b89f3c51660f"
+    ],
+    "expected": [
+      "guess-0bf28e99-32bd-480d-ac7e-b89f3c51660f",
+      "guess-0bf28e99-32bd-480d-ac7e-b89f3c51660f"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-0bf28e99-32bd-480d-ac7e-b89f3c51660f",
+    "expected": "guess-0bf28e99-32bd-480d-ac7e-b89f3c51660f"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-3f1a1abc-d191-44e5-90c2-4f2865033027",
+      "hint-3f1a1abc-d191-44e5-90c2-4f2865033027"
+    ],
+    "expected": [
+      "hint-3f1a1abc-d191-44e5-90c2-4f2865033027",
+      "hint-3f1a1abc-d191-44e5-90c2-4f2865033027"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-3f1a1abc-d191-44e5-90c2-4f2865033027",
+    "expected": "hint-3f1a1abc-d191-44e5-90c2-4f2865033027"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-ed010fd1-eaed-4984-a1c6-13b15ff02fd0",
+      "continue-ed010fd1-eaed-4984-a1c6-13b15ff02fd0"
+    ],
+    "expected": [
+      "continue-ed010fd1-eaed-4984-a1c6-13b15ff02fd0",
+      "continue-ed010fd1-eaed-4984-a1c6-13b15ff02fd0"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-ed010fd1-eaed-4984-a1c6-13b15ff02fd0",
+    "expected": "continue-ed010fd1-eaed-4984-a1c6-13b15ff02fd0"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-aa2513b9-0ebd-496a-a2ba-7ed8d6ef2641",
+      "skip-aa2513b9-0ebd-496a-a2ba-7ed8d6ef2641"
+    ],
+    "expected": [
+      "skip-aa2513b9-0ebd-496a-a2ba-7ed8d6ef2641",
+      "skip-aa2513b9-0ebd-496a-a2ba-7ed8d6ef2641"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-aa2513b9-0ebd-496a-a2ba-7ed8d6ef2641",
+    "expected": "skip-aa2513b9-0ebd-496a-a2ba-7ed8d6ef2641"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-6d83484a-a7a1-4aa0-955d-6c0994328abd"
+    ],
+    "expected": [
+      "guess-6d83484a-a7a1-4aa0-955d-6c0994328abd"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-6d83484a-a7a1-4aa0-955d-6c0994328abd",
+    "expected": "guess-6d83484a-a7a1-4aa0-955d-6c0994328abd"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-682e92fb-2080-47c0-aac2-1274cbb12060"
+    ],
+    "expected": [
+      "hint-682e92fb-2080-47c0-aac2-1274cbb12060"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-682e92fb-2080-47c0-aac2-1274cbb12060",
+    "expected": "hint-682e92fb-2080-47c0-aac2-1274cbb12060"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-7d8f1cd9-4fb6-4751-9aa6-ad9c0ee63e0e"
+    ],
+    "expected": [
+      "continue-7d8f1cd9-4fb6-4751-9aa6-ad9c0ee63e0e"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-7d8f1cd9-4fb6-4751-9aa6-ad9c0ee63e0e",
+    "expected": "continue-7d8f1cd9-4fb6-4751-9aa6-ad9c0ee63e0e"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-ce76dbc4-f05b-4ec4-b01f-12bcb4b01f94"
+    ],
+    "expected": [
+      "skip-ce76dbc4-f05b-4ec4-b01f-12bcb4b01f94"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-ce76dbc4-f05b-4ec4-b01f-12bcb4b01f94",
+    "expected": "skip-ce76dbc4-f05b-4ec4-b01f-12bcb4b01f94"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-1d114f34-8510-4b77-93f6-138ebe6d743b"
+    ],
+    "expected": [
+      "guess-1d114f34-8510-4b77-93f6-138ebe6d743b"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-1d114f34-8510-4b77-93f6-138ebe6d743b",
+    "expected": "guess-1d114f34-8510-4b77-93f6-138ebe6d743b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-7f0da295-a1f1-417a-93a3-70781dd1439a"
+    ],
+    "expected": [
+      "hint-7f0da295-a1f1-417a-93a3-70781dd1439a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-7f0da295-a1f1-417a-93a3-70781dd1439a",
+    "expected": "hint-7f0da295-a1f1-417a-93a3-70781dd1439a"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-a0d7528f-bd31-4952-93b9-5dbb482689b8"
+    ],
+    "expected": [
+      "continue-a0d7528f-bd31-4952-93b9-5dbb482689b8"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-a0d7528f-bd31-4952-93b9-5dbb482689b8",
+    "expected": "continue-a0d7528f-bd31-4952-93b9-5dbb482689b8"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-11eed359-9372-4720-98cd-33d1f3cc6a37"
+    ],
+    "expected": [
+      "skip-11eed359-9372-4720-98cd-33d1f3cc6a37"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-11eed359-9372-4720-98cd-33d1f3cc6a37",
+    "expected": "skip-11eed359-9372-4720-98cd-33d1f3cc6a37"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "generation:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-fa88db86-e733-456c-b7ab-dab375322538"
+    ],
+    "expected": [
+      "guess-fa88db86-e733-456c-b7ab-dab375322538"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-fa88db86-e733-456c-b7ab-dab375322538",
+    "expected": "guess-fa88db86-e733-456c-b7ab-dab375322538"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-adee11fb-bef2-4101-8516-e13ac0c470e3"
+    ],
+    "expected": [
+      "hint-adee11fb-bef2-4101-8516-e13ac0c470e3"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-adee11fb-bef2-4101-8516-e13ac0c470e3",
+    "expected": "hint-adee11fb-bef2-4101-8516-e13ac0c470e3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-249b0322-a0ce-4600-9c25-db1b869ab790"
+    ],
+    "expected": [
+      "continue-249b0322-a0ce-4600-9c25-db1b869ab790"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-249b0322-a0ce-4600-9c25-db1b869ab790",
+    "expected": "continue-249b0322-a0ce-4600-9c25-db1b869ab790"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-5504b1f7-9dec-4659-b0f6-52e7dfcdaa94"
+    ],
+    "expected": [
+      "skip-5504b1f7-9dec-4659-b0f6-52e7dfcdaa94"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-5504b1f7-9dec-4659-b0f6-52e7dfcdaa94",
+    "expected": "skip-5504b1f7-9dec-4659-b0f6-52e7dfcdaa94"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-ae5dbf2c-5bc9-41fd-85c1-123a5a611419"
+    ],
+    "expected": [
+      "guess-ae5dbf2c-5bc9-41fd-85c1-123a5a611419"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-ae5dbf2c-5bc9-41fd-85c1-123a5a611419",
+    "expected": "guess-ae5dbf2c-5bc9-41fd-85c1-123a5a611419"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-0ee38d73-a23e-456b-be20-483dae17d527"
+    ],
+    "expected": [
+      "hint-0ee38d73-a23e-456b-be20-483dae17d527"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-0ee38d73-a23e-456b-be20-483dae17d527",
+    "expected": "hint-0ee38d73-a23e-456b-be20-483dae17d527"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-e55bd833-2314-4735-8e9e-679bfeeca346"
+    ],
+    "expected": [
+      "continue-e55bd833-2314-4735-8e9e-679bfeeca346"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-e55bd833-2314-4735-8e9e-679bfeeca346",
+    "expected": "continue-e55bd833-2314-4735-8e9e-679bfeeca346"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-21784f36-0db1-45f5-9786-bf78e898eab4"
+    ],
+    "expected": [
+      "skip-21784f36-0db1-45f5-9786-bf78e898eab4"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-21784f36-0db1-45f5-9786-bf78e898eab4",
+    "expected": "skip-21784f36-0db1-45f5-9786-bf78e898eab4"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "scope cleanup retires the old lease interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "logout:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-fdeed919-af8a-494e-93da-8459a8df7771",
+      "guess-fdeed919-af8a-494e-93da-8459a8df7771"
+    ],
+    "expected": [
+      "guess-fdeed919-af8a-494e-93da-8459a8df7771",
+      "guess-fdeed919-af8a-494e-93da-8459a8df7771"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-fdeed919-af8a-494e-93da-8459a8df7771",
+    "expected": "guess-fdeed919-af8a-494e-93da-8459a8df7771"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-8fd69363-69ca-47d5-a0bd-bf060ba6340b",
+      "hint-8fd69363-69ca-47d5-a0bd-bf060ba6340b"
+    ],
+    "expected": [
+      "hint-8fd69363-69ca-47d5-a0bd-bf060ba6340b",
+      "hint-8fd69363-69ca-47d5-a0bd-bf060ba6340b"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-8fd69363-69ca-47d5-a0bd-bf060ba6340b",
+    "expected": "hint-8fd69363-69ca-47d5-a0bd-bf060ba6340b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-17caca88-df5c-4397-9b6e-4d825d4cd436",
+      "continue-17caca88-df5c-4397-9b6e-4d825d4cd436"
+    ],
+    "expected": [
+      "continue-17caca88-df5c-4397-9b6e-4d825d4cd436",
+      "continue-17caca88-df5c-4397-9b6e-4d825d4cd436"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-17caca88-df5c-4397-9b6e-4d825d4cd436",
+    "expected": "continue-17caca88-df5c-4397-9b6e-4d825d4cd436"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-3ec539f6-0a8e-4524-b1e4-32c4de24fc3d",
+      "skip-3ec539f6-0a8e-4524-b1e4-32c4de24fc3d"
+    ],
+    "expected": [
+      "skip-3ec539f6-0a8e-4524-b1e4-32c4de24fc3d",
+      "skip-3ec539f6-0a8e-4524-b1e4-32c4de24fc3d"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-3ec539f6-0a8e-4524-b1e4-32c4de24fc3d",
+    "expected": "skip-3ec539f6-0a8e-4524-b1e4-32c4de24fc3d"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-58713cbf-78d2-40e4-9e3c-eaf629e7032d",
+      "guess-58713cbf-78d2-40e4-9e3c-eaf629e7032d"
+    ],
+    "expected": [
+      "guess-58713cbf-78d2-40e4-9e3c-eaf629e7032d",
+      "guess-58713cbf-78d2-40e4-9e3c-eaf629e7032d"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-58713cbf-78d2-40e4-9e3c-eaf629e7032d",
+    "expected": "guess-58713cbf-78d2-40e4-9e3c-eaf629e7032d"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-bdc271ee-c9bd-4abf-ac67-0015e82d962f",
+      "hint-bdc271ee-c9bd-4abf-ac67-0015e82d962f"
+    ],
+    "expected": [
+      "hint-bdc271ee-c9bd-4abf-ac67-0015e82d962f",
+      "hint-bdc271ee-c9bd-4abf-ac67-0015e82d962f"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-bdc271ee-c9bd-4abf-ac67-0015e82d962f",
+    "expected": "hint-bdc271ee-c9bd-4abf-ac67-0015e82d962f"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-cd6d2820-83df-4ea4-b2c0-cbe88aabcf2b",
+      "continue-cd6d2820-83df-4ea4-b2c0-cbe88aabcf2b"
+    ],
+    "expected": [
+      "continue-cd6d2820-83df-4ea4-b2c0-cbe88aabcf2b",
+      "continue-cd6d2820-83df-4ea4-b2c0-cbe88aabcf2b"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-cd6d2820-83df-4ea4-b2c0-cbe88aabcf2b",
+    "expected": "continue-cd6d2820-83df-4ea4-b2c0-cbe88aabcf2b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-65a2e1f3-8781-441c-bcdd-8cf364e67fdb",
+      "skip-65a2e1f3-8781-441c-bcdd-8cf364e67fdb"
+    ],
+    "expected": [
+      "skip-65a2e1f3-8781-441c-bcdd-8cf364e67fdb",
+      "skip-65a2e1f3-8781-441c-bcdd-8cf364e67fdb"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-65a2e1f3-8781-441c-bcdd-8cf364e67fdb",
+    "expected": "skip-65a2e1f3-8781-441c-bcdd-8cf364e67fdb"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "question:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "guess-7b8ec83d-f71e-4133-a8b9-61b0c6b9e3b8",
+      "guess-7b8ec83d-f71e-4133-a8b9-61b0c6b9e3b8"
+    ],
+    "expected": [
+      "guess-7b8ec83d-f71e-4133-a8b9-61b0c6b9e3b8",
+      "guess-7b8ec83d-f71e-4133-a8b9-61b0c6b9e3b8"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "guess-7b8ec83d-f71e-4133-a8b9-61b0c6b9e3b8",
+    "expected": "guess-7b8ec83d-f71e-4133-a8b9-61b0c6b9e3b8"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:guess",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "hint-fd2f0d47-de51-4ad8-b55b-fe8c0ba363d8",
+      "hint-fd2f0d47-de51-4ad8-b55b-fe8c0ba363d8"
+    ],
+    "expected": [
+      "hint-fd2f0d47-de51-4ad8-b55b-fe8c0ba363d8",
+      "hint-fd2f0d47-de51-4ad8-b55b-fe8c0ba363d8"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "hint-fd2f0d47-de51-4ad8-b55b-fe8c0ba363d8",
+    "expected": "hint-fd2f0d47-de51-4ad8-b55b-fe8c0ba363d8"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:hint",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "continue-a9decc5b-1c33-4a84-8344-426155439926",
+      "continue-a9decc5b-1c33-4a84-8344-426155439926"
+    ],
+    "expected": [
+      "continue-a9decc5b-1c33-4a84-8344-426155439926",
+      "continue-a9decc5b-1c33-4a84-8344-426155439926"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "continue-a9decc5b-1c33-4a84-8344-426155439926",
+    "expected": "continue-a9decc5b-1c33-4a84-8344-426155439926"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:continue",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "native action admits one original queued operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "original action uses Alice and its issued question",
+    "actual": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ],
+    "expected": [
+      "Alice",
+      1,
+      "en",
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "scope revocation rejects retry before network delivery",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "same-scope retries preserve the exact idempotency request",
+    "actual": [
+      "skip-c2a7f02a-1382-40eb-9118-6edda4322f25",
+      "skip-c2a7f02a-1382-40eb-9118-6edda4322f25"
+    ],
+    "expected": [
+      "skip-c2a7f02a-1382-40eb-9118-6edda4322f25",
+      "skip-c2a7f02a-1382-40eb-9118-6edda4322f25"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "no retry can acquire a lease under another scope",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "original queued action remains durable for its originating player",
+    "actual": "skip-c2a7f02a-1382-40eb-9118-6edda4322f25",
+    "expected": "skip-c2a7f02a-1382-40eb-9118-6edda4322f25"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "none:skip",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  }
+]

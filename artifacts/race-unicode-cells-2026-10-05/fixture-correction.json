@@ -1,0 +1,10 @@
+{
+  "path": "firebase-functions/src/__tests__/race/raceUnicodeCells.it.test.ts",
+  "before": "a29bdf5c32affca38e518aedac0ce1d2f16b307eb1529d64f08cbf981b733762",
+  "after": "bb82274cb7e06e7af9735e3cc1beba02951ec8685234fb3ed302b2e72e7e81c3",
+  "change": "Corrected only the test fixture import from raceStoredRecords to raceSetupService. Production source and all passing build/core/browser/type inputs are unchanged.",
+  "initialSdkTestsPassed": 410,
+  "initialSdkTestsFailed": 2,
+  "initialEmulatorHandle": 65361,
+  "initialEmulatorExit": 1
+}

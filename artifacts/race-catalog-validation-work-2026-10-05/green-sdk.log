@@ -1,0 +1,73 @@
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":13,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/racePoolValidationWork.it.test.ts:44:5
+
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":17,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/racePoolValidationWork.it.test.ts:44:5
+
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":15,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/racePoolValidationWork.it.test.ts:44:5
+
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":8,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/racePoolValidationWork.it.test.ts:44:5
+
+Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        1.709 s, estimated 2 s
+Ran all test suites.

@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/92f638cebe4c7f78272ee7a1ab619e2aa916e36c4f5b27275c8684e67cff3fe0/jest.json",
+    "preserved": "artifacts/race-cell-glyph-fit-2026-10-05/uncached-verification/target-metadata/jest.json",
+    "sha256": "18521f50ef2fc63ca9474a578e3a469cd17e9fcf5e95a6c6a0d3628ff042aa1e"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/02d6b22534032535c48e3a3add01d048924b03b5f123ebf2916c515332c3ebd2/facebook.json",
+    "preserved": "artifacts/race-cell-glyph-fit-2026-10-05/uncached-verification/target-metadata/facebook.json",
+    "sha256": "79b1048d2d20cf71c40330853202a48781b49112fcb47c142661542c994d25ec"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/c7a0eb6e2ee637920b9dbf8ba93e34f1880fecb9f98f4dac3f8c05328a894ab3/reddit.json",
+    "preserved": "artifacts/race-cell-glyph-fit-2026-10-05/uncached-verification/target-metadata/reddit.json",
+    "sha256": "e0f9df1598b3bc7c2acfbc0adc3632d2b632130ec2488ccb21b7980ed82a37a3"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/77bc46e0c80c1715c21635ac7559987bb4f4f4399723a9276168ca3afcd0daa3/youtube.json",
+    "preserved": "artifacts/race-cell-glyph-fit-2026-10-05/uncached-verification/target-metadata/youtube.json",
+    "sha256": "ca40b74a784735676e62b8a28b87b2c59089b17a0d9342131c3eeb865be97c7f"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/0ad880cd09aaece789491010f6ffcce63baa805c1b56398ae2106734fb2ea358/netflix.json",
+    "preserved": "artifacts/race-cell-glyph-fit-2026-10-05/uncached-verification/target-metadata/netflix.json",
+    "sha256": "0b6e38990666e090a18e32e915c2195ed78112106a9f8232663346f1512b1471"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/5bf6bf66c2ae3da5cac37ac8821f8dc6543f181af5f768d39d16213643663fa4/yahoo.json",
+    "preserved": "artifacts/race-cell-glyph-fit-2026-10-05/uncached-verification/target-metadata/yahoo.json",
+    "sha256": "1110787ccef7b02e4b0274a2aa666171be06fa3c8f90a2570e3e7872f3703522"
+  }
+]

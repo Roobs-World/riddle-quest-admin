@@ -1,0 +1,395 @@
+{
+  "mode": "production",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 56,
+  "checks": 431,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:hint:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-8fd7c556-c256-4dae-88d3-44c3c27c1217"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:hint:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-e13c2e54-6fbe-4442-8c5b-4cd4e5298936"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:hint:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:continue:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-59c0573e-5868-4d47-b8f7-3e2a4dd006d9"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:continue:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-a9f48b8e-7f5d-4919-804f-ac17dc3e7c8e"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:continue:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:skip:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-0a3d619e-70be-4b5e-81b7-24f2f8752c36"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:skip:rejected",
+      "name": "old receipt cannot restore foreign question",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:skip:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-1b0e849b-7529-4632-901b-4c2e48740a28"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:account:skip:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:hint:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-1d0fd3f4-0bc0-4267-b658-cd590e70b6be"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:hint:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-5da173aa-5485-4390-a4cd-8e62149214d4"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:hint:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:continue:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-77fe9c3e-ec3b-48e5-813b-99a568ea9d7d"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:continue:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-f1ead9f0-1d9c-460a-942d-448a946cff78"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:continue:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:skip:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-a193c250-4201-43de-a8c6-e8498d45a5b6"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:skip:rejected",
+      "name": "old receipt cannot restore foreign question",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:skip:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-1ec06415-f5ff-4145-8f1d-5c2a3258f0dd"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:generation:skip:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:hint:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-82119ef0-2ee0-4244-8559-f233a3d66d37"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:hint:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-d25b95d4-c900-425a-af29-d2b9ebeb5db4"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:hint:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:continue:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-37832b01-3bc3-4e05-a869-2ce52cd79296"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:continue:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-dabace78-9008-4342-bd04-c20098d2fbcb"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:continue:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:skip:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-62aea80c-e7a5-48b1-a1e5-1e0e7a1a7a84"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:skip:rejected",
+      "name": "old receipt cannot restore foreign question",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:skip:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-9ffd144a-0366-4596-a76b-237475b86902"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:locale:skip:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:hint:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-7fef9cb9-c9e1-43ab-8083-5fe330e49439"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:hint:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "hint-683eeeaf-a234-464e-965b-9a64bd52de49"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:hint:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:continue:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-dc65c486-c087-492f-93f5-567bde8cbd4e"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:continue:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "continue-80f34034-7282-4371-a029-0e958a3635fa"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:continue:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:skip:success",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-4b752776-0bd8-41cc-b17f-74a6b35a97fe"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:skip:rejected",
+      "name": "old receipt cannot restore foreign question",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:skip:rejected",
+      "name": "old action remains durable in original scope",
+      "actual": null,
+      "expected": "skip-56e9b066-5a4c-4473-b61c-fc38d16a76bf"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "receipt:logout:skip:rejected",
+      "name": "old receipt cannot publish its failure notice",
+      "actual": "Fixture rejection",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:unmount:skip:interval",
+      "name": "only current callback may renew its exact request",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:unmount:skip:interval",
+      "name": "retired callback cannot acquire a lease",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:unmount:guess:retry",
+      "name": "only current callback may renew its exact request",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:unmount:guess:retry",
+      "name": "retired callback cannot acquire a lease",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:replaced:guess:retry",
+      "name": "only current callback may renew its exact request",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:replaced:guess:retry",
+      "name": "retired callback cannot acquire a lease",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Pending-play retry scope retirement
+
+46 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-pending-play-lifetime-browser.mjs:73:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 46,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,17 @@
+{
+  "firefox": {
+    "version": "Mozilla Firefox 153.0",
+    "versionCommandExitCode": 0,
+    "cacheRevision": "1538",
+    "executable": "/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+    "sha256": "26e4198abe0dfb93c339239297008b1319711575d8cbae8e2d5122d2017b29a1",
+    "provider": "Playwright Firefox"
+  },
+  "chromium": {
+    "provider": "Playwright Chromium bundled executable selected by installed @playwright/test"
+  },
+  "mcp": {
+    "available": true,
+    "launchSuccessful": false
+  }
+}

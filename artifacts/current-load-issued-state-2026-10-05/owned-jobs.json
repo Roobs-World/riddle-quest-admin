@@ -1,0 +1,163 @@
+[
+  {
+    "name": "red-latency-initial-identity",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "types-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator-initial-identity",
+    "sessionId": 6640,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-latency",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator-initial-controls",
+    "sessionId": 79950,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-focused",
+    "sessionId": 86492,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "types-final-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator-initial-controls",
+    "sessionId": 63544,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator-initial-finalization-call",
+    "sessionId": 63933,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": 63946,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator",
+    "sessionId": 71635,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator",
+    "sessionId": 97786,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-final-probe",
+    "sessionId": 72035,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-final-probe",
+    "sessionId": 55739,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 1817,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": 32570,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 76643,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 48336,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-focused",
+    "sessionId": 44738,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 13954,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 17596,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-isolated-latency-trace",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

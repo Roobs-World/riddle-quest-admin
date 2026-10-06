@@ -1,0 +1,6 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 3 production declarations are undocumented.
+- firebase-functions/src/__tests__/classicSupplyTransactionPayload.it.test.ts:32 stage
+- firebase-functions/src/__tests__/classicSupplyTransactionPayload.it.test.ts:32 documentBytes
+- firebase-functions/src/__tests__/classicSupplyTransactionPayload.it.test.ts:32 loadedFields
+[ELIFECYCLE] Command failed with exit code 1.

@@ -64,6 +64,7 @@ describe("authoritative game economy callables", () => {
       newCoins: 100,
       newProgress: {classicIndex: 3, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
       costDeducted: 200,
+      classicSupply: {classicIndex: 3, locale: "fr"},
     });
     mockTriggerClassicRiddleGenerationIfNeeded.mockResolvedValue(undefined);
   });
@@ -146,13 +147,27 @@ describe("authoritative game economy callables", () => {
     );
 
     expect(result).toMatchObject({success: true, costDeducted: 200, newCoins: 100});
-    expect(mockGetIssuedAuthoritativeSession).toHaveBeenCalledWith("player-1", SESSION_TOKEN, "classic", "classic-2");
+    expect(mockGetIssuedAuthoritativeSession).not.toHaveBeenCalled();
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith("player-1", 3, "fr");
+    expect(result).not.toHaveProperty("classicSupply");
     expect(mockSkipAuthoritativeRiddle).toHaveBeenCalledWith("player-1", {
       riddleId: "classic-2",
       gameMode: "classic",
       sessionToken: SESSION_TOKEN,
       requestId: "skip-request-1",
     });
+  });
+
+  it("prepares current progression when an earlier skip receipt is replayed", async () => {
+    mockSkipAuthoritativeRiddle.mockResolvedValueOnce({newCoins: 100, costDeducted: 200,
+      newProgress: {classicIndex: 3, dailyChallengeIndex: 0, dailyChallengeCurrentQuestion: 0},
+      classicSupply: {classicIndex: 9, locale: "de"}});
+    /** Public result retains the old receipt progression while supply uses current authority. */
+    const result = await skipRiddle(request({riddleId: "classic-2", gameMode: "classic" as const,
+      sessionToken: SESSION_TOKEN, requestId: "skip-context-replay"}));
+    expect(result.newProgress.classicIndex).toBe(3);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith("player-1", 9, "de");
+    expect(mockGetIssuedAuthoritativeSession).not.toHaveBeenCalled();
   });
 
   it("rejects Daily skip before invoking any transaction", async () => {

@@ -4,8 +4,11 @@ import type {GameSessionAction, GameSessionState, PendingGuessState} from "../ga
 
 /** Run the real recovery owner's mount effects against the real reducer. */
 const mockEffects: Array<() => unknown> = [];
+/** Commit ownership before exercising mount recovery effects. */
+const mockLayoutEffects: Array<() => unknown> = [];
 jest.mock("react", () => ({
   useCallback: <T>(callback: T) => callback,
+  useLayoutEffect: (effect: () => unknown) => {mockLayoutEffects.push(effect);},
   useEffect: (effect: () => unknown) => {mockEffects.push(effect);},
   useRef: <T>(current: T) => ({current}),
   useState: <T>(initial: T | (() => T)) => [
@@ -16,7 +19,7 @@ import {createInitialGameSession, gameSessionReducer} from "../gameSession";
 import {createPendingPlayJournalStorage, pendingPlayScope, type PendingGuessJournal} from "../pendingGuessJournal";
 import {useProvisionalPlayRecovery, type PendingPlayRecoveryAdapters} from "../game/hooks/useProvisionalPlayRecovery";
 
-beforeEach(() => {mockEffects.length = 0;});
+beforeEach(() => {mockEffects.length = 0; mockLayoutEffects.length = 0;});
 
 /** Immutable issued questions representing the hosted locale-return sequence. */
 const predecessor: BridgeRiddle = {
@@ -87,6 +90,7 @@ it.each([false, true])("keeps Settings open on locale return with journal recove
         actions.push(action);
         stateRef.current = gameSessionReducer(stateRef.current, action);
       }});
+    for (const effect of mockLayoutEffects) effect();
     for (const effect of mockEffects) effect();
     if (recover) {
       expect(actions.map(action => action.type)).toContain("restoreQueuedGuesses");

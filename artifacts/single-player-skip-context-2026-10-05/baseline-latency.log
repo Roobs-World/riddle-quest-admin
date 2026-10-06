@@ -1,0 +1,10 @@
+  console.info
+    {"elapsedMs":800,"reads":["direct:users/player-1/singlePlayerSessions/11e594f481958c10e3015d0bf0447a22f068a8a647f475df15ce2c7ab4b8f3f1","transaction:users/player-1/singlePlayerSessions/11e594f481958c10e3015d0bf0447a22f068a8a647f475df15ce2c7ab4b8f3f1","transaction:users/player-1"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.419 s, estimated 1 s
+Ran all test suites matching src/__tests__/singlePlayerSkipPreparationLatency.test.ts.

@@ -1,0 +1,253 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-current-load", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 42173.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: NODE_OPTIONS=--experimental-vm-modules pnpm exec jest --config ../artifacts/current-load-issued-state-2026-10-05/probe.config.cjs --runInBand
+FAIL src/__tests__/singlePlayerLoadIssuedState.it.test.ts
+  ● projects classic resumed false without a standalone issued-session read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      82 |   /** Actual response contains only the existing public projection. */
+      83 |   const {result, directReads} = await observedLoad(mode);
+    > 84 |   expect(directReads).toBe(0);
+         |                       ^
+      85 |   expect(result.challenge?.questions[0]).toMatchObject({riddleId: riddle(mode).riddleId, attemptsUsed: 0, awaitingContinue: false});
+      86 |   expect(result).not.toHaveProperty("state");
+      87 |   expect((await db.doc(`users/${OWNER}`).get()).data()).toEqual(profile);
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:84:23
+
+  ● projects classic resumed true without a standalone issued-session read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      82 |   /** Actual response contains only the existing public projection. */
+      83 |   const {result, directReads} = await observedLoad(mode);
+    > 84 |   expect(directReads).toBe(0);
+         |                       ^
+      85 |   expect(result.challenge?.questions[0]).toMatchObject({riddleId: riddle(mode).riddleId, attemptsUsed: 0, awaitingContinue: false});
+      86 |   expect(result).not.toHaveProperty("state");
+      87 |   expect((await db.doc(`users/${OWNER}`).get()).data()).toEqual(profile);
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:84:23
+
+  ● projects challenge resumed false without a standalone issued-session read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      82 |   /** Actual response contains only the existing public projection. */
+      83 |   const {result, directReads} = await observedLoad(mode);
+    > 84 |   expect(directReads).toBe(0);
+         |                       ^
+      85 |   expect(result.challenge?.questions[0]).toMatchObject({riddleId: riddle(mode).riddleId, attemptsUsed: 0, awaitingContinue: false});
+      86 |   expect(result).not.toHaveProperty("state");
+      87 |   expect((await db.doc(`users/${OWNER}`).get()).data()).toEqual(profile);
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:84:23
+
+  ● projects challenge resumed true without a standalone issued-session read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      82 |   /** Actual response contains only the existing public projection. */
+      83 |   const {result, directReads} = await observedLoad(mode);
+    > 84 |   expect(directReads).toBe(0);
+         |                       ^
+      85 |   expect(result.challenge?.questions[0]).toMatchObject({riddleId: riddle(mode).riddleId, attemptsUsed: 0, awaitingContinue: false});
+      86 |   expect(result).not.toHaveProperty("state");
+      87 |   expect((await db.doc(`users/${OWNER}`).get()).data()).toEqual(profile);
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:84:23
+
+  ● retains explicit classic resume-token validation and one standalone read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 2
+
+       95 |   /** Client resume validation remains separate from selecting the current entitlement. */
+       96 |   const token = await issue(mode), {result, directReads} = await observedLoad(mode, token);
+    >  97 |   expect(directReads).toBe(1); expect(result.challenge?.questions[0]?.sessionToken).toBe(token);
+          |                       ^
+       98 |   await expect(load(mode, "wrong-opaque-token-at-least-20-characters")).rejects.toMatchObject({code: "not-found"});
+       99 | });
+      100 |
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:97:23
+
+  ● retains explicit challenge resume-token validation and one standalone read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 2
+
+       95 |   /** Client resume validation remains separate from selecting the current entitlement. */
+       96 |   const token = await issue(mode), {result, directReads} = await observedLoad(mode, token);
+    >  97 |   expect(directReads).toBe(1); expect(result.challenge?.questions[0]?.sessionToken).toBe(token);
+          |                       ^
+       98 |   await expect(load(mode, "wrong-opaque-token-at-least-20-characters")).rejects.toMatchObject({code: "not-found"});
+       99 | });
+      100 |
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:97:23
+
+  ● projects resumed challenge hints and attempts from committed state
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 8
+    + Received  + 3
+
+      Object {
+    -   "attemptsUsed": 1,
+    -   "revealedHints": Array [
+    -     Object {
+    -       "index": 0,
+    -       "letter": "P",
+    -     },
+    -   ],
+    -   "sessionToken": "b04c2da8-076b-4496-b5b5-9afb82aaca50",
+    +   "attemptsUsed": 0,
+    +   "revealedHints": Array [],
+    +   "sessionToken": "dc9ea9b1-430f-4a27-8435-5da125f8d887",
+      }
+
+      102 |   /** Recovery data is canonical private state updated independently of the public loader. */
+      103 |   const token = await issue(mode); await db.doc(sessionPath(token)).update({attempts: 1, hintRevealedIndices: [0]});
+    > 104 |   expect((await load(mode)).challenge?.questions[0]).toMatchObject({sessionToken: token, attemptsUsed: 1, revealedHints: [{index: 0, letter: "P"}]});
+          |                                                      ^
+      105 | });
+      106 |
+      107 | it.each((["classic", "challenge"] as const).flatMap(mode => [false, true].map(win => ({mode, win}))))(
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:104:54
+
+  ● reconciles real terminal classic win false and rotates only retryable entitlements
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      115 |   /** Real completion updates progress and economy, then the actual loader reissues if needed. */
+      116 |   const {result, directReads} = await observedLoad(mode);
+    > 117 |   expect(directReads).toBe(0);
+          |                       ^
+      118 |   if (win && mode === "challenge") expect(result).toMatchObject({hasCompletedToday: true, questionsCompleted: 1});
+      119 |   else {
+      120 |     expect(result.challenge?.questions[0]).toMatchObject({riddleId: mode === "classic" && win ? "classic-2" : riddle(mode).riddleId, attemptsUsed: 0});
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:117:23
+
+  ● reconciles real terminal classic win true and rotates only retryable entitlements
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 2
+
+      115 |   /** Real completion updates progress and economy, then the actual loader reissues if needed. */
+      116 |   const {result, directReads} = await observedLoad(mode);
+    > 117 |   expect(directReads).toBe(0);
+          |                       ^
+      118 |   if (win && mode === "challenge") expect(result).toMatchObject({hasCompletedToday: true, questionsCompleted: 1});
+      119 |   else {
+      120 |     expect(result.challenge?.questions[0]).toMatchObject({riddleId: mode === "classic" && win ? "classic-2" : riddle(mode).riddleId, attemptsUsed: 0});
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:117:23
+
+  ● reconciles real terminal challenge win false and rotates only retryable entitlements
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      115 |   /** Real completion updates progress and economy, then the actual loader reissues if needed. */
+      116 |   const {result, directReads} = await observedLoad(mode);
+    > 117 |   expect(directReads).toBe(0);
+          |                       ^
+      118 |   if (win && mode === "challenge") expect(result).toMatchObject({hasCompletedToday: true, questionsCompleted: 1});
+      119 |   else {
+      120 |     expect(result.challenge?.questions[0]).toMatchObject({riddleId: mode === "classic" && win ? "classic-2" : riddle(mode).riddleId, attemptsUsed: 0});
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:117:23
+
+  ● reconciles real terminal challenge win true and rotates only retryable entitlements
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      115 |   /** Real completion updates progress and economy, then the actual loader reissues if needed. */
+      116 |   const {result, directReads} = await observedLoad(mode);
+    > 117 |   expect(directReads).toBe(0);
+          |                       ^
+      118 |   if (win && mode === "challenge") expect(result).toMatchObject({hasCompletedToday: true, questionsCompleted: 1});
+      119 |   else {
+      120 |     expect(result.challenge?.questions[0]).toMatchObject({riddleId: mode === "classic" && win ? "classic-2" : riddle(mode).riddleId, attemptsUsed: 0});
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:117:23
+
+  ● projects the fresh challenge issuance attempt after actual SDK retry
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 8
+    + Received  + 3
+
+      Object {
+    -   "attemptsUsed": 1,
+    -   "revealedHints": Array [
+    -     Object {
+    -       "index": 0,
+    -       "letter": "P",
+    -     },
+    -   ],
+    -   "sessionToken": "b6150328-e41d-4473-ae13-49a598be58e8",
+    +   "attemptsUsed": 0,
+    +   "revealedHints": Array [],
+    +   "sessionToken": "b16191ec-9bd3-4bf3-b181-d2440f249fa9",
+      }
+
+      153 |   }, options));
+      154 |   try {
+    > 155 |     expect((await load(mode)).challenge?.questions[0]).toMatchObject({sessionToken: token, attemptsUsed: 1, revealedHints: [{index: 0, letter: "P"}]});
+          |                                                        ^
+      156 |     expect(attempts).toBe(2);
+      157 |   } finally {spy.mockRestore();}
+      158 | });
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:155:56
+
+Test Suites: 1 failed, 1 total
+Tests:       12 failed, 2 passed, 14 total
+Snapshots:   0 total
+Time:        3.025 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "NODE_OPTIONS=--experimental-vm-modules pnpm exec jest --config ../artifacts/current-load-issued-state-2026-10-05/probe.config.cjs --runInBand" exited with code 1

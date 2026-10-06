@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`コイン`,CONTINUE_BUTTON:`続ける`,STREAK_SUFFIX:`日連勝`,TITLE:`連勝更新！`},n={StreakFanfare:t}})))()}r();export{n as default};

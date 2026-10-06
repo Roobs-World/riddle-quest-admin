@@ -13,13 +13,17 @@ let clock: number;
 const ref = {};
 /** Provides transaction behavior. */
 const transaction = {get: jest.fn(async () => ({data: () => ({...job})})), update: jest.fn((_, values) => Object.assign(job, values))};
+/** Masked reads retain the same canonical snapshot/error injector for each transaction attempt. */
+transaction.getAll = jest.fn(async (reference, _options) => [await transaction.get(reference)]);
+/** Indexed discovery returns only candidates; the transaction owns current eligibility and locale. */
+const dueQuery = {where: jest.fn(), orderBy: jest.fn(), limit: jest.fn(), select: jest.fn(), get: jest.fn()};
 /** Provides db behavior. */
-const db = {collection: jest.fn(() => ({doc: jest.fn(() => ref)})), runTransaction: jest.fn(async callback => callback(transaction))};
+const db = {collection: jest.fn(() => ({...dueQuery, doc: jest.fn(() => ref)})), runTransaction: jest.fn(async callback => callback(transaction))};
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: () => db}}));
 jest.mock("../shared/sentryHandlers", () => ({onScheduleWithSentry: jest.fn()}));
 jest.mock("../shared/sentry", () => ({captureException: capture}));
 jest.mock("../riddles/riddleGeneration", () => ({generateLocalizedClassicRiddlesForLocale: generate}));
-import {processClassicSupplyJob} from "../riddles/classicSupplyWorker";
+import {processClassicSupplyJob, processClassicSupplyJobs} from "../riddles/classicSupplyWorker";
 
 describe("durable Classic supply worker", () => {
   beforeEach(() => {
@@ -28,11 +32,34 @@ describe("durable Classic supply worker", () => {
     jest.spyOn(Date, "now").mockImplementation(() => clock);
     job = {locale: "ar", highestClassicIndex: 20, nextAttemptAtMs: 0};
     generate.mockResolvedValue(undefined);
+    for (const method of [dueQuery.where, dueQuery.orderBy, dueQuery.limit, dueQuery.select]) method.mockReturnValue(dueQuery);
+    dueQuery.get.mockResolvedValue({docs: [{id: "ar_20", data: () => ({locale: "fr", nextAttemptAtMs: 0})}]});
   });
   afterEach(() => jest.restoreAllMocks());
+  it("discovers document IDs without loading copied job fields and rechecks canonical locale", async () => {
+    await processClassicSupplyJobs();
+    expect(dueQuery.select).toHaveBeenCalledWith();
+    expect(dueQuery.where).toHaveBeenCalledWith("nextAttemptAtMs", "<=", clock);
+    expect(dueQuery.orderBy).toHaveBeenCalledWith("nextAttemptAtMs");
+    expect(dueQuery.limit).toHaveBeenCalledWith(3);
+    expect(generate).toHaveBeenCalledWith("ar", 5, clock + 180000);
+  });
+  it("does not treat discovery eligibility as a current transaction grant", async () => {
+    job.nextAttemptAtMs = clock + 600000;
+    await processClassicSupplyJobs();
+    expect(generate).not.toHaveBeenCalled();
+    expect(transaction.update).not.toHaveBeenCalled();
+  });
+  it("propagates failed discovery without starting generation", async () => {
+    dueQuery.get.mockRejectedValueOnce(new Error("discovery unavailable"));
+    await expect(processClassicSupplyJobs()).rejects.toThrow("discovery unavailable");
+    expect(generate).not.toHaveBeenCalled();
+  });
   it("completes the durable request and excludes successful replay", async () => {
     expect(await processClassicSupplyJob("ar_20")).toBe("generated");
     expect(generate).toHaveBeenCalledWith("ar", 5, clock + 180000);
+    expect(transaction.getAll).toHaveBeenNthCalledWith(1, ref, {fieldMask: ["nextAttemptAtMs", "completed", "locale"]});
+    expect(transaction.getAll).toHaveBeenNthCalledWith(2, ref, {fieldMask: ["leaseId"]});
     expect(job.completed).toBe(true);
     expect(await processClassicSupplyJob("ar_20")).toBe("skipped");
     expect(generate).toHaveBeenCalledTimes(1);

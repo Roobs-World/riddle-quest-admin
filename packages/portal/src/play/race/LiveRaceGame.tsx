@@ -6,6 +6,7 @@ import {LiveRaceInviteShare} from "./components/LiveRaceInviteShare";
 import {LiveRaceSearchWheel} from "./components/LiveRaceSearchWheel";
 import {estimatedRaceServerNow} from "./logic/raceCountdown";
 import {liveRaceDeliveryDeadline, liveRaceCommandRejected, confirmUnavailableLiveInvitation} from "./logic/liveRaceDeliveryDeadline";
+import {createLiveRaceRetirement} from "./logic/liveRaceRetirement";
 import {liveRacePollInterval} from "./logic/liveRacePolling";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {LiveRaceViewSchema, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@qwordly/core/race";
@@ -71,10 +72,14 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const [requestId] = useState(() => ({current: createRequestId("live-join")}));
   /** Repeated retirement deliveries retain one idempotency key for this seat. */
   const [leaveId] = useState(() => ({current: createRequestId("live-leave")}));
+  /** Retired receipts keep bounded cleanup under this journey's original transport and leave key. */
+  const [retireSeat] = useState(() => createLiveRaceRetirement(transport, leaveId.current, requestId.current, ownerId));
   /** Exact player command retained until its delivery is confirmed. */
   const pending = useRef<UpdateLiveRace | null>(null);
   /** A rejected stale command requires fresh server state before another mutation. */
   const refreshRequired = useRef(false);
+  /** An explicit authority rejection owns no new seat; its optional invitation preview remains a cancellable read. */
+  const joinRejected = useRef(false);
   /** Player commands can supersede a background poll without accepting its late response. */
   const inFlight = useRef<{
     /** Background observations may be superseded by an owned player command. */
@@ -164,12 +169,13 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     refreshQueued.current = false;
     inFlight.current = delivery;
     latestDelivery.current = delivery;
+    if (!viewRef.current && !command) joinRejected.current = false;
     reschedulePoll();
     if (command || !viewRef.current) setBusy(true);
     /** Accepts an owned receipt; late superseded deliveries cannot rewind gameplay. */
     const accept = (result: LiveRaceView) => {
       if (closed.current || !active.current) {
-        if (!["result", "cancelled"].includes(result.phase)) void transport.update({ticketId: result.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
+        retireSeat(result);
         return;
       }
       if (latestDelivery.current !== delivery || invitationUnavailableRef.current) return;
@@ -184,13 +190,16 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         closed.current = true;
         pending.current = null;
         closeCallback.current();
+      } else if (closeRequested.current) {
+        // Closing before join confirmation still owns the seat that the original request establishes.
+        pending.current = {ticketId: result.ticketId, action: "leave", requestId: leaveId.current};
       }
     };
     try {
       /** Viewer-specific result returned by the selected platform adapter. */
       const result = await liveRaceDeliveryDeadline(!viewRef.current ? rematchOfTicketId
-        ? transport.rematch!({locale, categoryId, requestId: requestId.current, rematchOfTicketId})
-        : transport.join({locale, categoryId, requestId: requestId.current, ...(createChallenge ? {createChallenge: true} : {}), ...(challengeId ? {challengeId} : {})}) :
+        ? transport.rematch!({locale, categoryId, requestId: requestId.current, rematchOfTicketId, ...(transport.retireJoin ? {retirementAware: true, ...(ownerId ? {expectedOwnerId: ownerId} : {})} : {})})
+        : transport.join({locale, categoryId, requestId: requestId.current, ...(transport.retireJoin ? {retirementAware: true, ...(ownerId ? {expectedOwnerId: ownerId} : {})} : {}), ...(createChallenge ? {createChallenge: true} : {}), ...(challengeId ? {challengeId} : {})}) :
         transport.update(command ?? {ticketId: viewRef.current.ticketId, action: "poll", requestId: createRequestId("live-poll")}),
         Boolean(viewRef.current && !command), late => {
           // Owned late commands can recover before retry; polls remain superseded observations.
@@ -199,6 +208,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       accept(result);
     } catch (failure) {
       if (inFlight.current === delivery && active.current && !closed.current) {
+        if (!viewRef.current && !command && liveRaceCommandRejected(failure)) {
+          joinRejected.current = true;
+          if (closeRequested.current) {closed.current = true; closeCallback.current(); return;}
+        }
         if (!viewRef.current && !command && challengeId &&
           await confirmUnavailableLiveInvitation(failure, challengeId, transport, lifetime.signal)) {
           // A close, account retirement or newer receipt may have superseded this read.
@@ -206,6 +219,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
           invitationUnavailableRef.current = true;
           setInvitationUnavailable(true);
           setError(false);
+          if (closeRequested.current) {closed.current = true; closeCallback.current();}
           return;
         }
         if (inFlight.current !== delivery || !active.current || closed.current) return;
@@ -232,7 +246,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         }
       }
     }
-  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft, reschedulePoll]);
+  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft, reschedulePoll, retireSeat, ownerId]);
   /** Signals never bypass delivery ownership or outage backoff. */
   const refresh = useCallback(() => {
     refreshQueued.current = true;
@@ -289,11 +303,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         if (closed.current) return;
         /** Last accepted ticket remains owned by this retired account journey. */
         const current = viewRef.current;
-        if (current && !["result", "cancelled"].includes(current.phase))
-          void transport.update({ticketId: current.ticketId, action: "leave", requestId: leaveId.current}).catch(() => {});
+        retireSeat(current);
       });
     };
-  }, [deliver, refresh]);
+  }, [deliver, refresh, retireSeat]);
   useEffect(() => {
     if (view?.phase !== "countdown" || view.startsAtMs === null) return;
     /** The lobby clock stops updating the gameplay owner as soon as racing begins. */
@@ -345,10 +358,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     if (closed.current || closeRequested.current) return;
     /** Snapshot whose ticket and prompt own the current interaction. */
     const current = viewRef.current;
-    if (current && !["result", "cancelled"].includes(current.phase)) {
+    if (!invitationUnavailableRef.current && (!current && !joinRejected.current || current && !["result", "cancelled"].includes(current.phase))) {
       closeRequested.current = true;
       setClosing(true);
-      pending.current = {ticketId: current.ticketId, action: "leave", requestId: leaveId.current};
+      if (current) pending.current = {ticketId: current.ticketId, action: "leave", requestId: leaveId.current};
       refreshRequired.current = false;
       nextDeliveryAt.current = 0;
       void deliver();

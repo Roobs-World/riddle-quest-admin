@@ -18,7 +18,7 @@ export function createFirebaseRaceMatchmaking(
   live: {
     ...(options.liveRematch ? {
       /** The existing authenticated join reserves the original private opponent server-side. */
-      async rematch(input: Pick<import("@qwordly/core/race").JoinLiveRace, "locale" | "categoryId" | "requestId"> & {
+      async rematch(input: Pick<import("@qwordly/core/race").JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {
         /** Caller-owned terminal seat. */ rematchOfTicketId: string;
       }) {
         /** Untrusted callable replies pass the existing strict live projection schema. */
@@ -77,6 +77,8 @@ export function createFirebaseRaceMatchmaking(
     async challenge(input) {return (await (await import("../firebase")).getLiveRaceChallenge(input)).data;},
     /** Provides join behavior. */
     async join(input) {return (await (await import("../firebase")).joinLiveRace(input)).data;},
+    /** Background retirement remains authenticated under the original join intent. */
+    async retireJoin(input) {return (await (await import("../firebase")).retireLiveRaceJoin(input)).data;},
     /** Provides update behavior. */
     async update(input) {return (await (await import("../firebase")).updateLiveRace(input)).data;},
   },

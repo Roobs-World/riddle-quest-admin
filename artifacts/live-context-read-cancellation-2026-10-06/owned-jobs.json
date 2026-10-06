@@ -1,0 +1,338 @@
+[
+  {
+    "name": "admission-final-baseline-node",
+    "command": [
+      "env",
+      "CONTEXT_GAP_REPORT_DIR=artifacts/live-context-read-cancellation-2026-10-06/admission-final-baseline-node",
+      "CONTEXT_GAP_BASELINE_FILE=artifacts/live-context-read-cancellation-2026-10-06/adapter-before-final-admission.ts",
+      "node",
+      "artifacts/live-context-read-cancellation-2026-10-06/probe-admission-gap.mjs"
+    ],
+    "logs": [
+      "admission-final-baseline-node.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257903.8774362,
+    "exitCode": 1,
+    "finishedAt": 1791257903.9747884
+  },
+  {
+    "name": "admission-final-green-node",
+    "command": [
+      "env",
+      "CONTEXT_GAP_REPORT_DIR=artifacts/live-context-read-cancellation-2026-10-06/admission-final-green-node",
+      "node",
+      "artifacts/live-context-read-cancellation-2026-10-06/probe-admission-gap.mjs"
+    ],
+    "logs": [
+      "admission-final-green-node.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257903.990213,
+    "exitCode": 0,
+    "finishedAt": 1791257904.085209
+  },
+  {
+    "name": "builds",
+    "command": [
+      "bash",
+      "artifacts/live-context-read-cancellation-2026-10-06/builds.sh"
+    ],
+    "logs": [
+      "builds.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257865.7743587,
+    "exitCode": 0,
+    "finishedAt": 1791257892.6388211
+  },
+  {
+    "name": "built-browser",
+    "command": [
+      "bash",
+      "artifacts/live-context-read-cancellation-2026-10-06/built-browser.sh"
+    ],
+    "logs": [
+      "built-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257965.048948,
+    "exitCode": 0,
+    "finishedAt": 1791258070.3210466
+  },
+  {
+    "name": "choice-development",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_MODE=development",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/choice-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-choice-browser.mjs"
+    ],
+    "logs": [
+      "choice-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257884.4212382,
+    "exitCode": 0,
+    "finishedAt": 1791257896.1843297
+  },
+  {
+    "name": "choice-production",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_MODE=production",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/choice-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-choice-browser.mjs"
+    ],
+    "logs": [
+      "choice-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257911.6793053,
+    "exitCode": 0,
+    "finishedAt": 1791257922.306973
+  },
+  {
+    "name": "chromium-development",
+    "command": [
+      "env",
+      "CONTEXT_READ_BROWSER=chromium",
+      "CONTEXT_READ_MODE=development",
+      "CONTEXT_READ_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/chromium-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-read-cancellation-browser.mjs"
+    ],
+    "logs": [
+      "chromium-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257866.4019277,
+    "exitCode": 0,
+    "finishedAt": 1791257882.281632
+  },
+  {
+    "name": "chromium-production",
+    "command": [
+      "env",
+      "CONTEXT_READ_BROWSER=chromium",
+      "CONTEXT_READ_MODE=production",
+      "CONTEXT_READ_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/chromium-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-read-cancellation-browser.mjs"
+    ],
+    "logs": [
+      "chromium-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257882.2970514,
+    "exitCode": 0,
+    "finishedAt": 1791257895.9283483
+  },
+  {
+    "name": "context-development",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=development",
+      "LIVE_CONTEXT_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/context-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "context-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257865.9710035,
+    "exitCode": 0,
+    "finishedAt": 1791257884.4056482
+  },
+  {
+    "name": "context-production",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=production",
+      "LIVE_CONTEXT_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/context-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "context-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257896.2013028,
+    "exitCode": 0,
+    "finishedAt": 1791257911.6638045
+  },
+  {
+    "name": "facebook-built-browser",
+    "command": [
+      "env",
+      "PORTAL_BROWSER_TESTS=1",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand",
+      "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"
+    ],
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257965.1348295,
+    "exitCode": 0,
+    "finishedAt": 1791257989.6755676
+  },
+  {
+    "name": "firefox-development",
+    "command": [
+      "env",
+      "CONTEXT_READ_BROWSER=firefox",
+      "CONTEXT_READ_MODE=development",
+      "CONTEXT_READ_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/firefox-development",
+      "CONTEXT_READ_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-read-cancellation-browser.mjs"
+    ],
+    "logs": [
+      "firefox-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257895.943505,
+    "exitCode": 0,
+    "finishedAt": 1791257916.4315577
+  },
+  {
+    "name": "firefox-production",
+    "command": [
+      "env",
+      "CONTEXT_READ_BROWSER=firefox",
+      "CONTEXT_READ_MODE=production",
+      "CONTEXT_READ_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/firefox-production",
+      "CONTEXT_READ_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-read-cancellation-browser.mjs"
+    ],
+    "logs": [
+      "firefox-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257916.446797,
+    "exitCode": 0,
+    "finishedAt": 1791257935.8765295
+  },
+  {
+    "name": "minimal-final-baseline-development",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_QUICK=1",
+      "CONTEXT_CHOICE_MODE=development",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/minimal-final-baseline-development",
+      "CONTEXT_CHOICE_BASELINE_BOARD_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/owned-00-before.txt",
+      "CONTEXT_CHOICE_BASELINE_ADAPTER_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/owned-01-before.txt",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257922.3229914,
+    "exitCode": 1,
+    "finishedAt": 1791257923.216745
+  },
+  {
+    "name": "minimal-final-baseline-production",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_QUICK=1",
+      "CONTEXT_CHOICE_MODE=production",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/minimal-final-baseline-production",
+      "CONTEXT_CHOICE_BASELINE_BOARD_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/owned-00-before.txt",
+      "CONTEXT_CHOICE_BASELINE_ADAPTER_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/owned-01-before.txt",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257924.1567383,
+    "exitCode": 1,
+    "finishedAt": 1791257925.0056849
+  },
+  {
+    "name": "minimal-final-green-development",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_QUICK=1",
+      "CONTEXT_CHOICE_MODE=development",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/minimal-final-green-development",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257923.2318842,
+    "exitCode": 0,
+    "finishedAt": 1791257924.1411946
+  },
+  {
+    "name": "minimal-final-green-production",
+    "command": [
+      "env",
+      "CONTEXT_CHOICE_QUICK=1",
+      "CONTEXT_CHOICE_MODE=production",
+      "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/minimal-final-green-production",
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257925.021306,
+    "exitCode": 0,
+    "finishedAt": 1791257925.9164
+  },
+  {
+    "name": "portal-units",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand"
+    ],
+    "logs": [
+      "portal-units.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257868.9797986,
+    "exitCode": 0,
+    "finishedAt": 1791257879.4972997
+  },
+  {
+    "name": "static",
+    "command": [
+      "bash",
+      "artifacts/live-context-read-cancellation-2026-10-06/static.sh"
+    ],
+    "logs": [
+      "static.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791257866.1765206,
+    "exitCode": 0,
+    "finishedAt": 1791257868.9634962
+  }
+]

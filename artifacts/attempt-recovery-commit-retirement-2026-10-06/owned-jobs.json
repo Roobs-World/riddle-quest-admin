@@ -1,0 +1,160 @@
+[
+  {
+    "name": "static-probe",
+    "sessionId": 73011,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-probe.log",
+      "tsdoc-probe.log"
+    ]
+  },
+  {
+    "name": "first-quick-green",
+    "sessionId": 11917,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "green-all-quick.log"
+    ]
+  },
+  {
+    "name": "portal-units",
+    "sessionId": 54608,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "portal-units.log"
+    ]
+  },
+  {
+    "name": "baseline-fixture-preflight",
+    "sessionId": 73299,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-final.log"
+    ]
+  },
+  {
+    "name": "static-final",
+    "sessionId": 29154,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-final.log",
+      "tsdoc-final.log",
+      "sizes-final.log"
+    ]
+  },
+  {
+    "name": "baseline-final",
+    "sessionId": 96569,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-final-corrected.log"
+    ]
+  },
+  {
+    "name": "all-six-builds",
+    "sessionId": 78598,
+    "status": "terminal",
+    "logs": [
+      "builds.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "chromium-matrix",
+    "sessionId": 64827,
+    "status": "terminal",
+    "logs": [
+      "chromium-development.log",
+      "chromium-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "firefox-matrix",
+    "sessionId": 71922,
+    "status": "terminal",
+    "logs": [
+      "firefox-development.log",
+      "firefox-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "original-probe-terminal",
+    "sessionId": 29002,
+    "status": "terminal",
+    "logs": [
+      "probe-terminal-development.log",
+      "probe-terminal-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "host-context-controls",
+    "sessionId": 65897,
+    "status": "terminal",
+    "logs": [
+      "host-context-development.log",
+      "host-context-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "boundaries-and-security",
+    "sessionId": 99181,
+    "status": "terminal",
+    "logs": [
+      "boundaries.log",
+      "security.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "built-browser",
+    "sessionId": 68393,
+    "status": "terminal",
+    "logs": [
+      "built-browser.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "facebook-built-browser",
+    "sessionId": 50817,
+    "status": "terminal",
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "original-development-red",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-red-development.log"
+    ]
+  },
+  {
+    "name": "original-production-red",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-red-production.log"
+    ]
+  },
+  {
+    "name": "original-first-green",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "probe-green-development.log"
+    ]
+  }
+]

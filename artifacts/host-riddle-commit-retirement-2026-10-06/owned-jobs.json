@@ -1,0 +1,254 @@
+[
+  {
+    "name": "probe-green-pair",
+    "sessionId": 83136,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "probe-green-development.log",
+      "probe-green-production.log"
+    ]
+  },
+  {
+    "name": "fixture-profile-preflight",
+    "sessionId": 34407,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "browser-probe.log"
+    ]
+  },
+  {
+    "name": "fixture-onboarding-preflight",
+    "sessionId": 60223,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "browser-probe-fixed.log"
+    ]
+  },
+  {
+    "name": "fixture-diagnostic",
+    "sessionId": 35064,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "fixture-diagnostic.log"
+    ]
+  },
+  {
+    "name": "quick-green",
+    "sessionId": 30420,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "browser-probe-final.log"
+    ]
+  },
+  {
+    "name": "quick-expanded-green",
+    "sessionId": 76281,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "green-all-quick.log"
+    ]
+  },
+  {
+    "name": "final-baseline-red",
+    "sessionId": 7216,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-final.log"
+    ]
+  },
+  {
+    "name": "static-preflight",
+    "sessionId": 87379,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "tsdoc-probe.log",
+      "sizes-probe.log"
+    ]
+  },
+  {
+    "name": "all-six-builds",
+    "sessionId": 85709,
+    "status": "terminal",
+    "logs": [
+      "builds.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "chromium-matrix",
+    "sessionId": 8283,
+    "status": "terminal",
+    "logs": [
+      "chromium-development.log",
+      "chromium-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "firefox-matrix",
+    "sessionId": 77964,
+    "status": "terminal",
+    "logs": [
+      "firefox-development.log",
+      "firefox-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "portal-unit-suite",
+    "sessionId": 95903,
+    "status": "terminal",
+    "logs": [
+      "portal-units.log"
+    ],
+    "exitCode": 1
+  },
+  {
+    "name": "recovery-matrix",
+    "sessionId": 28873,
+    "status": "terminal",
+    "logs": [
+      "recovery-development.log",
+      "recovery-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "preparation-matrix",
+    "sessionId": 98623,
+    "status": "terminal",
+    "logs": [
+      "preparation-development.log",
+      "preparation-production.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "portal-unit-suite-final",
+    "sessionId": 8290,
+    "status": "terminal",
+    "logs": [
+      "portal-units-final.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "static-final",
+    "sessionId": 98732,
+    "status": "terminal",
+    "logs": [
+      "types-final.log",
+      "tsdoc-final.log",
+      "sizes-final.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "built-browser",
+    "sessionId": 74625,
+    "status": "terminal",
+    "logs": [
+      "built-browser.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "boundaries-and-security",
+    "sessionId": 94541,
+    "status": "terminal",
+    "logs": [
+      "boundaries.log",
+      "security.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "facebook-built-browser",
+    "sessionId": 11595,
+    "status": "terminal",
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "stable-callback-red",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-stable-development.log"
+    ]
+  },
+  {
+    "name": "initial-development-red",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-development-corrected.log"
+    ]
+  },
+  {
+    "name": "initial-production-red",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-production.log"
+    ]
+  },
+  {
+    "name": "initial-import-preflight",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-development.log"
+    ]
+  },
+  {
+    "name": "focused-unit-preflight",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "units-probe.log"
+    ]
+  },
+  {
+    "name": "focused-units-final",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "units-green.log"
+    ]
+  },
+  {
+    "name": "board-assertion-red",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "board-test-red.log"
+    ]
+  },
+  {
+    "name": "aba-quick-green",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "aba-probe.log"
+    ]
+  },
+  {
+    "name": "type-preflight",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-probe.log"
+    ]
+  }
+]

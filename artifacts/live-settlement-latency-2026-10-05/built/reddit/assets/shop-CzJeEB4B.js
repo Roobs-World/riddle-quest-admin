@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`monete`,LOADING_TEXT:`Caricamento negozio...`,NO_PACKS_AVAILABLE:`Nessun pacchetto di monete è disponibile al momento.`,PURCHASE_BUTTON:`ACQUISTO`,TITLE:`NEGOZIO DI MONETE`,YOUR_BALANCE:`Il tuo equilibrio`},n={CoinShop:t}})))()}r();export{n as default};

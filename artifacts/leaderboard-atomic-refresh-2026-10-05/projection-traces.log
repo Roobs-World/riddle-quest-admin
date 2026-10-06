@@ -1,0 +1,45 @@
+  console.info
+    {"mode":"classic","win":false,"isAnonymous":false,"elapsedMs":0,"profileReads":0,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","win":false,"isAnonymous":true,"elapsedMs":0,"profileReads":0,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","win":true,"isAnonymous":false,"elapsedMs":600,"profileReads":1,"leaderboardTasks":1,"supplyTasks":1}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","win":true,"isAnonymous":true,"elapsedMs":600,"profileReads":1,"leaderboardTasks":0,"supplyTasks":1}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":false,"isAnonymous":false,"elapsedMs":0,"profileReads":0,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":false,"isAnonymous":true,"elapsedMs":0,"profileReads":0,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":true,"isAnonymous":false,"elapsedMs":250,"profileReads":0,"leaderboardTasks":1,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":true,"isAnonymous":true,"elapsedMs":0,"profileReads":0,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       21 skipped, 8 passed, 29 total
+Snapshots:   0 total
+Time:        0.409 s, estimated 1 s
+Ran all test suites matching src/__tests__/completeGameTransaction.test.ts with tests matching "reads a profile only".

@@ -1,0 +1,6 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 3 production declarations are undocumented.
+- firebase-functions/src/__tests__/firestoreService.test.ts:723 data
+- firebase-functions/src/__tests__/firestoreService.test.ts:736 result
+- firebase-functions/src/__tests__/singlePlayerCompletionRepairLatency.test.ts:54 result
+[ELIFECYCLE] Command failed with exit code 1.

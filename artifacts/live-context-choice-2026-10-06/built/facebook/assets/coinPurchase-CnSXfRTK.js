@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`훌륭해요`,COINS_SUFFIX:`코인`,TAP_CHEST_TO_COLLECT:`상자를 눌러 코인을 받으세요`,TITLE:`코인 추가됨!`},n={CoinPurchase:t}})))()}r();export{n as default};

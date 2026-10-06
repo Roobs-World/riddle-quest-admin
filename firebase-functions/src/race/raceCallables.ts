@@ -36,11 +36,10 @@ import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {
   abandonRaceRunForUser,
-  getRaceChallengePreview,
+  getRaceChallengeForUser,
   getRaceOutcomeForUser,
   listRaceCategoriesForLocale,
   listRaceInboxForUser,
-  claimRaceInviteForUser,
   publishRaceChallengeForUser,
   reserveRaceInviteForUser,
   requestRaceHintForUser,
@@ -305,9 +304,8 @@ export const getRaceChallenge = onCallWithSentry(
     const userId = await requireRaceUser(request);
     /** Provides input behavior. */
     const input = validateCallableRequest(RaceChallengeIdRequestSchema, request.data, "getRaceChallenge");
-    await claimRaceInviteForUser(userId, input.challengeId, input.locale);
-    /** Provides response behavior. */
-    const response = await getRaceChallengePreview(input.challengeId, input.locale);
+    /** User-bound admission validates original content before any dependent private claim. */
+    const response = await getRaceChallengeForUser(userId, input.challengeId, input.locale);
     return validateCallableResponse(RaceChallengePreviewSchema, response, "getRaceChallenge");
   },
 );

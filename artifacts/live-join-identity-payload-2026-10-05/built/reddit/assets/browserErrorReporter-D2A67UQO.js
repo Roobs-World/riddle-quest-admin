@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";function t(e,t){try{Promise.resolve(r(e,t)).catch(()=>void 0)}catch{}}var n,r;function i(){return(i=e((()=>{n=()=>void 0,r=n})))()}export{i as n,t};

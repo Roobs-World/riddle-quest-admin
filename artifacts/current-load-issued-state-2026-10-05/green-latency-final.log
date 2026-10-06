@@ -1,0 +1,41 @@
+  console.error
+    ◇ injected env (12) from .env
+
+      2 | /** Keeps real local demo-emulator runs independent of deployment credentials and project overrides. */
+      3 | const isDemoEmulatorTest = /^demo-/.test(process.env.GCLOUD_PROJECT || "") && /^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST || "");
+    > 4 | if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                                            ^
+      5 |
+      6 | // Ensure Jest environment is properly detected by iapConfig
+      7 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:4:44)
+
+  console.info
+    {"mode":"classic","resumed":false,"elapsedMs":400,"reads":["transaction:users/player/singlePlayerSessionBindings/6eeee94bc18a30def5f7b6ea471b2eaa60d0d48c63801e1891b1195ed4685862"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","resumed":true,"elapsedMs":600,"reads":["transaction:users/player/singlePlayerSessionBindings/6eeee94bc18a30def5f7b6ea471b2eaa60d0d48c63801e1891b1195ed4685862","transaction:users/player/singlePlayerSessions/63438df395e525d8f5bbefa36133892524fb9034cebd9ea8a88da9978dda95c3"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","resumed":false,"elapsedMs":400,"reads":["direct:localizedRiddles/en/riddles/daily-2027-01-15","transaction:users/player/singlePlayerSessionBindings/0feec3f9849dc2876a86f73ab5f1a71bf81220ed30cc7c2525ce24949a4c1d4c"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","resumed":true,"elapsedMs":600,"reads":["direct:localizedRiddles/en/riddles/daily-2027-01-15","transaction:users/player/singlePlayerSessionBindings/0feec3f9849dc2876a86f73ab5f1a71bf81220ed30cc7c2525ce24949a4c1d4c","transaction:users/player/singlePlayerSessions/9e2767e0a58ee68ba1e2e5f6b12c6c00e7568cfd2a3afa03c0f8b13a0cd1f860"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        0.406 s, estimated 1 s
+Ran all test suites matching src/__tests__/singlePlayerLoadIssuanceLatency.test.ts.

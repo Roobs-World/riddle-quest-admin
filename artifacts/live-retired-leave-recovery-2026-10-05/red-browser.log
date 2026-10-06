@@ -1,0 +1,34 @@
+{
+  "mode": "development",
+  "checks": 22,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "join",
+      "name": "old seat retires under its original provider once",
+      "actual": [],
+      "expected": [
+        1
+      ]
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live wait retirement assertions
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-retired-leave-recovery-browser.mjs:98:224 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

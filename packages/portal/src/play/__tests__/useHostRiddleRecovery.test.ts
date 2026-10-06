@@ -9,14 +9,43 @@ const refs: Array<{
   /** Mutable hook value. */
   current: unknown;
 }> = [];
-/** Current render's ref position. */
-let refIndex = 0;
+/** Memo cells retain ownership across unchanged dependency renders. */
+const memos: Array<{
+  /** React compares each dependency by identity. */
+  deps: unknown[];
+  /** Stable computed value for the admitted render. */
+  value: unknown;
+}> = [];
+/** Committed layout lifetimes retire before passive effects. */
+const layouts: Array<{
+  /** Dependencies that admitted this layout. */
+  deps: unknown[];
+  /** Disposal owned by this layout only. */
+  cleanup?: () => void;
+}> = [];
+/** Current render's independent hook positions. */
+let refIndex = 0, memoIndex = 0, layoutIndex = 0;
+/** Begins a new render without discarding committed hook cells. */
+const beginRender = () => {refIndex = memoIndex = layoutIndex = 0;};
+/** Retires committed layouts and the current passive recovery owner. */
+const retire = () => {layouts.forEach(layout => layout.cleanup?.()); cleanup?.(); cleanup = undefined;};
 /** Active lifecycle cleanup from the committed effect. */
 let cleanup: (() => void) | undefined;
 jest.mock("react", () => ({
   useCallback: <T>(callback: T) => callback,
-  useMemo: <T>(factory: () => T) => factory(),
-  useLayoutEffect: (effect: () => void) => effect(),
+  useMemo: (factory: () => unknown, deps: unknown[]) => {
+    /** Unchanged ownership reuses the same memo object, as in mounted React. */
+    const index = memoIndex++, prior = memos[index];
+    if (!prior || deps.some((value, i) => !Object.is(value, prior.deps[i]))) memos[index] = {deps, value: factory()};
+    return memos[index]!.value;
+  },
+  useLayoutEffect: (effect: () => void | (() => void), deps: unknown[]) => {
+    /** Layout retirement happens at commit, before the retained passive cleanup. */
+    const index = layoutIndex++, prior = layouts[index];
+    if (!prior || deps.some((value, i) => !Object.is(value, prior.deps[i]))) {
+      prior?.cleanup?.(); layouts[index] = {deps, cleanup: effect() || undefined};
+    }
+  },
   useEffect: (effect: () => void | (() => void)) => effects.push(effect),
   useRef: (initial: unknown) => {
     /** Every render advances in hook order, including previously initialized refs. */
@@ -68,7 +97,7 @@ const setup = (loadRiddle: HostServices["loadRiddle"]) => {
 };
 
 beforeEach(() => {
-  refs.length = 0; effects.length = 0; refIndex = 0;
+  refs.length = effects.length = memos.length = layouts.length = 0; beginRender();
   jest.useFakeTimers();
   Object.defineProperty(globalThis, "window", {configurable: true, value: Object.assign(new EventTarget(), {
     setTimeout: globalThis.setTimeout, clearTimeout: globalThis.clearTimeout,
@@ -77,7 +106,7 @@ beforeEach(() => {
     value: Object.assign(new EventTarget(), {visibilityState: "visible"})});
   Object.defineProperty(globalThis, "navigator", {configurable: true, value: {onLine: true}});
 });
-afterEach(() => {cleanup?.(); cleanup = undefined; jest.useRealTimers();});
+afterEach(() => {retire(); jest.useRealTimers();});
 
 it("releases a hanging content wait and accepts only its recovery response", async () => {
   /** First request never settles before its delivery deadline. */
@@ -109,7 +138,7 @@ it("settles an unresolved content wait immediately when its host retires", async
   /** Observe settlement without allowing the test to hang on the old implementation. */
   const settled = jest.fn();
   void loading.then(settled);
-  cleanup?.(); cleanup = undefined;
+  retire();
   await jest.advanceTimersByTimeAsync(0);
   expect(settled).toHaveBeenCalledWith(false);
   expect(owner.postOperation).not.toHaveBeenCalled();
@@ -147,7 +176,7 @@ it("rejects a successful authority receipt after final unmount", async () => {
   const owner = setup(() => held.promise);
   /** Async receipt retained while the context is disposed. */
   const loading = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "held-load");
-  cleanup?.(); cleanup = undefined;
+  retire();
   held.resolve(riddle);
   expect(await loading).toBe(false);
   expect(owner.postToGame).not.toHaveBeenCalled();
@@ -161,7 +190,7 @@ it("delivers the latest confirmed profile after a slow riddle load", async () =>
   const owner = setup(() => held.promise);
   /** Original content request started at a 300-coin balance. */
   const loading = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "held-load");
-  refIndex = 0;
+  beginRender();
   useHostRiddleLifecycle({...owner.options, profile: {coins: 350}});
   held.resolve(riddle);
   expect(await loading).toBe(true);
@@ -221,7 +250,7 @@ it("resets Classic recovery to the replacement account's confirmed position", as
   /** Mounted content lifecycle owns the first account's navigation pointer. */
   const owner = setup(load);
   await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en", classicIndex: 17}, "old-next");
-  cleanup?.();refIndex = 0;effects.length = 0;
+  retire(); beginRender();effects.length = 0;
   useHostRiddleLifecycle({...owner.options, userId: "replacement", profile: {coins: 100, classicIndex: 2}});
   cleanup = effects[0]() || undefined;
   await jest.advanceTimersByTimeAsync(250);
@@ -394,6 +423,54 @@ it("counts one shared startup failure once after repeated reconnect signals", as
   await jest.advanceTimersByTimeAsync(1000);
   expect(load).toHaveBeenCalledTimes(2);
   expect(owner.onRecoveryAttempt).toHaveBeenCalledTimes(2);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.activity).toBe(0);
+});
+
+it.each(["account", "generation", "locale", "provider"])("keeps the replacement load when old passive cleanup follows a %s commit", async kind => {
+  /** Old provider work deliberately outlives the owning commit. */
+  const held = deferred<BridgeRiddle>();
+  /** Replacement receipt has its own immutable question identity. */
+  const replacement = {...riddle, index: 6, sessionToken: "00000000-0000-4000-8000-000000000006"};
+  /** Both contexts use real deadline and delivery behavior around held authority work. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(held.promise).mockResolvedValue(replacement);
+  /** Initial committed content lifetime captures the retained callback. */
+  const owner = setup(load);
+  /** Old correlated request is admitted before context replacement. */
+  const old = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "old-context");
+  /** Passive cleanup is intentionally retained until the replacement has loaded. */
+  const oldPassiveCleanup = cleanup;
+  beginRender(); effects.length = 0;
+  /** Each changed value independently replaces ordinary content ownership. */
+  const options = {...owner.options, userId: kind === "account" ? "replacement" : "player",
+    accountGeneration: kind === "generation" ? 2 : undefined, locale: kind === "locale" ? "fr" : "en",
+    services: kind === "provider" ? {loadRiddle: load} : owner.options.services};
+  /** Synchronous layout commit retires the old delivery before passive cleanup. */
+  const current = useHostRiddleLifecycle(options);
+  expect(await old).toBe(false);
+  expect(await current.loadRiddle({gameMode: "classic", locale: options.locale}, "new-context")).toBe(true);
+  oldPassiveCleanup?.(); cleanup = effects[0]() || undefined;
+  held.resolve(riddle);
+  expect(await owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "retained-old-callback")).toBe(false);
+  await jest.advanceTimersByTimeAsync(1000);
+  expect(load).toHaveBeenCalledTimes(2);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postToGame.mock.calls[0][0]).toMatchObject({requestId: "new-context", payload: {riddle: replacement}});
+  expect(owner.postOperation).toHaveBeenCalledTimes(1);
+  expect(owner.activity).toBe(0);
+});
+
+it("keeps an admitted load across recovery callback replacement", async () => {
+  /** A presentation callback can change without changing account or provider ownership. */
+  const held = deferred<BridgeRiddle>();
+  /** Initial content wait remains admitted until its provider responds. */
+  const owner = setup(() => held.promise);
+  /** Original visible request must survive the callback-only commit. */
+  const loading = owner.lifecycle.loadRiddle({gameMode: "classic", locale: "en"}, "same-context");
+  beginRender();
+  useHostRiddleLifecycle({...owner.options, onRecoveryAttempt: jest.fn()});
+  held.resolve(riddle);
+  expect(await loading).toBe(true);
   expect(owner.postToGame).toHaveBeenCalledTimes(1);
   expect(owner.activity).toBe(0);
 });

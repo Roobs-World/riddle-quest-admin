@@ -1,0 +1,54 @@
+{
+  "goal": "active",
+  "postIssuanceDirectSessionReads": {
+    "ordinaryBefore": 1,
+    "ordinaryAfter": 0,
+    "terminalRotationBefore": 2,
+    "terminalRotationAfter": 0
+  },
+  "retainedExplicitResumeValidationReads": 1,
+  "syntheticLatencyMs": {
+    "fresh": {
+      "before": 600,
+      "after": 400
+    },
+    "resumed": {
+      "before": 800,
+      "after": 600
+    }
+  },
+  "unchangedSessionTransactionReads": {
+    "fresh": 1,
+    "resumed": 2
+  },
+  "scope": "Real current Classic/Daily loaders, issuance and response projection with deterministic 200 ms persistence/catalog stages. Profile, early recovery, account leases, HTTP and commit delays are outside this model. Not a production latency measurement. Separate actual Admin SDK emulator cases verify canonical persistence, real terminal completion and loss rotation, reward replay, resume validation, recovery fields and fresh retry state. Early recovery and derived ranking/generation are isolated in those SDK cases to exercise the post-issuance branches.",
+  "newRealEmulatorCases": 14,
+  "backendUnitTests": 1647,
+  "backendUnitSuites": 134,
+  "emulatorTests": 302,
+  "emulatorSuites": 20,
+  "focusedTests": 62,
+  "focusedSuites": 3,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25897,
+  "tsdocFiles": 1158,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2356,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 23,
+  "resolvedPreflightFixtureIssues": [
+    "Daily seed challenge key corrected to match actual catalog identity",
+    "Unknown resume token expects the existing permission-denied contract",
+    "Declined loss finalized through the real four-argument API before testing rotation"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

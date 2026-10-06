@@ -1,0 +1,169 @@
+[
+  {
+    "name": "red-sdk-initial",
+    "sessionId": 68034,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-sdk-final",
+    "sessionId": 34669,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-sdk-initial",
+    "sessionId": 73263,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "The accepted forfeit control expected a clean-run badge in addition to debut and first-win rewards. Corrected 250 to200; production unchanged."
+  },
+  {
+    "name": "backend-types-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-command-preflight",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Used audit:tsdoc instead of the repository check:tsdoc command; corrected command before final verification."
+  },
+  {
+    "name": "matching-red-sdk-27",
+    "sessionId": 38239,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "childExitCode": 1
+  },
+  {
+    "name": "matching-red-sdk-42",
+    "sessionId": 91419,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "childExitCode": 1
+  },
+  {
+    "name": "red-unit-work",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-unit-work",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-declarations-probe",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Six new fixture declarations needed inline documentation. Added comments only; corrected documentation audit passed."
+  },
+  {
+    "name": "green-sdk-final-probe",
+    "sessionId": 46024,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-corrected",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "prepare-fixed",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-portal-focused",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-portal-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-core-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "core-command-preflight",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Core uses jest.config.js, while the first command named the portal-style .cjs config. Retained the failure and used the package test command for final verification."
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 29327,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-lint",
+    "sessionId": 1090,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-core",
+    "sessionId": 37635,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 66525,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 74251,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "artifacts/live-context-owner-2026-10-06/expanded-driver.txt": "52f42b34018bd4b0aed4bb9243fcfe0209e7249ba7036ae0e0488227554ea8f2",
+  "artifacts/live-context-owner-2026-10-06/expanded-fixture.txt": "ecf3fe1fece856125ecc60f36be8b099838d8feca18243c03cb6dd3cad99e1d1",
+  "artifacts/live-context-owner-2026-10-06/probe-expanded.mjs": "ea02b561d6ccf7eb2255d31b6b89e0fe7f402a03ba1e92ca406464e0d35e81aa",
+  "artifacts/live-context-owner-2026-10-06/probe-minimal.mjs": "516106f8dd2354fbfd3cfe76fc360283024d87fb5ce950e934a617315da8e870"
+}

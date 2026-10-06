@@ -1,0 +1,7 @@
+{
+  "supply": "firebase-functions/src/riddles/riddleSupply.ts",
+  "worker": "firebase-functions/src/riddles/classicSupplyWorker.ts",
+  "supply-test": "firebase-functions/src/__tests__/riddleSupply.test.ts",
+  "worker-test": "firebase-functions/src/__tests__/classicSupplyWorker.test.ts",
+  "emulator-test": "firebase-functions/src/__tests__/classicSupplyPayload.it.test.ts"
+}

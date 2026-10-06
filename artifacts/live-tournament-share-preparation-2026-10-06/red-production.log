@@ -1,0 +1,165 @@
+{
+  "mode": "production",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 2,
+  "checks": 32,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "pending preparation owns exactly one deadline and dialog clears it",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "preparation expiry unlocks local share unless native dialog is admitted",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "second native adapter can open after preparation expiry only",
+      "actual": "unavailable",
+      "expected": "success"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "notification SDK is admitted exactly when shared gate is free",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "late original read cannot open a native dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "standings expiry suppresses deferred metadata admission",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "original local result is a contained provider outcome",
+      "actual": [
+        "success"
+      ],
+      "expected": [
+        "retryable-failure"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "standings-timeout",
+      "name": "fresh gesture admits exactly one owned native dialog",
+      "actual": [
+        9000,
+        7000
+      ],
+      "expected": [
+        7000
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "pending preparation owns exactly one deadline and dialog clears it",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "preparation expiry unlocks local share unless native dialog is admitted",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "second native adapter can open after preparation expiry only",
+      "actual": "unavailable",
+      "expected": "success"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "notification SDK is admitted exactly when shared gate is free",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "late original read cannot open a native dialog",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "original local result is a contained provider outcome",
+      "actual": [
+        "success"
+      ],
+      "expected": [
+        "retryable-failure"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "metadata-timeout",
+      "name": "fresh gesture admits exactly one owned native dialog",
+      "actual": [
+        9000,
+        7000
+      ],
+      "expected": [
+        7000
+      ]
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Share preparation must release abandoned waits and retain admitted native dialog occupancy
+
+15 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-tournament-share-preparation-browser.mjs:74:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 15,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

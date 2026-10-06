@@ -295,6 +295,7 @@ app.post("/api/game/:operation", async (request) => {
     "race.inbox",
     "race.match",
     "race.live.join",
+    "race.live.retire",
     "race.live.update",
     "race.live.history",
     "race.live.inbox",

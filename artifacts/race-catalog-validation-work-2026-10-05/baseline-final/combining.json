@@ -1,0 +1,1189 @@
+{
+  "name": "combining",
+  "answerUnits": 200000,
+  "answerBytes": 300000,
+  "result": {
+    "valid": false,
+    "locale": "en",
+    "categoryId": "history",
+    "eligibleCount": 30,
+    "difficultyCounts": {
+      "easy": 10,
+      "medium": 10,
+      "hard": 10
+    },
+    "issues": [
+      {
+        "code": "answer_too_long",
+        "message": "Answer exceeds the game's 7-slot or published text limits",
+        "documentPaths": [
+          "localizedRiddles/en/riddles/work-0"
+        ]
+      }
+    ]
+  },
+  "normalizationCalls": [
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 200000,
+      "form": "NFKC",
+      "answerInput": true,
+      "site": [
+        "    at /home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/jest-mock@30.4.1/node_modules/jest-mock/build/index.js:305:39",
+        "    at String.<anonymous> (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/jest-mock@30.4.1/node_modules/jest-mock/build/index.js:312:13)",
+        "    at String.mockConstructor (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/jest-mock@30.4.1/node_modules/jest-mock/build/index.js:102:19)",
+        "    at normalize (/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceContentValidation.ts:55:9)"
+      ]
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 200000,
+      "form": "NFKC",
+      "answerInput": true,
+      "site": [
+        "    at /home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/jest-mock@30.4.1/node_modules/jest-mock/build/index.js:305:39",
+        "    at String.<anonymous> (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/jest-mock@30.4.1/node_modules/jest-mock/build/index.js:312:13)",
+        "    at String.mockConstructor (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/jest-mock@30.4.1/node_modules/jest-mock/build/index.js:102:19)",
+        "    at normalizeForComparison (/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/riddles/riddleQuality.ts:4:6)"
+      ]
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 42,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 43,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFKC",
+      "answerInput": false,
+      "site": []
+    },
+    {
+      "units": 6,
+      "form": "NFC",
+      "answerInput": false,
+      "site": []
+    }
+  ],
+  "segmentationInputUnits": [
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6
+  ],
+  "answerNormalizationCalls": 2,
+  "answerNormalizationUnits": 400000,
+  "samples": [
+    3.521991000000014,
+    3.5255980000000022,
+    3.486263000000008,
+    3.481874000000005,
+    3.468078999999989,
+    3.6204979999999978,
+    3.474320999999975,
+    3.4746710000000007,
+    3.482535999999982,
+    3.463941000000034,
+    3.4728169999999636,
+    3.480612000000008,
+    3.47742599999998,
+    3.4711640000000443,
+    3.504537999999968,
+    3.4928859999999986,
+    3.4821249999999964,
+    3.475211999999999,
+    3.4761439999999766,
+    3.638171
+  ]
+}

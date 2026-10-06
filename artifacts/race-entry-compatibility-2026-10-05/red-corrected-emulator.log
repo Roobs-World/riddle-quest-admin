@@ -1,0 +1,15 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-race-entry-compatibility", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 51565.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/race-entry-compatibility-2026-10-05/probe.config.cjs --runInBand > ../artifacts/race-entry-compatibility-2026-10-05/red-corrected-sdk.log 2>&1
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config ../artifacts/race-entry-compatibility-2026-10-05/probe.config.cjs --runInBand > ../artifacts/race-entry-compatibility-2026-10-05/red-corrected-sdk.log 2>&1" exited with code 1

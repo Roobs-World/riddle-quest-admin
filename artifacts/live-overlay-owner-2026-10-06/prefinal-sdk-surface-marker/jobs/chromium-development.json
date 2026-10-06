@@ -1,0 +1,18 @@
+{
+  "name": "chromium-development",
+  "command": [
+    "env",
+    "OVERLAY_OWNER_BROWSER=chromium",
+    "OVERLAY_OWNER_MODE=development",
+    "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/chromium-development",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-overlay-owner-browser.mjs"
+  ],
+  "logs": [
+    "chromium-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791258668.134974,
+  "exitCode": 0,
+  "finishedAt": 1791258682.8549697
+}

@@ -1,0 +1,6 @@
+{
+  "candidate": "Single-player request schemas still accept only ASCII guesses while locale-independent core scoring accepts Unicode letters and marks.",
+  "status": "Unverified; inspect supported authored answer policies, native input paths and real load/guess handlers before proposing a change.",
+  "otherCandidate": "Race per-cell hint/feedback/confirmed-history schema bounds are eight UTF-16 units, whereas native drafts allow larger single graphemes. Reproduce with a valid authored Indic conjunct or another supported-locale answer before changing limits.",
+  "constraints": "Do not expand content or provider authority blindly. Preserve bounded inputs, seven answer slots, immutable decks, replay, server scoring and all target boundaries."
+}

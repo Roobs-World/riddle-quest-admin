@@ -1,0 +1,51 @@
+FAIL src/__tests__/race/raceLiveJoinRetirement.it.test.ts
+  ● retirement replay does not duplicate signals or rewards (matched=true)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 550
+    Received: 600
+
+      90 |   /** The existing settlement authority may grant the rival exactly once after an active forfeit. */
+      91 |   const before = await state(), marker = await liveJoinIntentRef(db, A, FIRST).get();
+    > 92 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(matched ? 550 : 500);
+         |                                                            ^
+      93 |   expect(await retire(A, FIRST, NOW + 8000)).toEqual({status: "retired"}); expect(await state()).toEqual(before);
+      94 |   expect((await liveJoinIntentRef(db, A, FIRST).get()).updateTime?.valueOf()).toBe(marker.updateTime?.valueOf());
+      95 | });
+
+      at src/__tests__/race/raceLiveJoinRetirement.it.test.ts:92:60
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 16 passed, 17 total
+Snapshots:   0 total
+Time:        2.749 s
+Ran all test suites.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.
+
+ReferenceError: You are trying to `require` a file after the Jest environment has been torn down. From src/__tests__/race/raceLiveJoinRetirement.it.test.ts.
+
+      at new GoogleErrorDecoder (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/googleError.js:269:32)
+      at GoogleError.parseGRPCStatusDetails (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/googleError.js:87:25)
+      at ClientReadableStreamImpl.<anonymous> (../node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/streamingCalls/streaming.js:192:39)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:612:18)
+      at Object.onReceiveStatus (../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+      at ../node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/protobufjs@7.6.5/node_modules/protobufjs/src/root.js:65
+    if (json.options)
+             ^
+
+TypeError: Cannot read properties of undefined (reading 'options')
+    at Root.fromJSON (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/protobufjs@7.6.5/node_modules/protobufjs/src/root.js:65:14)
+    at new GoogleErrorDecoder (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/googleError.js:270:35)
+    at GoogleError.parseGRPCStatusDetails (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/googleError.js:87:25)
+    at ClientReadableStreamImpl.<anonymous> (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/google-gax@6.9.0_supports-color@8.1.1/node_modules/google-gax/build/src/streamingCalls/streaming.js:192:39)
+    at ClientReadableStreamImpl.emit (node:events:521:24)
+    at Object.onReceiveStatus (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client.ts:612:18)
+    at Object.onReceiveStatus (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/client-interceptors.ts:424:48)
+    at /home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/@grpc+grpc-js@1.14.5/node_modules/@grpc/grpc-js/src/resolving-call.ts:184:24
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+
+Node.js v24.17.0

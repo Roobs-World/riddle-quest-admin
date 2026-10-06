@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import {mkdir,mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
+import {createServer} from 'node:http';
+import path from 'node:path';
+import {build} from '../../packages/portal/node_modules/vite/dist/node/index.js';
+import {chromium} from '../../packages/portal/node_modules/@playwright/test/index.mjs';
+const portal=path.resolve('packages/portal'),evidence=path.resolve('artifacts/pending-play-scope-retirement-2026-10-06'),mode=process.env.PENDING_SCOPE_MODE??'development';
+await mkdir(path.join(portal,'node_modules/.cache'),{recursive:true});const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/pending-scope-probe-'));let browser,server,result;
+try{
+await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
+await writeFile(path.join(scratch,'main.tsx'),`
+import React from 'react';import {createRoot} from 'react-dom/client';
+import {useProvisionalPlayRecovery} from ${JSON.stringify(path.join(portal,'src/play/game/hooks/useProvisionalPlayRecovery.ts'))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'src/play/gameSession.ts'))};
+import {createPendingPlayJournalStorage,pendingPlayScope} from ${JSON.stringify(path.join(portal,'src/play/pendingGuessJournal.ts'))};
+import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal,'src/play/GameFrameControls.tsx'))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};
+import ${JSON.stringify(path.join(portal,'src/styles.css'))};
+window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
+window.probe={messages:[],intervals:[],actions:[],errors:[],unhandled:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
+const user={uid:'Alice',isAnonymous:true,accountGeneration:1},profile={username:'Alice',coins:570,level:2,xp:100,winStreak:1,gamesPlayed:2,wins:1,achievements:[],classicIndex:1};const first={riddleId:'classic_1',text:'What has keys but cannot open doors?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000001',gameMode:'classic',index:1,attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false,evaluation:{answer:'piano',locale:'en'}};
+function seed(){let state=gameSessionReducer(createInitialGameSession(),{type:'hostInit',locale:'en',gameMode:'classic',user,profile,products:[]});return gameSessionReducer(state,{type:'loadRiddle',riddle:first});}
+const storage=createPendingPlayJournalStorage(localStorage);let now=0;const adapters={journal:storage,clock:{now:()=>now,setTimeout:(fn,ms)=>window.setTimeout(fn,ms),clearTimeout:id=>window.clearTimeout(id),setInterval:(fn,ms)=>{window.probe.intervals.push({fn,ms});return window.probe.intervals.length;},clearInterval:id=>{window.probe.intervals[id-1].cleared=true;}}};
+function App(){const [state,reduce]=React.useReducer(gameSessionReducer,undefined,seed),[replace,setReplace]=React.useState(false),stateRef=React.useRef(state);stateRef.current=state;
+ const dispatch=React.useCallback(action=>{window.probe.actions.push(action);reduce(action);},[]);
+ const post=React.useCallback(message=>window.probe.messages.push({actor:stateRef.current.user?.uid,message}),[]);
+ const recovery=useProvisionalPlayRecovery({state,stateRef,dispatch,postToHost:post,playFeedback:()=>{},adapters});
+ window.replace=()=>{setReplace(true);dispatch({type:'authState',user:{...user,uid:'Bob'},profile:{...profile,username:'Bob'}});dispatch({type:'loadRiddle',riddle:{...first,riddleId:'classic_2',sessionToken:'00000000-0000-4000-8000-000000000002'}});};
+ React.useLayoutEffect(()=>{if(replace){now=25000;window.probe.intervals[0].fn();}},[replace]);
+ return <main data-owner={state.user?.uid} data-draft={state.currentLetters.join('')}><ControlledGuessBoard answerLength={5} currentLetters={state.currentLetters} activeSlotIndex={state.activeSlotIndex} guesses={state.guesses} hintRevealedIndices={state.hintRevealedIndices} onSelectSlot={index=>dispatch({type:'selectSlot',index})}/><ControlledKeyboard letterStates={state.letterStates} onLetter={letter=>dispatch({type:'typeLetter',letter})} onBackspace={()=>dispatch({type:'backspace'})}/><button data-submit disabled={!recovery.canSubmit} onClick={recovery.submitGuess}>Submit fixture</button><button data-replace onClick={window.replace}>Replace account fixture</button></main>;
+}createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
+`);
+await build({root:scratch,configFile:false,publicDir:path.join(portal,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},build:{outDir:'dist',minify:false,target:'esnext'}});
+server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.webm':'audio/webm'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:390,height:844}});await page.goto('http://127.0.0.1:'+server.address().port);await page.locator('[data-owner=Alice]').waitFor();for(const letter of 'PIZZA')await page.locator('.keyboard .key').filter({hasText:new RegExp('^'+letter+'$')}).first().click();await page.locator('[data-submit]').click();await page.waitForFunction(()=>window.probe.messages.length===1&&window.probe.intervals.length===1);await page.locator('[data-replace]').click();await page.locator('[data-owner=Bob]').waitFor();await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));result=await page.evaluate(()=>({messages:window.probe.messages,errors:window.probe.errors,unhandled:window.probe.unhandled,owner:document.querySelector('[data-owner]').dataset.owner,draft:document.querySelector('[data-draft]').dataset.draft,intervals:window.probe.intervals.map(x=>({ms:x.ms,cleared:x.cleared}))}));await page.screenshot({path:path.join(evidence,'probe-'+mode+'.png')});
+}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});await writeFile(path.join(evidence,'probe-'+mode+'.json'),JSON.stringify(result??null,null,2)+'\n');}
+console.log(JSON.stringify(result));assert.deepEqual(result.messages.map(x=>({actor:x.actor,sessionToken:x.message.payload.sessionToken})),[{actor:'Alice',sessionToken:'00000000-0000-4000-8000-000000000001'}],'A queued lease-renewal callback cannot deliver an old account message through the newly committed account');

@@ -5,6 +5,7 @@ import coinUrl from "../../../../assets/images/coin.svg";
 import backspaceUrl from "../../../../assets/images/backspace-key.svg";
 import {tr} from "./i18n";
 import {canEditCurrentGuess, gameSessionReducer, type GameSessionState} from "./gameSession";
+import {useGuessGlyphFit} from "../input/useGuessGlyphFit";
 
 /** Fixed Latin shortcut letters are prepared once, independently of draft and receipt renders. */
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"].map(id => ({id, letters: id.split("")}));
@@ -184,8 +185,11 @@ export function ControlledGuessBoard({
     (_, index) =>
       guesses[index] ?? (index === guesses.length ? {guess: currentLetters, feedback: []} : {guess: [], feedback: []}),
   );
+  /** Drafts, history and hints refit only when their displayed text changes. */
+  const boardRef = useGuessGlyphFit(JSON.stringify(rows.map(row => row.guess)));
   return (
     <div
+      ref={boardRef}
       className="guess-board"
       style={{"--answer-length": answerLength, "--board-max-width": `${answerLength * 66 - 8}px`} as CSSProperties}
     >
@@ -214,7 +218,7 @@ export function ControlledGuessBoard({
                   .join(" ")}
                 key={cellIndex}
               >
-                {row.guess[cellIndex] ?? ""}
+                <span className="cell-glyph" aria-hidden="true">{row.guess[cellIndex] ?? ""}</span>
               </button>
             );
           })}

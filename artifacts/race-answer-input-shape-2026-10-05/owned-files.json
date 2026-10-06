@@ -1,0 +1,7 @@
+{
+  "catalog": "firebase-functions/src/race/raceContentValidation.ts",
+  "compatibility": "firebase-functions/src/race/raceDeckCompatibility.ts",
+  "unit-test": "firebase-functions/src/__tests__/race/raceAnswerInputShape.test.ts",
+  "sdk-test": "firebase-functions/src/__tests__/race/raceAnswerInputShape.it.test.ts",
+  "recording-test": "firebase-functions/src/__tests__/race/raceRecordingInputShape.it.test.ts"
+}

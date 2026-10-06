@@ -1,0 +1,9 @@
+[
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/6b941db467fbfc33d081d5366df73ec752ea6cdcd51f01d99170c9f701435f19/facebook.json",
+    "preserved": "artifacts/pending-play-scope-retirement-2026-10-06/extra-facebook-final.json",
+    "sha256": "8ea2642ca6ce5c9679bbcca2026ddb17fc22e5ba01b5ee4ee7ce8607b9fadb9a",
+    "outputDirectory": "/tmp/riddle-quest-facebook-browser-iAmP3t"
+  }
+]

@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (14.420044ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.392423ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (5.061331ms)
+✔ rejects imports between different target owners (2.959899ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.718551ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.33499ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.241823ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.827969ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.201406ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.676532ms)
+✔ aggregates violations in deterministic file and source order (0.770831ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.507946
+Web Target boundary audit passed (316 files, 1372 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-en-DSlqZhzN.js   87.86 kB │ gzip: 47.72 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-pt-qNKK8f77.js   90.15 kB │ gzip: 48.95 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-nl-DYdP_y8F.js   90.54 kB │ gzip: 49.16 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-id-ClPIQ6Wz.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-it-lnUJjEPG.js   91.35 kB │ gzip: 49.56 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-es-MsJ-B0K1.js   91.65 kB │ gzip: 49.77 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-de-G8VmcrF7.js   92.15 kB │ gzip: 50.04 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-tr-CZCeNhx6.js   92.54 kB │ gzip: 50.23 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-pl-C7GtqmjK.js   92.70 kB │ gzip: 50.33 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-fr-lBVJFMGU.js   93.56 kB │ gzip: 50.78 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-ja-KYT1Ggwt.js   94.66 kB │ gzip: 51.38 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-vi-Cs7PblY1.js   96.78 kB │ gzip: 52.55 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-ko-DIPiwfJI.js   97.36 kB │ gzip: 52.87 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-ar-BTvGwbju.js  102.12 kB │ gzip: 55.44 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/index-BeudQ0iy.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-ru-CTD_aDxE.js  114.09 kB │ gzip: 61.91 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/playable-pack-hi-NCd9narD.js  134.49 kB │ gzip: 73.01 kB
+../../../../../../tmp/race-answer-compatibility-builds-f_jjqbso/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.06s
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

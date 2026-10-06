@@ -1,0 +1,21 @@
+{
+  "name": "navigation-production",
+  "command": [
+    "env",
+    "RACE_NAV_REACT_MODE=production",
+    "RACE_NAV_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/navigation-production",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-race-navigation-focus-browser.mjs"
+  ],
+  "logs": [
+    "navigation-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791255738.3533697,
+  "exitCode": 0,
+  "finishedAt": 1791255787.23422
+}

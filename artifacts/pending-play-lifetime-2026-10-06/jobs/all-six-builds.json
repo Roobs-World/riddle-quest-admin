@@ -1,0 +1,14 @@
+{
+  "name": "all-six-builds",
+  "command": [
+    "bash",
+    "artifacts/pending-play-lifetime-2026-10-06/builds.sh"
+  ],
+  "logs": [
+    "builds.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791251806.3394656,
+  "exitCode": 0,
+  "finishedAt": 1791251832.4757116
+}

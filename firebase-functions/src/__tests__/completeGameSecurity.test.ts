@@ -5,7 +5,7 @@ const mockFinalizeAuthoritativeSession = jest.fn();
 
 jest.mock("../gameplay/firestoreService", () => ({
   getUser: (...args: unknown[]) => mockGetUser(...args),
-  ensureUserDocumentComplete: jest.fn(),
+  prepareUserDocumentCompletion: jest.requireActual<typeof import("../gameplay/firestoreService")>("../gameplay/firestoreService").prepareUserDocumentCompletion,
   updateUserCoins: jest.fn(),
   updateUserStats: jest.fn(),
 }));

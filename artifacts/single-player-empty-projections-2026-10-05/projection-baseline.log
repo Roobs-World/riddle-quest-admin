@@ -1,0 +1,131 @@
+  console.info
+    {"mode":"classic","win":false,"isAnonymous":false,"elapsedMs":200,"profileReads":1,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","win":false,"isAnonymous":true,"elapsedMs":200,"profileReads":1,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","win":true,"isAnonymous":false,"elapsedMs":600,"profileReads":1,"leaderboardTasks":1,"supplyTasks":1}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"classic","win":true,"isAnonymous":true,"elapsedMs":600,"profileReads":1,"leaderboardTasks":0,"supplyTasks":1}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":false,"isAnonymous":false,"elapsedMs":200,"profileReads":1,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":false,"isAnonymous":true,"elapsedMs":200,"profileReads":1,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":true,"isAnonymous":false,"elapsedMs":450,"profileReads":1,"leaderboardTasks":1,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"challenge","win":true,"isAnonymous":true,"elapsedMs":200,"profileReads":1,"leaderboardTasks":0,"supplyTasks":0}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/completeGameTransaction.test.ts
+  ● atomic authoritative completion › reads a profile only for required classic projections (win false, anonymous false)
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+      241 |       elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
+      242 |       leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
+    > 243 |     expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 1 : 0);
+          |                         ^
+      244 |     expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
+      245 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
+      246 |     expect(Date.now() - start).toBe(leaderboard || supply ? 200 + (supply ? 400 : 250) : 0);
+
+      at src/__tests__/completeGameTransaction.test.ts:243:25
+
+  ● atomic authoritative completion › reads a profile only for required classic projections (win false, anonymous true)
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+      241 |       elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
+      242 |       leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
+    > 243 |     expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 1 : 0);
+          |                         ^
+      244 |     expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
+      245 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
+      246 |     expect(Date.now() - start).toBe(leaderboard || supply ? 200 + (supply ? 400 : 250) : 0);
+
+      at src/__tests__/completeGameTransaction.test.ts:243:25
+
+  ● atomic authoritative completion › reads a profile only for required challenge projections (win false, anonymous false)
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+      241 |       elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
+      242 |       leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
+    > 243 |     expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 1 : 0);
+          |                         ^
+      244 |     expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
+      245 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
+      246 |     expect(Date.now() - start).toBe(leaderboard || supply ? 200 + (supply ? 400 : 250) : 0);
+
+      at src/__tests__/completeGameTransaction.test.ts:243:25
+
+  ● atomic authoritative completion › reads a profile only for required challenge projections (win false, anonymous true)
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+      241 |       elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
+      242 |       leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
+    > 243 |     expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 1 : 0);
+          |                         ^
+      244 |     expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
+      245 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
+      246 |     expect(Date.now() - start).toBe(leaderboard || supply ? 200 + (supply ? 400 : 250) : 0);
+
+      at src/__tests__/completeGameTransaction.test.ts:243:25
+
+  ● atomic authoritative completion › reads a profile only for required challenge projections (win true, anonymous true)
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+      241 |       elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
+      242 |       leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
+    > 243 |     expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 1 : 0);
+          |                         ^
+      244 |     expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
+      245 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
+      246 |     expect(Date.now() - start).toBe(leaderboard || supply ? 200 + (supply ? 400 : 250) : 0);
+
+      at src/__tests__/completeGameTransaction.test.ts:243:25
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 20 skipped, 3 passed, 28 total
+Snapshots:   0 total
+Time:        0.51 s, estimated 1 s
+Ran all test suites matching src/__tests__/completeGameTransaction.test.ts with tests matching "reads a profile only for required".

@@ -1,0 +1,1 @@
+Traceback: ledger update attempted to paste JSON null directly into Python; NameError: name null is not defined. No ledger was written by that failed command. Corrected to json.loads before recording terminal handles.

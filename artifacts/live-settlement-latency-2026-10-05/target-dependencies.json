@@ -1,0 +1,38 @@
+[
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/5ba6c59ff2f3ec9fa9f161c73cd1dd1a2b2b05b3776248b72c8452e9cef158be/facebook.json",
+    "preserved": "artifacts/live-settlement-latency-2026-10-05/target-metadata/facebook/facebook.json",
+    "sha256": "4f8eb6a9e1982014adbaef61f1a2b5c087ee3dc7c2572ea0b8cb07fe2f1ce748"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/2a00c3dfe2253cd6685bd6d74a052f8966d482f33a4f5b611d136e2bbe75caf9/yahoo.json",
+    "preserved": "artifacts/live-settlement-latency-2026-10-05/target-metadata/yahoo/yahoo.json",
+    "sha256": "ac2d7ff95f558b64f89cfcb735788123311fc156b3282661a4d6725c19fca447"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/3121e38d5b956bfdde7c617fa5be416a174f5d57510fac8744edeca7ecc881c1/jest.json",
+    "preserved": "artifacts/live-settlement-latency-2026-10-05/target-metadata/jest/jest.json",
+    "sha256": "5490bf86e89363f605b29a24bc006182ac0217a7d87c5a36c513aa74c7e79a4e"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/9f04218e254d479b073e17222979a5d8156749953b31e71fbeff3b3b3fcedc07/netflix.json",
+    "preserved": "artifacts/live-settlement-latency-2026-10-05/target-metadata/netflix/netflix.json",
+    "sha256": "95bbddb56f6056182ce4b73b42adceceab6287d0810a9bcb8c9e6a4dec96b530"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/a9db47173b9d3817efd415d966199e0d122391a7af2204628c4cbc79e7babb44/youtube.json",
+    "preserved": "artifacts/live-settlement-latency-2026-10-05/target-metadata/youtube/youtube.json",
+    "sha256": "022e5fa20aaa68fc129bbf921089692e698095e48bd53d82ea2aab844cdfbe77"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/fe2e7371a7d05412f584aa04725e9a67de3a4355a58e3f550759eeeeb7f31db2/reddit.json",
+    "preserved": "artifacts/live-settlement-latency-2026-10-05/target-metadata/reddit/reddit.json",
+    "sha256": "cdfff61b2834cc21ea2ed7c93119fb3fca97f74f8400d51e523177975b50f831"
+  }
+]

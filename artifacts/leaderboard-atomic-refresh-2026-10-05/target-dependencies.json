@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/21eec3bb3a146f61ce47214a3d8c386b3672a503b215ea6e047af14df62801ec/yahoo.json",
+    "preserved": "artifacts/leaderboard-atomic-refresh-2026-10-05/target-metadata/yahoo/yahoo.json",
+    "sha256": "58a9fdd77a962085aeb9e869af79c3d2724ae30f2fee0ed3e07b0028402773bd"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/48ea7325915fb76b21db3ad286e3339cbf40a4b4201945f7028a4f9d000e0317/reddit.json",
+    "preserved": "artifacts/leaderboard-atomic-refresh-2026-10-05/target-metadata/reddit/reddit.json",
+    "sha256": "7626a1009bf5b88ace55f73b1d59e5fd0922e1ccd9c87189b94401b36e78dcd9"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/4ad149156c3f9a59160cb91a3e363147d270ef176814c5653508c09aa83db293/youtube.json",
+    "preserved": "artifacts/leaderboard-atomic-refresh-2026-10-05/target-metadata/youtube/youtube.json",
+    "sha256": "c0b945c34ee49a82aef74a57a620c2931c6aab1de498a89767a0fe18e2bbf946"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/618b6b96de89a331504660f9f4a6323fa6d7014532b6ca55af9b3013c5bf7673/netflix.json",
+    "preserved": "artifacts/leaderboard-atomic-refresh-2026-10-05/target-metadata/netflix/netflix.json",
+    "sha256": "36078fd674a424143a71bb4b338d83dc210503b87299316274abdc40cc2b5f88"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/ea6c08057e1a72101cba44c99c6edaa6790de50128e24accefc053ac52624c75/jest.json",
+    "preserved": "artifacts/leaderboard-atomic-refresh-2026-10-05/target-metadata/jest/jest.json",
+    "sha256": "af3814cfff58af0f0534074646248fb71c2713e89cbc6e2c8bf2e62c24d66d9b"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/f71f6f97b08c455c6ad1b2c32c270c11b168ee028bc360b312a3bc8215b6a0ae/facebook.json",
+    "preserved": "artifacts/leaderboard-atomic-refresh-2026-10-05/target-metadata/facebook/facebook.json",
+    "sha256": "bd5957bd1c81e2396188376e735088b53b0c8dfd83e9fa94896ffa6b0f24e9e9"
+  }
+]

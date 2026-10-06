@@ -1,0 +1,32 @@
+[
+  {
+    "name": "final-emulator",
+    "handle": 41085,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-builds",
+    "handle": 3217,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-tsdoc",
+    "handle": 76211,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "targeted-lint",
+    "handle": 10569,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-built-browser",
+    "handle": 73234,
+    "status": "terminal",
+    "exitCode": 0
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/33b316c468516454290ba2e2cdf4deeda2883acf2c29156dd3ef6b3dd13e7618/netflix.json",
+    "preserved": "artifacts/live-context-choice-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "505e691400b3aae41bc8f566d78ab8a1a5717142d0558945a0cca669e0b355b3",
+    "outputDirectory": "/tmp/live-context-builds-wjdhpjm7/netflix"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/38e2d1dfd9e591376c2e08aa5f89305ca3f1193edcdf3b5338dbb75477776c2e/reddit.json",
+    "preserved": "artifacts/live-context-choice-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "8b15b1c066a467c1524f3acaaebaf7d6f19798ec305158c1a47a143bacb8b8ad",
+    "outputDirectory": "/tmp/live-context-builds-wjdhpjm7/reddit"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/751824c4ae9bd2675e356abfa32ca0f513c1872934a372309677f57d230eb502/facebook.json",
+    "preserved": "artifacts/live-context-choice-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "77b4d08ec34dabab9eaa83ad23c621a625811a11591652d486dcf502466ccb85",
+    "outputDirectory": "/tmp/live-context-builds-wjdhpjm7/facebook"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/b26724a9a6209f12dd7c194703d029b2ce39e68469edfccf54f21050e4a7cf90/youtube.json",
+    "preserved": "artifacts/live-context-choice-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "40ceec381c468c16c021c38a10046a07dc0270e90be141e6fff6b809bc1e09a1",
+    "outputDirectory": "/tmp/live-context-builds-wjdhpjm7/youtube"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/cdf2ce9959baa91ed94577c379e3a9553e919eb7136f160dd1b3c72187ab1e4a/jest.json",
+    "preserved": "artifacts/live-context-choice-2026-10-06/target-dependencies/jest.json",
+    "sha256": "7c9068552db6ccea86cdede5c10890b1625793a52b84515a67a638f91673025b",
+    "outputDirectory": "/tmp/live-context-builds-wjdhpjm7/jest"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/d00798a595c47c0db59ce3207564251ce9ead8d917045ecda0d08762e4cf3e46/yahoo.json",
+    "preserved": "artifacts/live-context-choice-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "3085de0b2e9243139c5d7bbfbe3335df3b797096933baedd5eed71200a2c5f05",
+    "outputDirectory": "/tmp/live-context-builds-wjdhpjm7/yahoo"
+  }
+]

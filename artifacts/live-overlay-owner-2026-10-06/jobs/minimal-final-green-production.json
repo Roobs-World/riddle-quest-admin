@@ -1,0 +1,17 @@
+{
+  "name": "minimal-final-green-production",
+  "command": [
+    "env",
+    "OVERLAY_OWNER_MODE=production",
+    "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/minimal-final-green-production",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-green-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791258972.347328,
+  "exitCode": 0,
+  "finishedAt": 1791258973.607211
+}

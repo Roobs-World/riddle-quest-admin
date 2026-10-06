@@ -1,0 +1,5 @@
+{
+  "schema": "packages/core/src/race/raceSchemas.ts",
+  "unit-test": "packages/core/src/race/__tests__/raceUnicodeAnswers.test.ts",
+  "emulator-test": "firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts"
+}

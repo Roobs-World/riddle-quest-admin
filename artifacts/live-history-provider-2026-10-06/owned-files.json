@@ -1,0 +1,23 @@
+[
+  {
+    "path": "packages/portal/src/play/race/components/LiveRaceHistory.tsx",
+    "before": "artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "024a2d1770f1a492795bba35e9c8c362ddeccaa705245000e164059b8d90e8f5",
+    "after": "artifacts/live-history-provider-2026-10-06/owned-00-after.txt",
+    "afterSha256": "3e0e9d59f0355b08c57e4b90ef24f3a3cdbd185acf386631f84901520d7b1098"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-history-provider-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "20905a58fd02d31bcc3308e3a58c3f07935e8902bbb197f9b460fd921d5c7869",
+    "after": "artifacts/live-history-provider-2026-10-06/owned-01-after.txt",
+    "afterSha256": "d77b06ab843ed5cfc6616647d2ed38c920198137b7d453e5348778b2ad98a87c"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-history-provider-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/live-history-provider-2026-10-06/owned-02-after.txt",
+    "afterSha256": "054d055ac08cd1d5dca102af2e6a0c037e440bbd55ad954262233dfb73fa2576"
+  }
+]

@@ -1,0 +1,357 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ cross-env NODE_ENV=test jest --config jest.config.js --runInBand src/race/__tests__/raceUnicodeCells.test.ts
+FAIL src/race/__tests__/raceUnicodeCells.test.ts
+  ● preserves a valid long hint result grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long hint result grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long feedback grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long feedback grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long history grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long history grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long current hint grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long current hint grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long preloaded hint grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● preserves a valid long preloaded hint grapheme
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      16 |   /** The same NFC output is produced by the authoritative engine and native input. */
+      17 |   const letter = splitGraphemes(original)[0];
+    > 18 |   expect(letter.length).toBeGreaterThan(8);expect(parse(letter).success).toBe(true);
+         |                                                                          ^
+      19 | });
+      20 | it.each(["recorded", "live"])("accepts an expanded canonical %s guess without rewriting request bytes", kind => {
+      21 |   /** Raw authored text remains within the answer contract while its native NFC input exceeds 128 units. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:18:74
+
+  ● accepts an expanded canonical recorded guess without rewriting request bytes
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 128,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=128 characters"
+      },
+      {
+        "code": "custom",
+        "path": [
+          "guess"
+        ],
+        "message": "Invalid input"
+      }
+    ]
+
+      23 |   expect(original).toHaveLength(128);expect(guess.length).toBeGreaterThan(128);
+      24 |   /** Both transport paths are constrained by the same normalized budget. */
+    > 25 |   const result = kind === "recorded" ? SubmitRaceGuessRequestSchema.parse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess: ` ${guess} `}) : UpdateLiveRaceSchema.parse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess: ` ${guess} `});
+         |                                                                     ^
+      26 |   expect(result.guess).toBe(guess);
+      27 | });
+      28 | it.each(["recorded", "live"])("rejects %s guesses that expand past the normalized budget", kind => {
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:25:69
+
+  ● accepts an expanded canonical live guess without rewriting request bytes
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 128,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=128 characters"
+      }
+    ]
+
+      23 |   expect(original).toHaveLength(128);expect(guess.length).toBeGreaterThan(128);
+      24 |   /** Both transport paths are constrained by the same normalized budget. */
+    > 25 |   const result = kind === "recorded" ? SubmitRaceGuessRequestSchema.parse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess: ` ${guess} `}) : UpdateLiveRaceSchema.parse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess: ` ${guess} `});
+         |                                                                                                                                                                                                     ^
+      26 |   expect(result.guess).toBe(guess);
+      27 | });
+      28 | it.each(["recorded", "live"])("rejects %s guesses that expand past the normalized budget", kind => {
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:25:197
+
+  ● rejects multiple slots in a hint result cell
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      32 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(false);
+      33 | });
+    > 34 | it.each(cellCases)("rejects multiple slots in a $kind cell", ({parse}) => {expect(parse("ab").success).toBe(false);});
+         |                                                                                                        ^
+      35 |
+      36 | it.each(["recorded", "live"])("accepts exactly 384 normalized units in a %s guess", kind => {
+      37 |   /** A bounded single-grapheme attempt exercises the complete normalized transport capacity. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:34:104
+
+  ● rejects multiple slots in a feedback cell
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      32 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(false);
+      33 | });
+    > 34 | it.each(cellCases)("rejects multiple slots in a $kind cell", ({parse}) => {expect(parse("ab").success).toBe(false);});
+         |                                                                                                        ^
+      35 |
+      36 | it.each(["recorded", "live"])("accepts exactly 384 normalized units in a %s guess", kind => {
+      37 |   /** A bounded single-grapheme attempt exercises the complete normalized transport capacity. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:34:104
+
+  ● rejects multiple slots in a history cell
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      32 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(false);
+      33 | });
+    > 34 | it.each(cellCases)("rejects multiple slots in a $kind cell", ({parse}) => {expect(parse("ab").success).toBe(false);});
+         |                                                                                                        ^
+      35 |
+      36 | it.each(["recorded", "live"])("accepts exactly 384 normalized units in a %s guess", kind => {
+      37 |   /** A bounded single-grapheme attempt exercises the complete normalized transport capacity. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:34:104
+
+  ● rejects multiple slots in a current hint cell
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      32 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(false);
+      33 | });
+    > 34 | it.each(cellCases)("rejects multiple slots in a $kind cell", ({parse}) => {expect(parse("ab").success).toBe(false);});
+         |                                                                                                        ^
+      35 |
+      36 | it.each(["recorded", "live"])("accepts exactly 384 normalized units in a %s guess", kind => {
+      37 |   /** A bounded single-grapheme attempt exercises the complete normalized transport capacity. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:34:104
+
+  ● rejects multiple slots in a preloaded hint cell
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      32 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(false);
+      33 | });
+    > 34 | it.each(cellCases)("rejects multiple slots in a $kind cell", ({parse}) => {expect(parse("ab").success).toBe(false);});
+         |                                                                                                        ^
+      35 |
+      36 | it.each(["recorded", "live"])("accepts exactly 384 normalized units in a %s guess", kind => {
+      37 |   /** A bounded single-grapheme attempt exercises the complete normalized transport capacity. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:34:104
+
+  ● accepts exactly 384 normalized units in a recorded guess
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      38 |   const guess = "b"+"\u0301".repeat(383);
+      39 |   expect(guess.normalize("NFC")).toHaveLength(384);
+    > 40 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(true);
+         |                                                                                                                                                                                                                                                                                                                          ^
+      41 | });
+      42 | it.each(["recorded", "live"])("rejects a raw oversized %s guess before normalization", kind => {
+      43 |   /** The earlier validation-work regression must remain true at the derived transport budget. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:40:314
+
+  ● accepts exactly 384 normalized units in a live guess
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      38 |   const guess = "b"+"\u0301".repeat(383);
+      39 |   expect(guess.normalize("NFC")).toHaveLength(384);
+    > 40 |   expect(kind === "recorded" ? SubmitRaceGuessRequestSchema.safeParse({runId: "cells-run", riddleId: "cells-question", requestId: "cells-command", guess}).success : UpdateLiveRaceSchema.safeParse({ticketId: "a".repeat(64), action: "guess", requestId: "cells-command", riddleId: "cells-question", guess}).success).toBe(true);
+         |                                                                                                                                                                                                                                                                                                                          ^
+      41 | });
+      42 | it.each(["recorded", "live"])("rejects a raw oversized %s guess before normalization", kind => {
+      43 |   /** The earlier validation-work regression must remain true at the derived transport budget. */
+
+      at src/race/__tests__/raceUnicodeCells.test.ts:40:314
+
+Test Suites: 1 failed, 1 total
+Tests:       19 failed, 4 passed, 23 total
+Snapshots:   0 total
+Time:        0.203 s, estimated 1 s
+Ran all test suites matching src/race/__tests__/raceUnicodeCells.test.ts.
+/home/craig-beswetherick/Documents/riddle-quest/packages/core:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/core@0.1.0 test: `cross-env NODE_ENV=test jest --config jest.config.js --runInBand src/race/__tests__/raceUnicodeCells.test.ts`
+Exit status 1

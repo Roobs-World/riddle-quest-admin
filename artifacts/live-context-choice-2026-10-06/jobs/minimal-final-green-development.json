@@ -1,0 +1,17 @@
+{
+  "name": "minimal-final-green-development",
+  "command": [
+    "env",
+    "CONTEXT_CHOICE_MODE=development",
+    "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-choice-2026-10-06/minimal-final-green-development",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-choice-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-green-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791256973.1682293,
+  "exitCode": 0,
+  "finishedAt": 1791256974.4805052
+}

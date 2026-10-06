@@ -1,0 +1,2 @@
+TSDoc audit failed: 1 production declarations are undocumented.
+- packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts:171 scope

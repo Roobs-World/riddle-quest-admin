@@ -4,7 +4,7 @@ import {ClassicRiddleBufferResponseSchema} from "@qwordly/core/validation/reques
 import {getUser} from "../gameplay/firestoreService";
 import {getPlayableClassicRiddle} from "../gameplay/classicRiddleFallback";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {ensureAuthoritativeSession, getIssuedAuthoritativeSession} from "../gameplay/singlePlayerSession";
+import {ensureAuthoritativeSessionWithState, getIssuedAuthoritativeSession} from "../gameplay/singlePlayerSession";
 import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
 import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
@@ -80,13 +80,13 @@ export const getClassicRiddleBuffer = onCallWithSentry(
     }
     // Each canonical content key owns its binding/session transaction. Preparing
     // at most three independent sessions together avoids serial database trips.
-    // Promise.all preserves catalog order even when later sessions finish first.
-    /** Prepared successor sessions retain canonical catalog order. */
-    const futureRiddles = await Promise.all(upcoming.map(async ({classicIndex, playable}) => {
+    // All outcomes settle before a required failure can release the callable account lease.
+    /** Prepared successor outcomes retain input order while every transaction settles before response or rejection. */
+    const futureRiddles = await Promise.allSettled(upcoming.map(async ({classicIndex, playable}) => {
       /** Extracts the fixture or authority fields required by this transition. */
       const {riddle, contentLocale} = playable;
-      /** Issued session token authorizes recovery and later server mutations. */
-      const token = await ensureAuthoritativeSession(
+      /** The committed issuance attempt owns both the token and its response projection inputs. */
+      const {sessionToken: token, state} = await ensureAuthoritativeSessionWithState(
         userId,
         "classic",
         riddle.riddleId,
@@ -96,13 +96,14 @@ export const getClassicRiddleBuffer = onCallWithSentry(
         riddle.answer,
         {classicIndex, difficultyBand: riddle.difficultyBand},
       );
-      /** Authoritative or observed state used to verify the current transition. */
-      const state = await getIssuedAuthoritativeSession(userId, token, "classic", riddle.riddleId);
       /** Public question carries the issued session and negotiated recovery fields. */
       const question = buildSinglePlayerChallengeResponse(riddle, undefined, token, state, true, request.data?.includeHintRecovery === true, request.data?.includeGuessRecovery === true).questions[0];
       return {classicIndex, expiresAtMs: state.expiresAt.toMillis(), question};
     }));
-    riddles.push(...futureRiddles);
+    for (const result of futureRiddles) {
+      if (result.status === "rejected") throw result.reason;
+      riddles.push(result.value);
+    }
     return ClassicRiddleBufferResponseSchema.parse({confirmedClassicIndex, riddles});
   },
 );

@@ -1,0 +1,21 @@
+{
+  "name": "navigation-development",
+  "command": [
+    "env",
+    "RACE_NAV_REACT_MODE=development",
+    "RACE_NAV_REPORT_DIR=../../artifacts/live-tournament-owner-2026-10-06/navigation-development",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-race-navigation-focus-browser.mjs"
+  ],
+  "logs": [
+    "navigation-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791255005.4026973,
+  "exitCode": 0,
+  "finishedAt": 1791255056.8714662
+}

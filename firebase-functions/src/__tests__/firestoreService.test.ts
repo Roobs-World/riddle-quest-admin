@@ -711,19 +711,57 @@ describe("FirestoreService", () => {
     /** Provides test user id behavior. */
     const testUserId = "existingUser123";
 
+    test("preserves concurrent progression, purchase and rewards while repairing a legacy profile", async () => {
+      /** Legacy state lacks defaults that repair would otherwise fill from an older snapshot. */
+      let stored: Record<string, any> = {stats: {gamesPlayed: 9, multiplayerWins: 1}, progress: {classicIndex: 5}};
+      /** Authoritative gameplay and commerce may commit between repair's read and write. */
+      const advanced = {stats: {gamesPlayed: 10, multiplayerWins: 2}, progress: {classicIndex: 6},
+        coins: 550, hasPurchasedApp: true, unlockedAchievements: [{achievementId: "race_debut", unlockedAt: 123}]};
+      /** Models one version conflict followed by a fresh Firestore transaction attempt. */
+      let raced = false;
+      /** Reads are immutable snapshots rather than live references to the in-memory account. */
+      const read = () => {
+        /** Snapshot data remains isolated from later account changes. */
+        const data = structuredClone(stored);
+        return {exists: true, data: () => data};
+      };
+      mockDoc.get.mockImplementation(async () => read());
+      mockDoc.update.mockImplementation(async (patch: Record<string, any>) => {
+        if (!raced) {stored = structuredClone(advanced); raced = true;}
+        stored = {...stored, ...patch};
+      });
+      mockTransaction.get.mockImplementation(async () => read());
+      /** Tentative repair writes are applied only after a successful attempt. */
+      let pending: Record<string, any> = {};
+      mockTransaction.update.mockImplementation((_ref: unknown, patch: Record<string, any>) => {pending = {...pending, ...patch};});
+      mockFirestore.runTransaction.mockImplementation(async (operation: any) => {
+        await operation(mockTransaction);
+        stored = structuredClone(advanced); raced = true; pending = {};
+        /** The retry's committed return value mirrors Firestore's transaction contract. */
+        const result = await operation(mockTransaction);
+        stored = {...stored, ...pending};
+        return result;
+      });
+      await ensureUserDocumentComplete(testUserId);
+      expect(stored).toMatchObject(advanced);
+      expect(stored.stats.level).toBe(1);
+      expect(stored.progress.dailyChallengeIndex).toBe(0);
+      expect(mockFirestore.runTransaction).toHaveBeenCalledTimes(1);
+    });
+
     test("should return early when user document does not exist", async () => {
       /** Provides mock user doc behavior. */
       const mockUserDoc = {
         exists: false,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
       await ensureUserDocumentComplete(testUserId);
 
       expect(mockLogger.warn).toHaveBeenCalledWith(
         `User document not found for ${testUserId}, cannot ensure completeness without basic user data`,
       );
-      expect(mockDoc.update).not.toHaveBeenCalled();
+      expect(mockTransaction.update).not.toHaveBeenCalled();
     });
 
     test("should not update when user has all required fields", async () => {
@@ -765,11 +803,11 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => completeUser,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).not.toHaveBeenCalled();
+      expect(mockTransaction.update).not.toHaveBeenCalled();
     });
 
     test("should add default stats when stats object is missing", async () => {
@@ -789,12 +827,13 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => userWithoutStats,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
-      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).toHaveBeenCalledWith(
+      expect(mockTransaction.update).toHaveBeenCalledWith(
+        mockDoc,
         expect.objectContaining({
           stats: expect.objectContaining({
             dailyPuzzlesCompleted: 0,
@@ -834,12 +873,13 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => userWithoutProgress,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
-      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).toHaveBeenCalledWith(
+      expect(mockTransaction.update).toHaveBeenCalledWith(
+        mockDoc,
         expect.objectContaining({
           progress: {
             classicIndex: 1,
@@ -871,12 +911,13 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => userWithPartialStats,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
-      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).toHaveBeenCalledWith(
+      expect(mockTransaction.update).toHaveBeenCalledWith(
+        mockDoc,
         expect.objectContaining({
           stats: expect.objectContaining({
             gamesPlayed: 10,
@@ -921,12 +962,13 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => userWithPartialProgress,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
-      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).toHaveBeenCalledWith(
+      expect(mockTransaction.update).toHaveBeenCalledWith(
+        mockDoc,
         expect.objectContaining({
           progress: expect.objectContaining({
             classicIndex: 5,
@@ -968,12 +1010,13 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => userWithoutCoins,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
-      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).toHaveBeenCalledWith(
+      expect(mockTransaction.update).toHaveBeenCalledWith(
+        mockDoc,
         expect.objectContaining({
           coins: 300,
         }),
@@ -1011,12 +1054,13 @@ describe("FirestoreService", () => {
         exists: true,
         data: () => userWithoutPurchaseFlag,
       };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
-      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       await ensureUserDocumentComplete(testUserId);
 
-      expect(mockDoc.update).toHaveBeenCalledWith(
+      expect(mockTransaction.update).toHaveBeenCalledWith(
+        mockDoc,
         expect.objectContaining({
           hasPurchasedApp: false,
         }),
@@ -1026,7 +1070,7 @@ describe("FirestoreService", () => {
     test("should throw and log error when Firestore fails", async () => {
       /** Provides test error behavior. */
       const testError = new Error("Firestore read failed");
-      (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
+      (mockTransaction.get as jest.MockedFunction<any>).mockRejectedValue(testError);
 
       await expect(ensureUserDocumentComplete(testUserId)).rejects.toThrow("Firestore read failed");
       expect(mockLogger.error).toHaveBeenCalledWith(

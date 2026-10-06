@@ -1,0 +1,44 @@
+[
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/0878c1f98be788472c77963f45f9bb971dc7721b6b7dff33750ef372c7db912f/netflix.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "2399db3b90b61b79aee360eacd0330b8384c95db33b977166a21e59c70e09afe",
+    "outputDirectory": "/tmp/live-context-builds-5crubtj2/netflix"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/1b408ff59eb8774646fd3b379a908c597ba909ddaaea8e59d484123a8ab6d0fe/facebook.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "0a5ff0870ecb00c78ecde82c542da0afaca9fd03da0b8581edc573bde14aac56",
+    "outputDirectory": "/tmp/live-context-builds-5crubtj2/facebook"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/54155bffa56961b4d94fbfc72357f977206e64fed39a270e04d03013e7b32d62/youtube.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "b36d2707f4a9deb0ac31aa7866d0c90b7f6dc68a1af538b7810f2cd6410248a2",
+    "outputDirectory": "/tmp/live-context-builds-5crubtj2/youtube"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/6c3d7652df45c7fffc9300af25b5b6fba1214c78d0dc0f094d5e6ff52f81940c/reddit.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "b13cfecab5c9584a4c49a25a2c6ceaa0acc969c7646b4ad44968ac10ce1669fb",
+    "outputDirectory": "/tmp/live-context-builds-5crubtj2/reddit"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/87c3ba9922fb42c2678ce1397587cf0795a30360c89bd5592d310c6dec50b340/yahoo.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "32af5ba2b55cd8738f6ae2535e8ac3efd57bab47b217d2be63db8368eb9df162",
+    "outputDirectory": "/tmp/live-context-builds-5crubtj2/yahoo"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/fb8f3f37f235db8754fbc4f19c9e0e98b2d6e18f6bb572213b13b703507ef899/jest.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/jest.json",
+    "sha256": "b1018bf807fd96aeb6e9f601685a786e3595398534ec3de1c6c8a26ae705b266",
+    "outputDirectory": "/tmp/live-context-builds-5crubtj2/jest"
+  }
+]

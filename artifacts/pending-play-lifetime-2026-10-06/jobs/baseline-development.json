@@ -1,0 +1,22 @@
+{
+  "name": "baseline-development",
+  "command": [
+    "env",
+    "PENDING_LIFE_QUICK=1",
+    "PENDING_LIFE_BASELINE_FILE=../../artifacts/pending-play-lifetime-2026-10-06/owned-00-before.txt",
+    "PENDING_LIFE_REPORT_DIR=../../artifacts/pending-play-lifetime-2026-10-06/baseline-development",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-pending-play-lifetime-browser.mjs"
+  ],
+  "logs": [
+    "baseline-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791251803.8973908,
+  "exitCode": 1,
+  "finishedAt": 1791251820.2008653
+}

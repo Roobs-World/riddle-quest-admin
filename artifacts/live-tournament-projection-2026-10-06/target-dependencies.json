@@ -1,0 +1,44 @@
+[
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/238e6696e5b24a21db22142fec0357816a22115eb626aadab7cc1156befa5cc7/reddit.json",
+    "preserved": "artifacts/live-tournament-projection-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "b31a63f18074c52b84f7748b71469d4bbe6053e05460cfa6ccaa75f8350243cb",
+    "outputDirectory": "/tmp/live-tournament-projection-builds-6_fl4rcu/reddit"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/28acbd17ffb22a5ad4d834dbf9178bb4c68e54cfc7aebd0d81b113c5f2028102/yahoo.json",
+    "preserved": "artifacts/live-tournament-projection-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "7d25e11442149c60e5c459f616487a62d1c32b6c0d2ed080ea8de765c36466bd",
+    "outputDirectory": "/tmp/live-tournament-projection-builds-6_fl4rcu/yahoo"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/99cea0e86e11b6a889bdfe5db04aacf2fbec00ceaf7757a074f735e3d086256f/jest.json",
+    "preserved": "artifacts/live-tournament-projection-2026-10-06/target-dependencies/jest.json",
+    "sha256": "156c06847912fefa295a3e08dc9989bf8a85ae276ee199cfa0bbc5cbad54f7f1",
+    "outputDirectory": "/tmp/live-tournament-projection-builds-6_fl4rcu/jest"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/e3e9c29385d33c4a9aefab056e8a821ec85b9afdf1657d869feeea357d5a594b/youtube.json",
+    "preserved": "artifacts/live-tournament-projection-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "2ce2b97cb31ebd753b619f8bc2cf45f654e6ca258224d34450e31cdc85b063ab",
+    "outputDirectory": "/tmp/live-tournament-projection-builds-6_fl4rcu/youtube"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/ed9b5d2b3ca1c8d29a141bb6a9323854961447fac47b0be23c353b155e194489/netflix.json",
+    "preserved": "artifacts/live-tournament-projection-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "a82b4c86ce1f06f8ca8243b635dfab33a5fd7247c530513b73351988e918f66d",
+    "outputDirectory": "/tmp/live-tournament-projection-builds-6_fl4rcu/netflix"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/fe96a5ebc326c546fcb65db9beba02d6cca2a49fbfa4526a68f21ec3e8f153c2/facebook.json",
+    "preserved": "artifacts/live-tournament-projection-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "7d6074890bdba0ef25f9d07cc1aa9fc1a802286989b7769bc05f675da3b3ca3e",
+    "outputDirectory": "/tmp/live-tournament-projection-builds-6_fl4rcu/facebook"
+  }
+]

@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RaceRecoverySchema = exports.RaceRecoveryIntentSchema = exports.RACE_RECOVERY_TTL_MS = exports.RACE_RECOVERY_KEY = void 0;
+const zod_1 = require("zod");
+const raceSchemas_1 = require("./raceSchemas");
+const raceMatchFailure_1 = require("./raceMatchFailure");
+/** One minimal recovery hint is retained; it contains no answers, scores or player input. */
+exports.RACE_RECOVERY_KEY = "riddleQuest:raceRecovery";
+/** Hints have bounded local retention; authoritative expiry is always checked by the server. */
+exports.RACE_RECOVERY_TTL_MS = 24 * 60 * 60 * 1000;
+/** Identifiers remain opaque rather than authorization credentials. */
+const Id = zod_1.z.string().min(1).max(160);
+/** Each journey restores through its existing authoritative operation. */
+exports.RaceRecoveryIntentSchema = zod_1.z.discriminatedUnion("kind", [
+    zod_1.z.object({ kind: zod_1.z.literal("search"), request: raceSchemas_1.RaceMatchRequestSchema.refine(request => request.requestId !== undefined), failure: raceMatchFailure_1.RaceMatchFailureSchema.optional(), retryAtMs: zod_1.z.number().int().nonnegative().optional() }).strict(),
+    zod_1.z.object({ kind: zod_1.z.literal("challenge"), challengeId: Id, offerId: zod_1.z.string().regex(/^[a-f0-9]{64}$/).optional() }).strict(),
+    zod_1.z.object({ kind: zod_1.z.literal("start"), request: raceSchemas_1.StartRaceRunRequestSchema }).strict(),
+]);
+/** Versioned owner/language binding and compare-and-clear identity protect replacement hints. */
+exports.RaceRecoverySchema = zod_1.z.object({ version: zod_1.z.literal(1), id: Id, ownerId: Id, locale: raceSchemas_1.RaceLocaleSchema,
+    savedAtMs: zod_1.z.number().int().nonnegative(), expiresAtMs: zod_1.z.number().int().nonnegative(), intent: exports.RaceRecoveryIntentSchema }).strict();

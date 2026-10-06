@@ -1,0 +1,59 @@
+{
+  "goal": "active",
+  "change": "Current/preloaded evaluation answers and recorded-race guess requests use the game's seven-grapheme limit within the existing live transport's 128-unit string bound.",
+  "reproduction": {
+    "locale": "fr",
+    "answer": "élément in NFD",
+    "units": 9,
+    "graphemes": 7,
+    "poolAcceptedBefore": true,
+    "engineGuessBefore": "correct",
+    "evaluationResponseBefore": "rejected",
+    "guessContractBefore": "rejected",
+    "redCoreCases": 5,
+    "redSdkCases": 8
+  },
+  "newCoreCases": 13,
+  "newSdkCases": 10,
+  "pinnedNode22SdkCases": 10,
+  "localesExercised": [
+    "fr",
+    "ru",
+    "ja",
+    "hi"
+  ],
+  "controls": "Retained original evaluation/private answer bytes, normalized scoring, hints, answer-free responses, single accepted guess on replay, account balances, eight-slot rejection, bounded raw input and trim semantics. Existing response-acceptance SDK controls included.",
+  "coreTests": 338,
+  "coreSuites": 36,
+  "backendUnitTests": 1657,
+  "backendUnitSuites": 134,
+  "emulatorTests": 367,
+  "emulatorSuites": 25,
+  "portalFocusedTests": 59,
+  "portalFocusedSuites": 6,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": [
+    "core",
+    "backend",
+    "portal"
+  ],
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25997,
+  "tsdocFiles": 1163,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2361,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 22,
+  "resolvedDocumentationPreflights": [
+    "tsdoc-probe",
+    "tsdoc-repaired-probe"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

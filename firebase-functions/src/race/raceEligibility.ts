@@ -1,3 +1,4 @@
+import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "./raceEngine";
 import {parseRaceInvitation} from "./raceInvitationRecord";
 import {HttpsError} from "firebase-functions/v2/https";
@@ -83,6 +84,7 @@ export async function inspectRaceChallengeEligibility(
     /** Ordered canonical deck validated against retained recording identifiers and content version. */
     const riddles = validateRaceDeckSnapshot(challenge.riddles ?? original?.riddles, challenge.canonicalRiddleIds,
       challenge.snapshotVersion === 1 ? challenge.contentVersion : undefined);
+    assertRaceDeckCompatible(riddles, locale);
     return {reason: null, riddles};
   } catch (error) {
     if (error instanceof HttpsError) return {reason: "content"};

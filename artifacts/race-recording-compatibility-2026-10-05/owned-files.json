@@ -1,0 +1,8 @@
+{
+  "helper": "firebase-functions/src/race/raceDeckCompatibility.ts",
+  "setup": "firebase-functions/src/race/raceSetupService.ts",
+  "eligibility": "firebase-functions/src/race/raceEligibility.ts",
+  "service": "firebase-functions/src/race/raceService.ts",
+  "unit-test": "firebase-functions/src/__tests__/race/raceService.test.ts",
+  "emulator-test": "firebase-functions/src/__tests__/race/raceRecordingCompatibility.it.test.ts"
+}

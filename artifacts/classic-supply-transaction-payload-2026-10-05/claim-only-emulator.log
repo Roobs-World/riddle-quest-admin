@@ -1,0 +1,55 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-supply-transaction", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 43743.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/classic-supply-transaction-payload-2026-10-05/probe.config.cjs --runInBand
+  console.info
+    {"readCalls":2,"transactions":2,"reads":[{"stage":"claim","documentBytes":53,"loadedFields":["completed","locale","nextAttemptAtMs"]},{"stage":"settlement","documentBytes":100156,"loadedFields":["completed","highestClassicIndex","leaseId","locale","nextAttemptAtMs","privateBlob"]}]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/classicSupplyTransactionPayload.it.test.ts (5.366 s)
+  ● loads only claim authority and lease ownership in the two real transaction reads
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 0
+    + Received  + 5
+
+      Object {
+        "loadedFields": Array [
+    +     "completed",
+    +     "highestClassicIndex",
+          "leaseId",
+    +     "locale",
+    +     "nextAttemptAtMs",
+    +     "privateBlob",
+        ],
+        "stage": "settlement",
+      }
+
+      61 |     expect(transactions).toBe(2); expect(reads).toHaveLength(2);
+      62 |     expect(reads[0]).toMatchObject({stage: "claim", loadedFields: ["completed", "locale", "nextAttemptAtMs"]});
+    > 63 |     expect(reads[1]).toMatchObject({stage: "settlement", loadedFields: ["leaseId"]});
+         |                      ^
+      64 |     expect(reads.every(read => read.documentBytes < 128)).toBe(true);
+      65 |     expect((await db.doc(`classicSupplyJobs/${JOB_ID}`).get()).data()).toMatchObject({completed: true, nextAttemptAtMs: Number.MAX_SAFE_INTEGER,
+      66 |       privateBlob: "x".repeat(100_000), highestClassicIndex: 20});
+
+      at Object.<anonymous> (src/__tests__/classicSupplyTransactionPayload.it.test.ts:63:22)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 9 passed, 10 total
+Snapshots:   0 total
+Time:        5.465 s, estimated 6 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config ../artifacts/classic-supply-transaction-payload-2026-10-05/probe.config.cjs --runInBand" exited with code 1

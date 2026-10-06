@@ -1,0 +1,47 @@
+[
+  {
+    "sessionId": 61545,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "resolution": "Evidence harness base paths were missing mode prefix; fixed artifact-only Vite base. Hidden native editor waits use attached state, matching production accessibility focus policy. No production edits."
+  },
+  {
+    "sessionId": 75757,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "checks": 368,
+    "cases": 16,
+    "note": "Behavior passed, output preserved in preflight-unstyled; screenshot inspection found fixture lacked race CSS, corrected final fixture."
+  },
+  {
+    "sessionId": 46845,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "checks": 368,
+    "cases": 16,
+    "note": "Firefox fallback preflight passed; retained alongside unstyled fixture evidence."
+  },
+  {
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "resolution": "Absent default Playwright Firefox1543 binary; preserved log and used installed Firefox1538 executable explicitly."
+  },
+  {
+    "name": "final-browser-builds-and-chromium-server",
+    "sessionId": 35454,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "cases": 16,
+    "checks": 368,
+    "ownedServerPort": 39901
+  },
+  {
+    "name": "final-firefox-playwright",
+    "sessionId": 94263,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "cases": 16,
+    "checks": 368
+  }
+]

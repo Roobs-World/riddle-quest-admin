@@ -1,0 +1,14 @@
+{
+  "name": "built-browser",
+  "command": [
+    "bash",
+    "artifacts/live-tournament-projection-2026-10-06/built-browser.sh"
+  ],
+  "logs": [
+    "built-browser.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791261865.109113,
+  "exitCode": 0,
+  "finishedAt": 1791261972.2969177
+}

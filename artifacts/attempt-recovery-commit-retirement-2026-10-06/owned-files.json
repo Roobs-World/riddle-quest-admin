@@ -1,0 +1,30 @@
+[
+  {
+    "path": "packages/portal/src/play/game/hooks/useAttemptRecovery.ts",
+    "before": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "bc25019f44651e9e61bfe6859e4fc2ba13529176037ab569ba1b87aa82757bf6",
+    "after": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-00-after.txt",
+    "afterSha256": "463e4c87990497e7f3c88e61b583a7822762e80ed6f1e9aa9a27de77b5b04349"
+  },
+  {
+    "path": "packages/portal/src/play/GameFrameApp.tsx",
+    "before": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "d4b344f79eba8b02702a6b1d8f9887fa80e8b1d9fcdcbe62eca25aca145a68c4",
+    "after": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-01-after.txt",
+    "afterSha256": "54a7f75f21cf5cf6c282a8559fb74abaace714279132ed780f35e3be92f0f681"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-02-before.txt",
+    "beforeSha256": "13a4f4499e8e753596e2908690783c20a3d3b3fb733ff794b64d97ab0c626b5b",
+    "after": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-02-after.txt",
+    "afterSha256": "109989d7cadf36303622c7da38dcae3b6bd6ede292246f388dfcbe000c6eb271"
+  },
+  {
+    "path": "packages/portal/scripts/verify-attempt-recovery-retirement-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/attempt-recovery-commit-retirement-2026-10-06/owned-03-after.txt",
+    "afterSha256": "81c9416e7357bcde947f6c8f11278052ae6768416615bf966c39420507886a84"
+  }
+]

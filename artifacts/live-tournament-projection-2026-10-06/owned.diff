@@ -1,0 +1,294 @@
+--- a/packages/portal/src/facebook/FacebookTournamentPresentation.ts
++++ b/packages/portal/src/facebook/FacebookTournamentPresentation.ts
+@@ -71,6 +71,14 @@
+   };
+   /** Serialize native updates so an older board cannot overwrite a newer best. */
+   let projectionTail = Promise.resolve();
++  /** One still-pending native lookup retains the best validated snapshot in its exact scope. */
++  type PendingProjection = {
++    /** Fresh official best received before native score admission. */ board: ListFacebookTournamentResponse;
++    /** Admitted score posts preserve their original promise and serialization. */ posting: boolean;
++    /** Concurrent recovery callers observe the same local completion. */ operation: Promise<void>;
++  };
++  /** Entries are removed after settlement without deleting a newer queued improvement. */
++  const pending = new Map<string, PendingProjection>();
+   /** Successful presentation is deduplicated per exact native and official context. */
+   const posted = new Map<string, number>();
+   /** Only fixed diagnostics leave the optional provider boundary. */
+@@ -84,21 +92,43 @@
+     /** Validated official standings for the exact player locale and UTC window. */
+     let board: ListFacebookTournamentResponse;
+     try {board = parseFacebookTournamentResponse(value);} catch {projectionFailure(); return Promise.resolve();}
++    /** Native context changes must not inherit pending work from another context. */
++    let contextId: string | null;
++    try {
++      if (!live(board, board.locale) || !board.currentPlayer) return Promise.resolve();
++      contextId = sdk.context!.getID();
++    } catch {projectionFailure(); return Promise.resolve();}
++    /** Official locale/day and native context own one pending projection. */
++    const scope = JSON.stringify([contextId, board.locale, board.tournamentId]);
++    /** Work still waiting for native lookup can adopt an improved server best. */
++    const existing = pending.get(scope);
++    if (existing && (!existing.posting || board.currentPlayer.adjustedTimeMs >= existing.board.currentPlayer!.adjustedTimeMs)) {
++      if (!existing.posting && board.currentPlayer.adjustedTimeMs < existing.board.currentPlayer!.adjustedTimeMs)
++        existing.board = board;
++      return existing.operation;
++    }
++    /** This entry is initialized before its deferred operation can be admitted. */
++    let entry: PendingProjection;
+     /** Serialized native update preserves ordering between recovered score snapshots. */
+     const operation = projectionTail.then(async () => {
+-      if (!live(board, board.locale) || !board.currentPlayer) return;
++      if (!live(entry.board, entry.board.locale) || sdk.context!.getID() !== contextId) return;
+       /** Current Meta tournament must match the authoritative board and live context. */
+       const native = await current();
+-      if (!live(board, board.locale) || !native || !matches(native, board)) return;
++      /** More official reads may have improved the best while native lookup was pending. */
++      const selected = entry.board;
++      if (!live(selected, selected.locale) || sdk.context!.getID() !== contextId || !native || !matches(native, selected)) return;
+       /** Exact native/official scope owns its successful-post cache. */
+-      const key = JSON.stringify([native.getID(), native.getContextID(), board.tournamentId]);
++      const key = JSON.stringify([native.getID(), native.getContextID(), selected.tournamentId]);
+       /** Only the current official best supplies a native score. */
+-      const score = board.currentPlayer.adjustedTimeMs, previous = posted.get(key);
++      const score = selected.currentPlayer!.adjustedTimeMs, previous = posted.get(key);
+       if (previous !== undefined && previous <= score) return;
++      entry.posting = true;
+       await sdk.tournament!.postScoreAsync(score);
+       posted.set(key, score);
+       if (posted.size > 8) posted.delete(posted.keys().next().value!);
+-    }).catch(projectionFailure);
++    }).catch(projectionFailure).finally(() => {if (pending.get(scope) === entry) pending.delete(scope);});
++    entry = {board, posting: false, operation};
++    pending.set(scope, entry);
+     projectionTail = operation;
+     return operation;
+   };
+--- a/packages/portal/src/facebook/__tests__/FacebookTournamentPresentation.test.ts
++++ b/packages/portal/src/facebook/__tests__/FacebookTournamentPresentation.test.ts
+@@ -210,3 +210,148 @@
+   await pending;
+   expect(sdk.tournament!.postScoreAsync).not.toHaveBeenCalled();
+ });
++
++it("shares one native lookup for concurrent identical official board projections", async () => {
++  /** One account and native context own all concurrent recovery reads. */
++  const {options, sdk, board} = fixture();
++  /** Production presentation receives independent validated server snapshots. */
++  const presentation = createFacebookTournamentPresentation(options)!;
++  await Promise.all(Array.from({length: 4}, () => presentation.projectBoard(board)));
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
++});
++
++it("uses the best official snapshot received before a held native lookup returns", async () => {
++  /** One active provider operation holds the initial official score. */
++  const {options, sdk, board, native} = fixture();
++  /** Explicit lookup admission avoids assumptions about promise queue depth. */
++  let admitted!: () => void;
++  /** Original native lookup remains observed while more official boards arrive. */
++  let release!: (native: FacebookInstantTournament) => void;
++  /** Complete only after the actual SDK method has been invoked. */
++  const ready = new Promise<void>(resolve => {admitted = resolve;});
++  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = resolve; admitted();}));
++  /** Exact immutable server snapshots differ only in their authoritative best. */
++  const best = (score: number): ListFacebookTournamentResponse => ({...board,
++    currentPlayer: {...board.currentPlayer!, adjustedTimeMs: score},
++    standings: [{...board.standings[0], adjustedTimeMs: score}]});
++  /** One adapter lifetime owns native ordering and in-flight coalescing. */
++  const presentation = createFacebookTournamentPresentation(options)!;
++  /** Original caller retains its projection completion. */
++  const original = presentation.projectBoard(board);
++  await ready;
++  /** Improving and older out-of-order server snapshots arrive during the SDK wait. */
++  const pending = [presentation.projectBoard(best(8000)), presentation.projectBoard(best(7000)), presentation.projectBoard(best(8500))];
++  release(native);
++  await Promise.all([original, ...pending]);
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
++});
++
++it.each([false, true])("serializes the best queued improvement after an admitted native post (failure=%s)", async failed => {
++  /** Original native admission is confirmed before any improvement arrives. */
++  const {options, sdk, board} = fixture();
++  /** Admit the exact SDK score call. */
++  let admit!: () => void;
++  /** Release the original native post without replacing its promise. */
++  let release!: () => void;
++  /** One admitted native post preserves ordering for all later improvements. */
++  const ready = new Promise<void>(resolve => {admit = resolve;});
++  jest.mocked(sdk.tournament!.postScoreAsync).mockImplementationOnce(() => new Promise((resolve,reject) => {
++    release = () => failed ? reject(new Error("Native post failed")) : resolve(); admit();
++  }));
++  /** Exact server snapshots select authoritative lower times only. */
++  const best = (score: number): ListFacebookTournamentResponse => ({...board,
++    currentPlayer: {...board.currentPlayer!, adjustedTimeMs: score},
++    standings: [{...board.standings[0], adjustedTimeMs: score}]});
++  /** This adapter owns the original post and the single queued improvement. */
++  const presentation = createFacebookTournamentPresentation(options)!;
++  /** Original projection completion remains observable. */
++  const original = presentation.projectBoard(board);
++  await ready;
++  expect(presentation.projectBoard(board)).toBe(original);
++  /** The queued operation adopts improvements without racing the admitted score. */
++  const improvement = presentation.projectBoard(best(8000));
++  expect(presentation.projectBoard(best(7000))).toBe(improvement);
++  expect(presentation.projectBoard(best(8500))).toBe(improvement);
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
++  release();
++  await Promise.all([original, improvement]);
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000], [7000]]);
++  expect(options.reportFailure).toHaveBeenCalledTimes(failed ? 1 : 0);
++});
++
++it("retires an old native context even when its held lookup returns the new context", async () => {
++  /** Context identity can change independently of the official global tournament. */
++  const {options, sdk, board, native} = fixture();
++  /** Current native context is read at every admission boundary. */
++  let contextId = "context-1";
++  sdk.context!.getID = () => contextId;
++  native.getContextID = () => contextId;
++  /** Resolve the original lookup with the SDK's current context. */
++  let release!: (native: FacebookInstantTournament) => void;
++  /** Exact SDK admission prevents fixed-depth scheduling assumptions. */
++  let admit!: () => void;
++  /** The first lookup is held across context replacement. */
++  const ready = new Promise<void>(resolve => {admit = resolve;});
++  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = resolve; admit();}));
++  /** One adapter receives reads for both native context lifetimes. */
++  const presentation = createFacebookTournamentPresentation(options)!;
++  /** Original native scope holds the slower server snapshot. */
++  const old = presentation.projectBoard(board);
++  await ready;
++  contextId = "context-2";
++  /** The replacement context has a newer authoritative best. */
++  const currentPlayer = {...board.currentPlayer!, adjustedTimeMs: 7000};
++  /** The new context's projection owns a separate queued operation. */
++  const fresh = presentation.projectBoard({...board, currentPlayer, standings: [currentPlayer]});
++  release(native);
++  await Promise.all([old, fresh]);
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
++});
++
++it("releases failed coalesced lookup work so a later authoritative read can retry", async () => {
++  /** A provider failure must not leave a cached failed operation. */
++  const {options, sdk, board} = fixture();
++  jest.mocked(sdk.getTournamentAsync!).mockRejectedValueOnce(new Error("Native lookup unavailable"));
++  /** Concurrent reads share one failure rather than duplicate native work. */
++  const presentation = createFacebookTournamentPresentation(options)!;
++  await Promise.all([presentation.projectBoard(board), presentation.projectBoard(board)]);
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
++  expect(options.reportFailure).toHaveBeenCalledTimes(1);
++  await presentation.projectBoard(board);
++  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
++});
++
++it("isolates a throwing native context getter and permits fresh recovery", async () => {
++  /** Optional SDK identity lookup cannot reject an authoritative standings read. */
++  const {options, sdk, board} = fixture();
++  sdk.context!.getID = jest.fn().mockImplementationOnce(() => {throw new Error("Native identity unavailable");}).mockReturnValue("context-1");
++  /** This provider keeps the official board independently of native projection. */
++  const presentation = createFacebookTournamentPresentation(options)!;
++  await expect(presentation.projectBoard(board)).resolves.toBeUndefined();
++  expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
++  await presentation.projectBoard(board);
++  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
++  expect(options.reportFailure).toHaveBeenCalledTimes(1);
++});
++
++it.each(["isActive", "getLocale", "now"])("contains a throwing %s projection guard", async callback => {
++  /** Native guard failures must not synchronously reject the official board caller. */
++  const {options, sdk, board} = fixture();
++  /** Each optional callback fault models the existing asynchronous projection boundary. */
++  const broken = () => {throw new Error("Optional projection guard unavailable");};
++  /** Callback failure stays independent of authoritative standings success. */
++  const presentation = createFacebookTournamentPresentation({...options,
++    isActive: callback === "isActive" ? broken : options.isActive,
++    getLocale: callback === "getLocale" ? broken : options.getLocale,
++    now: callback === "now" ? broken : options.now})!;
++  await expect(presentation.projectBoard(board)).resolves.toBeUndefined();
++  expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
++  expect(sdk.tournament!.postScoreAsync).not.toHaveBeenCalled();
++  expect(options.reportFailure).toHaveBeenCalledTimes(1);
++});
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -212,7 +212,8 @@
+     "test:live-context-read-cancellation:browser": "node scripts/verify-live-context-read-cancellation-browser.mjs && CONTEXT_READ_MODE=production node scripts/verify-live-context-read-cancellation-browser.mjs",
+     "test:live-overlay-owner:browser": "node scripts/verify-live-overlay-owner-browser.mjs && OVERLAY_OWNER_MODE=production node scripts/verify-live-overlay-owner-browser.mjs",
+     "test:live-overlay-cancellation:browser": "node scripts/verify-live-overlay-cancellation-browser.mjs && OVERLAY_OWNER_MODE=production node scripts/verify-live-overlay-cancellation-browser.mjs",
+-    "test:live-tournament-share:browser": "node scripts/verify-live-tournament-share-browser.mjs && TOURNAMENT_SHARE_MODE=production node scripts/verify-live-tournament-share-browser.mjs"
++    "test:live-tournament-share:browser": "node scripts/verify-live-tournament-share-browser.mjs && TOURNAMENT_SHARE_MODE=production node scripts/verify-live-tournament-share-browser.mjs",
++    "test:live-tournament-projection:browser": "node scripts/verify-live-tournament-projection-browser.mjs && TOURNAMENT_PROJECTION_MODE=production node scripts/verify-live-tournament-projection-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- /dev/null
++++ b/packages/portal/scripts/verify-live-tournament-projection-browser.mjs
+@@ -0,0 +1,53 @@
++/** Real tournament recovery reads measure native projection coalescing, ordering and failure recovery. */
++import assert from 'node:assert/strict';import {mkdir,mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';import {createServer} from 'node:http';import path from 'node:path';import {fileURLToPath} from 'node:url';import {build} from 'vite';import {chromium,firefox} from '@playwright/test';
++const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),engine=process.env.TOURNAMENT_PROJECTION_BROWSER??'chromium',mode=process.env.TOURNAMENT_PROJECTION_MODE??'development';
++const evidence=path.resolve(process.env.TOURNAMENT_PROJECTION_REPORT_DIR??path.join(portal,'../../artifacts/live-tournament-projection-2026-10-06',engine+'-'+mode));await mkdir(evidence,{recursive:true});
++const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/tournament-projection-probe-'));let browser,server,browserVersion;const observations=[];
++try{
++ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++ await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,'src/play/race/RaceTournamentEntry.tsx'))};import {createFacebookTournamentPresentation} from ${JSON.stringify(path.join(portal,'src/facebook/FacebookTournamentPresentation.ts'))};import {createFakeRaceServices} from ${JSON.stringify(path.join(portal,'src/play/race/testing/fakeRaceServices.ts'))};import {ListFacebookTournamentResponseSchema} from '@qwordly/core/race';import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};import ${JSON.stringify(path.join(portal,'src/styles.css'))};
++window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});const scenario=new URLSearchParams(location.search).get('scenario');window.probe={reads:[],lookups:[],posts:[],projections:[],diagnostics:[],errors:[],unhandled:[],renders:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
++const startsAtMs=Math.floor(Date.now()/86400000)*86400000,endsAtMs=startsAtMs+86400000,tournamentId='facebook-race10-en-'+new Date(startsAtMs).toISOString().slice(0,10);let score=9000,contextId='context-a',active=true,locale='en',clock=startsAtMs+1000;
++function board(){const currentPlayer={rank:1,adjustedTimeMs:score,isCurrentPlayer:true};return ListFacebookTournamentResponseSchema.parse({tournamentId,locale:'en',startsAtMs,endsAtMs,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,standings:[currentPlayer],currentPlayer});}
++const payload={kind:'rq-race10-tournament-v1',locale:'en',tournamentId,startsAtMs,endsAtMs};function native(id){return {getID:()=> 'native-'+id,getContextID:()=>scenario==='foreign'? 'foreign-context':id,getEndTime:()=>endsAtMs/1000,getPayload:()=>payload};}
++const sdk={getSupportedAPIs:()=>['getTournamentAsync','tournament.createAsync','tournament.shareAsync','tournament.postScoreAsync'],context:{getID:()=>contextId},getTournamentAsync:()=>{const id=contextId;window.probe.lookups.push(id);if(window.probe.lookups.length===1&&!scenario.startsWith('post-'))return new Promise((resolve,reject)=>{let done=false;window.finishNative=()=>{if(done)return;done=true;scenario==='lookup-failure'?reject(new Error('Synthetic native lookup failure')):resolve(native(id));};});return Promise.resolve(native(id));},tournament:{createAsync:async()=>{throw Error('Unexpected create');},shareAsync:async()=>{},postScoreAsync:value=>{window.probe.posts.push({contextId,score:value});if(window.probe.posts.length===1&&scenario.startsWith('post-'))return new Promise((resolve,reject)=>{let done=false;window.finishNative=()=>{if(done)return;done=true;scenario==='post-failure'?reject(new Error('Synthetic native post failure')):resolve();};});return Promise.resolve();}}};
++const presentation=createFacebookTournamentPresentation({sdk,enabled:true,ageCategory:'13_plus',isActive:()=>active,getLocale:()=>locale,now:()=>clock,list:async()=>board(),reportFailure:error=>window.probe.diagnostics.push(error.message)});
++const tournaments={list:async()=>{const value=board();window.probe.reads.push({score});const record={score,finished:false};window.probe.projections.push(record);void presentation.projectBoard(value).then(()=>{record.finished=true;});return value;},record:async()=>{throw Error('Unexpected record');},share:presentation.share};
++window.setScore=value=>{score=value;};const catalog=await createFakeRaceServices().listRaceCategories({locale:'en'}),uiPresentation={titleId:'projection-fixture',analyticsScreen:'projection_fixture',onRecordFailure:()=>{}},post=()=>{},never=new Promise(()=>{});function Suspend({held}){if(held)throw never;return null;}
++function App(){const [coins,setCoins]=React.useState(100),[version,setVersion]=React.useState(0),[held,setHeld]=React.useState(false);window.probe.renders.push({version,held});const change=()=>{if(scenario==='context')contextId='context-b';if(scenario==='account')active=false;if(scenario==='locale')locale='fr';if(scenario==='expiry')clock=endsAtMs;if(scenario==='profile')setCoins(800);setVersion(v=>v+1);};
++return <><button data-change style={{position:'fixed',bottom:4,right:4,zIndex:2147483647}} onClick={change}>Change fixture</button><button data-prepare style={{position:'fixed',bottom:4,left:4,zIndex:2147483647}} onClick={()=>React.startTransition(()=>{setVersion(v=>v+1);setHeld(true);})}>Prepare fixture</button><button data-abandon style={{position:'fixed',bottom:44,left:4,zIndex:2147483647}} onClick={()=>{setHeld(false);setCoins(800);}}>Abandon fixture</button><React.Suspense fallback={<output data-suspended>Suspended fixture</output>}><div data-version={version}><RaceTournamentEntry ownerId='fixture-player' locale='en' tournamentLocale='en' coins={coins} initialCategories={catalog.categories} tournaments={tournaments} presentation={uiPresentation} postToHost={post} onClose={()=>{}}/></div><Suspend held={held}/></React.Suspense></>;}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++`);
++ await build({root:scratch,configFile:false,publicDir:path.join(portal,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'projection-baseline',enforce:'pre',async load(id){if(process.env.TOURNAMENT_PROJECTION_BASELINE_FILE&&id.endsWith('/FacebookTournamentPresentation.ts'))return readFile(process.env.TOURNAMENT_PROJECTION_BASELINE_FILE,'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++ server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
++ browser=await (engine==='firefox'?firefox:chromium).launch({headless:true,...(engine==='firefox'&&process.env.TOURNAMENT_PROJECTION_FIREFOX_EXECUTABLE?{executablePath:process.env.TOURNAMENT_PROJECTION_FIREFOX_EXECUTABLE}:{})});browserVersion=browser.version();
++ const scenarios=process.env.TOURNAMENT_PROJECTION_MINIMAL==='1'?['duplicate','improving']:['duplicate','improving','post-success','post-failure','lookup-failure','context','account','locale','expiry','foreign','profile','abandon'];
++ for(const [width,height] of process.env.TOURNAMENT_PROJECTION_QUICK==='1'?[[390,844]]:[[390,568],[390,844],[1280,844]])for(const scenario of scenarios){
++  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),external=[];await context.route('**/*',route=>{if(new URL(route.request().url()).origin===origin)return route.continue();external.push(route.request().url());return route.abort();});const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
++  await page.goto(origin+'/?scenario='+scenario);await page.locator('.race-tournaments li').waitFor();await page.waitForFunction(()=>typeof window.finishNative==='function');
++  metric('initial authoritative board renders before SDK settles',await page.locator('.race-tournaments li').count(),1);metric('initial native lookup admitted once',await page.evaluate(()=>window.probe.lookups.length),1);
++  if(scenario==='abandon'){await page.locator('[data-prepare]').click();await page.waitForFunction(()=>window.probe.renders.some(x=>x.held));metric('abandoned render keeps committed board',await page.locator('[data-version]').getAttribute('data-version'),'0');await page.locator('[data-abandon]').click();}
++  else if(['context','account','locale','expiry','profile'].includes(scenario))await page.locator('[data-change]').click();
++  const changing=['improving','post-success','post-failure','context'].includes(scenario),retired=['account','locale','expiry'].includes(scenario);
++  for(const next of changing?[8000,7000,8500]:[9000,9000,9000]){await page.getByRole('tab',{name:'Play',exact:true}).click();await page.getByRole('tab',{name:'Tournaments',exact:true}).click();await page.locator('.race-tournaments li').waitFor();await page.evaluate(value=>window.setScore(value),next);}
++  // The final recovery read carries the selected server snapshot; earlier reads remain pending in the SDK.
++  await page.getByRole('tab',{name:'Play',exact:true}).click();await page.getByRole('tab',{name:'Tournaments',exact:true}).click();await page.locator('.race-tournaments li').waitFor();
++  metric('all recovery boards render while native work is held',await page.evaluate(()=>window.probe.reads.length),5);metric('serialized native lookup count before release',await page.evaluate(()=>window.probe.lookups.length),1);
++  await page.evaluate(()=>window.finishNative());await page.waitForFunction(()=>window.probe.projections.every(x=>x.finished));
++  const failed=scenario==='lookup-failure',foreign=scenario==='foreign',posting=scenario.startsWith('post-'),switched=scenario==='context';
++  const expectedScores=retired||foreign||failed?[]:posting?[9000,7000]:changing?[7000]:[9000];
++  metric('concurrent official snapshots share only necessary native lookups',await page.evaluate(()=>window.probe.lookups.length),posting||switched?2:1);
++  metric('native projection skips superseded unposted scores',await page.evaluate(()=>window.probe.posts.map(x=>x.score)),expectedScores);
++  metric('native context retains exact scope',await page.evaluate(()=>window.probe.posts.map(x=>x.contextId)),expectedScores.map(()=>switched?'context-b':'context-a'));
++  metric('all admitted local projection promises settle',await page.evaluate(()=>window.probe.projections.filter(x=>x.finished).length),5);
++  metric('fixed optional failure diagnostic',await page.evaluate(()=>window.probe.diagnostics),failed||scenario==='post-failure'?['facebook-tournament-score-projection-failed']:[]);
++  metric('official board remains independent of native result',await page.locator('.race-error').count(),0);
++  if(!retired){await page.getByRole('tab',{name:'Play',exact:true}).click();await page.getByRole('tab',{name:'Tournaments',exact:true}).click();await page.locator('.race-tournaments li').waitFor();await page.waitForFunction(()=>window.probe.projections.every(x=>x.finished));
++   metric('fresh recovery lookup remains available after original settlement',await page.evaluate(()=>window.probe.lookups.length),posting||switched?3:2);
++   metric('native best deduplicates later older snapshots or recovers lookup failure',await page.evaluate(()=>window.probe.posts.map(x=>x.score)),failed?[9000]:expectedScores);
++  }
++  metric('no external provider traffic',external,[]);metric('no browser error',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await page.evaluate(()=>window.probe.unhandled),[]);await page.screenshot({path:path.join(evidence,[width,height,scenario].join('-')+'.png')});await context.close();
++ }
++}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});await writeFile(path.join(evidence,'observations.json'),JSON.stringify(observations,null,2)+'\n');}
++const failures=observations.filter(x=>JSON.stringify(x.actual)!==JSON.stringify(x.expected));console.log(JSON.stringify({mode,engine,browserVersion,cases:new Set(observations.map(x=>[x.width,x.height,x.scenario].join(':'))).size,checks:observations.length,failures},null,2));assert.equal(failures.length,0,'Native tournament projection must coalesce pending official best snapshots');

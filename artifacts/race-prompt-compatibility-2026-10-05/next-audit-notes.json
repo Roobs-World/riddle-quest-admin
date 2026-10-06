@@ -1,0 +1,6 @@
+{
+  "candidate": "Race preloaded/evaluation answer schemas count UTF-16 units while catalog validation counts locale graphemes.",
+  "status": "Unverified; reproduce with a valid supported-locale authored answer before changing any policy.",
+  "scope": "Preserve seven-grapheme answers, target isolation, immutable recordings and normalization. Do not narrow Unicode acceptance merely to satisfy an inconsistent transport bound.",
+  "nextStep": "Construct a valid catalog pool containing a combining-sequence answer and exercise actual public evaluation projection. Rank hypotheses only after a tight runtime probe."
+}

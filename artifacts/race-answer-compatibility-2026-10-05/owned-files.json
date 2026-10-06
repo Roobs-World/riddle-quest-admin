@@ -1,0 +1,5 @@
+{
+  "validation": "firebase-functions/src/race/raceContentValidation.ts",
+  "unit-test": "firebase-functions/src/__tests__/race/raceService.test.ts",
+  "emulator-test": "firebase-functions/src/__tests__/race/raceAnswerCompatibility.it.test.ts"
+}

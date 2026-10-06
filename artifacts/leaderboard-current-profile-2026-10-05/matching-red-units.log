@@ -1,0 +1,299 @@
+FAIL src/__tests__/leaderboard.test.ts
+  ● getLeaderboard callable › uses current display fields for xp with one existing batch read
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+    @@ -1,11 +1,11 @@
+      Array [
+        Object {
+    -     "avatarUrl": "https://example.com/current.png",
+    +     "avatarUrl": "https://example.com/old.png",
+          "level": 3,
+          "userId": "u1",
+    -     "username": "Current name",
+    +     "username": "Old name",
+          "xp": 50,
+        },
+        Object {
+          "level": 2,
+          "userId": "u2",
+
+      306 |     /** Existing score order and values remain projection-owned; only current public identity is hydrated. */
+      307 |     const result = await callGetLeaderboard({uid: "viewer"}, {type});
+    > 308 |     expect(result.entries).toMatchObject([
+          |                            ^
+      309 |       {userId: "u1", username: "Current name", avatarUrl: "https://example.com/current.png", level: 3, xp: 50},
+      310 |       {userId: "u2", username: "Other", level: 2},
+      311 |     ]);
+
+      at src/__tests__/leaderboard.test.ts:308:28
+
+  ● getLeaderboard callable › uses current display fields for totalWins with one existing batch read
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+    @@ -1,11 +1,11 @@
+      Array [
+        Object {
+    -     "avatarUrl": "https://example.com/current.png",
+    +     "avatarUrl": "https://example.com/old.png",
+          "level": 3,
+          "userId": "u1",
+    -     "username": "Current name",
+    +     "username": "Old name",
+          "xp": 50,
+        },
+        Object {
+          "level": 2,
+          "userId": "u2",
+
+      306 |     /** Existing score order and values remain projection-owned; only current public identity is hydrated. */
+      307 |     const result = await callGetLeaderboard({uid: "viewer"}, {type});
+    > 308 |     expect(result.entries).toMatchObject([
+          |                            ^
+      309 |       {userId: "u1", username: "Current name", avatarUrl: "https://example.com/current.png", level: 3, xp: 50},
+      310 |       {userId: "u2", username: "Other", level: 2},
+      311 |     ]);
+
+      at src/__tests__/leaderboard.test.ts:308:28
+
+  ● getLeaderboard callable › uses current display fields for bestStreak with one existing batch read
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+    @@ -1,11 +1,11 @@
+      Array [
+        Object {
+    -     "avatarUrl": "https://example.com/current.png",
+    +     "avatarUrl": "https://example.com/old.png",
+          "level": 3,
+          "userId": "u1",
+    -     "username": "Current name",
+    +     "username": "Old name",
+          "xp": 50,
+        },
+        Object {
+          "level": 2,
+          "userId": "u2",
+
+      306 |     /** Existing score order and values remain projection-owned; only current public identity is hydrated. */
+      307 |     const result = await callGetLeaderboard({uid: "viewer"}, {type});
+    > 308 |     expect(result.entries).toMatchObject([
+          |                            ^
+      309 |       {userId: "u1", username: "Current name", avatarUrl: "https://example.com/current.png", level: 3, xp: 50},
+      310 |       {userId: "u2", username: "Other", level: 2},
+      311 |     ]);
+
+      at src/__tests__/leaderboard.test.ts:308:28
+
+  ● getLeaderboard callable › never reuses a copied avatar when current avatar is undefined
+
+    expect(received).not.toHaveProperty(path)
+
+    Expected path: not "avatarUrl"
+
+    Received value: "https://example.com/old.png"
+
+      321 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({avatarUrl: "https://example.com/old.png"})]));
+      322 |     mockProfileDocs.set("user-1", {username: "Current name", avatarUrl});
+    > 323 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]).not.toHaveProperty("avatarUrl");
+          |                                                                                      ^
+      324 |   });
+      325 |
+      326 |   it.each([
+
+      at src/__tests__/leaderboard.test.ts:323:86
+
+  ● getLeaderboard callable › never reuses a copied avatar when current avatar is null
+
+    expect(received).not.toHaveProperty(path)
+
+    Expected path: not "avatarUrl"
+
+    Received value: "https://example.com/old.png"
+
+      321 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({avatarUrl: "https://example.com/old.png"})]));
+      322 |     mockProfileDocs.set("user-1", {username: "Current name", avatarUrl});
+    > 323 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]).not.toHaveProperty("avatarUrl");
+          |                                                                                      ^
+      324 |   });
+      325 |
+      326 |   it.each([
+
+      at src/__tests__/leaderboard.test.ts:323:86
+
+  ● getLeaderboard callable › never reuses a copied avatar when current avatar is 
+
+    expect(received).not.toHaveProperty(path)
+
+    Expected path: not "avatarUrl"
+
+    Received value: "https://example.com/old.png"
+
+      321 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({avatarUrl: "https://example.com/old.png"})]));
+      322 |     mockProfileDocs.set("user-1", {username: "Current name", avatarUrl});
+    > 323 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]).not.toHaveProperty("avatarUrl");
+          |                                                                                      ^
+      324 |   });
+      325 |
+      326 |   it.each([
+
+      at src/__tests__/leaderboard.test.ts:323:86
+
+  ● getLeaderboard callable › never reuses a copied avatar when current avatar is    
+
+    expect(received).not.toHaveProperty(path)
+
+    Expected path: not "avatarUrl"
+
+    Received value: "https://example.com/old.png"
+
+      321 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({avatarUrl: "https://example.com/old.png"})]));
+      322 |     mockProfileDocs.set("user-1", {username: "Current name", avatarUrl});
+    > 323 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]).not.toHaveProperty("avatarUrl");
+          |                                                                                      ^
+      324 |   });
+      325 |
+      326 |   it.each([
+
+      at src/__tests__/leaderboard.test.ts:323:86
+
+  ● getLeaderboard callable › uses canonical name fallback Current display name without restoring a copied name
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Current display name"
+    Received: "Earlier name"
+
+      331 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({username: "Earlier name"})]));
+      332 |     mockProfileDocs.set("user-1", profile);
+    > 333 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]?.username).toBe(expected);
+          |                                                                                            ^
+      334 |   });
+      335 |
+      336 |   it("rejects mismatched subjects before reading canonical display data", async () => {
+
+      at src/__tests__/leaderboard.test.ts:333:92
+
+  ● getLeaderboard callable › uses canonical name fallback Player without restoring a copied name
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Player"
+    Received: "Earlier name"
+
+      331 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({username: "Earlier name"})]));
+      332 |     mockProfileDocs.set("user-1", profile);
+    > 333 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]?.username).toBe(expected);
+          |                                                                                            ^
+      334 |   });
+      335 |
+      336 |   it("rejects mismatched subjects before reading canonical display data", async () => {
+
+      at src/__tests__/leaderboard.test.ts:333:92
+
+  ● getLeaderboard callable › uses canonical name fallback Current username without restoring a copied name
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Current username"
+    Received: "Earlier name"
+
+      331 |     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({username: "Earlier name"})]));
+      332 |     mockProfileDocs.set("user-1", profile);
+    > 333 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]?.username).toBe(expected);
+          |                                                                                            ^
+      334 |   });
+      335 |
+      336 |   it("rejects mismatched subjects before reading canonical display data", async () => {
+
+      at src/__tests__/leaderboard.test.ts:333:92
+
+  ● getLeaderboard callable › rejects mismatched subjects before reading canonical display data
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"id": "u2"}, {"fieldMask": ["username", "displayName", "avatarUrl"]}
+    Received: {"get": [Function mockConstructor], "id": "u2", "path": "users/u2"}
+
+    Number of calls: 1
+
+      339 |     mockLeaderboardGet.mockResolvedValueOnce({docs: [{id: "u1", data: () => ({...makeEntry({userId: "u1"}), subjectUserId: "u2"})}, ...valid]});
+      340 |     expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries).toEqual([expect.objectContaining({userId: "u2"})]);
+    > 341 |     expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}), {fieldMask: ["username", "displayName", "avatarUrl"]});
+          |                        ^
+      342 |   });
+      343 |
+      344 |   it("throws unauthenticated when auth is missing", async () => {
+
+      at Object.<anonymous> (src/__tests__/leaderboard.test.ts:341:24)
+
+  ● getLeaderboard callable › ranks existing canonical multiplayer totals without reading stale leaderboard projections
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"
+
+    Number of calls: 0
+
+      390 |     /** Indexed account rankings returned by the callable. */
+      391 |     const result = await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins", limit: 25});
+    > 392 |     expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
+          |                             ^
+      393 |     expect(mockUsersWhere).toHaveBeenCalledWith("stats.multiplayerWins", ">", 0);
+      394 |     expect(mockUsersOrderBy).toHaveBeenCalledWith("stats.multiplayerWins", "desc");
+      395 |     expect(mockUsersLimit).toHaveBeenCalledWith(25);
+
+      at Object.<anonymous> (src/__tests__/leaderboard.test.ts:392:29)
+
+  ● getLeaderboard callable › derives from live users without backfilling a snapshot that could race deletion
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"
+
+    Number of calls: 0
+
+      519 |     expect(typedResult.entries[1].userId).toBe("u2");
+      520 |     expect(mockUsersLimit).toHaveBeenCalledWith(1000);
+    > 521 |     expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
+          |                             ^
+      522 |     expect(mockBatchSet).not.toHaveBeenCalled();
+      523 |     expect(mockBatchCommit).not.toHaveBeenCalled();
+      524 |   });
+
+      at Object.<anonymous> (src/__tests__/leaderboard.test.ts:521:29)
+
+  ● getLeaderboard callable › suppresses a noncanonical row even when its embedded user is live
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"id": "u2"}, {"fieldMask": ["username", "displayName", "avatarUrl"]}
+    Received: {"get": [Function mockConstructor], "id": "u2", "path": "users/u2"}
+
+    Number of calls: 1
+
+      571 |
+      572 |     expect(typedResult.entries).toEqual([expect.objectContaining({userId: "u2", username: "Other"})]);
+    > 573 |     expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}), {fieldMask: ["username", "displayName", "avatarUrl"]});
+          |                        ^
+      574 |   });
+      575 | });
+      576 |
+
+      at Object.<anonymous> (src/__tests__/leaderboard.test.ts:573:24)
+
+Test Suites: 1 failed, 1 total
+Tests:       14 failed, 21 passed, 35 total
+Snapshots:   0 total
+Time:        0.387 s, estimated 1 s
+Ran all test suites matching src/__tests__/leaderboard.test.ts.

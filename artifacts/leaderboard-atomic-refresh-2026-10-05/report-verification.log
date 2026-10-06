@@ -1,0 +1,33 @@
+2346 source inputs verified source-report
+{
+  "goal": "active",
+  "redRealFirestoreCases": 5,
+  "fixedRealFirestoreCases": 5,
+  "canonicalAccountReadOnEveryWriterAttempt": true,
+  "missingAccountNeverRecreated": true,
+  "avatarRemovalUsesReplacement": true,
+  "backendUnitTests": 1611,
+  "backendUnitSuites": 130,
+  "emulatorTests": 236,
+  "emulatorSuites": 14,
+  "focusedTests": 58,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25618,
+  "tsdocFiles": 1148,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2346,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 12,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  },
+  "performanceQualification": "The mocked leaderboard task hides its new transaction read. The matrix proves orchestration only, not a production Daily speedup. Daily moves its existing account read into the writer transaction; named Classic adds one concurrent account read to guarantee current ranking while content remains independent."
+}

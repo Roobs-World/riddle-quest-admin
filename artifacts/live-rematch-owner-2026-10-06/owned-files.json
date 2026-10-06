@@ -1,0 +1,23 @@
+[
+  {
+    "path": "packages/portal/src/play/race/RaceTournamentEntry.tsx",
+    "before": "artifacts/live-rematch-owner-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "ddbc5d04af59308220e9cf16fa9946033a7a83b68e03c1e4d9f97d68a2848572",
+    "after": "artifacts/live-rematch-owner-2026-10-06/owned-00-after.txt",
+    "afterSha256": "fdde5de3fd5884e9bd0a353d8625a4c98e816a9e3b1a7e9d958eecfc4d1fb753"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-rematch-owner-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "1eeace0022f7606cd2d64cee5fba9a88a64a6598def81546b709813d35173077",
+    "after": "artifacts/live-rematch-owner-2026-10-06/owned-01-after.txt",
+    "afterSha256": "50b58456cf5601d1fdd2e925de80874f16acaf4775de24103373b8255c70ea90"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-rematch-owner-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/live-rematch-owner-2026-10-06/owned-02-after.txt",
+    "afterSha256": "1a41610daaff471edbdbdcb3463dc9612957da221b94e5cdd8bddc37bee52b7e"
+  }
+]

@@ -80,7 +80,9 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     await page.locator(".race-error button").click();
     await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
     expect(joins[0]).toEqual(joins[1]);
+    // Facebook's trusted gameplay harness uses the existing synthetic host account; native provider identity is tested separately.
     expect(joins[0]).toEqual({locale, categoryId: "history", rematchOfTicketId: "d".repeat(64), requestId: expect.any(String),
+      retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
       ...(target === "Facebook" ? {facebookContextId} : {})});
     expect(await page.locator(".live-race-invite-share").count()).toBe(0);
     complete = true;
@@ -104,6 +106,7 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     await page.locator(".live-race-invitation button").click();
     await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
     expect(accepts).toEqual([{locale, categoryId: "history", challengeId: incomingId, requestId: expect.any(String),
+      retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
       ...(target === "Facebook" ? {facebookContextId} : {})}]);
     inbox = false;
     await page.locator(".race-close").click();

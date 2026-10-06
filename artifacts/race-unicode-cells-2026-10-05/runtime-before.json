@@ -1,0 +1,16 @@
+{
+  "locale": "hi",
+  "answerUnits": 10,
+  "slotUnits": [
+    1,
+    9
+  ],
+  "answerSlots": 2,
+  "validGuess": true,
+  "evaluationAccepted": true,
+  "requestAccepted": true,
+  "firstHintAccepted": false,
+  "feedbackAccepted": false,
+  "historyAccepted": false,
+  "currentHintAccepted": false
+}

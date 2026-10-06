@@ -1,0 +1,226 @@
+[
+  {
+    "path": "firebase-functions/firestore.indexes.json",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-00-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-00-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "432096fc249b80df3433bbc7c59f7184580fba32abdf9726e390377ad1241713",
+    "afterSha256": "b51c605e0da72db20cb66b5b042d88246b96c1f2aed718742d25100ffcf88ca6"
+  },
+  {
+    "path": "firebase-functions/src/index.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-01-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-01-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "abcd3bd07397a90cf657b7c6929955397ec919ec88702ae20b9d7777ddf4d1e5",
+    "afterSha256": "6dcf0c6f70987beb3f0d0fd3b6c1446ba014025563b381824b551c6c96061c35"
+  },
+  {
+    "path": "firebase-functions/src/race/raceLiveCallables.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-02-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-02-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "9762854972104105ae6f95157e1e3bd87cf098f9601cd449dbf4e207a28817a1",
+    "afterSha256": "6cb13ad6ca85dea4eca8bbe2d2b2eea739c74e6356940d5f3c3cde4f7ecde02d"
+  },
+  {
+    "path": "firebase-functions/src/race/raceLiveInvitation.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-03-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-03-after.txt",
+    "provenance": "artifacts/race-live-deck-compatibility-2026-10-05/live-invitation-after.ts",
+    "beforeSha256": "962118e2f85444bd8ed7e82310e5279ee6abf915bb74d98739f33f1dcc49a9cf",
+    "afterSha256": "c6529618ab84bd710f3d1b8a70e37fafcc0182f2118c28c1c0e8fb743e795e8d"
+  },
+  {
+    "path": "firebase-functions/src/race/raceLiveService.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-04-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-04-after.txt",
+    "provenance": "artifacts/race-live-deck-compatibility-2026-10-05/live-service-fixed.ts",
+    "beforeSha256": "446f8c99e60e6485864dd5fee2a3e966252788af11d4f1d6601faaf67039d8da",
+    "afterSha256": "88d9a4cefab7a48d8e84d9ea25a142455ca7917fdc577720f63b682aaa1055df"
+  },
+  {
+    "path": "firebase-functions/src/race/raceLiveState.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-05-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-05-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "45e63024e292b2151c0bacaf7b56348e75a320a0c0023e8ffa7b9d3a69876d80",
+    "afterSha256": "6f4878b522f0f1c2fceabc733749ba0b359cf55b0e2ad2f001d7d319dc1a1a2f"
+  },
+  {
+    "path": "firebase-functions/src/reddit/redditGameplayEndpoint.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-06-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-06-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "5b4edcc5dbaee5e88d40a01e5dd16439e46d77155c02b785fe1c3b23a3c2ac8c",
+    "afterSha256": "5df1a16e51a8e1b7ac8f4f41d5371eb3460c0aa052f8aa6aa697bf539853df69"
+  },
+  {
+    "path": "packages/core/src/race/raceLiveSchemas.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-07-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-07-after.txt",
+    "provenance": "artifacts/race-unicode-cells-2026-10-05/live-schemas-fixed.ts",
+    "beforeSha256": "2c3d56ce337dac1861eb35541900199d496c4237d64d77d5c1376ad86eddae0c",
+    "afterSha256": "4c24bf75daf585c71448145cde7e624a431abc86f2e60abcacc91ce8daeddc92"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-08-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-08-after.txt",
+    "provenance": "artifacts/live-retired-leave-recovery-2026-10-05/package-after.txt",
+    "beforeSha256": "33e3907b968c48bf8769b577adcd7dfce5078c012ce65ae4b4c4c779ad6c81d2",
+    "afterSha256": "e0b3a30275fe78eda1dfbcbb8d9474ec4a93687612bf6a4e3efabda8e97c3e9f"
+  },
+  {
+    "path": "packages/portal/src/__tests__/firebase.test.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-09-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-09-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "0f66a21d1523d8ddecfb64f6282266f624e2c844f1ed0c35b2a2ba9eca497c9b",
+    "afterSha256": "89fc38e96bee2de13f1ce925aa223945704f54be8e8606025f4a03f0c582fa79"
+  },
+  {
+    "path": "packages/portal/src/firebase.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-10-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-10-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "7da3eb3da26579fdb0b91723513b1bf6981f9df32469dd2b3ad5243d1d24fe3f",
+    "afterSha256": "1a31dc9e0c5924877336b362e46302e0897edf5f819e9f00d3101324f43d3bb0"
+  },
+  {
+    "path": "packages/portal/src/play/firebaseRaceMatchmaking.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-11-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-11-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "a852ee5f708dc1d851b2b6c44738a2c8fcfbf5a35b30417d92ed5b084b49aaaf",
+    "afterSha256": "25068dfe59441b73d79340fe7d7bde160a3db43638ddace55978076ebbc0f96b"
+  },
+  {
+    "path": "packages/portal/src/play/race/LiveRaceGame.tsx",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-12-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-12-after.txt",
+    "provenance": "artifacts/live-same-account-retirement-2026-10-06/LiveRaceGame.before.txt",
+    "beforeSha256": "bf14ee61e514db640670c29308fb7d3deb23cd9c2a35115a6e6fc4b166bbad48",
+    "afterSha256": "ecdee5bed8785fa05d904b7a6d6a0f7c8977cce210c7822e76be63d7064e5d74"
+  },
+  {
+    "path": "packages/portal/src/play/race/__tests__/liveRaceRetirement.test.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-13-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-13-after.txt",
+    "provenance": "artifacts/live-retired-leave-recovery-2026-10-05/units-after.txt",
+    "beforeSha256": "80221283289315d8587999f5e65a5fb2ffa2d5dca6db8dce948c8d3bfac518b6",
+    "afterSha256": "9670f746b7a4f060e63a10badf1667ab47e7fdcb09c5d8707a33529edc98ccff"
+  },
+  {
+    "path": "packages/portal/src/play/race/logic/liveRaceRetirement.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-14-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-14-after.txt",
+    "provenance": "artifacts/live-same-account-retirement-2026-10-06/retirement.before.txt",
+    "beforeSha256": "2982ee6354b8464f4ab572d860a5921e45b996cfd7f4a0ad09a611e05a3a2547",
+    "afterSha256": "b62ccacb251267742c21e01a603a9e94be7db80033a1f973e17f626a1f29458d"
+  },
+  {
+    "path": "packages/portal/src/reddit/RedditPlatformBootstrap.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-15-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-15-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "6be4c1819e073ac9072c5a024cc10dd70ee1b61298816d07507004c146866e04",
+    "afterSha256": "caebdbb2b9bffc542f146878a88af745acdaf0732e34f0725241e535c81a1eac"
+  },
+  {
+    "path": "packages/portal/src/reddit/__tests__/RedditPlatformBootstrap.test.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-16-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-16-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "9a2ceeb6468deb8ac32ac80882790862df22965d2c0a7135b5852197cba35e01",
+    "afterSha256": "bb16d8a6654ee82f4aa883ac78a8ecc998055c5d65e55e46d5dde7c80a4d14ba"
+  },
+  {
+    "path": "packages/reddit-app/src/server/index.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-17-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-17-after.txt",
+    "provenance": "git HEAD plus exact single allowlist-line change",
+    "beforeSha256": "e98a7761416e3c2342474e58afc3c421b197bd4a13a4ee66b6b898be91f79793",
+    "afterSha256": "224af426174f80454ca18e9d23cbf83e121875ecd0850d9e7471a804baf64cc8"
+  },
+  {
+    "path": "firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-18-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "acad7c68a027d0e7daf2ee2326ac42d03859f29730506f6524e75c35c048db4e"
+  },
+  {
+    "path": "firebase-functions/src/__tests__/race/raceLiveRetirementCallables.test.ts",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-19-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "a5a92c379459b8db3e84fe85413181e5023bc86876fb7c2d8c400d20115c220f"
+  },
+  {
+    "path": "firebase-functions/src/__tests__/redditLiveRetirementGateway.it.test.ts",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-20-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "70fa3b43581567e0a7fb5c719a62b2070172a441870c8afc3f22ce096f39ba5e"
+  },
+  {
+    "path": "firebase-functions/src/race/raceLiveJoinIntent.ts",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-21-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "97c246ee7f87d8d23c183401623caf9c2a76e665f2bd4ed5893523537fc0f9bc"
+  },
+  {
+    "path": "firebase-functions/src/race/raceLiveRetirement.ts",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-22-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "19eafc9fc11cd13aba8c0110c18a1b7fe44efe4186aa6c2e11c0fe42befc0480"
+  },
+  {
+    "path": "packages/core/src/race/__tests__/raceLiveJoinRetirementSchemas.test.ts",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-23-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "4f58e1e9109791d77dabdee45d526e1ee9d43e4cbc1f7259844287e8e8ec08bb"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-same-account-retirement-browser.mjs",
+    "before": null,
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-24-after.txt",
+    "provenance": "new file",
+    "beforeSha256": null,
+    "afterSha256": "8e96658104466dd150c84102932a55120ce4ace34817eab6040e775895a31b12"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/liveRematch.jest-playwright.support.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-25-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-25-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "5a810a64d0615ad94c983e502de8cf62953bfd2aeb770b27629ee28be2d4d68f",
+    "afterSha256": "40651889aaf271f79c715624594c86ba8d0a13254a1897d977b8805d0e1ccffb"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/liveMultiplayer.jest-playwright.support.ts",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-26-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-26-after.txt",
+    "provenance": "git HEAD verified against preceding frozen manifest",
+    "beforeSha256": "f16a340d1ac3e606ed3f9c0442ad614360077a88b8259d12c77645eba032bc91",
+    "afterSha256": "427a8b3733145a9915dcbdb885acf5cd5fb95729ef67cda7419f82d80b5186ef"
+  },
+  {
+    "path": "firebase-functions/jest.rules.config.js",
+    "before": "artifacts/live-same-account-retirement-2026-10-06/owned-27-before.txt",
+    "after": "artifacts/live-same-account-retirement-2026-10-06/owned-27-after.txt",
+    "beforeSha256": "d09899eb0b29327e701522f9408f83643636d3379ddc2a3be1b647630ac4ec6a",
+    "afterSha256": "d6a9e2ecc9cabe406df968fa1e839952330e59ae1ec568e657e7573b09aa65dc",
+    "provenance": "Inspected working-tree bytes equal git HEAD before registration correction"
+  }
+]

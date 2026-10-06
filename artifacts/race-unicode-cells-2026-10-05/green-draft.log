@@ -1,0 +1,5 @@
+Test Suites: 1 passed, 1 total
+Tests:       61 passed, 61 total
+Snapshots:   0 total
+Time:        0.399 s, estimated 1 s
+Ran all test suites matching src/play/race/__tests__/RaceSessionDraftReload.test.ts.

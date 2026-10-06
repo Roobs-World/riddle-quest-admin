@@ -1,0 +1,15 @@
+{
+  "packages/portal/src/styles.css": "f17e89d2640aeedf0e566e433fc9c978628fa122dda6f3627f958804487ba566",
+  "packages/portal/src/styles.race-lobby.css": "66f44a23e4ca51a086f473b78b92a2944e71361667a8135970ca560c15c34d17",
+  "packages/portal/src/styles.race-gameplay.css": "b5cd15c8536e76a7b9a1f2ab679f3632135f4a8bb3fc8d8885318b7cd6df72ab",
+  "packages/portal/src/play/race/components/RaceGameplay.tsx": "f9bfe7125e13ef23f42d835a07423c3b3929508ae9ae1ee8a5b6af572626f4a8",
+  "packages/portal/src/play/race/components/NativeAnswerInput.tsx": "c29719814361161cc706238b100f72508e9156b251e6b461e59d227a42f1b4fa",
+  "packages/portal/src/play/GameFrameControls.tsx": "ef24184f2730cd11395f905d82d9afe92cd414a37c64799097ecfb6b27760cb3",
+  "packages/portal/src/play/race/logic/raceInput.ts": "4ee171f2ad75c4656dec5437b9c0466c06b526f370b5ac81912f5dff3c035c99",
+  "packages/portal/src/play/race/logic/raceDraftStorage.ts": "697ce863d1e0dd82bab8aec642632fec0f618cc11b791a993568ba36a5f45484",
+  "packages/portal/src/play/race/RaceSessionAuthority.ts": "be3264eb1d89be939f19825bc98c8d0ee2808fa8dbda9c7361d197a6fe913d98",
+  "packages/core/src/race/raceSchemas.ts": "5587a09d4e39847d865291788e6950ebe8013b42205e621a9877c05f8bfc0817",
+  "packages/core/src/race/raceLiveSchemas.ts": "2c3d56ce337dac1861eb35541900199d496c4237d64d77d5c1376ad86eddae0c",
+  "packages/core/src/race/raceTextSchemas.ts": "0f281d3dd58e3298cee995dbcdd08926769e9f5d358e939cf14b99c35a43e979",
+  "packages/core/src/game/graphemes.ts": "80b98d42ccfa993f282b0174a60379d9030ff9a70b0089a3571ec059c9e53ecd"
+}

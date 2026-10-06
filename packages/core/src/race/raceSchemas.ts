@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../game/limits";
+import {RaceAnswerTextSchema, RaceGuessTextSchema, RaceGraphemeTextSchema} from "./raceTextSchemas";
 import {
   RACE_DECK_SIZE,
   RACE_HINT_PENALTY_MS,
@@ -31,7 +32,7 @@ const MillisecondsSchema = z.number().int().nonnegative();
 
 /** Confirmed presentation rows; scoring remains owned by the server run. */
 export const RaceConfirmedGuessSchema = z.object({
-  guess: z.array(z.string().min(1).max(8)).min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
+  guess: z.array(RaceGraphemeTextSchema).min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
   feedback: z.array(z.enum(["green", "yellow", "red"])).min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
 }).strict();
 
@@ -59,12 +60,12 @@ export const RaceRiddlePromptSchema = z
             .int()
             .nonnegative()
             .max(MAX_RIDDLE_ANSWER_CHARACTERS - 1),
-          letter: z.string().min(1).max(8),
+          letter: RaceGraphemeTextSchema,
         })
         .strict(),
     ),
     /** Opt-in local feedback for the current question only. */
-    evaluation: z.object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema}).strict().optional(),
+    evaluation: z.object({answer: RaceAnswerTextSchema, locale: RaceLocaleSchema}).strict().optional(),
   })
   .strict()
   .check((context) => {
@@ -85,13 +86,13 @@ export const RacePreloadedRiddleSchema = z
     answerLength: z.number().int().positive().max(MAX_RIDDLE_ANSWER_CHARACTERS),
     position: z.number().int().nonnegative().max(RACE_DECK_SIZE - 1),
     evaluation: z
-      .object({answer: z.string().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS), locale: RaceLocaleSchema})
+      .object({answer: RaceAnswerTextSchema, locale: RaceLocaleSchema})
       .strict(),
     /** First server-selected hint when supplied by the current race server. */
     hint: z
       .object({
         index: z.number().int().nonnegative().max(MAX_RIDDLE_ANSWER_CHARACTERS - 1),
-        letter: z.string().min(1).max(8),
+        letter: RaceGraphemeTextSchema,
       })
       .strict().optional(),
   })
@@ -193,7 +194,7 @@ export type RaceRunView = z.infer<typeof RaceRunViewSchema>;
 /** Schema for positional feedback returned for a submitted guess. */
 export const RaceLetterFeedbackSchema = z
   .object({
-    letter: z.string().min(1).max(8),
+    letter: RaceGraphemeTextSchema,
     status: z.enum(["green", "yellow", "red"]),
   })
   .strict();
@@ -219,7 +220,7 @@ export const SubmitRaceGuessResponseSchema = z
 export const RequestRaceHintResponseSchema = z
   .object({
     run: RaceRunViewSchema,
-    revealedLetter: z.string().min(1).max(8),
+    revealedLetter: RaceGraphemeTextSchema,
     index: z
       .number()
       .int()
@@ -360,7 +361,7 @@ export const SubmitRaceGuessRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
     riddleId: OpaqueIdSchema,
-    guess: z.string().trim().min(1).max(MAX_RIDDLE_ANSWER_CHARACTERS),
+    guess: RaceGuessTextSchema,
     requestId: RequestIdSchema,
     includeEvaluation: z.boolean().optional(),
   })

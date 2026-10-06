@@ -1,0 +1,49 @@
+{
+  "mode": "development",
+  "cases": 2,
+  "checks": 18,
+  "failures": [
+    {
+      "scenario": "player",
+      "name": "retired initialization never shows provider views",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "player",
+      "name": "retired initialization never starts a profile-name request",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "provider",
+      "name": "retired initialization never shows provider views",
+      "actual": 2,
+      "expected": 0
+    },
+    {
+      "scenario": "provider",
+      "name": "retired initialization never starts a profile-name request",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+4 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs:9:425 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 4,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

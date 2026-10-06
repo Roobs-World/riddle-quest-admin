@@ -1,0 +1,44 @@
+[
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/04425d1b783101d924e3192d911d6c5a5a84a051569c42eeec43582def04ff71/netflix.json",
+    "preserved": "artifacts/live-destination-capability-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "82df1f42a97c5c4fab153e7fb176258b37d3bae19187ad1ad4a955ec3ba9d574",
+    "outputDirectory": "/tmp/live-destination-builds-ez65tj4t/netflix"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/27d8e5b6fe10cd611b705e869136cdeb510b4702ca895a70b0e543f2994d2bea/reddit.json",
+    "preserved": "artifacts/live-destination-capability-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "3c53275d1e0d3eedc20e1272fa7ba570ab32f91e1c1f0a822c02167aa57b892d",
+    "outputDirectory": "/tmp/live-destination-builds-ez65tj4t/reddit"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/63a913d4bf1460773ff1ae3b95434baf0121fb2feaa69c876aa1b46902655edf/youtube.json",
+    "preserved": "artifacts/live-destination-capability-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "713c593c84709ca3dda36336db84d4e4045ed78e779e6d6f44db5e70b4b18974",
+    "outputDirectory": "/tmp/live-destination-builds-ez65tj4t/youtube"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/8cf32ffa38261e0a83a5817cb2dbb97b533e0788a7cb39188fbeb3ce6e7af9cb/jest.json",
+    "preserved": "artifacts/live-destination-capability-2026-10-06/target-dependencies/jest.json",
+    "sha256": "09de94da737fe9e6421334350450a47c205d3089c2724eac20b2c440926ad0d4",
+    "outputDirectory": "/tmp/live-destination-builds-ez65tj4t/jest"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/a7b6b20206d592034bda50d08c13afaf0284333ec0d6363dc73cfe5200e8921f/facebook.json",
+    "preserved": "artifacts/live-destination-capability-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "f120d8c2e23110f1446b339eb9246fc008d7a69d58275783a0a11b36bf5b32df",
+    "outputDirectory": "/tmp/live-destination-builds-ez65tj4t/facebook"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/e5b6eb51738f5eb8694b02ad939da56d85ed96d8c06340479561951c6604a694/yahoo.json",
+    "preserved": "artifacts/live-destination-capability-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "9660e0743e8c3bac0f403ed54caae962b5a76014a2f316097211e54ab2060daf",
+    "outputDirectory": "/tmp/live-destination-builds-ez65tj4t/yahoo"
+  }
+]

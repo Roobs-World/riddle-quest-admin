@@ -1,0 +1,25 @@
+FAIL src/facebook/__tests__/FacebookOverlayCapability.test.ts
+  ● Facebook overlay capability › a native show cancelling its scope cannot admit the next view's show
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: called with 0 arguments
+
+      253 |     await expect(createFacebookOverlayCapability(harness.value)!.renderPlayer({playerId: "player-1", surface: connectedSurface(), signal: controller.signal})).resolves.toEqual({status: "cancelled"});
+      254 |     expect(harness.picture.showAsync).toHaveBeenCalledTimes(1);
+    > 255 |     expect(harness.name.showAsync).not.toHaveBeenCalled();
+          |                                        ^
+      256 |   });
+      257 | });
+      258 |
+
+      at Object.<anonymous> (src/facebook/__tests__/FacebookOverlayCapability.test.ts:255:40)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 12 passed, 13 total
+Snapshots:   0 total
+Time:        0.199 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookOverlayCapability.test.ts.

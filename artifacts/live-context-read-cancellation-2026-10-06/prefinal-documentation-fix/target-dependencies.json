@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/b672617778c032204fc1923f5713c565ed73df498989a30e4d1c10e44122cbbe/facebook.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/prefinal-documentation-fix/target-dependencies/facebook.json",
+    "sha256": "b746fbe7817bcba55a783b7d143528d9bed7ceebe6bb65bbdc1d325386afd9ec"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/85847ad71df57f52a0090225d802b6d89f5eec4e3f3e12d657fd01b7fe2efbc9/reddit.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/prefinal-documentation-fix/target-dependencies/reddit.json",
+    "sha256": "0f67f611774504b33ccc08e1f0525910ecbaf512b4076e50e005fa7e4b7bfb53"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/bc57016963ee0daad8bb4633bec3e4604a2f15695f96e4c825af4cda09e971a6/yahoo.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/prefinal-documentation-fix/target-dependencies/yahoo.json",
+    "sha256": "4a4bd324c94d5650c55af263854933aa971431744e826a51cbf96b88d39cab5f"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/60643dbb2bbf30a560465aac71bcd2ba95e9c99d148eb9afdd8d79aa2d8b6bfd/netflix.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/prefinal-documentation-fix/target-dependencies/netflix.json",
+    "sha256": "8615c1f5219b60c1300a6703ecfd2598b66c2f641aef0178050dd4b195fc71dd"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/58d4c23e81844964c5a1f0bacdeac048f47ac9f43ad0eff49698836bf3dc8672/youtube.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/prefinal-documentation-fix/target-dependencies/youtube.json",
+    "sha256": "e47b21ff2da175cbeb5c4b33e7ee97effbcc808199c2f6159821547aaf5f0750"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/665195018ade1ad6e6d0a5a5eb3cfda936e133ad8de813c98aab1eb3e8e4258d/jest.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/prefinal-documentation-fix/target-dependencies/jest.json",
+    "sha256": "c47fccfe7d3e4017b157d021c4e0d24d4702d041e78a6aa46542c6bb5c5bb0ab"
+  }
+]

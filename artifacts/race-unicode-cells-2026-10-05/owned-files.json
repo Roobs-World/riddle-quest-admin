@@ -1,0 +1,13 @@
+{
+  "schemas": "packages/core/src/race/raceSchemas.ts",
+  "text-schemas": "packages/core/src/race/raceTextSchemas.ts",
+  "live-schemas": "packages/core/src/race/raceLiveSchemas.ts",
+  "index": "packages/core/src/race/index.ts",
+  "stored": "firebase-functions/src/race/raceStoredRecords.ts",
+  "draft": "packages/portal/src/play/race/logic/raceDraftStorage.ts",
+  "core-test": "packages/core/src/race/__tests__/raceUnicodeCells.test.ts",
+  "sdk-test": "firebase-functions/src/__tests__/race/raceUnicodeCells.it.test.ts",
+  "draft-test": "packages/portal/src/play/race/__tests__/RaceSessionDraftReload.test.ts",
+  "unicode-test": "packages/core/src/race/__tests__/raceUnicodeAnswers.test.ts",
+  "work-test": "packages/core/src/race/__tests__/raceValidationWork.test.ts"
+}

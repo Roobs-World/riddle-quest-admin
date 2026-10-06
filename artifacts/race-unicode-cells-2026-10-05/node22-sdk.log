@@ -1,0 +1,51 @@
+[Pinned Functions runtime v22.23.1] Unicode SDK compatibility
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":36,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":33,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":24,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       11 passed, 11 total
+Snapshots:   0 total
+Time:        1.621 s, estimated 3 s
+Ran all test suites.

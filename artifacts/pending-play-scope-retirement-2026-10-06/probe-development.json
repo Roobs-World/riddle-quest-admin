@@ -1,0 +1,28 @@
+{
+  "messages": [
+    {
+      "actor": "Alice",
+      "message": {
+        "type": "game:submitGuess",
+        "requestId": "guess-18a1da77-3c54-4d21-907c-445e5e149aaf",
+        "payload": {
+          "riddleId": "classic_1",
+          "gameMode": "classic",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "guess": "PIZZA",
+          "requestId": "guess-18a1da77-3c54-4d21-907c-445e5e149aaf"
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "unhandled": [],
+  "owner": "Bob",
+  "draft": "",
+  "intervals": [
+    {
+      "ms": 5000,
+      "cleared": true
+    }
+  ]
+}

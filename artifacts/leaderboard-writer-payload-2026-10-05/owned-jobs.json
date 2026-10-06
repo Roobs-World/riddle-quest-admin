@@ -1,0 +1,74 @@
+[
+  {
+    "name": "red-emulator",
+    "sessionId": 18782,
+    "exitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-focused-probe",
+    "sessionId": 98852,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator-probe",
+    "sessionId": 38482,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe",
+    "sessionId": 27408,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": 80149,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 80867,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 64200,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 79712,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 86933,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-focused",
+    "sessionId": 75012,
+    "exitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "built-browser",
+    "sessionId": 36935,
+    "exitCode": 0,
+    "status": "terminal"
+  }
+]

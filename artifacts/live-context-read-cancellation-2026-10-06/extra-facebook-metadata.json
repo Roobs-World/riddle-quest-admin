@@ -1,0 +1,8 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/96905fbe557a01e3a42769766c7e0ab255c9b0cdb4e6188d90348ef479e0334f/facebook.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/facebook-browser.json",
+    "sha256": "6c402ca25091e9ca1344777f28bd25c8a014e837ec696de36500cebdbbe52752",
+    "outputDirectory": "/tmp/riddle-quest-facebook-browser-EgPYCa"
+  }
+]

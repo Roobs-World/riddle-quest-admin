@@ -1,0 +1,51 @@
+[
+  {
+    "path": "packages/portal/src/play/race/RaceContextBoard.tsx",
+    "before": "artifacts/live-context-read-cancellation-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "31c35e7e7e4c3098e86099d7702f4f376740afa1e930a35612d23cfad131e995",
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-00-after.txt",
+    "afterSha256": "ae3edb373b866606e1a35c9f827bb4e2fdc78c86521249c809bdb44b6d7b16a0"
+  },
+  {
+    "path": "packages/portal/src/facebook/contextBoard.ts",
+    "before": "artifacts/live-context-read-cancellation-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "01b06def763b962d897529574a645729cd7c56cad8e64df184d777e01ba62e3c",
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-01-after.txt",
+    "afterSha256": "900d784545091fabd31abbbe6c3e90cc7ff60ff28c7ac84213c617960d9b3912"
+  },
+  {
+    "path": "packages/portal/src/platform/types.ts",
+    "before": "artifacts/live-context-read-cancellation-2026-10-06/owned-02-before.txt",
+    "beforeSha256": "5941d19c591cc1488b931646856bff6228a6489041c9b43e19a43e047e9f6130",
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-02-after.txt",
+    "afterSha256": "340acc1243ca1cda18562e0df8d3110c34b7efa92584618bb4f61c28bbc7adea"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-context-read-cancellation-2026-10-06/owned-03-before.txt",
+    "beforeSha256": "de9ff4a74dfdea5b11d2fcaff64bb9b7a15e1e8f3ee215f960770a129af8f45c",
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-03-after.txt",
+    "afterSha256": "f5997ff4dc3892c2a17ff669b13760a25f790a724604db32af7ce716c8e1d3f6"
+  },
+  {
+    "path": "packages/portal/src/facebook/__tests__/contextBoard.test.ts",
+    "before": "artifacts/live-context-read-cancellation-2026-10-06/owned-04-before.txt",
+    "beforeSha256": "7f2c021d49b6103c71ebba8fa4a46e6f3af67001a141eb79b908250770dbf7c5",
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-04-after.txt",
+    "afterSha256": "1850c4809549e6a75e1753da7acc58329f55ffe68b21b8b5f8c9e8a58ed81b12"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-context-read-cancellation-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-05-after.txt",
+    "afterSha256": "952e780fc340690442cf8f433f7eb7e5d11dbe37a9bbf6fa1b9a2f4f2018bcbc"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-context-choice-browser.mjs",
+    "before": "artifacts/live-context-read-cancellation-2026-10-06/owned-06-before.txt",
+    "beforeSha256": "699b8b3f4d8a5d2b05bc69d6f67f99d059d533f46ac04c69feca0795bfe1d90b",
+    "after": "artifacts/live-context-read-cancellation-2026-10-06/owned-06-after.txt",
+    "afterSha256": "5e14ab8450962ba0a7edb3e550d3e92977d42a4d699e8d559772f54206eea3d6"
+  }
+]

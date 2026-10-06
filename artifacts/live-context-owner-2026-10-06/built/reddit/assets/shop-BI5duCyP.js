@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`munten`,LOADING_TEXT:`Winkel laden...`,NO_PACKS_AVAILABLE:`Er zijn momenteel geen muntpakketten beschikbaar.`,PURCHASE_BUTTON:`AANKOOP`,TITLE:`MUNTWINKEL`,YOUR_BALANCE:`Jouw saldo`},n={CoinShop:t}})))()}r();export{n as default};

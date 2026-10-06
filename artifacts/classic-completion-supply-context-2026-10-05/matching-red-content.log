@@ -1,0 +1,52 @@
+  console.info
+    {"legacy":false,"elapsedMs":800,"reads":["transaction:gameCompletionReceipts/bdf7d757e256cc38890a6d9f77f636ec23207e343b03d6887d429136044bf6aa","transaction:users/player-1","transaction:users/player-1/singlePlayerCompletionBindings/92f6477b76d7bdfefe836ad2d90aadddbd236dc26c766bd581fb6d82dca9a7f8","transaction:users/player-1","direct:users/player-1"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"legacy":true,"elapsedMs":800,"reads":["transaction:gameCompletionReceipts/bdf7d757e256cc38890a6d9f77f636ec23207e343b03d6887d429136044bf6aa","transaction:users/player-1","transaction:users/player-1/singlePlayerCompletionBindings/92f6477b76d7bdfefe836ad2d90aadddbd236dc26c766bd581fb6d82dca9a7f8","transaction:users/player-1","direct:users/player-1"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/singlePlayerContentPreparationLatency.test.ts
+  ● prepares Classic content from committed legacy profile false without a duplicate read
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 0
+    Received length: 1
+    Received array:  ["direct:users/player-1"]
+
+      57 |     expect(await result).toMatchObject({isCorrect: true});
+      58 |     if (process.env.SINGLE_PLAYER_CONTENT_TRACE) console.info(JSON.stringify({legacy, elapsedMs: Date.now() - start, reads: mockReads}));
+    > 59 |     expect(mockReads.filter(read => read === "direct:users/player-1")).toHaveLength(0);
+         |                                                                        ^
+      60 |     expect(mockReads.filter(read => read.startsWith("repair-write:"))).toHaveLength(0);
+      61 |     expect(Date.now() - start).toBe(600);
+      62 |     expect(mockReads.filter(read => read === "transaction:users/player-1")).toHaveLength(2);
+
+      at src/__tests__/singlePlayerContentPreparationLatency.test.ts:59:72
+
+  ● prepares Classic content from committed legacy profile true without a duplicate read
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 0
+    Received length: 1
+    Received array:  ["direct:users/player-1"]
+
+      57 |     expect(await result).toMatchObject({isCorrect: true});
+      58 |     if (process.env.SINGLE_PLAYER_CONTENT_TRACE) console.info(JSON.stringify({legacy, elapsedMs: Date.now() - start, reads: mockReads}));
+    > 59 |     expect(mockReads.filter(read => read === "direct:users/player-1")).toHaveLength(0);
+         |                                                                        ^
+      60 |     expect(mockReads.filter(read => read.startsWith("repair-write:"))).toHaveLength(0);
+      61 |     expect(Date.now() - start).toBe(600);
+      62 |     expect(mockReads.filter(read => read === "transaction:users/player-1")).toHaveLength(2);
+
+      at src/__tests__/singlePlayerContentPreparationLatency.test.ts:59:72
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.429 s, estimated 1 s
+Ran all test suites matching src/__tests__/singlePlayerContentPreparationLatency.test.ts.

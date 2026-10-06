@@ -1,0 +1,21 @@
+{
+  "name": "destinations-development",
+  "command": [
+    "env",
+    "LIVE_DEST_MODE=development",
+    "LIVE_DEST_REPORT_DIR=../../artifacts/live-rematch-owner-2026-10-06/destinations-development",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-live-destination-capability-browser.mjs"
+  ],
+  "logs": [
+    "destinations-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791254451.5489373,
+  "exitCode": 0,
+  "finishedAt": 1791254468.160036
+}

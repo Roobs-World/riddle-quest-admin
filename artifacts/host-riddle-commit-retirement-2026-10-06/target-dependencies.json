@@ -1,0 +1,38 @@
+[
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/db5e98e86dc08fa145d24baab04f1af35911a0650db2e69c21d0af29ade6d66d/jest.json",
+    "preserved": "artifacts/host-riddle-commit-retirement-2026-10-06/target-metadata/jest.json",
+    "sha256": "9afa7758dd51ef2a73562949481225c92410d3e5030638b09091b3e9c3de679b"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/c9d3e7e9f4e4c47e22c73d01c68f6ef1cce3d0f6d5b484cb295868fa85cf4b31/facebook.json",
+    "preserved": "artifacts/host-riddle-commit-retirement-2026-10-06/target-metadata/facebook.json",
+    "sha256": "3750f08371d00e7360a021f0b09b82f2dfbeced70e2245ddb91886f7906556ba"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/5cb00d75daf76075b28614629dbb603621d748a8f25e74ea8a85256c8887c3c7/reddit.json",
+    "preserved": "artifacts/host-riddle-commit-retirement-2026-10-06/target-metadata/reddit.json",
+    "sha256": "70b487a898736313f50f97ebe5c17808fe1a50d1de0f24d92359b10138668e76"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/5a144d4714e82353bc9aff628feb3306d7bfb5f39fc722241d61f3732cf7bcc7/youtube.json",
+    "preserved": "artifacts/host-riddle-commit-retirement-2026-10-06/target-metadata/youtube.json",
+    "sha256": "226aa2ead1862d8bb082c65c782a3d26fe2079f19d668daa2bdc1d7ea2a2c43c"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/78459268659a1855963592285deba0a4629275ecb36f5c6a01d321edf439c8ad/netflix.json",
+    "preserved": "artifacts/host-riddle-commit-retirement-2026-10-06/target-metadata/netflix.json",
+    "sha256": "0ef2b7a536eea798f2c8e53e146247c513b86335a291dc62e96bcd1b54ad1272"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/674abf3804017d363bc359d65f94c98d2d6bf18338b6ccffb426ee8eac736b14/yahoo.json",
+    "preserved": "artifacts/host-riddle-commit-retirement-2026-10-06/target-metadata/yahoo.json",
+    "sha256": "0faa28fcceb34dc5a362b968ca356cce3f1d68611dafa6e3ed0488a139412a14"
+  }
+]

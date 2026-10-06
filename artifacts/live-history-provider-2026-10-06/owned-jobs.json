@@ -1,0 +1,287 @@
+[
+  {
+    "name": "all-six-builds",
+    "command": [
+      "bash",
+      "artifacts/live-history-provider-2026-10-06/builds.sh"
+    ],
+    "logs": [
+      "builds.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252630.833847,
+    "exitCode": 0,
+    "finishedAt": 1791252658.2406554
+  },
+  {
+    "name": "baseline-development",
+    "command": [
+      "env",
+      "LIVE_HISTORY_QUICK=1",
+      "LIVE_HISTORY_BASELINE_FILE=../../artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+      "LIVE_HISTORY_REPORT_DIR=../../artifacts/live-history-provider-2026-10-06/baseline-development",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-history-provider-browser.mjs"
+    ],
+    "logs": [
+      "baseline-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252630.6116915,
+    "exitCode": 1,
+    "finishedAt": 1791252662.0407262
+  },
+  {
+    "name": "baseline-production",
+    "command": [
+      "env",
+      "LIVE_HISTORY_QUICK=1",
+      "LIVE_HISTORY_MODE=production",
+      "LIVE_HISTORY_BASELINE_FILE=../../artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+      "LIVE_HISTORY_REPORT_DIR=../../artifacts/live-history-provider-2026-10-06/baseline-production",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-history-provider-browser.mjs"
+    ],
+    "logs": [
+      "baseline-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252631.2481215,
+    "exitCode": 1,
+    "finishedAt": 1791252662.5123746
+  },
+  {
+    "name": "built-browser",
+    "command": [
+      "bash",
+      "artifacts/live-history-provider-2026-10-06/built-browser.sh"
+    ],
+    "logs": [
+      "built-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252682.682744,
+    "exitCode": 0,
+    "finishedAt": 1791252788.59903
+  },
+  {
+    "name": "chromium-matrix",
+    "command": [
+      "bash",
+      "artifacts/live-history-provider-2026-10-06/browser.sh",
+      "chromium"
+    ],
+    "logs": [
+      "chromium-matrix.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252630.402917,
+    "exitCode": 0,
+    "finishedAt": 1791252649.1304069
+  },
+  {
+    "name": "expanded-preflight",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "expanded-preflight.log"
+    ]
+  },
+  {
+    "name": "facebook-built-browser",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand",
+      "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"
+    ],
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252682.9057863,
+    "exitCode": 0,
+    "finishedAt": 1791252707.7422593
+  },
+  {
+    "name": "firefox-matrix",
+    "command": [
+      "bash",
+      "artifacts/live-history-provider-2026-10-06/browser.sh",
+      "firefox"
+    ],
+    "logs": [
+      "firefox-matrix.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252631.0432215,
+    "exitCode": 0,
+    "finishedAt": 1791252658.0488544
+  },
+  {
+    "name": "fixture-intercepted-development",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "fixture-intercepted-development.log"
+    ]
+  },
+  {
+    "name": "fixture-intercepted-production",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "fixture-intercepted-production.log"
+    ]
+  },
+  {
+    "name": "minimal-final-baseline-development",
+    "command": [
+      "env",
+      "LIVE_HISTORY_MODE=development",
+      "LIVE_HISTORY_BASELINE_FILE=artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+      "LIVE_HISTORY_REPORT_DIR=artifacts/live-history-provider-2026-10-06/minimal-final-baseline-development",
+      "node",
+      "artifacts/live-history-provider-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252799.6842704,
+    "exitCode": 1,
+    "finishedAt": 1791252800.706395
+  },
+  {
+    "name": "minimal-final-baseline-production",
+    "command": [
+      "env",
+      "LIVE_HISTORY_MODE=production",
+      "LIVE_HISTORY_BASELINE_FILE=artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+      "LIVE_HISTORY_REPORT_DIR=artifacts/live-history-provider-2026-10-06/minimal-final-baseline-production",
+      "node",
+      "artifacts/live-history-provider-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252799.2917254,
+    "exitCode": 1,
+    "finishedAt": 1791252800.2420456
+  },
+  {
+    "name": "minimal-final-green-development",
+    "command": [
+      "env",
+      "LIVE_HISTORY_MODE=development",
+      "LIVE_HISTORY_REPORT_DIR=artifacts/live-history-provider-2026-10-06/minimal-final-green-development",
+      "node",
+      "artifacts/live-history-provider-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252799.4951546,
+    "exitCode": 0,
+    "finishedAt": 1791252800.497557
+  },
+  {
+    "name": "minimal-final-green-production",
+    "command": [
+      "env",
+      "LIVE_HISTORY_MODE=production",
+      "LIVE_HISTORY_REPORT_DIR=artifacts/live-history-provider-2026-10-06/minimal-final-green-production",
+      "node",
+      "artifacts/live-history-provider-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252799.8858023,
+    "exitCode": 0,
+    "finishedAt": 1791252800.829969
+  },
+  {
+    "name": "minimal-green-development",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "green-development.log"
+    ]
+  },
+  {
+    "name": "minimal-red-development",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-development.log"
+    ]
+  },
+  {
+    "name": "minimal-red-production",
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-production.log"
+    ]
+  },
+  {
+    "name": "portal-units",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand"
+    ],
+    "logs": [
+      "portal-units.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252629.9970546,
+    "exitCode": 0,
+    "finishedAt": 1791252641.114496
+  },
+  {
+    "name": "static-final",
+    "command": [
+      "bash",
+      "artifacts/live-history-provider-2026-10-06/static.sh"
+    ],
+    "logs": [
+      "static-final.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791252630.1923828,
+    "exitCode": 0,
+    "finishedAt": 1791252633.7441187
+  },
+  {
+    "name": "types-tsdoc-preflight",
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-preflight.log",
+      "tsdoc-preflight.log"
+    ]
+  }
+]

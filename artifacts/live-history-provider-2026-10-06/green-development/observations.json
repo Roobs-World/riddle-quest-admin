@@ -1,0 +1,74 @@
+[
+  {
+    "scenario": "replace",
+    "name": "replacement commits through actual tournament destination",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "scenario": "replace",
+    "name": "only current-provider rows exist during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "replace",
+    "name": "replacement cannot start a rematch from an old history ticket",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "replace",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "stable",
+    "name": "replacement commits through actual tournament destination",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "scenario": "stable",
+    "name": "only current-provider rows exist during commit",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "stable",
+    "name": "replacement cannot start a rematch from an old history ticket",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "stable",
+    "name": "ordinary parent update preserves row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "stable",
+    "name": "ordinary parent update adds no history read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "stable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

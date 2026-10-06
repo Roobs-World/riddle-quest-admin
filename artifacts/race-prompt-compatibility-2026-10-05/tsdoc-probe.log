@@ -1,0 +1,6 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 3 production declarations are undocumented.
+- firebase-functions/src/__tests__/race/racePromptCompatibility.it.test.ts:68 b
+- firebase-functions/src/__tests__/race/racePromptCompatibility.it.test.ts:69 active
+- firebase-functions/src/__tests__/race/racePromptCompatibility.it.test.ts:73 match
+[ELIFECYCLE] Command failed with exit code 1.

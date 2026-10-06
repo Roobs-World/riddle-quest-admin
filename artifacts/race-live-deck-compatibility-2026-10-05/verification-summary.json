@@ -1,0 +1,45 @@
+{
+  "goal": "active",
+  "change": "Validate complete retained frozen decks before new public/private/bot live matches; keep healthy matchmaking, available previews and bounded Unicode processing coherent while retaining accepted recovery and settlement.",
+  "newSdkCases": 42,
+  "matchingRedSdkFailures": 33,
+  "newUnitCases": 5,
+  "matchingRedUnitFailures": 4,
+  "backendUnitTests": 1674,
+  "backendUnitSuites": 135,
+  "emulatorTests": 454,
+  "emulatorSuites": 29,
+  "pinnedNode22SdkCases": 42,
+  "coreTests": 374,
+  "coreSuites": 38,
+  "portalFocusedTests": 121,
+  "portalFocusedSuites": 7,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "types": [
+    "core",
+    "backend",
+    "portal"
+  ],
+  "backendLint": "passed",
+  "tsdocDeclarations": 26154,
+  "tsdocFiles": 1172,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2379,
+  "compiledCoreHashes": 24,
+  "preservedBuildFiles": 1300,
+  "ownedParentJobsTerminal": 23,
+  "resolvedPreflights": [
+    "core-command-preflight",
+    "green-sdk-initial",
+    "tsdoc-command-preflight",
+    "tsdoc-declarations-probe"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  },
+  "limits": "No measured network latency reduction or release certification; transaction retry with changing retained content was reviewed in source but not forced by this new suite."
+}

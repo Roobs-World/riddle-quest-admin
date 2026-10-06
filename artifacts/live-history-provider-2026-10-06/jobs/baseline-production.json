@@ -1,0 +1,23 @@
+{
+  "name": "baseline-production",
+  "command": [
+    "env",
+    "LIVE_HISTORY_QUICK=1",
+    "LIVE_HISTORY_MODE=production",
+    "LIVE_HISTORY_BASELINE_FILE=../../artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+    "LIVE_HISTORY_REPORT_DIR=../../artifacts/live-history-provider-2026-10-06/baseline-production",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-live-history-provider-browser.mjs"
+  ],
+  "logs": [
+    "baseline-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791252631.2481215,
+  "exitCode": 1,
+  "finishedAt": 1791252662.5123746
+}

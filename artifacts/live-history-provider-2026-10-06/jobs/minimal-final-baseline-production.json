@@ -1,0 +1,18 @@
+{
+  "name": "minimal-final-baseline-production",
+  "command": [
+    "env",
+    "LIVE_HISTORY_MODE=production",
+    "LIVE_HISTORY_BASELINE_FILE=artifacts/live-history-provider-2026-10-06/owned-00-before.txt",
+    "LIVE_HISTORY_REPORT_DIR=artifacts/live-history-provider-2026-10-06/minimal-final-baseline-production",
+    "node",
+    "artifacts/live-history-provider-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-baseline-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791252799.2917254,
+  "exitCode": 1,
+  "finishedAt": 1791252800.2420456
+}

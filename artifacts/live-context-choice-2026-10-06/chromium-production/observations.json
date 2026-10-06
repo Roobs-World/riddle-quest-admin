@@ -1,0 +1,4454 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "silent-capability",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "cancelled",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-context",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "ordinary profile update retains pending dialog exclusion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile-silent",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "uncommitted provider replacement retains current owner",
+    "actual": "alpha",
+    "expected": "alpha"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "replacement provider owns its acknowledged current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "retired native acknowledgement does not refresh replacement provider",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "replacement provider owns its acknowledged current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "retired native acknowledgement does not refresh replacement provider",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired-success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "late native completion does not navigate away from current Play",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "choice does not issue an independent history read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "ordinary profile update retains pending dialog exclusion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "uncommitted provider replacement retains current owner",
+    "actual": "alpha",
+    "expected": "alpha"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "replacement provider owns its acknowledged current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "retired native acknowledgement does not refresh replacement provider",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "replacement provider owns its acknowledged current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "retired native acknowledgement does not refresh replacement provider",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "late native completion does not navigate away from current Play",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "choice does not issue an independent history read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "silent-capability",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cancelled",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "same-context",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "ordinary profile update retains pending dialog exclusion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile-silent",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "uncommitted provider replacement retains current owner",
+    "actual": "alpha",
+    "expected": "alpha"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "replacement provider owns its acknowledged current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "retired native acknowledgement does not refresh replacement provider",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "replacement provider owns its acknowledged current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "retired native acknowledgement does not refresh replacement provider",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "choice does not issue an independent history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "choice preserves independent history row identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "choice preserves modal identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ],
+      [
+        "beta",
+        "c"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "retired-success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "late native completion does not navigate away from current Play",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "choice does not issue an independent history read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

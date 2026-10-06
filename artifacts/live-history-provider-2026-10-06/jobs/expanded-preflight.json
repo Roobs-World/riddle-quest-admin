@@ -1,0 +1,8 @@
+{
+  "name": "expanded-preflight",
+  "status": "terminal",
+  "exitCode": 0,
+  "logs": [
+    "expanded-preflight.log"
+  ]
+}

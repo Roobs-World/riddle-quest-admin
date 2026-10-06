@@ -2,6 +2,7 @@
 const serviceMocks = {
   abandonRaceRunForUser: jest.fn(),
   getRaceChallengePreview: jest.fn(),
+  getRaceChallengeForUser: jest.fn(),
   getRaceOutcomeForUser: jest.fn(),
   listRaceCategoriesForLocale: jest.fn(),
   listRaceInboxForUser: jest.fn(),
@@ -51,6 +52,7 @@ jest.mock("firebase-functions/v2/https", () => {
 jest.mock("../../race/raceService", () => ({
   abandonRaceRunForUser: serviceMocks.abandonRaceRunForUser,
   getRaceChallengePreview: serviceMocks.getRaceChallengePreview,
+  getRaceChallengeForUser: serviceMocks.getRaceChallengeForUser,
   getRaceOutcomeForUser: serviceMocks.getRaceOutcomeForUser,
   listRaceCategoriesForLocale: serviceMocks.listRaceCategoriesForLocale,
   listRaceInboxForUser: serviceMocks.listRaceInboxForUser,
@@ -95,7 +97,7 @@ import {
   submitRaceGuess,
 } from "../../race/raceCallables";
 import {createRaceCallableCases, type RaceCallableHandlers} from "./callableCases";
-import {raceCallableUserId, raceRunResponseFixture} from "./callableFixtures";
+import {raceCallableUserId, raceRunResponseFixture, raceChallengePreviewFixture} from "./callableFixtures";
 
 /** Handles rs. */
 const handlers = {
@@ -186,6 +188,17 @@ describe("Race callable methods", () => {
     mockFindRecordedRaceMatch.mockReset();
     mockAssertRaceAccess.mockResolvedValue(undefined);
     serviceMocks.claimRaceInviteForUser.mockResolvedValue(false);
+    serviceMocks.getRaceChallengeForUser.mockReset();
+  });
+
+  it.each(["data-loss", "permission-denied", "storage-outage"])("legacy preview uses authenticated admission rather than a detached metadata read: %s", async code => {
+    /** A user-bound authority rejection must survive the legacy response adapter unchanged. */
+    const failure = Object.assign(new Error("Owned fixture admission failure"), {code});
+    serviceMocks.getRaceChallengeForUser.mockRejectedValueOnce(failure);
+    serviceMocks.getRaceChallengePreview.mockResolvedValueOnce(raceChallengePreviewFixture);
+    await expect(getRaceChallenge(authenticatedRequest({challengeId: "challenge-1", locale: "en"}))).rejects.toBe(failure);
+    expect(serviceMocks.getRaceChallengeForUser).toHaveBeenCalledWith(raceCallableUserId, "challenge-1", "en");
+    expect(serviceMocks.claimRaceInviteForUser).not.toHaveBeenCalled();expect(serviceMocks.getRaceChallengePreview).not.toHaveBeenCalled();
   });
 
   it("binds recorded matchmaking to authenticated identity and validated preferences", async () => {

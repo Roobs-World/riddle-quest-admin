@@ -1,0 +1,107 @@
+[
+  {
+    "name": "red-emulator",
+    "sessionId": 40671,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "claim-only-emulator",
+    "sessionId": 81709,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator",
+    "sessionId": 90328,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "focused-probe",
+    "sessionId": 69604,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "types-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": 47386,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe-initial",
+    "sessionId": 36930,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe-fixed",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 21254,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 22828,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": 18310,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 96146,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 71379,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-focused",
+    "sessionId": 75283,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "built-browser",
+    "sessionId": 20431,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

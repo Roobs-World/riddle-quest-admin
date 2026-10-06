@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`حذف الحساب`,DATA_EXPORT:`تصدير البيانات`,SUPPORT:`الدعم`,THIRD_PARTY_LICENSES:`تراخيص الجهات الخارجية`,TITLE:`حول / قانوني`},n={AboutLegal:t}})))()}r();export{n as default};

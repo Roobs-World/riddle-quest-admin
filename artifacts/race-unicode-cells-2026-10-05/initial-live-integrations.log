@@ -1,0 +1,113 @@
+FAIL src/__tests__/race/raceUnicodeCells.it.test.ts
+  ● Console
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":28,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":17,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":20,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":12,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+    console.info
+      {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":13,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  ● publishes original hi evaluations and normalized preloaded hints
+
+    TypeError: (0 , raceStoredRecords_1.parseRunRecord) is not a function
+
+      32 |   const start=await startRaceRunForUser(OWNER,{locale:item.locale,categoryId:"history",requestId:"cells-evaluation-start",includeEvaluation:true},{db,nowMs:NOW});
+      33 |   /** Original authored bytes are retained in both archive and public evaluation. */
+    > 34 |   const stored=parseRunRecord((await db.doc(`raceRuns/${start.run.runId}`).get()).data(), start.run.runId);
+         |                              ^
+      35 |   expect(start.run.preloadedRiddles).toHaveLength(15);expect(start.run.preloadedRiddles!.map(r=>r.evaluation.answer)).toEqual(stored.riddles.map(r=>r.answer));
+      36 |   expect(start.run.preloadedRiddles![0].hint!.letter).toBe(splitGraphemes(stored.riddles[0].answer,item.locale)[0]);
+      37 | });
+
+      at src/__tests__/race/raceUnicodeCells.it.test.ts:34:30
+
+  ● publishes original fr evaluations and normalized preloaded hints
+
+    TypeError: (0 , raceStoredRecords_1.parseRunRecord) is not a function
+
+      32 |   const start=await startRaceRunForUser(OWNER,{locale:item.locale,categoryId:"history",requestId:"cells-evaluation-start",includeEvaluation:true},{db,nowMs:NOW});
+      33 |   /** Original authored bytes are retained in both archive and public evaluation. */
+    > 34 |   const stored=parseRunRecord((await db.doc(`raceRuns/${start.run.runId}`).get()).data(), start.run.runId);
+         |                              ^
+      35 |   expect(start.run.preloadedRiddles).toHaveLength(15);expect(start.run.preloadedRiddles!.map(r=>r.evaluation.answer)).toEqual(stored.riddles.map(r=>r.answer));
+      36 |   expect(start.run.preloadedRiddles![0].hint!.letter).toBe(splitGraphemes(stored.riddles[0].answer,item.locale)[0]);
+      37 | });
+
+      at src/__tests__/race/raceUnicodeCells.it.test.ts:34:30
+
+
+Summary of all failing tests
+FAIL src/__tests__/race/raceUnicodeCells.it.test.ts
+  ● publishes original hi evaluations and normalized preloaded hints
+
+    TypeError: (0 , raceStoredRecords_1.parseRunRecord) is not a function
+
+      32 |   const start=await startRaceRunForUser(OWNER,{locale:item.locale,categoryId:"history",requestId:"cells-evaluation-start",includeEvaluation:true},{db,nowMs:NOW});
+      33 |   /** Original authored bytes are retained in both archive and public evaluation. */
+    > 34 |   const stored=parseRunRecord((await db.doc(`raceRuns/${start.run.runId}`).get()).data(), start.run.runId);
+         |                              ^
+      35 |   expect(start.run.preloadedRiddles).toHaveLength(15);expect(start.run.preloadedRiddles!.map(r=>r.evaluation.answer)).toEqual(stored.riddles.map(r=>r.answer));
+      36 |   expect(start.run.preloadedRiddles![0].hint!.letter).toBe(splitGraphemes(stored.riddles[0].answer,item.locale)[0]);
+      37 | });
+
+      at src/__tests__/race/raceUnicodeCells.it.test.ts:34:30
+
+  ● publishes original fr evaluations and normalized preloaded hints
+
+    TypeError: (0 , raceStoredRecords_1.parseRunRecord) is not a function
+
+      32 |   const start=await startRaceRunForUser(OWNER,{locale:item.locale,categoryId:"history",requestId:"cells-evaluation-start",includeEvaluation:true},{db,nowMs:NOW});
+      33 |   /** Original authored bytes are retained in both archive and public evaluation. */
+    > 34 |   const stored=parseRunRecord((await db.doc(`raceRuns/${start.run.runId}`).get()).data(), start.run.runId);
+         |                              ^
+      35 |   expect(start.run.preloadedRiddles).toHaveLength(15);expect(start.run.preloadedRiddles!.map(r=>r.evaluation.answer)).toEqual(stored.riddles.map(r=>r.answer));
+      36 |   expect(start.run.preloadedRiddles![0].hint!.letter).toBe(splitGraphemes(stored.riddles[0].answer,item.locale)[0]);
+      37 | });
+
+      at src/__tests__/race/raceUnicodeCells.it.test.ts:34:30
+
+
+Test Suites: 1 failed, 27 passed, 28 total
+Tests:       2 failed, 410 passed, 412 total
+Snapshots:   0 total
+Time:        197.486 s
+Ran all test suites.

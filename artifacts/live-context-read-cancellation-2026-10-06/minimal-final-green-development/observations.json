@@ -1,0 +1,148 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "initial context authority query remains singular",
+    "actual": [
+      "a"
+    ],
+    "expected": [
+      "a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "pending native dialog excludes repeated native chooser calls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "late native completion does not navigate away from current Play",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retired Activity read does not admit an authority request after membership settles",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "current context acknowledgement starts only its owned authority queries",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "choice does not issue an independent history read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "only current acknowledged context projection renders",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retired native outcome leaves current feedback clean",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "one original native dialog was opened",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "membership deliveries remain provider owned",
+    "actual": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a"
+      ],
+      [
+        "alpha",
+        "b"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "retained independent native action uses original history ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

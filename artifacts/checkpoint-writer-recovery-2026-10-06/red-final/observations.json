@@ -1,0 +1,266 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "writer absence does not masquerade as durable progress",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "availability delivers the latest pending projection once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "durable queue contains only the current confirmed draft",
+    "actual": null,
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "availability changes retain the playable board",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "host writer changes do not refetch authority content",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "storage failure remains owned by the existing durability queue",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "host-late",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "writer absence does not masquerade as durable progress",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "availability delivers the latest pending projection once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "durable queue contains only the current confirmed draft",
+    "actual": null,
+    "expected": "P"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "availability changes retain the playable board",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "storage failure remains owned by the existing durability queue",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-late",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "writer absence does not masquerade as durable progress",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "availability delivers the latest pending projection once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "durable queue contains only the current confirmed draft",
+    "actual": null,
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "availability changes retain the playable board",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "storage failure remains owned by the existing durability queue",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-background",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "writer absence does not masquerade as durable progress",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "availability delivers the latest pending projection once",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "durable queue contains only the current confirmed draft",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "availability changes retain the playable board",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "storage failure remains owned by the existing durability queue",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hook-clear",
+    "name": "self-contained injected harness",
+    "actual": [],
+    "expected": []
+  }
+]

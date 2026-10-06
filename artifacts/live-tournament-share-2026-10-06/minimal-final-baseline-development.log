@@ -1,0 +1,64 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 2,
+  "checks": 36,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "method-success",
+      "name": "only still-owned native success refreshes standings",
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "method-success",
+      "name": "ordinary authority method retains receiver",
+      "actual": [
+        "board",
+        "board"
+      ],
+      "expected": [
+        "board"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "method-success",
+      "name": "owned success refreshes current board",
+      "actual": 3,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "method-failure",
+      "name": "retired native feedback cannot affect current board",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Only committed native share operations may apply board feedback
+
+4 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-tournament-share-browser.mjs:112:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 4,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

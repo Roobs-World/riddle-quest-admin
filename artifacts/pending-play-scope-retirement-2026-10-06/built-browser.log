@@ -1,0 +1,15 @@
+FAIL src/play/__tests__/queuedCoinActions.jest-playwright.test.ts (23.044 s)
+  ● queued coin actions › shows a purchased hint and the buffered Skip successor before server confirmation
+
+    locator.evaluate: Error: Skip waited for server confirmation
+
+      at eval (eval at evaluate (:311:30), <anonymous>:7:31)
+      at async <anonymous>:337:30
+      at Object.<anonymous> (src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:320:10)
+
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       1 failed, 21 passed, 22 total
+Snapshots:   0 total
+Time:        108.66 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts|src/play/__tests__/profileTour.jest-playwright.test.ts|src/reddit/__tests__/redditBrowser.jest-playwright.test.ts|src/play/__tests__/queuedCoinActions.jest-playwright.test.ts.

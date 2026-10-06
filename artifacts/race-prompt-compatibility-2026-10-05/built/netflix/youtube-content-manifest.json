@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "target": "netflix-candidate",
+  "contentVersion": "youtube-content-v1-c9d7fda289aaeb84",
+  "contentSha256": "0c78fe40c02afe2ff4937632e658c701a4c1963bd9972d0f4d762dda33f4d020",
+  "releaseReady": true,
+  "fixture": false,
+  "locales": [
+    "en",
+    "es",
+    "pt",
+    "fr",
+    "de",
+    "ja",
+    "ko",
+    "hi",
+    "ru",
+    "tr",
+    "ar",
+    "id",
+    "it",
+    "nl",
+    "pl",
+    "vi"
+  ],
+  "classicRiddleCount": 180,
+  "dailyScheduleEntries": 180
+}

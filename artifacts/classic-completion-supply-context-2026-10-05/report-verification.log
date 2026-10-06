@@ -1,0 +1,36 @@
+2347 source inputs verified source-report
+{
+  "goal": "active",
+  "classicWinTransportModelBeforeMs": 800,
+  "classicWinTransportModelAfterMs": 600,
+  "modelDocumentReadsBefore": 5,
+  "modelDocumentReadsAfter": 4,
+  "scope": "Actual completion, profile preparation and atomic leaderboard writer with 200ms simulated reads and 400ms stubbed supply work. Terminal session finalization is trusted and injected; transaction commit and production network latency are outside the model.",
+  "finalAttemptContextOnly": true,
+  "replayUsesCurrentCommittedProgress": true,
+  "missingAccountSkipsContent": true,
+  "backendUnitTests": 1617,
+  "backendUnitSuites": 131,
+  "emulatorTests": 237,
+  "emulatorSuites": 14,
+  "singlePlayerRepairAndSupplyCases": 12,
+  "focusedTests": 40,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25643,
+  "tsdocFiles": 1149,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2347,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 13,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

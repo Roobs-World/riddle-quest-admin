@@ -1,0 +1,83 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 4,
+  "checks": 33,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "host-late",
+      "name": "availability delivers the latest pending projection once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "host-late",
+      "name": "durable queue contains only the current confirmed draft",
+      "actual": null,
+      "expected": "P"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hook-late",
+      "name": "availability delivers the latest pending projection once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hook-late",
+      "name": "durable queue contains only the current confirmed draft",
+      "actual": null,
+      "expected": "P"
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hook-background",
+      "name": "availability delivers the latest pending projection once",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hook-background",
+      "name": "durable queue contains only the current confirmed draft",
+      "actual": null,
+      "expected": ""
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "hook-clear",
+      "name": "availability delivers the latest pending projection once",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Checkpoint writer availability recovery
+
+7 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-checkpoint-writer-recovery-browser.mjs:116:211 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 7,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

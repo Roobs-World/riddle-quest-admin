@@ -1,0 +1,8 @@
+{
+  "name": "minimal-green-development",
+  "status": "terminal",
+  "exitCode": 0,
+  "logs": [
+    "green-development.log"
+  ]
+}

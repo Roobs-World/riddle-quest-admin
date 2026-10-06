@@ -1,0 +1,5 @@
+{
+  "unchangedInputs": 897,
+  "allSelectedBackendAndCoreSourceAndCompiledInputsUnchanged": true,
+  "laterConfigurationOnly": "firebase-functions/jest.rules.config.js"
+}

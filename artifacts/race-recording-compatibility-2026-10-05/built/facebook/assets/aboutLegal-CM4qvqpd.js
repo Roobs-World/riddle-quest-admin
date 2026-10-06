@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`Eliminación de cuenta`,DATA_EXPORT:`Exportación de datos`,SUPPORT:`Soporte`,THIRD_PARTY_LICENSES:`Licencias de terceros`,TITLE:`Acerca de / Legal`},n={AboutLegal:t}})))()}r();export{n as default};

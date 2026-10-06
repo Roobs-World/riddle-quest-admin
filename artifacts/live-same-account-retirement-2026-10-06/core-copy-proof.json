@@ -1,0 +1,122 @@
+[
+  {
+    "canonical": "packages/core/dist/race/index.d.ts",
+    "copy": "firebase-functions/packages/core/dist/race/index.d.ts",
+    "sha256": "d9d64c84f661bf17b36e8073b6c8e77166b7952b57956ef62b30a5c56b1a4825"
+  },
+  {
+    "canonical": "packages/core/dist/race/index.d.ts",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/index.d.ts",
+    "sha256": "d9d64c84f661bf17b36e8073b6c8e77166b7952b57956ef62b30a5c56b1a4825"
+  },
+  {
+    "canonical": "packages/core/dist/race/index.d.ts.map",
+    "copy": "firebase-functions/packages/core/dist/race/index.d.ts.map",
+    "sha256": "796d0590b1fcb9ede03652537de54b00981766e2efdc99ded4f910fe90dd6683"
+  },
+  {
+    "canonical": "packages/core/dist/race/index.d.ts.map",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/index.d.ts.map",
+    "sha256": "796d0590b1fcb9ede03652537de54b00981766e2efdc99ded4f910fe90dd6683"
+  },
+  {
+    "canonical": "packages/core/dist/race/index.js",
+    "copy": "firebase-functions/packages/core/dist/race/index.js",
+    "sha256": "336d4f2ed27123e1f6c9b3f5f76898b12c6ecfc52edfb2e7f93883d45f076087"
+  },
+  {
+    "canonical": "packages/core/dist/race/index.js",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/index.js",
+    "sha256": "336d4f2ed27123e1f6c9b3f5f76898b12c6ecfc52edfb2e7f93883d45f076087"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceLiveSchemas.d.ts",
+    "copy": "firebase-functions/packages/core/dist/race/raceLiveSchemas.d.ts",
+    "sha256": "085ce1e56aa378d69f23fee7522d53780bf06c3339a952b1dc3b5eead310c4a1"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceLiveSchemas.d.ts",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceLiveSchemas.d.ts",
+    "sha256": "085ce1e56aa378d69f23fee7522d53780bf06c3339a952b1dc3b5eead310c4a1"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceLiveSchemas.d.ts.map",
+    "copy": "firebase-functions/packages/core/dist/race/raceLiveSchemas.d.ts.map",
+    "sha256": "a102863adac947218a13faf5995df2448835157c58242eed6e93458d16a85233"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceLiveSchemas.d.ts.map",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceLiveSchemas.d.ts.map",
+    "sha256": "a102863adac947218a13faf5995df2448835157c58242eed6e93458d16a85233"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceLiveSchemas.js",
+    "copy": "firebase-functions/packages/core/dist/race/raceLiveSchemas.js",
+    "sha256": "5e1bcf4b2b44a5f2093a063d43f1a1b9d2a6c1a60238591673e31fb50e0f3078"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceLiveSchemas.js",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceLiveSchemas.js",
+    "sha256": "5e1bcf4b2b44a5f2093a063d43f1a1b9d2a6c1a60238591673e31fb50e0f3078"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceSchemas.d.ts",
+    "copy": "firebase-functions/packages/core/dist/race/raceSchemas.d.ts",
+    "sha256": "ab9949fd449059f66a761adaaa95c784d755bdab1afcfd69a4ab17dd0144f3c1"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceSchemas.d.ts",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceSchemas.d.ts",
+    "sha256": "ab9949fd449059f66a761adaaa95c784d755bdab1afcfd69a4ab17dd0144f3c1"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceSchemas.d.ts.map",
+    "copy": "firebase-functions/packages/core/dist/race/raceSchemas.d.ts.map",
+    "sha256": "103c488d2f8ade93c23e191d2989db053621f6486decb83b8951cb1001bfeabf"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceSchemas.d.ts.map",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceSchemas.d.ts.map",
+    "sha256": "103c488d2f8ade93c23e191d2989db053621f6486decb83b8951cb1001bfeabf"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceSchemas.js",
+    "copy": "firebase-functions/packages/core/dist/race/raceSchemas.js",
+    "sha256": "91a950d39687c74ff630c409fc254275dfb3e48de6368afd16e48198c933f1da"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceSchemas.js",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceSchemas.js",
+    "sha256": "91a950d39687c74ff630c409fc254275dfb3e48de6368afd16e48198c933f1da"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceTextSchemas.d.ts",
+    "copy": "firebase-functions/packages/core/dist/race/raceTextSchemas.d.ts",
+    "sha256": "912a0871be1913620263431c9c4000f61d266f0e17c9bb33540f2644f10714af"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceTextSchemas.d.ts",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceTextSchemas.d.ts",
+    "sha256": "912a0871be1913620263431c9c4000f61d266f0e17c9bb33540f2644f10714af"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceTextSchemas.d.ts.map",
+    "copy": "firebase-functions/packages/core/dist/race/raceTextSchemas.d.ts.map",
+    "sha256": "31e826b8314663314213cac8588c453a9677a3e61bfaa55540fc394eaee6c756"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceTextSchemas.d.ts.map",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceTextSchemas.d.ts.map",
+    "sha256": "31e826b8314663314213cac8588c453a9677a3e61bfaa55540fc394eaee6c756"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceTextSchemas.js",
+    "copy": "firebase-functions/packages/core/dist/race/raceTextSchemas.js",
+    "sha256": "10778532eff4d1a1432703e6ca8a04fa7d5e385a51fa06018b8db67bb279c0f1"
+  },
+  {
+    "canonical": "packages/core/dist/race/raceTextSchemas.js",
+    "copy": "node_modules/.pnpm/@qwordly+core@file+firebase-functions+packages+core/node_modules/@qwordly/core/dist/race/raceTextSchemas.js",
+    "sha256": "10778532eff4d1a1432703e6ca8a04fa7d5e385a51fa06018b8db67bb279c0f1"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "sourceInputs": 2448,
+  "ownedSourceRecords": 4,
+  "terminalTrackedJobs": 18,
+  "portalUnitTests": 2898,
+  "portalSkippedTests": 93,
+  "newMountedCases": 228,
+  "newMountedAssertions": 1896,
+  "backgroundOwnershipControlCases": 54,
+  "backgroundOwnershipControlAssertions": 360,
+  "serializationControlCases": 4,
+  "serializationControlAssertions": 64,
+  "builtBrowserTests": 9,
+  "isolatedTargetInventories": 6,
+  "preservedBuiltFiles": 1301,
+  "unchangedAuthorityInputs": 824,
+  "authorityEvidenceReused": true,
+  "cleanupVerified": true,
+  "goalComplete": false
+}

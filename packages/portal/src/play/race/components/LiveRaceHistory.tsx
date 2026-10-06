@@ -3,8 +3,8 @@ import {ListLiveRaceHistoryResponseSchema, type ListLiveRaceHistoryResponse, typ
 import {tr} from "../../i18n";
 import {LiveRaceSafety} from "./LiveRaceSafety";
 
-/** Locale-bound result reads grant nothing; explicit safety and rematch actions use the owning transport. */
-export function LiveRaceHistory({transport, locale, onRematch}: {
+/** A provider's history read and content locale own the visible rows and their actions. */
+type LiveRaceHistoryProps = {
   /** Owning provider supplies its authenticated history transport. */
   transport: LiveRaceCapability;
   /** Exact active content language. */
@@ -14,7 +14,20 @@ export function LiveRaceHistory({transport, locale, onRematch}: {
     /** Original validated content category. */ categoryId: ListLiveRaceHistoryResponse["entries"][number]["categoryId"];
     /** Caller-owned retained terminal ticket. */ rematchOfTicketId: string;
   }) => void;
-}) {
+};
+
+/** Provider replacement retires old rows and controls before any passive cleanup. */
+export function LiveRaceHistory(props: LiveRaceHistoryProps) {
+  /** React keeps abandoned replacements from changing the committed panel's identity. */
+  const [lifetime, setLifetime] = useState(() => ({transport: props.transport, read: props.transport.history,
+    locale: props.locale, version: 0}));
+  if (lifetime.transport !== props.transport || lifetime.read !== props.transport.history || lifetime.locale !== props.locale)
+    setLifetime({transport: props.transport, read: props.transport.history, locale: props.locale, version: lifetime.version + 1});
+  return <LiveRaceHistoryPanel key={lifetime.version} {...props} />;
+}
+
+/** Locale-bound result reads grant nothing; explicit actions use only this panel's provider. */
+function LiveRaceHistoryPanel({transport, locale, onRematch}: LiveRaceHistoryProps) {
   /** A new read never exposes results from an earlier account, locale or tab. */
   const [history, setHistory] = useState<ListLiveRaceHistoryResponse | null>(null);
   /** Each retry owns a new bounded observer. */
@@ -29,7 +42,10 @@ export function LiveRaceHistory({transport, locale, onRematch}: {
     setHistory(null); setFailed(false); setLoading(true);
     /** Missing authority releases the panel so a deliberate retry remains available. */
     const timeout = window.setTimeout(() => {if (current) {current = false; setFailed(true); setLoading(false);}}, 8000);
-    void Promise.resolve().then(() => transport.history!(locale)).then(value => {
+    /** The deferred read cannot borrow a replacement callback from a mutable provider. */
+    const read = transport.history;
+    void Promise.resolve().then(() => current ? read!.call(transport, locale) : undefined).then(value => {
+      if (!current) return;
       /** Strict ordering, retention and response locale precede every rendered row. */
       const result = ListLiveRaceHistoryResponseSchema.parse(value);
       if (result.locale !== locale) throw new Error("History locale mismatch");

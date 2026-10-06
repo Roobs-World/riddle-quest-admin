@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`Xóa tài khoản`,DATA_EXPORT:`Xuất dữ liệu`,SUPPORT:`Hỗ trợ`,THIRD_PARTY_LICENSES:`Giấy phép của bên thứ ba`,TITLE:`Giới thiệu / Pháp lý`},n={AboutLegal:t}})))()}r();export{n as default};

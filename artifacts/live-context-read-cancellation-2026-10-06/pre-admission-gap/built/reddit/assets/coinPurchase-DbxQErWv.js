@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`رائع`,COINS_SUFFIX:`عملات معدنية`,TAP_CHEST_TO_COLLECT:`اضغط على الصندوق لجمع عملاتك`,TITLE:`تمت إضافة العملات المعدنية!`},n={CoinPurchase:t}})))()}r();export{n as default};

@@ -1,0 +1,45 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 2,
+  "checks": 10,
+  "failures": [
+    {
+      "scenario": "paid-receipt",
+      "name": "old rejection cannot restore Alice question into Bob game",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "scenario": "paid-receipt",
+      "name": "old action remains durable under Alice scope",
+      "actual": null,
+      "expected": "skip-2f7e2ba4-9c51-41db-ab80-cd9b5dd70f2e"
+    },
+    {
+      "scenario": "lease-retirement",
+      "name": "retired frame cannot renew delivery",
+      "actual": 2,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Pending-play retry scope retirement
+
+3 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/pending-play-lifetime-2026-10-06/probe.mjs:56:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

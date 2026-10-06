@@ -1,0 +1,76 @@
+{
+  "goal": "active",
+  "selectedIdentityFields": [
+    "username",
+    "level",
+    "avatarUrl"
+  ],
+  "syntheticDecodedProfileBytes": {
+    "creator": {
+      "before": 100108,
+      "after": 79
+    },
+    "viewer": {
+      "before": 100106,
+      "after": 77
+    }
+  },
+  "newAcceptanceProfileReads": {
+    "before": 3,
+    "after": 2
+  },
+  "decodedSyntheticTotalBytesByPath": {
+    "public": {
+      "before": 100108,
+      "after": 79
+    },
+    "private": {
+      "before": 100108,
+      "after": 79
+    },
+    "reconnect": {
+      "before": 100108,
+      "after": 79
+    },
+    "preview": {
+      "before": 200214,
+      "after": 156
+    },
+    "accept": {
+      "before": 300320,
+      "after": 156
+    },
+    "accepted-recovery": {
+      "before": 200214,
+      "after": 156
+    }
+  },
+  "scope": "Actual Admin SDK and private loopback Firestore emulator. Canonical fixture profiles contain a 100000-character unused field. Bytes measure decoded JSON, not wire bytes, billing reduction or production latency. Field masks retain whole canonical document transaction locks and fresh snapshots on retries. Invitation creator and viewer use one masked getAll call; new acceptance reuses its viewer snapshot within that same transaction.",
+  "newRealEmulatorCases": 12,
+  "backendUnitTests": 1647,
+  "backendUnitSuites": 134,
+  "emulatorTests": 314,
+  "emulatorSuites": 21,
+  "focusedTests": 19,
+  "focusedSuites": 2,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25929,
+  "tsdocFiles": 1159,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2357,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 18,
+  "resolvedPreflightFixtureIssues": [
+    "Deletion service assertion corrected to its existing account-deleted error contract"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/5d4e83f65ae7e03823d3c3f480143d39ce560bfc23dab9448f7435e73e00cb32/jest.json",
+    "preserved": "artifacts/attempt-recovery-commit-retirement-2026-10-06/target-metadata/jest.json",
+    "sha256": "83bd1d47a2465b14ce5a467dfc4ac071b91a5ca8817c3c55701d7604dc2fb8c6"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/6713c64084fc09531e8c6fed5a178f09588cfa8d9afa4c29da6283b478f0e579/facebook.json",
+    "preserved": "artifacts/attempt-recovery-commit-retirement-2026-10-06/target-metadata/facebook.json",
+    "sha256": "f3190de5b98bafa18ec0ee4b30f989d0dbcef1f898d6a476a3e40366993ff42b"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/f2d503a51e1a345d9b9758c64ca66639a06d8f69ed426f8a3aafc8cf6b25dbd5/reddit.json",
+    "preserved": "artifacts/attempt-recovery-commit-retirement-2026-10-06/target-metadata/reddit.json",
+    "sha256": "23ad61d1ef6fde69c41d43796dd2bffaf878cf1078ace587cb2cc71eed4b2345"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/d47d495657a681e985ca3c3a439030219a9a6795e8b391cd3c45f6aeaf8a78e5/youtube.json",
+    "preserved": "artifacts/attempt-recovery-commit-retirement-2026-10-06/target-metadata/youtube.json",
+    "sha256": "0827629ab46b72afec4466ffc030cbb545b7bd6dc42dd2a83f29c8fc62830962"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/98f19dab72ab480bbbc77fb6b2b301fdb4351399ddf0b6b3eb3c5e68b915783f/netflix.json",
+    "preserved": "artifacts/attempt-recovery-commit-retirement-2026-10-06/target-metadata/netflix.json",
+    "sha256": "8c81f84c311ae0191985d5ff4fc45c4ba2e4905bd0a38949544841051d0be395"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/8dc82b8a77ee16b677def92cf90af3ae1d43cad4b29c16ef393ba8ed9a1da2ea/yahoo.json",
+    "preserved": "artifacts/attempt-recovery-commit-retirement-2026-10-06/target-metadata/yahoo.json",
+    "sha256": "d99b4faf2c36d4a8ac4ee451ffa1a44645fddd5da717b459a855860ada3b94b2"
+  }
+]

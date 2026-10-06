@@ -1,5 +1,5 @@
-import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
-import {graphemeLength} from "@qwordly/core/game";
+import {RACE_ANSWER_TEXT_UNITS, RACE_CATEGORY_IDS, RacePreloadedRiddleSchema, RaceRiddlePromptSchema, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
+import {splitGraphemes} from "@qwordly/core/game";
 import {type SupportedLocale} from "@qwordly/core/validation";
 import {clueContainsLiteralAnswer} from "../riddles/riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
@@ -122,13 +122,22 @@ export function validateRacePool(
     const question = typeof data.text === "string" ? data.text.trim() : "";
     /** Provides answer behavior. */
     const answer = typeof data.answer === "string" ? data.answer.trim() : "";
+    /** Oversized original text cannot enter Unicode duplicate/leak processing or published evaluation. */
+    const answerWithinTextBudget = answer.length <= RACE_ANSWER_TEXT_UNITS;
+    /** Native race edits discard whitespace-only NFC slots; bounded segmentation also supplies the slot count. */
+    const answerSlots = answerWithinTextBudget ? splitGraphemes(answer, options.locale) : [];
+    /** Published identity must be valid and unchanged by the client prompt schema's normalization. */
+    const identity = RaceRiddlePromptSchema.shape.riddleId.safeParse(data.riddleId);
+    /** Catalog readiness uses the same trimmed clue bounds as both published race response formats. */
+    const clue = RaceRiddlePromptSchema.shape.text.safeParse(data.text);
     if (
+      !identity.success || identity.data !== data.riddleId ||
       typeof data.canonicalRiddleId !== "string" ||
       !isCategory(data.categoryId) ||
       !isDifficulty(data.difficultyBand) ||
       typeof data.qualityVersion !== "string" ||
-      !question ||
-      !answer
+      !clue.success ||
+      !answer || data.answer !== answer || answerSlots.some(slot => !slot.trim())
     ) {
       issues.push({
         code: "missing_metadata",
@@ -141,23 +150,27 @@ export function validateRacePool(
     difficultyCounts[data.difficultyBand] += 1;
     /** Normalizes d question. */
     const normalizedQuestion = normalize(question, options.locale);
-    /** Normalizes d answer. */
-    const normalizedAnswer = normalize(answer, options.locale);
     canonicals.set(data.canonicalRiddleId, [...(canonicals.get(data.canonicalRiddleId) ?? []), record.documentPath]);
     questions.set(normalizedQuestion, [...(questions.get(normalizedQuestion) ?? []), record.documentPath]);
-    answers.set(normalizedAnswer, [...(answers.get(normalizedAnswer) ?? []), record.documentPath]);
+    if (answerWithinTextBudget) {
+      /** Only bounded answer text can contribute useful playable duplicate diagnostics. */
+      const normalizedAnswer = normalize(answer, options.locale);
+      answers.set(normalizedAnswer, [...(answers.get(normalizedAnswer) ?? []), record.documentPath]);
+    }
 
-    if (clueContainsLiteralAnswer(question, answer, options.locale)) {
+    if (answerWithinTextBudget && clueContainsLiteralAnswer(question, answer, options.locale)) {
       issues.push({
         code: "clue_leaks_answer",
         message: "Clue contains its literal answer",
         documentPaths: [record.documentPath],
       });
     }
-    if (graphemeLength(answer, options.locale) > MAX_RIDDLE_ANSWER_CHARACTERS) {
+    /** Immutable answers must fit the exact evaluation contract as well as the locale-aware slot limit. */
+    const publishedAnswer = RacePreloadedRiddleSchema.shape.evaluation.shape.answer.safeParse(data.answer);
+    if (!publishedAnswer.success || answerSlots.length > MAX_RIDDLE_ANSWER_CHARACTERS) {
       issues.push({
         code: "answer_too_long",
-        message: `Answer exceeds the game limit of ${MAX_RIDDLE_ANSWER_CHARACTERS} characters`,
+        message: `Answer exceeds the game's ${MAX_RIDDLE_ANSWER_CHARACTERS}-slot or published text limits`,
         documentPaths: [record.documentPath],
       });
     }

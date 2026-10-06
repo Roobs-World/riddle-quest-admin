@@ -1,0 +1,106 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-supply-payload", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 59625.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/classic-supply-query-payload-2026-10-05/probe.config.cjs --runInBand
+  console.info
+    {"locale":"tr","highestClassicIndex":12,"severity":"INFO","message":"Queued Classic replenishment without delaying gameplay."}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"catalog","readCalls":1,"documentBytes":100084,"loadedFields":["answer","classicIndex","provenance","text"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"locale":"tr","highestClassicIndex":12,"severity":"INFO","message":"Queued Classic replenishment without delaying gameplay."}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"locale":"tr","highestClassicIndex":12,"severity":"INFO","message":"Queued Classic replenishment without delaying gameplay."}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"locale":"tr","highestClassicIndex":-1,"severity":"INFO","message":"Queued Classic replenishment without delaying gameplay."}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"locale":"tr","highestClassicIndex":12,"severity":"INFO","message":"Queued Classic replenishment without delaying gameplay."}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+          at async Promise.all (index 0)
+
+  console.info
+    {"mode":"discovery","readCalls":1,"documentBytes":300235,"loadedFields":["highestClassicIndex","locale","nextAttemptAtMs","privateBlob"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/classicSupplyPayload.it.test.ts
+  ● loads only the highest index in one real supply query
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 3
+
+      Array [
+    +   "answer",
+        "classicIndex",
+    +   "provenance",
+    +   "text",
+      ]
+
+      47 |     await triggerClassicRiddleGenerationIfNeeded("supply-fixture", 11, "tr");
+      48 |     if (process.env.CLASSIC_SUPPLY_PAYLOAD_TRACE) console.info(JSON.stringify({mode: "catalog", readCalls, documentBytes, loadedFields}));
+    > 49 |     expect(readCalls).toBe(1); expect(loadedFields).toEqual(["classicIndex"]); expect(documentBytes).toBeLessThan(64);
+         |                                                     ^
+      50 |     expect((await db.doc("classicSupplyJobs/tr_12").get()).data()).toMatchObject({locale: "tr", highestClassicIndex: 12, nextAttemptAtMs: 0});
+      51 |     expect(mockGenerate).not.toHaveBeenCalled();
+      52 |     expect((await db.doc("localizedRiddles/tr/riddles/supply-payload-high").get()).data()?.text.length).toBe(100_000);
+
+      at Object.<anonymous> (src/__tests__/classicSupplyPayload.it.test.ts:49:53)
+
+  ● discovers only three due IDs and lets real transactions read canonical jobs
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 6
+
+    - Array []
+    + Array [
+    +   "highestClassicIndex",
+    +   "locale",
+    +   "nextAttemptAtMs",
+    +   "privateBlob",
+    + ]
+
+      102 |     await processClassicSupplyJobs();
+      103 |     if (process.env.CLASSIC_SUPPLY_PAYLOAD_TRACE) console.info(JSON.stringify({mode: "discovery", readCalls, documentBytes, loadedFields}));
+    > 104 |     expect(readCalls).toBe(1); expect(loadedFields).toEqual([]); expect(documentBytes).toBe(10);
+          |                                                     ^
+      105 |     expect(mockGenerate).toHaveBeenCalledTimes(3);
+      106 |     expect(mockGenerate.mock.calls.every(args => args[0] === "tr" && args[1] === 5 && args[2] > Date.now())).toBe(true);
+      107 |     for (const index of [10, 11, 12]) expect((await db.doc(`classicSupplyJobs/tr_${index}`).get()).data()).toMatchObject({completed: true, privateBlob: "x".repeat(100_000)});
+
+      at Object.<anonymous> (src/__tests__/classicSupplyPayload.it.test.ts:104:53)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 6 passed, 8 total
+Snapshots:   0 total
+Time:        3.503 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config ../artifacts/classic-supply-query-payload-2026-10-05/probe.config.cjs --runInBand" exited with code 1

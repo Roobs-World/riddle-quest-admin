@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (19.163912ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.864252ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (6.307301ms)
+✔ rejects imports between different target owners (1.929887ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.711599ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.456961ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.500564ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.846123ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.19291ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.760982ms)
+✔ aggregates violations in deterministic file and source order (0.979596ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 148.164541
+Web Target boundary audit passed (316 files, 1372 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-en-BLb6vI01.js   87.86 kB │ gzip: 47.73 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-pt-DW6vhCbg.js   90.15 kB │ gzip: 48.96 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-nl-DIYBOubY.js   90.54 kB │ gzip: 49.17 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-id-RDM3C1HP.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-it-Bqy6UcxD.js   91.35 kB │ gzip: 49.55 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-es-UIyi0ZQJ.js   91.65 kB │ gzip: 49.74 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-de-DzN56xL4.js   92.15 kB │ gzip: 50.04 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-tr-FuC7n28J.js   92.54 kB │ gzip: 50.24 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-pl-DPU2oByq.js   92.70 kB │ gzip: 50.33 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-fr-Bz583o3n.js   93.56 kB │ gzip: 50.81 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-ja-l1s5sstx.js   94.66 kB │ gzip: 51.40 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-vi-kbl1vwoy.js   96.78 kB │ gzip: 52.54 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-ko-DyLxwcF2.js   97.36 kB │ gzip: 52.86 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-ar-DPX9QlNh.js  102.12 kB │ gzip: 55.41 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/index-Dk3qZJvs.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-ru-COuBpYJe.js  114.09 kB │ gzip: 61.92 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/playable-pack-hi-Cng-Moiv.js  134.49 kB │ gzip: 72.95 kB
+../../../../../../tmp/live-join-identity-payload-builds-xujziudn/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.21s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

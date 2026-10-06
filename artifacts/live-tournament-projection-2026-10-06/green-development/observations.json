@@ -1,0 +1,266 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "initial authoritative board renders before SDK settles",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "initial native lookup admitted once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "all recovery boards render while native work is held",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "serialized native lookup count before release",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "concurrent official snapshots share only necessary native lookups",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "native projection skips superseded unposted scores",
+    "actual": [
+      9000
+    ],
+    "expected": [
+      9000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "native context retains exact scope",
+    "actual": [
+      "context-a"
+    ],
+    "expected": [
+      "context-a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "all admitted local projection promises settle",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "fixed optional failure diagnostic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "official board remains independent of native result",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "fresh recovery lookup remains available after original settlement",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "native best deduplicates later older snapshots or recovers lookup failure",
+    "actual": [
+      9000
+    ],
+    "expected": [
+      9000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "duplicate",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "initial authoritative board renders before SDK settles",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "initial native lookup admitted once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "all recovery boards render while native work is held",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "serialized native lookup count before release",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "concurrent official snapshots share only necessary native lookups",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "native projection skips superseded unposted scores",
+    "actual": [
+      7000
+    ],
+    "expected": [
+      7000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "native context retains exact scope",
+    "actual": [
+      "context-a"
+    ],
+    "expected": [
+      "context-a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "all admitted local projection promises settle",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "fixed optional failure diagnostic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "official board remains independent of native result",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "fresh recovery lookup remains available after original settlement",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "native best deduplicates later older snapshots or recovers lookup failure",
+    "actual": [
+      7000
+    ],
+    "expected": [
+      7000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "improving",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -1,7 +1,7 @@
 import {useEffect, useLayoutEffect, useRef, type Dispatch} from "react";
 import type {SavedGame} from "../../../platform/types";
 import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
-import {GameSessionCheckpoints} from "../../GameSessionCheckpoints";
+import {GameSessionCheckpoints, createSavedGame} from "../../GameSessionCheckpoints";
 
 export {createSavedGame} from "../../GameSessionCheckpoints";
 
@@ -20,6 +20,13 @@ export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispat
   if (!checkpointsRef.current) checkpointsRef.current = new GameSessionCheckpoints();
   /** Stable module identity owns every restore/save decision. */
   const checkpoints = checkpointsRef.current;
+  /** Duplicate suppression cannot acknowledge a projection while its writer is unavailable. */
+  const missedSaveRef = useRef<{
+    /** Only the originating account can deliver its previously missed progress. */
+    uid: string | undefined;
+    /** A recreated identity cannot inherit an earlier account's pending save. */
+    generation: number | undefined;
+  } | null>(null);
   /** Background saves follow visible progress and its committed target adapter. */
   const committedRef = useRef({state, onSaveGame});
   useLayoutEffect(() => {committedRef.current = {state, onSaveGame};}, [state, onSaveGame]);
@@ -33,10 +40,22 @@ export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispat
   }, [checkpoints, stateRef]);
 
   useEffect(() => {
+    /** Account replacement discards undelivered progress before a new writer can receive it. */
+    const missed = missedSaveRef.current;
+    if (missed && (missed.uid !== state.user?.uid || missed.generation !== state.user?.accountGeneration))
+      missedSaveRef.current = null;
     /** Restoration precedes saving so an initial draft cannot overwrite restored progress. */
     const effect = checkpoints.update(state, restoredGame);
     if (effect?.kind === "restore") dispatch(effect.action);
-    else if (effect?.kind === "save") onSaveGame?.(effect.game);
+    else if (effect?.kind === "save") {
+      if (onSaveGame) {onSaveGame(effect.game); missedSaveRef.current = null;}
+      else missedSaveRef.current = {uid: state.user?.uid, generation: state.user?.accountGeneration};
+    } else if (onSaveGame && missedSaveRef.current) {
+      // A new question or acknowledged outcome may have replaced the missed draft.
+      // Project the current confirmed board rather than replaying an obsolete payload.
+      onSaveGame(createSavedGame(state));
+      missedSaveRef.current = null;
+    }
   }, [checkpoints, state, restoredGame, dispatch, onSaveGame]);
 
   useEffect(() => {
@@ -52,7 +71,13 @@ export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispat
         stateRef.current.user?.accountGeneration !== committed.state.user?.accountGeneration) return;
       /** Projects only the still-owned committed progress for the target adapter. */
       const effect = checkpoints.update(committed.state, undefined, true);
-      if (effect?.kind === "save") committed.onSaveGame?.(effect.game);
+      if (effect?.kind === "save") {
+        if (committed.onSaveGame) {committed.onSaveGame(effect.game); missedSaveRef.current = null;}
+        else missedSaveRef.current = {
+          uid: committed.state.user?.uid,
+          generation: committed.state.user?.accountGeneration,
+        };
+      }
     };
     document.addEventListener("visibilitychange", saveBeforeBackgrounding);
     return () => document.removeEventListener("visibilitychange", saveBeforeBackgrounding);

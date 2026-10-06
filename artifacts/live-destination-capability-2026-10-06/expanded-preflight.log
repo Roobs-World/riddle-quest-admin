@@ -1,0 +1,72 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 12,
+  "checks": 136,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "destination": "activity",
+      "scenario": "other",
+      "name": "native End selects and focuses the last supported tab",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "destination": "tournaments",
+      "scenario": "other",
+      "name": "native End selects and focuses the last supported tab",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "destination": "tournaments",
+      "scenario": "restore",
+      "name": "native End selects and focuses the last supported tab",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "destination": "tournaments",
+      "scenario": "abandon",
+      "name": "native End selects and focuses the last supported tab",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "destination": "tournaments",
+      "scenario": "pending-choice-abandon",
+      "name": "native End selects and focuses the last supported tab",
+      "actual": false,
+      "expected": true
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Withdrawn destination capability must keep Play reachable
+
+5 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-destination-capability-browser.mjs:61:297 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 5,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

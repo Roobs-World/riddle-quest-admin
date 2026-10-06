@@ -1,0 +1,98 @@
+{
+  "goal": "active",
+  "transactionFieldMasks": {
+    "claim": [
+      "nextAttemptAtMs",
+      "completed",
+      "locale"
+    ],
+    "settlement": [
+      "leaseId"
+    ]
+  },
+  "decodedSyntheticPayloadBefore": [
+    {
+      "readCalls": 2,
+      "transactions": 2,
+      "reads": [
+        {
+          "stage": "claim",
+          "documentBytes": 100095,
+          "loadedFields": [
+            "completed",
+            "highestClassicIndex",
+            "locale",
+            "nextAttemptAtMs",
+            "privateBlob"
+          ]
+        },
+        {
+          "stage": "settlement",
+          "documentBytes": 100156,
+          "loadedFields": [
+            "completed",
+            "highestClassicIndex",
+            "leaseId",
+            "locale",
+            "nextAttemptAtMs",
+            "privateBlob"
+          ]
+        }
+      ]
+    }
+  ],
+  "decodedSyntheticPayloadAfter": [
+    {
+      "readCalls": 2,
+      "transactions": 2,
+      "reads": [
+        {
+          "stage": "claim",
+          "documentBytes": 53,
+          "loadedFields": [
+            "completed",
+            "locale",
+            "nextAttemptAtMs"
+          ]
+        },
+        {
+          "stage": "settlement",
+          "documentBytes": 50,
+          "loadedFields": [
+            "leaseId"
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Actual Admin SDK transactions and private Firestore emulator. Synthetic job contains a 100000-character unused field. Sizes measure decoded document JSON, not wire bytes or production latency. Two transaction reads remain. Generation provider is stubbed; canonical database reads/writes, locks and SDK retries remain real.",
+  "canonicalEligibilityLocaleAndLeaseValidationPreserved": true,
+  "generationBackoffAndSupersededSettlementControlsPassed": true,
+  "newRealEmulatorCases": 10,
+  "backendUnitTests": 1640,
+  "backendUnitSuites": 132,
+  "emulatorTests": 279,
+  "emulatorSuites": 18,
+  "focusedTests": 54,
+  "focusedSuites": 5,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25787,
+  "tsdocFiles": 1154,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2352,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 15,
+  "resolvedPreflightFailures": [
+    "Three missing test type-field comments repaired before source freeze"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

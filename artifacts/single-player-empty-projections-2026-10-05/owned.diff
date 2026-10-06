@@ -1,0 +1,188 @@
+--- a/firebase-functions/src/gameplay/completeGameLogic.ts
++++ b/firebase-functions/src/gameplay/completeGameLogic.ts
+@@ -488,6 +488,12 @@
+     }
+   }
+ 
++  /** Losses and anonymous Daily wins have no projection that needs a fresh profile. */
++  const publishLeaderboard = data.isCorrect && !auth.isAnonymous;
++  /** Classic wins still prepare subsequent content for both anonymous and named players. */
++  const prepareClassicSupply = data.isCorrect && data.gameMode === "classic";
++  if (!publishLeaderboard && !prepareClassicSupply) return result;
++
+   // These effects are derived, overwrite-safe, and retried on receipt replay;
+   // they cannot make the already-committed player reward partial.
+   try {
+@@ -495,7 +501,7 @@
+     const user = await getUser(auth.uid);
+     /** Independent projections share the same committed profile and settle before responding. */
+     const projections: Promise<unknown>[] = [];
+-    if (data.isCorrect && user && !auth.isAnonymous) {
++    if (publishLeaderboard && user) {
+       projections.push(updateLeaderboardEntry(
+         auth.uid,
+         user.username,
+@@ -508,7 +514,7 @@
+         user.avatarUrl ?? null,
+       ));
+     }
+-    if (data.isCorrect && data.gameMode === "classic" && user) {
++    if (prepareClassicSupply && user) {
+       projections.push(triggerClassicRiddleGenerationIfNeeded(auth.uid, user.progress.classicIndex, data.locale));
+     }
+     /** One failed projection cannot suppress or leave the other running past the response. */
+--- a/firebase-functions/src/__tests__/singlePlayerCompletionRepairLatency.test.ts
++++ b/firebase-functions/src/__tests__/singlePlayerCompletionRepairLatency.test.ts
+@@ -37,7 +37,7 @@
+ 
+ import {completeAuthoritativeGame} from "../gameplay/completeGameLogic";
+ 
+-it.each([false, true])("completes with legacy profile %s without a separate repair round trip", async legacy => {
++it.each([false, true])("completes with legacy profile %s without repair or empty projection round trips", async legacy => {
+   jest.useFakeTimers().setSystemTime(1_800_000_000_000);
+   try {
+     /** A complete profile is prepared independently of the old helper to keep baseline controls valid. */
+@@ -51,14 +51,14 @@
+     mockDocuments.set("users/player-1", legacy ? base : complete);
+     /** Actual completion derives the authoritative result and creates a durable loss receipt. */
+     const start = Date.now();
+-    /** Completion keeps its durable receipt and post-commit read in the measurement. */
++    /** Completion retains its durable receipt while skipping unused post-commit I/O. */
+     const result = completeAuthoritativeGame({gameMode: "classic", riddleId: "classic-1", sessionToken: "00000000-0000-4000-8000-000000000001"}, {uid: "player-1"});
+     await jest.runAllTimersAsync();
+     expect(await result).toMatchObject({isCorrect: false, coinsEarned: 0});
+     if (process.env.SINGLE_PLAYER_REPAIR_TRACE) console.info(JSON.stringify({legacy, elapsedMs: Date.now() - start, reads: mockReads}));
+-    expect(mockReads.filter(read => read === "direct:users/player-1")).toHaveLength(1);
++    expect(mockReads.filter(read => read === "direct:users/player-1")).toHaveLength(0);
+     expect(mockReads.filter(read => read.startsWith("repair-write:"))).toHaveLength(0);
+-    expect(Date.now() - start).toBe(400);
++    expect(Date.now() - start).toBe(200);
+     expect(mockDocuments.get("users/player-1")).toMatchObject({coins: 550, hasPurchasedApp: true,
+       stats: {gamesPlayed: 10, multiplayerWins: 2}, progress: {classicIndex: 1, dailyChallengeIndex: 0}});
+   } finally {jest.useRealTimers();}
+--- a/firebase-functions/src/__tests__/completeGameTransaction.test.ts
++++ b/firebase-functions/src/__tests__/completeGameTransaction.test.ts
+@@ -83,6 +83,8 @@
+ const mockUpdateLeaderboardEntry = jest.fn();
+ /** Provides mock trigger classic riddle generation if needed behavior. */
+ const mockTriggerClassicRiddleGenerationIfNeeded = jest.fn();
++/** Fresh post-commit account reads can be timed without replacing completion authority. */
++const mockGetUser = jest.fn(async (userId: string) => mockDocuments.get(`users/${userId}`));
+ 
+ jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
+ jest.mock("../gameplay/singlePlayerSession", () => ({
+@@ -90,7 +92,7 @@
+ }));
+ jest.mock("../gameplay/firestoreService", () => ({
+   prepareUserDocumentCompletion: jest.requireActual<typeof import("../gameplay/firestoreService")>("../gameplay/firestoreService").prepareUserDocumentCompletion,
+-  getUser: async (userId: string) => mockDocuments.get(`users/${userId}`),
++  getUser: (userId: string) => mockGetUser(userId),
+ }));
+ /** Deterministic achievement adapter isolates grants from completion/hint transaction assertions. */
+ const mockFindNewAchievements = jest.fn((..._args: unknown[]): Array<{
+@@ -199,6 +201,7 @@
+     mockUpdateLeaderboardEntry.mockReset();
+     mockTriggerClassicRiddleGenerationIfNeeded.mockReset();
+     mockFindNewAchievements.mockReturnValue([]);
++    mockGetUser.mockReset().mockImplementation(async userId => mockDocuments.get(`users/${userId}`));
+     mockDocuments.set(`users/${USER_ID}`, user());
+     mockFinalizeAuthoritativeSession.mockResolvedValue({
+       attempts: 2,
+@@ -213,6 +216,43 @@
+ 
+   afterEach(() => {
+     jest.useRealTimers();
++  });
++
++  it.each((["classic", "challenge"] as const).flatMap(gameMode => [false, true].flatMap(win => [false, true].map(isAnonymous =>
++    ({gameMode, win, isAnonymous})))))("reads a profile only for required $gameMode projections (win $win, anonymous $isAnonymous)", async ({gameMode, win, isAnonymous}) => {
++    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
++    mockFinalizeAuthoritativeSession.mockResolvedValue({attempts: 1, lastGuess: win ? "piano" : "organ", answer: "piano", terminal: true,
++      locale: "en", completionKey: gameMode === "classic" ? "classic:1" : "2026-08-12",
++      ...(gameMode === "classic" ? {classicIndex: 1} : {challengeDate: "2026-08-12"})});
++    mockGetUser.mockImplementation(userId => new Promise(resolve => setTimeout(() => resolve(mockDocuments.get(`users/${userId}`)), 200)));
++    mockUpdateLeaderboardEntry.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 250)));
++    mockTriggerClassicRiddleGenerationIfNeeded.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 400)));
++    /** Required projections determine whether a post-commit read has useful work to supply. */
++    const leaderboard = win && !isAnonymous, supply = win && gameMode === "classic";
++    /** One receipt remains authoritative regardless of which projection tasks are eligible. */
++    const request = {riddleId: gameMode === "classic" ? "classic-1" : "daily-2026-08-12", gameMode, sessionToken: TOKEN_A};
++    /** The model includes profile I/O and waits for the slowest required projection. */
++    const start = Date.now(), completion = completeAuthoritativeGame(request, {uid: USER_ID, isAnonymous});
++    await jest.runAllTimersAsync();
++    /** Confirmed result and bank state remain independent of empty projection work. */
++    const first = await completion;
++    expect(first.isCorrect).toBe(win);
++    if (process.env.SINGLE_PLAYER_PROJECTION_TRACE) console.info(JSON.stringify({mode: gameMode, win, isAnonymous,
++      elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
++      leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
++    expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 1 : 0);
++    expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
++    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
++    expect(Date.now() - start).toBe(leaderboard || supply ? 200 + (supply ? 400 : 250) : 0);
++    /** Result replay must retain the committed balance and statistics. */
++    const profile = structuredClone(mockDocuments.get(`users/${USER_ID}`));
++    expect(profile.coins).toBe(300 + first.coinsEarned);
++    /** Receipt replay still runs only the projections required for this mode and identity. */
++    const replay = completeAuthoritativeGame(request, {uid: USER_ID, isAnonymous});
++    await jest.runAllTimersAsync();
++    expect(await replay).toEqual(first);
++    expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(profile);
++    expect(mockGetUser).toHaveBeenCalledTimes(leaderboard || supply ? 2 : 0);
+   });
+ 
+   it("finishes independent Classic projections in the slower task's latency", async () => {
+--- a/firebase-functions/src/__tests__/singlePlayerAtomicRepair.it.test.ts
++++ b/firebase-functions/src/__tests__/singlePlayerAtomicRepair.it.test.ts
+@@ -1,3 +1,4 @@
++import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+ import {createHash} from "node:crypto";
+ import {getApps, initializeApp} from "firebase-admin/app";
+ import {getFirestore, FieldValue} from "firebase-admin/firestore";
+@@ -27,29 +28,36 @@
+ afterAll(clear);
+ 
+ /** Creates a real opaque session and a terminal authoritative guess sequence. */
+-async function terminal(win: boolean) {
++async function terminal(win: boolean, gameMode: "classic" | "challenge" = "classic") {
+   await db.doc(`users/${OWNER}`).set({userId: OWNER, username: "Legacy player", email: "legacy@example.invalid", coins: 550,
+     hasPurchasedApp: true, stats: {gamesPlayed: 9, multiplayerWins: 2}, progress: {classicIndex: 1}});
+   /** Canonical authored content is trusted by issuance, never supplied by a gameplay client. */
+-  const sessionToken = await ensureAuthoritativeSession(OWNER, "classic", "classic-1", "en", "classic:1", "classic:1", "piano", {classicIndex: 1, difficultyBand: "easy"});
+-  for (const [position, guess] of (win ? ["piano"] : ["organ", "crane", "flute", "drums", "cello", "viola"].slice(0, baseAttemptLimit("classic"))).entries())
+-    await submitAuthoritativeGuess(OWNER, {gameMode: "classic", riddleId: "classic-1", sessionToken, guess, requestId: `repair-guess-${position}`});
+-  return {gameMode: "classic" as const, riddleId: "classic-1", sessionToken};
++  /** Daily entitlement follows the same locale calendar as authoritative completion. */
++  const day = getDailyDate("en");
++  /** Each mode keeps its canonical content and completion identity. */
++  const riddleId = gameMode === "classic" ? "classic-1" : `daily-${day}`;
++  /** A real opaque session binds the content, entitlement and accepted attempt limit. */
++  const sessionToken = await ensureAuthoritativeSession(OWNER, gameMode, riddleId, "en", gameMode === "classic" ? "classic:1" : `challenge:${day}`,
++    gameMode === "classic" ? "classic:1" : day, "piano", {...(gameMode === "classic" ? {classicIndex: 1} : {challengeDate: day}), difficultyBand: "easy"});
++  for (const [position, guess] of (win ? ["piano"] : ["organ", "crane", "flute", "drums", "cello", "viola"].slice(0, baseAttemptLimit(gameMode))).entries())
++    await submitAuthoritativeGuess(OWNER, {gameMode, riddleId, sessionToken, guess, requestId: `repair-guess-${position}`});
++  return {gameMode, riddleId, sessionToken};
+ }
+ 
+-it.each([false, true])("repairs a legacy account and receipts a real terminal win %s exactly once", async win => {
++it.each((["classic", "challenge"] as const).flatMap(gameMode => [false, true].flatMap(win => [false, true].map(isAnonymous =>
++  ({gameMode, win, isAnonymous})))))("receipts real $gameMode win $win with anonymous $isAnonymous exactly once", async ({gameMode, win, isAnonymous}) => {
+   /** Repeated callers use the same real terminal session and permanent completion identity. */
+-  const request = await terminal(win);
++  const request = await terminal(win, gameMode);
+   /** Real concurrent completion transactions contend on the account and receipt. */
+-  const results = await Promise.all(Array.from({length: 4}, () => completeAuthoritativeGame(request, {uid: OWNER})));
++  const results = await Promise.all(Array.from({length: 4}, () => completeAuthoritativeGame(request, {uid: OWNER, isAnonymous})));
+   expect(results.every(value => JSON.stringify(value) === JSON.stringify(results[0]))).toBe(true);
+   /** Committed profile retains other game counters and paid entitlement. */
+   const profile = (await db.doc(`users/${OWNER}`).get()).data()!;
+   expect(profile).toMatchObject({coins: 550 + results[0]!.coinsEarned, hasPurchasedApp: true,
+-    stats: {gamesPlayed: 10, multiplayerWins: 2}, progress: {classicIndex: win ? 2 : 1, dailyChallengeIndex: 0}});
++    stats: {gamesPlayed: 10, multiplayerWins: 2}, progress: {classicIndex: win && gameMode === "classic" ? 2 : 1, dailyChallengeIndex: win && gameMode === "challenge" ? 1 : 0}});
+   expect(Array.isArray(profile.unlockedAchievements)).toBe(true);
+   expect((await db.collection("gameCompletionReceipts").get()).size).toBe(1);
+-  expect(await completeAuthoritativeGame(request, {uid: OWNER})).toEqual(results[0]);
++  expect(await completeAuthoritativeGame(request, {uid: OWNER, isAnonymous})).toEqual(results[0]);
+   expect((await db.doc(`users/${OWNER}`).get()).data()).toEqual(profile);
+ });
+ 

@@ -1,0 +1,296 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "authority board renders independently of held SDK operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "initial projection has exactly one native lookup",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "only pending metadata owns an eight-second deadline",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "original local projection settles at deadline unless score already admitted",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "expired or cleared lookup timers are removed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "fresh lookup can proceed before late original metadata returns",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "fresh official best posts without releasing expired original metadata",
+    "actual": [],
+    "expected": [
+      7000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "score post keeps its original serialized barrier",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "late original metadata cannot add or overwrite a native score",
+    "actual": [
+      7000
+    ],
+    "expected": [
+      7000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "fresh native work retains its exact context",
+    "actual": [
+      "context-a"
+    ],
+    "expected": [
+      "context-a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "deadline and native failure use one fixed optional diagnostic",
+    "actual": [],
+    "expected": [
+      "facebook-tournament-score-projection-failed"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "all admitted local projection handles eventually settle",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "native projection never adds an official board error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "all owned lookup deadlines are cleared",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "authority board renders independently of held SDK operation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "initial projection has exactly one native lookup",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "only pending metadata owns an eight-second deadline",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "original local projection settles at deadline unless score already admitted",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "expired or cleared lookup timers are removed",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "fresh lookup can proceed before late original metadata returns",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "fresh official best posts without releasing expired original metadata",
+    "actual": [],
+    "expected": [
+      7000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "score post keeps its original serialized barrier",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "late original metadata cannot add or overwrite a native score",
+    "actual": [],
+    "expected": [
+      7000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "fresh native work retains its exact context",
+    "actual": [],
+    "expected": [
+      "context-a"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "deadline and native failure use one fixed optional diagnostic",
+    "actual": [
+      "facebook-tournament-score-projection-failed"
+    ],
+    "expected": [
+      "facebook-tournament-score-projection-failed"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "all admitted local projection handles eventually settle",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "native projection never adds an official board error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "all owned lookup deadlines are cleared",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "late-rejection",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

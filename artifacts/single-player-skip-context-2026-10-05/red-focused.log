@@ -1,0 +1,164 @@
+FAIL src/__tests__/singlePlayerSkipPreparationLatency.test.ts
+  ● prepares skipped Classic content with one parallel transaction read stage
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 600
+    Received: 800
+
+      59 |     const start = Date.now(); const pending = skip(); await jest.runAllTimersAsync(); const result = await pending;
+      60 |     if (process.env.SINGLE_PLAYER_SKIP_TRACE) console.info(JSON.stringify({elapsedMs: Date.now() - start, reads: mockReads}));
+    > 61 |     expect(Date.now() - start).toBe(600);
+         |                                ^
+      62 |     expect(mockReads).toHaveLength(2);
+      63 |     expect(result).toMatchObject({success: true, costDeducted: 100, newCoins: 450, newProgress: {classicIndex: 2}});
+      64 |     expect(result).not.toHaveProperty("classicSupply");
+
+      at Object.<anonymous> (src/__tests__/singlePlayerSkipPreparationLatency.test.ts:61:32)
+
+FAIL src/__tests__/gameLogic.test.ts
+  ● authoritative game economy callables › delegates Classic skip to the session-bound transaction
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: "player-1", "00000000-0000-4000-8000-000000000001", "classic", "classic-2"
+
+      148 |
+      149 |     expect(result).toMatchObject({success: true, costDeducted: 200, newCoins: 100});
+    > 150 |     expect(mockGetIssuedAuthoritativeSession).not.toHaveBeenCalled();
+          |                                                   ^
+      151 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith("player-1", 3, "fr");
+      152 |     expect(result).not.toHaveProperty("classicSupply");
+      153 |     expect(mockSkipAuthoritativeRiddle).toHaveBeenCalledWith("player-1", {
+
+      at Object.<anonymous> (src/__tests__/gameLogic.test.ts:150:51)
+
+  ● authoritative game economy callables › prepares current progression when an earlier skip receipt is replayed
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "player-1", 9, "de"
+    Received: "player-1", 3, "fr"
+
+    Number of calls: 1
+
+      166 |       sessionToken: SESSION_TOKEN, requestId: "skip-context-replay"}));
+      167 |     expect(result.newProgress.classicIndex).toBe(3);
+    > 168 |     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith("player-1", 9, "de");
+          |                                                        ^
+      169 |     expect(mockGetIssuedAuthoritativeSession).not.toHaveBeenCalled();
+      170 |   });
+      171 |
+
+      at Object.<anonymous> (src/__tests__/gameLogic.test.ts:168:56)
+
+FAIL src/__tests__/singlePlayerSessionTransactions.test.ts
+  ● single-player session transactions › returns transaction-owned supply context without persisting it in the skip receipt
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 5
+
+      Object {
+    -   "classicSupply": Object {
+    +   "costDeducted": 100,
+    +   "newCoins": 200,
+    +   "newProgress": Object {
+          "classicIndex": 2,
+    -     "locale": "fr",
+    +     "dailyChallengeCurrentQuestion": 0,
+    +     "dailyChallengeIndex": 0,
+        },
+      }
+
+      336 |     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN, requestId: "skip-context-first"};
+      337 |     const first = await skipAuthoritativeRiddle(USER_ID, request);
+    > 338 |     expect(first).toMatchObject({classicSupply: {classicIndex: 2, locale: "fr"}});
+          |                   ^
+      339 |     expect(mockDocuments.get(sessionPath())?.skipResult).not.toHaveProperty("classicSupply");
+      340 |     mockDocuments.get(userPath)!.progress.classicIndex = 7;
+      341 |     const replay = await skipAuthoritativeRiddle(USER_ID, {...request, requestId: "skip-context-replay"});
+
+      at Object.<anonymous> (src/__tests__/singlePlayerSessionTransactions.test.ts:338:19)
+
+  ● single-player session transactions › rejects malformed issued locale inside the skip transaction
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"costDeducted": 100, "newCoins": 200, "newProgress": {"classicIndex": 2, "dailyChallengeCurrentQuestion": 0, "dailyChallengeIndex": 0}}
+
+      346 |   it.each(["locale", "contentKey", "completionKey", "answer"])("rejects malformed issued %s inside the skip transaction", async field => {
+      347 |     mockDocuments.set(sessionPath(), {...baseSession(), [field]: 17});
+    > 348 |     await expect(skipAuthoritativeRiddle(USER_ID, {riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN,
+          |                 ^
+      349 |       requestId: "skip-malformed-binding"})).rejects.toMatchObject({code: "permission-denied"});
+      350 |     expect(mockDocuments.get(userPath)).toMatchObject({coins: 300, progress: {classicIndex: 1}});
+      351 |     expect(mockTransaction.update).not.toHaveBeenCalled();
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/singlePlayerSessionTransactions.test.ts:348:17
+
+  ● single-player session transactions › rejects malformed issued contentKey inside the skip transaction
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"costDeducted": 100, "newCoins": 200, "newProgress": {"classicIndex": 2, "dailyChallengeCurrentQuestion": 0, "dailyChallengeIndex": 0}}
+
+      346 |   it.each(["locale", "contentKey", "completionKey", "answer"])("rejects malformed issued %s inside the skip transaction", async field => {
+      347 |     mockDocuments.set(sessionPath(), {...baseSession(), [field]: 17});
+    > 348 |     await expect(skipAuthoritativeRiddle(USER_ID, {riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN,
+          |                 ^
+      349 |       requestId: "skip-malformed-binding"})).rejects.toMatchObject({code: "permission-denied"});
+      350 |     expect(mockDocuments.get(userPath)).toMatchObject({coins: 300, progress: {classicIndex: 1}});
+      351 |     expect(mockTransaction.update).not.toHaveBeenCalled();
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/singlePlayerSessionTransactions.test.ts:348:17
+
+  ● single-player session transactions › rejects malformed issued completionKey inside the skip transaction
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"costDeducted": 100, "newCoins": 200, "newProgress": {"classicIndex": 2, "dailyChallengeCurrentQuestion": 0, "dailyChallengeIndex": 0}}
+
+      346 |   it.each(["locale", "contentKey", "completionKey", "answer"])("rejects malformed issued %s inside the skip transaction", async field => {
+      347 |     mockDocuments.set(sessionPath(), {...baseSession(), [field]: 17});
+    > 348 |     await expect(skipAuthoritativeRiddle(USER_ID, {riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN,
+          |                 ^
+      349 |       requestId: "skip-malformed-binding"})).rejects.toMatchObject({code: "permission-denied"});
+      350 |     expect(mockDocuments.get(userPath)).toMatchObject({coins: 300, progress: {classicIndex: 1}});
+      351 |     expect(mockTransaction.update).not.toHaveBeenCalled();
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/singlePlayerSessionTransactions.test.ts:348:17
+
+  ● single-player session transactions › rejects malformed issued answer inside the skip transaction
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"costDeducted": 100, "newCoins": 200, "newProgress": {"classicIndex": 2, "dailyChallengeCurrentQuestion": 0, "dailyChallengeIndex": 0}}
+
+      346 |   it.each(["locale", "contentKey", "completionKey", "answer"])("rejects malformed issued %s inside the skip transaction", async field => {
+      347 |     mockDocuments.set(sessionPath(), {...baseSession(), [field]: 17});
+    > 348 |     await expect(skipAuthoritativeRiddle(USER_ID, {riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN,
+          |                 ^
+      349 |       requestId: "skip-malformed-binding"})).rejects.toMatchObject({code: "permission-denied"});
+      350 |     expect(mockDocuments.get(userPath)).toMatchObject({coins: 300, progress: {classicIndex: 1}});
+      351 |     expect(mockTransaction.update).not.toHaveBeenCalled();
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/singlePlayerSessionTransactions.test.ts:348:17
+
+Test Suites: 3 failed, 3 total
+Tests:       8 failed, 26 passed, 34 total
+Snapshots:   0 total
+Time:        0.708 s, estimated 1 s
+Ran all test suites matching src/__tests__/gameLogic.test.ts|src/__tests__/singlePlayerSessionTransactions.test.ts|src/__tests__/singlePlayerSkipPreparationLatency.test.ts.

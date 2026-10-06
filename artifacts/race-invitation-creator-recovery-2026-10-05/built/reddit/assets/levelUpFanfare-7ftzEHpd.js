@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n,r;function i(){return(i=e((()=>{t={COINS_SUFFIX:` 동전`,CONTINUE_BUTTON:`굉장해요`,LEVEL_PREFIX:`레벨 `,TITLE:`레벨업!`,PROFILE_GUIDANCE:`새 레벨과 랭크는 프로필에서 확인할 수 있어요. 축하 화면이 끝나면 프로필 아이콘을 눌러 보세요.`},n={CONTINUE_BUTTON:`계속`,SUBTITLE:`새로운 랭크에 도달했어요.`,TITLE:`새 랭크 달성!`},r={LevelUpFanfare:t,RankUpFanfare:n}})))()}i();export{r as default};

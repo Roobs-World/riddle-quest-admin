@@ -25,10 +25,10 @@ export async function processClassicSupplyJob(requestId: string): Promise<"skipp
   const now = Date.now();
   /** Validated locale is returned only after this invocation acquires the job lease. */
   const locale = await db.runTransaction(async transaction => {
-    /** Current job state is read before eligibility and locale checks. */
-    const snapshot = await transaction.get(ref);
+    /** Each attempt locks the canonical job and loads only its eligibility and locale inputs. */
+    const [snapshot] = await transaction.getAll(ref, {fieldMask: ["nextAttemptAtMs", "completed", "locale"]});
     /** Persisted completion and retry fields determine whether the job can run. */
-    const data = snapshot.data();
+    const data = snapshot?.data();
     if (!data || data.nextAttemptAtMs > now || data.completed === true) return undefined;
     if (!SUPPORTED_LOCALES.includes(data.locale)) throw new Error("Invalid Classic supply job locale.");
     transaction.update(ref, {leaseId, nextAttemptAtMs: now + LEASE_MS});
@@ -44,8 +44,10 @@ export async function processClassicSupplyJob(requestId: string): Promise<"skipp
     captureException(error, {operation: "classicSupplyJob", locale});
   }
   await db.runTransaction(async transaction => {
-    /** Latest lease owner must still match before the worker records its outcome. */
-    const current = (await transaction.get(ref)).data();
+    /** This attempt locks the canonical job and loads only its current lease owner before recording an outcome. */
+    const [snapshot] = await transaction.getAll(ref, {fieldMask: ["leaseId"]});
+    /** Missing or superseded jobs cannot be recreated or settled by this invocation. */
+    const current = snapshot?.data();
     if (current?.leaseId !== leaseId) return;
     transaction.update(ref, succeeded
       ? {completed: true, nextAttemptAtMs: Number.MAX_SAFE_INTEGER}
@@ -56,9 +58,9 @@ export async function processClassicSupplyJob(requestId: string): Promise<"skipp
 
 /** Three bounded jobs per invocation; one indexed field covers both retry and expired-lease eligibility. */
 export async function processClassicSupplyJobs(): Promise<void> {
-  /** Bounded indexed query finds eligible retries and expired leases. */
+  /** Discovery needs only due document IDs; claim transactions independently read current eligibility and locale. */
   const due = await admin.firestore().collection("classicSupplyJobs")
-    .where("nextAttemptAtMs", "<=", Date.now()).orderBy("nextAttemptAtMs").limit(3).get();
+    .where("nextAttemptAtMs", "<=", Date.now()).orderBy("nextAttemptAtMs").limit(3).select().get();
   await Promise.all(due.docs.map(document => processClassicSupplyJob(document.id)));
 }
 

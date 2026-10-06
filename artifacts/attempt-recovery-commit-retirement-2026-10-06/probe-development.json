@@ -1,0 +1,98 @@
+[
+  {
+    "kind": "account",
+    "enabled": true,
+    "newRequests": 1,
+    "pendingAfterOldReceipt": "true",
+    "requests": [
+      {
+        "provider": 1,
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+        "provider": 2,
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "actions": [
+      {
+        "type": "setNotice",
+        "notice": null
+      },
+      {
+        "type": "setNotice",
+        "notice": null
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "kind": "generation",
+    "enabled": true,
+    "newRequests": 1,
+    "pendingAfterOldReceipt": "true",
+    "requests": [
+      {
+        "provider": 1,
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+        "provider": 2,
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000002"
+      }
+    ],
+    "actions": [
+      {
+        "type": "setNotice",
+        "notice": null
+      },
+      {
+        "type": "setNotice",
+        "notice": null
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "kind": "provider",
+    "enabled": true,
+    "newRequests": 1,
+    "pendingAfterOldReceipt": "true",
+    "requests": [
+      {
+        "provider": 1,
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+        "provider": 2,
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001"
+      }
+    ],
+    "actions": [
+      {
+        "type": "setNotice",
+        "notice": null
+      },
+      {
+        "type": "setNotice",
+        "notice": null
+      }
+    ],
+    "errors": [],
+    "unhandled": []
+  }
+]

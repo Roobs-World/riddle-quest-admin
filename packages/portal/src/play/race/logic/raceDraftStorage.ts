@@ -1,5 +1,5 @@
-import {RACE_DECK_SIZE, RACE_MAX_GUESSES_PER_RIDDLE, RaceLocaleSchema, RaceRunIdRequestSchema, type RaceRunView} from "@qwordly/core/race";
-import {MAX_RIDDLE_ANSWER_CHARACTERS, splitGraphemes} from "@qwordly/core/game";
+import {RACE_DECK_SIZE, RACE_MAX_GUESSES_PER_RIDDLE, RACE_NORMALIZED_TEXT_UNITS, RaceGraphemeTextSchema, RaceLocaleSchema, RaceRunIdRequestSchema, type RaceRunView} from "@qwordly/core/race";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "@qwordly/core/game";
 import {safeBrowserStorageSet, safeBrowserStorageRemove} from "../../playerPreferences";
 import {observeBrowserStorage} from "../../../platform/browserStorage";
 import type {RaceSessionState} from "../RaceSession.types";
@@ -35,7 +35,7 @@ type DraftRecord = {
 const fields = ["version", "ownerId", "runId", "locale", "riddleId", "position", "guessesUsed", "pendingGuess", "letters", "activeSlotIndex", "savedAtMs"];
 /** Strictly parses bounded input without treating browser data as gameplay authority. */
 const parse = (raw: string | null | undefined): DraftRecord | null => {
-  if (typeof raw !== "string" || raw.length > 4096) return null;
+  if (typeof raw !== "string" || raw.length > 8192) return null;
   try {
     /** Untrusted serialized presentation record. */
     const value = JSON.parse(raw);
@@ -46,7 +46,8 @@ const parse = (raw: string | null | undefined): DraftRecord | null => {
       !RaceLocaleSchema.safeParse(value.locale).success || !Number.isInteger(value.position) || value.position < 0 || value.position >= RACE_DECK_SIZE ||
       !Number.isInteger(value.guessesUsed) || value.guessesUsed < 0 || value.guessesUsed > RACE_MAX_GUESSES_PER_RIDDLE || typeof value.pendingGuess !== "boolean" ||
       !Array.isArray(value.letters) || !value.letters.length || value.letters.length > MAX_RIDDLE_ANSWER_CHARACTERS ||
-      value.letters.some((letter: unknown) => typeof letter !== "string" || letter.length > 64 || letter !== "" && (!letter.trim() || splitGraphemes(letter.normalize("NFC")).length !== 1)) ||
+      value.letters.some((letter: unknown) => typeof letter !== "string" || letter !== "" && (!letter.trim() || !RaceGraphemeTextSchema.safeParse(letter).success)) ||
+      value.letters.map((letter: string) => letter.normalize("NFC")).join("").length > RACE_NORMALIZED_TEXT_UNITS ||
       !Number.isInteger(value.activeSlotIndex) || value.activeSlotIndex < 0 || value.activeSlotIndex >= value.letters.length ||
       !Number.isSafeInteger(value.savedAtMs) || value.savedAtMs < 0 || value.savedAtMs > Number.MAX_SAFE_INTEGER - RACE_DRAFT_TTL_MS) return null;
     return {...value, letters: value.letters.map((letter: string) => letter.normalize("NFC"))};

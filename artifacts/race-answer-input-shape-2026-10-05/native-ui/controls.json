@@ -1,0 +1,52 @@
+{
+  "hyphen": {
+    "text": "a-b",
+    "locale": "en",
+    "slots": 3
+  },
+  "apostrophe": {
+    "text": "a'b",
+    "locale": "en",
+    "slots": 3
+  },
+  "digit": {
+    "text": "a1b",
+    "locale": "en",
+    "slots": 3
+  },
+  "emoji": {
+    "text": "a😀b",
+    "locale": "en",
+    "slots": 3
+  },
+  "family": {
+    "text": "a👩‍👩‍👧‍👦b",
+    "locale": "en",
+    "slots": 3
+  },
+  "zero-width": {
+    "text": "a​b",
+    "locale": "en",
+    "slots": 3
+  },
+  "letters": {
+    "text": "abc",
+    "locale": "en",
+    "slots": 3
+  },
+  "nfd": {
+    "text": "élément",
+    "locale": "fr",
+    "slots": 7
+  },
+  "hi": {
+    "text": "लक्ष्म्यां",
+    "locale": "hi",
+    "slots": 2
+  },
+  "marked-space": {
+    "text": "a ́b",
+    "locale": "en",
+    "slots": 3
+  }
+}

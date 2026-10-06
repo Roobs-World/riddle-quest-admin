@@ -1,0 +1,110 @@
+[
+  {
+    "scenario": "activity",
+    "name": "unsupported destination returns to Play during commit",
+    "actual": null,
+    "expected": "Play"
+  },
+  {
+    "scenario": "activity",
+    "name": "fallback commits the actual playable category surface",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "scenario": "activity",
+    "name": "fallback retains one roving keyboard entry",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "scenario": "activity",
+    "name": "unavailable destination does not create an error panel",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "activity",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "activity",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "tournaments",
+    "name": "unsupported destination returns to Play during commit",
+    "actual": null,
+    "expected": "Play"
+  },
+  {
+    "scenario": "tournaments",
+    "name": "fallback commits the actual playable category surface",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "scenario": "tournaments",
+    "name": "fallback retains one roving keyboard entry",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "scenario": "tournaments",
+    "name": "unavailable destination does not create an error panel",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "scenario": "tournaments",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "tournaments",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "pending-choice",
+    "name": "unsupported destination returns to Play during commit",
+    "actual": null,
+    "expected": "Play"
+  },
+  {
+    "scenario": "pending-choice",
+    "name": "fallback commits the actual playable category surface",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "scenario": "pending-choice",
+    "name": "fallback retains one roving keyboard entry",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "scenario": "pending-choice",
+    "name": "unavailable destination does not create an error panel",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "scenario": "pending-choice",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "pending-choice",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

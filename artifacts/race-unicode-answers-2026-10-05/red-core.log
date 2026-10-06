@@ -1,0 +1,135 @@
+FAIL src/race/__tests__/raceUnicodeAnswers.test.ts
+  ● keeps fr Unicode answers playable without changing their stored text
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "evaluation",
+          "answer"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      11 |   const answerLength = graphemeLength(answer, locale), evaluation = {answer, locale};
+      12 |   expect(answer.length).toBeGreaterThan(7); expect(answerLength).toBeLessThanOrEqual(7);
+    > 13 |   expect(RaceRiddlePromptSchema.parse({...prompt, answerLength, evaluation}).evaluation).toEqual(evaluation);
+         |                                 ^
+      14 |   expect(RacePreloadedRiddleSchema.parse({riddleId: prompt.riddleId, text: prompt.text, position: 0, answerLength, evaluation}).evaluation).toEqual(evaluation);
+      15 |   expect(SubmitRaceGuessRequestSchema.parse({runId: "unicode-run", riddleId: prompt.riddleId, requestId: "unicode-guess", guess: answer}).guess).toBe(answer);
+      16 | });
+
+      at src/race/__tests__/raceUnicodeAnswers.test.ts:13:33
+
+  ● keeps ru Unicode answers playable without changing their stored text
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "evaluation",
+          "answer"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      11 |   const answerLength = graphemeLength(answer, locale), evaluation = {answer, locale};
+      12 |   expect(answer.length).toBeGreaterThan(7); expect(answerLength).toBeLessThanOrEqual(7);
+    > 13 |   expect(RaceRiddlePromptSchema.parse({...prompt, answerLength, evaluation}).evaluation).toEqual(evaluation);
+         |                                 ^
+      14 |   expect(RacePreloadedRiddleSchema.parse({riddleId: prompt.riddleId, text: prompt.text, position: 0, answerLength, evaluation}).evaluation).toEqual(evaluation);
+      15 |   expect(SubmitRaceGuessRequestSchema.parse({runId: "unicode-run", riddleId: prompt.riddleId, requestId: "unicode-guess", guess: answer}).guess).toBe(answer);
+      16 | });
+
+      at src/race/__tests__/raceUnicodeAnswers.test.ts:13:33
+
+  ● keeps ja Unicode answers playable without changing their stored text
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "evaluation",
+          "answer"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      11 |   const answerLength = graphemeLength(answer, locale), evaluation = {answer, locale};
+      12 |   expect(answer.length).toBeGreaterThan(7); expect(answerLength).toBeLessThanOrEqual(7);
+    > 13 |   expect(RaceRiddlePromptSchema.parse({...prompt, answerLength, evaluation}).evaluation).toEqual(evaluation);
+         |                                 ^
+      14 |   expect(RacePreloadedRiddleSchema.parse({riddleId: prompt.riddleId, text: prompt.text, position: 0, answerLength, evaluation}).evaluation).toEqual(evaluation);
+      15 |   expect(SubmitRaceGuessRequestSchema.parse({runId: "unicode-run", riddleId: prompt.riddleId, requestId: "unicode-guess", guess: answer}).guess).toBe(answer);
+      16 | });
+
+      at src/race/__tests__/raceUnicodeAnswers.test.ts:13:33
+
+  ● keeps hi Unicode answers playable without changing their stored text
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "evaluation",
+          "answer"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      11 |   const answerLength = graphemeLength(answer, locale), evaluation = {answer, locale};
+      12 |   expect(answer.length).toBeGreaterThan(7); expect(answerLength).toBeLessThanOrEqual(7);
+    > 13 |   expect(RaceRiddlePromptSchema.parse({...prompt, answerLength, evaluation}).evaluation).toEqual(evaluation);
+         |                                 ^
+      14 |   expect(RacePreloadedRiddleSchema.parse({riddleId: prompt.riddleId, text: prompt.text, position: 0, answerLength, evaluation}).evaluation).toEqual(evaluation);
+      15 |   expect(SubmitRaceGuessRequestSchema.parse({runId: "unicode-run", riddleId: prompt.riddleId, requestId: "unicode-guess", guess: answer}).guess).toBe(answer);
+      16 | });
+
+      at src/race/__tests__/raceUnicodeAnswers.test.ts:13:33
+
+  ● retains trim-before-validation semantics for a decomposed guess
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      21 | });
+      22 | it("retains trim-before-validation semantics for a decomposed guess", () => {
+    > 23 |   expect(SubmitRaceGuessRequestSchema.parse({runId: "unicode-run", riddleId: prompt.riddleId, requestId: "unicode-guess", guess: ` ${cases[0].answer} `}).guess).toBe(cases[0].answer);
+         |                                       ^
+      24 | });
+      25 | it("retains the seven-slot ASCII boundary", () => {
+      26 |   expect(SubmitRaceGuessRequestSchema.safeParse({runId: "unicode-run", riddleId: prompt.riddleId, requestId: "unicode-guess", guess: "abcdefg"}).success).toBe(true);
+
+      at Object.<anonymous> (src/race/__tests__/raceUnicodeAnswers.test.ts:23:39)
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 8 passed, 13 total
+Snapshots:   0 total
+Time:        0.275 s
+Ran all test suites matching src/race/__tests__/raceUnicodeAnswers.test.ts.

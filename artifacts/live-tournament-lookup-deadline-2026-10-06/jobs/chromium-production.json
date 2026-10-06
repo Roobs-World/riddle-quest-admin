@@ -1,0 +1,19 @@
+{
+  "name": "chromium-production",
+  "command": [
+    "env",
+    "TOURNAMENT_LOOKUP_BROWSER=chromium",
+    "TOURNAMENT_LOOKUP_MODE=production",
+    "TOURNAMENT_LOOKUP_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+    "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/chromium-production",
+    "node",
+    "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+  ],
+  "logs": [
+    "chromium-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791262392.214074,
+  "exitCode": 0,
+  "finishedAt": 1791262409.4820764
+}

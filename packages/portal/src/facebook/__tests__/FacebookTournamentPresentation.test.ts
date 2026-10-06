@@ -210,3 +210,257 @@ it.each(["deletion", "locale"])("retires recovered projection after %s while pro
   await pending;
   expect(sdk.tournament!.postScoreAsync).not.toHaveBeenCalled();
 });
+
+it("shares one native lookup for concurrent identical official board projections", async () => {
+  /** One account and native context own all concurrent recovery reads. */
+  const {options, sdk, board} = fixture();
+  /** Production presentation receives independent validated server snapshots. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  await Promise.all(Array.from({length: 4}, () => presentation.projectBoard(board)));
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
+});
+
+it("uses the best official snapshot received before a held native lookup returns", async () => {
+  /** One active provider operation holds the initial official score. */
+  const {options, sdk, board, native} = fixture();
+  /** Explicit lookup admission avoids assumptions about promise queue depth. */
+  let admitted!: () => void;
+  /** Original native lookup remains observed while more official boards arrive. */
+  let release!: (native: FacebookInstantTournament) => void;
+  /** Complete only after the actual SDK method has been invoked. */
+  const ready = new Promise<void>(resolve => {admitted = resolve;});
+  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = resolve; admitted();}));
+  /** Exact immutable server snapshots differ only in their authoritative best. */
+  const best = (score: number): ListFacebookTournamentResponse => ({...board,
+    currentPlayer: {...board.currentPlayer!, adjustedTimeMs: score},
+    standings: [{...board.standings[0], adjustedTimeMs: score}]});
+  /** One adapter lifetime owns native ordering and in-flight coalescing. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  /** Original caller retains its projection completion. */
+  const original = presentation.projectBoard(board);
+  await ready;
+  /** Improving and older out-of-order server snapshots arrive during the SDK wait. */
+  const pending = [presentation.projectBoard(best(8000)), presentation.projectBoard(best(7000)), presentation.projectBoard(best(8500))];
+  release(native);
+  await Promise.all([original, ...pending]);
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
+});
+
+it.each([false, true])("serializes the best queued improvement after an admitted native post (failure=%s)", async failed => {
+  /** Original native admission is confirmed before any improvement arrives. */
+  const {options, sdk, board} = fixture();
+  /** Admit the exact SDK score call. */
+  let admit!: () => void;
+  /** Release the original native post without replacing its promise. */
+  let release!: () => void;
+  /** One admitted native post preserves ordering for all later improvements. */
+  const ready = new Promise<void>(resolve => {admit = resolve;});
+  jest.mocked(sdk.tournament!.postScoreAsync).mockImplementationOnce(() => new Promise((resolve,reject) => {
+    release = () => failed ? reject(new Error("Native post failed")) : resolve(); admit();
+  }));
+  /** Exact server snapshots select authoritative lower times only. */
+  const best = (score: number): ListFacebookTournamentResponse => ({...board,
+    currentPlayer: {...board.currentPlayer!, adjustedTimeMs: score},
+    standings: [{...board.standings[0], adjustedTimeMs: score}]});
+  /** This adapter owns the original post and the single queued improvement. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  /** Original projection completion remains observable. */
+  const original = presentation.projectBoard(board);
+  await ready;
+  expect(presentation.projectBoard(board)).toBe(original);
+  /** The queued operation adopts improvements without racing the admitted score. */
+  const improvement = presentation.projectBoard(best(8000));
+  expect(presentation.projectBoard(best(7000))).toBe(improvement);
+  expect(presentation.projectBoard(best(8500))).toBe(improvement);
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
+  release();
+  await Promise.all([original, improvement]);
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000], [7000]]);
+  expect(options.reportFailure).toHaveBeenCalledTimes(failed ? 1 : 0);
+});
+
+it("retires an old native context even when its held lookup returns the new context", async () => {
+  /** Context identity can change independently of the official global tournament. */
+  const {options, sdk, board, native} = fixture();
+  /** Current native context is read at every admission boundary. */
+  let contextId = "context-1";
+  sdk.context!.getID = () => contextId;
+  native.getContextID = () => contextId;
+  /** Resolve the original lookup with the SDK's current context. */
+  let release!: (native: FacebookInstantTournament) => void;
+  /** Exact SDK admission prevents fixed-depth scheduling assumptions. */
+  let admit!: () => void;
+  /** The first lookup is held across context replacement. */
+  const ready = new Promise<void>(resolve => {admit = resolve;});
+  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = resolve; admit();}));
+  /** One adapter receives reads for both native context lifetimes. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  /** Original native scope holds the slower server snapshot. */
+  const old = presentation.projectBoard(board);
+  await ready;
+  contextId = "context-2";
+  /** The replacement context has a newer authoritative best. */
+  const currentPlayer = {...board.currentPlayer!, adjustedTimeMs: 7000};
+  /** The new context's projection owns a separate queued operation. */
+  const fresh = presentation.projectBoard({...board, currentPlayer, standings: [currentPlayer]});
+  release(native);
+  await Promise.all([old, fresh]);
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
+});
+
+it("releases failed coalesced lookup work so a later authoritative read can retry", async () => {
+  /** A provider failure must not leave a cached failed operation. */
+  const {options, sdk, board} = fixture();
+  jest.mocked(sdk.getTournamentAsync!).mockRejectedValueOnce(new Error("Native lookup unavailable"));
+  /** Concurrent reads share one failure rather than duplicate native work. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  await Promise.all([presentation.projectBoard(board), presentation.projectBoard(board)]);
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
+  expect(options.reportFailure).toHaveBeenCalledTimes(1);
+  await presentation.projectBoard(board);
+  expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
+});
+
+it("isolates a throwing native context getter and permits fresh recovery", async () => {
+  /** Optional SDK identity lookup cannot reject an authoritative standings read. */
+  const {options, sdk, board} = fixture();
+  sdk.context!.getID = jest.fn().mockImplementationOnce(() => {throw new Error("Native identity unavailable");}).mockReturnValue("context-1");
+  /** This provider keeps the official board independently of native projection. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  await expect(presentation.projectBoard(board)).resolves.toBeUndefined();
+  expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
+  await presentation.projectBoard(board);
+  expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
+  expect(options.reportFailure).toHaveBeenCalledTimes(1);
+});
+
+it.each(["isActive", "getLocale", "now"])("contains a throwing %s projection guard", async callback => {
+  /** Native guard failures must not synchronously reject the official board caller. */
+  const {options, sdk, board} = fixture();
+  /** Each optional callback fault models the existing asynchronous projection boundary. */
+  const broken = () => {throw new Error("Optional projection guard unavailable");};
+  /** Callback failure stays independent of authoritative standings success. */
+  const presentation = createFacebookTournamentPresentation({...options,
+    isActive: callback === "isActive" ? broken : options.isActive,
+    getLocale: callback === "getLocale" ? broken : options.getLocale,
+    now: callback === "now" ? broken : options.now})!;
+  await expect(presentation.projectBoard(board)).resolves.toBeUndefined();
+  expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
+  expect(sdk.tournament!.postScoreAsync).not.toHaveBeenCalled();
+  expect(options.reportFailure).toHaveBeenCalledTimes(1);
+});
+
+it("bounds a stalled projection lookup and permits fresh work before the original lookup returns", async () => {
+  jest.useFakeTimers();
+  /** Original SDK operation remains observed independently of local projection completion. */
+  const {options, sdk, board, native} = fixture();
+  /** Admit the held native lookup before advancing its local deadline. */
+  let admit!: () => void;
+  /** Resolve the original admitted native query after a newer projection completes. */
+  let release!: (native: FacebookInstantTournament) => void;
+  /** Explicit native admission keeps timing independent of promise queue depth. */
+  const ready = new Promise<void>(resolve => {admit = resolve;});
+  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = resolve; admit();}));
+  /** One provider owns the original lookup and later recovery. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  /** Local completion must occur without changing the original SDK promise. */
+  let finished = false;
+  /** Retain the exact projection completion handle. */
+  const original = presentation.projectBoard(board).then(() => {finished = true;});
+  try {
+    await ready;
+    await jest.advanceTimersByTimeAsync(7999);
+    expect(finished).toBe(false);
+    await jest.advanceTimersByTimeAsync(1);
+    expect(finished).toBe(true);
+    /** Fresh validated standings may improve during the lost native response. */
+    const currentPlayer = {...board.currentPlayer!, adjustedTimeMs: 7000};
+    await presentation.projectBoard({...board, currentPlayer, standings: [currentPlayer]});
+    expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(2);
+    expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
+    release(native);
+    await jest.advanceTimersByTimeAsync(0);
+    expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
+    expect(options.reportFailure).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally {
+    release(native); await original; jest.useRealTimers();
+  }
+});
+
+it("observes late native rejection after lookup expiry and fresh score recovery", async () => {
+  jest.useFakeTimers();
+  /** The late native rejection belongs to the original admitted SDK query. */
+  const {options, sdk, board} = fixture();
+  /** Explicit query admission establishes the original wait. */
+  let admit!: () => void;
+  /** Reject the original query after its local deadline and a newer projection. */
+  let reject!: (error: Error) => void;
+  /** Complete admission without relying on microtask depth. */
+  const ready = new Promise<void>(resolve => {admit = resolve;});
+  jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise((_resolve, no) => {reject = no; admit();}));
+  /** New official reads remain independent of the late SDK promise. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  /** Retain the original local completion. */
+  const original = presentation.projectBoard(board);
+  try {
+    await ready; await jest.advanceTimersByTimeAsync(8000); await original;
+    /** Recovery uses only its fresh validated official best. */
+    const currentPlayer = {...board.currentPlayer!, adjustedTimeMs: 7000};
+    await presentation.projectBoard({...board, currentPlayer, standings: [currentPlayer]});
+    reject(new Error("Late native query rejection"));
+    await jest.advanceTimersByTimeAsync(0);
+    expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[7000]]);
+    expect(options.reportFailure).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally {
+    reject(new Error("Final native query rejection")); await original; jest.useRealTimers();
+  }
+});
+
+it.each([false, true])("clears lookup deadlines before an admitted native post (failure=%s)", async failed => {
+  jest.useFakeTimers();
+  /** Native score writes retain their original serial ordering after lookup completes. */
+  const {options, sdk, board} = fixture();
+  /** Confirm the exact native score admission. */
+  let admit!: () => void;
+  /** Release the original write after its metadata deadline would have passed. */
+  let release!: () => void;
+  /** An admitted native write owns this wait independently of the read deadline. */
+  const ready = new Promise<void>(resolve => {admit = resolve;});
+  jest.mocked(sdk.tournament!.postScoreAsync).mockImplementationOnce(() => new Promise((resolve,reject) => {
+    release = () => failed ? reject(new Error("Original native score failed")) : resolve(); admit();
+  }));
+  /** One provider serializes all native score writes. */
+  const presentation = createFacebookTournamentPresentation(options)!;
+  /** Local completion must remain pending until the admitted write settles. */
+  let finished = false;
+  /** Original projection retains its write completion. */
+  const original = presentation.projectBoard(board).then(() => {finished = true;});
+  /** Any queued improvement also requires the original native write to settle. */
+  let improvement: Promise<void> | undefined;
+  try {
+    await ready;
+    expect(jest.getTimerCount()).toBe(0);
+    await jest.advanceTimersByTimeAsync(8000);
+    expect(finished).toBe(false);
+    /** A better official score can queue without racing the older admitted write. */
+    const currentPlayer = {...board.currentPlayer!, adjustedTimeMs: 7000};
+    improvement = presentation.projectBoard({...board, currentPlayer, standings: [currentPlayer]});
+    await jest.advanceTimersByTimeAsync(8000);
+    expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000]]);
+    release(); await Promise.all([original, improvement]);
+    expect(jest.mocked(sdk.tournament!.postScoreAsync!).mock.calls).toEqual([[9000], [7000]]);
+    expect(options.reportFailure).toHaveBeenCalledTimes(failed ? 1 : 0);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally {
+    release(); await Promise.all([original, improvement]); jest.useRealTimers();
+  }
+});

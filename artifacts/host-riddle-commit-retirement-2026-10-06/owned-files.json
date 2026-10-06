@@ -1,0 +1,44 @@
+[
+  {
+    "path": "packages/portal/src/play/useHostRiddleLifecycle.ts",
+    "before": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "9d8de942bf683698dcda83943f2622644a5e36b7be7a1ef8606c78b0c047feea",
+    "after": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-00-after.txt",
+    "afterSha256": "7515ffb8608934391223c2aa184a1515a5b89b8c94e3f6061859d312dc3c7caa"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts",
+    "before": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "dfcf78704a63bc0df5df010e38edd92504d5550e464f5ff80de128bce9435394",
+    "after": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-01-after.txt",
+    "afterSha256": "90e64e34128c067db0e134d55645d7f0aa8f94a68f1540a0d2acadcbdac0e87c"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-02-before.txt",
+    "beforeSha256": "e0b3a30275fe78eda1dfbcbb8d9474ec4a93687612bf6a4e3efabda8e97c3e9f",
+    "after": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-02-after.txt",
+    "afterSha256": "13a4f4499e8e753596e2908690783c20a3d3b3fb733ff794b64d97ab0c626b5b"
+  },
+  {
+    "path": "packages/portal/scripts/verify-riddle-recovery-coalescing-browser.mjs",
+    "before": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-03-before.txt",
+    "beforeSha256": "0407bcaedf622b6d879d76caff0ff2378a405ccba4f58b527d7d4ed51f86b430",
+    "after": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-03-after.txt",
+    "afterSha256": "3ecc1de1dd7a7325b7b40cd7534da854e2660305708e26df904fba01495a27cb"
+  },
+  {
+    "path": "packages/portal/scripts/verify-host-riddle-commit-retirement-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-04-after.txt",
+    "afterSha256": "3c0b0140bef227763fd26273f3e1be1300c4b23bed4c4ca23a9c956750889c85"
+  },
+  {
+    "path": "packages/portal/src/play/race/__tests__/raceBoardAttempts.test.tsx",
+    "before": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-05-before.txt",
+    "beforeSha256": "b5fe13615e784c283a0188f48d64384feddaf7b7fd1cf9236091c018775ec561",
+    "after": "artifacts/host-riddle-commit-retirement-2026-10-06/owned-05-after.txt",
+    "afterSha256": "965d4932e17f5f032fca193cea98750e1430b8ca9ea9c7160778db8aa02efe77"
+  }
+]

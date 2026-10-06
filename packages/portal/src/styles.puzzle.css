@@ -78,8 +78,12 @@
 }
 .cell {
   width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
   aspect-ratio: 1;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
   border-radius: 50%;
   border: 2px solid #a1a8b3;
@@ -91,6 +95,13 @@
     sans-serif;
   text-transform: uppercase;
   cursor: pointer;
+}
+.cell > .cell-glyph {
+  display: inline-block;
+  justify-self: center;
+  white-space: pre;
+  transform-origin: center;
+  pointer-events: none;
 }
 .cell:disabled {
   cursor: default;

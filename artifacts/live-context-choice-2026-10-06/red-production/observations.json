@@ -1,0 +1,200 @@
+[
+  {
+    "scenario": "event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "event",
+    "name": "one new context authority query after native membership confirmation",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "scenario": "event",
+    "name": "native context choice does not reload independent history",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "scenario": "event",
+    "name": "native context choice preserves independent history row",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "scenario": "event",
+    "name": "native context choice preserves modal identity",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "scenario": "event",
+    "name": "new context projection belongs to the acknowledged native selection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "scenario": "event",
+    "name": "authority membership uses exact context identities once",
+    "actual": [
+      "a",
+      "b"
+    ],
+    "expected": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "scenario": "event",
+    "name": "native chooser remains a single user action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "no-event",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "no-event",
+    "name": "one new context authority query after native membership confirmation",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "scenario": "no-event",
+    "name": "native context choice does not reload independent history",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "scenario": "no-event",
+    "name": "native context choice preserves independent history row",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "scenario": "no-event",
+    "name": "native context choice preserves modal identity",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "scenario": "no-event",
+    "name": "new context projection belongs to the acknowledged native selection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "scenario": "no-event",
+    "name": "authority membership uses exact context identities once",
+    "actual": [
+      "a",
+      "b"
+    ],
+    "expected": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "scenario": "no-event",
+    "name": "native chooser remains a single user action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "membership confirmation gates native chooser completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "one new context authority query after native membership confirmation",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "native context choice does not reload independent history",
+    "actual": 2,
+    "expected": 1
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "native context choice preserves independent history row",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "native context choice preserves modal identity",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "new context projection belongs to the acknowledged native selection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "authority membership uses exact context identities once",
+    "actual": [
+      "a",
+      "b"
+    ],
+    "expected": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "native chooser remains a single user action",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "silent-capability",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

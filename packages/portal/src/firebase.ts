@@ -524,6 +524,8 @@ export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntry
 
 /** Authenticated live matchmaking and input transports. */
 export const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "joinLiveRace");
+/** Retires a stable account-owned join without cancelling a newer recovered seat. */
+export const retireLiveRaceJoin = httpsCallable<import("@qwordly/core/race").RetireLiveRaceJoin, import("@qwordly/core/race").RetireLiveRaceJoinResponse>(raceFunctions, "retireLiveRaceJoin");
 /** Reads live progress and commits idempotent commands. */
 export const updateLiveRace = rawHttpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView, {
   /** Private wake-up notification received through the same authenticated endpoint. */

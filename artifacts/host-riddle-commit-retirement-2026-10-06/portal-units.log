@@ -1,0 +1,214 @@
+FAIL src/play/race/__tests__/raceBoardAttempts.test.tsx
+  ● places active input after 0 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● places active input after 1 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● places active input after 3 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● places active input after 4 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div></div>"
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● reserves the projected attempt after 1 restored consumed rows
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">P</button>"
+    Received string:    "><button type=\"button\" disabled=\"\" aria-label=\"Letter 1: P. Letter is correct and in the right position\" class=\"cell green\"><span class=\"cell-glyph\" aria-hidden=\"true\">P</span></button><button type=\"button\" aria-label=\"Letter 2\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      38 |     activeSlotIndex={1} hintRevealedIndices={[0]} guesses={guesses} onSelectSlot={() => undefined} />);
+      39 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 4 ? 1 : 0);
+    > 40 |   if (used < 4) expect(html.split('class="guess-row"')[used + 2]).toContain('>P</button>');
+         |                                                                   ^
+      41 | });
+      42 |
+      43 | /** A correct answer's projected successor has its own untouched attempt count. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:40:67
+
+  ● reserves the projected attempt after 3 restored consumed rows
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">P</button>"
+    Received string:    "><button type=\"button\" disabled=\"\" aria-label=\"Letter 1: P. Letter is correct and in the right position\" class=\"cell green\"><span class=\"cell-glyph\" aria-hidden=\"true\">P</span></button><button type=\"button\" aria-label=\"Letter 2\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div></div>"
+
+      38 |     activeSlotIndex={1} hintRevealedIndices={[0]} guesses={guesses} onSelectSlot={() => undefined} />);
+      39 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 4 ? 1 : 0);
+    > 40 |   if (used < 4) expect(html.split('class="guess-row"')[used + 2]).toContain('>P</button>');
+         |                                                                   ^
+      41 | });
+      42 |
+      43 | /** A correct answer's projected successor has its own untouched attempt count. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:40:67
+
+
+Summary of all failing tests
+FAIL src/play/race/__tests__/raceBoardAttempts.test.tsx
+  ● places active input after 0 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● places active input after 1 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● places active input after 3 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● places active input after 4 authoritative attempts
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">A</button>"
+    Received string:    "><button type=\"button\" aria-label=\"Letter 1: A\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\">A</span></button><button type=\"button\" aria-label=\"Letter 2\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div></div>"
+
+      15 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 5 ? 1 : 0);
+      16 |   expect((html.match(/disabled=""/g) ?? []).length).toBe(used < 5 ? 20 : 25);
+    > 17 |   if (used < 5) expect(html.split('class="guess-row"')[used + 1]).toContain('>A</button>');
+         |                                                                   ^
+      18 | });
+      19 |
+      20 | /** Available recent feedback follows missing consumed attempts and retains its original colors. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:17:67
+
+  ● reserves the projected attempt after 1 restored consumed rows
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">P</button>"
+    Received string:    "><button type=\"button\" disabled=\"\" aria-label=\"Letter 1: P. Letter is correct and in the right position\" class=\"cell green\"><span class=\"cell-glyph\" aria-hidden=\"true\">P</span></button><button type=\"button\" aria-label=\"Letter 2\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div><div "
+
+      38 |     activeSlotIndex={1} hintRevealedIndices={[0]} guesses={guesses} onSelectSlot={() => undefined} />);
+      39 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 4 ? 1 : 0);
+    > 40 |   if (used < 4) expect(html.split('class="guess-row"')[used + 2]).toContain('>P</button>');
+         |                                                                   ^
+      41 | });
+      42 |
+      43 | /** A correct answer's projected successor has its own untouched attempt count. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:40:67
+
+  ● reserves the projected attempt after 3 restored consumed rows
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: ">P</button>"
+    Received string:    "><button type=\"button\" disabled=\"\" aria-label=\"Letter 1: P. Letter is correct and in the right position\" class=\"cell green\"><span class=\"cell-glyph\" aria-hidden=\"true\">P</span></button><button type=\"button\" aria-label=\"Letter 2\" aria-current=\"true\" class=\"cell active\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 3\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 4\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button><button type=\"button\" aria-label=\"Letter 5\" class=\"cell\"><span class=\"cell-glyph\" aria-hidden=\"true\"></span></button></div></div>"
+
+      38 |     activeSlotIndex={1} hintRevealedIndices={[0]} guesses={guesses} onSelectSlot={() => undefined} />);
+      39 |   expect((html.match(/aria-current="true"/g) ?? []).length).toBe(used < 4 ? 1 : 0);
+    > 40 |   if (used < 4) expect(html.split('class="guess-row"')[used + 2]).toContain('>P</button>');
+         |                                                                   ^
+      41 | });
+      42 |
+      43 | /** A correct answer's projected successor has its own untouched attempt count. */
+
+      at src/play/race/__tests__/raceBoardAttempts.test.tsx:40:67
+
+
+Test Suites: 1 failed, 15 skipped, 300 passed, 301 of 316 total
+Tests:       6 failed, 93 skipped, 2892 passed, 2991 total
+Snapshots:   0 total
+Time:        13.036 s, estimated 112 s
+Ran all test suites.

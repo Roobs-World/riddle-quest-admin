@@ -1,0 +1,75 @@
+{
+  "mode": "development",
+  "cases": 2,
+  "checks": 16,
+  "failures": [
+    {
+      "scenario": "provider",
+      "name": "provider or capability retirement commits Play before child effects",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "provider",
+      "name": "replacement never receives the original live ticket",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "provider",
+      "name": "retired rematch leaves no live subscription",
+      "actual": {
+        "Alice": 0,
+        "Bob": 1
+      },
+      "expected": {
+        "Alice": 0,
+        "Bob": 0
+      }
+    },
+    {
+      "scenario": "provider",
+      "name": "original seat retires through original provider",
+      "actual": [],
+      "expected": [
+        "Alice"
+      ]
+    },
+    {
+      "scenario": "provider",
+      "name": "restoration does not reopen retired rematch",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "capability",
+      "name": "restoration does not reopen retired rematch",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "capability",
+      "name": "restoration admits no automatic rematch",
+      "actual": 2,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Retired rematch must not cross provider or capability lifetime
+
+7 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-rematch-owner-2026-10-06/probe-minimal.mjs:24:188 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 7,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

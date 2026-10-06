@@ -1,0 +1,101 @@
+[
+  {
+    "name": "red-emulator",
+    "sessionId": 47048,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator",
+    "sessionId": 48018,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "probe-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "probe-lint",
+    "sessionId": 35164,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "probe-tsdoc-initial",
+    "sessionId": 75634,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "probe-tsdoc-fixed",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 46700,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 53389,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": 11172,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 73098,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 37637,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-focused",
+    "sessionId": 94720,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "built-browser",
+    "sessionId": 4213,
+    "exitCode": 143,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolvedBy": "built-browser-retry"
+  },
+  {
+    "name": "built-browser-retry",
+    "sessionId": 80124,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

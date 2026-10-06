@@ -1,0 +1,23 @@
+{
+  "name": "firefox-production",
+  "command": [
+    "env",
+    "LIVE_REMATCH_MODE=production",
+    "LIVE_REMATCH_BROWSER=firefox",
+    "LIVE_REMATCH_REPORT_DIR=../../artifacts/live-rematch-owner-2026-10-06/firefox-production",
+    "LIVE_REMATCH_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-live-rematch-owner-browser.mjs"
+  ],
+  "logs": [
+    "firefox-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791254457.783996,
+  "exitCode": 0,
+  "finishedAt": 1791254477.9765635
+}

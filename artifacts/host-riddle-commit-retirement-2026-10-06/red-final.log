@@ -1,0 +1,154 @@
+{
+  "engine": "chromium",
+  "mode": "development",
+  "cases": 4,
+  "checks": 48,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "locale:success",
+      "name": "old receipt accepted only while its committed content context remains owned",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "locale:success",
+      "name": "old operation acknowledgement follows the same ownership",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "locale:success",
+      "name": "old question cannot publish after committed retirement",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "locale:success",
+      "name": "retained old callback cannot admit provider work in a new context",
+      "actual": {
+        "accepted": true,
+        "reads": 1
+      },
+      "expected": {
+        "accepted": false,
+        "reads": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner:success",
+      "name": "old receipt accepted only while its committed content context remains owned",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner:success",
+      "name": "old operation acknowledgement follows the same ownership",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner:success",
+      "name": "old question cannot publish after committed retirement",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "owner:success",
+      "name": "retained old callback cannot admit provider work in a new context",
+      "actual": {
+        "accepted": true,
+        "reads": 1
+      },
+      "expected": {
+        "accepted": false,
+        "reads": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "generation:success",
+      "name": "retained old callback cannot admit provider work in a new context",
+      "actual": {
+        "accepted": true,
+        "reads": 1
+      },
+      "expected": {
+        "accepted": false,
+        "reads": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "provider:success",
+      "name": "old receipt accepted only while its committed content context remains owned",
+      "actual": true,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "provider:success",
+      "name": "old operation acknowledgement follows the same ownership",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "provider:success",
+      "name": "old question cannot publish after committed retirement",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "provider:success",
+      "name": "retained old callback cannot admit provider work in a new context",
+      "actual": {
+        "accepted": true,
+        "reads": 1
+      },
+      "expected": {
+        "accepted": false,
+        "reads": 0
+      }
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Committed content ownership fences delivery and retains valid requests
+
+13 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-host-riddle-commit-retirement-browser.mjs:123:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 13,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

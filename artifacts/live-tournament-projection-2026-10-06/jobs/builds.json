@@ -1,0 +1,14 @@
+{
+  "name": "builds",
+  "command": [
+    "bash",
+    "artifacts/live-tournament-projection-2026-10-06/builds.sh"
+  ],
+  "logs": [
+    "builds.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791261815.5875385,
+  "exitCode": 0,
+  "finishedAt": 1791261850.7878003
+}

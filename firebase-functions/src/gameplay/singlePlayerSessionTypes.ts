@@ -29,6 +29,25 @@ export type AuthoritativeSkipResult = {
   costDeducted: number;
 };
 
+/** Internal post-commit supply inputs accompany the immutable skip response without entering its receipt. */
+export type CommittedAuthoritativeSkipResult = AuthoritativeSkipResult & {
+  /** Fresh transaction-owned progression and issued content locale used only by the backend supply task. */
+  classicSupply: {
+    /** Current Classic entitlement after this attempt commits. */
+    classicIndex: number;
+    /** Validated locale from the session read in this same attempt. */
+    locale: string;
+  };
+};
+
+/** Internal issuance result carries only the session selected by the committed transaction attempt. */
+export type IssuedAuthoritativeSession = {
+  /** Opaque token bound to canonical content under the authenticated account. */
+  sessionToken: string;
+  /** Created or resumed canonical state used for backend public-response projection. */
+  state: SinglePlayerSessionState;
+};
+
 /** Stores one replay-safe guess receipt. */
 type GuessReceipt = {
   /** Hash of the normalized guess bound to the request id. */

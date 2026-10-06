@@ -1,0 +1,170 @@
+{
+  "goal": "active",
+  "providerCases": 15,
+  "measurements": [
+    {
+      "provider": "jest",
+      "winnerSeat": 0,
+      "retryDeletion": false,
+      "sourceReadFails": false,
+      "beforeReads": 8,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "jest",
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "sourceReadFails": false,
+      "beforeReads": 9,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "jest",
+      "winnerSeat": 0,
+      "retryDeletion": true,
+      "sourceReadFails": false,
+      "beforeReads": 16,
+      "afterReads": 16,
+      "afterMs": 1600
+    },
+    {
+      "provider": "jest",
+      "winnerSeat": 1,
+      "retryDeletion": true,
+      "sourceReadFails": false,
+      "beforeReads": 18,
+      "afterReads": 16,
+      "afterMs": 1600
+    },
+    {
+      "provider": "jest",
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "sourceReadFails": true,
+      "beforeReads": 9,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "reddit",
+      "winnerSeat": 0,
+      "retryDeletion": false,
+      "sourceReadFails": false,
+      "beforeReads": 8,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "reddit",
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "sourceReadFails": false,
+      "beforeReads": 9,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "reddit",
+      "winnerSeat": 0,
+      "retryDeletion": true,
+      "sourceReadFails": false,
+      "beforeReads": 16,
+      "afterReads": 16,
+      "afterMs": 1600
+    },
+    {
+      "provider": "reddit",
+      "winnerSeat": 1,
+      "retryDeletion": true,
+      "sourceReadFails": false,
+      "beforeReads": 18,
+      "afterReads": 16,
+      "afterMs": 1600
+    },
+    {
+      "provider": "reddit",
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "sourceReadFails": true,
+      "beforeReads": 9,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "facebook",
+      "winnerSeat": 0,
+      "retryDeletion": false,
+      "sourceReadFails": false,
+      "beforeReads": 8,
+      "afterReads": 8,
+      "afterMs": 800
+    },
+    {
+      "provider": "facebook",
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "sourceReadFails": false,
+      "beforeReads": 9,
+      "afterReads": 9,
+      "afterMs": 800
+    },
+    {
+      "provider": "facebook",
+      "winnerSeat": 0,
+      "retryDeletion": true,
+      "sourceReadFails": false,
+      "beforeReads": 16,
+      "afterReads": 16,
+      "afterMs": 1600
+    },
+    {
+      "provider": "facebook",
+      "winnerSeat": 1,
+      "retryDeletion": true,
+      "sourceReadFails": false,
+      "beforeReads": 18,
+      "afterReads": 18,
+      "afterMs": 1600
+    },
+    {
+      "provider": "facebook",
+      "winnerSeat": 1,
+      "retryDeletion": false,
+      "sourceReadFails": true,
+      "beforeReads": 9,
+      "afterReads": 9,
+      "afterMs": 800
+    }
+  ],
+  "scope": "actual service and scoring engine with 200ms simulated reads; real emulator gates verify provider delivery, privacy and transaction behavior",
+  "unnecessaryReadFailuresRemovedFor": [
+    "jest",
+    "reddit"
+  ],
+  "facebookOriginalContextPreserved": true,
+  "freshDeletionReadPerParticipantPerAttempt": true,
+  "backendUnitTests": 1597,
+  "backendUnitSuites": 129,
+  "liveEmulatorTests": 218,
+  "liveEmulatorSuites": 10,
+  "focusedTests": 19,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25557,
+  "tsdocFiles": 1145,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "stableSourceInputs": 2343,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 5,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

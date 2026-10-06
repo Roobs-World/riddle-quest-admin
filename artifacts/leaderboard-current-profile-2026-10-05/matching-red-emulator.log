@@ -1,0 +1,277 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-leaderboard-profile", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 49381.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/leaderboard-current-profile-2026-10-05/probe.config.cjs --runInBand
+  console.info
+    {"readCalls":1,"documentBytes":100153,"loadedFields":["avatarUrl","coins","privateBlob","stats","username"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"fallback","readCalls":1,"documentBytes":100176,"loadedFields":["avatarUrl","coins","privateBlob","stats","username"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"mode":"multiplayerWins","readCalls":1,"documentBytes":100176,"loadedFields":["avatarUrl","coins","privateBlob","stats","username"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/leaderboardCurrentProfile.it.test.ts
+  ● hydrates current identity for xp while keeping projection score semantics
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "entries": Array [
+          Object {
+    -       "avatarUrl": "https://example.invalid/current.png",
+    +       "avatarUrl": "https://example.invalid/old.png",
+            "bestStreak": 5,
+            "level": 2,
+            "totalWins": 10,
+            "updatedAt": 123,
+            "userId": "leaderboard-profile-a",
+    -       "username": "Current name",
+    +       "username": "Old name",
+            "xp": 50,
+          },
+        ],
+      }
+
+      31 |   /** Actual account batch read already performed for canonical existence now supplies display fields. */
+      32 |   const result = await readBoard(type);
+    > 33 |   expect(result).toMatchObject({entries: [{userId: IDS[0], username: "Current name", avatarUrl: "https://example.invalid/current.png",
+         |                  ^
+      34 |     level: 2, xp: 50, totalWins: 10, bestStreak: 5, updatedAt: 123}]});
+      35 |   expect((await db.doc(`leaderboard/${IDS[0]}`).get()).data()).toEqual(before);
+      36 | });
+
+      at src/__tests__/leaderboardCurrentProfile.it.test.ts:33:18
+
+  ● hydrates current identity for totalWins while keeping projection score semantics
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "entries": Array [
+          Object {
+    -       "avatarUrl": "https://example.invalid/current.png",
+    +       "avatarUrl": "https://example.invalid/old.png",
+            "bestStreak": 5,
+            "level": 2,
+            "totalWins": 10,
+            "updatedAt": 123,
+            "userId": "leaderboard-profile-a",
+    -       "username": "Current name",
+    +       "username": "Old name",
+            "xp": 50,
+          },
+        ],
+      }
+
+      31 |   /** Actual account batch read already performed for canonical existence now supplies display fields. */
+      32 |   const result = await readBoard(type);
+    > 33 |   expect(result).toMatchObject({entries: [{userId: IDS[0], username: "Current name", avatarUrl: "https://example.invalid/current.png",
+         |                  ^
+      34 |     level: 2, xp: 50, totalWins: 10, bestStreak: 5, updatedAt: 123}]});
+      35 |   expect((await db.doc(`leaderboard/${IDS[0]}`).get()).data()).toEqual(before);
+      36 | });
+
+      at src/__tests__/leaderboardCurrentProfile.it.test.ts:33:18
+
+  ● hydrates current identity for bestStreak while keeping projection score semantics
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "entries": Array [
+          Object {
+    -       "avatarUrl": "https://example.invalid/current.png",
+    +       "avatarUrl": "https://example.invalid/old.png",
+            "bestStreak": 5,
+            "level": 2,
+            "totalWins": 10,
+            "updatedAt": 123,
+            "userId": "leaderboard-profile-a",
+    -       "username": "Current name",
+    +       "username": "Old name",
+            "xp": 50,
+          },
+        ],
+      }
+
+      31 |   /** Actual account batch read already performed for canonical existence now supplies display fields. */
+      32 |   const result = await readBoard(type);
+    > 33 |   expect(result).toMatchObject({entries: [{userId: IDS[0], username: "Current name", avatarUrl: "https://example.invalid/current.png",
+         |                  ^
+      34 |     level: 2, xp: 50, totalWins: 10, bestStreak: 5, updatedAt: 123}]});
+      35 |   expect((await db.doc(`leaderboard/${IDS[0]}`).get()).data()).toEqual(before);
+      36 | });
+
+      at src/__tests__/leaderboardCurrentProfile.it.test.ts:33:18
+
+  ● omits a removed canonical avatar even when its copied projection still contains one
+
+    expect(received).not.toHaveProperty(path)
+
+    Expected path: not "avatarUrl"
+
+    Received value: "https://example.invalid/old.png"
+
+      37 | it("omits a removed canonical avatar even when its copied projection still contains one", async () => {
+      38 |   await db.doc(`users/${IDS[0]}`).update({avatarUrl: FieldValue.delete()});
+    > 39 |   expect((await readBoard()).entries[0]).not.toHaveProperty("avatarUrl");
+         |                                              ^
+      40 | });
+      41 | it("uses the current display-name fallback without exposing an earlier copied username", async () => {
+      42 |   await db.doc(`users/${IDS[0]}`).update({username: FieldValue.delete(), displayName: "Current display name"});
+
+      at Object.<anonymous> (src/__tests__/leaderboardCurrentProfile.it.test.ts:39:46)
+
+  ● uses the current display-name fallback without exposing an earlier copied username
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Current display name"
+    Received: "Old name"
+
+      41 | it("uses the current display-name fallback without exposing an earlier copied username", async () => {
+      42 |   await db.doc(`users/${IDS[0]}`).update({username: FieldValue.delete(), displayName: "Current display name"});
+    > 43 |   expect((await readBoard()).entries[0]?.username).toBe("Current display name");
+         |                                                    ^
+      44 | });
+      45 | it("keeps an existing account with no display fields live under the field mask", async () => {
+      46 |   await db.doc(`users/${IDS[0]}`).set({coins: 550});
+
+      at Object.<anonymous> (src/__tests__/leaderboardCurrentProfile.it.test.ts:43:52)
+
+  ● keeps an existing account with no display fields live under the field mask
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "entries": Array [
+          Object {
+            "level": 2,
+            "userId": "leaderboard-profile-a",
+    -       "username": "Player",
+    +       "username": "Old name",
+            "xp": 50,
+          },
+        ],
+      }
+
+      47 |   /** The projection score distinguishes a live masked account from a fallback account scan. */
+      48 |   const result = await readBoard();
+    > 49 |   expect(result).toMatchObject({entries: [{userId: IDS[0], username: "Player", level: 2, xp: 50}]});
+         |                  ^
+      50 |   expect(result.entries[0]).not.toHaveProperty("avatarUrl");
+      51 | });
+      52 | it("retains deletion and subject ownership checks before hydrating remaining accounts", async () => {
+
+      at Object.<anonymous> (src/__tests__/leaderboardCurrentProfile.it.test.ts:49:18)
+
+  ● loads only display fields in the existing single account batch read
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 3
+
+      Array [
+        "avatarUrl",
+    +   "coins",
+    +   "privateBlob",
+    +   "stats",
+        "username",
+      ]
+
+      77 |     if (process.env.LEADERBOARD_PROFILE_TRACE) console.info(JSON.stringify({readCalls, documentBytes, loadedFields}));
+      78 |     expect(readCalls).toBe(1);
+    > 79 |     expect(loadedFields).toEqual(["avatarUrl", "username"]);
+         |                          ^
+      80 |     expect(documentBytes).toBeLessThan(256);
+      81 |   } finally {spy.mockRestore();}
+      82 | });
+
+      at Object.<anonymous> (src/__tests__/leaderboardCurrentProfile.it.test.ts:79:26)
+
+  ● limits fallback account query payload to public ranking fields
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 2
+
+      Array [
+        "avatarUrl",
+    +   "coins",
+    +   "privateBlob",
+        "stats",
+        "username",
+      ]
+
+      108 |     if (process.env.LEADERBOARD_PROFILE_TRACE) console.info(JSON.stringify({mode, readCalls, documentBytes, loadedFields}));
+      109 |     expect(readCalls).toBe(1);
+    > 110 |     expect(loadedFields).toEqual(["avatarUrl", "stats", "username"]);
+          |                          ^
+      111 |     expect(documentBytes).toBeLessThan(256);
+      112 |   } finally {spy.mockRestore();}
+      113 | });
+
+      at src/__tests__/leaderboardCurrentProfile.it.test.ts:110:26
+
+  ● limits multiplayerWins account query payload to public ranking fields
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 2
+
+      Array [
+        "avatarUrl",
+    +   "coins",
+    +   "privateBlob",
+        "stats",
+        "username",
+      ]
+
+      108 |     if (process.env.LEADERBOARD_PROFILE_TRACE) console.info(JSON.stringify({mode, readCalls, documentBytes, loadedFields}));
+      109 |     expect(readCalls).toBe(1);
+    > 110 |     expect(loadedFields).toEqual(["avatarUrl", "stats", "username"]);
+          |                          ^
+      111 |     expect(documentBytes).toBeLessThan(256);
+      112 |   } finally {spy.mockRestore();}
+      113 | });
+
+      at src/__tests__/leaderboardCurrentProfile.it.test.ts:110:26
+
+Test Suites: 1 failed, 1 total
+Tests:       9 failed, 1 passed, 10 total
+Snapshots:   0 total
+Time:        1.153 s, estimated 2 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config ../artifacts/leaderboard-current-profile-2026-10-05/probe.config.cjs --runInBand" exited with code 1

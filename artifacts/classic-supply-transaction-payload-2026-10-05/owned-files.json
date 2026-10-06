@@ -1,0 +1,5 @@
+{
+  "worker": "firebase-functions/src/riddles/classicSupplyWorker.ts",
+  "worker-test": "firebase-functions/src/__tests__/classicSupplyWorker.test.ts",
+  "emulator-test": "firebase-functions/src/__tests__/classicSupplyTransactionPayload.it.test.ts"
+}

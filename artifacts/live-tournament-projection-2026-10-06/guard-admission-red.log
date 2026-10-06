@@ -1,0 +1,59 @@
+FAIL src/facebook/__tests__/FacebookTournamentPresentation.test.ts
+  ● contains a throwing isActive projection guard
+
+    Optional projection guard unavailable
+
+      345 |   const {options, sdk, board} = fixture();
+      346 |   /** Each optional callback fault models the existing asynchronous projection boundary. */
+    > 347 |   const broken = () => {throw new Error("Optional projection guard unavailable");};
+          |                               ^
+      348 |   /** Callback failure stays independent of authoritative standings success. */
+      349 |   const presentation = createFacebookTournamentPresentation({...options,
+      350 |     isActive: callback === "isActive" ? broken : options.isActive,
+
+      at broken (src/facebook/__tests__/FacebookTournamentPresentation.test.ts:347:31)
+      at active (src/facebook/FacebookTournamentPresentation.ts:43:42)
+      at live (src/facebook/FacebookTournamentPresentation.ts:48:12)
+      at Object.projectBoard (src/facebook/FacebookTournamentPresentation.ts:95:10)
+      at src/facebook/__tests__/FacebookTournamentPresentation.test.ts:353:29
+
+  ● contains a throwing getLocale projection guard
+
+    Optional projection guard unavailable
+
+      345 |   const {options, sdk, board} = fixture();
+      346 |   /** Each optional callback fault models the existing asynchronous projection boundary. */
+    > 347 |   const broken = () => {throw new Error("Optional projection guard unavailable");};
+          |                               ^
+      348 |   /** Callback failure stays independent of authoritative standings success. */
+      349 |   const presentation = createFacebookTournamentPresentation({...options,
+      350 |     isActive: callback === "isActive" ? broken : options.isActive,
+
+      at broken (src/facebook/__tests__/FacebookTournamentPresentation.test.ts:347:31)
+      at active (src/facebook/FacebookTournamentPresentation.ts:43:56)
+      at live (src/facebook/FacebookTournamentPresentation.ts:48:12)
+      at Object.projectBoard (src/facebook/FacebookTournamentPresentation.ts:95:10)
+      at src/facebook/__tests__/FacebookTournamentPresentation.test.ts:353:29
+
+  ● contains a throwing now projection guard
+
+    Optional projection guard unavailable
+
+      345 |   const {options, sdk, board} = fixture();
+      346 |   /** Each optional callback fault models the existing asynchronous projection boundary. */
+    > 347 |   const broken = () => {throw new Error("Optional projection guard unavailable");};
+          |                               ^
+      348 |   /** Callback failure stays independent of authoritative standings success. */
+      349 |   const presentation = createFacebookTournamentPresentation({...options,
+      350 |     isActive: callback === "isActive" ? broken : options.isActive,
+
+      at broken (src/facebook/__tests__/FacebookTournamentPresentation.test.ts:347:31)
+      at live (src/facebook/FacebookTournamentPresentation.ts:47:19)
+      at Object.projectBoard (src/facebook/FacebookTournamentPresentation.ts:95:10)
+      at src/facebook/__tests__/FacebookTournamentPresentation.test.ts:353:29
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 21 passed, 24 total
+Snapshots:   0 total
+Time:        0.245 s, estimated 1 s
+Ran all test suites matching src/facebook/__tests__/FacebookTournamentPresentation.test.ts.

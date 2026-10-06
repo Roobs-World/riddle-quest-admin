@@ -1,0 +1,3968 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "exit",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "closed Activity stays unmounted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "close",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "fr"
+    ],
+    "expected": [
+      "fr"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "bounded read timeout remains retryable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "timeout",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "abandoned replacement retains committed provider",
+    "actual": "alpha",
+    "expected": "alpha"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-replace",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en",
+      "en"
+    ],
+    "expected": [
+      "en",
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "admitted",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "independent run recording survives read retirement",
+    "actual": [
+      [
+        "b",
+        "en",
+        "fixture-opaque-run"
+      ]
+    ],
+    "expected": [
+      [
+        "b",
+        "en",
+        "fixture-opaque-run"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "optional projection remains reward free",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "record",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "closed Activity stays unmounted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "close",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "fr"
+    ],
+    "expected": [
+      "fr"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "account",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "bounded read timeout remains retryable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "abandoned replacement retains committed provider",
+    "actual": "alpha",
+    "expected": "alpha"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en",
+      "en"
+    ],
+    "expected": [
+      "en",
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "independent run recording survives read retirement",
+    "actual": [
+      [
+        "b",
+        "en",
+        "fixture-opaque-run"
+      ]
+    ],
+    "expected": [
+      [
+        "b",
+        "en",
+        "fixture-opaque-run"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "optional projection remains reward free",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "record",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "exit",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "closed Activity stays unmounted",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "close",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "fr"
+    ],
+    "expected": [
+      "fr"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "account",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "bounded read timeout remains retryable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timeout",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "abandoned replacement retains committed provider",
+    "actual": "alpha",
+    "expected": "alpha"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-replace",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en",
+      "en"
+    ],
+    "expected": [
+      "en",
+      "en"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "admitted",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "independent run recording survives read retirement",
+    "actual": [
+      [
+        "b",
+        "en",
+        "fixture-opaque-run"
+      ]
+    ],
+    "expected": [
+      [
+        "b",
+        "en",
+        "fixture-opaque-run"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "optional projection remains reward free",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "fresh Activity owns exactly its new request",
+    "actual": [
+      "en"
+    ],
+    "expected": [
+      "en"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "record",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "initial authority read is singular",
+    "actual": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ],
+    "expected": [
+      [
+        "alpha",
+        "a",
+        "en"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "membership confirmation precedes authority admission",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "only surviving read admits deferred authority work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "shared native membership is neither cancelled nor duplicated",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no score mutation from standings cancellation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "current destination renders acknowledged authority rows",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "independent modal identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "independent history identity survives read work",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "retired errors do not surface on current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "no-event",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

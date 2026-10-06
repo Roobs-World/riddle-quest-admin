@@ -1,0 +1,52 @@
+{
+  "goal": "active",
+  "futureSessionDirectReadsBefore": 3,
+  "futureSessionDirectReadsAfter": 0,
+  "retainedCurrentSessionDirectReads": 1,
+  "syntheticLatencyMs": {
+    "fresh": {
+      "before": 800,
+      "after": 600
+    },
+    "resumed": {
+      "before": 1000,
+      "after": 800
+    }
+  },
+  "physicalReads": {
+    "fresh": {
+      "before": 7,
+      "after": 4
+    },
+    "resumed": {
+      "before": 10,
+      "after": 7
+    }
+  },
+  "scope": "Real buffer, issuance and response projection with deterministic 200 ms persistence/catalog delays. Profile, current reconciliation, account lease, HTTP and commit delays are outside this model. Not a production latency measurement. Separate actual Admin SDK emulator tests verify canonical writes, concurrency, fresh retry state, recovery and lease lifetime.",
+  "allSiblingIssuancesSettleBeforeLeaseRelease": true,
+  "newRealEmulatorCases": 9,
+  "backendUnitTests": 1643,
+  "backendUnitSuites": 133,
+  "emulatorTests": 288,
+  "emulatorSuites": 19,
+  "focusedTests": 65,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25852,
+  "tsdocFiles": 1156,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2354,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 16,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "held delivery owns its expected deadline",
+    "actual": [
+      10000
+    ],
+    "expected": [
+      10000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "close retains the unresolved join before advertising another start",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "failed owned leave still excludes a replacement search",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "close retries only the original leave identity",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "close cannot duplicate its unresolved join",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "same provider starts a distinct seat after cancellation",
+    "actual": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "expected": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "same provider replacement remains playable",
+    "actual": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "expected": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "original close cannot leave the replacement ticket",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "settled journey retains no delivery deadline",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "no unhandled promise",
+    "actual": [],
+    "expected": []
+  }
+]

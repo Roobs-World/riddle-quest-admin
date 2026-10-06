@@ -1,0 +1,116 @@
+[
+  {
+    "name": "runtime-probe-config-preflight",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Corrected the artifact creation root after the initial relative-working-directory setup failed; runtime-probe then passed."
+  },
+  {
+    "name": "runtime-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "red-unit",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator",
+    "sessionId": 76642,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "types-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": 57932,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe",
+    "sessionId": 69721,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Added missing declaration comments in the new integration fixture; tsdoc-repaired-probe then passed."
+  },
+  {
+    "name": "green-emulator",
+    "sessionId": 55706,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "green-focused",
+    "sessionId": 49612,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-repaired-probe",
+    "sessionId": 98631,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 50683,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 6276,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 71161,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 12230,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 4704,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

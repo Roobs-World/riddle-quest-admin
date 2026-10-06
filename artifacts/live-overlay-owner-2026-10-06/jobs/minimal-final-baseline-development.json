@@ -1,0 +1,19 @@
+{
+  "name": "minimal-final-baseline-development",
+  "command": [
+    "env",
+    "OVERLAY_OWNER_MODE=development",
+    "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/minimal-final-baseline-development",
+    "OVERLAY_OWNER_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/owned-00-before.txt",
+    "OVERLAY_OWNER_BASELINE_ADAPTER_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/owned-01-before.txt",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-owner-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-baseline-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791258968.5106082,
+  "exitCode": 1,
+  "finishedAt": 1791258969.785221
+}

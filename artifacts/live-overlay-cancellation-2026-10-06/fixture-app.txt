@@ -1,0 +1,13 @@
+window.expectedReceiver=providers.alpha;const never=new Promise(()=>{});function Suspend({held}){if(held)throw never;return null;}
+function App(){const [owner,setOwner]=React.useState('alpha'),[playerId,setPlayerId]=React.useState('player-1'),[coins,setCoins]=React.useState(100),[account,setAccount]=React.useState('fixture-player'),[held,setHeld]=React.useState(false),[visible,setVisible]=React.useState(true);window.probe.renders.push(owner);return <>
+<button data-action style={{position:'fixed',bottom:4,right:4,zIndex:2147483647}} onClick={()=>{
+ if(scenario==='name-player'){window.fixturePlayer='player-2';setPlayerId('player-2');}
+ else if(scenario==='name-provider'){window.expectedReceiver=providers.beta;setOwner('beta');}
+ else if(scenario==='name-method'){providers.alpha.renderPlayer=providers.beta.renderPlayer;setCoins(800);}
+ else if(scenario==='name-account')setAccount('replacement-player');
+ else if(scenario.includes('profile'))setCoins(800);
+ else setVisible(false);
+}}>Action fixture</button>
+<button data-prepare style={{position:'fixed',bottom:44,left:4,zIndex:2147483647}} onClick={()=>React.startTransition(()=>{setOwner('beta');setHeld(true);})}>Prepare fixture</button>
+<button data-abandon style={{position:'fixed',bottom:44,right:4,zIndex:2147483647}} onClick={()=>{setOwner('alpha');setHeld(false);}}>Abandon fixture</button>
+<React.Suspense fallback={<output>Suspended fixture</output>}>{visible&&<RaceTournamentEntry ownerId={account} locale='en' coins={coins} initialCategories={catalog.categories} contextBoard={contextBoard} matchmaking={{live}} playerOverlay={providers[owner]} platformPlayerId={playerId} presentation={presentation} postToHost={post} onClose={()=>setVisible(false)}/>}<Suspend held={held}/></React.Suspense></>;}createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);

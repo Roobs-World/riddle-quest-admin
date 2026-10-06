@@ -1,0 +1,18 @@
+{
+  "name": "chromium-production",
+  "command": [
+    "env",
+    "OVERLAY_OWNER_BROWSER=chromium",
+    "OVERLAY_OWNER_MODE=production",
+    "OVERLAY_OWNER_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-cancellation-2026-10-06/chromium-production",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-overlay-cancellation-browser.mjs"
+  ],
+  "logs": [
+    "chromium-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791260376.7692938,
+  "exitCode": 0,
+  "finishedAt": 1791260397.397344
+}

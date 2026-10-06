@@ -1,0 +1,8 @@
+{
+  "name": "lifetime-development",
+  "status": "terminal",
+  "exitCode": 1,
+  "logs": [
+    "lifetime-development.log"
+  ]
+}

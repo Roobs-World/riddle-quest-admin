@@ -1,0 +1,8 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/d6c92d493c4b914112d332d3914a3eead43e51eb07caa44149217550ed259f00/facebook.json",
+    "preserved": "artifacts/live-overlay-cancellation-2026-10-06/target-dependencies/facebook-browser.json",
+    "sha256": "65ce540a1b57b075622331d168b40cd0521bee545e79d4d59890d298c07cd71f",
+    "outputDirectory": "/tmp/riddle-quest-facebook-browser-jEQASi"
+  }
+]

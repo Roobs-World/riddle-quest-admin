@@ -60,6 +60,11 @@ jest.mock("../riddles/riddleGeneration", () => ({
 
 jest.mock("../gameplay/singlePlayerSession", () => ({
   ensureAuthoritativeSession: (...args: unknown[]) => mockEnsureAuthoritativeSession(...args),
+  ensureAuthoritativeSessionWithState: async (...args: unknown[]) => {
+    /** Fixture token and recovery state represent one committed issuance result for buffer tests. */
+    const sessionToken = await mockEnsureAuthoritativeSession(...args);
+    return {sessionToken, state: await mockGetIssuedAuthoritativeSession(args[0], sessionToken, args[1], args[2])};
+  },
   getIssuedAuthoritativeSession: (...args: unknown[]) => mockGetIssuedAuthoritativeSession(...args),
 }));
 

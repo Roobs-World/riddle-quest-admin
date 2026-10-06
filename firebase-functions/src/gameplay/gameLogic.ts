@@ -19,7 +19,6 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {
-  getIssuedAuthoritativeSession,
   grantAuthoritativeContinue,
   purchaseAuthoritativeHint,
   skipAuthoritativeRiddle,
@@ -59,8 +58,6 @@ export const skipRiddle = onCallWithSentry(
         throw new HttpsError("failed-precondition", "Daily riddles cannot be skipped.");
       }
 
-      /** Provides session behavior. */
-      const session = await getIssuedAuthoritativeSession(currentUserId, sessionToken, "classic", riddleId);
       /** Provides result behavior. */
       const result = await skipAuthoritativeRiddle(currentUserId, {
         riddleId,
@@ -70,8 +67,8 @@ export const skipRiddle = onCallWithSentry(
       });
       await triggerClassicRiddleGenerationIfNeeded(
         currentUserId,
-        result.newProgress.classicIndex,
-        session.locale as SupportedLocale,
+        result.classicSupply.classicIndex,
+        result.classicSupply.locale as SupportedLocale,
       );
       /** Provides progress message behavior. */
       const progressMessage = `Advanced to classic level ${result.newProgress.classicIndex}`;

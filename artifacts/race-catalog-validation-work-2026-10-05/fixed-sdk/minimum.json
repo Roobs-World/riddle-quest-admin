@@ -1,0 +1,21 @@
+{
+  "name": "minimum",
+  "answerUnits": 129,
+  "answerBytes": 129,
+  "answerNormalizationCalls": 0,
+  "answerNormalizationUnits": 0,
+  "before": {
+    "data": {
+      "username": "Catalog Work",
+      "coins": 500
+    },
+    "version": "063926835986.596155000"
+  },
+  "after": {
+    "data": {
+      "username": "Catalog Work",
+      "coins": 500
+    },
+    "version": "063926835986.596155000"
+  }
+}

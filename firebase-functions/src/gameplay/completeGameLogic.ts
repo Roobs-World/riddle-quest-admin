@@ -5,7 +5,7 @@ import * as functions from "firebase-functions";
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getUser, ensureUserDocumentComplete} from "./firestoreService";
+import {prepareUserDocumentCompletion} from "./firestoreService";
 import type {Player, PlayerStats} from "../validation/firestoreSchemas";
 import type {CompleteGameRequestData, CompleteGameResponseData} from "@qwordly/core/validation/requestSchemas";
 import {findNewAchievements} from "./achievements";
@@ -187,6 +187,14 @@ const defaultPlayerStats = (): PlayerStats => ({
   multiplayerChallengesCreated: 0,
 });
 
+/** Internal projection context returned only by the final committed transaction attempt. */
+interface CommittedCompletion {
+  /** Public completion result, retaining its existing receipt and callable shape. */
+  response: CompleteGameResponseData;
+  /** Committed Classic progress used to check supply without a second account fetch. */
+  classicIndex?: number;
+}
+
 /** Atomically applies progression, rewards, achievements, and the replay receipt. */
 async function commitAuthoritativeCompletion(
   data: AuthoritativeCompleteGameData,
@@ -197,7 +205,6 @@ async function commitAuthoritativeCompletion(
     isAnonymous?: boolean;
   },
 ): Promise<CompleteGameResponseData> {
-  await ensureUserDocumentComplete(auth.uid);
   /** Provides receipt id behavior. */
   const receiptId = createHash("sha256").update(`${auth.uid}\0${data.gameMode}\0${data.completionKey}`).digest("hex");
   /** Provides db behavior. */
@@ -213,14 +220,22 @@ async function commitAuthoritativeCompletion(
     data.entitlementCompletionKey,
   );
 
-  /** Provides result behavior. */
-  let result = await db.runTransaction(async (transaction) => {
+  /** Every retry returns its own context; only the committed attempt supplies post-commit work. */
+  const committed = await db.runTransaction(async (transaction): Promise<CommittedCompletion> => {
     /** Provides [receipt snapshot, user snapshot, completion binding snapshot] behavior. */
     const [receiptSnapshot, userSnapshot, completionBindingSnapshot] = await Promise.all([
       transaction.get(receiptRef),
       transaction.get(userRef),
       transaction.get(completionBindingRef),
     ]);
+    /** Repair uses this attempt's fresh account and commits with completion or its replay. */
+    const profileRepair = userSnapshot.exists ? prepareUserDocumentCompletion(userSnapshot.data() as Partial<Player>) : {};
+    /** Prepared authority supplies both replay metadata and new progression within this attempt. */
+    const user = userSnapshot.exists ? {...userSnapshot.data(), ...profileRepair} as Player : undefined;
+    /** Replays and superseded completions may repair existing accounts without creating one. */
+    const repairExistingProfile = () => {
+      if (Object.keys(profileRepair).length) transaction.update(userRef, profileRepair);
+    };
     /** Clears matching completion binding. */
     const clearMatchingCompletionBinding = () => {
       if (
@@ -253,15 +268,16 @@ async function commitAuthoritativeCompletion(
       /** Provides cached behavior. */
       const cached = receiptSnapshot.data()?.result;
       if (receiptSnapshot.data()?.status === "completed" && cached) {
+        repairExistingProfile();
         clearMatchingCompletionBinding();
-        return cached as CompleteGameResponseData;
+        return {
+          response: cached as CompleteGameResponseData,
+          classicIndex: user?.progress?.classicIndex,
+        };
       }
       throw new HttpsError("data-loss", "The game completion receipt is invalid.");
     }
-    if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
-
-    /** Provides r. */
-    const user = userSnapshot.data() as Player;
+    if (!user) throw new HttpsError("not-found", "User data not found.");
     /** Provides current stats behavior. */
     const currentStats: PlayerStats = {...defaultPlayerStats(), ...(user.stats ?? {})};
     /** Provides progress behavior. */
@@ -324,9 +340,10 @@ async function commitAuthoritativeCompletion(
         leveledUp: false,
         ...(data.gameMode === "challenge" ? {newWinStreak: currentStats.winStreak} : {}),
       };
+      repairExistingProfile();
       createCompletionReceipt(response);
       clearMatchingCompletionBinding();
-      return response;
+      return {response, classicIndex: progress.classicIndex};
     }
     /** Provides stats behavior. */
     const stats: PlayerStats = {...currentStats};
@@ -435,6 +452,7 @@ async function commitAuthoritativeCompletion(
     };
 
     transaction.update(userRef, {
+      ...profileRepair,
       coins: newBalance,
       stats,
       progress,
@@ -452,8 +470,10 @@ async function commitAuthoritativeCompletion(
     });
     createCompletionReceipt(response);
     clearMatchingCompletionBinding();
-    return response;
+    return {response, classicIndex: progress.classicIndex};
   });
+  /** Referral settlement can extend the public result without changing its committed supply context. */
+  let result = committed.response;
 
   // A failed settlement makes the callable retryable. On retry the completion
   // receipt replays safely and the referral transaction resumes idempotently.
@@ -480,28 +500,20 @@ async function commitAuthoritativeCompletion(
     }
   }
 
+  /** Losses and anonymous Daily wins have no derived projection work. */
+  const publishLeaderboard = data.isCorrect && !auth.isAnonymous;
+  /** Classic wins still prepare subsequent content for both anonymous and named players. */
+  const prepareClassicSupply = data.isCorrect && data.gameMode === "classic";
+  if (!publishLeaderboard && !prepareClassicSupply) return result;
+
   // These effects are derived, overwrite-safe, and retried on receipt replay;
   // they cannot make the already-committed player reward partial.
   try {
-    /** Provides r. */
-    const user = await getUser(auth.uid);
-    /** Independent projections share the same committed profile and settle before responding. */
+    /** Ranking checks current authority; content reuses committed progress; both settle before responding. */
     const projections: Promise<unknown>[] = [];
-    if (data.isCorrect && user && !auth.isAnonymous) {
-      projections.push(updateLeaderboardEntry(
-        auth.uid,
-        user.username,
-        {
-          level: user.stats.level,
-          xp: user.stats.xp,
-          totalWins: user.stats.totalWins,
-          bestStreak: user.stats.bestStreak,
-        },
-        user.avatarUrl ?? null,
-      ));
-    }
-    if (data.isCorrect && data.gameMode === "classic" && user) {
-      projections.push(triggerClassicRiddleGenerationIfNeeded(auth.uid, user.progress.classicIndex, data.locale));
+    if (publishLeaderboard) projections.push(updateLeaderboardEntry(auth.uid));
+    if (prepareClassicSupply && committed.classicIndex !== undefined) {
+      projections.push(triggerClassicRiddleGenerationIfNeeded(auth.uid, committed.classicIndex, data.locale));
     }
     /** One failed projection cannot suppress or leave the other running past the response. */
     const settled = await Promise.allSettled(projections);

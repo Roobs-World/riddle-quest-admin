@@ -1,0 +1,44 @@
+[
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/47f4f51e97a25d01f766c9a500ac632cef4b29f0e41f3413fe88657157a4ab57/yahoo.json",
+    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "43536d80a9f80867a27d8015dfdd8e335f7469839b17e9da75ed58512ac46ae1",
+    "outputDirectory": "/tmp/live-tournament-lookup-builds-8zhgu5s0/yahoo"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/4c16f2bd3fa0ff410ecc87f21d434821be6a9220317b26cfd263e34fbeb86007/reddit.json",
+    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "b04825bb641c46881fcc83da9f58852b0eab1e3ecbc3fbe7d6a8ed217f0dd77c",
+    "outputDirectory": "/tmp/live-tournament-lookup-builds-8zhgu5s0/reddit"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/4d6a8518d5c447bca7a30b07fd16ef621421dcb4b3a6d9f61cc6eda300b73ed6/netflix.json",
+    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "3eb8dc246a7ee71aaa4339dde66505b6e5931734868c6a710a3b9bd97ea3fe5e",
+    "outputDirectory": "/tmp/live-tournament-lookup-builds-8zhgu5s0/netflix"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/b2e26f4fb565748b86c501ea92d551454689dff30c4b62b738d6232d6f9b3f0f/jest.json",
+    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/jest.json",
+    "sha256": "5f97ba3bfefd9af9aba3835962f9590cf1aca83b365e71ad0c09ada01a6fd3f0",
+    "outputDirectory": "/tmp/live-tournament-lookup-builds-8zhgu5s0/jest"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/b54e42666d060fb9055a9d1ca97063d7ada68b75a0c9fb6a9ea4e3d8750ac6b7/youtube.json",
+    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "ec3e57d4f781b62c6b079ebde457fafa2658488781de7ae69f28a11f08a78768",
+    "outputDirectory": "/tmp/live-tournament-lookup-builds-8zhgu5s0/youtube"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/bb59dc651d95e88025e6a0d07d3272e2eb490695b8e68548990f20bf7dce0792/facebook.json",
+    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "106b8518b9527001459fdf9e3243a10a41cc4a19193f735556ab3c75a7523529",
+    "outputDirectory": "/tmp/live-tournament-lookup-builds-8zhgu5s0/facebook"
+  }
+]

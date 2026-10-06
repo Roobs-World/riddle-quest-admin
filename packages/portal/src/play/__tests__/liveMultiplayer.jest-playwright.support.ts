@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
-import {LiveRaceViewSchema, RACE_RULES, type JoinLiveRace, type UpdateLiveRace, type LiveRaceView} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, RACE_RULES, type JoinLiveRace, type UpdateLiveRace, type LiveRaceView} from "@qwordly/core/race";
 import {installLiveHistoryJourney} from "./liveHistory.jest-playwright.support";
 import {installLiveRematchJourney} from "./liveRematch.jest-playwright.support";
 
@@ -47,6 +47,12 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     requestUrls.push(route.request().url());
     joins.push(target === "Reddit" ? input : input.data);
     return joins.length === 1 ? unavailable(route) : reply(route, snapshot());
+  });
+  await page.route(target === "Reddit" ? "**/api/game/race.live.retire" : "**/retireLiveRaceJoin", route => {
+    /** Actual shipped adapters may select only their original join and verified account precondition. */
+    const raw = route.request().postDataJSON(), input = RetireLiveRaceJoinSchema.parse(target === "Reddit" ? raw : raw.data);
+    expect(input).toEqual({requestId: expect.any(String), expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account"});
+    requestUrls.push(route.request().url()); return reply(route, {status: "retired"});
   });
   await page.route(target === "Reddit" ? "**/api/game/race.live.update" : "**/updateLiveRace", route => {
     /** Player commands contain only an owned ticket, action and request identifier. */

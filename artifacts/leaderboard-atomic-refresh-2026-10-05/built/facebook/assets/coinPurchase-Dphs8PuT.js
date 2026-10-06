@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Parfait`,COINS_SUFFIX:` pieces`,TAP_CHEST_TO_COLLECT:`Touchez le coffre pour récupérer vos pièces`,TITLE:`Pieces ajoutees!`},n={CoinPurchase:t}})))()}r();export{n as default};

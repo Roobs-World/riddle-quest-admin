@@ -1,3 +1,4 @@
+import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
 import {admin} from "../shared/firebaseAdmin";
 import {logger} from "firebase-functions";
 import {createHash} from "node:crypto";
@@ -71,7 +72,7 @@ import {settleRaceRun} from "./raceSettlement";
 import {projectRaceRunResponse} from "./raceRunResponse";
 import {parseRaceInvitation, assertRaceInvitationOpen} from "./raceInvitationRecord";
 import {buildRaceBotOpponent, parseRaceBotOffer, assertRaceAcceptedBotRun} from "./raceBot";
-export {reserveRaceInviteForUser, claimRaceInviteForUser} from "./raceInvitation";
+export {reserveRaceInviteForUser, claimRaceInviteForUser, getRaceChallengeForUser} from "./raceInvitation";
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
 
 /** Reports one answer-free command observation outside transactions, including failed offer acceptance. */
@@ -659,6 +660,8 @@ export async function publishRaceChallengeForUser(
     if (!outcome.publishable) {
       throw new HttpsError("failed-precondition", "Only a verified completed creator run can be published.");
     }
+    // Cached publications above retain their original receipt; only new publication must authorize this content.
+    assertRaceDeckCompatible(run.riddles, run.locale);
     /** Provides r. */
     const user = userSnapshot.data() ?? {};
     /** Provides display name behavior. */

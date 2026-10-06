@@ -1,0 +1,299 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-race-unicode-answers", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 51903.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/race-unicode-answers-2026-10-05/probe.config.cjs --runInBand
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"fr","failureCode":"data-loss","durationMs":59,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"ru","failureCode":"data-loss","durationMs":21,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"ja","failureCode":"data-loss","durationMs":17,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  console.warn
+    {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"hi","failureCode":"data-loss","durationMs":23,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:96:12)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":28,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"ru","categoryId":"history","status":"active","durationMs":22,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"ja","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/race/raceUnicodeAnswers.it.test.ts
+  ● publishes and scores the complete fr evaluation deck without changing canonical answers
+
+    Stored race view is invalid.
+
+       7 |   /** Strict decoding stays inside the transaction; diagnostics never expose immutable answers. */
+       8 |   const response = RaceRunResponseSchema.safeParse({run: toRaceRunView(run, nowMs, includeEvaluation, includeGuessHistory)});
+    >  9 |   if (!response.success) throw new HttpsError("data-loss", "Stored race view is invalid.");
+         |                                ^
+      10 |   return response.data;
+      11 | }
+      12 |
+
+      at projectRaceRunResponse (src/race/raceRunResponse.ts:9:32)
+      at src/race/raceService.ts:350:44
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at prepareRaceRunForUser (src/race/raceService.ts:288:28)
+      at startRaceRunForUser (src/race/raceService.ts:91:22)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  ● publishes and scores the complete ru evaluation deck without changing canonical answers
+
+    Stored race view is invalid.
+
+       7 |   /** Strict decoding stays inside the transaction; diagnostics never expose immutable answers. */
+       8 |   const response = RaceRunResponseSchema.safeParse({run: toRaceRunView(run, nowMs, includeEvaluation, includeGuessHistory)});
+    >  9 |   if (!response.success) throw new HttpsError("data-loss", "Stored race view is invalid.");
+         |                                ^
+      10 |   return response.data;
+      11 | }
+      12 |
+
+      at projectRaceRunResponse (src/race/raceRunResponse.ts:9:32)
+      at src/race/raceService.ts:350:44
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at prepareRaceRunForUser (src/race/raceService.ts:288:28)
+      at startRaceRunForUser (src/race/raceService.ts:91:22)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  ● publishes and scores the complete ja evaluation deck without changing canonical answers
+
+    Stored race view is invalid.
+
+       7 |   /** Strict decoding stays inside the transaction; diagnostics never expose immutable answers. */
+       8 |   const response = RaceRunResponseSchema.safeParse({run: toRaceRunView(run, nowMs, includeEvaluation, includeGuessHistory)});
+    >  9 |   if (!response.success) throw new HttpsError("data-loss", "Stored race view is invalid.");
+         |                                ^
+      10 |   return response.data;
+      11 | }
+      12 |
+
+      at projectRaceRunResponse (src/race/raceRunResponse.ts:9:32)
+      at src/race/raceService.ts:350:44
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at prepareRaceRunForUser (src/race/raceService.ts:288:28)
+      at startRaceRunForUser (src/race/raceService.ts:91:22)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  ● publishes and scores the complete hi evaluation deck without changing canonical answers
+
+    Stored race view is invalid.
+
+       7 |   /** Strict decoding stays inside the transaction; diagnostics never expose immutable answers. */
+       8 |   const response = RaceRunResponseSchema.safeParse({run: toRaceRunView(run, nowMs, includeEvaluation, includeGuessHistory)});
+    >  9 |   if (!response.success) throw new HttpsError("data-loss", "Stored race view is invalid.");
+         |                                ^
+      10 |   return response.data;
+      11 | }
+      12 |
+
+      at projectRaceRunResponse (src/race/raceRunResponse.ts:9:32)
+      at src/race/raceService.ts:350:44
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at prepareRaceRunForUser (src/race/raceService.ts:288:28)
+      at startRaceRunForUser (src/race/raceService.ts:91:22)
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:40:17
+
+  ● accepts a canonically equivalent decomposed fr guess in an answer-free run
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      66 |   expect(start.run.currentRiddle?.evaluation).toBeUndefined(); expect(start.run.preloadedRiddles).toBeUndefined(); expect(answer.length).toBeGreaterThan(7);
+      67 |   /** Normalized client input and original stored bytes compare through the same scoring semantics. */
+    > 68 |   const command = SubmitRaceGuessRequestSchema.parse({runId: start.run.runId, riddleId: start.run.currentRiddle!.riddleId,
+         |                                                ^
+      69 |     requestId: "unicode-legacy-guess", guess: ` ${answer.normalize("NFD")} `});
+      70 |   const response = await submitRaceGuessForUser(OWNER, command, {db, nowMs: NOW+1000});
+      71 |   expect(response.isCorrect).toBe(true); expect(response.run.correctCount).toBe(1); expect(response.run.currentRiddle?.evaluation).toBeUndefined();
+
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:68:48
+
+  ● accepts a canonically equivalent decomposed ru guess in an answer-free run
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      66 |   expect(start.run.currentRiddle?.evaluation).toBeUndefined(); expect(start.run.preloadedRiddles).toBeUndefined(); expect(answer.length).toBeGreaterThan(7);
+      67 |   /** Normalized client input and original stored bytes compare through the same scoring semantics. */
+    > 68 |   const command = SubmitRaceGuessRequestSchema.parse({runId: start.run.runId, riddleId: start.run.currentRiddle!.riddleId,
+         |                                                ^
+      69 |     requestId: "unicode-legacy-guess", guess: ` ${answer.normalize("NFD")} `});
+      70 |   const response = await submitRaceGuessForUser(OWNER, command, {db, nowMs: NOW+1000});
+      71 |   expect(response.isCorrect).toBe(true); expect(response.run.correctCount).toBe(1); expect(response.run.currentRiddle?.evaluation).toBeUndefined();
+
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:68:48
+
+  ● accepts a canonically equivalent decomposed ja guess in an answer-free run
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      66 |   expect(start.run.currentRiddle?.evaluation).toBeUndefined(); expect(start.run.preloadedRiddles).toBeUndefined(); expect(answer.length).toBeGreaterThan(7);
+      67 |   /** Normalized client input and original stored bytes compare through the same scoring semantics. */
+    > 68 |   const command = SubmitRaceGuessRequestSchema.parse({runId: start.run.runId, riddleId: start.run.currentRiddle!.riddleId,
+         |                                                ^
+      69 |     requestId: "unicode-legacy-guess", guess: ` ${answer.normalize("NFD")} `});
+      70 |   const response = await submitRaceGuessForUser(OWNER, command, {db, nowMs: NOW+1000});
+      71 |   expect(response.isCorrect).toBe(true); expect(response.run.correctCount).toBe(1); expect(response.run.currentRiddle?.evaluation).toBeUndefined();
+
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:68:48
+
+  ● accepts a canonically equivalent decomposed hi guess in an answer-free run
+
+    ZodError: [
+      {
+        "origin": "string",
+        "code": "too_big",
+        "maximum": 7,
+        "inclusive": true,
+        "path": [
+          "guess"
+        ],
+        "message": "Too big: expected string to have <=7 characters"
+      }
+    ]
+
+      66 |   expect(start.run.currentRiddle?.evaluation).toBeUndefined(); expect(start.run.preloadedRiddles).toBeUndefined(); expect(answer.length).toBeGreaterThan(7);
+      67 |   /** Normalized client input and original stored bytes compare through the same scoring semantics. */
+    > 68 |   const command = SubmitRaceGuessRequestSchema.parse({runId: start.run.runId, riddleId: start.run.currentRiddle!.riddleId,
+         |                                                ^
+      69 |     requestId: "unicode-legacy-guess", guess: ` ${answer.normalize("NFD")} `});
+      70 |   const response = await submitRaceGuessForUser(OWNER, command, {db, nowMs: NOW+1000});
+      71 |   expect(response.isCorrect).toBe(true); expect(response.run.correctCount).toBe(1); expect(response.run.currentRiddle?.evaluation).toBeUndefined();
+
+      at src/__tests__/race/raceUnicodeAnswers.it.test.ts:68:48
+
+Test Suites: 1 failed, 1 total
+Tests:       8 failed, 2 passed, 10 total
+Snapshots:   0 total
+Time:        2.389 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "pnpm exec jest --config ../artifacts/race-unicode-answers-2026-10-05/probe.config.cjs --runInBand" exited with code 1

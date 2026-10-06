@@ -1,0 +1,95 @@
+{
+  "status": "diagnosis-reproduced",
+  "productionEdited": false,
+  "serversStarted": false,
+  "process": {
+    "sessionId": null,
+    "exitCode": 0,
+    "terminal": true
+  },
+  "cases": 16,
+  "assertions": 152,
+  "whitespaceCases": 9,
+  "supportedNonwhitespaceControls": 7,
+  "sourceFiles": 30,
+  "sourceUnchanged": true,
+  "sourceHashes": {
+    "packages/core/src/game/index.ts": "4f5c69f87415cf58dec16fc4230b09218ebc165f6637c3369fbc82977a3a6132",
+    "packages/core/src/game/computeFeedback.ts": "1e6f0c3bdd5913977f3b2de849cd3b94b46e3bf9fd85ff4209c14e357f5d4de0",
+    "packages/core/src/game/graphemes.ts": "80b98d42ccfa993f282b0174a60379d9030ff9a70b0089a3571ec059c9e53ecd",
+    "packages/core/src/game/isValidGuess.ts": "398b78ea2332443e2574c5e5094811bddd204130b8c312cd06be12b1d3263f2d",
+    "packages/core/src/game/computeLetterStates.ts": "247ff382db993b0167709258430363b1fd074dfc13867a0a5c763b2ecb9c465d",
+    "packages/core/src/game/GameEngine.ts": "7ea0a693ee415379daa0d7f0d1176e494db786726096ce4d416e77e5469456fc",
+    "packages/core/src/game/completionStrategies.ts": "35608bd5a0511135ec75ee3af0be17daddd7d71520a4acb9ab5ee51ffa965f18",
+    "packages/core/src/game/limits.ts": "8e79a2f1ac1b489e7caab0f97dfa992cf0b48a8367abe914b75651db439a6066",
+    "packages/core/src/game/achievementRewards.ts": "04d284c5fa0687aa62ed223a526d476385d6e3076d2e72aaceceaca54d367309",
+    "packages/core/src/game/achievementMilestones.ts": "ebb8b970b1ade727880a1bb2a4f7af4b93c7d741ee0b8bbcb4f18b23187a4de0",
+    "packages/core/src/game/economy.ts": "9e7bc8c2c7d6cf1db153a90eb8156781f88485f4c9934623004f19cf942b8f96",
+    "packages/core/src/race/index.ts": "afc3c0f63ab1e0d631710c3551f4aa7ad0b89dece2142e3b3fb5b55e01082378",
+    "packages/core/src/race/raceSchemas.ts": "5587a09d4e39847d865291788e6950ebe8013b42205e621a9877c05f8bfc0817",
+    "packages/core/src/race/raceTextSchemas.ts": "0f281d3dd58e3298cee995dbcdd08926769e9f5d358e939cf14b99c35a43e979",
+    "packages/core/src/race/raceDefinitionSchemas.ts": "05dfd103aa6ac178a4ceb2fb32663e79a9f69f40c36e382a73132ea548beb677",
+    "packages/core/src/validation/locales.ts": "599217cc0fb8bd12a687ec70c4b5840e7e924e62d686d834adac69ba64425cf2",
+    "packages/core/src/race/raceGhostSchemas.ts": "b6217f2991369091cad9b91e5ee6249d2c1cec9d8e1d531de91ac7e9f3d20f60",
+    "packages/core/src/race/raceAnalyticsSchemas.ts": "24a8749ef0ca247da8eae8688d55461c9ec2525859a73241e83d8d74137c7509",
+    "packages/core/src/race/raceMatchFailure.ts": "4447a6fe66764123a792ad30b3e73956f79d81a31e68d39588091fe1d722f11b",
+    "packages/core/src/race/raceRecoverySchemas.ts": "43624d4249bf384ff8530e4a2e0c82e41130368e27b0369ae6ce633fd5b08775",
+    "packages/core/src/race/raceLiveSchemas.ts": "2c3d56ce337dac1861eb35541900199d496c4237d64d77d5c1376ad86eddae0c",
+    "packages/core/src/race/raceLiveHistorySchemas.ts": "b9460f5548339e90c1cbf71781a7039f1925c4230df0167309df2d3d6676d82b",
+    "packages/portal/src/play/race/logic/raceInput.ts": "4ee171f2ad75c4656dec5437b9c0466c06b526f370b5ac81912f5dff3c035c99",
+    "firebase-functions/src/race/raceContentValidation.ts": "3205adbaa160df17a30d9054a889fc5d079f2e579ae98b9549a1d1676d0dcf20",
+    "firebase-functions/src/riddles/riddleQuality.ts": "6e92098f5fe861992c4d5b9e3506a4066004b7cb4f42eeba01d49dcaa135ff05",
+    "firebase-functions/src/shared/constants.ts": "4d6ea043f1509220163b7b39d217f95fa51dbb3759976f7483ad3b2dbe8460b7",
+    "firebase-functions/src/race/raceDeckCompatibility.ts": "416d7a92ccaccb5f2b3cadae4bee0478c171707b5d741efc6ce79aa20974265a",
+    "firebase-functions/src/race/raceLiveState.ts": "45e63024e292b2151c0bacaf7b56348e75a320a0c0023e8ffa7b9d3a69876d80",
+    "firebase-functions/src/race/raceEngine.ts": "a8c51a438a1a0585ea5d6b79e7d89cf1fef9b6d715127ee861eebe65cab2a8f4",
+    "firebase-functions/src/race/raceLiveScoring.ts": "c11742ddb9c1ca5f824d5a46f2c6474339a4519b57a40e163500c91d5f95879a"
+  },
+  "main": {
+    "kind": "space",
+    "answer": "a b",
+    "discarded": true,
+    "sourceUnits": 3,
+    "sourceGraphemes": [
+      "a",
+      " ",
+      "b"
+    ],
+    "editorLetters": [
+      "a",
+      "b",
+      ""
+    ],
+    "editedGuess": "ab",
+    "allSlotsFilled": false,
+    "catalogIssues": [],
+    "frozenDeckCompatible": true,
+    "sharedEvaluationAccepted": true,
+    "transportAccepted": true,
+    "engine": {
+      "accepted": false,
+      "code": "invalid-argument",
+      "message": "Guess must contain exactly 3 characters."
+    }
+  },
+  "hintRecovery": {
+    "firstHint": "a",
+    "secondHint": " ",
+    "paidHints": 2,
+    "penaltyMs": 30000,
+    "editorLetters": [
+      "a",
+      " ",
+      "b"
+    ],
+    "guess": "a b",
+    "isCorrect": true
+  },
+  "retainedTranspiledModules": 30,
+  "preservedEvidenceFiles": 36,
+  "sha256Manifest": "evidence-sha256.json",
+  "limitations": [
+    "Offline module runtime diagnostic, not browser orOS input certification.",
+    "No policy change is proposed or applied in this diagnostic."
+  ]
+}

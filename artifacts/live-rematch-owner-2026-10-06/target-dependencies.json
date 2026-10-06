@@ -1,0 +1,44 @@
+[
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/3569a0215c9ccba54438a870747ff1a726f48981e4232f922e50a912bce65416/yahoo.json",
+    "preserved": "artifacts/live-rematch-owner-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "be6376ebdb986f78a7c6a4dcf4405f55a1b50d4e6ae9c22aeecdc5fd7f3e86ae",
+    "outputDirectory": "/tmp/live-rematch-builds-gd5sl4fc/yahoo"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/b3ae16d5123f1dfafb7179d2b5346a1318d86a9411c6a370425dde9b52841c8b/youtube.json",
+    "preserved": "artifacts/live-rematch-owner-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "854b8060bc456ee07dcf816ad66d165bd121ff60d9a239dfe33e96f609273b9e",
+    "outputDirectory": "/tmp/live-rematch-builds-gd5sl4fc/youtube"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/b4700859370a698ee13049bae168f52522d97c4b8fd8cf1f0a624a633645f477/netflix.json",
+    "preserved": "artifacts/live-rematch-owner-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "bf2fa78ab637ddd5dd4687579818869600d57bc13e2ee20d6dab51fea6dccf75",
+    "outputDirectory": "/tmp/live-rematch-builds-gd5sl4fc/netflix"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/c26495edb86560b2de86f07e5cc56ef6623b80975cf1b7a4d8e0bafa50aec812/reddit.json",
+    "preserved": "artifacts/live-rematch-owner-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "2b7cc49deecff97e2c3a3c4d46c2742706f6319a417a177507e6d49feab9071d",
+    "outputDirectory": "/tmp/live-rematch-builds-gd5sl4fc/reddit"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/d0a15c9b73a21fe07adbed73443a630c13e9e06a19193bde0d5123ab2394499f/jest.json",
+    "preserved": "artifacts/live-rematch-owner-2026-10-06/target-dependencies/jest.json",
+    "sha256": "99902f50fe2e672a9f56ce793141b5bcd6d4a310b43daf2eae386d9e3605ac41",
+    "outputDirectory": "/tmp/live-rematch-builds-gd5sl4fc/jest"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/efbe3dfc95020953ee9609ec7654aaca02a72a53d0c28954c3b5b6f6bfcd24ea/facebook.json",
+    "preserved": "artifacts/live-rematch-owner-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "752bdb46b1da1d113480a5086bcf47d56da8006ec2bf88c4404dff9595289798",
+    "outputDirectory": "/tmp/live-rematch-builds-gd5sl4fc/facebook"
+  }
+]

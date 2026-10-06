@@ -84,9 +84,11 @@ it("validates one deck per join even when the queue transaction retries", async 
   })}));
   /** A catalog RPC must not be repeated while Firestore retries the shared queue lock. */
   const contentRead = jest.fn(async () => ({docs}));
+  /** Projection remains one catalog RPC in this immutable-deck retry fixture. */
+  const projectedQuery = {get: contentRead, select: () => ({get: contentRead})};
   /** The catalog and deletion collection share the normal database API. */
   const collection = (path: string): unknown => ({doc: (id: string) => ({path: `${path}/${id}`}),
-    where: () => ({where: () => ({get: contentRead}), get: contentRead})});
+    where: () => ({...projectedQuery, where: () => projectedQuery})});
   /** Failed transaction attempts discard their queued writes before retrying. */
   const transaction = {get: async (ref: {
     /** Owned or shared document path. */
@@ -94,12 +96,14 @@ it("validates one deck per join even when the queue transaction retries", async 
   }) => ({
     exists: ref.path === `users/${OWNER}`, data: () => ref.path === `users/${OWNER}` ? {username: "Alice"} : undefined,
   }), create: jest.fn(), set: jest.fn(), update: jest.fn()};
+  /** Masked profile transport retains the same single physical read in this catalog-retry fixture. */
+  const maskedTransaction = {...transaction, getAll: async (ref: Parameters<typeof transaction.get>[0], _options: unknown) => [await transaction.get(ref)]};
   /** Firestore retries the callback without committing the first attempt's writes. */
   const db = {doc: (path: string) => ({path}), collection,
     runTransaction: async (operation: (value: typeof transaction) => unknown) => {
-      await operation(transaction);
+      await operation(maskedTransaction);
       transaction.create.mockClear(); transaction.set.mockClear(); transaction.update.mockClear();
-      return operation(transaction);
+      return operation(maskedTransaction);
     }} as unknown as FirebaseFirestore.Firestore;
   expect(await joinLiveRaceForUser(OWNER, {locale: "en", categoryId: "history", requestId: "retry-latency-join"}, {db, nowMs: NOW}))
     .toMatchObject({phase: "searching", player: {displayName: "Alice"}});

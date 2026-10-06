@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Geweldig`,COINS_SUFFIX:`Munten`,TAP_CHEST_TO_COLLECT:`Tik op de kist om je munten te verzamelen`,TITLE:`Munten toegevoegd!`},n={CoinPurchase:t}})))()}r();export{n as default};

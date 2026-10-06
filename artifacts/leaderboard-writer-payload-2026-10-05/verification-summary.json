@@ -1,0 +1,63 @@
+{
+  "goal": "active",
+  "transactionFieldMask": [
+    "username",
+    "displayName",
+    "avatarUrl",
+    "stats.level",
+    "stats.xp",
+    "stats.totalWins",
+    "stats.bestStreak",
+    "stats.multiplayerWins"
+  ],
+  "decodedSyntheticPayloadBefore": [
+    {
+      "readCalls": 1,
+      "documentBytes": 100175,
+      "loadedFields": [
+        "avatarUrl",
+        "coins",
+        "privateBlob",
+        "stats",
+        "username"
+      ]
+    }
+  ],
+  "decodedSyntheticPayloadAfter": [
+    {
+      "readCalls": 1,
+      "documentBytes": 146,
+      "loadedFields": [
+        "avatarUrl",
+        "stats",
+        "username"
+      ]
+    }
+  ],
+  "scope": "Actual Admin SDK transaction and private emulator. Synthetic account contains a 100000-character unused field. Sizes measure decoded document JSON, not wire bytes or production request latency. One canonical account read remains.",
+  "newRealEmulatorCases": 4,
+  "realSDKRetryControls": 2,
+  "backendUnitTests": 1630,
+  "backendUnitSuites": 131,
+  "emulatorTests": 251,
+  "emulatorSuites": 15,
+  "focusedTests": 74,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25686,
+  "tsdocFiles": 1150,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2348,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 12,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

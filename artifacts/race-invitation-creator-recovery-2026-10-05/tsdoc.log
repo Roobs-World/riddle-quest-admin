@@ -1,0 +1,3 @@
+TSDoc audit failed: 2 production declarations are undocumented.
+- firebase-functions/src/__tests__/race/raceLiveCreatorRecovery.it.test.ts:30 riddles
+- firebase-functions/src/__tests__/race/raceLiveCreatorRecovery.it.test.ts:48 profile

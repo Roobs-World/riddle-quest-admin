@@ -1,0 +1,38 @@
+[
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/762147ba87868bed5cc7e2aa15ef52c66203326d85ee669e045a1a4ca2e920ca/yahoo.json",
+    "preserved": "artifacts/single-player-empty-projections-2026-10-05/target-metadata/yahoo/yahoo.json",
+    "sha256": "eaf1f5abc8a7355b8ff1cfaeaa11a7bffd897b956a8dc2dbf7923c054704dfea"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/def7eb8cb21364bd58c62f8526f96e328c1e18e583779f17a766c0d214cb75e6/facebook.json",
+    "preserved": "artifacts/single-player-empty-projections-2026-10-05/target-metadata/facebook/facebook.json",
+    "sha256": "cc2b7e62389553ed0864ef63fb98280857e385d451f27ecc727cb571c5042bf6"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/a5e3491e78b20ce3b0dcca0593ad6fb9cb066a8e6b90c3f9ceb7b1bfeb673112/reddit.json",
+    "preserved": "artifacts/single-player-empty-projections-2026-10-05/target-metadata/reddit/reddit.json",
+    "sha256": "a280f2f39b4d14c5156e3ca07113db4902130b1734a2b491a86ee43777545240"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/5c8f70f02ddbb131521b237d72767f1fde446b72106a84a038220f6c373ec49b/netflix.json",
+    "preserved": "artifacts/single-player-empty-projections-2026-10-05/target-metadata/netflix/netflix.json",
+    "sha256": "9f9c0437884958a4b757cd4f093f1b4936a2f93c1b73e7d97df5950bb61dac44"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/d591eb7b61c2f0e5c9f68e137e5c981fbbf605e5ea9e1801e61c473e255f9665/jest.json",
+    "preserved": "artifacts/single-player-empty-projections-2026-10-05/target-metadata/jest/jest.json",
+    "sha256": "87f1ae69f08559778eaab8ba04e20097c01ea1ff4013ccbcfda380eec5f3a669"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/181b6b94bd6c18d4350dd5402c0825585a39bb408e0ca9b9853dfabb34f385aa/youtube.json",
+    "preserved": "artifacts/single-player-empty-projections-2026-10-05/target-metadata/youtube/youtube.json",
+    "sha256": "a301a71a5a557c4cfc076705dfebe0a72a29ccdda78549100d2cb832280e0598"
+  }
+]

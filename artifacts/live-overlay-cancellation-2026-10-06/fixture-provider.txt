@@ -1,0 +1,23 @@
+function provider(owner){
+ const stage=scenario.startsWith('picture')?'picture':scenario.startsWith('show')?'show':'name';
+ function create(kind,surface){
+  const playerId=window.fixturePlayer;window.probe.creates.push({owner,kind,playerId,owned:surface.dataset.platformOwnedIdentity!==undefined});
+  const makeView=()=>{
+   const id=window.probe.allocated.length;window.probe.allocated.push(id);window.probe.views.push({id,owner,kind,playerId});
+   const node=document.createElement('span');node.dataset.providerView=owner;node.dataset.providerPlayer=playerId;node.textContent=owner+' '+playerId+' '+kind;
+   return {showAsync:()=>{
+    window.probe.shows.push(id);
+    if(owner==='alpha'&&playerId==='player-1'&&stage==='show'&&kind==='picture'&&!window.showHeld){window.showHeld=true;return new Promise((resolve,reject)=>{let settled=false;window.releaseOriginal=()=>{if(settled)return;settled=true;if(scenario.endsWith('reject'))reject(Error('late-show-failure'));else {surface.append(node);resolve();}};window.originalPending=true;});}
+    surface.append(node);return Promise.resolve();
+   },dismissAsync:()=>{
+    window.probe.dismisses.push(id);
+    if(scenario==='name-dismiss-stall'&&owner==='alpha'&&kind==='picture'&&playerId==='player-1')return new Promise(resolve=>{window.releaseDismiss=()=>{node.remove();resolve();};});
+    node.remove();return Promise.resolve();
+   },destroyAsync:async()=>{window.probe.destroys.push(id);node.remove();}};
+  };
+  if(owner==='alpha'&&playerId==='player-1'&&kind===stage&&stage!=='show'&&!window.creationHeld){window.creationHeld=true;return new Promise((resolve,reject)=>{let settled=false;window.releaseOriginal=()=>{if(settled)return;settled=true;if(scenario.endsWith('reject'))reject(Error('late-creation-failure'));else resolve(makeView());};window.originalPending=true;});}
+  return Promise.resolve(makeView());
+ }
+ const actual=createFacebookOverlayCapability({getSupportedAPIs:()=>['overlayViews.createProfilePictureOverlayViewAsync','overlayViews.createProfileNameOverlayViewAsync'],player:{getID:()=>window.fixturePlayer},overlayViews:{createProfilePictureOverlayViewAsync:surface=>create('picture',surface),createProfileNameOverlayViewAsync:surface=>create('name',surface)}});
+ const capability={renderPlayer(options){const id=window.probe.requests.length;window.probe.requests.push({id,owner,receiver:this===window.expectedReceiver,signal:options.signal});const pending=actual.renderPlayer(options);pending.then(result=>window.probe.results.push({id,status:result.status}),()=>window.probe.results.push({id,status:'rejected'}));return pending;}};return capability;
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/0527a3ce7ba3160765880c08d344607d2bbdb01212fafb7aa19b6b7dc8815cdc/jest.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/pre-admission-gap/target-dependencies/jest.json",
+    "sha256": "572a9e10d76f2eb7a1237b4d68946a8185143521fcf0f15e8b1d651bd7d71d46",
+    "outputDirectory": "/tmp/live-context-builds-_oz9kb0f/jest"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/1b4814986e29f329b3975bea3de32a39b70fec146dbd85de38cf7ea22a95b7a5/facebook.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/pre-admission-gap/target-dependencies/facebook.json",
+    "sha256": "64812664d439d37b3222efebb5e4bd94362d3a2e342d051a2cf6ffd6465c5bd4",
+    "outputDirectory": "/tmp/live-context-builds-_oz9kb0f/facebook"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/1c4046395842ae90f7febaed4ba969a9876cbe4437f41f59a24afbe85aacd971/reddit.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/pre-admission-gap/target-dependencies/reddit.json",
+    "sha256": "8cfe322e5d08f3a330537da878fdb3ebcb136673c5c87e3e0f9ce18e677f1216",
+    "outputDirectory": "/tmp/live-context-builds-_oz9kb0f/reddit"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/7658cadbaef6475fc774170d064897c896b5f6a57a7d64f24570822067b98137/netflix.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/pre-admission-gap/target-dependencies/netflix.json",
+    "sha256": "c41dc6ec9014efe7e39eb2366411d313ca2b4d9f5ae546b0c0df35540e7ca696",
+    "outputDirectory": "/tmp/live-context-builds-_oz9kb0f/netflix"
+  },
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/8715f596f0b2b3e378a8ffdc3be960e45f5d9b707ddcb9d2167bc8a6f6735b45/youtube.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/pre-admission-gap/target-dependencies/youtube.json",
+    "sha256": "a1fcd886d2ea4e8f65591355be909d466b9bbef31cef982c25aefce7fc06680f",
+    "outputDirectory": "/tmp/live-context-builds-_oz9kb0f/youtube"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/9b71c94ac79daaa0f3149c4f2488bcd0ba78dbbab03d60eafcaca57497dfef57/yahoo.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/pre-admission-gap/target-dependencies/yahoo.json",
+    "sha256": "257cd0eb4567c2a39d498c7701fd0f1643f7a1bb1bd424bd6c4952e7e1c9bc30",
+    "outputDirectory": "/tmp/live-context-builds-_oz9kb0f/yahoo"
+  }
+]

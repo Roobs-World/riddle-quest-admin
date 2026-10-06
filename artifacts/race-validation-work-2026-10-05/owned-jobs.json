@@ -1,0 +1,130 @@
+[
+  {
+    "name": "runtime-probe-initial",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal",
+    "note": "Probe fixture incorrectly unwrapped the required preload evaluation schema; corrected before the matching runtime baseline. No production change."
+  },
+  {
+    "name": "runtime-before",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "red-unit-initial",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-unit",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-focused",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "prepare-core",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "types-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "runtime-after",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-core",
+    "sessionId": 73785,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-portal-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-types",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "core-lint-unconfigured",
+    "sessionId": null,
+    "exitCode": 2,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "The core package has no configured ESLint command. Root invocation selected a system ESLint without a repository config. Core TypeScript and tests passed; canonical downstream backend ESLint runs separately. No source changes."
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 65170,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-portal-focused",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-lint",
+    "sessionId": 16570,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 25395,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 12923,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

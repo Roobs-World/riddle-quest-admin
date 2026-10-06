@@ -1,0 +1,8 @@
+{
+  "name": "minimal-red-development",
+  "status": "terminal",
+  "exitCode": 1,
+  "logs": [
+    "red-development.log"
+  ]
+}

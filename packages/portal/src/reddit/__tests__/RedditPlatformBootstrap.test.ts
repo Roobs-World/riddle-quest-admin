@@ -62,6 +62,7 @@ beforeEach(() => {
 it.each([
   ["/api/game/race.live.update", 409, "live-race-request-failed", "failed-precondition"],
   ["/api/game/race.live.join", 409, "live-race-request-failed", "failed-precondition"],
+  ["/api/game/race.live.retire", 409, "live-race-request-failed", "failed-precondition"],
   ["/api/game/race.live.update", 503, "live-race-request-failed", "unavailable"],
   ["/api/game/race.live.update", 409, "other-error", "unavailable"],
   ["/api/game/race.resume", 409, "live-race-request-failed", "unavailable"],
@@ -611,4 +612,28 @@ it("does not revive an older guest record after best-effort cleanup cannot remov
   blockedRemoval.mockRestore();
   await result.value.storage.writePreferences({locale: "en"});
   expect(JSON.parse(values.get("riddleQuestRedditGuestV1")!)).toEqual({preferences: {locale: "en"}, playerData: null});
+});
+
+it.each(["retired", "superseded", "invalid"])("validates the original retirement intent through the same-origin adapter: %s", async status => {
+  global.fetch = jest.fn(input => {
+    if (input === "/api/session") return reply({ok: true, authenticated: true, accountGeneration: 1,
+      features: {...enabledFeatures, commerce: false, presence: false}});
+    if (input === "/api/storage/read") return reply({ok: true, preferences: {}, playerData: null});
+    return reply({ok: true, result: {status}});
+  }) as typeof fetch;
+  /** Real authenticated bootstrap exposes only the approved browser gateway. */
+  const session = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (session.status !== "success") throw new Error("expected-authenticated-session");
+  /** Expected account cannot become a caller-selected authority field. */
+  const input = {requestId: "original-retirement-join", expectedOwnerId: "reddit_original_account"};
+  /** Request exercises lazy response validation in the production adapter. */
+  const operation = session.value.capabilities.matchmaking!.live!.retireJoin!(input);
+  if (status === "invalid") await expect(operation).rejects.toThrow();
+  else await expect(operation).resolves.toEqual({status});
+  expect((global.fetch as jest.Mock).mock.calls.at(-1)).toMatchObject(["/api/game/race.live.retire", {body: JSON.stringify(input)}]);
+});
+
+it.each(["live-race-request-failed", "other-error"])("retains exact retirement not-found authority without trusting unrelated diagnostics: %s", async marker => {
+  global.fetch = jest.fn(() => Promise.resolve({ok: false, status: 404, json: async () => ({error: marker, code: "not-found"})}) as Promise<Response>);
+  await expect(postRedditGateway("/api/game/race.live.retire")).rejects.toMatchObject({code: marker === "live-race-request-failed" ? "not-found" : "unavailable"});
 });

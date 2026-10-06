@@ -1,0 +1,41 @@
+{
+  "goal": "active",
+  "newRetirementUnitCases": 19,
+  "focusedUnitCases": 59,
+  "focusedUnitSuites": 3,
+  "originalRetirementBrowserFailures": 2,
+  "firstFixCloseOwnershipFailure": 1,
+  "nativeBrowserCases": 168,
+  "nativeAssertions": 3000,
+  "confirmationCases": 27,
+  "confirmationAssertions": 369,
+  "activeCloseCases": 6,
+  "builtJestRedditCases": 8,
+  "builtBrowserSuites": 3,
+  "firefox": "153.0 native Playwright",
+  "clientTypes": "passed",
+  "tsdocDeclarations": 26419,
+  "tsdocFiles": 1182,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "sourceInputs": 2390,
+  "compiledCoreHashes": 24,
+  "builtFiles": 1300,
+  "terminalTrackedJobs": 27,
+  "reusedEvidence": {
+    "sourceEvidence": "artifacts/race-invitation-creator-recovery-2026-10-05/verification-summary.json",
+    "unchangedBackendCoreInputs": true,
+    "reusedBackendUnitTests": 1722,
+    "reusedEmulatorCases": 641,
+    "additionalLiveCreatorCases": 4,
+    "noFreshFullSuiteClaim": true
+  },
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true,
+    "builtBytesVerifiedBeforeCleanup": 1300
+  },
+  "retirementBudget": "Initial leave plus three retries, 10s command deadlines and 1/2/4s backoffs; at most 47s local waiting for four never-settling requests.",
+  "limits": "Injected transport failures are component evidence, not production outage measurements. Recovery is finite; persistent outages can exhaust it. Existing recorded invitation recovery gap remains unfixed. No network latency, production concurrency or release-certification claim."
+}

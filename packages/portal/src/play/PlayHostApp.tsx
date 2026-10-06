@@ -438,7 +438,7 @@ export function PlayHostApp({
           startupError={startupUnavailable && !startupComplete && notice ? getHostNoticeMessage(notice) : undefined}
           interactionBlocked={serverInteractionActive}
           restoredGame={initialPlayerData?.activeGame}
-          onSaveGame={saveActiveGame}
+          onSaveGame={onPlayerDataChange ? saveActiveGame : undefined}
           registrationName={registrationName}
           registrationInviterName={registrationInviterName}
           initialRaceChallengeId={initialRaceChallengeId}

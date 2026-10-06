@@ -1,0 +1,145 @@
+[
+  {
+    "name": "runtime-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "red-unit",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator-initial-invalid-invite",
+    "sessionId": 70344,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal",
+    "note": "Private publication fixture had an unbound creator hash; matching baseline rerun after fixture correction."
+  },
+  {
+    "name": "types-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe",
+    "sessionId": 15092,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Added four missing declaration comments in the new SDK fixture before subsequent documentation checks."
+  },
+  {
+    "name": "green-emulator-initial-invalid-invite",
+    "sessionId": 18109,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Corrected the synthetic invitation ID to the authenticated creator hash; matching baseline and fixed SDK reruns follow."
+  },
+  {
+    "name": "green-focused",
+    "sessionId": 2678,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-repaired-probe",
+    "sessionId": 89090,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "red-emulator",
+    "sessionId": 85968,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "green-emulator",
+    "sessionId": 86399,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "types-repaired-probe",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "lint-repaired-probe",
+    "sessionId": 96788,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-final-probe",
+    "sessionId": 90258,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-types",
+    "sessionId": 28394,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-lint",
+    "sessionId": 47422,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 49695,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 16220,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-emulator",
+    "sessionId": 12901,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 29949,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

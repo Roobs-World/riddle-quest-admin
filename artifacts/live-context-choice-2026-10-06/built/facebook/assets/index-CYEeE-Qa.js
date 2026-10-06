@@ -1,0 +1,1 @@
+import{t as e}from"./facebook-BFUFeTfr.js";e();

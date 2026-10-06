@@ -1,0 +1,351 @@
+--- a/firebase-functions/src/gameplay/leaderboard.ts
++++ b/firebase-functions/src/gameplay/leaderboard.ts
+@@ -35,6 +35,11 @@
+ /** Defines the default username value. */
+ const DEFAULT_USERNAME = "Player";
+ 
++/** Liveness hydration needs only current public identity rather than the full account. */
++const LEADERBOARD_DISPLAY_FIELDS = ["username", "displayName", "avatarUrl"];
++/** Canonical fallback and multiplayer rankings need only public identity and their score inputs. */
++const LEADERBOARD_ACCOUNT_FIELDS = [...LEADERBOARD_DISPLAY_FIELDS, "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"];
++
+ /**
+  * Computes sortable progression score using level as primary rank key.
+  *
+@@ -227,9 +232,22 @@
+     return [{entry: toSafeLeaderboardEntry(data, document.id), userRef: db.collection("users").doc(document.id)}];
+   });
+   if (candidates.length === 0) return [];
+-  /** Provides rs. */
+-  const users = await db.getAll(...candidates.map(({userRef}) => userRef));
+-  return candidates.flatMap(({entry}, index) => (users[index]?.exists ? [entry] : []));
++  /** Existing liveness reads need only public display fields, excluding economy and private profile payloads. */
++  const users = await db.getAll(...candidates.map(({userRef}) => userRef), {fieldMask: LEADERBOARD_DISPLAY_FIELDS});
++  return candidates.flatMap(({entry}, index) => {
++    /** Identity is hydrated only after the canonical account existence and projection ownership checks. */
++    const account = users[index];
++    if (!account?.exists) return [];
++    /** The account's current display fields supersede a stale best-effort copied profile. */
++    const display = account.data();
++    /** Score ordering and values retain their server-owned projection semantics. */
++    const hydrated = {...entry, username: normalizeKey(display?.username) ?? normalizeKey(display?.displayName) ?? DEFAULT_USERNAME};
++    delete hydrated.avatarUrl;
++    /** An absent or invalid current avatar never falls back to a prior copied image. */
++    const avatar = display?.avatarUrl;
++    if (typeof avatar === "string" && avatar.trim().length > 0) hydrated.avatarUrl = avatar;
++    return [hydrated];
++  });
+ }
+ 
+ /**
+@@ -242,7 +260,7 @@
+  */
+ async function buildLeaderboardFromUsers(type: LeaderboardType, limit: number): Promise<LeaderboardEntry[]> {
+   /** Provides rs snapshot. */
+-  const usersSnapshot = await admin.firestore().collection("users").limit(1000).get();
++  const usersSnapshot = await admin.firestore().collection("users").select(...LEADERBOARD_ACCOUNT_FIELDS).limit(1000).get();
+   /** Provides derived behavior. */
+   const derived = usersSnapshot.docs.map((doc) => {
+     /** Provides data behavior. */
+@@ -330,7 +348,7 @@
+     if (type === "multiplayerWins") {
+       /** Accounts ranked directly by their committed multiplayer victories. */
+       const snapshot = await admin.firestore().collection("users")
+-        .where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc").limit(limit).get();
++        .where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc").select(...LEADERBOARD_ACCOUNT_FIELDS).limit(limit).get();
+       /** Public rows derived from canonical account documents. */
+       const entries = snapshot.docs.map(doc => toLeaderboardEntryFromUserDoc(doc.id, doc.data() as UserDocForLeaderboard));
+       return validateCallableResponse(GetLeaderboardResponseSchema, {entries, requestingUserId}, "getLeaderboard");
+--- a/firebase-functions/src/__tests__/leaderboard.test.ts
++++ b/firebase-functions/src/__tests__/leaderboard.test.ts
+@@ -52,12 +52,21 @@
+ const mockUsersWhere = jest.fn();
+ /** Orders authoritative account statistics. */
+ const mockUsersOrderBy = jest.fn();
++/** Selects only public fields required by canonical rankings. */
++const mockUsersSelect = jest.fn();
+ /** Provides mock users get behavior. */
+ const mockUsersGet = jest.fn();
+ /** Provides mock users doc behavior. */
+ const mockUsersDoc = jest.fn();
+ /** Provides mock users doc get behavior. */
+ const mockUsersDocGet = jest.fn();
++/** Canonical display snapshots are independent from copied leaderboard rows in regressions. */
++const mockProfileDocs = new Map<string, Record<string, unknown>>();
++/** Mirrors the SDK's argument order while ignoring the trailing read-options object. */
++const mockReadProfiles = async (...refs: Array<{
++  /** A document argument has an ID; a read-options argument does not. */
++  id?: string;
++}>) => refs.flatMap(ref => ref.id === undefined ? [] : [{exists: true, id: ref.id, data: () => mockProfileDocs.get(ref.id!)}]);
+ /** Provides mock get all behavior. */
+ const mockGetAll = jest.fn();
+ /** Provides mock batch set behavior. */
+@@ -87,6 +96,7 @@
+   where: mockUsersWhere,
+   orderBy: mockUsersOrderBy,
+   limit: mockUsersLimit,
++  select: mockUsersSelect,
+   get: mockUsersGet,
+ };
+ 
+@@ -108,6 +118,7 @@
+       where: mockUsersWhere,
+       orderBy: mockUsersOrderBy,
+       limit: mockUsersLimit,
++      select: mockUsersSelect,
+       doc: mockUsersDoc,
+     };
+   }
+@@ -175,7 +186,10 @@
+ /** Creates snapshot. */
+ function makeSnapshot(entries: LeaderboardEntry[]) {
+   return {
+-    docs: entries.map((e) => ({id: e.userId, data: () => e})),
++    docs: entries.map((e) => {
++      mockProfileDocs.set(e.userId, {username: e.username, avatarUrl: e.avatarUrl});
++      return {id: e.userId, data: () => e};
++    }),
+   };
+ }
+ 
+@@ -261,21 +275,16 @@
+     mockUsersGet.mockReset();
+     mockUsersDocGet.mockReset();
+     mockGetAll.mockReset();
++    mockProfileDocs.clear();
+     // Re-apply chain because clearAllMocks resets return values
+     mockOrderBy.mockReturnValue(mockLeaderboardQuery);
+     mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
+     mockUsersLimit.mockReturnValue(mockUsersQuery);
++    mockUsersSelect.mockReturnValue(mockUsersQuery);
+     mockUsersWhere.mockReturnValue(mockUsersQuery);
+     mockUsersOrderBy.mockReturnValue(mockUsersQuery);
+     mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
+-    mockGetAll.mockImplementation(
+-      async (
+-        ...refs: Array<{
+-          /** Stores id. */
+-          id: string;
+-        }>
+-      ) => refs.map((ref) => ({exists: true, id: ref.id})),
+-    );
++    mockGetAll.mockImplementation(mockReadProfiles);
+     mockUsersDocGet.mockResolvedValue({
+       exists: false,
+       data: () => ({}),
+@@ -288,6 +297,50 @@
+     return mockOnCall({auth, data});
+   }
+ 
++  it.each(["xp", "totalWins", "bestStreak"] as const)("uses current display fields for %s with one existing batch read", async type => {
++    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([
++      makeEntry({userId: "u1", username: "Old name", avatarUrl: "https://example.com/old.png", level: 3, xp: 50}),
++      makeEntry({userId: "u2", username: "Other", level: 2}),
++    ]));
++    mockProfileDocs.set("u1", {username: "Current name", avatarUrl: "https://example.com/current.png", stats: {level: 99}});
++    /** Existing score order and values remain projection-owned; only current public identity is hydrated. */
++    const result = await callGetLeaderboard({uid: "viewer"}, {type});
++    expect(result.entries).toMatchObject([
++      {userId: "u1", username: "Current name", avatarUrl: "https://example.com/current.png", level: 3, xp: 50},
++      {userId: "u2", username: "Other", level: 2},
++    ]);
++    expect(mockGetAll).toHaveBeenCalledTimes(1);
++    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u1"}), expect.objectContaining({id: "u2"}),
++      {fieldMask: ["username", "displayName", "avatarUrl"]});
++    expect(mockUsersDocGet).not.toHaveBeenCalled();
++    expect(mockSet).not.toHaveBeenCalled();
++    expect(mockBatchCommit).not.toHaveBeenCalled();
++  });
++
++  it.each([undefined, null, "", "   "])("never reuses a copied avatar when current avatar is %s", async avatarUrl => {
++    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({avatarUrl: "https://example.com/old.png"})]));
++    mockProfileDocs.set("user-1", {username: "Current name", avatarUrl});
++    expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]).not.toHaveProperty("avatarUrl");
++  });
++
++  it.each([
++    {profile: {username: "  ", displayName: "Current display name"}, expected: "Current display name"},
++    {profile: {username: "", displayName: "  "}, expected: "Player"},
++    {profile: {username: " Current username ", displayName: "Other display name"}, expected: "Current username"},
++  ])("uses canonical name fallback $expected without restoring a copied name", async ({profile, expected}) => {
++    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry({username: "Earlier name"})]));
++    mockProfileDocs.set("user-1", profile);
++    expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries[0]?.username).toBe(expected);
++  });
++
++  it("rejects mismatched subjects before reading canonical display data", async () => {
++    /** Canonical ownership is proven by document IDs and embedded subject IDs, never matching display fields. */
++    const valid = makeSnapshot([makeEntry({userId: "u2", username: "Other"})]).docs;
++    mockLeaderboardGet.mockResolvedValueOnce({docs: [{id: "u1", data: () => ({...makeEntry({userId: "u1"}), subjectUserId: "u2"})}, ...valid]});
++    expect((await callGetLeaderboard({uid: "viewer"}, {type: "xp"})).entries).toEqual([expect.objectContaining({userId: "u2"})]);
++    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}), {fieldMask: ["username", "displayName", "avatarUrl"]});
++  });
++
+   it("throws unauthenticated when auth is missing", async () => {
+     await expect(callGetLeaderboard(null, {type: "xp"})).rejects.toMatchObject({
+       code: "unauthenticated",
+@@ -336,6 +389,7 @@
+     ]});
+     /** Indexed account rankings returned by the callable. */
+     const result = await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins", limit: 25});
++    expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
+     expect(mockUsersWhere).toHaveBeenCalledWith("stats.multiplayerWins", ">", 0);
+     expect(mockUsersOrderBy).toHaveBeenCalledWith("stats.multiplayerWins", "desc");
+     expect(mockUsersLimit).toHaveBeenCalledWith(25);
+@@ -464,6 +518,7 @@
+     expect(typedResult.entries[0].userId).toBe("u1");
+     expect(typedResult.entries[1].userId).toBe("u2");
+     expect(mockUsersLimit).toHaveBeenCalledWith(1000);
++    expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
+     expect(mockBatchSet).not.toHaveBeenCalled();
+     expect(mockBatchCommit).not.toHaveBeenCalled();
+   });
+@@ -476,14 +531,8 @@
+       makeEntry({userId: "u2", username: "Other", xp: 600, progressScore: 2_000_000_600}),
+     ];
+     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
+-    mockGetAll.mockImplementationOnce(
+-      async (
+-        ...refs: Array<{
+-          /** Stores id. */
+-          id: string;
+-        }>
+-      ) => refs.map((ref) => ({exists: ref.id !== "legacy-u1", id: ref.id})),
+-    );
++    mockGetAll.mockImplementationOnce(async (...refs: Parameters<typeof mockReadProfiles>) =>
++      (await mockReadProfiles(...refs)).map(document => ({...document, exists: document.id !== "legacy-u1"})));
+ 
+     /** Provides result behavior. */
+     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
+@@ -498,6 +547,7 @@
+   });
+ 
+   it("suppresses a noncanonical row even when its embedded user is live", async () => {
++    mockProfileDocs.set("u2", {username: "Other"});
+     mockLeaderboardGet.mockResolvedValueOnce({
+       docs: [
+         {
+@@ -520,6 +570,6 @@
+     };
+ 
+     expect(typedResult.entries).toEqual([expect.objectContaining({userId: "u2", username: "Other"})]);
+-    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}));
++    expect(mockGetAll).toHaveBeenCalledWith(expect.objectContaining({id: "u2"}), {fieldMask: ["username", "displayName", "avatarUrl"]});
+   });
+ });
+--- /dev/null
++++ b/firebase-functions/src/__tests__/leaderboardCurrentProfile.it.test.ts
+@@ -0,0 +1,113 @@
++import {getApps, initializeApp} from "firebase-admin/app";
++import {getFirestore, FieldValue, Query} from "firebase-admin/firestore";
++import {getLeaderboard} from "../gameplay/leaderboard";
++
++/** Only this loopback demo fixture may hold these canonical accounts and public projections. */
++const PROJECT = process.env.GCLOUD_PROJECT ?? "";
++/** IDs reserved exclusively for the private test's account and projection documents. */
++const IDS = ["leaderboard-profile-a", "leaderboard-profile-b", "leaderboard-profile-c"] as const;
++/** Real Admin SDK account batch reads include the actual Firestore field-mask behavior. */
++let db: FirebaseFirestore.Firestore;
++/** Removes only this fixture's fixed account IDs and corresponding projections. */
++const clear = async () => {await Promise.all(IDS.flatMap(id => [db.doc(`users/${id}`).delete(), db.doc(`leaderboard/${id}`).delete()]));};
++/** Executes the real callable wrapper with synthetic verified transport claims. */
++const readBoard = (type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins" = "xp") => getLeaderboard.run({auth: {uid: "leaderboard-profile-viewer", token: {}}, data: {type, limit: 10}} as never);
++beforeAll(() => {
++  if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")) throw new Error("Private demo emulator required");
++  if (!getApps().length) initializeApp({projectId: PROJECT});
++  db = getFirestore();
++});
++beforeEach(async () => {
++  await clear();
++  await db.doc(`users/${IDS[0]}`).set({username: "Current name", avatarUrl: "https://example.invalid/current.png", stats: {level: 99, xp: 100, totalWins: 99}});
++  await db.doc(`leaderboard/${IDS[0]}`).set({userId: IDS[0], subjectUserId: IDS[0], username: "Old name", avatarUrl: "https://example.invalid/old.png",
++    level: 2, xp: 50, progressScore: 2_000_000_050, totalWins: 10, bestStreak: 5, updatedAt: 123});
++});
++afterAll(clear);
++
++it.each(["xp", "totalWins", "bestStreak"] as const)("hydrates current identity for %s while keeping projection score semantics", async type => {
++  /** Read-only identity repair must neither update the public projection nor mutate the account. */
++  const before = (await db.doc(`leaderboard/${IDS[0]}`).get()).data();
++  /** Actual account batch read already performed for canonical existence now supplies display fields. */
++  const result = await readBoard(type);
++  expect(result).toMatchObject({entries: [{userId: IDS[0], username: "Current name", avatarUrl: "https://example.invalid/current.png",
++    level: 2, xp: 50, totalWins: 10, bestStreak: 5, updatedAt: 123}]});
++  expect((await db.doc(`leaderboard/${IDS[0]}`).get()).data()).toEqual(before);
++});
++it("omits a removed canonical avatar even when its copied projection still contains one", async () => {
++  await db.doc(`users/${IDS[0]}`).update({avatarUrl: FieldValue.delete()});
++  expect((await readBoard()).entries[0]).not.toHaveProperty("avatarUrl");
++});
++it("uses the current display-name fallback without exposing an earlier copied username", async () => {
++  await db.doc(`users/${IDS[0]}`).update({username: FieldValue.delete(), displayName: "Current display name"});
++  expect((await readBoard()).entries[0]?.username).toBe("Current display name");
++});
++it("keeps an existing account with no display fields live under the field mask", async () => {
++  await db.doc(`users/${IDS[0]}`).set({coins: 550});
++  /** The projection score distinguishes a live masked account from a fallback account scan. */
++  const result = await readBoard();
++  expect(result).toMatchObject({entries: [{userId: IDS[0], username: "Player", level: 2, xp: 50}]});
++  expect(result.entries[0]).not.toHaveProperty("avatarUrl");
++});
++it("retains deletion and subject ownership checks before hydrating remaining accounts", async () => {
++  await db.doc(`users/${IDS[0]}`).delete();
++  await db.doc(`users/${IDS[1]}`).set({username: "Unrelated account"});
++  await db.doc(`leaderboard/${IDS[1]}`).set({userId: IDS[1], subjectUserId: IDS[0], username: "Unrelated account", progressScore: 3_000_000_000});
++  await db.doc(`users/${IDS[2]}`).set({username: "Remaining player"});
++  await db.doc(`leaderboard/${IDS[2]}`).set({userId: IDS[2], subjectUserId: IDS[2], username: "Remaining player", progressScore: 1_000_000_000});
++  expect((await readBoard()).entries.map(entry => entry.userId)).toEqual([IDS[2]]);
++});
++it("loads only display fields in the existing single account batch read", async () => {
++  await db.doc(`users/${IDS[0]}`).update({privateBlob: "x".repeat(100_000), coins: 550});
++  /** Calls the actual SDK beneath the seam so field masking is verified by the real emulator. */
++  const original = db.getAll.bind(db);
++  /** Records only synthetic fixture data sizes, never user account contents. */
++  let readCalls = 0, documentBytes = 0, loadedFields: string[] = [];
++  /** Read seam observes the SDK's real filtered result without replacing any database operation. */
++  const spy = jest.spyOn(db, "getAll").mockImplementation(async (...args) => {
++    /** Canonical snapshots returned by the actual account batch operation. */
++    const documents = await original(...args);
++    readCalls++;
++    documentBytes = Buffer.byteLength(JSON.stringify(documents.map(document => document.data())));
++    loadedFields = Object.keys(documents[0]!.data()!).sort();
++    return documents;
++  });
++  try {
++    await readBoard();
++    if (process.env.LEADERBOARD_PROFILE_TRACE) console.info(JSON.stringify({readCalls, documentBytes, loadedFields}));
++    expect(readCalls).toBe(1);
++    expect(loadedFields).toEqual(["avatarUrl", "username"]);
++    expect(documentBytes).toBeLessThan(256);
++  } finally {spy.mockRestore();}
++});
++
++it.each(["fallback", "multiplayerWins"] as const)("limits %s account query payload to public ranking fields", async mode => {
++  await db.doc(`users/${IDS[0]}`).update({privateBlob: "x".repeat(100_000), coins: 550, "stats.multiplayerWins": 999_999});
++  if (mode === "fallback") await db.doc(`leaderboard/${IDS[0]}`).delete();
++  /** Real SDK query execution preserves indexes, ordering and the actual projection field mask. */
++  const original = Query.prototype.get;
++  /** Records only this synthetic account's decoded document size and field names. */
++  let readCalls = 0, documentBytes = 0, loadedFields: string[] = [];
++  /** Canonical users queries are observed underneath the actual callable and SDK. */
++  const spy = jest.spyOn(Query.prototype, "get").mockImplementation(async function(this: FirebaseFirestore.Query) {
++    /** The original SDK handles server-side select fields and returns genuine query snapshots. */
++    const result = await original.call(this);
++    /** Only this fixture's canonical account contributes payload measurements. */
++    const account = result.docs.find(document => document.ref.path === `users/${IDS[0]}`);
++    if (account) {
++      readCalls++;
++      documentBytes = Buffer.byteLength(JSON.stringify(account.data()));
++      loadedFields = Object.keys(account.data()).sort();
++    }
++    return result;
++  });
++  try {
++    /** The response keeps canonical score semantics for fallback and multiplayer rankings. */
++    const result = await readBoard(mode === "fallback" ? "xp" : "multiplayerWins");
++    expect(result.entries.find(entry => entry.userId === IDS[0])).toMatchObject({username: "Current name", level: 99, xp: 100, multiplayerWins: 999_999});
++    if (process.env.LEADERBOARD_PROFILE_TRACE) console.info(JSON.stringify({mode, readCalls, documentBytes, loadedFields}));
++    expect(readCalls).toBe(1);
++    expect(loadedFields).toEqual(["avatarUrl", "stats", "username"]);
++    expect(documentBytes).toBeLessThan(256);
++  } finally {spy.mockRestore();}
++});

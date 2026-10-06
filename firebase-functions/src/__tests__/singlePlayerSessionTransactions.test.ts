@@ -331,6 +331,29 @@ describe("single-player session transactions", () => {
     expect(mockDocuments.get(userPath)?.stats.classicSkipped).toBe(1);
   });
 
+  it("returns transaction-owned supply context without persisting it in the skip receipt", async () => {
+    mockDocuments.set(sessionPath(), baseSession({locale: "fr"}));
+    /** One canonical request establishes the immutable skip receipt. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN, requestId: "skip-context-first"};
+    /** First committed context accompanies the new charge. */
+    const first = await skipAuthoritativeRiddle(USER_ID, request);
+    expect(first).toMatchObject({classicSupply: {classicIndex: 2, locale: "fr"}});
+    expect(mockDocuments.get(sessionPath())?.skipResult).not.toHaveProperty("classicSupply");
+    mockDocuments.get(userPath)!.progress = {...mockDocuments.get(userPath)!.progress, classicIndex: 7};
+    /** Replay carries current supply progress alongside the unchanged receipt. */
+    const replay = await skipAuthoritativeRiddle(USER_ID, {...request, requestId: "skip-context-replay"});
+    expect(replay).toMatchObject({newCoins: 200, newProgress: {classicIndex: 2}, classicSupply: {classicIndex: 7, locale: "fr"}});
+    expect(mockDocuments.get(userPath)).toMatchObject({coins: 200, progress: {classicIndex: 7}, stats: {classicSkipped: 1}});
+  });
+
+  it.each(["locale", "contentKey", "completionKey", "answer"])("rejects malformed issued %s inside the skip transaction", async field => {
+    mockDocuments.set(sessionPath(), {...baseSession(), [field]: 17});
+    await expect(skipAuthoritativeRiddle(USER_ID, {riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN,
+      requestId: "skip-malformed-binding"})).rejects.toMatchObject({code: "permission-denied"});
+    expect(mockDocuments.get(userPath)).toMatchObject({coins: 300, progress: {classicIndex: 1}});
+    expect(mockTransaction.update).not.toHaveBeenCalled();
+  });
+
   it("requires the full 100-coin skip price without mutating progress", async () => {
     mockDocuments.set(userPath, {...baseUser(), coins: 99});
     /** Captures the exact session object to prove the rejected transaction leaves it untouched. */

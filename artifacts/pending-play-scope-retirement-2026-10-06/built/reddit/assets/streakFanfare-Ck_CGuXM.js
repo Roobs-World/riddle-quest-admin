@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` सिक्के`,CONTINUE_BUTTON:`जारी रखें`,STREAK_SUFFIX:` दिन की स्ट्रीक`,TITLE:`स्ट्रीक बढ़ी!`},n={StreakFanfare:t}})))()}r();export{n as default};

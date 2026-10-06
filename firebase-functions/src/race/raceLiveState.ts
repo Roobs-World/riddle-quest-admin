@@ -5,6 +5,7 @@ import type {FacebookLiveContextBinding} from "./facebookLiveContextBinding";
 
 /** Private ticket contains the immutable deck and authenticated owner. */
 export type LiveTicket = {
+  /** Hash of the latest first-accepted modern join; retries cannot reclaim it. */ activeJoinId?: string;
   /** Original optional Facebook score destination, captured before play. */ facebookContext?: FacebookLiveContextBinding;
   /** Sanitized creator content is retained only as a surviving player's frozen deck source. */ deleted?: boolean;
   /** Private lobbies never enter the public queue or select a bot. */ privateChallenge?: boolean;

@@ -1,0 +1,309 @@
+[
+  {
+    "name": "builds",
+    "command": [
+      "bash",
+      "artifacts/live-tournament-lookup-deadline-2026-10-06/builds.sh"
+    ],
+    "logs": [
+      "builds.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262391.7750187,
+    "exitCode": 0,
+    "finishedAt": 1791262421.8206756
+  },
+  {
+    "name": "built-browser",
+    "command": [
+      "bash",
+      "artifacts/live-tournament-lookup-deadline-2026-10-06/built-browser.sh"
+    ],
+    "logs": [
+      "built-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262500.990886,
+    "exitCode": 0,
+    "finishedAt": 1791262607.7708013
+  },
+  {
+    "name": "chromium-development",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_BROWSER=chromium",
+      "TOURNAMENT_LOOKUP_MODE=development",
+      "TOURNAMENT_LOOKUP_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/chromium-development",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "chromium-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262391.567344,
+    "exitCode": 0,
+    "finishedAt": 1791262409.724425
+  },
+  {
+    "name": "chromium-production",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_BROWSER=chromium",
+      "TOURNAMENT_LOOKUP_MODE=production",
+      "TOURNAMENT_LOOKUP_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/chromium-production",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "chromium-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262392.214074,
+    "exitCode": 0,
+    "finishedAt": 1791262409.4820764
+  },
+  {
+    "name": "facebook-built-browser",
+    "command": [
+      "env",
+      "PORTAL_BROWSER_TESTS=1",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand",
+      "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"
+    ],
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262500.7850223,
+    "exitCode": 0,
+    "finishedAt": 1791262527.1237411
+  },
+  {
+    "name": "firefox-development",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_BROWSER=firefox",
+      "TOURNAMENT_LOOKUP_MODE=development",
+      "TOURNAMENT_LOOKUP_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/firefox-development",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "firefox-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262391.987137,
+    "exitCode": 0,
+    "finishedAt": 1791262416.6831408
+  },
+  {
+    "name": "firefox-production",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_BROWSER=firefox",
+      "TOURNAMENT_LOOKUP_MODE=production",
+      "TOURNAMENT_LOOKUP_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/firefox-production",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "firefox-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262391.3732083,
+    "exitCode": 0,
+    "finishedAt": 1791262415.6199634
+  },
+  {
+    "name": "minimal-final-baseline-development",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_MODE=development",
+      "TOURNAMENT_LOOKUP_MINIMAL=1",
+      "TOURNAMENT_LOOKUP_QUICK=1",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/minimal-final-baseline-development",
+      "TOURNAMENT_LOOKUP_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/owned-00-before.txt",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262418.938232,
+    "exitCode": 1,
+    "finishedAt": 1791262420.684615
+  },
+  {
+    "name": "minimal-final-baseline-production",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_MODE=production",
+      "TOURNAMENT_LOOKUP_MINIMAL=1",
+      "TOURNAMENT_LOOKUP_QUICK=1",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/minimal-final-baseline-production",
+      "TOURNAMENT_LOOKUP_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/owned-00-before.txt",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262419.992762,
+    "exitCode": 1,
+    "finishedAt": 1791262421.6985278
+  },
+  {
+    "name": "minimal-final-green-development",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_MODE=development",
+      "TOURNAMENT_LOOKUP_MINIMAL=1",
+      "TOURNAMENT_LOOKUP_QUICK=1",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/minimal-final-green-development",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262419.1679535,
+    "exitCode": 0,
+    "finishedAt": 1791262420.896009
+  },
+  {
+    "name": "minimal-final-green-production",
+    "command": [
+      "env",
+      "TOURNAMENT_LOOKUP_MODE=production",
+      "TOURNAMENT_LOOKUP_MINIMAL=1",
+      "TOURNAMENT_LOOKUP_QUICK=1",
+      "TOURNAMENT_LOOKUP_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/minimal-final-green-production",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262420.3922837,
+    "exitCode": 0,
+    "finishedAt": 1791262421.9091964
+  },
+  {
+    "name": "portal-units",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand"
+    ],
+    "logs": [
+      "portal-units.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262390.966814,
+    "exitCode": 0,
+    "finishedAt": 1791262402.7493465
+  },
+  {
+    "name": "projection-development",
+    "command": [
+      "env",
+      "TOURNAMENT_PROJECTION_MODE=development",
+      "TOURNAMENT_PROJECTION_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/projection-development",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-projection-browser.mjs"
+    ],
+    "logs": [
+      "projection-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262420.1840281,
+    "exitCode": 0,
+    "finishedAt": 1791262439.5958936
+  },
+  {
+    "name": "projection-production",
+    "command": [
+      "env",
+      "TOURNAMENT_PROJECTION_MODE=production",
+      "TOURNAMENT_PROJECTION_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/projection-production",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-projection-browser.mjs"
+    ],
+    "logs": [
+      "projection-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262419.7762587,
+    "exitCode": 0,
+    "finishedAt": 1791262438.7278483
+  },
+  {
+    "name": "share-development",
+    "command": [
+      "env",
+      "TOURNAMENT_SHARE_MODE=development",
+      "TOURNAMENT_SHARE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/share-development",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-share-browser.mjs"
+    ],
+    "logs": [
+      "share-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262419.354347,
+    "exitCode": 0,
+    "finishedAt": 1791262437.1009703
+  },
+  {
+    "name": "share-production",
+    "command": [
+      "env",
+      "TOURNAMENT_SHARE_MODE=production",
+      "TOURNAMENT_SHARE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-lookup-deadline-2026-10-06/share-production",
+      "node",
+      "packages/portal/scripts/verify-live-tournament-share-browser.mjs"
+    ],
+    "logs": [
+      "share-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262419.5638325,
+    "exitCode": 0,
+    "finishedAt": 1791262436.541248
+  },
+  {
+    "name": "static-checks",
+    "command": [
+      "bash",
+      "artifacts/live-tournament-lookup-deadline-2026-10-06/static.sh"
+    ],
+    "logs": [
+      "static-checks.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791262390.7620275,
+    "exitCode": 0,
+    "finishedAt": 1791262394.2039645
+  }
+]

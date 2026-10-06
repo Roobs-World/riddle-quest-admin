@@ -114,7 +114,11 @@ export function useHostRiddleLifecycle({
   if (!contextAbortRef.current) contextAbortRef.current = new AbortController();
   /** Profile changes during content delivery must not rewind confirmed balances or progression. */
   const profileRef = useRef(profile);
-  profileRef.current = profile;
+  /** Ordinary loads belong to an account visit, locale, and provider, independently of optional preparation. */
+  const contextScope = useMemo(() => ({userId, accountGeneration, locale, services}),
+    [userId, accountGeneration, locale, services]);
+  /** Only committed ownership may admit a visible read or accept its result. */
+  const contextScopeRef = useRef<typeof contextScope | null>(null);
   /** Stable content ownership excludes ordinary balance and presentation updates. */
   const preparationScope = useMemo(() => ({userId, accountGeneration, locale, services, canUsePreparedQuestions}),
     [userId, accountGeneration, locale, services, canUsePreparedQuestions]);
@@ -132,7 +136,7 @@ export function useHostRiddleLifecycle({
   const preparedRef = useRef<{
     /** Current authentication/content context captured before guarded service work. */
     scope: typeof preparationScope;
-    /** Passive context retirement and ABA replacement invalidate this read. */
+    /** Committed context retirement and ABA replacement invalidate this read. */
     version: number;
     /** The still-displayed predecessor owns this successor. */
     parentToken: string;
@@ -143,9 +147,9 @@ export function useHostRiddleLifecycle({
     /** Only a successful adapter response can be used by explicit Next. */
     riddle: Awaited<ReturnType<HostServices["loadRiddle"]>> | null;
   } | null>(null);
-  /** Render-time replacement cannot admit an earlier prepared account, locale or provider. */
+  /** Committed replacement cannot admit an earlier prepared account, locale or provider. */
   const ownsPreparation = (entry: NonNullable<typeof preparedRef.current>) => {
-    /** Latest render's scope revokes stale preparations before effect cleanup. */
+    /** Latest committed scope revokes stale preparations before passive effect cleanup. */
     const current = preparationScopeRef.current;
     return !contextAbortRef.current?.signal.aborted && entry.version === contextVersionRef.current &&
       entry.scope === current &&
@@ -157,7 +161,32 @@ export function useHostRiddleLifecycle({
   const gameModeRef = useRef(gameMode);
   /** Latest classic progression index used by recovery. */
   const classicIndexRef = useRef(profile?.classicIndex);
-  gameModeRef.current = gameMode;
+  /** Recovery observes the callback from the latest committed render without restarting content ownership. */
+  const onRecoveryAttemptRef = useRef(onRecoveryAttempt);
+
+  useLayoutEffect(() => {
+    /** This commit owns its own controller; older passive cleanup cannot abort it. */
+    const context = new AbortController();
+    contextScopeRef.current = contextScope;
+    contextVersionRef.current += 1;
+    contextAbortRef.current?.abort();
+    contextAbortRef.current = context;
+    loadInFlightRef.current = null;
+    loadedRef.current = false;
+    preparedRef.current = null;
+    deliveredRiddleRef.current = null;
+    deliveredScopeRef.current = null;
+    classicIndexRef.current = profile?.classicIndex;
+    scheduleRecoveryRef.current = () => undefined;
+    setStartupComplete(false);
+    setStartupUnavailable(false);
+    return () => {
+      context.abort();
+      if (contextScopeRef.current === contextScope) contextScopeRef.current = null;
+    };
+    // Profile refreshes must preserve an admitted request and its progression pointer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contextScope]);
 
   /** Loads and delivers one correlated or automatic riddle. */
   const loadRiddle = useCallback(
@@ -215,6 +244,7 @@ export function useHostRiddleLifecycle({
           return false;
         }
       }
+      if (contextScopeRef.current !== contextScope || contextAbortRef.current!.signal.aborted) return false;
       if (input.classicIndex !== undefined) classicIndexRef.current = input.classicIndex;
       // Automatic recovery shares the active request. Correlated reads remain
       // independent, but a newer visible request retires the older delivery wait.
@@ -232,7 +262,7 @@ export function useHostRiddleLifecycle({
       const retireDelivery = () => delivery.abort();
       contextSignal.addEventListener("abort", retireDelivery, {once: true});
       /** Obsolete successes and failures cannot mutate the latest board's host state. */
-      const ownsDelivery = () => contextVersion === contextVersionRef.current &&
+      const ownsDelivery = () => contextScopeRef.current === contextScope && contextVersion === contextVersionRef.current &&
         deliveryRef.current === delivery && !delivery.signal.aborted;
       /** Complete pending load outcome. */
       const pending = (async () => {
@@ -338,24 +368,20 @@ export function useHostRiddleLifecycle({
       });
     },
     [configurationWarning, onPlayable, onStartupUnavailable, postOperation, postToGame, services, setNotice, withActivity,
-      userId, locale, canUsePreparedQuestions, preparationScope],
+      userId, locale, canUsePreparedQuestions, preparationScope, contextScope],
   );
   /** Latest load implementation used by recovery timers. */
   const loadRiddleRef = useRef(loadRiddle);
-  loadRiddleRef.current = loadRiddle;
+  useLayoutEffect(() => {
+    profileRef.current = profile;
+    gameModeRef.current = gameMode;
+    loadRiddleRef.current = loadRiddle;
+    onRecoveryAttemptRef.current = onRecoveryAttempt;
+  }, [profile, gameMode, loadRiddle, onRecoveryAttempt]);
 
   useEffect(() => {
-    contextVersionRef.current += 1;
-    contextAbortRef.current?.abort();
-    contextAbortRef.current = new AbortController();
-    loadInFlightRef.current = null;
-    loadedRef.current = false;
-    preparedRef.current = null;
-    deliveredRiddleRef.current = null;
-    deliveredScopeRef.current = null;
-    classicIndexRef.current = profileRef.current?.classicIndex;
-    setStartupComplete(false);
-    setStartupUnavailable(false);
+    /** Recovery work stays bound to the commit that installed these listeners. */
+    const contextSignal = contextAbortRef.current!.signal;
     if (!userId) return;
     services.preloadInitialRiddles?.(locale);
     /** Whether this context generation has been disposed. */
@@ -368,31 +394,33 @@ export function useHostRiddleLifecycle({
     let recovering = false;
     /** Replaces the active recovery timer with a bounded retry. */
     const scheduleRecovery = (delayMs: number) => {
-      if (cancelled) return;
+      if (cancelled || contextSignal.aborted) return;
       if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
       recoveryTimer = window.setTimeout(() => void recoverRiddle(), delayMs);
     };
     /** Resynchronizes the host and retries the current riddle context. */
     const recoverRiddle = async () => {
-      if (loadedRef.current || cancelled || recovering || navigator.onLine === false) return;
+      if (loadedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
       recovering = true;
       try {
-        onRecoveryAttempt();
+        onRecoveryAttemptRef.current();
         /** Whether the recovery produced a playable riddle. */
         const loaded = await loadRiddleRef.current({
           gameMode: gameModeRef.current,
           locale,
           classicIndex: classicIndexRef.current,
         });
-        if (loaded || cancelled) return;
+        if (loaded || cancelled || contextSignal.aborted) return;
         failedAttempts += 1;
         scheduleRecovery(Math.min(30_000, 500 * 2 ** Math.min(failedAttempts, 6)));
       } finally {recovering = false;}
     };
-    scheduleRecoveryRef.current = () => scheduleRecovery(250);
+    /** This scheduler can only be removed by its own passive cleanup. */
+    const retry = () => scheduleRecovery(250);
+    scheduleRecoveryRef.current = retry;
     /** Recover immediately when the browser regains connectivity or returns to the game. */
     const resumeRecovery = () => {
-      if (cancelled || loadedRef.current || navigator.onLine === false) return;
+      if (cancelled || contextSignal.aborted || loadedRef.current || navigator.onLine === false) return;
       failedAttempts = 0;
       if (!recovering) scheduleRecovery(0);
     };
@@ -403,18 +431,12 @@ export function useHostRiddleLifecycle({
     scheduleRecovery(250);
     return () => {
       cancelled = true;
-      // Invalidate pending requests even when this cleanup is a final unmount.
-      contextVersionRef.current += 1;
-      contextAbortRef.current?.abort();
-      preparedRef.current = null;
-      deliveredRiddleRef.current = null;
-      deliveredScopeRef.current = null;
-      scheduleRecoveryRef.current = () => undefined;
+      if (scheduleRecoveryRef.current === retry) scheduleRecoveryRef.current = () => undefined;
       if (recoveryTimer !== undefined) window.clearTimeout(recoveryTimer);
       window.removeEventListener("online", resumeRecovery);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [accountGeneration, locale, onRecoveryAttempt, userId]);
+  }, [contextScope, locale, services, userId]);
 
   return {gameMode, startupComplete, startupUnavailable, loadRiddle};
 }

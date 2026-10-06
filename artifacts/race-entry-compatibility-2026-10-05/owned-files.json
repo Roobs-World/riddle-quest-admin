@@ -1,0 +1,9 @@
+{
+  "sdk-test": "firebase-functions/src/__tests__/race/raceEntryCompatibility.it.test.ts",
+  "invitation": "firebase-functions/src/race/raceInvitation.ts",
+  "setup": "firebase-functions/src/race/raceSetupService.ts",
+  "callables": "firebase-functions/src/race/raceCallables.ts",
+  "service": "firebase-functions/src/race/raceService.ts",
+  "callable-test": "firebase-functions/src/__tests__/race/raceCallables.test.ts",
+  "callable-cases": "firebase-functions/src/__tests__/race/callableCases.ts"
+}

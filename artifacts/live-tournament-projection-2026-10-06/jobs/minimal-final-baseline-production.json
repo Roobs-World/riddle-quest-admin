@@ -1,0 +1,20 @@
+{
+  "name": "minimal-final-baseline-production",
+  "command": [
+    "env",
+    "TOURNAMENT_PROJECTION_MODE=production",
+    "TOURNAMENT_PROJECTION_MINIMAL=1",
+    "TOURNAMENT_PROJECTION_QUICK=1",
+    "TOURNAMENT_PROJECTION_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-projection-2026-10-06/minimal-final-baseline-production",
+    "TOURNAMENT_PROJECTION_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-projection-2026-10-06/owned-00-before.txt",
+    "node",
+    "packages/portal/scripts/verify-live-tournament-projection-browser.mjs"
+  ],
+  "logs": [
+    "minimal-final-baseline-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791261832.2589867,
+  "exitCode": 1,
+  "finishedAt": 1791261835.477899
+}

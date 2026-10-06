@@ -1,0 +1,1089 @@
+{
+  "result": {
+    "value": true
+  },
+  "before": [
+    {
+      "path": "raceRuns/recording-source",
+      "data": {
+        "runId": "recording-source",
+        "userId": "jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "role": "creator",
+        "status": "completed",
+        "result": "recorded",
+        "categoryId": "history",
+        "locale": "en",
+        "rulesVersion": "race10_v1",
+        "rulesSnapshot": {
+          "version": "race10_v1",
+          "targetCorrect": 10,
+          "deckSize": 15,
+          "maxGuessesPerRiddle": 5,
+          "maxHintsPerRiddle": 7,
+          "hintPenaltyMs": 15000,
+          "skipPenaltyMs": 45000,
+          "maxAdjustedTimeMs": 300000
+        },
+        "deckId": "recording-deck",
+        "currentPosition": 9,
+        "correctCount": 10,
+        "guessesUsed": 0,
+        "guessHistory": [],
+        "hintUsed": false,
+        "revealedLetters": [],
+        "startedAtMs": 1799999950000,
+        "finishedAtMs": 1799999960000,
+        "wallFinishMs": 10000,
+        "hintPenaltyMs": 0,
+        "skipPenaltyMs": 0,
+        "events": [
+          {
+            "sequence": 0,
+            "type": "correct",
+            "riddlePosition": 0,
+            "wallElapsedMs": 1000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 1000,
+            "correctCount": 1
+          },
+          {
+            "sequence": 1,
+            "type": "correct",
+            "riddlePosition": 1,
+            "wallElapsedMs": 2000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 2000,
+            "correctCount": 2
+          },
+          {
+            "sequence": 2,
+            "type": "correct",
+            "riddlePosition": 2,
+            "wallElapsedMs": 3000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 3000,
+            "correctCount": 3
+          },
+          {
+            "sequence": 3,
+            "type": "correct",
+            "riddlePosition": 3,
+            "wallElapsedMs": 4000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 4000,
+            "correctCount": 4
+          },
+          {
+            "sequence": 4,
+            "type": "correct",
+            "riddlePosition": 4,
+            "wallElapsedMs": 5000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 5000,
+            "correctCount": 5
+          },
+          {
+            "sequence": 5,
+            "type": "correct",
+            "riddlePosition": 5,
+            "wallElapsedMs": 6000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 6000,
+            "correctCount": 6
+          },
+          {
+            "sequence": 6,
+            "type": "correct",
+            "riddlePosition": 6,
+            "wallElapsedMs": 7000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 7000,
+            "correctCount": 7
+          },
+          {
+            "sequence": 7,
+            "type": "correct",
+            "riddlePosition": 7,
+            "wallElapsedMs": 8000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 8000,
+            "correctCount": 8
+          },
+          {
+            "sequence": 8,
+            "type": "correct",
+            "riddlePosition": 8,
+            "wallElapsedMs": 9000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 9000,
+            "correctCount": 9
+          },
+          {
+            "sequence": 9,
+            "type": "correct",
+            "riddlePosition": 9,
+            "wallElapsedMs": 10000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 10000,
+            "correctCount": 10
+          }
+        ],
+        "evaluationPolicy": "preloaded",
+        "riddles": [
+          {
+            "riddleId": "recorded-0",
+            "canonicalRiddleId": "history:0",
+            "text": "Original question 0",
+            "answer": "piano",
+            "position": 0
+          },
+          {
+            "riddleId": "recorded-1",
+            "canonicalRiddleId": "history:1",
+            "text": "Original question 1",
+            "answer": "piano",
+            "position": 1
+          },
+          {
+            "riddleId": "recorded-2",
+            "canonicalRiddleId": "history:2",
+            "text": "Original question 2",
+            "answer": "piano",
+            "position": 2
+          },
+          {
+            "riddleId": "recorded-3",
+            "canonicalRiddleId": "history:3",
+            "text": "Original question 3",
+            "answer": "piano",
+            "position": 3
+          },
+          {
+            "riddleId": "recorded-4",
+            "canonicalRiddleId": "history:4",
+            "text": "Original question 4",
+            "answer": "piano",
+            "position": 4
+          },
+          {
+            "riddleId": "recorded-5",
+            "canonicalRiddleId": "history:5",
+            "text": "Original question 5",
+            "answer": "piano",
+            "position": 5
+          },
+          {
+            "riddleId": "recorded-6",
+            "canonicalRiddleId": "history:6",
+            "text": "Original question 6",
+            "answer": "piano",
+            "position": 6
+          },
+          {
+            "riddleId": "recorded-7",
+            "canonicalRiddleId": "history:7",
+            "text": "Original question 7",
+            "answer": "piano",
+            "position": 7
+          },
+          {
+            "riddleId": "recorded-8",
+            "canonicalRiddleId": "history:8",
+            "text": "Original question 8",
+            "answer": "piano",
+            "position": 8
+          },
+          {
+            "riddleId": "recorded-9",
+            "canonicalRiddleId": "history:9",
+            "text": "Original question 9",
+            "answer": "piano",
+            "position": 9
+          },
+          {
+            "riddleId": "recorded-10",
+            "canonicalRiddleId": "history:10",
+            "text": "Original question 10",
+            "answer": "piano",
+            "position": 10
+          },
+          {
+            "riddleId": "recorded-11",
+            "canonicalRiddleId": "history:11",
+            "text": "Original question 11",
+            "answer": "piano",
+            "position": 11
+          },
+          {
+            "riddleId": "recorded-12",
+            "canonicalRiddleId": "history:12",
+            "text": "Original question 12",
+            "answer": "piano",
+            "position": 12
+          },
+          {
+            "riddleId": "recorded-13",
+            "canonicalRiddleId": "history:13",
+            "text": "Original question 13",
+            "answer": "piano",
+            "position": 13
+          },
+          {
+            "riddleId": "recorded-14",
+            "canonicalRiddleId": "history:14",
+            "text": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+            "answer": "piano",
+            "position": 14
+          }
+        ]
+      },
+      "version": "063926832155.558349000"
+    },
+    {
+      "path": "raceChallenges/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+      "data": {
+        "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+        "scope": "invitation",
+        "creatorId": "jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "creatorRunId": "recording-source",
+        "creatorSnapshot": {
+          "displayName": "Recorded Alice"
+        },
+        "categoryId": "history",
+        "locale": "en",
+        "deckId": "recording-deck",
+        "canonicalRiddleIds": [
+          "history:0",
+          "history:1",
+          "history:2",
+          "history:3",
+          "history:4",
+          "history:5",
+          "history:6",
+          "history:7",
+          "history:8",
+          "history:9",
+          "history:10",
+          "history:11",
+          "history:12",
+          "history:13",
+          "history:14"
+        ],
+        "targetCorrect": 10,
+        "creatorWallFinishMs": 10000,
+        "creatorHintPenaltyMs": 0,
+        "creatorSkipPenaltyMs": 0,
+        "creatorTotalPenaltyMs": 0,
+        "creatorAdjustedFinishMs": 10000,
+        "ghostEvents": [
+          {
+            "sequence": 0,
+            "type": "correct",
+            "riddlePosition": 0,
+            "wallElapsedMs": 1000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 1000,
+            "correctCount": 1
+          },
+          {
+            "sequence": 1,
+            "type": "correct",
+            "riddlePosition": 1,
+            "wallElapsedMs": 2000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 2000,
+            "correctCount": 2
+          },
+          {
+            "sequence": 2,
+            "type": "correct",
+            "riddlePosition": 2,
+            "wallElapsedMs": 3000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 3000,
+            "correctCount": 3
+          },
+          {
+            "sequence": 3,
+            "type": "correct",
+            "riddlePosition": 3,
+            "wallElapsedMs": 4000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 4000,
+            "correctCount": 4
+          },
+          {
+            "sequence": 4,
+            "type": "correct",
+            "riddlePosition": 4,
+            "wallElapsedMs": 5000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 5000,
+            "correctCount": 5
+          },
+          {
+            "sequence": 5,
+            "type": "correct",
+            "riddlePosition": 5,
+            "wallElapsedMs": 6000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 6000,
+            "correctCount": 6
+          },
+          {
+            "sequence": 6,
+            "type": "correct",
+            "riddlePosition": 6,
+            "wallElapsedMs": 7000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 7000,
+            "correctCount": 7
+          },
+          {
+            "sequence": 7,
+            "type": "correct",
+            "riddlePosition": 7,
+            "wallElapsedMs": 8000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 8000,
+            "correctCount": 8
+          },
+          {
+            "sequence": 8,
+            "type": "correct",
+            "riddlePosition": 8,
+            "wallElapsedMs": 9000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 9000,
+            "correctCount": 9
+          },
+          {
+            "sequence": 9,
+            "type": "correct",
+            "riddlePosition": 9,
+            "wallElapsedMs": 10000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 10000,
+            "correctCount": 10
+          }
+        ],
+        "rules": {
+          "version": "race10_v1",
+          "targetCorrect": 10,
+          "deckSize": 15,
+          "maxGuessesPerRiddle": 5,
+          "maxHintsPerRiddle": 7,
+          "hintPenaltyMs": 15000,
+          "skipPenaltyMs": 45000,
+          "maxAdjustedTimeMs": 300000
+        },
+        "status": "active",
+        "createdAtMs": 1799999970000,
+        "expiresAtMs": 1800000100000,
+        "snapshotVersion": 1,
+        "riddles": [
+          {
+            "riddleId": "recorded-0",
+            "canonicalRiddleId": "history:0",
+            "text": "Original question 0",
+            "answer": "piano",
+            "position": 0
+          },
+          {
+            "riddleId": "recorded-1",
+            "canonicalRiddleId": "history:1",
+            "text": "Original question 1",
+            "answer": "piano",
+            "position": 1
+          },
+          {
+            "riddleId": "recorded-2",
+            "canonicalRiddleId": "history:2",
+            "text": "Original question 2",
+            "answer": "piano",
+            "position": 2
+          },
+          {
+            "riddleId": "recorded-3",
+            "canonicalRiddleId": "history:3",
+            "text": "Original question 3",
+            "answer": "piano",
+            "position": 3
+          },
+          {
+            "riddleId": "recorded-4",
+            "canonicalRiddleId": "history:4",
+            "text": "Original question 4",
+            "answer": "piano",
+            "position": 4
+          },
+          {
+            "riddleId": "recorded-5",
+            "canonicalRiddleId": "history:5",
+            "text": "Original question 5",
+            "answer": "piano",
+            "position": 5
+          },
+          {
+            "riddleId": "recorded-6",
+            "canonicalRiddleId": "history:6",
+            "text": "Original question 6",
+            "answer": "piano",
+            "position": 6
+          },
+          {
+            "riddleId": "recorded-7",
+            "canonicalRiddleId": "history:7",
+            "text": "Original question 7",
+            "answer": "piano",
+            "position": 7
+          },
+          {
+            "riddleId": "recorded-8",
+            "canonicalRiddleId": "history:8",
+            "text": "Original question 8",
+            "answer": "piano",
+            "position": 8
+          },
+          {
+            "riddleId": "recorded-9",
+            "canonicalRiddleId": "history:9",
+            "text": "Original question 9",
+            "answer": "piano",
+            "position": 9
+          },
+          {
+            "riddleId": "recorded-10",
+            "canonicalRiddleId": "history:10",
+            "text": "Original question 10",
+            "answer": "piano",
+            "position": 10
+          },
+          {
+            "riddleId": "recorded-11",
+            "canonicalRiddleId": "history:11",
+            "text": "Original question 11",
+            "answer": "piano",
+            "position": 11
+          },
+          {
+            "riddleId": "recorded-12",
+            "canonicalRiddleId": "history:12",
+            "text": "Original question 12",
+            "answer": "piano",
+            "position": 12
+          },
+          {
+            "riddleId": "recorded-13",
+            "canonicalRiddleId": "history:13",
+            "text": "Original question 13",
+            "answer": "piano",
+            "position": 13
+          },
+          {
+            "riddleId": "recorded-14",
+            "canonicalRiddleId": "history:14",
+            "text": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+            "answer": "piano",
+            "position": 14
+          }
+        ],
+        "contentVersion": "29e4a40ceec20bdfd6d138338b406f0a3ee2a935dbc1f31776809cd5b772f5b1"
+      },
+      "version": "063926832155.559568000"
+    },
+    {
+      "path": "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+      "data": {
+        "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+        "creatorId": "jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "locale": "en",
+        "status": "published",
+        "claimState": "unclaimed",
+        "publicationState": "published",
+        "createdAtMs": 1799999990000,
+        "expiresAtMs": 1800000100000
+      },
+      "version": "063926832155.555383000"
+    },
+    {
+      "path": "users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "data": {
+        "username": "Recorded Alice",
+        "coins": 100
+      },
+      "version": "063926832155.550264000"
+    },
+    {
+      "path": "users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "data": {
+        "username": "Recorded Bob",
+        "coins": 100
+      },
+      "version": "063926832155.550734000"
+    }
+  ],
+  "after": [
+    {
+      "path": "raceRuns/recording-source",
+      "data": {
+        "runId": "recording-source",
+        "userId": "jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "role": "creator",
+        "status": "completed",
+        "result": "recorded",
+        "categoryId": "history",
+        "locale": "en",
+        "rulesVersion": "race10_v1",
+        "rulesSnapshot": {
+          "version": "race10_v1",
+          "targetCorrect": 10,
+          "deckSize": 15,
+          "maxGuessesPerRiddle": 5,
+          "maxHintsPerRiddle": 7,
+          "hintPenaltyMs": 15000,
+          "skipPenaltyMs": 45000,
+          "maxAdjustedTimeMs": 300000
+        },
+        "deckId": "recording-deck",
+        "currentPosition": 9,
+        "correctCount": 10,
+        "guessesUsed": 0,
+        "guessHistory": [],
+        "hintUsed": false,
+        "revealedLetters": [],
+        "startedAtMs": 1799999950000,
+        "finishedAtMs": 1799999960000,
+        "wallFinishMs": 10000,
+        "hintPenaltyMs": 0,
+        "skipPenaltyMs": 0,
+        "events": [
+          {
+            "sequence": 0,
+            "type": "correct",
+            "riddlePosition": 0,
+            "wallElapsedMs": 1000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 1000,
+            "correctCount": 1
+          },
+          {
+            "sequence": 1,
+            "type": "correct",
+            "riddlePosition": 1,
+            "wallElapsedMs": 2000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 2000,
+            "correctCount": 2
+          },
+          {
+            "sequence": 2,
+            "type": "correct",
+            "riddlePosition": 2,
+            "wallElapsedMs": 3000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 3000,
+            "correctCount": 3
+          },
+          {
+            "sequence": 3,
+            "type": "correct",
+            "riddlePosition": 3,
+            "wallElapsedMs": 4000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 4000,
+            "correctCount": 4
+          },
+          {
+            "sequence": 4,
+            "type": "correct",
+            "riddlePosition": 4,
+            "wallElapsedMs": 5000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 5000,
+            "correctCount": 5
+          },
+          {
+            "sequence": 5,
+            "type": "correct",
+            "riddlePosition": 5,
+            "wallElapsedMs": 6000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 6000,
+            "correctCount": 6
+          },
+          {
+            "sequence": 6,
+            "type": "correct",
+            "riddlePosition": 6,
+            "wallElapsedMs": 7000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 7000,
+            "correctCount": 7
+          },
+          {
+            "sequence": 7,
+            "type": "correct",
+            "riddlePosition": 7,
+            "wallElapsedMs": 8000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 8000,
+            "correctCount": 8
+          },
+          {
+            "sequence": 8,
+            "type": "correct",
+            "riddlePosition": 8,
+            "wallElapsedMs": 9000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 9000,
+            "correctCount": 9
+          },
+          {
+            "sequence": 9,
+            "type": "correct",
+            "riddlePosition": 9,
+            "wallElapsedMs": 10000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 10000,
+            "correctCount": 10
+          }
+        ],
+        "evaluationPolicy": "preloaded",
+        "riddles": [
+          {
+            "riddleId": "recorded-0",
+            "canonicalRiddleId": "history:0",
+            "text": "Original question 0",
+            "answer": "piano",
+            "position": 0
+          },
+          {
+            "riddleId": "recorded-1",
+            "canonicalRiddleId": "history:1",
+            "text": "Original question 1",
+            "answer": "piano",
+            "position": 1
+          },
+          {
+            "riddleId": "recorded-2",
+            "canonicalRiddleId": "history:2",
+            "text": "Original question 2",
+            "answer": "piano",
+            "position": 2
+          },
+          {
+            "riddleId": "recorded-3",
+            "canonicalRiddleId": "history:3",
+            "text": "Original question 3",
+            "answer": "piano",
+            "position": 3
+          },
+          {
+            "riddleId": "recorded-4",
+            "canonicalRiddleId": "history:4",
+            "text": "Original question 4",
+            "answer": "piano",
+            "position": 4
+          },
+          {
+            "riddleId": "recorded-5",
+            "canonicalRiddleId": "history:5",
+            "text": "Original question 5",
+            "answer": "piano",
+            "position": 5
+          },
+          {
+            "riddleId": "recorded-6",
+            "canonicalRiddleId": "history:6",
+            "text": "Original question 6",
+            "answer": "piano",
+            "position": 6
+          },
+          {
+            "riddleId": "recorded-7",
+            "canonicalRiddleId": "history:7",
+            "text": "Original question 7",
+            "answer": "piano",
+            "position": 7
+          },
+          {
+            "riddleId": "recorded-8",
+            "canonicalRiddleId": "history:8",
+            "text": "Original question 8",
+            "answer": "piano",
+            "position": 8
+          },
+          {
+            "riddleId": "recorded-9",
+            "canonicalRiddleId": "history:9",
+            "text": "Original question 9",
+            "answer": "piano",
+            "position": 9
+          },
+          {
+            "riddleId": "recorded-10",
+            "canonicalRiddleId": "history:10",
+            "text": "Original question 10",
+            "answer": "piano",
+            "position": 10
+          },
+          {
+            "riddleId": "recorded-11",
+            "canonicalRiddleId": "history:11",
+            "text": "Original question 11",
+            "answer": "piano",
+            "position": 11
+          },
+          {
+            "riddleId": "recorded-12",
+            "canonicalRiddleId": "history:12",
+            "text": "Original question 12",
+            "answer": "piano",
+            "position": 12
+          },
+          {
+            "riddleId": "recorded-13",
+            "canonicalRiddleId": "history:13",
+            "text": "Original question 13",
+            "answer": "piano",
+            "position": 13
+          },
+          {
+            "riddleId": "recorded-14",
+            "canonicalRiddleId": "history:14",
+            "text": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+            "answer": "piano",
+            "position": 14
+          }
+        ]
+      },
+      "version": "063926832155.558349000"
+    },
+    {
+      "path": "raceChallenges/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+      "data": {
+        "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+        "scope": "invitation",
+        "creatorId": "jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "creatorRunId": "recording-source",
+        "creatorSnapshot": {
+          "displayName": "Recorded Alice"
+        },
+        "categoryId": "history",
+        "locale": "en",
+        "deckId": "recording-deck",
+        "canonicalRiddleIds": [
+          "history:0",
+          "history:1",
+          "history:2",
+          "history:3",
+          "history:4",
+          "history:5",
+          "history:6",
+          "history:7",
+          "history:8",
+          "history:9",
+          "history:10",
+          "history:11",
+          "history:12",
+          "history:13",
+          "history:14"
+        ],
+        "targetCorrect": 10,
+        "creatorWallFinishMs": 10000,
+        "creatorHintPenaltyMs": 0,
+        "creatorSkipPenaltyMs": 0,
+        "creatorTotalPenaltyMs": 0,
+        "creatorAdjustedFinishMs": 10000,
+        "ghostEvents": [
+          {
+            "sequence": 0,
+            "type": "correct",
+            "riddlePosition": 0,
+            "wallElapsedMs": 1000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 1000,
+            "correctCount": 1
+          },
+          {
+            "sequence": 1,
+            "type": "correct",
+            "riddlePosition": 1,
+            "wallElapsedMs": 2000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 2000,
+            "correctCount": 2
+          },
+          {
+            "sequence": 2,
+            "type": "correct",
+            "riddlePosition": 2,
+            "wallElapsedMs": 3000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 3000,
+            "correctCount": 3
+          },
+          {
+            "sequence": 3,
+            "type": "correct",
+            "riddlePosition": 3,
+            "wallElapsedMs": 4000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 4000,
+            "correctCount": 4
+          },
+          {
+            "sequence": 4,
+            "type": "correct",
+            "riddlePosition": 4,
+            "wallElapsedMs": 5000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 5000,
+            "correctCount": 5
+          },
+          {
+            "sequence": 5,
+            "type": "correct",
+            "riddlePosition": 5,
+            "wallElapsedMs": 6000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 6000,
+            "correctCount": 6
+          },
+          {
+            "sequence": 6,
+            "type": "correct",
+            "riddlePosition": 6,
+            "wallElapsedMs": 7000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 7000,
+            "correctCount": 7
+          },
+          {
+            "sequence": 7,
+            "type": "correct",
+            "riddlePosition": 7,
+            "wallElapsedMs": 8000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 8000,
+            "correctCount": 8
+          },
+          {
+            "sequence": 8,
+            "type": "correct",
+            "riddlePosition": 8,
+            "wallElapsedMs": 9000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 9000,
+            "correctCount": 9
+          },
+          {
+            "sequence": 9,
+            "type": "correct",
+            "riddlePosition": 9,
+            "wallElapsedMs": 10000,
+            "penaltyAddedMs": 0,
+            "totalPenaltyMs": 0,
+            "adjustedElapsedMs": 10000,
+            "correctCount": 10
+          }
+        ],
+        "rules": {
+          "version": "race10_v1",
+          "targetCorrect": 10,
+          "deckSize": 15,
+          "maxGuessesPerRiddle": 5,
+          "maxHintsPerRiddle": 7,
+          "hintPenaltyMs": 15000,
+          "skipPenaltyMs": 45000,
+          "maxAdjustedTimeMs": 300000
+        },
+        "status": "active",
+        "createdAtMs": 1799999970000,
+        "expiresAtMs": 1800000100000,
+        "snapshotVersion": 1,
+        "riddles": [
+          {
+            "riddleId": "recorded-0",
+            "canonicalRiddleId": "history:0",
+            "text": "Original question 0",
+            "answer": "piano",
+            "position": 0
+          },
+          {
+            "riddleId": "recorded-1",
+            "canonicalRiddleId": "history:1",
+            "text": "Original question 1",
+            "answer": "piano",
+            "position": 1
+          },
+          {
+            "riddleId": "recorded-2",
+            "canonicalRiddleId": "history:2",
+            "text": "Original question 2",
+            "answer": "piano",
+            "position": 2
+          },
+          {
+            "riddleId": "recorded-3",
+            "canonicalRiddleId": "history:3",
+            "text": "Original question 3",
+            "answer": "piano",
+            "position": 3
+          },
+          {
+            "riddleId": "recorded-4",
+            "canonicalRiddleId": "history:4",
+            "text": "Original question 4",
+            "answer": "piano",
+            "position": 4
+          },
+          {
+            "riddleId": "recorded-5",
+            "canonicalRiddleId": "history:5",
+            "text": "Original question 5",
+            "answer": "piano",
+            "position": 5
+          },
+          {
+            "riddleId": "recorded-6",
+            "canonicalRiddleId": "history:6",
+            "text": "Original question 6",
+            "answer": "piano",
+            "position": 6
+          },
+          {
+            "riddleId": "recorded-7",
+            "canonicalRiddleId": "history:7",
+            "text": "Original question 7",
+            "answer": "piano",
+            "position": 7
+          },
+          {
+            "riddleId": "recorded-8",
+            "canonicalRiddleId": "history:8",
+            "text": "Original question 8",
+            "answer": "piano",
+            "position": 8
+          },
+          {
+            "riddleId": "recorded-9",
+            "canonicalRiddleId": "history:9",
+            "text": "Original question 9",
+            "answer": "piano",
+            "position": 9
+          },
+          {
+            "riddleId": "recorded-10",
+            "canonicalRiddleId": "history:10",
+            "text": "Original question 10",
+            "answer": "piano",
+            "position": 10
+          },
+          {
+            "riddleId": "recorded-11",
+            "canonicalRiddleId": "history:11",
+            "text": "Original question 11",
+            "answer": "piano",
+            "position": 11
+          },
+          {
+            "riddleId": "recorded-12",
+            "canonicalRiddleId": "history:12",
+            "text": "Original question 12",
+            "answer": "piano",
+            "position": 12
+          },
+          {
+            "riddleId": "recorded-13",
+            "canonicalRiddleId": "history:13",
+            "text": "Original question 13",
+            "answer": "piano",
+            "position": 13
+          },
+          {
+            "riddleId": "recorded-14",
+            "canonicalRiddleId": "history:14",
+            "text": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+            "answer": "piano",
+            "position": 14
+          }
+        ],
+        "contentVersion": "29e4a40ceec20bdfd6d138338b406f0a3ee2a935dbc1f31776809cd5b772f5b1"
+      },
+      "version": "063926832155.559568000"
+    },
+    {
+      "path": "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+      "data": {
+        "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+        "creatorId": "jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "locale": "en",
+        "status": "published",
+        "publicationState": "published",
+        "createdAtMs": 1799999990000,
+        "expiresAtMs": 1800000100000,
+        "claimedAtMs": 1800000000000,
+        "claimState": "claimed",
+        "recipientId": "jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "version": "063926832155.572160000"
+    },
+    {
+      "path": "users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "data": {
+        "username": "Recorded Alice",
+        "coins": 100
+      },
+      "version": "063926832155.550264000"
+    },
+    {
+      "path": "users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "data": {
+        "username": "Recorded Bob",
+        "coins": 100
+      },
+      "version": "063926832155.550734000"
+    }
+  ]
+}

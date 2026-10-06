@@ -1,0 +1,10 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 7 production declarations are undocumented.
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:44 answer
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:53 response
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:64 stored
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:65 answer
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:70 response
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:76 start
+- firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts:77 before
+[ELIFECYCLE] Command failed with exit code 1.

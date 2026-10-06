@@ -1,0 +1,21 @@
+{
+  "sourceInputs": 2458,
+  "ownedSourceRecords": 5,
+  "terminalTrackedJobs": 17,
+  "archivedMarkerCompatibilityJobs": 17,
+  "portalUnitTests": 2905,
+  "portalSkippedTests": 93,
+  "overlayOwnerCases": 120,
+  "overlayOwnerAssertions": 1512,
+  "adjacentCases": 144,
+  "adjacentAssertions": 2322,
+  "minimalGreenCases": 4,
+  "minimalGreenAssertions": 36,
+  "builtBrowserTests": 23,
+  "isolatedTargetInventories": 6,
+  "preservedBuiltFiles": 1301,
+  "unchangedAuthorityInputs": 824,
+  "authorityEvidenceReused": true,
+  "cleanupVerified": true,
+  "goalComplete": false
+}

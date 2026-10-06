@@ -1,0 +1,23 @@
+{
+  "name": "facebook-built-browser",
+  "command": [
+    "env",
+    "PORTAL_BROWSER_TESTS=1",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "jest",
+    "--config",
+    "jest.config.cjs",
+    "--runInBand",
+    "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"
+  ],
+  "logs": [
+    "facebook-browser.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791258743.0428681,
+  "exitCode": 1,
+  "finishedAt": 1791258765.521474
+}

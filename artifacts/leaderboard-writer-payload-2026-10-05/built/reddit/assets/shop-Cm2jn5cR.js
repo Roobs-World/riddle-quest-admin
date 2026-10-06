@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`コイン`,LOADING_TEXT:`ショップを読み込み中...`,NO_PACKS_AVAILABLE:`現在コインパックはありません。`,PURCHASE_BUTTON:`購入`,TITLE:`コインショップ`,YOUR_BALANCE:`残高`},n={CoinShop:t}})))()}r();export{n as default};

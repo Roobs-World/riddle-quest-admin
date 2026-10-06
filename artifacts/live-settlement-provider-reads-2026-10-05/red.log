@@ -1,0 +1,205 @@
+  console.info
+    {"provider":"jest","winner":0,"retryDeletion":false,"sourceReadFails":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"jest","winner":1,"retryDeletion":false,"sourceReadFails":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"jest","winner":0,"retryDeletion":true,"sourceReadFails":false,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"jest","winner":1,"retryDeletion":true,"sourceReadFails":false,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"jest","winner":1,"retryDeletion":false,"sourceReadFails":true,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"reddit","winner":0,"retryDeletion":false,"sourceReadFails":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"reddit","winner":1,"retryDeletion":false,"sourceReadFails":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"reddit","winner":0,"retryDeletion":true,"sourceReadFails":false,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"reddit","winner":1,"retryDeletion":true,"sourceReadFails":false,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"reddit","winner":1,"retryDeletion":false,"sourceReadFails":true,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"facebook","winner":0,"retryDeletion":false,"sourceReadFails":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"facebook","winner":1,"retryDeletion":false,"sourceReadFails":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"facebook","winner":0,"retryDeletion":true,"sourceReadFails":false,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"facebook","winner":1,"retryDeletion":true,"sourceReadFails":false,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"provider":"facebook","winner":1,"retryDeletion":false,"sourceReadFails":true,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/facebook_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/facebook_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/race/raceLiveSettlementLatency.test.ts
+  ● settles jest seat 1 with retry deletion false and source failure false
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 8
+    Received length: 9
+    Received array:  ["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]
+
+      101 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+      102 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+    > 103 |     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
+          |                   ^
+      104 |     expect(reads.includes(`liveRaceTickets/${ticketIds[1]}`)).toBe(provider === "facebook" && winner === 1);
+      105 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+      106 |     expect(writes).toContain(`users/${OWNER}`);
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:103:19
+
+  ● settles jest seat 1 with retry deletion true and source failure false
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 16
+    Received length: 18
+    Received array:  ["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", …]
+
+      101 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+      102 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+    > 103 |     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
+          |                   ^
+      104 |     expect(reads.includes(`liveRaceTickets/${ticketIds[1]}`)).toBe(provider === "facebook" && winner === 1);
+      105 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+      106 |     expect(writes).toContain(`users/${OWNER}`);
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:103:19
+
+  ● settles jest seat 1 with retry deletion false and source failure true
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 1
+
+      Object {
+    -   "value": Object {
+    -     "phase": "result",
+    -     "result": "loss",
+    -     "rewardCoins": 0,
+    -   },
+    +   "value": undefined,
+      }
+
+       98 |       return;
+       99 |     }
+    > 100 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+          |                          ^
+      101 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+      102 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+      103 |     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:100:26
+
+  ● settles reddit seat 1 with retry deletion false and source failure false
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 8
+    Received length: 9
+    Received array:  ["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]
+
+      101 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+      102 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+    > 103 |     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
+          |                   ^
+      104 |     expect(reads.includes(`liveRaceTickets/${ticketIds[1]}`)).toBe(provider === "facebook" && winner === 1);
+      105 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+      106 |     expect(writes).toContain(`users/${OWNER}`);
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:103:19
+
+  ● settles reddit seat 1 with retry deletion true and source failure false
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 16
+    Received length: 18
+    Received array:  ["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "users/reddit_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "users/reddit_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", …]
+
+      101 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+      102 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+    > 103 |     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
+          |                   ^
+      104 |     expect(reads.includes(`liveRaceTickets/${ticketIds[1]}`)).toBe(provider === "facebook" && winner === 1);
+      105 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+      106 |     expect(writes).toContain(`users/${OWNER}`);
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:103:19
+
+  ● settles reddit seat 1 with retry deletion false and source failure true
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 1
+
+      Object {
+    -   "value": Object {
+    -     "phase": "result",
+    -     "result": "loss",
+    -     "rewardCoins": 0,
+    -   },
+    +   "value": undefined,
+      }
+
+       98 |       return;
+       99 |     }
+    > 100 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+          |                          ^
+      101 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+      102 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+      103 |     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:100:26
+
+Test Suites: 1 failed, 1 total
+Tests:       6 failed, 9 passed, 15 total
+Snapshots:   0 total
+Time:        0.401 s, estimated 1 s
+Ran all test suites matching src/__tests__/race/raceLiveSettlementLatency.test.ts.

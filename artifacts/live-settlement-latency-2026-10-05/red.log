@@ -1,0 +1,42 @@
+FAIL src/__tests__/race/raceLiveSettlementLatency.test.ts
+  ● settles winner seat 0 in four round trips without repeating deletion reads
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  ["jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+
+      57 |     await jest.runAllTimersAsync();
+      58 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+    > 59 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(1);
+         |                                                                                           ^
+      60 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(1);
+      61 |     expect(reads).toHaveLength(winner === 0 ? 8 : 9);
+      62 |     expect(Date.now() - NOW).toBe(800);
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:59:91
+
+  ● settles winner seat 1 in four round trips without repeating deletion reads
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  ["jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+
+      57 |     await jest.runAllTimersAsync();
+      58 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+    > 59 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(1);
+         |                                                                                           ^
+      60 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(1);
+      61 |     expect(reads).toHaveLength(winner === 0 ? 8 : 9);
+      62 |     expect(Date.now() - NOW).toBe(800);
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:59:91
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.716 s
+Ran all test suites matching src/__tests__/race/raceLiveSettlementLatency.test.ts.

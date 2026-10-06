@@ -1,0 +1,113 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-current-load", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 42173.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: NODE_OPTIONS=--experimental-vm-modules pnpm exec jest --config ../artifacts/current-load-issued-state-2026-10-05/probe.config.cjs --runInBand
+FAIL src/__tests__/singlePlayerLoadIssuedState.it.test.ts
+  ● retains explicit classic resume-token validation and one standalone read
+
+    expect(received).rejects.toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "code": "not-found",
+    +   "code": "permission-denied",
+      }
+
+       96 |   const token = await issue(mode), {result, directReads} = await observedLoad(mode, token);
+       97 |   expect(directReads).toBe(1); expect(result.challenge?.questions[0]?.sessionToken).toBe(token);
+    >  98 |   await expect(load(mode, "wrong-opaque-token-at-least-20-characters")).rejects.toMatchObject({code: "not-found"});
+          |                                                                                 ^
+       99 | });
+      100 |
+      101 | it.each(["classic", "challenge"] as const)("projects resumed %s hints and attempts from committed state", async mode => {
+
+      at Object.toMatchObject (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:98:81
+
+  ● retains explicit challenge resume-token validation and one standalone read
+
+    expect(received).rejects.toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "code": "not-found",
+    +   "code": "permission-denied",
+      }
+
+       96 |   const token = await issue(mode), {result, directReads} = await observedLoad(mode, token);
+       97 |   expect(directReads).toBe(1); expect(result.challenge?.questions[0]?.sessionToken).toBe(token);
+    >  98 |   await expect(load(mode, "wrong-opaque-token-at-least-20-characters")).rejects.toMatchObject({code: "not-found"});
+          |                                                                                 ^
+       99 | });
+      100 |
+      101 | it.each(["classic", "challenge"] as const)("projects resumed %s hints and attempts from committed state", async mode => {
+
+      at Object.toMatchObject (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:98:81
+
+  ● reconciles real terminal classic win false and rotates only retryable entitlements
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "attemptsUsed": 0,
+    +   "attemptsUsed": 5,
+        "riddleId": "classic-1",
+      }
+
+      118 |   if (win && mode === "challenge") expect(result).toMatchObject({hasCompletedToday: true, questionsCompleted: 1});
+      119 |   else {
+    > 120 |     expect(result.challenge?.questions[0]).toMatchObject({riddleId: mode === "classic" && win ? "classic-2" : riddle(mode).riddleId, attemptsUsed: 0});
+          |                                            ^
+      121 |     expect(result.challenge?.questions[0]?.sessionToken).not.toBe(token);
+      122 |   }
+      123 |   /** Replay cannot double-grant the reconciled completion. */
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:120:44
+
+  ● reconciles real terminal challenge win false and rotates only retryable entitlements
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "attemptsUsed": 0,
+    +   "attemptsUsed": 5,
+        "riddleId": "daily-2026-10-05",
+      }
+
+      118 |   if (win && mode === "challenge") expect(result).toMatchObject({hasCompletedToday: true, questionsCompleted: 1});
+      119 |   else {
+    > 120 |     expect(result.challenge?.questions[0]).toMatchObject({riddleId: mode === "classic" && win ? "classic-2" : riddle(mode).riddleId, attemptsUsed: 0});
+          |                                            ^
+      121 |     expect(result.challenge?.questions[0]?.sessionToken).not.toBe(token);
+      122 |   }
+      123 |   /** Replay cannot double-grant the reconciled completion. */
+
+      at src/__tests__/singlePlayerLoadIssuedState.it.test.ts:120:44
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 10 passed, 14 total
+Snapshots:   0 total
+Time:        4.236 s
+Ran all test suites.
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "NODE_OPTIONS=--experimental-vm-modules pnpm exec jest --config ../artifacts/current-load-issued-state-2026-10-05/probe.config.cjs --runInBand" exited with code 1

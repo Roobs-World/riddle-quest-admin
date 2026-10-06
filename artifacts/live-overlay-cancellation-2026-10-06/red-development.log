@@ -1,0 +1,49 @@
+{
+  "mode": "development",
+  "cases": 2,
+  "checks": 22,
+  "failures": [
+    {
+      "scenario": "player",
+      "name": "retiring pending name creation dismisses its acknowledged picture immediately",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "player",
+      "name": "acknowledged picture is destroyed before the original name request settles",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "provider",
+      "name": "retiring pending name creation dismisses its acknowledged picture immediately",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "provider",
+      "name": "acknowledged picture is destroyed before the original name request settles",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+4 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-overlay-cancellation-2026-10-06/probe-minimal.mjs:9:425 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 4,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

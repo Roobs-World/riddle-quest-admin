@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "guess",
+    "inputUnits": 4096,
+    "success": false,
+    "normalizedUnits": 4096,
+    "segmentedUnits": 4096
+  },
+  {
+    "kind": "prompt",
+    "inputUnits": 4096,
+    "success": false,
+    "normalizedUnits": 4096,
+    "segmentedUnits": 4096
+  },
+  {
+    "kind": "preload",
+    "inputUnits": 4096,
+    "success": false,
+    "normalizedUnits": 4096,
+    "segmentedUnits": 4096
+  }
+]

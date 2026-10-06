@@ -1,0 +1,7 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={ACHIEVEMENT_UNLOCKED:`Prestatie ontgrendeld!`,COINS_SUFFIX:` Munten`,NEXT_LEVEL_BUTTON:`Volgend niveau`,SHARE_TEXT:`Nodig een vriend uit · elk 100 munten`,REFERRAL_REWARD_MESSAGE:`Registreer je via mijn uitnodiging en we krijgen allebei {coins} munten!`,OPEN_INVITE_MESSAGE:`{name} daagt je uit voor Riddle Quest. Registreer je via deze uitnodiging en jullie krijgen allebei {coins} munten!`,REFERRAL_REWARD_TITLE:`Een vriend doet mee!`,TITLE:`LEUKE BAAN!`,TOTAL_COINS_LABEL:`Totaal aantal munten`,YOU_WON_TITLE:`JE HEBT GEWONNEN!`,SHARE_ATTEMPT_PLURAL:`pogingen`,SHARE_ATTEMPT_SINGULAR:`poging`,SHARE_CLASSIC_MODE_LABEL:`Klassieke modus`,SHARE_DAILY_CHALLENGE_LABEL:`Dagelijkse uitdaging`,SHARE_MESSAGE_TEMPLATE:`Ik heb de Riddle Quest {gameType} van vandaag opgelost in {attempts} {attemptLabel}!
+
+{emojiGrid}
+
+Kun jij mijn score verbeteren?
+
+#Riddle Quest #WordPuzzle #BrainGame`,SHARE_RESULT_TITLE:`Bekijk mijn Riddle Quest resultaat!`,INVITE_FRIEND:`Nodig een vriend uit`},n={VictoryModal:t}})))()}r();export{n as default};

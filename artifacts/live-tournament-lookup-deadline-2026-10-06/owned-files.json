@@ -1,0 +1,30 @@
+[
+  {
+    "path": "packages/portal/src/facebook/FacebookTournamentPresentation.ts",
+    "before": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "1da621df1acbcda511cb108587095b3d61ecd25d452eaa070375afffeaf21aca",
+    "after": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-00-after.txt",
+    "afterSha256": "c4b7c6d2fb6d40abedd686f42866e37e6103961828e01f95a60a607c195f8fa2"
+  },
+  {
+    "path": "packages/portal/src/facebook/__tests__/FacebookTournamentPresentation.test.ts",
+    "before": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "f3eea06decbf4a18c0d432d26e11f778305ebd6dc1f81ad1268e68505b7ddb0b",
+    "after": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-01-after.txt",
+    "afterSha256": "f271ec73806f4cb746b5a0ebbb871a5c6c74781f4a22919e614525f23e19e4e9"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-02-before.txt",
+    "beforeSha256": "f8991b3b08b1ffa351466687b592cdc18b76530f4f4dc9ff7de673d388aa1789",
+    "after": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-02-after.txt",
+    "afterSha256": "aec47b7f095ffe57d4121232e093be1e2bdedc084612b439570cfcb03b0f8b09"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-tournament-lookup-deadline-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/live-tournament-lookup-deadline-2026-10-06/owned-03-after.txt",
+    "afterSha256": "1e2fb7b98c0148976a75114dcd7147d202eb516ceeb3eb16bb99540d747bcaeb"
+  }
+]

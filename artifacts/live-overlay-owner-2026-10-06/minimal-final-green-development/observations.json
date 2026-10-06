@@ -1,0 +1,110 @@
+[
+  {
+    "scenario": "player",
+    "name": "replacement isolates the provider surface at commit",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "scenario": "player",
+    "name": "retired initialization never shows provider views",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "player",
+    "name": "retired initialization never starts a profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "player",
+    "name": "retired player views never enter current presentation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "player",
+    "name": "independent history identity survives provider refresh",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "player",
+    "name": "independent modal identity survives provider refresh",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "player",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "player",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "player",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "provider",
+    "name": "replacement isolates the provider surface at commit",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "scenario": "provider",
+    "name": "retired initialization never shows provider views",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "provider",
+    "name": "retired initialization never starts a profile-name request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "provider",
+    "name": "retired player views never enter current presentation",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "provider",
+    "name": "independent history identity survives provider refresh",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "provider",
+    "name": "independent modal identity survives provider refresh",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "provider",
+    "name": "independent history is not reread",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -1,0 +1,25 @@
+FAIL src/__tests__/classicSupplyWorker.test.ts
+  ● durable Classic supply worker › completes the durable request and excludes successful replay
+
+    expect(jest.fn()).toHaveBeenNthCalledWith(n, ...expected)
+
+    n: 1
+    Expected: {}, {"fieldMask": ["nextAttemptAtMs", "completed", "locale"]}
+
+    Number of calls: 0
+
+      59 |     expect(await processClassicSupplyJob("ar_20")).toBe("generated");
+      60 |     expect(generate).toHaveBeenCalledWith("ar", 5, clock + 180000);
+    > 61 |     expect(transaction.getAll).toHaveBeenNthCalledWith(1, ref, {fieldMask: ["nextAttemptAtMs", "completed", "locale"]});
+         |                                ^
+      62 |     expect(transaction.getAll).toHaveBeenNthCalledWith(2, ref, {fieldMask: ["leaseId"]});
+      63 |     expect(job.completed).toBe(true);
+      64 |     expect(await processClassicSupplyJob("ar_20")).toBe("skipped");
+
+      at Object.<anonymous> (src/__tests__/classicSupplyWorker.test.ts:61:32)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 7 passed, 8 total
+Snapshots:   0 total
+Time:        0.229 s, estimated 1 s
+Ran all test suites matching src/__tests__/classicSupplyWorker.test.ts.

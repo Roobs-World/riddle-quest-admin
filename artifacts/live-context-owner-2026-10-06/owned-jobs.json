@@ -1,0 +1,413 @@
+[
+  {
+    "name": "all-six-builds",
+    "command": [
+      "bash",
+      "artifacts/live-context-owner-2026-10-06/builds.sh"
+    ],
+    "logs": [
+      "builds.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255685.2842011,
+    "exitCode": 0,
+    "finishedAt": 1791255713.7544334
+  },
+  {
+    "name": "built-browser",
+    "command": [
+      "bash",
+      "artifacts/live-context-owner-2026-10-06/built-browser.sh"
+    ],
+    "logs": [
+      "built-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255764.8185103,
+    "exitCode": 0,
+    "finishedAt": 1791255873.3418436
+  },
+  {
+    "name": "chromium-development",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=development",
+      "LIVE_CONTEXT_BROWSER=chromium",
+      "LIVE_CONTEXT_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/chromium-development",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "chromium-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255686.5669332,
+    "exitCode": 0,
+    "finishedAt": 1791255706.413542
+  },
+  {
+    "name": "chromium-production",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=production",
+      "LIVE_CONTEXT_BROWSER=chromium",
+      "LIVE_CONTEXT_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/chromium-production",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "chromium-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255706.4296427,
+    "exitCode": 0,
+    "finishedAt": 1791255722.5761793
+  },
+  {
+    "name": "destinations-development",
+    "command": [
+      "env",
+      "LIVE_DEST_MODE=development",
+      "LIVE_DEST_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/destinations-development",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-destination-capability-browser.mjs"
+    ],
+    "logs": [
+      "destinations-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255787.266464,
+    "exitCode": 0,
+    "finishedAt": 1791255803.313826
+  },
+  {
+    "name": "destinations-production",
+    "command": [
+      "env",
+      "LIVE_DEST_MODE=production",
+      "LIVE_DEST_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/destinations-production",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-destination-capability-browser.mjs"
+    ],
+    "logs": [
+      "destinations-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255803.3294897,
+    "exitCode": 0,
+    "finishedAt": 1791255818.0647237
+  },
+  {
+    "name": "facebook-built-browser",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand",
+      "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts"
+    ],
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255765.1273265,
+    "exitCode": 0,
+    "finishedAt": 1791255791.7799652
+  },
+  {
+    "name": "firefox-development",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=development",
+      "LIVE_CONTEXT_BROWSER=firefox",
+      "LIVE_CONTEXT_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/firefox-development",
+      "LIVE_CONTEXT_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "firefox-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255687.216374,
+    "exitCode": 0,
+    "finishedAt": 1791255714.8844059
+  },
+  {
+    "name": "firefox-production",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=production",
+      "LIVE_CONTEXT_BROWSER=firefox",
+      "LIVE_CONTEXT_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/firefox-production",
+      "LIVE_CONTEXT_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-context-owner-browser.mjs"
+    ],
+    "logs": [
+      "firefox-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255714.8998294,
+    "exitCode": 0,
+    "finishedAt": 1791255738.4489617
+  },
+  {
+    "name": "history-development",
+    "command": [
+      "env",
+      "LIVE_HISTORY_MODE=development",
+      "LIVE_HISTORY_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/history-development",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-history-provider-browser.mjs"
+    ],
+    "logs": [
+      "history-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255818.080221,
+    "exitCode": 0,
+    "finishedAt": 1791255826.1981583
+  },
+  {
+    "name": "history-production",
+    "command": [
+      "env",
+      "LIVE_HISTORY_MODE=production",
+      "LIVE_HISTORY_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/history-production",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-history-provider-browser.mjs"
+    ],
+    "logs": [
+      "history-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255826.213649,
+    "exitCode": 0,
+    "finishedAt": 1791255833.892507
+  },
+  {
+    "name": "minimal-final-baseline-development",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=development",
+      "LIVE_CONTEXT_REPORT_DIR=artifacts/live-context-owner-2026-10-06/minimal-final-baseline-development",
+      "LIVE_CONTEXT_BASELINE_FILE=artifacts/live-context-owner-2026-10-06/owned-00-before.txt",
+      "node",
+      "artifacts/live-context-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255687.428599,
+    "exitCode": 1,
+    "finishedAt": 1791255689.4821107
+  },
+  {
+    "name": "minimal-final-baseline-production",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=production",
+      "LIVE_CONTEXT_REPORT_DIR=artifacts/live-context-owner-2026-10-06/minimal-final-baseline-production",
+      "LIVE_CONTEXT_BASELINE_FILE=artifacts/live-context-owner-2026-10-06/owned-00-before.txt",
+      "node",
+      "artifacts/live-context-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-baseline-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255691.2835264,
+    "exitCode": 1,
+    "finishedAt": 1791255692.604004
+  },
+  {
+    "name": "minimal-final-green-development",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=development",
+      "LIVE_CONTEXT_REPORT_DIR=artifacts/live-context-owner-2026-10-06/minimal-final-green-development",
+      "node",
+      "artifacts/live-context-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255689.5029018,
+    "exitCode": 0,
+    "finishedAt": 1791255691.2669997
+  },
+  {
+    "name": "minimal-final-green-production",
+    "command": [
+      "env",
+      "LIVE_CONTEXT_MODE=production",
+      "LIVE_CONTEXT_REPORT_DIR=artifacts/live-context-owner-2026-10-06/minimal-final-green-production",
+      "node",
+      "artifacts/live-context-owner-2026-10-06/probe-minimal.mjs"
+    ],
+    "logs": [
+      "minimal-final-green-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255692.6211286,
+    "exitCode": 0,
+    "finishedAt": 1791255693.9354565
+  },
+  {
+    "name": "navigation-development",
+    "command": [
+      "env",
+      "RACE_NAV_REACT_MODE=development",
+      "RACE_NAV_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/navigation-development",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-race-navigation-focus-browser.mjs"
+    ],
+    "logs": [
+      "navigation-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255686.9954336,
+    "exitCode": 0,
+    "finishedAt": 1791255738.3378024
+  },
+  {
+    "name": "navigation-production",
+    "command": [
+      "env",
+      "RACE_NAV_REACT_MODE=production",
+      "RACE_NAV_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/navigation-production",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-race-navigation-focus-browser.mjs"
+    ],
+    "logs": [
+      "navigation-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255738.3533697,
+    "exitCode": 0,
+    "finishedAt": 1791255787.23422
+  },
+  {
+    "name": "portal-units",
+    "command": [
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "jest",
+      "--config",
+      "jest.config.cjs",
+      "--runInBand"
+    ],
+    "logs": [
+      "portal-units.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255686.365538,
+    "exitCode": 0,
+    "finishedAt": 1791255697.9907713
+  },
+  {
+    "name": "rematch-development",
+    "command": [
+      "env",
+      "LIVE_REMATCH_MODE=development",
+      "LIVE_REMATCH_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/rematch-development",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-rematch-owner-browser.mjs"
+    ],
+    "logs": [
+      "rematch-development.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255833.9095128,
+    "exitCode": 0,
+    "finishedAt": 1791255849.1118922
+  },
+  {
+    "name": "rematch-production",
+    "command": [
+      "env",
+      "LIVE_REMATCH_MODE=production",
+      "LIVE_REMATCH_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/rematch-production",
+      "pnpm",
+      "--dir",
+      "packages/portal",
+      "exec",
+      "node",
+      "scripts/verify-live-rematch-owner-browser.mjs"
+    ],
+    "logs": [
+      "rematch-production.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255849.129954,
+    "exitCode": 0,
+    "finishedAt": 1791255863.2004209
+  },
+  {
+    "name": "static-final",
+    "command": [
+      "bash",
+      "artifacts/live-context-owner-2026-10-06/static.sh"
+    ],
+    "logs": [
+      "static-final.log"
+    ],
+    "status": "terminal",
+    "startedAt": 1791255686.758459,
+    "exitCode": 0,
+    "finishedAt": 1791255691.0205705
+  }
+]

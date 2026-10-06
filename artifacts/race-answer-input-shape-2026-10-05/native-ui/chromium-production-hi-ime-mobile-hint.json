@@ -1,0 +1,188 @@
+{
+  "kind": "hi",
+  "locale": "hi",
+  "text": "लक्ष्म्यां",
+  "expected": [
+    "ल",
+    "क्ष्म्यां"
+  ],
+  "draft": {
+    "letters": [
+      "",
+      "क्ष्म्यां"
+    ],
+    "activeSlotIndex": 0
+  },
+  "run": {
+    "runId": "unicode-browser-hi",
+    "role": "creator",
+    "status": "active",
+    "categoryId": "mixed",
+    "locale": "hi",
+    "rules": {
+      "version": "race10_v1",
+      "targetCorrect": 10,
+      "deckSize": 15,
+      "maxGuessesPerRiddle": 5,
+      "maxHintsPerRiddle": 7,
+      "hintPenaltyMs": 15000,
+      "skipPenaltyMs": 45000,
+      "maxAdjustedTimeMs": 300000
+    },
+    "correctCount": 0,
+    "wallElapsedMs": 1000,
+    "totalPenaltyMs": 0,
+    "adjustedElapsedMs": 1000,
+    "currentRiddle": {
+      "riddleId": "unicode-question-hi",
+      "text": "Unicode native input fixture",
+      "answerLength": 2,
+      "position": 0,
+      "guessesUsed": 1,
+      "guessesRemaining": 4,
+      "confirmedGuesses": [
+        {
+          "guess": [
+            "ल",
+            "क्ष्म्यां"
+          ],
+          "feedback": [
+            "red",
+            "red"
+          ]
+        }
+      ],
+      "hintAvailable": true,
+      "revealedLetters": [
+        {
+          "index": 1,
+          "letter": "क्ष्म्यां"
+        }
+      ]
+    },
+    "events": []
+  },
+  "storage": "{\"version\":1,\"ownerId\":\"unicode-browser-owner\",\"runId\":\"unicode-browser-hi\",\"locale\":\"hi\",\"riddleId\":\"unicode-question-hi\",\"position\":0,\"guessesUsed\":1,\"pendingGuess\":false,\"letters\":[\"\",\"क्ष्म्यां\"],\"activeSlotIndex\":0,\"savedAtMs\":1791233104686}",
+  "probe": {
+    "kind": "hi",
+    "locale": "hi",
+    "text": "लक्ष्म्यां",
+    "expected": [
+      "ल",
+      "क्ष्म्यां"
+    ],
+    "callbacks": [],
+    "commands": [
+      {
+        "recorded": {
+          "runId": "unicode-browser-hi",
+          "riddleId": "unicode-question-hi",
+          "guess": "लक्ष्म्यां",
+          "requestId": "unicode-browser-command"
+        },
+        "live": {
+          "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "action": "guess",
+          "requestId": "unicode-browser-command",
+          "riddleId": "unicode-question-hi",
+          "guess": "लक्ष्म्यां"
+        },
+        "feedback": [
+          {
+            "letter": "ल",
+            "status": "red"
+          },
+          {
+            "letter": "क्ष्म्यां",
+            "status": "red"
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "unhandled": [],
+    "consoleErrors": [],
+    "restores": [
+      {
+        "currentLetters": [
+          "ल",
+          "क्ष्म्यां"
+        ],
+        "activeSlotIndex": 1
+      }
+    ]
+  },
+  "rows": [
+    [
+      {
+        "text": "ल",
+        "label": "Letter 1: ल. Letter is not in the word at all",
+        "disabled": true,
+        "classes": "cell red"
+      },
+      {
+        "text": "क्ष्म्यां",
+        "label": "Letter 2: क्ष्म्यां. Letter is not in the word at all",
+        "disabled": true,
+        "classes": "cell red"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": false,
+        "classes": "cell active"
+      },
+      {
+        "text": "क्ष्म्यां",
+        "label": "Letter 2: क्ष्म्यां. Letter is correct and in the right position",
+        "disabled": true,
+        "classes": "cell green"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ]
+  ],
+  "focused": ""
+}

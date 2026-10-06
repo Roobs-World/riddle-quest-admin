@@ -1,0 +1,20 @@
+{
+  "name": "minimal-final-baseline-production",
+  "command": [
+    "env",
+    "CONTEXT_CHOICE_QUICK=1",
+    "CONTEXT_CHOICE_MODE=production",
+    "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/minimal-final-baseline-production",
+    "CONTEXT_CHOICE_BASELINE_BOARD_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/owned-00-before.txt",
+    "CONTEXT_CHOICE_BASELINE_ADAPTER_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/owned-01-before.txt",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-baseline-production.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791257553.6635568,
+  "exitCode": 1,
+  "finishedAt": 1791257554.5317135
+}

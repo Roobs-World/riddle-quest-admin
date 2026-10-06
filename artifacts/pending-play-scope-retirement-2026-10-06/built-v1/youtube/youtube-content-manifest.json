@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "target": "youtube-playables",
+  "contentVersion": "youtube-content-v1-fixture-643b893f7ed0c15d",
+  "contentSha256": "d114fc2cd7e54d8f72a51b5ec4897e826822d0a8a0c2ea1a44639cc20c5b173d",
+  "releaseReady": false,
+  "fixture": true,
+  "locales": [
+    "en"
+  ],
+  "classicRiddleCount": 3,
+  "dailyScheduleEntries": 3
+}

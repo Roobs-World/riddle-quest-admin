@@ -1,0 +1,82 @@
+  console.error
+    ◇ injected env (12) from .env
+
+      2 | /** Keeps real local demo-emulator runs independent of deployment credentials and project overrides. */
+      3 | const isDemoEmulatorTest = /^demo-/.test(process.env.GCLOUD_PROJECT || "") && /^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST || "");
+    > 4 | if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", override: true});
+        |                                            ^
+      5 |
+      6 | // Ensure Jest environment is properly detected by iapConfig
+      7 | process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+
+      at se (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:155)
+      at Object.ce [as configDotenv] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1059)
+      at Object.ae [as config] (../node_modules/.pnpm/dotenv@18.0.4/node_modules/dotenv/dist/index.cjs:7:1168)
+      at Object.<anonymous> (jest.env.setup.js:4:44)
+
+FAIL src/__tests__/race/raceService.test.ts
+  ● Race to 10 deterministic deck service › rejects an unusable riddle identity undefined before selecting a competitive deck
+
+    expect(received).toThrow(expected)
+
+    Expected substring: "missing_metadata"
+    Received message:   "Race content is incomplete at localizedRiddles/en/riddles/history-1."
+
+          418 |       typeof data.answer !== "string"
+          419 |     ) {
+        > 420 |       throw new HttpsError("internal", `Race content is incomplete at ${record.documentPath}.`);
+              |             ^
+          421 |     }
+          422 |     return {
+          423 |       riddleId: data.riddleId,
+
+      at src/race/raceSetupService.ts:420:13
+                at Array.map (<anonymous>)
+      at buildDeterministicRaceDeck (src/race/raceSetupService.ts:411:27)
+      at src/__tests__/race/raceService.test.ts:110:44
+      at Object.<anonymous> (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2235:93)
+      at src/__tests__/race/raceService.test.ts:110:117
+      at src/__tests__/race/raceService.test.ts:110:117
+
+  ● Race to 10 deterministic deck service › rejects an unusable riddle identity  before selecting a competitive deck
+
+    expect(received).toThrow(expected)
+
+    Expected substring: "missing_metadata"
+
+    Received function did not throw
+
+      108 |     /** A complete balanced pool isolates identity validity from all other content rules. */
+      109 |     const pool = makePool("en"); pool[0].data.riddleId = riddleId;
+    > 110 |     expect(() => buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "invalid-identity"})).toThrow("missing_metadata");
+          |                                                                                                                     ^
+      111 |   });
+      112 |
+      113 |   it("rejects an undersized competitive pool", () => {
+
+      at src/__tests__/race/raceService.test.ts:110:117
+
+  ● Race to 10 deterministic deck service › rejects an unusable riddle identity     before selecting a competitive deck
+
+    expect(received).toThrow(expected)
+
+    Expected substring: "missing_metadata"
+
+    Received function did not throw
+
+      108 |     /** A complete balanced pool isolates identity validity from all other content rules. */
+      109 |     const pool = makePool("en"); pool[0].data.riddleId = riddleId;
+    > 110 |     expect(() => buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "invalid-identity"})).toThrow("missing_metadata");
+          |                                                                                                                     ^
+      111 |   });
+      112 |
+      113 |   it("rejects an undersized competitive pool", () => {
+
+      at src/__tests__/race/raceService.test.ts:110:117
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 6 passed, 9 total
+Snapshots:   0 total
+Time:        0.375 s, estimated 1 s
+Ran all test suites matching src/__tests__/race/raceService.test.ts.

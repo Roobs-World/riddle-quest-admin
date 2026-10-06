@@ -1,0 +1,40 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 9,
+  "checks": 142,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "commit-provider",
+      "name": "original nonterminal seat retires through original provider once",
+      "actual": [
+        [
+          "Alice",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        ]
+      ],
+      "expected": []
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Retired rematch must not cross provider or capability lifetime
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-rematch-owner-browser.mjs:52:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

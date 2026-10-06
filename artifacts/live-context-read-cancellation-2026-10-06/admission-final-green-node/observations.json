@@ -1,0 +1,12 @@
+[
+  {
+    "name": "retirement between native resolution and authority admission issues no request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "name": "retired read resolves as ignored absence",
+    "actual": null,
+    "expected": null
+  }
+]

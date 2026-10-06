@@ -1,0 +1,17 @@
+{
+  "name": "minimal-final-green-development",
+  "command": [
+    "env",
+    "LIVE_TOURNAMENT_MODE=development",
+    "LIVE_TOURNAMENT_REPORT_DIR=artifacts/live-tournament-owner-2026-10-06/minimal-final-green-development",
+    "node",
+    "artifacts/live-tournament-owner-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-green-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791255007.1162035,
+  "exitCode": 0,
+  "finishedAt": 1791255008.775137
+}

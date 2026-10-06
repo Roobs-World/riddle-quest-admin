@@ -37,10 +37,23 @@ jest.mock("firebase/functions", () => ({
 }));
 
 import {auth, firebaseApp, loadUserDocument, getCurrentClassicRiddle} from "../firebase";
+import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
 
 describe("Firebase browser adapter", () => {
   beforeEach(() => {
     mockGetDoc.mockReset();
+  });
+
+  it.each(["retired", "superseded"])("delivers the original join identity through the lazy regional retirement adapter: %s", async status => {
+    /** SDK callable captures the command before any authenticated provider response. */
+    const index = mockHttpsCallable.mock.calls.findIndex(call => call[1] === "retireLiveRaceJoin");
+    /** Original account is a precondition carried intact through lazy module loading. */
+    const input = {requestId: "original-owned-join", expectedOwnerId: "jest_original_account"};
+    /** Native SDK envelope remains the only mocked boundary. */
+    const sdk = mockHttpsCallable.mock.results[index].value;
+    sdk.mockResolvedValueOnce({data: {status}});
+    await expect(createFirebaseRaceMatchmaking().live!.retireJoin!(input)).resolves.toEqual({status});
+    expect(sdk).toHaveBeenLastCalledWith(input);
   });
 
   it("negotiates encrypted answer delivery and restores the SDK result before domain validation", async () => {
@@ -106,6 +119,7 @@ describe("Firebase browser adapter", () => {
       "getRaceEntry",
       "cancelRaceInvite",
       "joinLiveRace",
+      "retireLiveRaceJoin",
       "updateLiveRace",
       "getLiveRaceChallenge",
       "sendLiveRaceChallenge",
@@ -200,6 +214,7 @@ describe("Firebase environment variants", () => {
       "getRaceEntry",
       "cancelRaceInvite",
       "joinLiveRace",
+      "retireLiveRaceJoin",
       "updateLiveRace",
       "getLiveRaceChallenge",
       "sendLiveRaceChallenge",
@@ -221,7 +236,7 @@ describe("Firebase environment variants", () => {
       "completeGame", "submitSinglePlayerGuess", "getHint", "spendCoins", "skipRiddle"];
     for (const [instance, name] of mockHttpsCallable.mock.calls) {
       if (soloCalls.includes(name)) expect(instance).toMatchObject({region: "us-central1"});
-      if (name === "joinLiveRace" || name === "updateLiveRace") expect(instance).toMatchObject({region: "europe-west1"});
+      if (name === "joinLiveRace" || name === "updateLiveRace" || name === "retireLiveRaceJoin") expect(instance).toMatchObject({region: "europe-west1"});
       if (name === "deleteAccount") expect(instance).toMatchObject({region: "europe-west2"});
     }
   });

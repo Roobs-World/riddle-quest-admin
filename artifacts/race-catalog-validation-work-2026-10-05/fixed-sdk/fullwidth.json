@@ -1,0 +1,21 @@
+{
+  "name": "fullwidth",
+  "answerUnits": 200000,
+  "answerBytes": 600000,
+  "answerNormalizationCalls": 0,
+  "answerNormalizationUnits": 0,
+  "before": {
+    "data": {
+      "username": "Catalog Work",
+      "coins": 500
+    },
+    "version": "063926835986.858912000"
+  },
+  "after": {
+    "data": {
+      "username": "Catalog Work",
+      "coins": 500
+    },
+    "version": "063926835986.858912000"
+  }
+}

@@ -1,0 +1,426 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "accepted successor is playable before receipt",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "receipt preserves progress or rolls back a rejected action",
+    "actual": "",
+    "expected": "C"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "receipt applies only its authoritative balance",
+    "actual": 470,
+    "expected": 470
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "receipt retires the original paid journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "accepted",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "accepted successor is playable before receipt",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "duplicate early successor preserves its typed draft",
+    "actual": "C",
+    "expected": "C"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "receipt preserves progress or rolls back a rejected action",
+    "actual": "",
+    "expected": "C"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "receipt applies only its authoritative balance",
+    "actual": 470,
+    "expected": 470
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "receipt retires the original paid journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "duplicate",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-request",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-request",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-request",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-request",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-index",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-index",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-index",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-index",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-token",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-token",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-token",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "same-token",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-mode",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-mode",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-mode",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "wrong-mode",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "early load applies only the correlated next question",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "accepted successor is playable before receipt",
+    "actual": "00000000-0000-4000-8000-000000000001",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "receipt preserves progress or rolls back a rejected action",
+    "actual": "",
+    "expected": ""
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "receipt applies only its authoritative balance",
+    "actual": 570,
+    "expected": 570
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "receipt retires the original paid journal",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "rejected",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  }
+]

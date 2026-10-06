@@ -1,0 +1,16 @@
+[{"scenario":"locale","accepted":true,"posts":[{"committed":"1","message":{"type":"host:riddleLoaded","requestId":"old-read","payload":{"riddle":{"riddleId":"classic-fake-1","text":"What has keys but cannot open doors?","answerLength":5,"sessionToken":"00000000-0000-4000-8000-000000000001","gameMode":"classic","index":1,"attemptsUsed":0,"hasUsedContinue":false,"awaitingContinue":false,"evaluation":{"answer":"piano","locale":"en"}},"profile":{"coins":100}}}}],"operations":[["old-read","loadRiddle",true,{"riddleId":"classic-fake-1"}]],"errors":[],"unhandled":[]},{"scenario":"owner","accepted":true,"posts":[{"committed":"1","message":{"type":"host:riddleLoaded","requestId":"old-read","payload":{"riddle":{"riddleId":"classic-fake-1","text":"What has keys but cannot open doors?","answerLength":5,"sessionToken":"00000000-0000-4000-8000-000000000001","gameMode":"classic","index":1,"attemptsUsed":0,"hasUsedContinue":false,"awaitingContinue":false,"evaluation":{"answer":"piano","locale":"en"}},"profile":{"coins":100}}}}],"operations":[["old-read","loadRiddle",true,{"riddleId":"classic-fake-1"}]],"errors":[],"unhandled":[]},{"scenario":"generation","accepted":true,"posts":[{"committed":"1","message":{"type":"host:riddleLoaded","requestId":"old-read","payload":{"riddle":{"riddleId":"classic-fake-1","text":"What has keys but cannot open doors?","answerLength":5,"sessionToken":"00000000-0000-4000-8000-000000000001","gameMode":"classic","index":1,"attemptsUsed":0,"hasUsedContinue":false,"awaitingContinue":false,"evaluation":{"answer":"piano","locale":"en"}},"profile":{"coins":100}}}}],"operations":[["old-read","loadRiddle",true,{"riddleId":"classic-fake-1"}]],"errors":[],"unhandled":[]},{"scenario":"provider","accepted":true,"posts":[{"committed":"1","message":{"type":"host:riddleLoaded","requestId":"old-read","payload":{"riddle":{"riddleId":"classic-fake-1","text":"What has keys but cannot open doors?","answerLength":5,"sessionToken":"00000000-0000-4000-8000-000000000001","gameMode":"classic","index":1,"attemptsUsed":0,"hasUsedContinue":false,"awaitingContinue":false,"evaluation":{"answer":"piano","locale":"en"}},"profile":{"coins":100}}}}],"operations":[["old-read","loadRiddle",true,{"riddleId":"classic-fake-1"}]],"errors":[],"unhandled":[]}]
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Committed context replacement must retire the old read
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/host-riddle-commit-retirement-2026-10-06/probe.mjs:41:50 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (14.232418ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.190005ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (9.902333ms)
+✔ rejects imports between different target owners (3.104783ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.632359ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.96571ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.062262ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.74962ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.012669ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.648419ms)
+✔ aggregates violations in deterministic file and source order (1.352893ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.15395
+Web Target boundary audit passed (316 files, 1372 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/index.html                             0.81 kB │ gzip:  0.40 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-en-YY_HV5Ne.js   87.86 kB │ gzip: 47.70 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-pt-YqhIEZ4W.js   90.15 kB │ gzip: 48.95 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-nl-BEl_Z0Kr.js   90.54 kB │ gzip: 49.13 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-id-DEK8r02N.js   91.21 kB │ gzip: 49.52 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-it-BxFBlj7G.js   91.35 kB │ gzip: 49.58 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-es-M2-iAXXq.js   91.65 kB │ gzip: 49.77 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-de-Z9hWY15J.js   92.15 kB │ gzip: 50.02 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-tr-BZzXlZSz.js   92.54 kB │ gzip: 50.23 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-pl-CfEBgD1f.js   92.70 kB │ gzip: 50.33 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-fr-FUHMSjVR.js   93.56 kB │ gzip: 50.76 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-ja-Bq7c0YmM.js   94.66 kB │ gzip: 51.40 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-vi-CjB-P7dY.js   96.78 kB │ gzip: 52.55 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-ko-BBMSNh_U.js   97.36 kB │ gzip: 52.87 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-ar-CoTa80fw.js  102.12 kB │ gzip: 55.42 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/index-C9Klb8q7.js             105.36 kB │ gzip: 35.25 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-ru-CihOBDFc.js  114.09 kB │ gzip: 61.91 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/playable-pack-hi-CUKf_Kwp.js  134.49 kB │ gzip: 73.00 kB
+../../../../../../tmp/race-answer-input-shape-builds-gmcvszs2/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.08s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

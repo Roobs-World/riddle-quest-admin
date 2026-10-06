@@ -1,3 +1,4 @@
+import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
 import {admin} from "../shared/firebaseAdmin";
 import {createHash} from "node:crypto";
 import {
@@ -335,8 +336,8 @@ export async function loadEligibleContent(
   /** Provides query behavior. */
   let query: FirebaseFirestore.Query = getLocalizedCollection(db, locale).where("raceEligible", "==", true);
   if (categoryId) query = query.where("categoryId", "==", categoryId);
-  /** Provides snapshot behavior. */
-  const snapshot = await query.get();
+  /** Retains all eligibility, validation and immutable-deck fields without loading unrelated catalog payload. */
+  const snapshot = await query.select("riddleId", "canonicalRiddleId", "text", "answer", "categoryId", "difficultyBand", "raceEligible", "qualityVersion").get();
   return snapshot.docs.map((document) => toContentRecord(locale, document));
 }
 
@@ -439,14 +440,23 @@ export async function resolveChallengeRiddles(
   db: Firestore,
   locale: RaceLocale,
   challenge: RaceChallengeRecord,
+  /** Optional admission transaction locks legacy content before any dependent seat write. */
+  transaction?: FirebaseFirestore.Transaction,
 ): Promise<RaceRiddleSnapshot[]> {
   assertRaceLocaleCompatible(challenge, locale);
-  if (challenge.riddles) return validateRaceDeckSnapshot(challenge.riddles, challenge.canonicalRiddleIds,
-    challenge.snapshotVersion === 1 ? challenge.contentVersion : undefined);
+  if (challenge.riddles) {
+    /** Integrity and playability are separate checks; neither rewrites the original snapshot. */
+    const riddles = validateRaceDeckSnapshot(challenge.riddles, challenge.canonicalRiddleIds,
+      challenge.snapshotVersion === 1 ? challenge.contentVersion : undefined);
+    assertRaceDeckCompatible(riddles, locale);
+    return riddles;
+  }
   // Upgrade legacy challenges from the creator's authoritative snapshot. Never
   // reconstruct a competitive deck from mutable localized catalog documents.
-  /** Provides creator behavior. */
-  const creator = await db.doc(`raceRuns/${challenge.creatorRunId}`).get();
+  /** Canonical legacy source reference is bound to this recorded creator. */
+  const creatorRef = db.doc(`raceRuns/${challenge.creatorRunId}`);
+  /** Modern snapshots require no additional read; legacy content shares the caller's transaction when supplied. */
+  const creator = transaction ? await transaction.get(creatorRef) : await creatorRef.get();
   /** Provides data behavior. */
   const data = creator.data();
   if (!creator.exists || data?.runId !== challenge.creatorRunId || data?.userId !== challenge.creatorId || data?.locale !== locale) {
@@ -455,7 +465,10 @@ export async function resolveChallengeRiddles(
   /** Legacy recovery consumes a validated source rather than a same-owner partial document. */
   const original = parseRunRecord(data, challenge.creatorRunId);
   assertRaceCreatorArchiveLink(original, challenge);
-  return validateRaceDeckSnapshot(original.riddles, challenge.canonicalRiddleIds);
+  /** Legacy hydration must also be compatible before a new competitive attempt can consume it. */
+  const riddles = validateRaceDeckSnapshot(original.riddles, challenge.canonicalRiddleIds);
+  assertRaceDeckCompatible(riddles, locale);
+  return riddles;
 }
 
 /** Provides challenge preview behavior. */

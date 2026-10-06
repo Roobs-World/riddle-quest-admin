@@ -1,4 +1,4 @@
-import {computeFeedback} from "@qwordly/core/game";
+import {splitGraphemes, computeFeedback} from "@qwordly/core/game";
 import {describe, expect, it} from "@jest/globals";
 import {RACE_HINT_PENALTY_MS, type RaceRunView} from "@qwordly/core/race";
 import {RACE_DRAFT_TTL_MS, type RaceDraftStorage} from "../logic/raceDraftStorage";
@@ -304,4 +304,25 @@ it("keeps consumed legacy rows ahead of restored editable input", async () => {
   expect(reload.session.getSnapshot().raceGuesses).toHaveLength(3);
   expect(reload.session.getSnapshot().currentLetters).toEqual(["", "", "", "", ""]);
   reload.session.dispose();
+});
+
+it.each([{locale: "hi", text: "लक्ष्म्यां"}, {locale: "fr", text: "a"+"\u0344".repeat(127)}] as const)("restores full $locale native graphemes after disposing the same question", async ({locale, text}) => {
+  /** Canonical legacy presentation permits Unicode input without storing a solution in browser data. */
+  const base = await fixture(), letters = splitGraphemes(text, locale), run = {...base, locale, preloadedRiddles: undefined,
+    currentRiddle: {...base.currentRiddle!, evaluation: undefined, answerLength: letters.length}};
+  /** The actual session input policy persists NFC cells, including canonically expanded input. */
+  const store = memory(), first = open(run, store);
+  first.session.input("text", text);expect(first.session.getSnapshot().currentLetters).toEqual(letters);first.session.dispose();
+  expect(open(run, store).session.getSnapshot().currentLetters).toEqual(letters);
+});
+
+it("rejects restored cells whose separate normalization exceeds the whole guess budget", async () => {
+  /** Each cell is valid in isolation but normalization across their boundary would disguise an oversized restored draft. */
+  const {run, store, h} = await typed();h.session.dispose();
+  /** Browser data is presentation only and cannot exceed the accepted input transport. */
+  const record = JSON.parse(store.read()!);record.letters = ["a", "\u0344".repeat(192), "", "", ""];
+  expect(record.letters.join("").normalize("NFC")).toHaveLength(384);
+  expect(record.letters.map((letter: string) => letter.normalize("NFC")).join("")).toHaveLength(385);
+  store.replace(JSON.stringify(record));
+  expect(open(run, store).session.getSnapshot().currentLetters).toEqual(["", "", "", "", ""]);
 });

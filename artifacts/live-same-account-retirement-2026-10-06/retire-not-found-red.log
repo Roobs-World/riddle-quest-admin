@@ -1,0 +1,28 @@
+FAIL src/reddit/__tests__/RedditPlatformBootstrap.test.ts
+  ● retains exact retirement not-found authority without trusting unrelated diagnostics: live-race-request-failed
+
+    expect(received).rejects.toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "code": "not-found",
+    +   "code": "unavailable",
+      }
+
+      636 | it.each(["live-race-request-failed", "other-error"])("retains exact retirement not-found authority without trusting unrelated diagnostics: %s", async marker => {
+      637 |   global.fetch = jest.fn(() => Promise.resolve({ok: false, status: 404, json: async () => ({error: marker, code: "not-found"})}) as Promise<Response>);
+    > 638 |   await expect(postRedditGateway("/api/game/race.live.retire")).rejects.toMatchObject({code: marker === "live-race-request-failed" ? "not-found" : "unavailable"});
+          |                                                                         ^
+      639 | });
+      640 |
+
+      at Object.toMatchObject (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2155:20)
+      at src/reddit/__tests__/RedditPlatformBootstrap.test.ts:638:73
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 39 passed, 40 total
+Snapshots:   0 total
+Time:        0.286 s, estimated 1 s
+Ran all test suites matching src/reddit/__tests__/RedditPlatformBootstrap.test.ts.

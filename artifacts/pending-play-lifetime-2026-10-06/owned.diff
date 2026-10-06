@@ -1,0 +1,292 @@
+--- a/packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts
++++ b/packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts
+@@ -1,4 +1,4 @@
+-import {useCallback, useEffect, useRef, useState} from "react";
++import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
+ import type {Dispatch, MutableRefObject} from "react";
+ import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
+ import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
+@@ -167,6 +167,11 @@
+       sessionToken: message.payload.sessionToken};
+     postToHost(message);
+   }, [postToHost]);
++  /** Exact committed lifetime; old callbacks cannot revive when an account returns. */
++  const deliveryOwnerRef = useRef<{
++    /** Scope admitted by this commit. */
++    scope: string | null;
++  } | null>(null);
+   /** The send first used by the current operation. */
+   const sendFirst = useCallback(() => {
+     /** The first used by the current operation. */
+@@ -179,7 +184,8 @@
+       (getConfirmedRiddleOutcome(current.riddle)?.kind === "loss" ||
+         message?.payload.sessionToken !== current.riddle.sessionToken)) return;
+     // Render-time identity revocation must precede lease acquisition and delivery.
+-    if (!message || !activeScope || journalRef.current?.scope !== activeScope ||
++    if (!deliveryOwnerRef.current || deliveryOwnerRef.current.scope !== activeScope ||
++      !message || !activeScope || journalRef.current?.scope !== activeScope ||
+       !adapters.journal.acquire(activeScope, ownerRef.current, adapters.clock.now()))
+       return;
+     if (sentRequestRef.current !== message.requestId || adapters.clock.now() - sentAtRef.current >= 20_000) {
+@@ -190,6 +196,32 @@
+   }, [postToHost]);
+   /** The retry timer ref used by the current operation. */
+   const retryTimerRef = useRef<number | null>(null);
++  useLayoutEffect(() => {
++    /** A fresh token owns every timer installed during this committed scope. */
++    const owner = {scope};
++    deliveryOwnerRef.current = owner;
++    return () => {
++      if (deliveryOwnerRef.current !== owner) return;
++      deliveryOwnerRef.current = null;
++      if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
++      if (leaseRenewRef.current !== null) adapters.clock.clearInterval(leaseRenewRef.current);
++      retryTimerRef.current = null;
++      leaseRenewRef.current = null;
++      if (owner.scope) adapters.journal.release(owner.scope, ownerRef.current);
++    };
++  }, [scope, postToHost, adapters]);
++  /** Each registered interval retains its exact lifetime and timer identity. */
++  const renewDelivery = useCallback(() => {
++    /** Committed owner that admitted this registration. */
++    const owner = deliveryOwnerRef.current;
++    if (!owner || leaseRenewRef.current !== null) return;
++    /** Cancelled callbacks must not borrow a newer timer, including in the same scope. */
++    const timer = adapters.clock.setInterval(() => {
++      if (deliveryOwnerRef.current !== owner || leaseRenewRef.current !== timer) return;
++      sendFirst();
++    }, 5_000);
++    leaseRenewRef.current = timer;
++  }, [adapters, sendFirst]);
+   useEffect(() => {
+     /** Lets a reloaded tab take over its durable journal immediately. */
+     const releaseOnPageHide = () => {
+@@ -198,8 +230,6 @@
+     window.addEventListener("pagehide", releaseOnPageHide);
+     return () => {
+       window.removeEventListener("pagehide", releaseOnPageHide);
+-      if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
+-      if (leaseRenewRef.current !== null) adapters.clock.clearInterval(leaseRenewRef.current);
+       releaseOnPageHide();
+     };
+   }, []);
+@@ -278,7 +308,7 @@
+       // Preserve terminal authority; foreign deliveries wait until this completion is acknowledged.
+       if (getConfirmedRiddleOutcome(state.riddle)?.kind === "win") sendFirst();
+       if ((persistedJournal.queue.length || persistedJournal.coinAction) && leaseRenewRef.current === null)
+-        leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
++        renewDelivery();
+       return;
+     }
+     if (activeJournal) {
+@@ -290,7 +320,7 @@
+           restoreSegment(activeJournal, segment);
+         sendFirst();
+         if ((activeJournal.queue.length || activeJournal.coinAction) && leaseRenewRef.current === null)
+-          leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
++          renewDelivery();
+         return;
+       }
+       /** The previous used by the current operation. */
+@@ -325,15 +355,15 @@
+     if (state.riddle.gameMode === "challenge" && active.riddle.sessionToken !== state.riddle.sessionToken) {
+       sendFirst();
+       if ((journal.queue.length || journal.coinAction) && leaseRenewRef.current === null)
+-        leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
++        renewDelivery();
+       return;
+     }
+     if (active.riddle.sessionToken !== state.riddle.sessionToken) dispatch({type: "loadRiddle", riddle: active.riddle});
+     restoreSegment(journal, active);
+     sendFirst();
+     if ((journal.queue.length || journal.coinAction) && leaseRenewRef.current === null)
+-      leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
+-  }, [dispatch, scope, sendFirst, state.riddle, state.completionAcknowledged]);
++      renewDelivery();
++  }, [dispatch, scope, sendFirst, renewDelivery, state.riddle, state.completionAcknowledged]);
+   useEffect(() => {
+     /** The journal used by the current operation. */
+     const journal = journalRef.current;
+@@ -529,13 +559,13 @@
+       playFeedback("submit");
+       dispatch({type: "guessRequested"});
+       if (journal.queue.length === 1) sendFirst();
+-      if (leaseRenewRef.current === null) leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
++      if (leaseRenewRef.current === null) renewDelivery();
+     } else {
+       playFeedback("submit");
+       dispatch({type: "guessRequested"});
+       sendDirectGuess(message);
+     }
+-  }, [canSubmit, currentAttempt, dispatch, journalAvailable, playFeedback, postToHost, scope, sendFirst, sendDirectGuess, state]);
++  }, [canSubmit, currentAttempt, dispatch, journalAvailable, playFeedback, postToHost, scope, sendFirst, renewDelivery, sendDirectGuess, state]);
+   /** Restores the last confirmed checkpoint and removes every dependent provisional action. */
+   const rollbackQueuedPlay = useCallback(
+     (first: QueuedGuess) => {
+@@ -597,6 +627,8 @@
+         message.payload.operation === "spendCoins" ||
+         message.payload.operation === "skip"
+       ) {
++        // Account revocation must precede journal deletion, rollback and generic handling.
++        if (journalRef.current?.scope !== scopeRef.current) return true;
+         /** Paid request retained until its correlated authoritative result arrives. */
+         const action = journalRef.current?.coinAction;
+         /** Operation name expected for the retained paid action. */
+@@ -660,12 +692,17 @@
+       if (!message.payload.ok) {
+         if (message.payload.errorKind !== "rejected") {
+           if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
+-          retryTimerRef.current = adapters.clock.setTimeout(() => {
++          /** Exact lifetime admitting this retry, independent of later scope reuse. */
++          const owner = deliveryOwnerRef.current;
++          /** Cancelled timeout cannot clear a replacement retry or send its queue. */
++          const timer = adapters.clock.setTimeout(() => {
++            if (!owner || deliveryOwnerRef.current !== owner || retryTimerRef.current !== timer) return;
+             retryTimerRef.current = null;
+             if (queuedGuessesRef.current[0]?.message.requestId !== first.message.requestId) return;
+             sentRequestRef.current = null;
+             sendFirst();
+           }, 1_000);
++          retryTimerRef.current = timer;
+           return true;
+         }
+         if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
+@@ -891,10 +928,10 @@
+       journalRef.current = journal;
+       setCoinActionPending(true);
+       if (queuedGuessesRef.current.length === 0) sendFirst();
+-      if (leaseRenewRef.current === null) leaseRenewRef.current = adapters.clock.setInterval(sendFirst, 5_000);
++      if (leaseRenewRef.current === null) renewDelivery();
+       return true;
+     },
+-    [dispatch, scope, sendFirst, stateRef],
++    [dispatch, scope, sendFirst, renewDelivery, stateRef],
+   );
+ 
+   useEffect(() => {
+--- a/packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts
++++ b/packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts
+@@ -4,8 +4,11 @@
+ 
+ /** Run the real recovery owner's mount effects against the real reducer. */
+ const mockEffects: Array<() => unknown> = [];
++/** Commit ownership before exercising mount recovery effects. */
++const mockLayoutEffects: Array<() => unknown> = [];
+ jest.mock("react", () => ({
+   useCallback: <T>(callback: T) => callback,
++  useLayoutEffect: (effect: () => unknown) => {mockLayoutEffects.push(effect);},
+   useEffect: (effect: () => unknown) => {mockEffects.push(effect);},
+   useRef: <T>(current: T) => ({current}),
+   useState: <T>(initial: T | (() => T)) => [
+@@ -16,7 +19,7 @@
+ import {createPendingPlayJournalStorage, pendingPlayScope, type PendingGuessJournal} from "../pendingGuessJournal";
+ import {useProvisionalPlayRecovery, type PendingPlayRecoveryAdapters} from "../game/hooks/useProvisionalPlayRecovery";
+ 
+-beforeEach(() => {mockEffects.length = 0;});
++beforeEach(() => {mockEffects.length = 0; mockLayoutEffects.length = 0;});
+ 
+ /** Immutable issued questions representing the hosted locale-return sequence. */
+ const predecessor: BridgeRiddle = {
+@@ -87,6 +90,7 @@
+         actions.push(action);
+         stateRef.current = gameSessionReducer(stateRef.current, action);
+       }});
++    for (const effect of mockLayoutEffects) effect();
+     for (const effect of mockEffects) effect();
+     if (recover) {
+       expect(actions.map(action => action.type)).toContain("restoreQueuedGuesses");
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -201,6 +201,7 @@
+     "test:live-same-account-retirement:browser": "node scripts/verify-live-same-account-retirement-browser.mjs && LIVE_SAME_REACT_MODE=production node scripts/verify-live-same-account-retirement-browser.mjs",
+     "test:live-retired-leave-recovery:browser": "node scripts/verify-live-retired-leave-recovery-browser.mjs && LIVE_WAIT_REACT_MODE=production node scripts/verify-live-retired-leave-recovery-browser.mjs",
+     "test:checkpoint-writer-recovery:browser": "node scripts/verify-checkpoint-writer-recovery-browser.mjs && CHECKPOINT_WRITER_REACT_MODE=production node scripts/verify-checkpoint-writer-recovery-browser.mjs",
++    "test:pending-play-lifetime:browser": "node scripts/verify-pending-play-lifetime-browser.mjs && PENDING_LIFE_MODE=production node scripts/verify-pending-play-lifetime-browser.mjs",
+     "test:pending-play-scope-retirement:browser": "node scripts/verify-pending-play-scope-retirement-browser.mjs && PENDING_SCOPE_MODE=production node scripts/verify-pending-play-scope-retirement-browser.mjs"
+   },
+   "dependencies": {
+--- /dev/null
++++ b/packages/portal/scripts/verify-pending-play-lifetime-browser.mjs
+@@ -0,0 +1,73 @@
++/** Real router, reducer and durable journal regression for paid receipts and cancelled delivery clocks.
++ * Timers retain callbacks after cancellation to reproduce the commit-before-passive-cleanup boundary.
++ * Strict Mode cold restoration and account return exercise exact lifetime ownership. */
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium,firefox} from '@playwright/test';
++const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.PENDING_LIFE_MODE??'development',engine=process.env.PENDING_LIFE_BROWSER??'chromium',evidence=path.resolve(process.env.PENDING_LIFE_REPORT_DIR??path.join(portal,'../../artifacts/pending-play-lifetime-2026-10-06',engine+'-'+mode));await mkdir(evidence,{recursive:true});assert.ok(['development','production'].includes(mode));assert.ok(['chromium','firefox'].includes(engine));const observations=[];let browserVersion;
++await mkdir(path.join(portal,'node_modules/.cache'),{recursive:true});const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/pending-play-lifetime-'));let browser,server;
++try{
++await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';
++import {useGameMessageRouter} from ${JSON.stringify(path.join(portal,'src/play/useGameMessageRouter.ts'))};
++import {useGameMessageListener} from ${JSON.stringify(path.join(portal,'src/play/game/hooks/useGameBridgeLifecycle.ts'))};
++import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(portal,'src/play/localBridge.ts'))};
++import {useProvisionalPlayRecovery} from ${JSON.stringify(path.join(portal,'src/play/game/hooks/useProvisionalPlayRecovery.ts'))};
++import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'src/play/gameSession.ts'))};
++import {createPendingPlayJournalStorage,pendingPlayScope} from ${JSON.stringify(path.join(portal,'src/play/pendingGuessJournal.ts'))};
++import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal,'src/play/GameFrameControls.tsx'))};
++import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};
++import ${JSON.stringify(path.join(portal,'src/styles.css'))};
++window.setTime=value=>{now=value;};window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
++const [replacement,operation]=new URLSearchParams(location.search).get('scenario').split(':');window.probe={messages:[],routed:0,leases:[],intervals:[],timeouts:[],actions:[],errors:[],unhandled:[],passiveRetired:false};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
++const user={uid:'Alice',isAnonymous:true,accountGeneration:1},profile={username:'Alice',coins:570,level:2,xp:100,winStreak:1,gamesPlayed:2,wins:1,achievements:[],classicIndex:1};const first={riddleId:'classic_1',text:'What has keys but cannot open doors?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000001',gameMode:'classic',index:1,attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false,evaluation:{answer:'piano',locale:'en'}};
++function seed(){let state=gameSessionReducer(createInitialGameSession(),{type:'hostInit',locale:'en',gameMode:'classic',user,profile,products:[]});state=gameSessionReducer(state,{type:'loadRiddle',riddle:first});if(operation==='continue')for(let attempts=1;attempts<=5;attempts++)state=gameSessionReducer(state,{type:'guessResolved',feedback:{guess:[...'PIZZA'],feedback:Array(5).fill('red')},attempts,isCorrect:false,gameOver:false,canContinue:attempts===5});return state;}
++const storage=createPendingPlayJournalStorage(localStorage);let now=0;const adapters={journal:{...storage,acquire:(scope,owner,time)=>{window.probe.leases.push(scope);return storage.acquire(scope,owner,time);}},clock:{now:()=>now,setTimeout:(fn,ms)=>{window.probe.timeouts.push({fn,ms});return window.probe.timeouts.length;},clearTimeout:id=>{window.probe.timeouts[id-1].cleared=true;},setInterval:(fn,ms)=>{window.probe.intervals.push({fn,ms});return window.probe.intervals.length;},clearInterval:id=>{window.probe.intervals[id-1].cleared=true;}}};
++if(new URLSearchParams(location.search).has('cold')){const state=seed();const {currentLetters,activeSlotIndex,guesses,engineSnapshot,modal,lastOutcome,completionAcknowledged,letterStates,profile,lastRewards,optimisticAchievementIds}=state;storage.write({version:1,scope:pendingPlayScope('Alice',1,'en'),confirmedClassicIndex:1,riddle:first,base:{currentLetters,activeSlotIndex,guesses,engineSnapshot,modal,lastOutcome,completionAcknowledged,letterStates,profile,lastRewards,optimisticAchievementIds},draft:[],successors:[],queue:[],coinAction:{type:'game:skipRiddle',requestId:'skip-cold',payload:{riddleId:first.riddleId,sessionToken:first.sessionToken,gameMode:'classic',locale:'en',amount:20}}});}
++function Frame(){const [state,reduce]=React.useReducer(gameSessionReducer,undefined,seed),[replace,setReplace]=React.useState(0),stateRef=React.useRef(state);stateRef.current=state;
++ const dispatch=React.useCallback(action=>{window.probe.actions.push(action);reduce(action);},[]);
++ const post=React.useCallback(message=>window.probe.messages.push({actor:stateRef.current.user?.uid??null,generation:stateRef.current.user?.accountGeneration??null,locale:stateRef.current.locale,message}),[]);
++ const recovery=useProvisionalPlayRecovery({state,stateRef,dispatch,postToHost:post,playFeedback:()=>{},adapters});
++ const router=useGameMessageRouter({dispatch,stateRef,postToHost:post,requestRiddle:recovery.requestRiddle,onGuessResult:recovery.handleQueuedGuessResult,acceptRiddleResult:recovery.acceptRiddleResult});const trackedRouter=React.useCallback(async(...args)=>{try{return await router(...args);}finally{window.probe.routed++;}},[router]);useGameMessageListener({router:trackedRouter,postToHost:post});
++ window.emit=message=>window.dispatchEvent(new CustomEvent(HOST_TO_GAME_EVENT,{detail:message}));window.current=()=>({uid:state.user?.uid,generation:state.user?.accountGeneration,locale:state.locale,hints:state.hintRevealedIndices,notice:state.notice,token:state.riddle?.sessionToken,index:state.riddle?.index,draft:state.currentLetters.join(''),coins:state.profile?.coins,pending:recovery.coinActionsReady,actions:window.probe.actions});
++ window.originalScope=pendingPlayScope('Alice',1,'en');window.readOriginalJournal=()=>storage.read(window.originalScope);
++ window.start=()=>operation==='guess'?recovery.submitGuess():operation==='hint'?recovery.requestHint():operation==='continue'?recovery.requestContinue():recovery.requestSkip();
++ window.replace=()=>{const replacement=window.nextReplacement??new URLSearchParams(location.search).get('scenario').split(':')[0];setReplace(value=>value+1);if(['account','generation','logout','return'].includes(replacement))dispatch({type:'authState',user:replacement==='logout'?null:{...user,uid:replacement==='account'?'Bob':'Alice',accountGeneration:replacement==='generation'?2:1},profile:{...profile,username:replacement==='return'?'Alice':'Bob',coins:replacement==='return'?570:900}});else if(replacement==='locale')dispatch({type:'hostInit',locale:'fr',gameMode:'classic',user,profile,products:[]});else if(replacement==='profile')dispatch({type:'profileUpdated',profile:{...profile,coins:800,username:'Updated profile'}});
++ if(['account','generation','locale','question','return'].includes(replacement))dispatch({type:'loadRiddle',riddle:replacement==='return'?first:{...first,index:2,riddleId:'classic_2',sessionToken:'00000000-0000-4000-8000-000000000002'}});};
++ React.useLayoutEffect(()=>{if(replace){window.probe.actorAtReceipt=stateRef.current.user?.uid;window.commitFn?.();}},[replace]);
++ React.useEffect(()=>{window.probe.passiveRetired=false;return()=>{window.probe.passiveRetired=true;};},[]);
++ return <main data-token={state.riddle?.sessionToken} data-ready={recovery.coinActionsReady} data-coins={state.profile?.coins} data-owner={state.user?.uid} data-draft={state.currentLetters.join('')}><ControlledGuessBoard answerLength={5} currentLetters={state.currentLetters} activeSlotIndex={state.activeSlotIndex} guesses={state.guesses} hintRevealedIndices={state.hintRevealedIndices} onSelectSlot={index=>dispatch({type:'selectSlot',index})}/><ControlledKeyboard letterStates={state.letterStates} onLetter={letter=>dispatch({type:'typeLetter',letter})} onBackspace={()=>dispatch({type:'backspace'})}/><button data-submit disabled={operation==='guess'&&!recovery.canSubmit} onClick={window.start}>Submit fixture</button><button data-replace onClick={window.replace}>Replace account fixture</button></main>;
++}
++function App(){const [mounted,setMounted]=React.useState(true);React.useLayoutEffect(()=>{if(!mounted){window.probe.callbackBeforePassiveCleanup=!window.probe.passiveRetired;now=25000;window.retainedTimer.fn();}},[mounted]);return <><button data-retire onClick={()=>setMounted(false)}>Retire fixture</button>{mounted?<Frame/>:<output data-retired>Retired fixture</output>}</>;}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++`);
++await build({root:scratch,configFile:false,publicDir:path.join(portal,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'pending-scope-baseline',enforce:'pre',async load(id){if(process.env.PENDING_LIFE_BASELINE_FILE&&id.endsWith('/useProvisionalPlayRecovery.ts'))return readFile(process.env.PENDING_LIFE_BASELINE_FILE,'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.woff2':'font/woff2','.webm':'audio/webm'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await(engine==='firefox'?firefox:chromium).launch({headless:true,...(engine==='firefox'&&process.env.PENDING_LIFE_FIREFOX_EXECUTABLE?{executablePath:process.env.PENDING_LIFE_FIREFOX_EXECUTABLE}:{})});browserVersion=browser.version();
++const origin='http://127.0.0.1:'+server.address().port;
++const scenarios=[];
++for(const replacement of ['account','generation','locale','logout'])for(const operation of ['hint','continue','skip'])for(const result of ['success','rejected','retryable'])scenarios.push({kind:'receipt',replacement,operation,result});
++for(const timer of ['interval','retry'])for(const replacement of ['unmount','account','generation','locale','logout','aba','profile','question','none',...(timer==='retry'?['replaced']:[])])scenarios.push({kind:'timer',replacement,operation:timer==='retry'?'guess':'skip',timer});
++scenarios.push({kind:'cold',replacement:'none',operation:'skip'});
++for(const width of (process.env.PENDING_LIFE_QUICK==='1'?[390]:[390,1280]))for(const config of scenarios){const {kind,replacement,operation,result,timer}=config,scenario=[kind,replacement,operation,result??timer??'restore'].join(':'),context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage(),external=[];await context.route('**/*',route=>{if(new URL(route.request().url()).origin===origin)return route.continue();external.push(route.request().url());return route.abort();});const metric=(name,actual,expected)=>observations.push({width,height:844,scenario,name,actual,expected});await page.goto(origin+'/?scenario='+replacement+':'+operation+(kind==='cold'?'&cold=1':''));await page.locator('[data-owner=Alice]').waitFor();
++ await page.evaluate(()=>{window.expectedRoute=window.probe.routed+1;window.emit({type:'host:operationResult',requestId:'hint-warm',payload:{operation:'hint',ok:true,data:{}}});});await page.waitForFunction(()=>window.probe.routed>=window.expectedRoute);
++ if(kind!=='cold'){if(operation==='guess'){for(const letter of 'PIZZA')await page.locator('.keyboard .key').filter({hasText:new RegExp('^'+letter+'$')}).click();}await page.locator('[data-submit]').click();}await page.waitForFunction(()=>window.probe.intervals.length>0);
++ const request=await page.evaluate(operation=>window.probe.messages.find(x=>x.message.type===(operation==='guess'?'game:submitGuess':operation==='hint'?'game:requestHint':operation==='continue'?'game:spendCoins':'game:skipRiddle')).message,operation);
++ if(kind==='receipt'){await page.evaluate(({request,operation,result})=>{window.heldReceipt={type:'host:operationResult',requestId:request.requestId,payload:{operation:operation==='continue'?'spendCoins':operation==='hint'?'hint':'skip',ok:result==='success',...(result==='success'?{data:{newCoins:550,index:0,revealedLetter:'P'}}:{error:'Fixture rejection',errorKind:result})}};window.expectedRoute=window.probe.routed+1;window.commitFn=()=>window.emit(window.heldReceipt);}, {request,operation,result});await page.locator('[data-replace]').click();await page.waitForFunction(()=>window.probe.routed>=window.expectedRoute);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const state=await page.evaluate(()=>window.current());metric('receipt reaches committed replacement',await page.evaluate(()=>window.probe.actorAtReceipt??null),replacement==='logout'?null:replacement==='account'?'Bob':'Alice');metric('old receipt cannot restore foreign question',state.token??null,replacement==='logout'?null:'00000000-0000-4000-8000-000000000002');metric('old action remains durable in original scope',await page.evaluate(()=>window.readOriginalJournal()?.coinAction?.requestId??null),request.requestId);metric('old hint cannot reveal a letter',state.hints,[]);metric('old receipt cannot publish its failure notice',state.notice??null,null);if(['account','generation'].includes(replacement))metric('replacement confirmed coins survive',state.coins,900);}
++ else if(kind==='timer'){if(timer==='retry'){await page.evaluate(request=>{window.expectedRoute=window.probe.routed+1;window.emit({type:'host:operationResult',requestId:request.requestId,payload:{operation:'guess',ok:false,error:'Fixture transport failure',errorKind:'retryable'}});},request);await page.waitForFunction(()=>window.probe.routed>=window.expectedRoute&&window.probe.timeouts.length>0);}await page.evaluate(timer=>{window.retainedTimer=timer==='retry'?window.probe.timeouts.at(-1):window.probe.intervals.at(-1);window.setTime(25000);},timer);await page.evaluate(request=>{window.retainedRequest=request.requestId;window.beforeMessages=window.probe.messages.filter(x=>x.message.requestId===request.requestId).length;window.beforeLeases=window.probe.leases.length;window.commitFn=()=>window.retainedTimer.fn();},request);
++ if(replacement==='unmount'){await page.locator('[data-retire]').click();await page.locator('[data-retired]').waitFor();metric('callback invoked before passive cleanup',await page.evaluate(()=>window.probe.callbackBeforePassiveCleanup),true);}
++ else if(replacement==='none')await page.evaluate(()=>window.retainedTimer.fn());
++ else if(replacement==='replaced'){await page.evaluate(request=>{window.expectedRoute=window.probe.routed+1;window.emit({type:'host:operationResult',requestId:request.requestId,payload:{operation:'guess',ok:false,error:'Fixture replacement retry',errorKind:'retryable'}});},request);await page.waitForFunction(()=>window.probe.routed>=window.expectedRoute&&window.probe.timeouts.length===2);await page.evaluate(()=>window.retainedTimer.fn());}
++ else{if(replacement==='aba')await page.evaluate(()=>{window.nextReplacement='account';window.commitFn=()=>{};});await page.locator('[data-replace]').click();if(replacement==='aba'){await page.locator('[data-owner=Bob]').waitFor();await page.evaluate(()=>{window.nextReplacement='return';window.commitFn=()=>{window.probe.beforeAba=window.probe.messages.length;window.probe.beforeAbaLeases=window.probe.leases.length;window.retainedTimer.fn();window.probe.afterAba=window.probe.messages.length;window.probe.afterAbaLeases=window.probe.leases.length;};});await page.locator('[data-replace]').click();metric('cancelled callback cannot revive after account returns',await page.evaluate(()=>window.probe.afterAba-window.probe.beforeAba),0);metric('revived callback cannot acquire a lease',await page.evaluate(()=>window.probe.afterAbaLeases-window.probe.beforeAbaLeases),0);}}
++ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));if(replacement!=='aba'){const keeps=['profile','question','none'].includes(replacement);metric('only current callback may renew its exact request',await page.evaluate(()=>window.probe.messages.filter(x=>x.message.requestId===window.retainedRequest).length-window.beforeMessages),keeps?1:0);metric('retired callback cannot acquire a lease',await page.evaluate(()=>window.probe.leases.length-window.beforeLeases),keeps?1:0);}if(replacement==='replaced'){await page.evaluate(()=>{window.beforeReplacement=window.probe.messages.length;window.probe.timeouts.at(-1).fn();});metric('cancelled timeout leaves replacement retry usable',await page.evaluate(()=>window.probe.messages.length-window.beforeReplacement),1);}
++ metric('journal survives timer retirement',await page.evaluate(operation=>{const journal=window.readOriginalJournal();return operation==='guess'?journal?.queue[0]?.message.requestId??null:journal?.coinAction?.requestId??null;},operation),request.requestId);}
++ else{metric('Strict Mode installs a live replacement interval',await page.evaluate(()=>window.probe.intervals.at(-1).cleared??false),false);await page.evaluate(()=>{window.setTime(25000);window.beforeMessages=window.probe.messages.length;window.beforeLeases=window.probe.leases.length;window.probe.intervals[0].fn();window.probe.oldTimerPosts=window.probe.messages.length-window.beforeMessages;window.probe.oldTimerLeases=window.probe.leases.length-window.beforeLeases;});metric('only the live registered callback owns delivery',await page.evaluate(()=>window.probe.oldTimerPosts),mode==='development'?0:1);metric('only the live registered callback owns lease acquisition',await page.evaluate(()=>window.probe.oldTimerLeases),mode==='development'?0:1);await page.evaluate(()=>{window.beforeMessages=window.probe.messages.length;window.probe.intervals.at(-1).fn();});metric('restored active interval retransmits original request',await page.evaluate(()=>window.probe.messages.length-window.beforeMessages),mode==='development'?1:0);metric('restored journal remains durable',await page.evaluate(()=>window.readOriginalJournal()?.coinAction?.requestId??null),'skip-cold');}
++ metric('self-contained fixture makes no external requests',external,[]);metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled errors',await page.evaluate(()=>window.probe.unhandled),[]);await page.screenshot({path:path.join(evidence,width+'-'+scenario.replaceAll(':','-')+'.png')});await context.close();}
++
++
++}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});await writeFile(path.join(evidence,'observations.json'),JSON.stringify(observations,null,2)+'\n');}
++const failures=observations.filter(x=>JSON.stringify(x.actual)!==JSON.stringify(x.expected));console.log(JSON.stringify({mode,engine,browserVersion,cases:new Set(observations.map(x=>[x.width,x.height,x.scenario].join(':'))).size,checks:observations.length,failures},null,2));assert.equal(failures.length,0,'Pending-play retry scope retirement');

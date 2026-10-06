@@ -1,0 +1,45 @@
+{
+  "goal": "active",
+  "change": "Race pool readiness validates text using the published prompt schema before category exposure or deck/seat publication.",
+  "reproduction": {
+    "clueLength": 2001,
+    "poolAcceptedBefore": true,
+    "liveResponseBefore": "schema rejection",
+    "preloadedResponseBefore": "schema rejection",
+    "matchingRedUnitCases": 2,
+    "matchingRedSdkCases": 4
+  },
+  "newTests": {
+    "unit": 4,
+    "realSdk": 10
+  },
+  "boundaryControls": "2000 trimmed characters remain legal, including padded 2002-character stored clues; immutable private deck bytes and canonical account balances are retained.",
+  "validation": "Existing missing_metadata issue code; no new visible text or locale keys.",
+  "backendUnitTests": 1657,
+  "backendUnitSuites": 134,
+  "emulatorTests": 344,
+  "emulatorSuites": 23,
+  "focusedTests": 51,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25975,
+  "tsdocFiles": 1161,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2359,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 16,
+  "resolvedPreflightFailures": [
+    "runtime-probe-config-preflight",
+    "tsdoc-probe"
+  ],
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

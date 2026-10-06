@@ -29,13 +29,14 @@ export async function triggerClassicRiddleGenerationIfNeeded(
   try {
     /** Provides collection behavior. */
     const collection = `localizedRiddles/${locale}/riddles`;
-    /** Provides snapshot behavior. */
+    /** Highest-index discovery excludes unused text, answers and provenance from the backend payload. */
     const snapshot = await admin
       .firestore()
       .collection(collection)
       .where("classicIndex", ">=", 0)
       .orderBy("classicIndex", "desc")
       .limit(1)
+      .select("classicIndex")
       .get();
     /** Provides highest classic index behavior. */
     const highestClassicIndex = snapshot.empty ? -1 : Number(snapshot.docs[0]?.data().classicIndex ?? -1);

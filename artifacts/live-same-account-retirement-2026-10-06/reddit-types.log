@@ -1,0 +1,9 @@
+../../firebase-functions                 | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 1d ago)
+../..                                    | Progress: resolved 1, reused 0, downloaded 0, added 0
+../..                                    |   +1 +
+../..                                    | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 681ms using pnpm v11.21.0
+$ tsc6 -p tsconfig.json --noEmit

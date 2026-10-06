@@ -1,0 +1,21 @@
+{
+  "name": "navigation-development",
+  "command": [
+    "env",
+    "RACE_NAV_REACT_MODE=development",
+    "RACE_NAV_REPORT_DIR=../../artifacts/live-context-owner-2026-10-06/navigation-development",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-race-navigation-focus-browser.mjs"
+  ],
+  "logs": [
+    "navigation-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791255686.9954336,
+  "exitCode": 0,
+  "finishedAt": 1791255738.3378024
+}

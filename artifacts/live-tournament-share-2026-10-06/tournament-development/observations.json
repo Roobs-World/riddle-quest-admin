@@ -1,0 +1,3962 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "initial",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "read",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "retired old receipt cannot populate new board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-read",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "failed-provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "original native share excludes repeated clicks",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "retired native settlement cannot replace current feedback",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "retired native success starts no replacement retry",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "native share remains one original adapter call",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "original native share excludes repeated clicks",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "retired native settlement cannot replace current feedback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "retired native success starts no replacement retry",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "native share remains one original adapter call",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "explicit owned retry admits exactly one additional read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "pending-share-success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "prepared replacement preserves committed provider",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "prepared replacement preserves original row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "fresh standings contain only current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "replacement retires old feedback during commit",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "fresh standings contain only current projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "native-locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "initial",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "read",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "retired old receipt cannot populate new board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "original native share excludes repeated clicks",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "retired native settlement cannot replace current feedback",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "retired native success starts no replacement retry",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "native share remains one original adapter call",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "original native share excludes repeated clicks",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "retired native settlement cannot replace current feedback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "retired native success starts no replacement retry",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "native share remains one original adapter call",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "explicit owned retry admits exactly one additional read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "prepared replacement preserves committed provider",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "prepared replacement preserves original row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh standings contain only current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement retires old feedback during commit",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "fresh standings contain only current projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "initial",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "read",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "retired old receipt cannot populate new board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-read",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "failed-provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "original native share excludes repeated clicks",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "retired native settlement cannot replace current feedback",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "retired native success starts no replacement retry",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "native share remains one original adapter call",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "original native share excludes repeated clicks",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "retired native settlement cannot replace current feedback",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "retired native success starts no replacement retry",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "native share remains one original adapter call",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "explicit owned retry admits exactly one additional read",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "fresh standings contain only current projection",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending-share-success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "profile",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "prepared replacement preserves committed provider",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "prepared replacement preserves original row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "ordinary or abandoned updates preserve mounted board and row",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "ordinary or abandoned updates add no read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained standings remain authoritative projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained native share uses original provider",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "retained share unlocks on original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement retires old feedback during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh standings contain only current projection",
+    "actual": "#3",
+    "expected": "#3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "one admitted read per mounted board lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "admitted method retains provider receiver",
+    "actual": [
+      "Alice"
+    ],
+    "expected": [
+      "Alice"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement removes old standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement removes old share controls during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement retires old feedback during commit",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement starts exactly one owned authority read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "fresh standings contain only current projection",
+    "actual": "#1",
+    "expected": "#1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "replacement obtains fresh row owner",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "fresh board native action is unlocked",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "fresh provider failure or recovery state is correct",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "native-locale",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

@@ -1,0 +1,3490 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "question:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "modal:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "dispatch:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "350",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "aba:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "removed provider exposes no video action",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "removed provider releases the paid continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "disable:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:failure",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unmount:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "owned completion applies only its expected grant",
+    "actual": "none",
+    "expected": "none"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Latest confirmed profile",
+    "expected": "Latest confirmed profile"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "profile:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "owned completion applies only its expected grant",
+    "actual": "none",
+    "expected": "none"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Guest Solver",
+    "expected": "Guest Solver"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-provider:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "owned completion applies only its expected grant",
+    "actual": "none",
+    "expected": "none"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Guest Solver",
+    "expected": "Guest Solver"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "suspended-profile:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "owned completion applies only its expected grant",
+    "actual": "none",
+    "expected": "none"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Guest Solver",
+    "expected": "Guest Solver"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "owned completion applies only its expected grant",
+    "actual": "continue",
+    "expected": "continue"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Guest Solver",
+    "expected": "Guest Solver"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [
+      "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"
+    ],
+    "expected": [
+      "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:failure",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "owned completion applies only its expected grant",
+    "actual": "continue",
+    "expected": "continue"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Guest Solver",
+    "expected": "Guest Solver"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:cancelled",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "unchanged committed context retains one provider request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "owned completion applies only its expected grant",
+    "actual": "continue",
+    "expected": "continue"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "suspended profile cannot enter the accepted receipt",
+    "actual": "Guest Solver",
+    "expected": "Guest Solver"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "owned failures keep the existing translated recovery notice",
+    "actual": [
+      "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"
+    ],
+    "expected": [
+      "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "active:unavailable",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  }
+]

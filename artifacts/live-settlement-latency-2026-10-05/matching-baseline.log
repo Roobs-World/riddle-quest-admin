@@ -1,0 +1,98 @@
+  console.info
+    {"winner":0,"retryDeletion":false,"elapsedMs":800,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"winner":1,"retryDeletion":false,"elapsedMs":1000,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"winner":0,"retryDeletion":true,"elapsedMs":1600,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"winner":1,"retryDeletion":true,"elapsedMs":2000,"reads":["liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","liveRaceMatches/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/blockedRivals/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/blockedRivals/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","users/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","users/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","jestAccountDeletionTombstones/jest_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","liveRaceTickets/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+FAIL src/__tests__/race/raceLiveSettlementLatency.test.ts
+  ● settles winner seat 0 with retry deletion false using fresh boundaries
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  ["jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+
+      74 |     if (process.env.LIVE_SETTLEMENT_TRACE) console.info(JSON.stringify({winner, retryDeletion, elapsedMs: Date.now() - NOW, reads}));
+      75 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+    > 76 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+         |                                                                                           ^
+      77 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+      78 |     expect(reads).toHaveLength((winner === 0 ? 8 : 9) * (retryDeletion ? 2 : 1));
+      79 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:76:91
+
+  ● settles winner seat 1 with retry deletion false using fresh boundaries
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  ["jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+
+      74 |     if (process.env.LIVE_SETTLEMENT_TRACE) console.info(JSON.stringify({winner, retryDeletion, elapsedMs: Date.now() - NOW, reads}));
+      75 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+    > 76 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+         |                                                                                           ^
+      77 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+      78 |     expect(reads).toHaveLength((winner === 0 ? 8 : 9) * (retryDeletion ? 2 : 1));
+      79 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:76:91
+
+  ● settles winner seat 0 with retry deletion true using fresh boundaries
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 4
+    Received array:  ["jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+
+      74 |     if (process.env.LIVE_SETTLEMENT_TRACE) console.info(JSON.stringify({winner, retryDeletion, elapsedMs: Date.now() - NOW, reads}));
+      75 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+    > 76 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+         |                                                                                           ^
+      77 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+      78 |     expect(reads).toHaveLength((winner === 0 ? 8 : 9) * (retryDeletion ? 2 : 1));
+      79 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:76:91
+
+  ● settles winner seat 1 with retry deletion true using fresh boundaries
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 4
+    Received array:  ["jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "jestAccountDeletionTombstones/jest_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+
+      74 |     if (process.env.LIVE_SETTLEMENT_TRACE) console.info(JSON.stringify({winner, retryDeletion, elapsedMs: Date.now() - NOW, reads}));
+      75 |     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+    > 76 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+         |                                                                                           ^
+      77 |     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+      78 |     expect(reads).toHaveLength((winner === 0 ? 8 : 9) * (retryDeletion ? 2 : 1));
+      79 |     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+
+      at src/__tests__/race/raceLiveSettlementLatency.test.ts:76:91
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 4 total
+Snapshots:   0 total
+Time:        0.335 s, estimated 1 s
+Ran all test suites matching src/__tests__/race/raceLiveSettlementLatency.test.ts.

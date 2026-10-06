@@ -1,0 +1,6 @@
+{
+  "mode": "development",
+  "cases": 3,
+  "checks": 30,
+  "failures": []
+}

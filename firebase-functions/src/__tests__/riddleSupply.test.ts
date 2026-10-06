@@ -2,6 +2,8 @@
 // @ts-nocheck
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
+/** Selects only the index needed to decide whether supply is low. */
+const mockSelect = jest.fn();
 /** Provides mock get behavior. */
 const mockGet = jest.fn();
 /** Provides mock create behavior. */
@@ -29,11 +31,13 @@ const query = {
   orderBy: mockOrderBy,
   limit: mockLimit,
   get: mockGet,
+  select: mockSelect,
 };
 
 mockWhere.mockReturnValue(query);
 mockOrderBy.mockReturnValue(query);
 mockLimit.mockReturnValue(query);
+mockSelect.mockReturnValue(query);
 
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
@@ -61,6 +65,7 @@ describe("riddle supply", () => {
     mockWhere.mockReturnValue(query);
     mockOrderBy.mockReturnValue(query);
     mockLimit.mockReturnValue(query);
+    mockSelect.mockReturnValue(query);
     mockDoc.mockReturnValue({create: mockCreate, delete: mockDelete});
     mockCollection.mockImplementation((path: string) => (path === "classicSupplyJobs" ? {doc: mockDoc} : query));
     mockCreate.mockResolvedValue(undefined);
@@ -75,6 +80,7 @@ describe("riddle supply", () => {
 
     expect(mockOrderBy).toHaveBeenCalledWith("classicIndex", "desc");
     expect(mockLimit).toHaveBeenCalledWith(1);
+    expect(mockSelect).toHaveBeenCalledWith("classicIndex");
     expect(mockCreate).not.toHaveBeenCalled();
     expect(mockGenerateForLocale).not.toHaveBeenCalled();
   });

@@ -1,0 +1,19 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-riddle-quest-settlement", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/live-settlement-latency-2026-10-05/integration.config.cjs --runInBand --testNamePattern "serializes rival completion with deletion"
+
+Test Suites: 6 skipped, 1 passed, 1 of 7 total
+Tests:       132 skipped, 4 passed, 136 total
+Snapshots:   0 total
+Time:        6.21 s, estimated 52 s
+Ran all test suites with tests matching "serializes rival completion with deletion".
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

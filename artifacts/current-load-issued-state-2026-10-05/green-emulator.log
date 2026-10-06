@@ -1,0 +1,18 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-current-load", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 42173.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: NODE_OPTIONS=--experimental-vm-modules pnpm exec jest --config ../artifacts/current-load-issued-state-2026-10-05/probe.config.cjs --runInBand
+Test Suites: 1 passed, 1 total
+Tests:       14 passed, 14 total
+Snapshots:   0 total
+Time:        3.968 s, estimated 4 s
+Ran all test suites.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

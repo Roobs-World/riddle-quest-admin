@@ -1,0 +1,1 @@
+Cannot find module './node_modules/typescript' from repository-root transformation. Fixed with createRequire(firebase-functions/package.json).

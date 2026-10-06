@@ -1,0 +1,15 @@
+  console.info
+    {"legacy":false,"elapsedMs":600,"reads":["transaction:gameCompletionReceipts/bdf7d757e256cc38890a6d9f77f636ec23207e343b03d6887d429136044bf6aa","transaction:users/player-1","transaction:users/player-1/singlePlayerCompletionBindings/92f6477b76d7bdfefe836ad2d90aadddbd236dc26c766bd581fb6d82dca9a7f8","transaction:users/player-1"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"legacy":true,"elapsedMs":600,"reads":["transaction:gameCompletionReceipts/bdf7d757e256cc38890a6d9f77f636ec23207e343b03d6887d429136044bf6aa","transaction:users/player-1","transaction:users/player-1/singlePlayerCompletionBindings/92f6477b76d7bdfefe836ad2d90aadddbd236dc26c766bd581fb6d82dca9a7f8","transaction:users/player-1"]}
+
+      at console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        0.397 s, estimated 1 s
+Ran all test suites matching src/__tests__/singlePlayerContentPreparationLatency.test.ts.

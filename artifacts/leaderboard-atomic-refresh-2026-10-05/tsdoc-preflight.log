@@ -1,0 +1,9 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 6 production declarations are undocumented.
+- firebase-functions/src/__tests__/leaderboard.test.ts:36 get
+- firebase-functions/src/__tests__/leaderboard.test.ts:36 set
+- firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts:12 level
+- firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts:12 xp
+- firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts:12 totalWins
+- firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts:12 bestStreak
+[ELIFECYCLE] Command failed with exit code 1.

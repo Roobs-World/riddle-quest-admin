@@ -1,0 +1,92 @@
+{
+  "mode": "development",
+  "browserVersion": "153.0.8010.12",
+  "cases": 3,
+  "checks": 18,
+  "failures": [
+    {
+      "scenario": "activity",
+      "name": "unsupported destination returns to Play during commit",
+      "actual": null,
+      "expected": "Play"
+    },
+    {
+      "scenario": "activity",
+      "name": "fallback commits the actual playable category surface",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "activity",
+      "name": "fallback retains one roving keyboard entry",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "tournaments",
+      "name": "unsupported destination returns to Play during commit",
+      "actual": null,
+      "expected": "Play"
+    },
+    {
+      "scenario": "tournaments",
+      "name": "fallback commits the actual playable category surface",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "tournaments",
+      "name": "fallback retains one roving keyboard entry",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "tournaments",
+      "name": "unavailable destination does not create an error panel",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "scenario": "pending-choice",
+      "name": "unsupported destination returns to Play during commit",
+      "actual": null,
+      "expected": "Play"
+    },
+    {
+      "scenario": "pending-choice",
+      "name": "fallback commits the actual playable category surface",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "pending-choice",
+      "name": "fallback retains one roving keyboard entry",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "scenario": "pending-choice",
+      "name": "unavailable destination does not create an error panel",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Withdrawn destination capability must keep Play reachable
+
+11 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-destination-capability-2026-10-06/probe-choice.mjs:47:203 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 11,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

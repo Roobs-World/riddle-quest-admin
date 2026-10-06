@@ -3,6 +3,8 @@ import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {JoinLiveRaceSchema, UpdateLiveRaceSchema, LiveRaceViewSchema, GetLiveRaceChallengeSchema, LiveRaceChallengeSchema,
   SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema} from "@qwordly/core/race";
+import {RetireLiveRaceJoinSchema, RetireLiveRaceJoinResponseSchema} from "@qwordly/core/race";
+import {retireLiveRaceJoinForUser} from "./raceLiveRetirement";
 import {listLiveRaceHistoryForUser} from "./raceLiveHistory";
 import {admin} from "../shared/firebaseAdmin";
 import {listLiveRaceChallengesForUser, sendLiveRaceChallengeForUser} from "./raceLiveChallengeNotifications";
@@ -40,6 +42,15 @@ export const joinLiveRace = onCallWithSentry("joinLiveRace", interactiveOptions,
   const userId = owner(request);
   await assertRaceAccess(userId, input.locale);
   return validateCallableResponse(LiveRaceViewSchema, await joinLiveRaceForUser(userId, input), "joinLiveRace");
+});
+/** Background cleanup owns a join intent, never the latest account ticket selected by the browser. */
+export const retireLiveRaceJoin = onCallWithSentry("retireLiveRaceJoin", interactiveOptions, async request => {
+  /** Strict input contains only the original join's stable request identity. */
+  const input = validateCallableRequest(RetireLiveRaceJoinSchema, request.data, "retireLiveRaceJoin");
+  /** Verified authentication is the sole account authority. */
+  const userId = owner(request);
+  return validateCallableResponse(RetireLiveRaceJoinResponseSchema,
+    await retireLiveRaceJoinForUser(userId, input, {authorize: () => assertRaceAccess(userId)}), "retireLiveRaceJoin");
 });
 /** Reads progress or accepts one idempotent live action. */
 export const updateLiveRace = onCallWithSentry("updateLiveRace", interactiveOptions, async (request, response) => {

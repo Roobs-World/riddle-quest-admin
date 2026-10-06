@@ -1,0 +1,316 @@
+{
+  "kind": "nfd",
+  "locale": "fr",
+  "text": "élément",
+  "expected": [
+    "é",
+    "l",
+    "é",
+    "m",
+    "e",
+    "n",
+    "t"
+  ],
+  "draft": {
+    "letters": [
+      "é",
+      "l",
+      "é",
+      "m",
+      "e",
+      "n",
+      "t"
+    ],
+    "activeSlotIndex": 6
+  },
+  "run": {
+    "runId": "unicode-browser-nfd",
+    "role": "creator",
+    "status": "active",
+    "categoryId": "mixed",
+    "locale": "fr",
+    "rules": {
+      "version": "race10_v1",
+      "targetCorrect": 10,
+      "deckSize": 15,
+      "maxGuessesPerRiddle": 5,
+      "maxHintsPerRiddle": 7,
+      "hintPenaltyMs": 15000,
+      "skipPenaltyMs": 45000,
+      "maxAdjustedTimeMs": 300000
+    },
+    "correctCount": 0,
+    "wallElapsedMs": 1000,
+    "totalPenaltyMs": 0,
+    "adjustedElapsedMs": 1000,
+    "currentRiddle": {
+      "riddleId": "unicode-question-nfd",
+      "text": "Unicode native input fixture",
+      "answerLength": 7,
+      "position": 0,
+      "guessesUsed": 0,
+      "guessesRemaining": 5,
+      "confirmedGuesses": [],
+      "hintAvailable": true,
+      "revealedLetters": []
+    },
+    "events": []
+  },
+  "storage": "{\"version\":1,\"ownerId\":\"unicode-browser-owner\",\"runId\":\"unicode-browser-nfd\",\"locale\":\"fr\",\"riddleId\":\"unicode-question-nfd\",\"position\":0,\"guessesUsed\":0,\"pendingGuess\":false,\"letters\":[\"é\",\"l\",\"é\",\"m\",\"e\",\"n\",\"t\"],\"activeSlotIndex\":6,\"savedAtMs\":1791233104237}",
+  "probe": {
+    "kind": "nfd",
+    "locale": "fr",
+    "text": "élément",
+    "expected": [
+      "é",
+      "l",
+      "é",
+      "m",
+      "e",
+      "n",
+      "t"
+    ],
+    "callbacks": [],
+    "commands": [],
+    "errors": [],
+    "unhandled": [],
+    "consoleErrors": [],
+    "restores": [
+      {
+        "currentLetters": [
+          "é",
+          "l",
+          "é",
+          "m",
+          "e",
+          "n",
+          "t"
+        ],
+        "activeSlotIndex": 6
+      }
+    ]
+  },
+  "rows": [
+    [
+      {
+        "text": "é",
+        "label": "Letter 1: é",
+        "disabled": false,
+        "classes": "cell"
+      },
+      {
+        "text": "l",
+        "label": "Letter 2: l",
+        "disabled": false,
+        "classes": "cell"
+      },
+      {
+        "text": "é",
+        "label": "Letter 3: é",
+        "disabled": false,
+        "classes": "cell"
+      },
+      {
+        "text": "m",
+        "label": "Letter 4: m",
+        "disabled": false,
+        "classes": "cell"
+      },
+      {
+        "text": "e",
+        "label": "Letter 5: e",
+        "disabled": false,
+        "classes": "cell"
+      },
+      {
+        "text": "n",
+        "label": "Letter 6: n",
+        "disabled": false,
+        "classes": "cell"
+      },
+      {
+        "text": "t",
+        "label": "Letter 7: t",
+        "disabled": false,
+        "classes": "cell active"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 3",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 4",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 5",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 6",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 7",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 3",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 4",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 5",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 6",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 7",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 3",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 4",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 5",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 6",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 7",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ],
+    [
+      {
+        "text": "",
+        "label": "Letter 1",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 2",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 3",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 4",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 5",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 6",
+        "disabled": true,
+        "classes": "cell"
+      },
+      {
+        "text": "",
+        "label": "Letter 7",
+        "disabled": true,
+        "classes": "cell"
+      }
+    ]
+  ],
+  "focused": ""
+}

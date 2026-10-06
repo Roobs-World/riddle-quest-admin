@@ -1,0 +1,44 @@
+[
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/2436eea4cbe5975e75eb3c1cbde349ab8451aac0bc290a39f65b3003b9597d36/youtube.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/youtube.json",
+    "sha256": "fe627f364c0774bb3f56ff987f664c83aaedbfcced4de92a2eae0ddc0a1df2b2",
+    "outputDirectory": "/tmp/live-context-builds-6sebloq5/youtube"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/829906d6d2a71b8d830dba660c0242bc0bbde8cd0cd4821fc282f9cad0babcf9/facebook.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/facebook.json",
+    "sha256": "ab2f77e1467972047a339c0a630b5d68ca5c53505c417ca69f466caaa728978f",
+    "outputDirectory": "/tmp/live-context-builds-6sebloq5/facebook"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/8d0c6a70848c04b9e22a120bacb84d5267b762653ec0ec6fd1654acbd6b173a1/reddit.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/reddit.json",
+    "sha256": "1873b17afc18c2badb3a6703db6f8722643d893a02a6bee9b63d7bbe228f857e",
+    "outputDirectory": "/tmp/live-context-builds-6sebloq5/reddit"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/97726c04e64fb746f02dd65ddd24076028fbd831bced6c4262d9b8927c9b023e/jest.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/jest.json",
+    "sha256": "8d6fbc85d684408d5b7c3f289258888b2aa8ec63ce0e56d72c78f41e750b6079",
+    "outputDirectory": "/tmp/live-context-builds-6sebloq5/jest"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/dccd8414dea38ff1d1c1cd8c9dae43c4bfc1d35e77b20bfb29b2a88188e8037d/netflix.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/netflix.json",
+    "sha256": "166b5f4260ad87feb7993ab4ad073c75a8e255644124b4fbd5f80fdf59994e35",
+    "outputDirectory": "/tmp/live-context-builds-6sebloq5/netflix"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/e22502922c1a8982a7a3134c64c179daa626a589624fc137167d75c042def3ad/yahoo.json",
+    "preserved": "artifacts/live-context-read-cancellation-2026-10-06/target-dependencies/yahoo.json",
+    "sha256": "d9dacc1293c76f236c86623acc246df045ddf6246f516cf3e8014b8692b49202",
+    "outputDirectory": "/tmp/live-context-builds-6sebloq5/yahoo"
+  }
+]

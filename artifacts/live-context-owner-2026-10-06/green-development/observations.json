@@ -1,0 +1,134 @@
+[
+  {
+    "scenario": "initial",
+    "name": "one admitted context read per mounted lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "initial",
+    "name": "independent history reads once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "initial",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "initial",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "provider",
+    "name": "one admitted context read per mounted lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "provider",
+    "name": "independent history reads once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "provider",
+    "name": "replacement removes old context standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "provider",
+    "name": "context replacement preserves independent history row during commit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "provider",
+    "name": "fresh context standings belong only to replacement",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "scenario": "provider",
+    "name": "context replacement adds no history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "provider",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "provider",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "one admitted context read per mounted lifetime",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "independent history reads once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "replacement removes old context standings during commit",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "context replacement preserves independent history row during commit",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "fresh context standings belong only to replacement",
+    "actual": "#2",
+    "expected": "#2"
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "context replacement adds no history read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "retired context callback starts no new read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "retired context callback cannot clear replacement rows",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "scenario": "retained-signal",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

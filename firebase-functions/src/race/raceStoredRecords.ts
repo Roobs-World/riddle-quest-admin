@@ -2,7 +2,7 @@ import {z} from "zod";
 import {splitGraphemes} from "@qwordly/core/game";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceCategoryIdSchema, RaceLocaleSchema, RaceRunStatusSchema, RaceRulesSchema,
-  RaceGhostEventSchema, RaceOutcomeSchema, RACE_RULES_VERSION, RACE_RULES} from "@qwordly/core/race";
+  RaceGhostEventSchema, RaceOutcomeSchema, RACE_RULES_VERSION, RACE_RULES, RACE_NORMALIZED_TEXT_UNITS} from "@qwordly/core/race";
 import {raceTimelineAgrees} from "./raceStoredTimeline";
 import {raceHasLegacyTerminalGrant, RACE_START_LEAD_MS} from "./raceEngine";
 import {raceRewardAwardsAgree} from "./raceAchievements";
@@ -25,7 +25,7 @@ const Run = z.looseObject({recordVersion: z.literal(1).optional(), runId: Id, us
   result: z.enum(["player_win", "ghost_win", "tie", "timed_out", "recorded"]).nullable().optional(),
   categoryId: RaceCategoryIdSchema, locale: RaceLocaleSchema, rulesVersion: z.literal(RACE_RULES_VERSION), rulesSnapshot: RaceRulesSchema.optional(),
   deckId: Id, riddles: z.array(Riddle).min(1).max(15), currentPosition: z.number().int().min(0).max(15),
-  correctCount: z.number().int().min(0).max(10), guessesUsed: z.number().int().min(0).max(5), guessHistory: z.array(z.string().min(1).max(256)).max(5).optional(), hintUsed: z.boolean(),
+  correctCount: z.number().int().min(0).max(10), guessesUsed: z.number().int().min(0).max(5), guessHistory: z.array(z.string().min(1).max(RACE_NORMALIZED_TEXT_UNITS)).max(5).optional(), hintUsed: z.boolean(),
   revealedLetters: z.array(z.looseObject({index: z.number().int().nonnegative(), letter: z.string().min(1)})),
   startedAtMs: Ms, lastActionAtMs: Ms.optional(), readinessAcceptedAtMs: Ms.optional(), deadlineAtMs: Ms.optional(), preparationExpiresAtMs: Ms.optional(), finishedAtMs: Ms.optional(), wallFinishMs: Ms.optional(),
   hintPenaltyMs: Ms, skipPenaltyMs: Ms, events: z.array(RaceGhostEventSchema),

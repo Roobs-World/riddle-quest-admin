@@ -1,0 +1,1226 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "only supported selection commits",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "fallback commits the real playable category surface",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "selected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "only supported selection commits",
+    "actual": "Activity",
+    "expected": "Activity"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "fallback commits the real playable category surface",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "other",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "only supported selection commits",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "fallback commits the real playable category surface",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "restoring capability does not auto-open its former destination",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "explicit restored destination obtains fresh authority",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "restore",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "prepared withdrawal retains committed selected tab",
+    "actual": "Activity",
+    "expected": "Activity"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "abandoned withdrawal retains panel identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "abandoned withdrawal starts no replacement reads",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "abandoned withdrawal retains supported selection",
+    "actual": "Activity",
+    "expected": "Activity"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "only supported selection commits",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "fallback commits the real playable category surface",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "native dialog keeps synchronous exclusion during capability update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "only still-owned native failure reaches the current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "native selection is not restarted by fallback or abandonment",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "native dialog unlocks after its original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "prepared withdrawal retains committed selected tab",
+    "actual": "Activity",
+    "expected": "Activity"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "abandoned withdrawal retains panel identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "abandoned withdrawal starts no replacement reads",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "abandoned withdrawal retains supported selection",
+    "actual": "Activity",
+    "expected": "Activity"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "native dialog keeps synchronous exclusion during capability update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "only still-owned native failure reaches the current destination",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "native selection is not restarted by fallback or abandonment",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "native dialog unlocks after its original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "activity",
+    "scenario": "pending-choice-abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "only supported selection commits",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "fallback commits the real playable category surface",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "selected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "only supported selection commits",
+    "actual": "Tournaments",
+    "expected": "Tournaments"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "fallback commits the real playable category surface",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "other",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "only supported selection commits",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "fallback commits the real playable category surface",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "restoring capability does not auto-open its former destination",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "explicit restored destination obtains fresh authority",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "restore",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "prepared withdrawal retains committed selected tab",
+    "actual": "Tournaments",
+    "expected": "Tournaments"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "abandoned withdrawal retains panel identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "abandoned withdrawal starts no replacement reads",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "abandoned withdrawal retains supported selection",
+    "actual": "Tournaments",
+    "expected": "Tournaments"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "withdrawing capability does not leave a generic error",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "only supported selection commits",
+    "actual": "Play",
+    "expected": "Play"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "fallback commits the real playable category surface",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "one roving keyboard entry remains available",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "withdrawing an unrelated capability preserves panel identity",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "native dialog keeps synchronous exclusion during capability update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "only still-owned native failure reaches the current destination",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "native selection is not restarted by fallback or abandonment",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "native dialog unlocks after its original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "prepared withdrawal retains committed selected tab",
+    "actual": "Tournaments",
+    "expected": "Tournaments"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "abandoned withdrawal retains panel identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "abandoned withdrawal starts no replacement reads",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "abandoned withdrawal retains supported selection",
+    "actual": "Tournaments",
+    "expected": "Tournaments"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "native dialog keeps synchronous exclusion during capability update",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "only still-owned native failure reaches the current destination",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "native selection is not restarted by fallback or abandonment",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "native dialog unlocks after its original settlement",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "native End selects and focuses the last supported tab",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "native Home returns focus and selection to Play",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "destination": "tournaments",
+    "scenario": "pending-choice-abandon",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

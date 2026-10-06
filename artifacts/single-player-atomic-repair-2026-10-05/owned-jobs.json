@@ -1,0 +1,80 @@
+[
+  {
+    "name": "initial-focused-probe",
+    "handle": 11381,
+    "status": "terminal",
+    "exitCode": 1
+  },
+  {
+    "name": "corrected-focused-probe",
+    "handle": 18104,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "initial-emulator-probe",
+    "handle": 69085,
+    "status": "terminal",
+    "exitCode": 1
+  },
+  {
+    "name": "corrected-emulator-probe",
+    "handle": 55451,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "full-unit-preflight-without-vm-flag",
+    "handle": 8468,
+    "status": "terminal",
+    "exitCode": 1
+  },
+  {
+    "name": "lint-probe",
+    "handle": 28253,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-emulator",
+    "handle": 42570,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-builds",
+    "handle": 24884,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-types",
+    "handle": 62261,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-tsdoc",
+    "handle": 19633,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-lint",
+    "handle": 5890,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-built-browser",
+    "handle": 35732,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  {
+    "name": "final-focused",
+    "handle": 36102,
+    "status": "terminal",
+    "exitCode": 0
+  }
+]

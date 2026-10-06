@@ -1,4 +1,6 @@
-import {RACE_RULES, type RaceDifficultyBand, type RaceLocale} from "@qwordly/core/race";
+import {RaceRunViewSchema, RACE_RULES, type RaceDifficultyBand, type RaceLocale} from "@qwordly/core/race";
+import {liveRun} from "../../race/raceLiveState";
+import {toRaceRunView} from "../../race/raceEngine";
 import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
 import {buildDeterministicRaceDeck} from "../../race/raceService";
 import {assertRaceLocaleCompatible, resolveChallengeRiddles, type RaceChallengeRecord} from "../../race/raceSetupService";
@@ -40,7 +42,7 @@ describe("Race to 10 deterministic deck service", () => {
 
   it("resolves legacy challenges from the original creator run, never the mutable catalog", async () => {
     /** Ordered original creator deck remains available despite mutable catalog removal. */
-    const riddles = Array.from({length: 10}, (_, position) => ({riddleId: `original-${position}`, canonicalRiddleId: `history:original-${position}`, text: "Original clue", answer: "original", position}));
+    const riddles = Array.from({length: 10}, (_, position) => ({riddleId: `original-${position}`, canonicalRiddleId: `history:original-${position}`, text: "Original clue", answer: "origin", position}));
     /** Legacy metadata agrees with its complete source recording. */
     const challenge = {locale: "en", creatorId: "creator", creatorRunId: "original-run", categoryId: "history", deckId: "deck",
       targetCorrect: 10, creatorWallFinishMs: 10000, creatorHintPenaltyMs: 0, creatorSkipPenaltyMs: 0,
@@ -102,6 +104,65 @@ describe("Race to 10 deterministic deck service", () => {
         {easy: 0, medium: 0, hard: 0},
       ),
     ).toEqual({easy: 10, medium: 5, hard: 0});
+  });
+
+  it.each([undefined, "", "   ", " padded-id ", "r".repeat(161), 42])("rejects an unusable riddle identity %s before selecting a competitive deck", riddleId => {
+    /** A complete balanced pool isolates identity validity from all other content rules. */
+    const pool = makePool("en"); pool[0].data.riddleId = riddleId;
+    expect(() => buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "invalid-identity"})).toThrow("missing_metadata");
+  });
+
+  it.each(["Q".repeat(2001), " "+"Q".repeat(2001)+" "])("rejects oversized clues before selecting a competitive deck", text => {
+    /** The complete pool isolates the public text limit from difficulty and uniqueness rules. */
+    const pool = makePool("en"); pool[0].data.text = text;
+    expect(() => buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "invalid-clue"})).toThrow("missing_metadata");
+  });
+
+  it.each(["Q".repeat(2000), " "+"Q".repeat(2000)+" "])("keeps boundary clues playable with and without preloaded evaluation", text => {
+    /** Both public response variants must accept every selected current prompt. */
+    const pool = makePool("en"); pool[0].data.text = text;
+    /** All ten easy riddles include the boundary clue irrespective of the deterministic order. */
+    const deck = buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "boundary-clue"});
+    /** Projection uses the same run constructor as authoritative live matchmaking. */
+    const run = {...liveRun({...deck, locale: "en", categoryId: "history"}, "player", "boundary-run", 1000), evaluationPolicy: "preloaded" as const};
+    expect(deck.riddles.find(riddle => riddle.riddleId === "en-history-1")?.text).toBe(text);
+    for (let currentPosition = 0; currentPosition < deck.riddles.length; currentPosition++) {
+      expect(RaceRunViewSchema.safeParse(toRaceRunView({...run, currentPosition}, 2000)).success).toBe(true);
+      expect(RaceRunViewSchema.safeParse(toRaceRunView({...run, currentPosition}, 2000, true)).success).toBe(true);
+    }
+  });
+
+  it.each([" cat", "cat ", " cat ", "\tcat\n", "\u00a0cat\u00a0"])("rejects padded answers before selecting an immutable deck", answer => {
+    /** Trimming at validation cannot hide slots that authoritative gameplay would still count. */
+    const pool = makePool("en"); pool[0].data.answer = answer;
+    expect(() => buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "padded-answer"})).toThrow("missing_metadata");
+  });
+
+  it("rejects an oversized answer encoding even when it contains one grapheme", () => {
+    /** Published evaluation and guess limits must agree with competitive catalog readiness. */
+    const pool = makePool("en"); pool[0].data.answer = "a"+"\u0301".repeat(128);
+    expect(() => buildDeterministicRaceDeck(pool, {locale: "en", categoryId: "history", seed: "oversized-encoding"})).toThrow("answer_too_long");
+  });
+
+  it.each(["élément".normalize("NFD"), "ABCDEFG"])("retains canonical seven-slot answer text without rewriting it", answer => {
+    /** Legal decomposed and uppercase answers remain immutable rather than being normalized in storage. */
+    const pool = makePool("fr"); pool[0].data.answer = answer;
+    /** Every easy record is selected, including the unchanged answer under test. */
+    const deck = buildDeterministicRaceDeck(pool, {locale: "fr", categoryId: "history", seed: "canonical-answer"});
+    expect(deck.riddles.find(riddle => riddle.riddleId === "fr-history-1")?.answer).toBe(answer);
+    /** Both the current prompt and complete evaluation deck remain deliverable. */
+    const run = {...liveRun({...deck, locale: "fr", categoryId: "history"}, "player", "canonical-run", 1000), evaluationPolicy: "preloaded" as const};
+    for (let currentPosition = 0; currentPosition < deck.riddles.length; currentPosition++)
+      expect(RaceRunViewSchema.safeParse(toRaceRunView({...run, currentPosition}, 2000, true)).success).toBe(true);
+  });
+
+  it.each([{answer: " cat "}, {answer: "a"+"\u0301".repeat(128)}, {text: "Q".repeat(2001)}, {riddleId: " padded-recording "}])(
+    "rejects an incompatible frozen recording before resolving a new challenge deck", async invalid => {
+    /** Hash-consistent archived content may still be unplayable by the published question contract. */
+    const riddles = [{riddleId: "frozen-question", canonicalRiddleId: "history:frozen", text: "Original clue", answer: "piano", position: 0, ...invalid}];
+    /** No mutable catalog read is available to disguise a bad immutable source. */
+    const challenge = {locale: "en", riddles, canonicalRiddleIds: ["history:frozen"]} as RaceChallengeRecord;
+    await expect(resolveChallengeRiddles({} as FirebaseFirestore.Firestore, "en", challenge)).rejects.toThrow("not compatible");
   });
 
   it("rejects an undersized competitive pool", () => {

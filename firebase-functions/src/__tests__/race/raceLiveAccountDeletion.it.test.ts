@@ -297,7 +297,8 @@ it("removes a deleting winner's board entry and balance snapshot without changin
   expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(125);
 });
 
-it("serializes rival completion with deletion and cannot create another economic grant", async () => {
+it.each(["cleanup-first", "guard-first", "completion-first", "concurrent"] as const)(
+  "serializes rival completion with deletion (%s) without another economic grant", async order => {
   /** Provides {players, tickets} behavior. */
   const {players, tickets} = await pair("reddit");
   for (let i = 0; i < 9; i++) {
@@ -312,15 +313,30 @@ it("serializes rival completion with deletion and cannot create another economic
   const value = (await db.doc(`liveRaceMatches/${tickets[0].ticketId}`).get()).data()!;
   /** Provides run behavior. */
   const run = value.runs[1] as RaceRunRecord, riddle = run.riddles[run.currentPosition];
-  await Promise.all([erase(players[0]), updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "guess", requestId: "delete-final-race",
-    riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: START + 15000})]);
+  /** One final answer races the guard and the identity sweep in distinct serializations. */
+  const complete = () => updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "guess", requestId: "delete-final-race",
+    riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: START + 15000});
+  if (order === "cleanup-first") {await erase(players[0]); await complete();}
+  else if (order === "guard-first") {
+    await getJestAccountDeletionRef(db, players[0]).set({recreationBlocked: true});
+    await complete(); await erase(players[0]);
+  } else if (order === "completion-first") {await complete(); await erase(players[0]);}
+  else await Promise.all([erase(players[0]), complete()]);
   /** Provides match behavior. */
   const match = (await db.doc(`liveRaceMatches/${tickets[0].ticketId}`).get()).data()!;
   expect([null, 1]).toContain(match.winner);
+  /** A settled draw carries its balance; cleanup cancellation has no economic receipt. */
+  const expectedCoins = match.winner === 1 ? 225 : match.runs[1].settlementCoins === undefined ? 100 : 125;
+  if (order !== "concurrent") expect(expectedCoins).toBe(order === "cleanup-first" ? 100 : order === "guard-first" ? 125 : 225);
+  /** Persisted economy must agree with the terminal serialization before any replay. */
+  const settledProfile = (await db.doc(`users/${players[1]}`).get()).data()!;
+  expect(settledProfile.coins).toBe(expectedCoins);
+  expect(settledProfile.stats.multiplayerWins).toBe(match.winner === 1 ? 1 : 0);
+  expect(settledProfile.stats.multiplayerGamesPlayed ?? 0).toBe(expectedCoins === 100 ? 0 : 1);
+  expect(match.runs[1].settlementCoins).toBe(expectedCoins === 100 ? undefined : expectedCoins);
+  expect(match.rewardCoins).toBe(match.winner === 1 ? 50 : 0);
   await Promise.all(Array.from({length: 4}, (_, i) => updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: `delete-repeat-${i}`}, {db, nowMs: START + 16000})));
-  // A started draw still grants the one-time debut badge; a clean winner earns three badges.
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(match.winner === 1 ? 225 : 125);
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.stats.multiplayerWins).toBe(match.winner === 1 ? 1 : 0);
+  expect((await db.doc(`users/${players[1]}`).get()).data()).toEqual(settledProfile);
   expect(JSON.stringify(match).includes(players[0])).toBe(false);
 });
 

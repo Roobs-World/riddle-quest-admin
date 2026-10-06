@@ -1,0 +1,207 @@
+[
+  {
+    "name": "red-sdk-minimal",
+    "sessionId": 94992,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-sdk-expanded",
+    "sessionId": 76715,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal",
+    "resolution": "All36 intended negative cases reproduced. Four accepted controls incorrectly compared dynamic replay clocks; changed these controls to assert retained identity/content and single receipts before any production fix."
+  },
+  {
+    "name": "red-sdk-corrected",
+    "sessionId": 83779,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "red-callables",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "status": "terminal"
+  },
+  {
+    "name": "module-generation-preflight",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "The source transformation looked for TypeScript at the repository root, where no module exists. Corrected the resolver to the installed Functions package before any verification."
+  },
+  {
+    "name": "types-and-callables-initial",
+    "sessionId": 80560,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "childDiagnosticsPresent": true,
+    "childExitCode": null,
+    "resolution": "The typecheck emitted2 diagnostics: an unintended cancellation return annotation and an overly broad eligibility-reason union. The wrapper subsequently exited0 on105 callable tests; isolated corrected typecheck reached actualexit0."
+  },
+  {
+    "name": "types-corrected",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "green-sdk-initial",
+    "sessionId": 37575,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "66 cases passed. Four modern oversized-clue fixtures fail strict stored-record parsing before deck compatibility; classified known parser failures as typed invalid entry and corrected fixture controls to respect structurally invalid creator metadata."
+  },
+  {
+    "name": "green-sdk",
+    "sessionId": 17043,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "types-probe-final",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "tsdoc-probe",
+    "sessionId": 85047,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Added the missing documentation on the narrow SDK proxy getter before source freeze."
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": 14681,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "prepare-fixed",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "ledger-serialization-preflight",
+    "sessionId": null,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "Replaced direct JSON-as-Python insertion with json.loads; the failed command made no ledger write."
+  },
+  {
+    "name": "initial-backend",
+    "sessionId": 47281,
+    "exitCode": 1,
+    "expectedExitCode": 0,
+    "status": "terminal",
+    "resolution": "635/637 SDK cases passed. The two added deletion controls wrongly expected a transport code from the domain service; corrected to its existing account-deleted sentinel after actual terminal shutdown. All production and client hashes remain unchanged."
+  },
+  {
+    "name": "final-builds",
+    "sessionId": 75418,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-core",
+    "sessionId": 72707,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-portal",
+    "sessionId": 26863,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-core-types",
+    "sessionId": 39852,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-portal-types",
+    "sessionId": 91936,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-types",
+    "sessionId": 19128,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-lint",
+    "sessionId": 6941,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc",
+    "sessionId": 26799,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-built-browser",
+    "sessionId": 22179,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend",
+    "sessionId": 13224,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-types-corrected",
+    "sessionId": null,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-backend-lint-corrected",
+    "sessionId": 63598,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  },
+  {
+    "name": "final-tsdoc-corrected",
+    "sessionId": 25472,
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "status": "terminal"
+  }
+]

@@ -1,0 +1,181 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [
+      {
+        "epoch": "1",
+        "action": {
+          "type": "profileUpdated",
+          "profile": {
+            "username": "Guest Solver",
+            "coins": 900,
+            "level": 3,
+            "xp": 420,
+            "winStreak": 2,
+            "gamesPlayed": 7,
+            "wins": 5,
+            "achievements": [
+              "first_win",
+              "daily_spark"
+            ],
+            "classicIndex": 1
+          }
+        }
+      },
+      {
+        "epoch": "1",
+        "action": {
+          "type": "continueGranted"
+        }
+      }
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "false",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "current continuation applies its authoritative balance",
+    "actual": "900",
+    "expected": "350"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "continued question accepts native keyboard-button input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "one active request locks competing continuation controls",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "retirement settles the local caller without waiting for provider completion",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "replacement continuation controls are immediately usable",
+    "actual": false,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "retained old callback cannot admit provider work",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "replacement synchronous admission deduplicates repeated calls",
+    "actual": 1,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "retired receipt cannot change notice, balance or attempts",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "account:success",
+    "name": "old finally cannot unlock the replacement request",
+    "actual": "false",
+    "expected": "true"
+  }
+]

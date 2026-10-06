@@ -1,0 +1,23 @@
+[
+  {
+    "path": "packages/portal/src/play/race/RaceContextBoard.tsx",
+    "before": "artifacts/live-context-owner-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "ae1a0e489d92a6222034b4256024e90a5b58346b69d20f3f2d97e2454dc559c1",
+    "after": "artifacts/live-context-owner-2026-10-06/owned-00-after.txt",
+    "afterSha256": "8d9f0eeff83e2950673caaeb902eba3669e579018fdcfbcc923be8596554a2fa"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-context-owner-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "b5c18bcac5ff8fba20fa77c00226a1aac450ec0eaaa8fa3e969f459478560740",
+    "after": "artifacts/live-context-owner-2026-10-06/owned-01-after.txt",
+    "afterSha256": "404bc051000679e477499f57fc046aed7d6a4ac5bfa99517b9975b8538c06e4b"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-context-owner-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/live-context-owner-2026-10-06/owned-02-after.txt",
+    "afterSha256": "c1429253e05516d0dc7338dfd3e713f1e9da9331e9725b0390a86f366b94e73e"
+  }
+]

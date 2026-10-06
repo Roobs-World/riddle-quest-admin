@@ -1,0 +1,22 @@
+{
+  "name": "chromium-development",
+  "command": [
+    "env",
+    "LIVE_DEST_MODE=development",
+    "LIVE_DEST_BROWSER=chromium",
+    "LIVE_DEST_REPORT_DIR=../../artifacts/live-destination-capability-2026-10-06/chromium-development",
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "node",
+    "scripts/verify-live-destination-capability-browser.mjs"
+  ],
+  "logs": [
+    "chromium-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791253761.7094407,
+  "exitCode": 0,
+  "finishedAt": 1791253779.5708222
+}

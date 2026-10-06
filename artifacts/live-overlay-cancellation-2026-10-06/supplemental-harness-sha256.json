@@ -1,0 +1,8 @@
+{
+  "artifacts/live-overlay-cancellation-2026-10-06/expanded-driver.txt": "20fa39c73e43aa40a2cf7f163e65c41fbf70d79a35f4b7316daa2567d24e47df",
+  "artifacts/live-overlay-cancellation-2026-10-06/expanded-prefix.txt": "fe63a2d5da4e551ef806b0789a2c1b02c8f6611ccec76b2be05bc0d56cb40fc7",
+  "artifacts/live-overlay-cancellation-2026-10-06/fixture-app.txt": "f8fb014cb810aefbb3b24411e2faa8addd6f4c17280fb8496613b9c15d5bdf3a",
+  "artifacts/live-overlay-cancellation-2026-10-06/fixture-provider-before-idempotent-release.txt": "9a934320d96532a2423b5a4fa7e4db56d3bfef8e3e3f2982061fa0f023c83d12",
+  "artifacts/live-overlay-cancellation-2026-10-06/fixture-provider.txt": "2cadd6ccf561a67eafa8dd8d5cfbcecd36ded219d8552a27b2c0cfe888b12ab8",
+  "artifacts/live-overlay-cancellation-2026-10-06/probe-minimal.mjs": "8f4dbdd9e1eb6a4892c2e8f02ce2653764ec6f7c6983052a6ee821e2dadbb8cd"
+}

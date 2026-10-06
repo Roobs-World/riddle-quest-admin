@@ -1,0 +1,14 @@
+{
+  "name": "static",
+  "command": [
+    "bash",
+    "artifacts/live-overlay-cancellation-2026-10-06/static.sh"
+  ],
+  "logs": [
+    "static.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791260353.4843981,
+  "exitCode": 0,
+  "finishedAt": 1791260356.0215223
+}

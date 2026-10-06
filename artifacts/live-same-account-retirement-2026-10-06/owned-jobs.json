@@ -1,0 +1,400 @@
+[
+  {
+    "name": "initial-browser-red",
+    "sessionId": 48065,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-browser.log"
+    ],
+    "evidence": "Canonical same-account retirement reproduced before the protocol fix."
+  },
+  {
+    "name": "quick-browser-green",
+    "sessionId": 84100,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "green-quick.log"
+    ],
+    "evidence": "Corrected mounted fixture passes both races."
+  },
+  {
+    "name": "final-baseline-control",
+    "sessionId": 70328,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-final.log"
+    ],
+    "evidence": "Same final harness against preceding implementation fails8/18 assertions."
+  },
+  {
+    "name": "first-sdk-probe",
+    "sessionId": 95506,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "sdk-probe.log",
+      "emulator-probe.log"
+    ],
+    "evidence": "16pass1incorrect reward expectation; also failed post-teardown SDK decoder."
+  },
+  {
+    "name": "corrected-sdk-probe",
+    "sessionId": 12484,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "sdk-corrected.log",
+      "emulator-corrected.log"
+    ],
+    "evidence": "17assertions pass but process teardown fails; not counted as green."
+  },
+  {
+    "name": "owned-sdk-reads",
+    "sessionId": 83932,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "sdk-owned-reads.log",
+      "emulator-owned-reads.log"
+    ],
+    "evidence": "Pending actual SDK reads drained before Jest module teardown;17pass and actual exit0."
+  },
+  {
+    "name": "lint-probe",
+    "sessionId": 63119,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "lint-probe.log"
+    ],
+    "evidence": "Actual terminal result retained from preceding continuation."
+  },
+  {
+    "name": "core-units",
+    "sessionId": 10925,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "core-units.log"
+    ],
+    "evidence": "391tests39suites."
+  },
+  {
+    "name": "portal-initial-focus",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "portal-focused.log"
+    ],
+    "evidence": "47tests2suites; incorrect invitation selector corrected in later focus."
+  },
+  {
+    "name": "retirement-callable",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "backend-callable.log"
+    ],
+    "evidence": "8cases."
+  },
+  {
+    "name": "tsdoc-initial-fixture",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "tsdoc-current.log"
+    ],
+    "evidence": "Proxy getters required documentation; corrected."
+  },
+  {
+    "name": "adapter-contract-red",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "adapter-red.log"
+    ],
+    "evidence": "Retirement path missing typed409; callable endpoint and region expectation lists needed extension."
+  },
+  {
+    "name": "signed-gateway-red",
+    "sessionId": 2625,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "gateway-red.log",
+      "gateway-emulator-red.log"
+    ],
+    "evidence": "Real signed dispatch maps three authority rejections to generic401."
+  },
+  {
+    "name": "signed-gateway-green",
+    "sessionId": 71806,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "gateway-green.log",
+      "gateway-emulator-green.log"
+    ],
+    "evidence": "4signed gateway cases pass."
+  },
+  {
+    "name": "backend-types-lint-cycles",
+    "sessionId": 78748,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "backend-types.log",
+      "lint.log",
+      "module-cycles.log"
+    ],
+    "evidence": "Direct compiler/linter plus cycle gate."
+  },
+  {
+    "name": "portal-types-contracts",
+    "sessionId": 3018,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "portal-types.log",
+      "portal-contracts-final.log"
+    ],
+    "evidence": "125cases before the final404 regression extension."
+  },
+  {
+    "name": "core-reddit-checks",
+    "sessionId": 86373,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "core-types.log",
+      "reddit-types.log",
+      "reddit-tests.log"
+    ],
+    "evidence": "Core and Devvit types;51Devvit tests."
+  },
+  {
+    "name": "security-boundary-deploy-audits",
+    "sessionId": 97435,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "tsdoc.log",
+      "security.log",
+      "boundaries.log",
+      "deploy-tests.log"
+    ],
+    "evidence": "Audits pass."
+  },
+  {
+    "name": "complete-backend-emulator",
+    "sessionId": 3480,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "backend-units.log",
+      "live-integrations.log",
+      "node22-sdk.log",
+      "backend-emulator.log"
+    ],
+    "evidence": "1730units/138;677actualSDK/38;17pinnedNode22SDK/1; clean owned emulator shutdown."
+  },
+  {
+    "name": "initial-browser-matrix",
+    "sessionId": 87347,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "browser-matrix.log",
+      "same-firefox-development.log"
+    ],
+    "evidence": "Chromium halves pass; Playwright default Firefox1543 absent. Resolved using existing1538 executable."
+  },
+  {
+    "name": "first-six-builds",
+    "sessionId": 57571,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "builds.log"
+    ],
+    "evidence": "Six client builds and Devvit server pass; bytes retained in first-pass."
+  },
+  {
+    "name": "initial-built-browser",
+    "sessionId": 4048,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "built-browser.log"
+    ],
+    "evidence": "7pass1older rematch exact-input expectation; fixture updated for modern join fields."
+  },
+  {
+    "name": "remaining-native-browser-matrix",
+    "sessionId": 7701,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "same-firefox-development-fixed.log",
+      "same-firefox-production-fixed.log",
+      "legacy-firefox-development.log",
+      "legacy-firefox-production.log",
+      "confirmation.log",
+      "active-close.log"
+    ],
+    "evidence": "Both native Firefox modes, invitation confirmation and mounted PvP journeys pass."
+  },
+  {
+    "name": "retirement-not-found-red",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "retire-not-found-red.log"
+    ],
+    "evidence": "Exact signed404 was incorrectly retryable; one regression failed before fix."
+  },
+  {
+    "name": "final-portal-contracts",
+    "sessionId": 49662,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "portal-types-final.log",
+      "portal-contracts-terminal.log",
+      "tsdoc-terminal.log"
+    ],
+    "evidence": "127cases6suites."
+  },
+  {
+    "name": "final-six-builds",
+    "sessionId": 84391,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "builds-final.log",
+      "build-jest.log",
+      "build-facebook.log",
+      "build-reddit.log",
+      "build-youtube.log",
+      "build-netflix.log",
+      "build-yahoo.log",
+      "build-reddit-server.log"
+    ],
+    "evidence": "All six isolated artifacts plus Devvit server pass."
+  },
+  {
+    "name": "final-built-browser-pre-fixture-correction",
+    "sessionId": 64903,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "built-browser-final.log"
+    ],
+    "evidence": "8tests3suites pass; later change affects only Facebook synthetic-host expectation."
+  },
+  {
+    "name": "facebook-fixture-owner-red",
+    "sessionId": 42115,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "evidence": "Expected provider UID disagreed with intentionally synthetic gameplay host UID; clarified fixture expectation."
+  },
+  {
+    "name": "facebook-built-browser-final",
+    "sessionId": 3576,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "facebook-browser-final.log"
+    ],
+    "evidence": "Full injected provider SDK flow passes1test on dedicated13+ fixture."
+  },
+  {
+    "name": "supplemental-wrong-output-variable",
+    "sessionId": 20702,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "active-close-recovery.log"
+    ],
+    "evidence": "Passed6cases but wrote existing default output directory; resolved with supported variable and recorded preflight."
+  },
+  {
+    "name": "active-close-final",
+    "sessionId": 85398,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "active-close-recovery-final.log"
+    ],
+    "evidence": "6cases in the owned output directory."
+  },
+  {
+    "name": "final-file-size-and-documentation",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "tsdoc-final.log",
+      "file-sizes.log"
+    ],
+    "evidence": "26525declarations/1188files;1265source files within enforced size limits."
+  },
+  {
+    "name": "terminal-built-browser",
+    "sessionId": 35550,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "built-browser-terminal.log"
+    ],
+    "evidence": "8tests3suites pass against exact final support source; actual session35550exit0 drained."
+  },
+  {
+    "name": "final-root-audits-registration-red",
+    "sessionId": 35786,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "security-terminal.log",
+      "boundaries-terminal.log",
+      "scalability.log",
+      "e2e-coverage.log"
+    ],
+    "evidence": "Security, isolation and scalability pass; coverage detects23 actual omitted suites."
+  },
+  {
+    "name": "canonical-registration-final",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "e2e-coverage-final.log",
+      "rules-selected-final.json",
+      "registration-green-proof.json"
+    ],
+    "evidence": "Audit passes; actual canonical Jest selection equals all86 repository integration suites;23newregistrations already passed in fresh38-suiteSDK run."
+  },
+  {
+    "name": "functions-production-emit",
+    "sessionId": null,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "functions-build.log",
+      "functions-build-proof.json"
+    ],
+    "evidence": "Exact production compiler and test/mock stripping into an owned output directory; preserved all emitted bytes before cleanup."
+  }
+]

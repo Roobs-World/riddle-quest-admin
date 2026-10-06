@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Tuyệt vời`,COINS_SUFFIX:`tiền xu`,TAP_CHEST_TO_COLLECT:`Chạm vào rương để nhận xu`,TITLE:`Đã thêm tiền xu!`},n={CoinPurchase:t}})))()}r();export{n as default};

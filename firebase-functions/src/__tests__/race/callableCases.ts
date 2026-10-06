@@ -62,7 +62,7 @@ type ServiceName =
   | "abandonRaceRunForUser"
   | "publishRaceChallengeForUser"
   | "reserveRaceInviteForUser"
-  | "getRaceChallengePreview"
+  | "getRaceChallengeForUser"
   | "getRaceOutcomeForUser"
   | "listRaceInboxForUser";
 
@@ -198,9 +198,9 @@ export const createRaceCallableCases = (
       name: "getRaceChallenge",
       handler: handlers.getRaceChallenge,
       input: {challengeId: "challenge-1", locale: "en"},
-      serviceMock: mocks.getRaceChallengePreview,
+      serviceMock: mocks.getRaceChallengeForUser,
       response: raceChallengePreviewFixture,
-      expectedCall: ["challenge-1", "en"],
+      expectedCall: [userId, "challenge-1", "en"],
       accessCall: [userId],
     },
     {

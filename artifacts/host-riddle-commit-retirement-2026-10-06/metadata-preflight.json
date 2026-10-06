@@ -1,0 +1,6 @@
+{
+  "expectedFromPrecedingPass": 2,
+  "actualNewOwnedInventories": 1,
+  "removedFiles": 0,
+  "resolution": "This default Facebook fixture performs one dedicated build; only its new exact inventory is retained."
+}

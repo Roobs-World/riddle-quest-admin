@@ -1,0 +1,210 @@
+--- a/firebase-functions/src/gameplay/leaderboard.ts
++++ b/firebase-functions/src/gameplay/leaderboard.ts
+@@ -37,7 +37,7 @@
+ 
+ /** Liveness hydration needs only current public identity rather than the full account. */
+ const LEADERBOARD_DISPLAY_FIELDS = ["username", "displayName", "avatarUrl"];
+-/** Canonical fallback and multiplayer rankings need only public identity and their score inputs. */
++/** Canonical queries and transactional projection need only public identity and their score inputs. */
+ const LEADERBOARD_ACCOUNT_FIELDS = [...LEADERBOARD_DISPLAY_FIELDS, "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"];
+ 
+ /**
+@@ -293,9 +293,9 @@
+   try {
+     /** Logging occurs only after the final transaction attempt commits. */
+     const updated = await db.runTransaction(async transaction => {
+-      /** Every retry reads the latest committed account rather than a caller snapshot. */
+-      const user = await transaction.get(userRef);
+-      if (!user.exists) return false;
++      /** Each retry reads current public inputs under the account lock without loading unused private fields. */
++      const [user] = await transaction.getAll(userRef, {fieldMask: LEADERBOARD_ACCOUNT_FIELDS});
++      if (!user?.exists) return false;
+       /** Public fields retain the same sanitization and ownership identifiers. */
+       const entry = toSafeLeaderboardEntry(toLeaderboardEntryFromUserDoc(userId, user.data() as UserDocForLeaderboard), userId);
+       transaction.set(leaderboardRef, {...entry, subjectUserId: userId});
+--- a/firebase-functions/src/__tests__/leaderboard.test.ts
++++ b/firebase-functions/src/__tests__/leaderboard.test.ts
+@@ -30,16 +30,20 @@
+ const mockSet = jest.fn().mockResolvedValue(undefined);
+ /** Each writer attempt gets a fresh canonical profile. */
+ const mockTransactionGet = jest.fn();
++/** Models one masked SDK account read while retaining the canonical snapshot/error injector. */
++const mockTransactionGetAll = jest.fn(async (ref: unknown, _options: unknown) => [await mockTransactionGet(ref)]);
+ /** Public rows are replaced atomically, including removal of obsolete identity fields. */
+ const mockTransactionSet = jest.fn();
+ /** Transaction callback seam exercises retry reads without caching account snapshots. */
+ const mockRunTransaction = jest.fn(async (operation: (transaction: {
+   /** Reads authority on each attempt. */
+   get: typeof mockTransactionGet;
++  /** Reads one canonical document with the public field mask. */
++  getAll: typeof mockTransactionGetAll;
+   /** Replaces the public row. */
+   set: typeof mockTransactionSet;
+ }) => Promise<unknown>) =>
+-  operation({get: mockTransactionGet, set: mockTransactionSet}));
++  operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet}));
+ /** Provides mock order by behavior. */
+ const mockOrderBy = jest.fn();
+ /** Provides mock leaderboard limit behavior. */
+@@ -206,6 +210,8 @@
+   it("writes a complete canonical row in the account transaction", async () => {
+     await updateLeaderboardEntry("uid-1");
+     expect(mockTransactionGet).toHaveBeenCalledWith(expect.objectContaining({path: "users/uid-1"}));
++    expect(mockTransactionGetAll).toHaveBeenCalledWith(expect.objectContaining({path: "users/uid-1"}),
++      {fieldMask: ["username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"]});
+     expect(mockTransactionSet).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({
+       userId: "uid-1", subjectUserId: "uid-1", username: "Alice", level: 2, xp: 300,
+       progressScore: 2_000_000_300, totalWins: 6, bestStreak: 3,
+@@ -247,8 +253,8 @@
+     mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({username: "Old", stats: {level: 1, totalWins: 2}})})
+       .mockResolvedValueOnce({exists: true, data: () => ({username: "Current", stats: {level: 3, totalWins: 8}})});
+     mockRunTransaction.mockImplementationOnce(async operation => {
+-      await operation({get: mockTransactionGet, set: mockTransactionSet});
+-      return operation({get: mockTransactionGet, set: mockTransactionSet});
++      await operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
++      return operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
+     });
+     await updateLeaderboardEntry("uid-6");
+     expect(mockTransactionGet).toHaveBeenCalledTimes(2);
+@@ -256,6 +262,27 @@
+     expect(mockLoggerInfo).toHaveBeenCalledTimes(1);
+   });
+ 
++  it("keeps a fieldless canonical account live and publishes existing public defaults", async () => {
++    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({coins: 550})});
++    await updateLeaderboardEntry("uid-empty");
++    expect(mockTransactionGetAll).toHaveBeenCalledTimes(1);
++    expect(mockTransactionSet).toHaveBeenCalledWith(mockDocRef, expect.objectContaining({userId: "uid-empty", subjectUserId: "uid-empty",
++      username: "Player", level: 1, xp: 0, totalWins: 0, bestStreak: 0, multiplayerWins: 0}));
++  });
++
++  it("does not reuse first-attempt membership when the account is gone on retry", async () => {
++    mockTransactionGet.mockResolvedValueOnce({exists: true, data: () => ({username: "First attempt"})}).mockResolvedValueOnce({exists: false});
++    mockRunTransaction.mockImplementationOnce(async operation => {
++      await operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
++      return operation({get: mockTransactionGet, getAll: mockTransactionGetAll, set: mockTransactionSet});
++    });
++    await updateLeaderboardEntry("uid-deleted");
++    expect(mockTransactionGetAll).toHaveBeenCalledTimes(2);
++    // One queued first-attempt write is discarded by the transaction boundary, with no second write or success log.
++    expect(mockTransactionSet).toHaveBeenCalledTimes(1);
++    expect(mockLoggerInfo).not.toHaveBeenCalled();
++  });
++
+   it("propagates a canonical read failure without publishing a partial row", async () => {
+     mockTransactionGet.mockRejectedValueOnce(new Error("account unavailable"));
+     await expect(updateLeaderboardEntry("uid-7")).rejects.toThrow("account unavailable");
+--- a/firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts
++++ b/firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts
+@@ -64,3 +64,89 @@
+   expect((await db.doc(`leaderboard/${OWNER}`).get()).data()).toMatchObject({totalWins: 5, multiplayerWins: 7});
+   expect((await db.doc(`users/${OWNER}`).get()).data()).toMatchObject({stats: {totalWins: 5, multiplayerWins: 7}});
+ });
++
++it("loads only score and display inputs in one real writer transaction read", async () => {
++  await db.doc(`users/${OWNER}`).update({privateBlob: "x".repeat(100_000), coins: 550, "stats.multiplayerWins": 7});
++  /** The original SDK transaction still performs every read and write; the seam only observes returned data. */
++  const original = db.runTransaction.bind(db);
++  /** Captures decoded synthetic document size, without recording any account values. */
++  let readCalls = 0, documentBytes = 0, loadedFields: string[] = [];
++  /** Measures actual document snapshots returned beneath both the baseline and masked writer API. */
++  const observe = (document: FirebaseFirestore.DocumentSnapshot) => {
++    if (document.ref.path === `users/${OWNER}`) {
++      readCalls++;
++      documentBytes = Buffer.byteLength(JSON.stringify(document.data()));
++      loadedFields = Object.keys(document.data()!).sort();
++    }
++  };
++  /** Wraps one genuine transaction attempt while preserving its methods and commit behavior. */
++  const spy = jest.spyOn(db, "runTransaction").mockImplementation((operation, options) => original(async transaction => {
++    /** Restored after every attempt so real SDK retries cannot nest observer wrappers. */
++    const get = transaction.get.bind(transaction), getAll = transaction.getAll.bind(transaction);
++    transaction.get = async (...args: Parameters<typeof get>) => {
++      /** This baseline writer reads one document through the original SDK. */
++      const result = await get(...args);
++      observe(result as FirebaseFirestore.DocumentSnapshot);
++      return result;
++    };
++    transaction.getAll = async (...args: Parameters<typeof getAll>) => {
++      /** Field masking is performed by the original SDK and emulator, never fabricated by the fixture. */
++      const documents = await getAll(...args);
++      documents.forEach(observe);
++      return documents;
++    };
++    try {return await operation(transaction);} finally {transaction.get = get; transaction.getAll = getAll;}
++  }, options));
++  try {
++    await refreshOldSnapshot();
++    if (process.env.LEADERBOARD_WRITER_TRACE) console.info(JSON.stringify({readCalls, documentBytes, loadedFields}));
++    expect(readCalls).toBe(1);
++    expect(loadedFields).toEqual(["avatarUrl", "stats", "username"]);
++    expect(documentBytes).toBeLessThan(256);
++    expect((await db.doc(`leaderboard/${OWNER}`).get()).data()).toMatchObject({...oldStats, multiplayerWins: 7});
++    expect((await db.doc(`users/${OWNER}`).get()).data()).toMatchObject({coins: 550, privateBlob: "x".repeat(100_000)});
++  } finally {spy.mockRestore();}
++});
++
++it("preserves liveness and defaults for an account with no selected public fields", async () => {
++  await db.doc(`users/${OWNER}`).set({coins: 550});
++  await refreshOldSnapshot();
++  expect((await db.doc(`leaderboard/${OWNER}`).get()).data()).toMatchObject({userId: OWNER, subjectUserId: OWNER,
++    username: "Player", level: 1, xp: 0, totalWins: 0, bestStreak: 0, multiplayerWins: 0});
++  expect((await db.doc(`users/${OWNER}`).get()).data()).toEqual({coins: 550});
++});
++
++it.each([false, true])("re-reads canonical authority after an SDK abort (deleted %s)", async deleted => {
++  await db.doc(`leaderboard/${OWNER}`).delete();
++  /** Actual SDK rollback and retry are exercised after the first callback has queued its public row. */
++  const original = db.runTransaction.bind(db);
++  /** Only the final attempt may publish anything from its own fresh canonical snapshot. */
++  let attempts = 0;
++  /** Injects a retryable abort, then changes authority before the second attempt reads it. */
++  const spy = jest.spyOn(db, "runTransaction").mockImplementation((operation, options) => original(async transaction => {
++    attempts++;
++    if (attempts === 2) {
++      if (deleted) await db.doc(`users/${OWNER}`).delete();
++      else await db.doc(`users/${OWNER}`).update({username: "Retry current name", avatarUrl: FieldValue.delete(),
++        stats: {level: 4, xp: 200, totalWins: 11, bestStreak: 8, multiplayerWins: 9}, coins: 550});
++    }
++    /** The real writer callback reads and queues its replacement within this real transaction attempt. */
++    const result = await operation(transaction);
++    if (attempts === 1) throw Object.assign(new Error("Fixture retryable transaction abort"), {code: 10});
++    return result;
++  }, options));
++  try {
++    await refreshOldSnapshot();
++    expect(attempts).toBe(2);
++    /** A first-attempt row must not survive the SDK's actual rollback. */
++    const row = await db.doc(`leaderboard/${OWNER}`).get();
++    if (deleted) {
++      expect(row.exists).toBe(false);
++      expect((await db.doc(`users/${OWNER}`).get()).exists).toBe(false);
++    } else {
++      expect(row.data()).toMatchObject({username: "Retry current name", level: 4, xp: 200, totalWins: 11, bestStreak: 8, multiplayerWins: 9});
++      expect(row.data()).not.toHaveProperty("avatarUrl");
++      expect((await db.doc(`users/${OWNER}`).get()).data()?.coins).toBe(550);
++    }
++  } finally {spy.mockRestore();}
++});
+--- a/firebase-functions/src/__tests__/singlePlayerContentPreparationLatency.test.ts
++++ b/firebase-functions/src/__tests__/singlePlayerContentPreparationLatency.test.ts
+@@ -14,12 +14,15 @@
+   update: async (patch: Record<string, any>) => {mockReads.push(`repair-write:${path}`); await mockDelay(); mockDocuments.set(path, {...mockDocuments.get(path), ...patch});},
+   collection: (name: string) => ({doc: (id: string) => mockRef(`${path}/${name}/${id}`)}),
+ });
++/** Both single and masked transaction reads retain one physical read and the same transport stage. */
++const mockTransactionRead = async (ref: {
++  /** The SDK document path identifies one canonical transaction read. */
++  path: string;
++}) => {mockReads.push(`transaction:${ref.path}`); await mockDelay(); return mockSnapshot(ref.path);};
+ /** Atomic completion writes stay synchronous after the final required read. */
+ const mockTransaction = {
+-  get: async (ref: {
+-    /** Canonical path identifies one fresh transactional read. */
+-    path: string;
+-  }) => {mockReads.push(`transaction:${ref.path}`); await mockDelay(); return mockSnapshot(ref.path);},
++  get: mockTransactionRead,
++  getAll: async (ref: Parameters<typeof mockTransactionRead>[0], _options: unknown) => [await mockTransactionRead(ref)],
+   update: (ref: any, patch: Record<string, any>) => mockDocuments.set(ref.path, {...mockDocuments.get(ref.path), ...patch}),
+   create: (ref: any, value: Record<string, any>) => mockDocuments.set(ref.path, value),
+   set: (ref: any, value: Record<string, any>) => mockDocuments.set(ref.path, value),

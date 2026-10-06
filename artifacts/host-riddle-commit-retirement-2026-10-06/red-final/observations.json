@@ -1,0 +1,410 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "old receipt accepted only while its committed content context remains owned",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "old operation acknowledgement follows the same ownership",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "old question cannot publish after committed retirement",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "late failure cannot publish a retired notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "replacement request survives preceding passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "replacement startup stays playable",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "retained old callback cannot admit provider work in a new context",
+    "actual": {
+      "accepted": true,
+      "reads": 1
+    },
+    "expected": {
+      "accepted": false,
+      "reads": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "owned question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "retired loading activity is released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "locale:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "old receipt accepted only while its committed content context remains owned",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "old operation acknowledgement follows the same ownership",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "old question cannot publish after committed retirement",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "late failure cannot publish a retired notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "replacement request survives preceding passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "replacement startup stays playable",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "retained old callback cannot admit provider work in a new context",
+    "actual": {
+      "accepted": true,
+      "reads": 1
+    },
+    "expected": {
+      "accepted": false,
+      "reads": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "owned question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "retired loading activity is released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "owner:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "old receipt accepted only while its committed content context remains owned",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "old operation acknowledgement follows the same ownership",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "old question cannot publish after committed retirement",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "late failure cannot publish a retired notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "replacement request survives preceding passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "replacement startup stays playable",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "retained old callback cannot admit provider work in a new context",
+    "actual": {
+      "accepted": true,
+      "reads": 1
+    },
+    "expected": {
+      "accepted": false,
+      "reads": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "owned question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "retired loading activity is released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "generation:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "old receipt accepted only while its committed content context remains owned",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "old operation acknowledgement follows the same ownership",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "old question cannot publish after committed retirement",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "late failure cannot publish a retired notice",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "replacement request survives preceding passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "replacement startup stays playable",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retained old callback cannot admit provider work in a new context",
+    "actual": {
+      "accepted": true,
+      "reads": 1
+    },
+    "expected": {
+      "accepted": false,
+      "reads": 0
+    }
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "owned question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "retired loading activity is released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "provider:success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  }
+]

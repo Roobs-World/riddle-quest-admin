@@ -35,6 +35,11 @@ const LEVEL_WEIGHT = 1_000_000_000;
 /** Defines the default username value. */
 const DEFAULT_USERNAME = "Player";
 
+/** Liveness hydration needs only current public identity rather than the full account. */
+const LEADERBOARD_DISPLAY_FIELDS = ["username", "displayName", "avatarUrl"];
+/** Canonical queries and transactional projection need only public identity and their score inputs. */
+const LEADERBOARD_ACCOUNT_FIELDS = [...LEADERBOARD_DISPLAY_FIELDS, "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins"];
+
 /**
  * Computes sortable progression score using level as primary rank key.
  *
@@ -227,9 +232,22 @@ async function liveCanonicalLeaderboardEntries(documents: LeaderboardDocument[])
     return [{entry: toSafeLeaderboardEntry(data, document.id), userRef: db.collection("users").doc(document.id)}];
   });
   if (candidates.length === 0) return [];
-  /** Provides rs. */
-  const users = await db.getAll(...candidates.map(({userRef}) => userRef));
-  return candidates.flatMap(({entry}, index) => (users[index]?.exists ? [entry] : []));
+  /** Existing liveness reads need only public display fields, excluding economy and private profile payloads. */
+  const users = await db.getAll(...candidates.map(({userRef}) => userRef), {fieldMask: LEADERBOARD_DISPLAY_FIELDS});
+  return candidates.flatMap(({entry}, index) => {
+    /** Identity is hydrated only after the canonical account existence and projection ownership checks. */
+    const account = users[index];
+    if (!account?.exists) return [];
+    /** The account's current display fields supersede a stale best-effort copied profile. */
+    const display = account.data();
+    /** Score ordering and values retain their server-owned projection semantics. */
+    const hydrated = {...entry, username: normalizeKey(display?.username) ?? normalizeKey(display?.displayName) ?? DEFAULT_USERNAME};
+    delete hydrated.avatarUrl;
+    /** An absent or invalid current avatar never falls back to a prior copied image. */
+    const avatar = display?.avatarUrl;
+    if (typeof avatar === "string" && avatar.trim().length > 0) hydrated.avatarUrl = avatar;
+    return [hydrated];
+  });
 }
 
 /**
@@ -242,7 +260,7 @@ async function liveCanonicalLeaderboardEntries(documents: LeaderboardDocument[])
  */
 async function buildLeaderboardFromUsers(type: LeaderboardType, limit: number): Promise<LeaderboardEntry[]> {
   /** Provides rs snapshot. */
-  const usersSnapshot = await admin.firestore().collection("users").limit(1000).get();
+  const usersSnapshot = await admin.firestore().collection("users").select(...LEADERBOARD_ACCOUNT_FIELDS).limit(1000).get();
   /** Provides derived behavior. */
   const derived = usersSnapshot.docs.map((doc) => {
     /** Provides data behavior. */
@@ -257,51 +275,33 @@ async function buildLeaderboardFromUsers(type: LeaderboardType, limit: number): 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
- * Write (or merge) a user's leaderboard entry. Called by completeGameLogic
- * after a win so the leaderboard always reflects the latest stats.
+ * Refreshes a public leaderboard row from the current canonical account.
  *
- * @param userId    Firebase Auth UID.
- * @param username  Display username for the leaderboard row.
- * @param stats     The updated stat values to store.
- * @param avatarUrl Optional avatar URL for display.
+ * The account read and row replacement share a transaction, so delayed
+ * completion callbacks cannot restore an older score or copied identity.
+ * A missing account never recreates a public row; omitted avatars are removed.
+ *
+ * @param userId Firebase Auth UID whose committed account is projected.
  */
-export async function updateLeaderboardEntry(
-  userId: string,
-  username: string,
-  stats: {
-    /** Stores level. */
-    level: number; /** Stores xp. */
-    /** Stores xp. */
-    xp: number; /** Stores total wins. */
-    /** Stores total wins. */
-    totalWins: number; /** Stores best streak. */
-    /** Stores best streak. */
-    bestStreak: number;
-  },
-  avatarUrl?: string | null,
-): Promise<void> {
-  /** Provides entry behavior. */
-  const entry: LeaderboardEntry & {
-    /** Stores subject user id. */
-    subjectUserId: string;
-  } = {
-    userId,
-    subjectUserId: userId,
-    username,
-    level: stats.level,
-    xp: stats.xp,
-    progressScore: computeProgressScore(stats.level, stats.xp),
-    totalWins: stats.totalWins,
-    bestStreak: stats.bestStreak,
-    updatedAt: Date.now(),
-  };
-  if (avatarUrl) {
-    entry.avatarUrl = avatarUrl;
-  }
-
+export async function updateLeaderboardEntry(userId: string): Promise<void> {
+  /** Canonical account and public projection share one conflict boundary. */
+  const db = admin.firestore();
+  /** Existing authority is required before writing any copied public data. */
+  const userRef = db.collection("users").doc(userId);
+  /** Replacement removes profile fields that no longer exist on the account. */
+  const leaderboardRef = db.collection("leaderboard").doc(userId);
   try {
-    await admin.firestore().collection("leaderboard").doc(userId).set(entry, {merge: true});
-    functions.logger.info(`[Leaderboard] Updated entry for user ${userId}`);
+    /** Logging occurs only after the final transaction attempt commits. */
+    const updated = await db.runTransaction(async transaction => {
+      /** Each retry reads current public inputs under the account lock without loading unused private fields. */
+      const [user] = await transaction.getAll(userRef, {fieldMask: LEADERBOARD_ACCOUNT_FIELDS});
+      if (!user?.exists) return false;
+      /** Public fields retain the same sanitization and ownership identifiers. */
+      const entry = toSafeLeaderboardEntry(toLeaderboardEntryFromUserDoc(userId, user.data() as UserDocForLeaderboard), userId);
+      transaction.set(leaderboardRef, {...entry, subjectUserId: userId});
+      return true;
+    });
+    if (updated) functions.logger.info(`[Leaderboard] Updated entry for user ${userId}`);
   } catch (error) {
     functions.logger.error(`[Leaderboard] Failed to update entry for user ${userId}:`, error);
     captureException(error, {userId});
@@ -348,7 +348,7 @@ export const getLeaderboard = onCallWithSentry("getLeaderboard", browserCallable
     if (type === "multiplayerWins") {
       /** Accounts ranked directly by their committed multiplayer victories. */
       const snapshot = await admin.firestore().collection("users")
-        .where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc").limit(limit).get();
+        .where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc").select(...LEADERBOARD_ACCOUNT_FIELDS).limit(limit).get();
       /** Public rows derived from canonical account documents. */
       const entries = snapshot.docs.map(doc => toLeaderboardEntryFromUserDoc(doc.id, doc.data() as UserDocForLeaderboard));
       return validateCallableResponse(GetLeaderboardResponseSchema, {entries, requestingUserId}, "getLeaderboard");

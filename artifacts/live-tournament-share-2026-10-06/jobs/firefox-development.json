@@ -1,0 +1,19 @@
+{
+  "name": "firefox-development",
+  "command": [
+    "env",
+    "TOURNAMENT_SHARE_BROWSER=firefox",
+    "TOURNAMENT_SHARE_MODE=development",
+    "TOURNAMENT_SHARE_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox",
+    "TOURNAMENT_SHARE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-share-2026-10-06/firefox-development",
+    "node",
+    "packages/portal/scripts/verify-live-tournament-share-browser.mjs"
+  ],
+  "logs": [
+    "firefox-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791261089.5943785,
+  "exitCode": 0,
+  "finishedAt": 1791261118.592188
+}

@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SUPPORTED_LOCALES = void 0;
+/** Defines the supported locales value. */
+exports.SUPPORTED_LOCALES = [
+    "en",
+    "es",
+    "pt",
+    "fr",
+    "de",
+    "ja",
+    "ko",
+    "hi",
+    "ru",
+    "tr",
+    "ar",
+    "id",
+    "it",
+    "nl",
+    "pl",
+    "vi",
+];

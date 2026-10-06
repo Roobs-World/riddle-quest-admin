@@ -1,0 +1,30 @@
+[
+  {
+    "path": "packages/portal/src/play/game/hooks/useGameSessionPersistence.ts",
+    "before": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "a41b1aa2c6a69d4047f0211b41bbeb3526a006b4ecaacd7cb455ba1877a30a0b",
+    "after": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-00-after.txt",
+    "afterSha256": "614a659efa5fd92f26399ed1d3ba01fe67cc3013bfb1d1a68ea6a0249c8f7560"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "109989d7cadf36303622c7da38dcae3b6bd6ede292246f388dfcbe000c6eb271",
+    "after": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-01-after.txt",
+    "afterSha256": "0399deaa9f47068f36ba75c9d53f1331c479715fa8c8ac2440622b896dd44888"
+  },
+  {
+    "path": "packages/portal/src/play/PlayHostApp.tsx",
+    "before": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-02-before.txt",
+    "beforeSha256": "9f3dca84d8885ddbc056bc3e511e9f1709f3bd50a67f04b6ef2723b95d538284",
+    "after": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-02-after.txt",
+    "afterSha256": "d23eda6776c15bad780de89f1fda8f754630a52b2d7b4cb68f654fd7b3e01860"
+  },
+  {
+    "path": "packages/portal/scripts/verify-checkpoint-writer-recovery-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/checkpoint-writer-recovery-2026-10-06/owned-03-after.txt",
+    "afterSha256": "e82401215081b8e6142c0a61baf72a9e9b7ef786398f0da0b87fe5b24e5fbee3"
+  }
+]

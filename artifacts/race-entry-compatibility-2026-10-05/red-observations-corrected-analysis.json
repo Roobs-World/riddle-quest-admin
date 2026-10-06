@@ -1,0 +1,627 @@
+{
+  "observations": 32,
+  "changedObservations": 22,
+  "changedPaths": [
+    "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+  ],
+  "rows": [
+    {
+      "file": "entry-false-false-oversized-answer-0-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-false-oversized-answer-14-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-false-oversized-clue-0-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-false-oversized-clue-14-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-false-space-0-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-false-space-14-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-true-oversized-answer-0-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-true-oversized-answer-14-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-true-oversized-clue-0-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-true-oversized-clue-14-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-true-space-0-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-false-true-space-14-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-false-oversized-answer-0-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-false-oversized-answer-14-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-false-space-0-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-false-space-14-false.json",
+      "changed": [],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "recording-challenge",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-true-oversized-answer-0-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-true-oversized-answer-14-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-true-space-0-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "entry-true-true-space-14-false.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "status": "ready",
+        "challenge": {
+          "challengeId": "jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd",
+          "creator": {
+            "displayName": "Recorded Alice"
+          },
+          "categoryId": "history",
+          "locale": "en",
+          "targetCorrect": 10,
+          "adjustedTimeToBeatMs": 10000,
+          "rulesVersion": "race10_v1",
+          "expiresAtMs": 1800000100000,
+          "status": "active"
+        },
+        "invitation": {
+          "claimState": "claimed",
+          "publicationState": "published",
+          "role": "recipient",
+          "canCancel": false,
+          "expiresAtMs": 1800000100000
+        },
+        "serverNowMs": 1800000000000
+      }
+    },
+    {
+      "file": "legacy-false-oversized-answer-0.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-false-oversized-answer-14.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-false-oversized-clue-0.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-false-oversized-clue-14.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-false-space-0.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-false-space-14.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-true-oversized-answer-0.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-true-oversized-answer-14.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-true-oversized-clue-0.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-true-oversized-clue-14.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-true-space-0.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "file": "legacy-true-space-14.json",
+      "changed": [
+        "raceInviteLobbies/jest-invite-11eee8227bc76c491afb83b34438845efa8a95c81bd886e975fb12ac113b77a4-dddddddddddddddddddddddddddddddd"
+      ],
+      "result": {
+        "value": true
+      }
+    }
+  ]
+}

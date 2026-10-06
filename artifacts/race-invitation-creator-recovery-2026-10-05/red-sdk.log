@@ -1,0 +1,115 @@
+FAIL src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts
+  ● keeps authenticated creator cancellation available with malformed $name metadata
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 6
+    + Received  + 0
+
+      Object {
+    -   "invitation": Object {
+    -     "canCancel": true,
+    -     "claimState": "unclaimed",
+    -     "publicationState": "published",
+    -     "role": "creator",
+    -   },
+        "reason": "invalid",
+        "status": "unavailable",
+      }
+
+      42 |   expect(cancelled).toMatchObject({status:"cancelled",invitation:{role:"creator",canCancel:false}});expect(await cancelRaceInviteForUser(A,input,{db,nowMs:NOW+2})).toEqual(cancelled);
+      43 |   trace(kind,{entry,cancelled,lobbyVersionBefore:before.updateTime?.valueOf()});
+    > 44 |   expect(entry).toMatchObject({status:"unavailable",reason:"invalid",invitation:{role:"creator",canCancel:true,claimState:"unclaimed",publicationState:"published"}});
+         |                 ^
+      45 | });
+      46 | it("retains cold creator cancellation state when the revoked original recording remains malformed",async()=>{
+      47 |   /** A canonical cancel receipt is independent of parsing the old question payload. */
+
+      at src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts:44:17
+
+  ● keeps authenticated creator cancellation available with malformed $name metadata
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 6
+    + Received  + 0
+
+      Object {
+    -   "invitation": Object {
+    -     "canCancel": true,
+    -     "claimState": "unclaimed",
+    -     "publicationState": "published",
+    -     "role": "creator",
+    -   },
+        "reason": "invalid",
+        "status": "unavailable",
+      }
+
+      42 |   expect(cancelled).toMatchObject({status:"cancelled",invitation:{role:"creator",canCancel:false}});expect(await cancelRaceInviteForUser(A,input,{db,nowMs:NOW+2})).toEqual(cancelled);
+      43 |   trace(kind,{entry,cancelled,lobbyVersionBefore:before.updateTime?.valueOf()});
+    > 44 |   expect(entry).toMatchObject({status:"unavailable",reason:"invalid",invitation:{role:"creator",canCancel:true,claimState:"unclaimed",publicationState:"published"}});
+         |                 ^
+      45 | });
+      46 | it("retains cold creator cancellation state when the revoked original recording remains malformed",async()=>{
+      47 |   /** A canonical cancel receipt is independent of parsing the old question payload. */
+
+      at src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts:44:17
+
+  ● keeps authenticated creator cancellation available with malformed $name metadata
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 6
+    + Received  + 0
+
+      Object {
+    -   "invitation": Object {
+    -     "canCancel": true,
+    -     "claimState": "unclaimed",
+    -     "publicationState": "published",
+    -     "role": "creator",
+    -   },
+        "reason": "invalid",
+        "status": "unavailable",
+      }
+
+      42 |   expect(cancelled).toMatchObject({status:"cancelled",invitation:{role:"creator",canCancel:false}});expect(await cancelRaceInviteForUser(A,input,{db,nowMs:NOW+2})).toEqual(cancelled);
+      43 |   trace(kind,{entry,cancelled,lobbyVersionBefore:before.updateTime?.valueOf()});
+    > 44 |   expect(entry).toMatchObject({status:"unavailable",reason:"invalid",invitation:{role:"creator",canCancel:true,claimState:"unclaimed",publicationState:"published"}});
+         |                 ^
+      45 | });
+      46 | it("retains cold creator cancellation state when the revoked original recording remains malformed",async()=>{
+      47 |   /** A canonical cancel receipt is independent of parsing the old question payload. */
+
+      at src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts:44:17
+
+  ● retains cold creator cancellation state when the revoked original recording remains malformed
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 1
+
+      Object {
+    -   "invitation": Object {
+    -     "canCancel": false,
+    -     "role": "creator",
+    -   },
+    -   "status": "cancelled",
+    +   "status": "unavailable",
+      }
+
+      50 |   /** Cold reload reads independent authoritative lifecycle facts without trusting client memory. */
+      51 |   const entry=await getRaceEntryForUser(A,ID,"en",{db,nowMs:NOW+2,includeViewerRole:true});trace("cold-cancelled",entry);
+    > 52 |   expect(entry).toMatchObject({status:"cancelled",invitation:{role:"creator",canCancel:false}});
+         |                 ^
+      53 | });
+      54 |
+
+      at Object.<anonymous> (src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts:52:17)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 4 total
+Snapshots:   0 total
+Time:        1.337 s
+Ran all test suites.

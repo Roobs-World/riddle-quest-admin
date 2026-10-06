@@ -63,11 +63,13 @@ const mockTransaction = {
     }) => mockDocuments.delete(ref.path),
   ),
 };
+/** Discarded attempts can be injected without moving projection context outside the transaction return value. */
+const mockRunTransaction = jest.fn(async (operation: (transaction: typeof mockTransaction) => unknown) => operation(mockTransaction));
 /** Provides mock firestore behavior. */
 const mockFirestore = Object.assign(
   jest.fn(() => ({
     collection: (name: string) => collectionRef(name),
-    runTransaction: async (operation: (transaction: typeof mockTransaction) => unknown) => operation(mockTransaction),
+    runTransaction: mockRunTransaction,
   })),
   {
     FieldValue: {serverTimestamp: () => "server-time"},
@@ -83,14 +85,16 @@ const mockFinalizeAuthoritativeSession = jest.fn();
 const mockUpdateLeaderboardEntry = jest.fn();
 /** Provides mock trigger classic riddle generation if needed behavior. */
 const mockTriggerClassicRiddleGenerationIfNeeded = jest.fn();
+/** Fresh post-commit account reads can be timed without replacing completion authority. */
+const mockGetUser = jest.fn(async (userId: string) => mockDocuments.get(`users/${userId}`));
 
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
 jest.mock("../gameplay/singlePlayerSession", () => ({
   finalizeAuthoritativeSession: (...args: unknown[]) => mockFinalizeAuthoritativeSession(...args),
 }));
 jest.mock("../gameplay/firestoreService", () => ({
-  ensureUserDocumentComplete: jest.fn(),
-  getUser: async (userId: string) => mockDocuments.get(`users/${userId}`),
+  prepareUserDocumentCompletion: jest.requireActual<typeof import("../gameplay/firestoreService")>("../gameplay/firestoreService").prepareUserDocumentCompletion,
+  getUser: (userId: string) => mockGetUser(userId),
 }));
 /** Deterministic achievement adapter isolates grants from completion/hint transaction assertions. */
 const mockFindNewAchievements = jest.fn((..._args: unknown[]): Array<{
@@ -146,6 +150,7 @@ const stats = () => ({
 });
 /** Provides r. */
 const user = () => ({
+  hasPurchasedApp: false,
   userId: USER_ID,
   email: "player@example.com",
   username: "player",
@@ -195,9 +200,11 @@ describe("atomic authoritative completion", () => {
   beforeEach(() => {
     mockDocuments.clear();
     jest.clearAllMocks();
+    mockRunTransaction.mockReset().mockImplementation(async operation => operation(mockTransaction));
     mockUpdateLeaderboardEntry.mockReset();
     mockTriggerClassicRiddleGenerationIfNeeded.mockReset();
     mockFindNewAchievements.mockReturnValue([]);
+    mockGetUser.mockReset().mockImplementation(async userId => mockDocuments.get(`users/${userId}`));
     mockDocuments.set(`users/${USER_ID}`, user());
     mockFinalizeAuthoritativeSession.mockResolvedValue({
       attempts: 2,
@@ -212,6 +219,43 @@ describe("atomic authoritative completion", () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it.each((["classic", "challenge"] as const).flatMap(gameMode => [false, true].flatMap(win => [false, true].map(isAnonymous =>
+    ({gameMode, win, isAnonymous})))))("reuses committed progress for $gameMode content preparation (win $win, anonymous $isAnonymous)", async ({gameMode, win, isAnonymous}) => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    mockFinalizeAuthoritativeSession.mockResolvedValue({attempts: 1, lastGuess: win ? "piano" : "organ", answer: "piano", terminal: true,
+      locale: "en", completionKey: gameMode === "classic" ? "classic:1" : "2026-08-12",
+      ...(gameMode === "classic" ? {classicIndex: 1} : {challengeDate: "2026-08-12"})});
+    mockGetUser.mockImplementation(userId => new Promise(resolve => setTimeout(() => resolve(mockDocuments.get(`users/${userId}`)), 200)));
+    mockUpdateLeaderboardEntry.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 250)));
+    mockTriggerClassicRiddleGenerationIfNeeded.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 400)));
+    /** Required projections determine whether a post-commit read has useful work to supply. */
+    const leaderboard = win && !isAnonymous, supply = win && gameMode === "classic";
+    /** One receipt remains authoritative regardless of which projection tasks are eligible. */
+    const request = {riddleId: gameMode === "classic" ? "classic-1" : "daily-2026-08-12", gameMode, sessionToken: TOKEN_A};
+    /** Ranking reads current authority while supply reuses committed progression. */
+    const start = Date.now(), completion = completeAuthoritativeGame(request, {uid: USER_ID, isAnonymous});
+    await jest.runAllTimersAsync();
+    /** Confirmed result and bank state remain independent of empty projection work. */
+    const first = await completion;
+    expect(first.isCorrect).toBe(win);
+    if (process.env.SINGLE_PLAYER_PROJECTION_TRACE) console.info(JSON.stringify({mode: gameMode, win, isAnonymous,
+      elapsedMs: Date.now() - start, profileReads: mockGetUser.mock.calls.length,
+      leaderboardTasks: mockUpdateLeaderboardEntry.mock.calls.length, supplyTasks: mockTriggerClassicRiddleGenerationIfNeeded.mock.calls.length}));
+    expect(mockGetUser).toHaveBeenCalledTimes(0);
+    expect(mockUpdateLeaderboardEntry).toHaveBeenCalledTimes(leaderboard ? 1 : 0);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(supply ? 1 : 0);
+    expect(Date.now() - start).toBe(Math.max(supply ? 400 : 0, leaderboard ? 250 : 0));
+    /** Result replay must retain the committed balance and statistics. */
+    const profile = structuredClone(mockDocuments.get(`users/${USER_ID}`));
+    expect(profile.coins).toBe(300 + first.coinsEarned);
+    /** Receipt replay still runs only the projections required for this mode and identity. */
+    const replay = completeAuthoritativeGame(request, {uid: USER_ID, isAnonymous});
+    await jest.runAllTimersAsync();
+    expect(await replay).toEqual(first);
+    expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(profile);
+    expect(mockGetUser).toHaveBeenCalledTimes(0);
   });
 
   it("finishes independent Classic projections in the slower task's latency", async () => {
@@ -241,6 +285,70 @@ describe("atomic authoritative completion", () => {
     expect(await completion).toMatchObject({isCorrect: true});
     expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(1);
     expect(Date.now() - started).toBe(400);
+  });
+
+  it("awaits ranking even when the independent content supply check fails", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    mockTriggerClassicRiddleGenerationIfNeeded.mockRejectedValueOnce(new Error("content supply unavailable"));
+    mockUpdateLeaderboardEntry.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 250)));
+    /** Content failure cannot suppress ranking or leave it running past the response. */
+    const start = Date.now(), completion = completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID});
+    await jest.runAllTimersAsync();
+    expect(await completion).toMatchObject({isCorrect: true});
+    expect(mockUpdateLeaderboardEntry).toHaveBeenCalledWith(USER_ID);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith(USER_ID, 2, "en");
+    expect(mockGetUser).not.toHaveBeenCalled();
+    expect(Date.now() - start).toBe(250);
+  });
+
+  it("uses current account progression when replaying an older Classic receipt", async () => {
+    /** The replay result stays immutable while the supply check follows current account authority. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** A completed win first advances and checks index two. */
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenLastCalledWith(USER_ID, 2, "en");
+    mockDocuments.get(`users/${USER_ID}`)!.progress.classicIndex = 7;
+    expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenLastCalledWith(USER_ID, 7, "en");
+    expect(mockGetUser).not.toHaveBeenCalled();
+  });
+
+  it("checks current progression for a superseded Classic win", async () => {
+    mockDocuments.get(`users/${USER_ID}`)!.progress.classicIndex = 7;
+    expect(await completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID}))
+      .toMatchObject({isCorrect: true, coinsEarned: 0});
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith(USER_ID, 7, "en");
+    expect(mockGetUser).not.toHaveBeenCalled();
+  });
+
+  it("skips content when replaying a receipt whose account has been removed", async () => {
+    /** Missing-account replay still returns its original public result without new projections of progress. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** Establishes an authoritative receipt before deleting the fixture account. */
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    mockDocuments.delete(`users/${USER_ID}`);
+    mockTriggerClassicRiddleGenerationIfNeeded.mockClear();
+    expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).not.toHaveBeenCalled();
+    expect(mockGetUser).not.toHaveBeenCalled();
+  });
+
+  it("never leaks an abandoned transaction attempt's supply index", async () => {
+    mockRunTransaction.mockImplementationOnce(async operation => {
+      /** This Map snapshot models rollback of every first-attempt write before a retry. */
+      const original = structuredClone(mockDocuments);
+      await operation(mockTransaction);
+      mockDocuments.clear();
+      for (const [path, value] of original) mockDocuments.set(path, value);
+      mockDocuments.get(`users/${USER_ID}`)!.progress.classicIndex = 9;
+      return operation(mockTransaction);
+    });
+    expect(await completeAuthoritativeGame({riddleId: "classic-1", gameMode: "classic", sessionToken: TOKEN_A}, {uid: USER_ID}))
+      .toMatchObject({isCorrect: true, coinsEarned: 0});
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledTimes(1);
+    expect(mockTriggerClassicRiddleGenerationIfNeeded).toHaveBeenCalledWith(USER_ID, 9, "en");
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(300);
+    expect(mockGetUser).not.toHaveBeenCalled();
   });
 
   it("commits rewards, progression, and receipt once across completion retries", async () => {

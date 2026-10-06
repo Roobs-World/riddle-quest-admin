@@ -280,151 +280,149 @@ export async function initializeNewUser(
   }
 }
 
-/**
- * Ensures a user document exists with proper default values.
- * If the user exists but is missing stats/progress, it will add them.
- *
- * @param userId - The ID of the user.
- * @return A promise that resolves when the user document is verified/updated.
- */
+/** Prepares missing profile fields from the current authoritative account snapshot. */
+export function prepareUserDocumentCompletion(userData: Partial<Player>): Partial<Player> {
+  /** Updates s. */
+  const updates: Partial<Player> = {};
+
+  // Ensure stats object exists with all required fields
+  if (!userData.stats) {
+    updates.stats = {
+      xp: 0,
+      level: 1,
+      dailyPuzzlesCompleted: 0,
+      bestStreak: 0,
+      totalWordsGuessed: 0,
+      winRate: 0,
+      averageGuesses: 0,
+      totalScore: 0,
+      highestLevelClassic: 0,
+      gamesPlayed: 0,
+      wins: 0,
+      challengeWins: 0,
+      winStreak: 0,
+      totalWins: 0,
+      totalGuessesInWins: 0,
+      totalHintsUsed: 0,
+      multiplayerGamesPlayed: 0,
+      multiplayerWins: 0,
+      multiplayerChallengesCreated: 0,
+    };
+  } else {
+    // Check for missing stat fields and add defaults
+    /** Provides current stats behavior. */
+    const currentStats = userData.stats;
+    /** Provides default stats behavior. */
+    const defaultStats = {
+      xp: 0,
+      level: 1,
+      dailyPuzzlesCompleted: 0,
+      bestStreak: 0,
+      totalWordsGuessed: 0,
+      winRate: 0,
+      averageGuesses: 0,
+      totalScore: 0,
+      highestLevelClassic: 0,
+      gamesPlayed: 0,
+      wins: 0,
+      challengeWins: 0,
+      winStreak: 0,
+      totalWins: 0,
+      totalGuessesInWins: 0,
+      totalHintsUsed: 0,
+      multiplayerGamesPlayed: 0,
+      multiplayerWins: 0,
+      multiplayerChallengesCreated: 0,
+    };
+
+    /** Provides needs stats update behavior. */
+    let needsStatsUpdate = false;
+    /** Provides merged stats behavior. */
+    const mergedStats = {...currentStats};
+
+    for (const [key, defaultValue] of Object.entries(defaultStats)) {
+      if (!(key in currentStats) || currentStats[key as keyof typeof currentStats] === undefined) {
+        mergedStats[key as keyof typeof mergedStats] = defaultValue;
+        needsStatsUpdate = true;
+      }
+    }
+
+    if (needsStatsUpdate) {
+      updates.stats = mergedStats;
+    }
+  }
+
+  // Ensure progress object exists with all required fields
+  if (!userData.progress) {
+    updates.progress = {
+      classicIndex: 1,
+      dailyChallengeIndex: 0,
+      dailyChallengeCurrentQuestion: 0,
+    };
+  } else {
+    /** Provides current progress behavior. */
+    const currentProgress = userData.progress;
+    /** Provides default progress behavior. */
+    const defaultProgress = {
+      classicIndex: 1,
+      dailyChallengeIndex: 0,
+      dailyChallengeCurrentQuestion: 0,
+    };
+
+    /** Provides needs progress update behavior. */
+    let needsProgressUpdate = false;
+    /** Provides merged progress behavior. */
+    const mergedProgress = {...currentProgress};
+
+    for (const [key, defaultValue] of Object.entries(defaultProgress)) {
+      if (!(key in currentProgress) || currentProgress[key as keyof typeof currentProgress] === undefined) {
+        mergedProgress[key as keyof typeof mergedProgress] = defaultValue;
+        needsProgressUpdate = true;
+      }
+    }
+
+    if (needsProgressUpdate) {
+      updates.progress = mergedProgress;
+    }
+  }
+
+  // Ensure other required fields exist
+  if (userData.coins === undefined) {
+    updates.coins = INITIAL_COINS; // Default starting coins
+  }
+
+  if (userData.hasPurchasedApp === undefined) {
+    updates.hasPurchasedApp = false;
+  }
+
+  if (!Array.isArray(userData.unlockedAchievements)) {
+    updates.unlockedAchievements = [];
+  }
+
+  return updates;
+}
+
+/** Repairs a legacy account without overwriting a concurrent gameplay or commerce commit. */
 export async function ensureUserDocumentComplete(userId: string): Promise<void> {
   try {
-    /** Provides r ref. */
-    const userRef = getDb().collection("users").doc(userId);
-    /** Provides r doc. */
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      functions.logger.warn(
-        `User document not found for ${userId}, cannot ensure completeness without basic user data`,
-      );
-      return;
-    }
-
-    /** Provides r data. */
-    const userData = userDoc.data() as Partial<Player>;
-    /** Updates s. */
-    const updates: Partial<Player> = {};
-
-    // Ensure stats object exists with all required fields
-    if (!userData.stats) {
-      updates.stats = {
-        xp: 0,
-        level: 1,
-        dailyPuzzlesCompleted: 0,
-        bestStreak: 0,
-        totalWordsGuessed: 0,
-        winRate: 0,
-        averageGuesses: 0,
-        totalScore: 0,
-        highestLevelClassic: 0,
-        gamesPlayed: 0,
-        wins: 0,
-        challengeWins: 0,
-        winStreak: 0,
-        totalWins: 0,
-        totalGuessesInWins: 0,
-        totalHintsUsed: 0,
-        multiplayerGamesPlayed: 0,
-        multiplayerWins: 0,
-        multiplayerChallengesCreated: 0,
-      };
-    } else {
-      // Check for missing stat fields and add defaults
-      /** Provides current stats behavior. */
-      const currentStats = userData.stats;
-      /** Provides default stats behavior. */
-      const defaultStats = {
-        xp: 0,
-        level: 1,
-        dailyPuzzlesCompleted: 0,
-        bestStreak: 0,
-        totalWordsGuessed: 0,
-        winRate: 0,
-        averageGuesses: 0,
-        totalScore: 0,
-        highestLevelClassic: 0,
-        gamesPlayed: 0,
-        wins: 0,
-        challengeWins: 0,
-        winStreak: 0,
-        totalWins: 0,
-        totalGuessesInWins: 0,
-        totalHintsUsed: 0,
-        multiplayerGamesPlayed: 0,
-        multiplayerWins: 0,
-        multiplayerChallengesCreated: 0,
-      };
-
-      /** Provides needs stats update behavior. */
-      let needsStatsUpdate = false;
-      /** Provides merged stats behavior. */
-      const mergedStats = {...currentStats};
-
-      for (const [key, defaultValue] of Object.entries(defaultStats)) {
-        if (!(key in currentStats) || currentStats[key as keyof typeof currentStats] === undefined) {
-          mergedStats[key as keyof typeof mergedStats] = defaultValue;
-          needsStatsUpdate = true;
-        }
+    /** One transaction protects both the default computation and the conditional update. */
+    const db = getDb();
+    /** Canonical account is never created by profile repair. */
+    const userRef = db.collection("users").doc(userId);
+    /** Only committed repair fields are logged; retries use fresh snapshots. */
+    const fields = await db.runTransaction(async transaction => {
+      /** Missing accounts retain the existing no-recreation behavior. */
+      const userDoc = await transaction.get(userRef);
+      if (!userDoc.exists) {
+        functions.logger.warn(`User document not found for ${userId}, cannot ensure completeness without basic user data`);
+        return [];
       }
-
-      if (needsStatsUpdate) {
-        updates.stats = mergedStats;
-      }
-    }
-
-    // Ensure progress object exists with all required fields
-    if (!userData.progress) {
-      updates.progress = {
-        classicIndex: 1,
-        dailyChallengeIndex: 0,
-        dailyChallengeCurrentQuestion: 0,
-      };
-    } else {
-      /** Provides current progress behavior. */
-      const currentProgress = userData.progress;
-      /** Provides default progress behavior. */
-      const defaultProgress = {
-        classicIndex: 1,
-        dailyChallengeIndex: 0,
-        dailyChallengeCurrentQuestion: 0,
-      };
-
-      /** Provides needs progress update behavior. */
-      let needsProgressUpdate = false;
-      /** Provides merged progress behavior. */
-      const mergedProgress = {...currentProgress};
-
-      for (const [key, defaultValue] of Object.entries(defaultProgress)) {
-        if (!(key in currentProgress) || currentProgress[key as keyof typeof currentProgress] === undefined) {
-          mergedProgress[key as keyof typeof mergedProgress] = defaultValue;
-          needsProgressUpdate = true;
-        }
-      }
-
-      if (needsProgressUpdate) {
-        updates.progress = mergedProgress;
-      }
-    }
-
-    // Ensure other required fields exist
-    if (userData.coins === undefined) {
-      updates.coins = INITIAL_COINS; // Default starting coins
-    }
-
-    if (userData.hasPurchasedApp === undefined) {
-      updates.hasPurchasedApp = false;
-    }
-
-    if (!Array.isArray(userData.unlockedAchievements)) {
-      updates.unlockedAchievements = [];
-    }
-
-    // Apply updates if any are needed
-    if (Object.keys(updates).length > 0) {
-      await userRef.update(updates);
-      functions.logger.info(`Updated user document for ${userId} with missing fields:`, Object.keys(updates));
-    }
+      /** Missing defaults are derived only from this transaction attempt. */
+      const updates = prepareUserDocumentCompletion(userDoc.data() as Partial<Player>);
+      if (Object.keys(updates).length) transaction.update(userRef, updates);
+      return Object.keys(updates);
+    });
+    if (fields.length) functions.logger.info(`Updated user document for ${userId} with missing fields:`, fields);
   } catch (error) {
     functions.logger.error(`Error ensuring user document completeness for ${userId}:`, error);
     captureException(error);

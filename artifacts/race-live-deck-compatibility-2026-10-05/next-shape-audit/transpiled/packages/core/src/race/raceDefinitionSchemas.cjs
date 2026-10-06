@@ -1,0 +1,94 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RaceCategorySchema = exports.RACE_RULES = exports.RaceRulesSchema = exports.RaceContentQualityVersionSchema = exports.RaceDifficultyBandSchema = exports.RaceAccessRequestSchema = exports.RaceAccessResponseSchema = exports.RaceLocaleSchema = exports.RaceCategoryIdSchema = exports.RACE_SUPPORTED_LOCALES = exports.RACE_CATEGORY_IDS = exports.RaceAchievementIdSchema = exports.RACE_ACHIEVEMENT_IDS = exports.RACE_CHALLENGE_TTL_MS = exports.RACE_MAX_ADJUSTED_TIME_MS = exports.RACE_SKIP_PENALTY_MS = exports.RACE_HINT_PENALTY_MS = exports.RACE_MAX_HINTS_PER_RIDDLE = exports.RACE_MAX_GUESSES_PER_RIDDLE = exports.RACE_DECK_SIZE = exports.RACE_TARGET_CORRECT = exports.RACE_RULES_VERSION = void 0;
+const zod_1 = require("zod");
+const locales_1 = require("../validation/locales");
+const limits_1 = require("../game/limits");
+/** Version identifier for the current authoritative multiplayer rules. */
+exports.RACE_RULES_VERSION = "race10_v1";
+/** Correct answers required to complete a Race to 10 run. */
+exports.RACE_TARGET_CORRECT = 10;
+/** Riddles captured in each authoritative race deck. */
+exports.RACE_DECK_SIZE = 15;
+/** Incorrect guesses allowed before a riddle is automatically skipped. */
+exports.RACE_MAX_GUESSES_PER_RIDDLE = 5;
+/** Hints allowed for each race riddle. */
+exports.RACE_MAX_HINTS_PER_RIDDLE = limits_1.MAX_RIDDLE_ANSWER_CHARACTERS;
+/** Adjusted-time penalty added for using a hint. */
+exports.RACE_HINT_PENALTY_MS = 15_000;
+/** Adjusted-time penalty added for skipping a riddle. */
+exports.RACE_SKIP_PENALTY_MS = 45_000;
+/** Maximum adjusted duration of a competitive challenger run. */
+exports.RACE_MAX_ADJUSTED_TIME_MS = 300_000;
+/** Duration for which a published race challenge remains active. */
+exports.RACE_CHALLENGE_TTL_MS = 7 * 24 * 60 * 60 * 1_000;
+/** Stable identifiers for achievements granted by authoritative race events. */
+exports.RACE_ACHIEVEMENT_IDS = [
+    "race_debut",
+    "race_first_win",
+    "race_wins_5",
+    "race_wins_25",
+    "race_host",
+    "race_hosts_5",
+    "race_clean_run",
+];
+/** Schema for a supported multiplayer achievement identifier. */
+exports.RaceAchievementIdSchema = zod_1.z.enum(exports.RACE_ACHIEVEMENT_IDS);
+/** Stable identifiers for selectable multiplayer content categories. */
+exports.RACE_CATEGORY_IDS = ["history", "geography", "music", "film", "science", "mixed"];
+/** Locales currently supported by authoritative multiplayer content. */
+exports.RACE_SUPPORTED_LOCALES = locales_1.SUPPORTED_LOCALES;
+/** Schema for a supported multiplayer category identifier. */
+exports.RaceCategoryIdSchema = zod_1.z.enum(exports.RACE_CATEGORY_IDS);
+/** Schema for a locale supported by authoritative multiplayer. */
+exports.RaceLocaleSchema = zod_1.z.enum(exports.RACE_SUPPORTED_LOCALES);
+/** Schema for a player's evaluated multiplayer rollout access. */
+exports.RaceAccessResponseSchema = zod_1.z
+    .object({
+    enabled: zod_1.z.boolean(),
+    locale: exports.RaceLocaleSchema,
+    reason: zod_1.z.enum(["enabled", "rollout_disabled", "not_in_cohort"]),
+})
+    .strict();
+/** Schema for a locale-specific multiplayer access request. */
+exports.RaceAccessRequestSchema = zod_1.z.object({ locale: exports.RaceLocaleSchema }).strict();
+/** Schema for the content difficulty bands used to balance race decks. */
+exports.RaceDifficultyBandSchema = zod_1.z.enum(["easy", "medium", "hard"]);
+/** Schema for the review/version marker attached to race content. */
+exports.RaceContentQualityVersionSchema = zod_1.z.string().trim().min(1).max(80);
+/** Schema for the immutable rules included in race responses. */
+exports.RaceRulesSchema = zod_1.z
+    .object({
+    version: zod_1.z.literal(exports.RACE_RULES_VERSION),
+    targetCorrect: zod_1.z.literal(exports.RACE_TARGET_CORRECT),
+    deckSize: zod_1.z.literal(exports.RACE_DECK_SIZE),
+    maxGuessesPerRiddle: zod_1.z.literal(exports.RACE_MAX_GUESSES_PER_RIDDLE),
+    /** Accept one-hint responses while an older server revision is still serving races. */
+    maxHintsPerRiddle: zod_1.z.union([zod_1.z.literal(1), zod_1.z.literal(exports.RACE_MAX_HINTS_PER_RIDDLE)]),
+    hintPenaltyMs: zod_1.z.literal(exports.RACE_HINT_PENALTY_MS),
+    skipPenaltyMs: zod_1.z.literal(exports.RACE_SKIP_PENALTY_MS),
+    maxAdjustedTimeMs: zod_1.z.literal(exports.RACE_MAX_ADJUSTED_TIME_MS),
+})
+    .strict();
+/** Frozen canonical rules used by the client and server. */
+exports.RACE_RULES = Object.freeze({
+    version: exports.RACE_RULES_VERSION,
+    targetCorrect: exports.RACE_TARGET_CORRECT,
+    deckSize: exports.RACE_DECK_SIZE,
+    maxGuessesPerRiddle: exports.RACE_MAX_GUESSES_PER_RIDDLE,
+    maxHintsPerRiddle: exports.RACE_MAX_HINTS_PER_RIDDLE,
+    hintPenaltyMs: exports.RACE_HINT_PENALTY_MS,
+    skipPenaltyMs: exports.RACE_SKIP_PENALTY_MS,
+    maxAdjustedTimeMs: exports.RACE_MAX_ADJUSTED_TIME_MS,
+});
+/** Schema for an answer-free multiplayer category summary. */
+exports.RaceCategorySchema = zod_1.z
+    .object({
+    categoryId: exports.RaceCategoryIdSchema,
+    nameKey: zod_1.z.string().min(1).max(120),
+    descriptionKey: zod_1.z.string().min(1).max(120),
+    icon: zod_1.z.enum(["history", "geography", "music", "film", "science", "shuffle"]),
+    colorToken: zod_1.z.string().regex(/^#[0-9a-fA-F]{6}$/),
+    availableRiddleCount: zod_1.z.number().int().nonnegative(),
+})
+    .strict();

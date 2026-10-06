@@ -81,7 +81,9 @@ export const postRedditGateway = async (path: string, body: unknown = {}): Promi
     const payload: unknown = await response.json();
     if (!response.ok || !isRecord(payload) || payload.ok !== true) {
       /** Stable HTTP categories remain available when older gateways omit typed details. */
-      const code = response.status === 409 && /^\/api\/game\/race\.live\.(join|update)$/.test(path) &&
+      const code = response.status === 404 && path === "/api/game/race.live.retire" &&
+        isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "not-found" ? "not-found" :
+        response.status === 409 && /^\/api\/game\/race\.live\.(join|update|retire)$/.test(path) &&
         isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "failed-precondition" ? "failed-precondition" :
         [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
         response.status === 429 ? "resource-exhausted" : "unavailable";
@@ -416,6 +418,12 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
                       /** Answer-free response contract loaded with multiplayer. */
                       const {LiveRaceViewSchema} = await import("@qwordly/core/race");
                       return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.join", input)).result);
+                    },
+                    /** Retires the original join under verified same-origin account authority. */
+                    async retireJoin(input) {
+                      /** Retirement carries only the original request identity through the same-origin gateway. */
+                      const {RetireLiveRaceJoinResponseSchema} = await import("@qwordly/core/race");
+                      return RetireLiveRaceJoinResponseSchema.parse((await postRedditGateway("/api/game/race.live.retire", input)).result);
                     },
                     /** Reads or mutates an authenticated live seat through Devvit. */
                     async update(input) {

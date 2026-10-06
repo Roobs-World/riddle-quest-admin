@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/7b5bfcc9bb2dd1ffc731e061e19bf504d3cc691961983ebfdc422e64df2b3cce/jest.json",
+    "preserved": "artifacts/race-answer-input-shape-2026-10-05/target-metadata/jest.json",
+    "sha256": "aef857abdc8c554f0c04c45d238e2e82ca49da02537648c8d409025bb2883d49"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/260438a7580fac585f6d779e9d01f53882261509d39c05115cac3824fbb03725/facebook.json",
+    "preserved": "artifacts/race-answer-input-shape-2026-10-05/target-metadata/facebook.json",
+    "sha256": "2dee40382d2ca0612197257fef2f5919cae1148b574179784c09ddbeeada8d8b"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/7e1f4e2d0260e5be4dc5eec15d8106513e82fdb107bcf774d487e53a86374716/reddit.json",
+    "preserved": "artifacts/race-answer-input-shape-2026-10-05/target-metadata/reddit.json",
+    "sha256": "a9288def9cf46f97be5f429057f7cf873e5cda2e3a13e613b027d159bc1f3705"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/ebb731783021d7edfc586a24f3449d1349e9130d192baebb17f6b0d1e5a11852/youtube.json",
+    "preserved": "artifacts/race-answer-input-shape-2026-10-05/target-metadata/youtube.json",
+    "sha256": "041d586ae661541dc635bc3458e8ebd137a8ac08f9894251ccf4563282995a49"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/d53d9f0e003103623c29191818304af589964cea877192561100e58122936b84/netflix.json",
+    "preserved": "artifacts/race-answer-input-shape-2026-10-05/target-metadata/netflix.json",
+    "sha256": "7848000391298b3f4d706368cc72197706de387846b6fdc9aa35d62b8cfcc175"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/07451471e23676c57086f0b2705a2dbc13de96b0f96f503b33e7b853eb1a6fdc/yahoo.json",
+    "preserved": "artifacts/race-answer-input-shape-2026-10-05/target-metadata/yahoo.json",
+    "sha256": "22a3d2f9664b30f266c71f9edeb8259a856b8768f0d2a3aebcdbe81e6131bb4e"
+  }
+]

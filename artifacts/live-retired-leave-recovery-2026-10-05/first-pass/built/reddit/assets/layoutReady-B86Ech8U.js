@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";function t(e){let t=!1,n=0,r=()=>{n=window.requestAnimationFrame(()=>{t||e()})};return document.readyState===`complete`?r():window.addEventListener(`load`,r,{once:!0}),()=>{t=!0,window.cancelAnimationFrame(n),window.removeEventListener(`load`,r)}}function n(){return(n=e((()=>{})))()}export{t as n,n as t};

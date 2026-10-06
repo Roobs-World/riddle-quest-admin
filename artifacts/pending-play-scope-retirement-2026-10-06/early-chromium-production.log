@@ -1,0 +1,35 @@
+{
+  "mode": "production",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 30,
+  "checks": 159,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "rejected",
+      "name": "accepted successor is playable before receipt",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Pending-play retry scope retirement
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs:57:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

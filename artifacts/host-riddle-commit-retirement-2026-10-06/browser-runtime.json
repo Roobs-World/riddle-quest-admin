@@ -1,0 +1,11 @@
+[
+  {
+    "name": "chromium",
+    "version": "153.0.8010.12"
+  },
+  {
+    "name": "firefox",
+    "version": "153.0",
+    "executablePath": "/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox"
+  }
+]

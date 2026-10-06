@@ -1,0 +1,110 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-join",
+    "name": "replacement adapter recovers the same canonical account ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-join",
+    "name": "retired cleanup does not cancel the resumed server seat",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-join",
+    "name": "resumed journey retains its native editor",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-join",
+    "name": "old receipts do not grant a completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-join",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "late-join",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "delayed-leave",
+    "name": "replacement adapter recovers the same canonical account ticket",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "delayed-leave",
+    "name": "retired cleanup does not cancel the resumed server seat",
+    "actual": true,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "delayed-leave",
+    "name": "resumed journey retains its native editor",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "delayed-leave",
+    "name": "old receipts do not grant a completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "delayed-leave",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "delayed-leave",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

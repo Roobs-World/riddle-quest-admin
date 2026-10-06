@@ -1,0 +1,30 @@
+[
+  {
+    "path": "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+    "before": "artifacts/pending-play-lifetime-2026-10-06/owned-00-before.txt",
+    "beforeSha256": "e900d883e25c239276b6ccb639d4fa344523a51a9ed29fb43ac3392f144f1b2c",
+    "after": "artifacts/pending-play-lifetime-2026-10-06/owned-00-after.txt",
+    "afterSha256": "f15d374613f31e06e768f3ba025db919141ca41373d674ede5be5a13d4c2e988"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts",
+    "before": "artifacts/pending-play-lifetime-2026-10-06/owned-01-before.txt",
+    "beforeSha256": "3f5148cfaebe5fb219868e288c07ad8833dde88fd341d3970c8f671faac3de0f",
+    "after": "artifacts/pending-play-lifetime-2026-10-06/owned-01-after.txt",
+    "afterSha256": "a9e629967edd3ea386ac24509d1fa67344d7cb1cc655815f01feb291357afdf9"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/pending-play-lifetime-2026-10-06/owned-02-before.txt",
+    "beforeSha256": "9826a8f91c835da5281d7421c5dd4a5daf01399a1e40571fcc17b9f2f835a16f",
+    "after": "artifacts/pending-play-lifetime-2026-10-06/owned-02-after.txt",
+    "afterSha256": "20905a58fd02d31bcc3308e3a58c3f07935e8902bbb197f9b460fd921d5c7869"
+  },
+  {
+    "path": "packages/portal/scripts/verify-pending-play-lifetime-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/pending-play-lifetime-2026-10-06/owned-03-after.txt",
+    "afterSha256": "2044231edca798282cb5502c3f732c5d62fe966aac3042dfdd65586c1ca5d7d6"
+  }
+]

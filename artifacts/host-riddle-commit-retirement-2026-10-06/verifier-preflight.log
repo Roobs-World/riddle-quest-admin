@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-riddle-commit-retirement-2026-10-06/verify.py", line 101, in <module>
+    assert 'packages/portal/src/play/useHostRiddleLifecycle.ts' in data['modules']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

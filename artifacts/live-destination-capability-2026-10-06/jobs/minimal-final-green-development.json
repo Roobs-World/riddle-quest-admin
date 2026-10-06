@@ -1,0 +1,17 @@
+{
+  "name": "minimal-final-green-development",
+  "command": [
+    "env",
+    "LIVE_DEST_MODE=development",
+    "LIVE_DEST_REPORT_DIR=artifacts/live-destination-capability-2026-10-06/minimal-final-green-development",
+    "node",
+    "artifacts/live-destination-capability-2026-10-06/probe-choice.mjs"
+  ],
+  "logs": [
+    "minimal-final-green-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791253812.4210694,
+  "exitCode": 0,
+  "finishedAt": 1791253813.6080132
+}

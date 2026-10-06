@@ -1,0 +1,47 @@
+FAIL src/__tests__/firestoreService.test.ts
+  ● FirestoreService › ensureUserDocumentComplete › preserves concurrent progression, purchase and rewards while repairing a legacy profile
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 11
+    + Received  +  6
+
+      Object {
+    -   "coins": 550,
+    -   "hasPurchasedApp": true,
+    +   "coins": 300,
+    +   "hasPurchasedApp": false,
+        "progress": Object {
+    -     "classicIndex": 6,
+    +     "classicIndex": 5,
+        },
+        "stats": Object {
+    -     "gamesPlayed": 10,
+    -     "multiplayerWins": 2,
+    -   },
+    -   "unlockedAchievements": Array [
+    -     Object {
+    -       "achievementId": "race_debut",
+    -       "unlockedAt": 123,
+    +     "gamesPlayed": 9,
+    +     "multiplayerWins": 1,
+        },
+    -   ],
+    +   "unlockedAchievements": Array [],
+      }
+
+      738 |       });
+      739 |       await ensureUserDocumentComplete(testUserId);
+    > 740 |       expect(stored).toMatchObject(advanced);
+          |                      ^
+      741 |       expect(stored.stats.level).toBe(1);
+      742 |       expect(stored.progress.dailyChallengeIndex).toBe(0);
+      743 |       expect(mockFirestore.runTransaction).toHaveBeenCalledTimes(1);
+
+      at Object.<anonymous> (src/__tests__/firestoreService.test.ts:740:22)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 49 skipped, 50 total
+Snapshots:   0 total
+Time:        0.429 s, estimated 1 s
+Ran all test suites matching src/__tests__/firestoreService.test.ts with tests matching "preserves concurrent progression, purchase and rewards".

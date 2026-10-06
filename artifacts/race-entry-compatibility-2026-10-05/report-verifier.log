@@ -1,0 +1,55 @@
+2384 source inputs verified source-report
+{
+  "goal": "active",
+  "change": "Validate original frozen race content before recorded readiness or recipient binding; share user-aware admission with the legacy preview callable and preserve accepted recovery.",
+  "newSdkCases": 90,
+  "baselineSdkFailures": 46,
+  "baselineTypedStructuralFailures": 4,
+  "baselineCapturedSeatMutations": 22,
+  "greenCapturedSeatMutations": 0,
+  "newCallableCases": 3,
+  "baselineCallableFailures": 4,
+  "backendUnitTests": 1705,
+  "backendUnitSuites": 136,
+  "emulatorTests": 637,
+  "emulatorSuites": 33,
+  "originalInvitationLifecycleCases": 16,
+  "pinnedNode22SdkCases": 90,
+  "coreTests": 374,
+  "coreSuites": 38,
+  "portalFocusedTests": 127,
+  "portalFocusedSuites": 9,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "types": [
+    "core",
+    "backend",
+    "portal"
+  ],
+  "backendLint": "passed",
+  "tsdocDeclarations": 26337,
+  "tsdocFiles": 1177,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2384,
+  "compiledCoreHashes": 24,
+  "preservedBuildFiles": 1300,
+  "ownedParentJobsTerminal": 28,
+  "resolvedPreflights": [
+    "green-sdk-initial",
+    "initial-backend",
+    "ledger-serialization-preflight",
+    "module-generation-preflight",
+    "tsdoc-probe",
+    "types-and-callables-initial"
+  ],
+  "productionStableAcrossCorrectedFixture": true,
+  "legacyPreviewTransactionCount": 1,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true,
+    "builtBytesVerifiedBeforeCleanup": 1300
+  },
+  "limits": "No measured network latency gain, production deployment, provider certification, or YouTube release certification. Four initial modern oversized-clue cases were already parser errors and are now typed invalid entry. The final fixture-only rerun preserves all other verified source hashes."
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "method-success",
+    "name": "one admitted initial authority read",
+    "actual": 1,
+    "expected": 1
+  }
+]

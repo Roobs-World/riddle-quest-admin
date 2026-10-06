@@ -30,6 +30,8 @@ import {baseAttemptLimit, normalizeAnswerText, transitionSinglePlayerGuess} from
 import type {
   AuthoritativeHintResult,
   AuthoritativeSkipResult,
+  CommittedAuthoritativeSkipResult,
+  IssuedAuthoritativeSession,
   SinglePlayerSessionState,
 } from "./singlePlayerSessionTypes";
 export {transitionSinglePlayerGuess} from "./singlePlayerGuessTransition";
@@ -63,8 +65,13 @@ const getCompletionReceiptRef = (userId: string, gameMode: "classic" | "challeng
     .collection("gameCompletionReceipts")
     .doc(opaqueHash(`${userId}\0${gameMode}\0${completionKey}`));
 
-/** Issues or resumes one opaque session token for immutable canonical content. */
-export async function ensureAuthoritativeSession(
+/** Preserves token-only issuance for callers that separately reconcile current session state. */
+export async function ensureAuthoritativeSession(...args: Parameters<typeof ensureAuthoritativeSessionWithState>): Promise<string> {
+  return (await ensureAuthoritativeSessionWithState(...args)).sessionToken;
+}
+
+/** Issues or resumes canonical state inside the same transaction that selects its opaque token. */
+export async function ensureAuthoritativeSessionWithState(
   userId: string,
   gameMode: "classic" | "challenge",
   riddleId: string,
@@ -80,10 +87,11 @@ export async function ensureAuthoritativeSession(
     /** Server-owned content difficulty; never accepted from gameplay requests. */
     difficultyBand?: unknown;
   },
-): Promise<string> {
+): Promise<IssuedAuthoritativeSession> {
   /** Provides binding ref behavior. */
   const bindingRef = getBindingRef(userId, contentKey);
-  return admin.firestore().runTransaction(async (transaction) => {
+  /** Only the final committed attempt can provide projection inputs. */
+  const issued = await admin.firestore().runTransaction(async (transaction) => {
     /** Provides binding snapshot behavior. */
     const bindingSnapshot = await transaction.get(bindingRef);
     if (bindingSnapshot.exists) {
@@ -111,10 +119,10 @@ export async function ensureAuthoritativeSession(
           const lossReceipt = await transaction.get(
             getCompletionReceiptRef(userId, gameMode, `${completionKey}:loss:${token}`),
           );
-          if (!lossReceipt.exists || lossReceipt.data()?.status !== "completed") return token;
+          if (!lossReceipt.exists || lossReceipt.data()?.status !== "completed") return {sessionToken: token, state: existingState};
           // A fully recorded loss starts a fresh attempt on the same entitlement.
         } else {
-          return token;
+          return {sessionToken: token, state: existingState};
         }
       }
     }
@@ -132,7 +140,8 @@ export async function ensureAuthoritativeSession(
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       expiresAt,
     });
-    transaction.create(sessionRef, {
+    /** Public projection inputs come from this attempt without an additional document read. */
+    const state: SinglePlayerSessionState = {
       gameMode,
       riddleId,
       contentKey,
@@ -147,12 +156,13 @@ export async function ensureAuthoritativeSession(
       terminal: false,
       isCorrect: false,
       guessReceipts: {},
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       expiresAt,
-    });
-    return sessionToken;
+    };
+    transaction.create(sessionRef, {...state, createdAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp()});
+    return {sessionToken, state};
   });
+  assertIssuedSession(issued.state, gameMode, riddleId);
+  return issued;
 }
 
 /** Ensures an opaque token is bound to exactly the expected user content. */
@@ -204,6 +214,21 @@ function assertCurrentEntitlement(
   }
 }
 
+/** Validates issued private state at both standalone reads and the atomic skip boundary. */
+function assertIssuedSession(state: SinglePlayerSessionState, gameMode: "classic" | "challenge", riddleId: string): void {
+  assertSinglePlayerSessionActive(state);
+  if (
+    state.gameMode !== gameMode ||
+    state.riddleId !== riddleId ||
+    typeof state.locale !== "string" ||
+    typeof state.contentKey !== "string" ||
+    typeof state.completionKey !== "string" ||
+    typeof state.answer !== "string"
+  ) {
+    throw new HttpsError("permission-denied", "The game session does not match this riddle.");
+  }
+}
+
 /** Reads locale/content binding from an opaque token owned by the authenticated user. */
 export async function getIssuedAuthoritativeSession(
   userId: string,
@@ -216,17 +241,7 @@ export async function getIssuedAuthoritativeSession(
   if (!snapshot.exists) throw new HttpsError("permission-denied", "The game session is not valid.");
   /** Provides state behavior. */
   const state = snapshot.data() as SinglePlayerSessionState;
-  assertSinglePlayerSessionActive(state);
-  if (
-    state.gameMode !== gameMode ||
-    state.riddleId !== riddleId ||
-    typeof state.locale !== "string" ||
-    typeof state.contentKey !== "string" ||
-    typeof state.completionKey !== "string" ||
-    typeof state.answer !== "string"
-  ) {
-    throw new HttpsError("permission-denied", "The game session does not match this riddle.");
-  }
+  assertIssuedSession(state, gameMode, riddleId);
   return state;
 }
 
@@ -485,7 +500,7 @@ export async function skipAuthoritativeRiddle(
     /** Stores request id. */
     requestId: string;
   },
-): Promise<AuthoritativeSkipResult> {
+): Promise<CommittedAuthoritativeSkipResult> {
   /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, request.sessionToken);
   /** Provides r ref. */
@@ -499,12 +514,11 @@ export async function skipAuthoritativeRiddle(
     if (!userSnapshot.exists) throw new HttpsError("not-found", "User data not found.");
     /** Provides state behavior. */
     const state = sessionSnapshot.data() as SinglePlayerSessionState;
-    assertSinglePlayerSessionActive(state);
-    assertSessionBinding(state, "classic", request.riddleId, state.locale, state.contentKey);
-    if (state.skipResult) return state.skipResult;
-    if (state.terminal) throw new HttpsError("failed-precondition", "This riddle is already complete.");
-    /** Provides r. */
+    assertIssuedSession(state, "classic", request.riddleId);
+    /** The same fresh account snapshot supplies replay preparation without changing the immutable receipt. */
     const user = userSnapshot.data() as Player;
+    if (state.skipResult) return {...state.skipResult, classicSupply: {classicIndex: Number(user.progress?.classicIndex ?? 1), locale: state.locale}};
+    if (state.terminal) throw new HttpsError("failed-precondition", "This riddle is already complete.");
     assertCurrentEntitlement(state, user);
     /** Provides coins behavior. */
     const coins = Number(user.coins ?? 0);
@@ -540,6 +554,6 @@ export async function skipAuthoritativeRiddle(
       skipResult: result,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
-    return result;
+    return {...result, classicSupply: {classicIndex: newProgress.classicIndex, locale: state.locale}};
   });
 }

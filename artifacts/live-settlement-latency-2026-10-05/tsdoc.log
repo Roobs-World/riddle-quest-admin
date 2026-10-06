@@ -1,0 +1,8 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 5 production declarations are undocumented.
+- firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts:43 path
+- firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts:49 path
+- firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts:50 path
+- firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts:51 path
+- firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts:89 replay
+[ELIFECYCLE] Command failed with exit code 1.

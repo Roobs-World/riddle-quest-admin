@@ -1,0 +1,19 @@
+{
+  "attempts": [
+    {
+      "tool": "get_firefox_info",
+      "error": "Process (pid=371479) unexpectedly closed with status 0"
+    },
+    {
+      "tool": "new_page(about:blank)",
+      "error": "Process (pid=382789) unexpectedly closed with status 0"
+    },
+    {
+      "tool": "get_firefox_output(lines=100)",
+      "error": "Process (pid=383015) unexpectedly closed with status 0"
+    }
+  ],
+  "pageCreated": false,
+  "configurationChanged": false,
+  "fallback": "Installed Playwright Firefox"
+}

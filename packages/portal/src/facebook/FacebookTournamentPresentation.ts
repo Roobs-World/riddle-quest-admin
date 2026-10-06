@@ -69,8 +69,26 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
       throw error;
     }
   };
+  /** Bounds read-only projection lookup while retaining observers on the original SDK promise. */
+  const projectionCurrent = async () => {
+    /** Only an admitted metadata query owns this deadline; score posts retain their original ordering. */
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      return await Promise.race([current(), new Promise<never>((_resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error("facebook-tournament-projection-lookup-timeout")), 8000);
+      })]);
+    } finally {if (timeout !== undefined) clearTimeout(timeout);}
+  };
   /** Serialize native updates so an older board cannot overwrite a newer best. */
   let projectionTail = Promise.resolve();
+  /** One still-pending native lookup retains the best validated snapshot in its exact scope. */
+  type PendingProjection = {
+    /** Fresh official best received before native score admission. */ board: ListFacebookTournamentResponse;
+    /** Admitted score posts preserve their original promise and serialization. */ posting: boolean;
+    /** Concurrent recovery callers observe the same local completion. */ operation: Promise<void>;
+  };
+  /** Entries are removed after settlement without deleting a newer queued improvement. */
+  const pending = new Map<string, PendingProjection>();
   /** Successful presentation is deduplicated per exact native and official context. */
   const posted = new Map<string, number>();
   /** Only fixed diagnostics leave the optional provider boundary. */
@@ -84,21 +102,43 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
     /** Validated official standings for the exact player locale and UTC window. */
     let board: ListFacebookTournamentResponse;
     try {board = parseFacebookTournamentResponse(value);} catch {projectionFailure(); return Promise.resolve();}
+    /** Native context changes must not inherit pending work from another context. */
+    let contextId: string | null;
+    try {
+      if (!live(board, board.locale) || !board.currentPlayer) return Promise.resolve();
+      contextId = sdk.context!.getID();
+    } catch {projectionFailure(); return Promise.resolve();}
+    /** Official locale/day and native context own one pending projection. */
+    const scope = JSON.stringify([contextId, board.locale, board.tournamentId]);
+    /** Work still waiting for native lookup can adopt an improved server best. */
+    const existing = pending.get(scope);
+    if (existing && (!existing.posting || board.currentPlayer.adjustedTimeMs >= existing.board.currentPlayer!.adjustedTimeMs)) {
+      if (!existing.posting && board.currentPlayer.adjustedTimeMs < existing.board.currentPlayer!.adjustedTimeMs)
+        existing.board = board;
+      return existing.operation;
+    }
+    /** This entry is initialized before its deferred operation can be admitted. */
+    let entry: PendingProjection;
     /** Serialized native update preserves ordering between recovered score snapshots. */
     const operation = projectionTail.then(async () => {
-      if (!live(board, board.locale) || !board.currentPlayer) return;
+      if (!live(entry.board, entry.board.locale) || sdk.context!.getID() !== contextId) return;
       /** Current Meta tournament must match the authoritative board and live context. */
-      const native = await current();
-      if (!live(board, board.locale) || !native || !matches(native, board)) return;
+      const native = await projectionCurrent();
+      /** More official reads may have improved the best while native lookup was pending. */
+      const selected = entry.board;
+      if (!live(selected, selected.locale) || sdk.context!.getID() !== contextId || !native || !matches(native, selected)) return;
       /** Exact native/official scope owns its successful-post cache. */
-      const key = JSON.stringify([native.getID(), native.getContextID(), board.tournamentId]);
+      const key = JSON.stringify([native.getID(), native.getContextID(), selected.tournamentId]);
       /** Only the current official best supplies a native score. */
-      const score = board.currentPlayer.adjustedTimeMs, previous = posted.get(key);
+      const score = selected.currentPlayer!.adjustedTimeMs, previous = posted.get(key);
       if (previous !== undefined && previous <= score) return;
+      entry.posting = true;
       await sdk.tournament!.postScoreAsync(score);
       posted.set(key, score);
       if (posted.size > 8) posted.delete(posted.keys().next().value!);
-    }).catch(projectionFailure);
+    }).catch(projectionFailure).finally(() => {if (pending.get(scope) === entry) pending.delete(scope);});
+    entry = {board, posting: false, operation};
+    pending.set(scope, entry);
     projectionTail = operation;
     return operation;
   };
@@ -108,14 +148,34 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
       return runFacebookSdkDialog(sdk, async () => {
         try {
           if (!active(locale)) return {status: "unavailable", message: "facebook-tournament-inactive"};
-          /** Re-parse even injected dependencies, including full UTC/standing invariants. */
-          const board = parseFacebookTournamentResponse(await list(locale));
+          /** Preparation may expire locally without changing either original read promise. */
+          let expired = false;
+          /** One shared budget covers standings and metadata, ending before native dialog admission. */
+          let timeout: ReturnType<typeof setTimeout> | undefined;
+          /** A timer boundary cannot admit the next SDK read from an already fulfilled race. */
+          const assertPreparing = () => {if (expired) throw new Error("facebook-tournament-share-preparation-timeout");};
+          /** Both original read promises retain rejection observers after local expiry. */
+          const deadline = new Promise<never>((_resolve, reject) => {
+            timeout = setTimeout(() => {expired = true; reject(new Error("facebook-tournament-share-preparation-timeout"));}, 8000);
+          });
+          /** Exact-schema official standings authorize only the current best. */
+          let board: ListFacebookTournamentResponse;
+          /** Current native metadata is untrusted and receives the remaining preparation budget. */
+          let native: FacebookInstantTournament | undefined;
+          try {
+            /** A retired read cannot continue into metadata admission or parsing. */
+            const response = await Promise.race([list(locale), deadline]);
+            assertPreparing();
+            board = parseFacebookTournamentResponse(response);
+            if (!live(board, locale) || !board.currentPlayer) {
+              return {status: "unavailable", message: "facebook-tournament-score-unavailable"};
+            }
+            native = await Promise.race([current(), deadline]);
+            assertPreparing();
+          } finally {if (timeout !== undefined) clearTimeout(timeout);}
           if (!live(board, locale) || !board.currentPlayer) {
-            return {status: "unavailable", message: "facebook-tournament-score-unavailable"};
+            return {status: "unavailable", message: "facebook-tournament-inactive"};
           }
-          /** Read current native state without treating its score or payload as authority. */
-          const native = await current();
-          if (!live(board, locale)) return {status: "unavailable", message: "facebook-tournament-inactive"};
           /** Existing native tournaments for another day/locale are never overwritten or silently switched. */
           if (native) {
             /** A native invitation in another supported content locale receives existing localized guidance. */
@@ -141,7 +201,9 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
           /** Cancellation is ordinary user input, with no provider diagnostics exposed. */
           const code = typeof error === "object" && error !== null && "code" in error ? error.code : undefined;
           if (code === "USER_INPUT" || code === "USER_CANCELLED") return {status: "cancelled"};
-          reportFailure(new Error("facebook-tournament-share-failed"));
+          try {reportFailure(new Error("facebook-tournament-share-failed"));} catch {
+            // Optional diagnostics cannot replace the contained provider outcome.
+          }
           return {status: "retryable-failure", message: "facebook-tournament-share-failed"};
         }
       });

@@ -44,40 +44,76 @@ export function createFacebookOverlayCapability(sdk: FacebookInstantSdk): Overla
 
   return {
     /** Renders player. */
-    async renderPlayer({playerId, surface}) {
+    async renderPlayer({playerId, surface, signal}) {
+      if (signal?.aborted) return {status: "cancelled"};
       if (playerId !== sdk.player.getID()) {
         return {status: "terminal-failure", message: "facebook-overlay-player-mismatch"};
       }
       if (!surface.isConnected) {
         return {status: "terminal-failure", message: "facebook-overlay-surface-detached"};
       }
-      /** Creates d. */
-      const created: FacebookOverlayView[] = [];
+      /** Each native creation owns cleanup independently, including SDKs returning shared handles. */
+      const created: Array<{
+        /** Native view returned by one admitted creation. */ view: FacebookOverlayView;
+        /** One observed cleanup per creation. */ cleanup?: Promise<void>;
+      }> = [];
+      /** Retirement prevents any subsequent native admission and reclaims late creations. */
+      let retired = false;
+      /** Resolve local cancellation without rejecting an otherwise unobserved promise. */
+      let interrupt!: (value: null) => void;
+      /** Original SDK operations retain observers after local cancellation wins. */
+      const interruption = new Promise<null>(resolve => {interrupt = resolve;});
+      /** Marks cleanup before invoking the SDK, containing repeated abort/disposer paths. */
+      const dispose = (entry: typeof created[number]) => entry.cleanup ??= Promise.resolve().then(() => destroyViews([entry.view]));
+      /** Existing views retire immediately; late creation observers reclaim their own result. */
+      const retire = () => {
+        retired = true;
+        return Promise.allSettled(created.map(dispose)).then(() => {});
+      };
+      /** Cancellation starts cleanup immediately, even when another SDK phase never settles. */
+      const abort = () => {void retire(); interrupt(null);};
+      signal?.addEventListener("abort", abort, {once: true});
+      if (signal?.aborted) abort();
+      /** Every phase rechecks the connected mount and opaque SDK identity before admission. */
+      const assertCurrent = () => {
+        if (!surface.isConnected || playerId !== sdk.player.getID() || retired || signal?.aborted)
+          throw new Error("facebook-overlay-retired");
+      };
+      /** Local cancellation leaves the admitted SDK creation observed and cleans its late result. */
+      const create = async (operation: Promise<FacebookOverlayView>) => {
+        /** This observer runs even after the local race has completed. */
+        const observed = operation.then(view => {
+          /** Native ownership begins only when the original creation returns its view. */
+          const entry: typeof created[number] = {view};
+          created.push(entry);
+          if (retired) void dispose(entry);
+          return entry;
+        });
+        /** A cancelled consumer never accepts an original late creation as current. */
+        const entry = await Promise.race([observed, interruption]);
+        if (entry === null) throw new Error("facebook-overlay-retired");
+        return entry.view;
+      };
       try {
-        /** Provides picture behavior. */
-        const picture = await overlays.createProfilePictureOverlayViewAsync(
-          surface,
-          PROFILE_PICTURE_STYLE,
-          IFRAME_STYLE,
-        );
-        created.push(picture);
-        /** Provides name behavior. */
-        const name = await overlays.createProfileNameOverlayViewAsync(surface, PROFILE_NAME_STYLE, IFRAME_STYLE, "");
-        created.push(name);
-        await Promise.all(created.map((view) => view.showAsync()));
-        /** Provides destroyed behavior. */
-        let destroyed = false;
-        return {
-          status: "success",
-          value: async () => {
-            if (destroyed) return;
-            destroyed = true;
-            await destroyViews(created);
-          },
-        };
+        assertCurrent();
+        await create(overlays.createProfilePictureOverlayViewAsync(surface, PROFILE_PICTURE_STYLE, IFRAME_STYLE));
+        assertCurrent();
+        await create(overlays.createProfileNameOverlayViewAsync(surface, PROFILE_NAME_STYLE, IFRAME_STYLE, ""));
+        assertCurrent();
+        await Promise.race([Promise.all(created.map(entry => Promise.resolve().then(() => {
+          // An earlier show may synchronously retire the scope before the next SDK admission.
+          assertCurrent();
+          return entry.view.showAsync();
+        }))), interruption]);
+        assertCurrent();
+        return {status: "success", value: retire};
       } catch (error) {
-        await destroyViews(created);
-        return failure(error);
+        // Cancellation also bounds waiting for cleanup; every native cleanup promise remains observed.
+        await Promise.race([retire(), interruption]);
+        return signal?.aborted ? {status: "cancelled"} : failure(error);
+      } finally {
+        signal?.removeEventListener("abort", abort);
+        interrupt(null);
       }
     },
   };

@@ -1,0 +1,50 @@
+{
+  "goal": "active",
+  "change": "Catalog readiness rejects answer padding and validates original immutable answer text against the published evaluation schema before deck or seat publication.",
+  "reproductions": [
+    {
+      "kind": "padded answer",
+      "units": 5,
+      "trimmedGraphemes": 3,
+      "poolAcceptedBefore": true,
+      "failure": "Both normal and padded guesses rejected by the real engine."
+    },
+    {
+      "kind": "oversized encoding",
+      "units": 129,
+      "trimmedGraphemes": 1,
+      "poolAcceptedBefore": true,
+      "failure": "Published evaluation rejected."
+    }
+  ],
+  "matchingRedUnitCases": 6,
+  "matchingRedSdkCases": 10,
+  "newUnitCases": 8,
+  "newRealSdkCases": 14,
+  "scope": "New catalog-based category/deck/seat creation; immutable historical recordings and retained tickets are a separate candidate. No content rewriting or single-player policy expansion.",
+  "controls": "Legal decomposed and uppercase answers retain original deck text; public/private invalid joins publish no records; duplicate correct guesses advance once; canonical balances and unaffected categories remain unchanged.",
+  "singlePlayerAudit": "ASCII policy confirmed intentional in authored transliteration, playable-answer guards and request schemas.",
+  "backendUnitTests": 1665,
+  "backendUnitSuites": 134,
+  "emulatorTests": 381,
+  "emulatorSuites": 26,
+  "focusedTests": 59,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 26017,
+  "tsdocFiles": 1164,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2362,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 14,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

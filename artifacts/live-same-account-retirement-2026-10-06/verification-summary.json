@@ -1,0 +1,29 @@
+{
+  "sourceInputs": 2445,
+  "ownedSourceRecords": 28,
+  "terminalTrackedJobs": 36,
+  "backendUnits": 1730,
+  "realSdkCases": 677,
+  "pinnedNode22Cases": 17,
+  "clientContractCases": 127,
+  "builtBrowserTests": 9,
+  "nativeBrowser": {
+    "same": {
+      "cases": 24,
+      "assertions": 216,
+      "screenshots": 24
+    },
+    "legacy": {
+      "cases": 168,
+      "assertions": 3000,
+      "screenshots": 168
+    }
+  },
+  "confirmationCases": 27,
+  "activeCloseCases": 6,
+  "preservedFinalBuiltFiles": 1301,
+  "isolatedTargetInventories": 6,
+  "cleanupVerified": true,
+  "goalComplete": false,
+  "compiledFunctionsFiles": 394
+}

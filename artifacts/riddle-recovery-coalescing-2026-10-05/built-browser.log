@@ -1,0 +1,6 @@
+
+Test Suites: 3 passed, 3 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        103.087 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts|src/play/__tests__/profileTour.jest-playwright.test.ts|src/reddit/__tests__/redditBrowser.jest-playwright.test.ts.

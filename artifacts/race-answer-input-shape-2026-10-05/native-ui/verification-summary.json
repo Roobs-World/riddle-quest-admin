@@ -1,0 +1,29 @@
+{
+  "finishedAt": "2026-10-05T20:45:27.471Z",
+  "portClosed": true,
+  "sourceStable": true,
+  "checks": 1984,
+  "cases": 80,
+  "browsers": [
+    "Chromium",
+    "Firefox153"
+  ],
+  "reactModes": [
+    "development",
+    "production"
+  ],
+  "entry": [
+    "injected-composition",
+    "paste"
+  ],
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "supportedControls": 10,
+  "stableSourceInputs": 13,
+  "screenshots": 80,
+  "auditSnapshots": 400,
+  "preservedFiles": 512,
+  "scope": "Actual production components with injected display-only hint/history receipts; authoritative scoring and settlement covered by SDK. No OS IME or system clipboard certification; conjunct visual overflow remains a next candidate."
+}

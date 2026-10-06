@@ -1,0 +1,20 @@
+{
+  "name": "portal-units",
+  "command": [
+    "pnpm",
+    "--dir",
+    "packages/portal",
+    "exec",
+    "jest",
+    "--config",
+    "jest.config.cjs",
+    "--runInBand"
+  ],
+  "logs": [
+    "portal-units.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791255004.7585804,
+  "exitCode": 0,
+  "finishedAt": 1791255016.3577912
+}

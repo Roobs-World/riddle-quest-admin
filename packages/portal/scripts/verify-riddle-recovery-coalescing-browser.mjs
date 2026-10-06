@@ -25,7 +25,7 @@ import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/f
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
-window.__RIDDLE_QUEST_BROWSER_TEST__=true;
+const scenario=new URL(location.href).searchParams.get('scenario')??'online';window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
@@ -34,32 +34,55 @@ window.probe={outbound:[],inbound:[],reads:[],recoveries:[],errors:[],unhandled:
 const clearTimer=window.clearTimeout.bind(window);window.clearTimeout=id=>{window.probe.pendingTimers.delete(id);return clearTimer(id);};window.trackRecovery=(callback,delay)=>{window.probe.timerSchedules.push({at:performance.now(),delay});const id=window.setTimeout(()=>{window.probe.pendingTimers.delete(id);window.probe.timerCallbacks.push({at:performance.now(),delay});callback();},delay);window.probe.pendingTimers.set(id,delay);return id;};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));window.addEventListener('riddle-quest:host-to-game',e=>window.probe.inbound.push(e.detail));
-const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),profile=await source.loadProfile('jest-guest');
-let rejectFirst;window.fail=()=>{window.probe.failedAt=performance.now();rejectFirst(new Error('Startup fixture transport unavailable'));};
-window.storm=async()=>{for(let i=0;i<20;i++){window.probe.signals.push(performance.now());window.dispatchEvent(new Event('online'));await new Promise(r=>setTimeout(r,10));}};
-const services={...source,loadRiddle:input=>{window.probe.reads.push({at:performance.now(),...input});if(window.probe.reads.length===1)return new Promise((resolve,reject)=>{rejectFirst=reject;});return Promise.resolve(first);}};
+const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),profile=await source.loadProfile('jest-guest');
+let rejectFirst,resolveFirst,visible=true,connected=true;window.show=value=>{visible=value;document.dispatchEvent(new Event('visibilitychange'));};Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>visible?'visible':'hidden'});Object.defineProperty(document,'hidden',{configurable:true,get:()=>!visible});Object.defineProperty(navigator,'onLine',{configurable:true,get:()=>connected});window.connect=value=>{connected=value;if(value)window.dispatchEvent(new Event('online'));};window.fail=()=>{window.probe.failedAt=performance.now();if(scenario==='success')resolveFirst(first);else rejectFirst(new Error('Startup fixture transport unavailable'));};
+window.storm=async()=>{if(scenario==='hidden')window.show(false);if(scenario==='offline')connected=false;for(let i=0;i<(scenario==='single'?1:20);i++){window.probe.signals.push(performance.now());if(scenario==='visible'||scenario==='mixed'&&i%2===0){window.show(false);window.show(true);}else if(scenario==='hidden')document.dispatchEvent(new Event('visibilitychange'));else window.dispatchEvent(new Event('online'));await new Promise(r=>setTimeout(r,10));}};
+const services={...source,loadRiddle:input=>{window.probe.reads.push({at:performance.now(),...input});if(window.probe.reads.length===1)return new Promise((resolve,reject)=>{rejectFirst=reject;resolveFirst=resolve;});if(scenario==='backoff-chain'&&window.probe.reads.length===2)return Promise.reject(new Error('Second startup fixture transport failure'));return Promise.resolve(first);}};
 const session=createHostedPlaySession({hostServices:services,economyAvailable:false,raceAvailable:false,initialPlayerData:{schemaVersion:1,updatedAt:1,profile,activeGame:null}});
 const gameRoot=createRoot(document.querySelector('#root'));window.retire=()=>gameRoot.unmount();gameRoot.render(<React.StrictMode><PlayHostApp session={session}/><aside style={{position:'fixed',zIndex:2147483647,top:0,left:0}}><button data-storm onClick={()=>window.storm()}>Repeat reconnect signals</button><button data-fail onClick={()=>window.fail()}>Fail held startup read</button></aside></React.StrictMode>);
 `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'riddle-recovery-baseline',enforce:'pre',async load(id){if(id.endsWith('/useHostRiddleLifecycle.ts')){const source=await readFile(baseline?path.join(baseline,'lifecycle.before.txt'):id,'utf8');const needle='      onRecoveryAttempt();';assert.equal(source.split(needle).length,2);const timer='recoveryTimer = window.setTimeout(() => void recoverRiddle(), delayMs);';assert.equal(source.split(timer).length,2);return source.replace(needle,'      window.probe.recoveries.push(performance.now()); onRecoveryAttempt();').replace(timer,'recoveryTimer = window.trackRecovery(() => void recoverRiddle(), delayMs);');}}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'riddle-recovery-baseline',enforce:'pre',async load(id){if(id.endsWith('/useHostRiddleLifecycle.ts')){const source=await readFile(baseline?path.join(baseline,'lifecycle.before.txt'):id,'utf8');const needle=source.includes('onRecoveryAttemptRef.current();')?'      onRecoveryAttemptRef.current();':'      onRecoveryAttempt();';assert.equal(source.split(needle).length,2);const timer='recoveryTimer = window.setTimeout(() => void recoverRiddle(), delayMs);';assert.equal(source.split(timer).length,2);return source.replace(needle,'      window.probe.recoveries.push(performance.now()); '+needle.trim()).replace(timer,'recoveryTimer = window.trackRecovery(() => void recoverRiddle(), delayMs);');}}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg','.webm':'audio/webm','.json':'application/json'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
  if(process.env.RIDDLE_RECOVERY_SERVE_ONLY==='1'){console.log(JSON.stringify({url:origin,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
  else {
  browser=await chromium.launch({headless:true});
- for(const [width,height] of [[390,568]]) {
+ for(const [width,height] of process.env.RIDDLE_RECOVERY_QUICK==='1'?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const scenario of process.env.RIDDLE_RECOVERY_SCENARIOS?.split(',')??['online','visible','mixed','hidden','single','success','retired','offline','backoff-chain','resume-backoff']) {
  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),external=[];
  await context.route('**/*',route=>{const request=new URL(route.request().url());if(request.origin===origin)return route.continue();external.push(request.origin);return route.abort();});
- const metric=(name,actual,expected)=>observations.push({width,height,name,actual,expected});
- await page.goto(origin);await page.waitForFunction(()=>window.probe.reads.length===1&&window.probe.recoveries.length>=1);
- const before=await page.evaluate(()=>window.probe.timerCallbacks.length);await page.locator('[data-storm]').click();await page.waitForFunction(()=>window.probe.signals.length===20);await page.waitForTimeout(30);
+ const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
+ await page.goto(origin+'/?scenario='+scenario);await page.waitForFunction(()=>window.probe.reads.length===1&&window.probe.recoveries.length>=1);
+ const before=await page.evaluate(()=>window.probe.timerCallbacks.length);await page.locator('[data-storm]').click();await page.waitForFunction(count=>window.probe.signals.length===count,scenario==='single'?1:20);await page.waitForTimeout(30);
  metric('reconnect signals share one provider read',await page.evaluate(()=>window.probe.reads.length),1);
- metric('held startup has only one recovery observer',await page.evaluate(()=>window.probe.recoveries.length),1);metric('reconnect signals do not wake an already owned recovery',await page.evaluate(before=>window.probe.timerCallbacks.length-before,before),0);
- await page.locator('[data-fail]').click();await page.waitForTimeout(1400);
- metric('one shared failure retries on its first backoff',await page.evaluate(()=>window.probe.reads.length),2);
- metric('recovery restores a playable question promptly',await page.getByRole('heading',{name:'What has keys but cannot open doors?',exact:true}).count(),1);
+ metric('held startup has only one recovery observer',await page.evaluate(()=>window.probe.recoveries.length),1);
+ metric('reconnect signals do not wake an already owned recovery',await page.evaluate(before=>window.probe.timerCallbacks.length-before,before),0);
+ if(scenario==='retired'){
+  await page.evaluate(()=>window.retire());await page.evaluate(()=>window.fail());await page.waitForTimeout(1400);
+  metric('retirement stops automatic recovery reads',await page.evaluate(()=>window.probe.reads.length),1);
+  metric('retirement releases its recovery timer',await page.evaluate(()=>window.probe.pendingTimers.size),0);
+  metric('late failure cannot restore retired gameplay',await page.locator('.play-game-shell').count(),0);
+ }else{
+  await page.locator('[data-fail]').click();
+  if(scenario==='resume-backoff'){await page.waitForTimeout(100);await page.evaluate(()=>window.connect(true));await page.waitForTimeout(200);}else await page.waitForTimeout(1400);
+  if(scenario==='offline'){
+   metric('offline recovery does not admit another read',await page.evaluate(()=>window.probe.reads.length),1);await page.evaluate(()=>window.connect(true));await page.waitForTimeout(200);
+  }
+  metric('one shared failure retries on its first backoff',await page.evaluate(()=>window.probe.reads.length),scenario==='success'?1:2);
+  if(scenario==='backoff-chain'){
+   metric('distinct failures preserve their bounded exponential backoff',await page.evaluate(()=>window.probe.timerSchedules.filter(x=>x.delay>=1000).map(x=>x.delay)),[1000,2000]);await page.waitForTimeout(2200);metric('second genuine failure still recovers automatically',await page.evaluate(()=>window.probe.reads.length),3);
+  }
+  metric('recovery restores a playable question promptly',await page.getByRole('heading',{name:'What has keys but cannot open doors?',exact:true}).count(),1);
+  if(scenario==='hidden')await page.evaluate(()=>window.show(true));
+  if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+  if(await page.locator('.guess-row button:not([disabled])').count()){
+   await page.locator('.guess-row button:not([disabled])').first().click();await page.keyboard.type('p');metric('recovered question accepts native answer input',await page.locator('.guess-row').first().textContent().then(text=>text.includes('P')),true);
+  }else metric('recovered question exposes an editable answer',false,true);
+  metric('accepted startup stops its recovery timers',await page.evaluate(()=>window.probe.pendingTimers.size),0);
+  if(['online','visible','mixed','single'].includes(scenario))metric('retry starts at the one-second failure backoff',await page.evaluate(()=>{const reads=window.probe.reads;const delay=reads[1]?.at-window.probe.failedAt;return delay>=950&&delay<1350;}),true);
+  if(scenario==='resume-backoff')metric('restored connectivity bypasses idle backoff promptly',await page.evaluate(()=>window.probe.reads[1]?.at-window.probe.failedAt<400),true);
+ }
  metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejections',await page.evaluate(()=>window.probe.unhandled),[]);metric('no external traffic',external,[]);
- observations.push({width,height,diagnostic:true,name:'actual startup recovery trace',actual:await page.evaluate(()=>window.probe),expected:null});await context.close();
+ observations.push({width,height,scenario,diagnostic:true,name:'actual startup recovery trace',actual:await page.evaluate(()=>({...window.probe,pendingTimers:[...window.probe.pendingTimers.values()]})),expected:null});await context.close();
  }
  }
 } finally {await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});if(process.env.RIDDLE_RECOVERY_SERVE_ONLY!=='1')await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2)+'\n');}

@@ -1,0 +1,4 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 1 production declarations are undocumented.
+- firebase-functions/src/__tests__/race/raceEntryCompatibility.it.test.ts:243 get
+[ELIFECYCLE] Command failed with exit code 1.

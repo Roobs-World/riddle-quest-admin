@@ -1,0 +1,63 @@
+i  emulators: Starting emulators: firestore, database
+i  emulators: Detected demo project ID "demo-race-unicode-cells", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 56371.
+i  database: Database Emulator logging to database-debug.log
+i  Running script: pnpm exec jest --config ../artifacts/race-unicode-cells-2026-10-05/probe.config.cjs --runInBand
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":59,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":23,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":17,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"creator","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       11 passed, 11 total
+Snapshots:   0 total
+Time:        2.219 s, estimated 3 s
+Ran all test suites.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

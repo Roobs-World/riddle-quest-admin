@@ -1,0 +1,196 @@
+[
+  {
+    "scenario": "held-online",
+    "readCount": 1,
+    "recoveryCount": 1,
+    "timerCallbacks": [
+      {
+        "at": 342,
+        "delay": 250
+      }
+    ],
+    "pendingTimers": [],
+    "signals": 20,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "recovered-online",
+    "reads": [
+      {
+        "at": 115,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      },
+      {
+        "at": 1920,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      }
+    ],
+    "recoveries": [
+      342,
+      1920
+    ],
+    "failedAt": 919,
+    "pendingTimers": [],
+    "timerSchedules": [
+      {
+        "at": 91,
+        "delay": 250
+      },
+      {
+        "at": 919,
+        "delay": 250
+      },
+      {
+        "at": 920,
+        "delay": 1000
+      }
+    ],
+    "question": "What has keys but cannot open doors?",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "recovered-native-input",
+    "draft": "P",
+    "pendingTimers": [],
+    "readCount": 2,
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "visible",
+    "held": {
+      "readCount": 1,
+      "recoveryCount": 1,
+      "timerCallbacks": [
+        {
+          "at": 363,
+          "delay": 250
+        },
+        {
+          "at": 2049,
+          "delay": 1000
+        }
+      ],
+      "pendingTimers": [],
+      "signals": 20
+    },
+    "reads": [
+      {
+        "at": 141,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      },
+      {
+        "at": 2049,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      }
+    ],
+    "recoveries": [
+      363,
+      2049
+    ],
+    "failedAt": 969,
+    "pendingTimers": [],
+    "timerSchedules": [
+      {
+        "at": 112,
+        "delay": 250
+      },
+      {
+        "at": 971,
+        "delay": 250
+      },
+      {
+        "at": 971,
+        "delay": 1000
+      }
+    ],
+    "question": "What has keys but cannot open doors?",
+    "errors": [],
+    "unhandled": []
+  },
+  {
+    "scenario": "backoff-chain",
+    "held": {
+      "readCount": 1,
+      "recoveryCount": 1,
+      "timerCallbacks": [
+        {
+          "at": 351,
+          "delay": 250
+        },
+        {
+          "at": 1965,
+          "delay": 1000
+        },
+        {
+          "at": 3965,
+          "delay": 2000
+        }
+      ],
+      "pendingTimers": [],
+      "signals": 20
+    },
+    "reads": [
+      {
+        "at": 122,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      },
+      {
+        "at": 1965,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      },
+      {
+        "at": 3965,
+        "gameMode": "classic",
+        "locale": "en",
+        "classicIndex": 1
+      }
+    ],
+    "recoveries": [
+      351,
+      1965,
+      3965
+    ],
+    "failedAt": 964,
+    "pendingTimers": [],
+    "timerSchedules": [
+      {
+        "at": 100,
+        "delay": 250
+      },
+      {
+        "at": 965,
+        "delay": 250
+      },
+      {
+        "at": 965,
+        "delay": 1000
+      },
+      {
+        "at": 1965,
+        "delay": 250
+      },
+      {
+        "at": 1965,
+        "delay": 2000
+      }
+    ],
+    "question": "What has keys but cannot open doors?",
+    "errors": [],
+    "unhandled": []
+  }
+]

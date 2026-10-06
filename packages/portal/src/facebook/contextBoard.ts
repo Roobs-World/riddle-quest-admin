@@ -25,9 +25,11 @@ export function createFacebookContextBoard(
   backend: FacebookContextBoardBackend,
 ): ContextBoardCapability {
   /** Only the existing validated native adapter can select a board destination. */
-  const currentContext = async () => {
+  const currentContext = async (signal?: AbortSignal) => {
+    if (signal?.aborted) return null;
     /** A retired or failed synchronization must not masquerade as normal solo state. */
     const current = await coordinator.ensureCurrent();
+    if (signal?.aborted) return null;
     if (current.status === "success") return current.value;
     if (current.status === "unavailable" && current.message === "facebook-context-unavailable") return null;
     throw new Error("facebook-context-board-unavailable");
@@ -35,9 +37,11 @@ export function createFacebookContextBoard(
   return {
     onContextChange: callback => coordinator.onContextChange(callback),
     /** Native absence skips the read; current social state uses authenticated standings. */
-    async list(locale) {
+    async list(locale, signal) {
       /** No authenticated board request is meaningful without a validated social destination. */
-      const current = await currentContext();
+      const current = await currentContext(signal);
+      // Native resolution and this continuation have separate microtasks; guard the final callable admission too.
+      if (signal?.aborted) return null;
       return current ? (await backend.list({contextId: current.contextId, locale})).data : null;
     },
     /** Optional context projection never creates a score destination for solo play. */

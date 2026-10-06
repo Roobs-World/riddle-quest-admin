@@ -1,0 +1,17 @@
+{
+  "name": "tournament-development",
+  "command": [
+    "env",
+    "LIVE_TOURNAMENT_MODE=development",
+    "LIVE_TOURNAMENT_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-projection-2026-10-06/tournament-development",
+    "node",
+    "packages/portal/scripts/verify-live-tournament-owner-browser.mjs"
+  ],
+  "logs": [
+    "tournament-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791261832.4690454,
+  "exitCode": 0,
+  "finishedAt": 1791261849.5239835
+}

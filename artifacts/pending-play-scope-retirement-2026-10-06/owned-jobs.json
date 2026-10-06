@@ -1,0 +1,316 @@
+[
+  {
+    "name": "original-red-probes",
+    "sessionId": 8348,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "probe-red-development.log",
+      "probe-red-production.log"
+    ]
+  },
+  {
+    "name": "first-scope-green",
+    "sessionId": 13562,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "probe-green-development.log",
+      "probe-green-production.log"
+    ]
+  },
+  {
+    "name": "focused-scope-matrix",
+    "sessionId": 86650,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "quick.log"
+    ]
+  },
+  {
+    "name": "all-six-builds-v2",
+    "sessionId": 15038,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-v2-probe.log",
+      "tsdoc-v2-probe.log",
+      "builds-v2.log"
+    ]
+  },
+  {
+    "name": "paid-preview-heading-hypothesis",
+    "sessionId": 22827,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "paid-preview.log"
+    ]
+  },
+  {
+    "name": "paid-preview-current-and-prior-red",
+    "sessionId": 98566,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "paid-preview-trace.log",
+      "paid-preview-prior.log"
+    ]
+  },
+  {
+    "name": "paid-preview-final-green",
+    "sessionId": 31160,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "paid-preview-final.log"
+    ]
+  },
+  {
+    "name": "early-reply-first-development",
+    "sessionId": 76753,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "early-chromium-development.log"
+    ]
+  },
+  {
+    "name": "all-six-builds",
+    "sessionId": 92340,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "builds.log"
+    ],
+    "command": "bash artifacts/pending-play-scope-retirement-2026-10-06/builds.sh > artifacts/pending-play-scope-retirement-2026-10-06/builds.log 2>&1"
+  },
+  {
+    "name": "chromium-matrix",
+    "sessionId": 25972,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "chromium-development.log",
+      "chromium-production.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; for task_mode in development production; do PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"../../artifacts/pending-play-scope-retirement-2026-10-06/chromium-$task_mode\" pnpm --dir packages/portal exec node scripts/verify-pending-play-scope-retirement-browser.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/chromium-$task_mode.log\" 2>&1 || exit $?; done"
+  },
+  {
+    "name": "firefox-matrix",
+    "sessionId": 74369,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "firefox-development.log",
+      "firefox-production.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; for task_mode in development production; do PENDING_SCOPE_BROWSER=firefox PENDING_SCOPE_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"../../artifacts/pending-play-scope-retirement-2026-10-06/firefox-$task_mode\" pnpm --dir packages/portal exec node scripts/verify-pending-play-scope-retirement-browser.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/firefox-$task_mode.log\" 2>&1 || exit $?; done"
+  },
+  {
+    "name": "portal-units",
+    "sessionId": 87021,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "portal-units.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; pnpm --dir packages/portal exec jest --config jest.config.cjs --runInBand > artifacts/pending-play-scope-retirement-2026-10-06/portal-units.log 2>&1"
+  },
+  {
+    "name": "baseline-final",
+    "sessionId": 65122,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "red-final.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; PENDING_SCOPE_QUICK=1 PENDING_SCOPE_SCENARIOS=account:guess,generation:hint,locale:continue,account:skip PENDING_SCOPE_BASELINE_FILE=../../artifacts/pending-play-scope-retirement-2026-10-06/owned-00-before.txt PENDING_SCOPE_REPORT_DIR=../../artifacts/pending-play-scope-retirement-2026-10-06/red-final pnpm --dir packages/portal exec node scripts/verify-pending-play-scope-retirement-browser.mjs > artifacts/pending-play-scope-retirement-2026-10-06/red-final.log 2>&1"
+  },
+  {
+    "name": "static-final",
+    "sessionId": 80960,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-final.log",
+      "tsdoc-final.log",
+      "sizes-final.log",
+      "boundaries.log",
+      "security.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; pnpm --dir packages/portal check:types > artifacts/pending-play-scope-retirement-2026-10-06/types-final.log 2>&1 && pnpm check:tsdoc > artifacts/pending-play-scope-retirement-2026-10-06/tsdoc-final.log 2>&1 && pnpm check:file-sizes > artifacts/pending-play-scope-retirement-2026-10-06/sizes-final.log 2>&1 && pnpm --dir packages/portal check:target-boundaries > artifacts/pending-play-scope-retirement-2026-10-06/boundaries.log 2>&1 && pnpm check:security > artifacts/pending-play-scope-retirement-2026-10-06/security.log 2>&1"
+  },
+  {
+    "name": "built-browser",
+    "sessionId": 13151,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "built-browser.log"
+    ],
+    "command": "bash artifacts/pending-play-scope-retirement-2026-10-06/built-browser.sh > artifacts/pending-play-scope-retirement-2026-10-06/built-browser.log 2>&1"
+  },
+  {
+    "name": "facebook-built-browser",
+    "sessionId": 69213,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "facebook-browser.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false PORTAL_BROWSER_TESTS=1; pnpm --dir packages/portal exec jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts > artifacts/pending-play-scope-retirement-2026-10-06/facebook-browser.log 2>&1"
+  },
+  {
+    "name": "original-probe-terminal",
+    "sessionId": 68249,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "probe-terminal-development.log",
+      "probe-terminal-production.log"
+    ],
+    "command": "PENDING_SCOPE_MODE=development node artifacts/pending-play-scope-retirement-2026-10-06/probe.mjs > artifacts/pending-play-scope-retirement-2026-10-06/probe-terminal-development.log 2>&1 && PENDING_SCOPE_MODE=production node artifacts/pending-play-scope-retirement-2026-10-06/probe.mjs > artifacts/pending-play-scope-retirement-2026-10-06/probe-terminal-production.log 2>&1"
+  },
+  {
+    "name": "built-browser-v2",
+    "sessionId": 74114,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "built-browser-v2.log"
+    ],
+    "command": "bash artifacts/pending-play-scope-retirement-2026-10-06/built-browser.sh > artifacts/pending-play-scope-retirement-2026-10-06/built-browser-v2.log 2>&1"
+  },
+  {
+    "name": "facebook-built-browser-v2",
+    "sessionId": 55918,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "facebook-browser-v2.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false PORTAL_BROWSER_TESTS=1; pnpm --dir packages/portal exec jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts > artifacts/pending-play-scope-retirement-2026-10-06/facebook-browser-v2.log 2>&1"
+  },
+  {
+    "name": "portal-units-v2",
+    "sessionId": 32577,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "portal-units-v2.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; pnpm --dir packages/portal exec jest --config jest.config.cjs --runInBand > artifacts/pending-play-scope-retirement-2026-10-06/portal-units-v2.log 2>&1"
+  },
+  {
+    "name": "static-final-v2",
+    "sessionId": 32798,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "types-final-v2.log",
+      "tsdoc-final-v2.log",
+      "sizes-final-v2.log",
+      "boundaries-v2.log",
+      "security-v2.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; pnpm --dir packages/portal check:types > artifacts/pending-play-scope-retirement-2026-10-06/types-final-v2.log 2>&1 && pnpm check:tsdoc > artifacts/pending-play-scope-retirement-2026-10-06/tsdoc-final-v2.log 2>&1 && pnpm check:file-sizes > artifacts/pending-play-scope-retirement-2026-10-06/sizes-final-v2.log 2>&1 && pnpm --dir packages/portal check:target-boundaries > artifacts/pending-play-scope-retirement-2026-10-06/boundaries-v2.log 2>&1 && pnpm check:security > artifacts/pending-play-scope-retirement-2026-10-06/security-v2.log 2>&1"
+  },
+  {
+    "name": "chromium-matrix-v2",
+    "sessionId": 54083,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "chromium-development-v2.log",
+      "chromium-production-v2.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; for task_mode in development production; do PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"../../artifacts/pending-play-scope-retirement-2026-10-06/chromium-$task_mode-v2\" pnpm --dir packages/portal exec node scripts/verify-pending-play-scope-retirement-browser.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/chromium-$task_mode-v2.log\" 2>&1 || exit $?; done"
+  },
+  {
+    "name": "firefox-matrix-v2",
+    "sessionId": 13144,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "firefox-development-v2.log",
+      "firefox-production-v2.log"
+    ],
+    "command": "export pnpm_config_verify_deps_before_run=false; for task_mode in development production; do PENDING_SCOPE_BROWSER=firefox PENDING_SCOPE_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"../../artifacts/pending-play-scope-retirement-2026-10-06/firefox-$task_mode-v2\" pnpm --dir packages/portal exec node scripts/verify-pending-play-scope-retirement-browser.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/firefox-$task_mode-v2.log\" 2>&1 || exit $?; done"
+  },
+  {
+    "name": "early-chromium-production",
+    "sessionId": 67246,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "early-chromium-production.log"
+    ],
+    "command": "PENDING_SCOPE_MODE=production PENDING_SCOPE_REPORT_DIR=artifacts/pending-play-scope-retirement-2026-10-06/early-chromium-production node artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs > artifacts/pending-play-scope-retirement-2026-10-06/early-chromium-production.log 2>&1"
+  },
+  {
+    "name": "early-firefox-matrix",
+    "sessionId": 47481,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "early-firefox-development.log"
+    ],
+    "command": "for task_mode in development production; do PENDING_SCOPE_BROWSER=firefox PENDING_SCOPE_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"artifacts/pending-play-scope-retirement-2026-10-06/early-firefox-$task_mode\" node artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/early-firefox-$task_mode.log\" 2>&1 || exit $?; done",
+    "note": "The development preflight failed, so the shell loop did not run its planned production iteration. Both modes passed in the corrected final job."
+  },
+  {
+    "name": "early-baseline",
+    "sessionId": 89275,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "early-red.log"
+    ],
+    "command": "PENDING_SCOPE_QUICK=1 PENDING_SCOPE_BASELINE_FILE=artifacts/pending-play-scope-retirement-2026-10-06/owned-00-before.txt PENDING_SCOPE_REPORT_DIR=artifacts/pending-play-scope-retirement-2026-10-06/early-red node artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs > artifacts/pending-play-scope-retirement-2026-10-06/early-red.log 2>&1"
+  },
+  {
+    "name": "original-probe-terminal-v2",
+    "sessionId": 91972,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "probe-terminal-development-v2.log",
+      "probe-terminal-production-v2.log"
+    ],
+    "command": "PENDING_SCOPE_MODE=development node artifacts/pending-play-scope-retirement-2026-10-06/probe.mjs > artifacts/pending-play-scope-retirement-2026-10-06/probe-terminal-development-v2.log 2>&1 && PENDING_SCOPE_MODE=production node artifacts/pending-play-scope-retirement-2026-10-06/probe.mjs > artifacts/pending-play-scope-retirement-2026-10-06/probe-terminal-production-v2.log 2>&1"
+  },
+  {
+    "name": "early-chromium-final",
+    "sessionId": 43727,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "early-chromium-development-final.log",
+      "early-chromium-production-final.log"
+    ],
+    "command": "for task_mode in development production; do PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"artifacts/pending-play-scope-retirement-2026-10-06/early-chromium-$task_mode-final\" node artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/early-chromium-$task_mode-final.log\" 2>&1 || exit $?; done"
+  },
+  {
+    "name": "early-firefox-final",
+    "sessionId": 4343,
+    "status": "terminal",
+    "exitCode": 0,
+    "logs": [
+      "early-firefox-development-final.log",
+      "early-firefox-production-final.log"
+    ],
+    "command": "for task_mode in development production; do PENDING_SCOPE_BROWSER=firefox PENDING_SCOPE_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox PENDING_SCOPE_MODE=\"$task_mode\" PENDING_SCOPE_REPORT_DIR=\"artifacts/pending-play-scope-retirement-2026-10-06/early-firefox-$task_mode-final\" node artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs > \"artifacts/pending-play-scope-retirement-2026-10-06/early-firefox-$task_mode-final.log\" 2>&1 || exit $?; done"
+  },
+  {
+    "name": "early-baseline-final",
+    "sessionId": 84256,
+    "status": "terminal",
+    "exitCode": 1,
+    "logs": [
+      "early-red-final.log"
+    ],
+    "command": "PENDING_SCOPE_QUICK=1 PENDING_SCOPE_BASELINE_FILE=artifacts/pending-play-scope-retirement-2026-10-06/owned-00-before.txt PENDING_SCOPE_REPORT_DIR=artifacts/pending-play-scope-retirement-2026-10-06/early-red-final node artifacts/pending-play-scope-retirement-2026-10-06/verify-early-skip.mjs > artifacts/pending-play-scope-retirement-2026-10-06/early-red-final.log 2>&1"
+  }
+]

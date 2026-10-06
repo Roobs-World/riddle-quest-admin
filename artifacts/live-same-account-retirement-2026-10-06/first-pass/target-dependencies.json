@@ -1,0 +1,38 @@
+[
+  {
+    "target": "youtube",
+    "original": "artifacts/target-dependencies/custom/6c46268fa5189c51fc11cfc9cf321dc232baf3003a1d54f46dadacd13195f04e/youtube.json",
+    "preserved": "artifacts/live-same-account-retirement-2026-10-06/first-pass/target-metadata/youtube.json",
+    "sha256": "3d9bbf9fefc0648f02060e53289ff9169bd21b1917e1894c5346652a0774f6a4"
+  },
+  {
+    "target": "netflix",
+    "original": "artifacts/target-dependencies/custom/ec8a5bdcfceddff0d3e50e14e62c351b8f40e6fbdc3b337c9c0e6cd24114fd51/netflix.json",
+    "preserved": "artifacts/live-same-account-retirement-2026-10-06/first-pass/target-metadata/netflix.json",
+    "sha256": "9077c4c2b19a5c0cf6fa4ada9fd3e450f4dac63cd2567792820bc887c55db353"
+  },
+  {
+    "target": "reddit",
+    "original": "artifacts/target-dependencies/custom/b01fa1a7cf323d36a5f900a8123a2be232e62134d50da432bafbd5b092c2013b/reddit.json",
+    "preserved": "artifacts/live-same-account-retirement-2026-10-06/first-pass/target-metadata/reddit.json",
+    "sha256": "9b07950bf6ac354e3a704fe5cc1fb203adffa1cb3545f584525f4645f0bb0dc1"
+  },
+  {
+    "target": "jest",
+    "original": "artifacts/target-dependencies/custom/88fd63b553d39bd306f527d3b4e44c22079e69a99dca088540febad947a1bb60/jest.json",
+    "preserved": "artifacts/live-same-account-retirement-2026-10-06/first-pass/target-metadata/jest.json",
+    "sha256": "e9305366b0c25a471da4187e833c6d3e9e89588566a25d065fd53f172d5766a1"
+  },
+  {
+    "target": "yahoo",
+    "original": "artifacts/target-dependencies/custom/8c59dc91031aad69021cd5f143f5480c04d0d965887a24702eb91e988fea2b05/yahoo.json",
+    "preserved": "artifacts/live-same-account-retirement-2026-10-06/first-pass/target-metadata/yahoo.json",
+    "sha256": "77bae7fa10c24627ff7bf2a13bc135d2f3f11d4cfbb2866c4f5f6c5a41151853"
+  },
+  {
+    "target": "facebook",
+    "original": "artifacts/target-dependencies/custom/edbda6ba74d9f9f83f86c5e6f039edf24508f5122c011e6763e342649641b1b3/facebook.json",
+    "preserved": "artifacts/live-same-account-retirement-2026-10-06/first-pass/target-metadata/facebook.json",
+    "sha256": "2b00b69b11ef25a39290e765fcc6c43cf97332d1ae6414b043c722431a856cd2"
+  }
+]

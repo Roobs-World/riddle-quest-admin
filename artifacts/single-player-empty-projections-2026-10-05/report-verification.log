@@ -1,0 +1,34 @@
+2345 source inputs verified source-report
+{
+  "goal": "active",
+  "lossModelBeforeMs": 400,
+  "lossModelAfterMs": 200,
+  "lossReadsBefore": 4,
+  "lossReadsAfter": 3,
+  "scope": "actual completion with 200ms simulated reads and trusted terminal finalization fixture; projection-only model uses mocked authority with 200ms profile read and 250/400ms tasks; emulator tests use actual issuance and guesses",
+  "requiredProjectionsStillAwaited": true,
+  "realSessionMatrixCases": 8,
+  "realRepairCasesTotal": 11,
+  "backendUnitTests": 1608,
+  "backendUnitSuites": 130,
+  "emulatorTests": 231,
+  "emulatorSuites": 13,
+  "focusedTests": 33,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25608,
+  "tsdocFiles": 1147,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "stableSourceInputs": 2345,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 11,
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

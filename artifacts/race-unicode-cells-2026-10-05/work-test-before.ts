@@ -1,0 +1,41 @@
+import {RaceRiddlePromptSchema, RacePreloadedRiddleSchema, SubmitRaceGuessRequestSchema} from "../raceSchemas";
+
+/** Direct public schemas retain their transport transforms while exposing costly Unicode validation work. */
+const cases = [
+  {kind: "guess", parse: (answer: string) => SubmitRaceGuessRequestSchema.safeParse({runId: "work-run", riddleId: "work-question", requestId: "work-command", guess: answer})},
+  {kind: "prompt", parse: (answer: string) => RaceRiddlePromptSchema.shape.evaluation.unwrap().shape.answer.safeParse(answer)},
+  {kind: "preload", parse: (answer: string) => RacePreloadedRiddleSchema.shape.evaluation.shape.answer.safeParse(answer)},
+];
+/** Both excessive slots and a single excessive grapheme must stop before normalization and segmentation. */
+const oversized = ["a".repeat(4096), "a"+"\u0301".repeat(128)];
+it.each(cases.flatMap(item => oversized.map(answer => ({...item, answer}))))("rejects oversized $kind text without Unicode work", ({parse, answer}) => {
+  /** Native instrumentation observes actual text processing without replacing the schema or grapheme helper. */
+  const normalize = jest.spyOn(String.prototype, "normalize");
+  /** Segmentation observation follows the installed runtime and the production fallback if unavailable. */
+  const segment = typeof Intl.Segmenter === "function" ? jest.spyOn(Intl.Segmenter.prototype, "segment") : null;
+  try {
+    /** Failed parsing keeps the raw length issue as well as the existing refinement rejection. */
+    const result = parse(answer);
+    expect(result.success).toBe(false);
+    if (!result.success) expect(result.error.issues.some(issue => issue.code === "too_big")).toBe(true);
+    expect(normalize).not.toHaveBeenCalled();
+    if (segment) expect(segment).not.toHaveBeenCalled();
+  } finally {normalize.mockRestore(); segment?.mockRestore();}
+});
+it.each(cases)("accepts the original 128-unit seven-slot $kind boundary", ({kind, parse}) => {
+  /** The first letter's combining marks leave exactly seven graphemes in the maximum permitted raw text. */
+  const answer = "a"+"\u0301".repeat(121)+"bcdefg";
+  expect(answer).toHaveLength(128);
+  /** Successful validation preserves the authored bytes rather than storing NFC output. */
+  const result = parse(answer);
+  expect(result.success).toBe(true);
+  if (result.success) expect(result.data).toEqual(kind === "guess" ? expect.objectContaining({guess: answer}) : answer);
+});
+it.each(cases)("rejects eight slots within the raw $kind length bound", ({parse}) => {
+  expect(parse("abcdefgh").success).toBe(false);
+});
+it("keeps trim-before-length validation for the maximum-size guess", () => {
+  /** Transport whitespace remains outside the existing raw text bound after trimming. */
+  const answer = "a"+"\u0301".repeat(121)+"bcdefg";
+  expect(SubmitRaceGuessRequestSchema.parse({runId: "work-run", riddleId: "work-question", requestId: "work-command", guess: ` ${answer} `}).guess).toBe(answer);
+});

@@ -1,0 +1,125 @@
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":22,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":17,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":17,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":23,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":20,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":20,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"fr","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"hi","categoryId":"history","status":"active","durationMs":20,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":11,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":16,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":10,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":24,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":19,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":26,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":15,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":14,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":18,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+  console.info
+    {"telemetryVersion":1,"disposition":"returned","entryKind":"challenge","provider":"jest","locale":"en","categoryId":"history","status":"active","durationMs":21,"severity":"INFO","message":"Race start command"}
+
+      at Object.console.info (jest.env.setup.js:113:5)
+
+Test Suites: 1 passed, 1 total
+Tests:       90 passed, 90 total
+Snapshots:   0 total
+Time:        15.431 s
+Ran all test suites.

@@ -1,0 +1,18 @@
+{
+  "name": "minimal-final-baseline-development",
+  "command": [
+    "env",
+    "LIVE_TOURNAMENT_MODE=development",
+    "LIVE_TOURNAMENT_REPORT_DIR=artifacts/live-tournament-owner-2026-10-06/minimal-final-baseline-development",
+    "LIVE_TOURNAMENT_BASELINE_FILE=artifacts/live-tournament-owner-2026-10-06/owned-00-before.txt",
+    "node",
+    "artifacts/live-tournament-owner-2026-10-06/probe-minimal.mjs"
+  ],
+  "logs": [
+    "minimal-final-baseline-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791255005.2119834,
+  "exitCode": 1,
+  "finishedAt": 1791255007.0973582
+}

@@ -80,4 +80,51 @@ describe("Facebook optional native context board", () => {
     expect(value.coordinator.onContextChange).toHaveBeenCalledWith(changed);
     expect(value.stop).toHaveBeenCalledTimes(1);
   });
+  test("a previously retired read does not start shared native synchronization", async () => {
+    /** Cancellation applies only to this consumer, before any membership or authority work. */
+    const value = fixture(), controller = new AbortController(); controller.abort();
+    await expect(value.capability.list("fr", controller.signal)).resolves.toBeNull();
+    expect(value.coordinator.ensureCurrent).not.toHaveBeenCalled();
+    expect(value.backend.list).not.toHaveBeenCalled();
+  });
+  test("retiring a read during membership confirmation preserves independent score recording", async () => {
+    /** Both operations await the same native membership; only the read owns a cancellation signal. */
+    const value = fixture(), controller = new AbortController();
+    /** Resolve the original membership without replacing either adapter operation. */
+    let confirm!: (current: PlatformResult<Context>) => void;
+    /** Shared membership stays pending while its consumer retires. */
+    const membership = new Promise<PlatformResult<Context>>(resolve => {confirm = resolve;});
+    value.coordinator.ensureCurrent.mockImplementation(() => membership);
+    /** The authenticated score projection remains independent of the optional read. */
+    const read = value.capability.list("fr", controller.signal), record = value.capability.record("opaque-run", "fr");
+    controller.abort(); confirm({status: "success", value: {contextId: "group-b", contextType: "GROUP"}});
+    await expect(read).resolves.toBeNull();
+    await expect(record).resolves.toMatchObject({runId: "opaque-run", rewardsEnabled: false});
+    expect(value.backend.list).not.toHaveBeenCalled();
+    expect(value.backend.record).toHaveBeenCalledTimes(1);
+    expect(value.backend.record).toHaveBeenCalledWith({contextId: "group-b", locale: "fr", runId: "opaque-run"});
+  });
+  test("cancellation after authority admission neither replays nor pretends to revoke the callable", async () => {
+    /** An already admitted authenticated request keeps its original delivery semantics. */
+    const value = fixture(), controller = new AbortController();
+    /** Hold the original callable result until after this UI consumer retires. */
+    let deliver!: (response: Awaited<ReturnType<FacebookContextBoardBackend["list"]>>) => void;
+    value.backend.list.mockImplementation(() => new Promise(resolve => {deliver = resolve;}));
+    /** Native membership resolves before backend admission. */
+    const read = value.capability.list("fr", controller.signal);
+    await Promise.resolve(); await Promise.resolve();
+    expect(value.backend.list).toHaveBeenCalledTimes(1);
+    controller.abort(); deliver({data: value.board});
+    await expect(read).resolves.toEqual(value.board);
+    expect(value.backend.list).toHaveBeenCalledTimes(1);
+  });
+  test("retirement between native context resolution and callable admission skips the backend", async () => {
+    /** The outer adapter continuation must recheck cancellation after resolving the native destination. */
+    const value = fixture(), controller = new AbortController();
+    /** The native context resolves first, but the authenticated callable has not yet been invoked. */
+    const read = value.capability.list("fr", controller.signal);
+    await Promise.resolve(); controller.abort();
+    await expect(read).resolves.toBeNull();
+    expect(value.backend.list).not.toHaveBeenCalled();
+  });
 });

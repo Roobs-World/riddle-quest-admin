@@ -1,0 +1,17 @@
+{
+  "name": "choice-development",
+  "command": [
+    "env",
+    "CONTEXT_CHOICE_MODE=development",
+    "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-read-cancellation-2026-10-06/choice-development",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-context-choice-browser.mjs"
+  ],
+  "logs": [
+    "choice-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791257884.4212382,
+  "exitCode": 0,
+  "finishedAt": 1791257896.1843297
+}

@@ -1,0 +1,6898 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-97c958ae-99af-4dba-9d54-4a910fb5b2b2",
+    "expected": "hint-97c958ae-99af-4dba-9d54-4a910fb5b2b2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-94171995-9b45-4ee8-9af2-c4fba6309e76",
+    "expected": "hint-94171995-9b45-4ee8-9af2-c4fba6309e76"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-0e357409-2d49-472f-9e3c-d603ed322729",
+    "expected": "hint-0e357409-2d49-472f-9e3c-d603ed322729"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-1aa9f75b-5475-4e87-a635-4a7d92efd751",
+    "expected": "continue-1aa9f75b-5475-4e87-a635-4a7d92efd751"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-50f131b2-5158-4131-9196-efb49db86400",
+    "expected": "continue-50f131b2-5158-4131-9196-efb49db86400"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-b7f14c3e-9d02-49ed-b982-0c23249bf209",
+    "expected": "continue-b7f14c3e-9d02-49ed-b982-0c23249bf209"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-f7cba375-acc7-46e6-8f68-069988d14768",
+    "expected": "skip-f7cba375-acc7-46e6-8f68-069988d14768"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-747885d6-5d50-4ea9-a411-eb8aaba0fb4a",
+    "expected": "skip-747885d6-5d50-4ea9-a411-eb8aaba0fb4a"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-14921cd0-0f73-47c2-a6bb-f088fff7440e",
+    "expected": "skip-14921cd0-0f73-47c2-a6bb-f088fff7440e"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-c0fff96b-a6a9-47ce-8de4-9aeebae4dd78",
+    "expected": "hint-c0fff96b-a6a9-47ce-8de4-9aeebae4dd78"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-b49a6a4c-89d1-4b0f-97aa-c6e6d249c030",
+    "expected": "hint-b49a6a4c-89d1-4b0f-97aa-c6e6d249c030"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-9d989aef-6810-40cc-a85b-1907c9a9104f",
+    "expected": "hint-9d989aef-6810-40cc-a85b-1907c9a9104f"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-2606051a-934d-43ee-884f-9fd4d9d42165",
+    "expected": "continue-2606051a-934d-43ee-884f-9fd4d9d42165"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-4c1b1ecf-9363-4254-926c-b95eb9f4d561",
+    "expected": "continue-4c1b1ecf-9363-4254-926c-b95eb9f4d561"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-8809906e-29dd-453a-990d-7c7c9d21cca0",
+    "expected": "continue-8809906e-29dd-453a-990d-7c7c9d21cca0"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-ff68bfec-64ae-4034-97d7-68edfac8725a",
+    "expected": "skip-ff68bfec-64ae-4034-97d7-68edfac8725a"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-574589cb-48fc-4022-93d6-faffb57f5869",
+    "expected": "skip-574589cb-48fc-4022-93d6-faffb57f5869"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-6d724246-3408-4ed4-baf9-67c41cdc9b14",
+    "expected": "skip-6d724246-3408-4ed4-baf9-67c41cdc9b14"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-bcd14fb1-54b4-4e69-b90a-32310e33c7b6",
+    "expected": "hint-bcd14fb1-54b4-4e69-b90a-32310e33c7b6"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-1ef0e234-4300-48c4-992b-c0f848b8a305",
+    "expected": "hint-1ef0e234-4300-48c4-992b-c0f848b8a305"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-9945fcb3-6d9a-4d04-9f63-a0ac05f06c6d",
+    "expected": "hint-9945fcb3-6d9a-4d04-9f63-a0ac05f06c6d"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-ec74c700-e2f1-4235-b31d-07500d267225",
+    "expected": "continue-ec74c700-e2f1-4235-b31d-07500d267225"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-be0c68e3-dec9-44fe-9f55-ea9e5786f6a9",
+    "expected": "continue-be0c68e3-dec9-44fe-9f55-ea9e5786f6a9"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-7a706783-5299-4f4a-9c88-8f39804deed8",
+    "expected": "continue-7a706783-5299-4f4a-9c88-8f39804deed8"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-2fde6560-ca99-4db1-82bc-1285e57341d5",
+    "expected": "skip-2fde6560-ca99-4db1-82bc-1285e57341d5"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-ce1726a2-b70b-4865-9897-9262176872de",
+    "expected": "skip-ce1726a2-b70b-4865-9897-9262176872de"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-4a6cadbd-9022-4971-b18b-9ef2514eb007",
+    "expected": "skip-4a6cadbd-9022-4971-b18b-9ef2514eb007"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-9bd28577-6e50-405b-9154-3fb6fe5dd432",
+    "expected": "hint-9bd28577-6e50-405b-9154-3fb6fe5dd432"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-8d79032a-a641-4f97-bfbe-bf767bbe8eb2",
+    "expected": "hint-8d79032a-a641-4f97-bfbe-bf767bbe8eb2"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-1dd1f155-5088-4940-ab0c-9a929fc4a8ad",
+    "expected": "hint-1dd1f155-5088-4940-ab0c-9a929fc4a8ad"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-d47a4d02-555b-4cfd-a4c8-9261d4721906",
+    "expected": "continue-d47a4d02-555b-4cfd-a4c8-9261d4721906"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-1e8045ec-8451-4287-a05d-72fe32bc5572",
+    "expected": "continue-1e8045ec-8451-4287-a05d-72fe32bc5572"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-b3623c37-a407-4808-bad6-ec816bdcf49b",
+    "expected": "continue-b3623c37-a407-4808-bad6-ec816bdcf49b"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-76697096-648f-4b1d-8c75-dac564874270",
+    "expected": "skip-76697096-648f-4b1d-8c75-dac564874270"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-1f114bc7-768f-413f-b3d5-cb985447694e",
+    "expected": "skip-1f114bc7-768f-413f-b3d5-cb985447694e"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-cca9647b-f024-473f-b1b6-5d2a86d40c4f",
+    "expected": "skip-cca9647b-f024-473f-b1b6-5d2a86d40c4f"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "callback invoked before passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-fb680dd3-cc77-45e8-b909-4333deeb5296",
+    "expected": "skip-fb680dd3-cc77-45e8-b909-4333deeb5296"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-6c06145f-93c5-4524-aa5b-9108729be213",
+    "expected": "skip-6c06145f-93c5-4524-aa5b-9108729be213"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-705ffe21-f92a-479a-91f8-0afc06452c55",
+    "expected": "skip-705ffe21-f92a-479a-91f8-0afc06452c55"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-e2ca7169-97ac-48d6-9c24-cf32994642a3",
+    "expected": "skip-e2ca7169-97ac-48d6-9c24-cf32994642a3"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-0a88e341-9ed3-4589-9ab0-e03e71217333",
+    "expected": "skip-0a88e341-9ed3-4589-9ab0-e03e71217333"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "cancelled callback cannot revive after account returns",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "revived callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-327a7270-156e-4e5e-8626-78311925ba7d",
+    "expected": "skip-327a7270-156e-4e5e-8626-78311925ba7d"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-583c292d-6c30-4dab-a7b3-ff91c077fb2c",
+    "expected": "skip-583c292d-6c30-4dab-a7b3-ff91c077fb2c"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-882aa446-7971-4d9c-820d-0f31279385b7",
+    "expected": "skip-882aa446-7971-4d9c-820d-0f31279385b7"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-6fe6359a-5271-4e44-b652-f6a697895f68",
+    "expected": "skip-6fe6359a-5271-4e44-b652-f6a697895f68"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "callback invoked before passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-1ea1a28e-e305-4b42-8f24-99a5281cf3b5",
+    "expected": "guess-1ea1a28e-e305-4b42-8f24-99a5281cf3b5"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-c1a224b6-5a7d-4595-a0a2-5f50df6efd52",
+    "expected": "guess-c1a224b6-5a7d-4595-a0a2-5f50df6efd52"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-fc8188e7-a2bb-482b-9931-2cf485e74c9c",
+    "expected": "guess-fc8188e7-a2bb-482b-9931-2cf485e74c9c"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-a1a9e2db-3297-4f98-9458-6fb6c12783be",
+    "expected": "guess-a1a9e2db-3297-4f98-9458-6fb6c12783be"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-268c4b47-1cd0-4414-af6a-85c424e7ea7a",
+    "expected": "guess-268c4b47-1cd0-4414-af6a-85c424e7ea7a"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "cancelled callback cannot revive after account returns",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "revived callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-ecb5161a-8819-47b8-a393-6707dc157356",
+    "expected": "guess-ecb5161a-8819-47b8-a393-6707dc157356"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-eed60da6-ab7b-4ff7-a349-7edf2dba55f6",
+    "expected": "guess-eed60da6-ab7b-4ff7-a349-7edf2dba55f6"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-7ab03f40-ec08-44ab-8856-8bf6974fc8d9",
+    "expected": "guess-7ab03f40-ec08-44ab-8856-8bf6974fc8d9"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-058d57e6-a633-4656-8e03-ef6400a25f94",
+    "expected": "guess-058d57e6-a633-4656-8e03-ef6400a25f94"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "cancelled timeout leaves replacement retry usable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-4457cc16-5bce-4d06-a703-ce8377f42455",
+    "expected": "guess-4457cc16-5bce-4d06-a703-ce8377f42455"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "Strict Mode installs a live replacement interval",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "only the live registered callback owns delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "only the live registered callback owns lease acquisition",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "restored active interval retransmits original request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "restored journal remains durable",
+    "actual": "skip-cold",
+    "expected": "skip-cold"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-8fb3686c-331f-48e8-a5ea-46d24e842eca",
+    "expected": "hint-8fb3686c-331f-48e8-a5ea-46d24e842eca"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-5a45ddea-20e6-49ed-a7d1-bd90180d0243",
+    "expected": "hint-5a45ddea-20e6-49ed-a7d1-bd90180d0243"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-923ec763-fee0-4cb8-ad1a-606e8e6dac55",
+    "expected": "hint-923ec763-fee0-4cb8-ad1a-606e8e6dac55"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-7427636a-3d89-4589-a964-bbb59daa3491",
+    "expected": "continue-7427636a-3d89-4589-a964-bbb59daa3491"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-43522c4c-186e-4fb9-ab4d-c7856f0e094e",
+    "expected": "continue-43522c4c-186e-4fb9-ab4d-c7856f0e094e"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-67ea5834-0556-47a8-9452-f403512a563e",
+    "expected": "continue-67ea5834-0556-47a8-9452-f403512a563e"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-aefc62ff-0fcc-4a3d-8b2a-8e95bce1b63e",
+    "expected": "skip-aefc62ff-0fcc-4a3d-8b2a-8e95bce1b63e"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-7d6e8f6f-fe33-40cf-b301-4bd959187628",
+    "expected": "skip-7d6e8f6f-fe33-40cf-b301-4bd959187628"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Bob",
+    "expected": "Bob"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-1a4bf426-d067-48c6-8acf-fef2d788b505",
+    "expected": "skip-1a4bf426-d067-48c6-8acf-fef2d788b505"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:account:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-5c412ee6-a947-47e0-838c-2dc27571cc5a",
+    "expected": "hint-5c412ee6-a947-47e0-838c-2dc27571cc5a"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-04c5ec76-f36f-4ec6-a008-5302b9d59131",
+    "expected": "hint-04c5ec76-f36f-4ec6-a008-5302b9d59131"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-7243048f-f72d-4dcb-9798-21e4adc8ec9c",
+    "expected": "hint-7243048f-f72d-4dcb-9798-21e4adc8ec9c"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-96ae580f-64b7-4dfd-8522-470d7667075c",
+    "expected": "continue-96ae580f-64b7-4dfd-8522-470d7667075c"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-749ca90b-d200-4991-82e3-8f725764ccc3",
+    "expected": "continue-749ca90b-d200-4991-82e3-8f725764ccc3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-87811a42-ea41-4fa7-8645-d6939a58399b",
+    "expected": "continue-87811a42-ea41-4fa7-8645-d6939a58399b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-f071a1d4-8054-4612-90a6-69d16c3d7b56",
+    "expected": "skip-f071a1d4-8054-4612-90a6-69d16c3d7b56"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-ac7a1edf-ddda-4a8d-a0b4-3cafda0e8825",
+    "expected": "skip-ac7a1edf-ddda-4a8d-a0b4-3cafda0e8825"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-7efdfd71-89be-4e41-961e-0c294f107fed",
+    "expected": "skip-7efdfd71-89be-4e41-961e-0c294f107fed"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "replacement confirmed coins survive",
+    "actual": 900,
+    "expected": 900
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:generation:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-2c443184-dfe0-446b-a372-3d0152f2984a",
+    "expected": "hint-2c443184-dfe0-446b-a372-3d0152f2984a"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-f62364a8-2293-4717-8424-4f4ac1b8dedf",
+    "expected": "hint-f62364a8-2293-4717-8424-4f4ac1b8dedf"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-10e4c631-2a38-4494-a07b-6e1cc854314a",
+    "expected": "hint-10e4c631-2a38-4494-a07b-6e1cc854314a"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-3cbafddd-15cf-4d81-82e3-1268baa01912",
+    "expected": "continue-3cbafddd-15cf-4d81-82e3-1268baa01912"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-99c0f454-2067-4224-a972-cd5ba9ed8c1d",
+    "expected": "continue-99c0f454-2067-4224-a972-cd5ba9ed8c1d"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-30b5e733-a2ac-4be0-bc4e-f28ce11e72f2",
+    "expected": "continue-30b5e733-a2ac-4be0-bc4e-f28ce11e72f2"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-a6697a71-5219-47b5-a5af-4cef50e85236",
+    "expected": "skip-a6697a71-5219-47b5-a5af-4cef50e85236"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-4ddf90f0-e569-46d7-ad1b-fc05127441a4",
+    "expected": "skip-4ddf90f0-e569-46d7-ad1b-fc05127441a4"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": "Alice",
+    "expected": "Alice"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": "00000000-0000-4000-8000-000000000002",
+    "expected": "00000000-0000-4000-8000-000000000002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-25dc9276-ed7a-48b0-81b0-f1767c91a079",
+    "expected": "skip-25dc9276-ed7a-48b0-81b0-f1767c91a079"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:locale:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-7db08416-0b8b-49fe-be29-2bf5b31c7336",
+    "expected": "hint-7db08416-0b8b-49fe-be29-2bf5b31c7336"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-cb63284c-f1dd-4d73-88a5-8315ae59c166",
+    "expected": "hint-cb63284c-f1dd-4d73-88a5-8315ae59c166"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "hint-08d3e259-c4d8-4b49-8e7b-607c0c1a9a44",
+    "expected": "hint-08d3e259-c4d8-4b49-8e7b-607c0c1a9a44"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:hint:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-eccfdc5f-a35c-4687-9fed-31f55e4d0f9f",
+    "expected": "continue-eccfdc5f-a35c-4687-9fed-31f55e4d0f9f"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-0785c00b-fc1d-43fe-833e-82409f9d89b9",
+    "expected": "continue-0785c00b-fc1d-43fe-833e-82409f9d89b9"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "continue-186ecb34-a7ef-4f73-9cf9-7c8876729d9b",
+    "expected": "continue-186ecb34-a7ef-4f73-9cf9-7c8876729d9b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:continue:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-f3e08292-5df7-4fcb-a6cc-b7a2c94240e6",
+    "expected": "skip-f3e08292-5df7-4fcb-a6cc-b7a2c94240e6"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:success",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-f6b392df-6e3e-43b7-9ce1-762c335f0346",
+    "expected": "skip-f6b392df-6e3e-43b7-9ce1-762c335f0346"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:rejected",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "receipt reaches committed replacement",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old receipt cannot restore foreign question",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old action remains durable in original scope",
+    "actual": "skip-58baf21b-4f95-4825-b84f-184b45d3805e",
+    "expected": "skip-58baf21b-4f95-4825-b84f-184b45d3805e"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old hint cannot reveal a letter",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "old receipt cannot publish its failure notice",
+    "actual": null,
+    "expected": null
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "receipt:logout:skip:retryable",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "callback invoked before passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-d0aba317-54ee-4a5d-90d5-80102d07b1ee",
+    "expected": "skip-d0aba317-54ee-4a5d-90d5-80102d07b1ee"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-4b2b4488-d677-403a-8ffd-ed517d8db4e6",
+    "expected": "skip-4b2b4488-d677-403a-8ffd-ed517d8db4e6"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-8dcf49c3-df7a-4dfd-a5a9-7a3ebb6725d1",
+    "expected": "skip-8dcf49c3-df7a-4dfd-a5a9-7a3ebb6725d1"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-e1a9c20d-704f-4b26-835c-14f06aea083b",
+    "expected": "skip-e1a9c20d-704f-4b26-835c-14f06aea083b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-b6f12427-1f93-4e46-9e6b-2763fd0fa35c",
+    "expected": "skip-b6f12427-1f93-4e46-9e6b-2763fd0fa35c"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "cancelled callback cannot revive after account returns",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "revived callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-409ba5d8-4ed2-4ec5-a34a-59275241d68a",
+    "expected": "skip-409ba5d8-4ed2-4ec5-a34a-59275241d68a"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-ce023b31-f9b9-42c3-a6ea-911aae0d560e",
+    "expected": "skip-ce023b31-f9b9-42c3-a6ea-911aae0d560e"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-96d617cb-e4f3-4bf0-8184-394c94bd37b6",
+    "expected": "skip-96d617cb-e4f3-4bf0-8184-394c94bd37b6"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-00fb5541-7a8b-4a0a-b0ed-105e006dcaf3",
+    "expected": "skip-00fb5541-7a8b-4a0a-b0ed-105e006dcaf3"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "callback invoked before passive cleanup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-fb90fed1-0947-4607-b76d-fa91d41c097c",
+    "expected": "guess-fb90fed1-0947-4607-b76d-fa91d41c097c"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:unmount:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-ec394cf2-a770-4ca4-8548-71a947708342",
+    "expected": "guess-ec394cf2-a770-4ca4-8548-71a947708342"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:account:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-619d0371-7202-47ab-85e1-f0851349e63f",
+    "expected": "guess-619d0371-7202-47ab-85e1-f0851349e63f"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:generation:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-e8e7c5c5-fb88-4236-9fbd-49770b96210d",
+    "expected": "guess-e8e7c5c5-fb88-4236-9fbd-49770b96210d"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:locale:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-de564ae9-9d0b-46e3-91fa-2f22f531c002",
+    "expected": "guess-de564ae9-9d0b-46e3-91fa-2f22f531c002"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:logout:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "cancelled callback cannot revive after account returns",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "revived callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-fcd46ca1-a6cf-4611-98d2-1de17c222562",
+    "expected": "guess-fcd46ca1-a6cf-4611-98d2-1de17c222562"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:aba:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-edf8043d-32d3-4396-ad80-7ca2c781e5ed",
+    "expected": "guess-edf8043d-32d3-4396-ad80-7ca2c781e5ed"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:profile:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-b6a504b1-b779-40bd-b8b8-10405ba3f52a",
+    "expected": "guess-b6a504b1-b779-40bd-b8b8-10405ba3f52a"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:question:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-1a4a5fee-e0ee-4578-8273-3fe9aa6b9a21",
+    "expected": "guess-1a4a5fee-e0ee-4578-8273-3fe9aa6b9a21"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "only current callback may renew its exact request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "cancelled timeout leaves replacement retry usable",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "journal survives timer retirement",
+    "actual": "guess-eb7e02b1-534e-40b8-b0e0-addab9448c6b",
+    "expected": "guess-eb7e02b1-534e-40b8-b0e0-addab9448c6b"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:replaced:guess:retry",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "Strict Mode installs a live replacement interval",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "only the live registered callback owns delivery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "only the live registered callback owns lease acquisition",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "restored active interval retransmits original request",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "restored journal remains durable",
+    "actual": "skip-cold",
+    "expected": "skip-cold"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  }
+]

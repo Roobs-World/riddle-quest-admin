@@ -1,0 +1,105 @@
+--- a/firebase-functions/src/race/raceLiveService.ts
++++ b/firebase-functions/src/race/raceLiveService.ts
+@@ -307,8 +307,8 @@
+           deletionSnapshots.get(participantId) ?? transaction.get(getJestAccountDeletionRef(db, participantId))]);
+         return profile.exists && !deletion.exists ? profile : null;
+       }));
+-      /** Preserve the winner's canonical referral destination even when the rival requests settlement. */
+-      const winnerSourceRead = winner && winnerTicket ? winnerTicket === input.ticketId ? ticket :
++      /** Only Facebook delivery needs the winner's frozen context; other providers use the match receipt. */
++      const winnerSourceRead = winner && winnerTicket && isFacebookFirebaseUid(winner.userId) ? winnerTicket === input.ticketId ? ticket :
+         transaction.get(db.doc(`liveRaceTickets/${winnerTicket}`)).then(source => source.data() as LiveTicket | undefined) : undefined;
+       /** Every read completes before balances, statistics, receipts or delivery outboxes can change. */
+       const [participants, winnerSource] = await Promise.all([participantsRead, winnerSourceRead]);
+--- a/firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts
++++ b/firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts
+@@ -2,19 +2,24 @@
+ import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
+ import {JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
+ 
+-/** Fixed server clock and two authenticated human seats. */
+-const NOW = 1_800_000_000_000, OWNER = `jest_${"a".repeat(40)}`, RIVAL = `jest_${"b".repeat(40)}`;
++/** Fixed authoritative observation clock for every provider. */
++const NOW = 1_800_000_000_000;
+ 
+-it.each([
+-  {winner: 0 as const, retryDeletion: false}, {winner: 1 as const, retryDeletion: false},
+-  {winner: 0 as const, retryDeletion: true}, {winner: 1 as const, retryDeletion: true},
+-])("settles winner seat $winner with retry deletion $retryDeletion using fresh boundaries", async ({winner, retryDeletion}) => {
++it.each(["jest", "reddit", "facebook"].flatMap(provider => [
++  {provider, winner: 0 as const, retryDeletion: false, sourceReadFails: false},
++  {provider, winner: 1 as const, retryDeletion: false, sourceReadFails: false},
++  {provider, winner: 0 as const, retryDeletion: true, sourceReadFails: false},
++  {provider, winner: 1 as const, retryDeletion: true, sourceReadFails: false},
++  {provider, winner: 1 as const, retryDeletion: false, sourceReadFails: true},
++]))("settles $provider seat $winner with retry deletion $retryDeletion and source failure $sourceReadFails", async ({provider, winner, retryDeletion, sourceReadFails}) => {
+   jest.useFakeTimers().setSystemTime(NOW);
+   try {
+     /** A finished human match still needs its atomic economy settlement. */
+     const base = {locale: "en" as const, categoryId: "history" as const, contentVersion: "settlement-latency-v1",
+       riddles: Array.from({length: 30}, (_, position) => ({position, riddleId: `q${position}`,
+         canonicalRiddleId: `history:${position}`, text: `Historical clue number ${position}`, answer: "piano"}))};
++    /** Each provider retains two canonical authenticated human accounts. */
++    const OWNER = `${provider}_${"a".repeat(40)}`, RIVAL = `${provider}_${"b".repeat(40)}`;
+     /** Both tickets retain canonical account ownership and the shared match binding. */
+     const ticketIds = ["a".repeat(64), "b".repeat(64)] as const, users = [OWNER, RIVAL] as const;
+     /** The match began before this result observation. */
+@@ -28,9 +33,10 @@
+     /** In-memory persistence gives every read the same 200ms transport cost. */
+     const documents = new Map<string, unknown>([[`liveRaceMatches/${ticketIds[0]}`, match]]);
+     users.forEach((userId, seat) => {
+-      /** A canonical ticket is read even when the winner belongs to the other caller. */
++      /** Facebook destinations remain frozen independently for each private ticket. */
+       const ticket: LiveTicket = {userId, pool: "pool", createdAtMs: startsAtMs - 5000, seenAtMs: startsAtMs,
+-        matchId: ticketIds[0], player: players[seat]!, run: runs[seat]!};
++        matchId: ticketIds[0], player: players[seat]!, run: runs[seat]!,
++        ...(provider === "facebook" ? {facebookContext: {contextKey: ticketIds[seat]!, createdAtMs: startsAtMs - 5000, joinedAtMs: startsAtMs - 2000}} : {})};
+       documents.set(`liveRaceTickets/${ticketIds[seat]}`, {...ticket, expiresAt: "expiry"});
+       documents.set(`users/${userId}`, {coins: 100});
+     });
+@@ -47,6 +53,7 @@
+         expect(writes).toHaveLength(0);
+         reads.push(ref.path);
+         await new Promise(resolve => setTimeout(resolve, 200));
++        if (sourceReadFails && ref.path === `liveRaceTickets/${ticketIds[1]}`) throw new Error("Winner source read unavailable");
+         return {ref, exists: documents.has(ref.path), data: () => structuredClone(documents.get(ref.path))};
+       },
+       set: (ref: {
+@@ -83,11 +90,18 @@
+       {db, nowMs: NOW, authorize: async () => {await new Promise(resolve => setTimeout(resolve, 200));}})
+       .then(value => ({value, error: undefined}), error => ({value: undefined, error}));
+     await jest.runAllTimersAsync();
+-    if (process.env.LIVE_SETTLEMENT_TRACE) console.info(JSON.stringify({winner, retryDeletion, elapsedMs: Date.now() - NOW, reads}));
++    if (process.env.LIVE_SETTLEMENT_TRACE) console.info(JSON.stringify({provider, winner, retryDeletion, sourceReadFails, elapsedMs: Date.now() - NOW, reads}));
++    if (provider === "facebook" && sourceReadFails) {
++      expect((await result).error).toEqual(new Error("Winner source read unavailable"));
++      expect(writes).toHaveLength(0);
++      expect(users.map(user => documents.get(`users/${user}`))).toEqual([{coins: 100}, {coins: 100}]);
++      return;
++    }
+     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
+     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+     expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+-    expect(reads).toHaveLength((winner === 0 ? 8 : 9) * (retryDeletion ? 2 : 1));
++    expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
++    expect(reads.includes(`liveRaceTickets/${ticketIds[1]}`)).toBe(provider === "facebook" && winner === 1);
+     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
+     expect(writes).toContain(`users/${OWNER}`);
+     if (retryDeletion) {
+@@ -95,6 +109,16 @@
+       expect(documents.get(`users/${RIVAL}`)).toEqual({coins: 100});
+       expect((await result).value?.opponent).toMatchObject({displayName: "Riddle Quest player", avatarUrl: null});
+     } else expect(writes).toContain(`users/${RIVAL}`);
++    /** Provider delivery keeps only the accepted winner and its original destination. */
++    const deliveries = [...documents.entries()].filter(([path]) => path.startsWith("racePerformanceOutbox/"));
++    expect(deliveries).toHaveLength(provider === "jest" || retryDeletion && winner === 1 ? 0 : 1);
++    if (deliveries.length) {
++      expect(deliveries[0]![1]).toMatchObject({userId: users[winner], liveTicketId: ticketIds[winner], source: `${provider}_live`});
++      if (provider === "facebook") expect(deliveries[0]![1]).toMatchObject({facebookContext: {
++        contextKey: ticketIds[winner], createdAtMs: startsAtMs - 5000, joinedAtMs: startsAtMs - 2000,
++      }});
++      else expect(deliveries[0]![1]).not.toHaveProperty("facebookContext");
++    }
+     /** A repeated observation cannot pay either participant again. */
+     const profiles = users.map(user => structuredClone(documents.get(`users/${user}`)));
+     reads.length = 0; writes.length = 0;

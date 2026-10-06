@@ -1,0 +1,19 @@
+{
+  "name": "owner-final-baseline-development",
+  "command": [
+    "env",
+    "CONTEXT_CHOICE_QUICK=1",
+    "CONTEXT_CHOICE_MODE=development",
+    "CONTEXT_CHOICE_REPORT_DIR=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-choice-2026-10-06/owner-final-baseline-development",
+    "CONTEXT_CHOICE_BASELINE_FILE=/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-choice-2026-10-06/entry-before-choice-owner.tsx",
+    "node",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-context-choice-2026-10-06/probe-minimal-owner.mjs"
+  ],
+  "logs": [
+    "owner-final-baseline-development.log"
+  ],
+  "status": "terminal",
+  "startedAt": 1791256973.1252697,
+  "exitCode": 1,
+  "finishedAt": 1791256973.15277
+}

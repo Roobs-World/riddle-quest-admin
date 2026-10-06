@@ -1,0 +1,52 @@
+{
+  "goal": "active",
+  "selectedContentFields": [
+    "riddleId",
+    "canonicalRiddleId",
+    "text",
+    "answer",
+    "categoryId",
+    "difficultyBand",
+    "raceEligible",
+    "qualityVersion"
+  ],
+  "syntheticDecodedQueryBytes": {
+    "singleCategory30Docs": {
+      "before": 3007881,
+      "after": 7371
+    },
+    "allCategories60Docs": {
+      "before": 6015521,
+      "after": 14501
+    }
+  },
+  "queryCallsBeforeAndAfter": 1,
+  "riddleIdentityValidation": "Published prompt schema must accept the original ID unchanged; rejects missing, blank, whitespace-only, padded, oversized and non-string identities before category availability or deck selection.",
+  "scope": "Actual Admin SDK and private loopback Firestore emulator. Each eligible fixture document contains an unused 100000-character field. Sizes measure decoded document-array JSON, not wire bytes, billing savings or production latency. Locale/category/eligibility filters, document identities, pool validation, deterministic deck order and content version are retained.",
+  "newRealEmulatorCases": 20,
+  "newIdentityUnitCases": 6,
+  "backendUnitTests": 1653,
+  "backendUnitSuites": 134,
+  "emulatorTests": 334,
+  "emulatorSuites": 22,
+  "focusedTests": 47,
+  "focusedSuites": 4,
+  "builtBrowserTests": 8,
+  "builtBrowserSuites": 3,
+  "bufferedTransitionBudgetMs": 100,
+  "types": "passed",
+  "targetedLint": "passed",
+  "tsdocDeclarations": 25954,
+  "tsdocFiles": 1160,
+  "sixBuilds": "passed",
+  "youtube": "fixture",
+  "stableSourceInputs": 2358,
+  "preservedBuildFiles": 1300,
+  "ownedJobsTerminal": 23,
+  "probeScopeExtension": "Initial three basic identity cases expanded to six after tracing the published schema normalization and bounds; matching baseline/projection/fixed runs use all six.",
+  "cleanup": {
+    "temporaryBuildRemoved": true,
+    "ownedTargetMetadataPreservedAndRemoved": 6,
+    "ownedEmulatorsStopped": true
+  }
+}

@@ -12,7 +12,7 @@ import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {ensureAuthoritativeSession, getIssuedAuthoritativeSession} from "../gameplay/singlePlayerSession";
+import {ensureAuthoritativeSessionWithState, getIssuedAuthoritativeSession} from "../gameplay/singlePlayerSession";
 import {completeAuthoritativeGame, isDailyCompletionDateEligible} from "../gameplay/completeGameLogic";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 import {getPlayableClassicRiddle, isPlayableRiddleContent} from "../gameplay/classicRiddleFallback";
@@ -230,8 +230,8 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       };
       /** Provides content key behavior. */
       const contentKey = getSinglePlayerContentKey(canonicalRiddle, "challenge", locale);
-      /** Provides session token behavior. */
-      let sessionToken = await ensureAuthoritativeSession(
+      /** The committed issuance attempt provides both identity and public projection inputs. */
+      let {sessionToken, state: activeSession} = await ensureAuthoritativeSessionWithState(
         request.auth.uid,
         "challenge",
         riddleId,
@@ -241,8 +241,6 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         canonicalRiddle.answer,
         {challengeDate: todayDateString, difficultyBand: canonicalRiddle.difficultyBand},
       );
-      /** Projects the accepted session snapshot; only a rotated entitlement requires another read. */
-      let activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
       if (
         activeSession.terminal &&
         !activeSession.isSkipped &&
@@ -272,7 +270,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           );
         }
         // A recorded loss remains retryable for the same Daily entitlement.
-        sessionToken = await ensureAuthoritativeSession(
+        ({sessionToken, state: activeSession} = await ensureAuthoritativeSessionWithState(
           request.auth.uid,
           "challenge",
           riddleId,
@@ -281,8 +279,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
           completionKey,
           canonicalRiddle.answer,
           {challengeDate: todayDateString, difficultyBand: canonicalRiddle.difficultyBand},
-        );
-        activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "challenge", riddleId);
+        ));
       }
 
       /** Provides challenge data behavior. */
@@ -468,8 +465,8 @@ export const getCurrentClassicRiddle = onCallWithSentry(
       }
       /** Provides content key behavior. */
       const contentKey = getSinglePlayerContentKey(riddle, "classic", contentLocale);
-      /** Provides session token behavior. */
-      let sessionToken = await ensureAuthoritativeSession(
+      /** The committed issuance attempt provides both identity and public projection inputs. */
+      let {sessionToken, state: activeSession} = await ensureAuthoritativeSessionWithState(
         request.auth.uid,
         "classic",
         riddle.riddleId,
@@ -478,13 +475,6 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         getSinglePlayerCompletionKey("classic", expectedClassicIndex),
         riddle.answer,
         {classicIndex: expectedClassicIndex, difficultyBand: riddle.difficultyBand},
-      );
-      /** Projects the accepted session snapshot; terminal reconciliation refreshes the rotated binding. */
-      let activeSession = await getIssuedAuthoritativeSession(
-        request.auth.uid,
-        sessionToken,
-        "classic",
-        riddle.riddleId,
       );
       if (activeSession.terminal) {
         if (!activeSession.isSkipped) {
@@ -515,7 +505,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
         }
         /** Provides reconciled content key behavior. */
         const reconciledContentKey = getSinglePlayerContentKey(riddle, "classic", contentLocale);
-        sessionToken = await ensureAuthoritativeSession(
+        ({sessionToken, state: activeSession} = await ensureAuthoritativeSessionWithState(
           request.auth.uid,
           "classic",
           riddle.riddleId,
@@ -524,8 +514,7 @@ export const getCurrentClassicRiddle = onCallWithSentry(
           getSinglePlayerCompletionKey("classic", classicIndex),
           riddle.answer,
           {classicIndex, difficultyBand: riddle.difficultyBand},
-        );
-        activeSession = await getIssuedAuthoritativeSession(request.auth.uid, sessionToken, "classic", riddle.riddleId);
+        ));
       }
 
       return validateCallableResponse(

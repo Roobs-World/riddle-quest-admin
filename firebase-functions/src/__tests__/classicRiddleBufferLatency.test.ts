@@ -9,7 +9,9 @@ jest.mock("../daily/dailyChallenge", () => ({getCurrentClassicRiddle: {run: (...
 jest.mock("../gameplay/firestoreService", () => ({getUser: async () => ({progress: {classicIndex: 1}, preferredLanguage: "en"})}));
 jest.mock("../gameplay/classicRiddleFallback", () => ({getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
 jest.mock("../gameplay/singlePlayerSession", () => ({
-  ensureAuthoritativeSession: (...args: [string, string, string]) => mockEnsureSession(...args),
+  ensureAuthoritativeSessionWithState: async (...args: [string, string, string]) => ({sessionToken: await mockEnsureSession(...args),
+    state: {gameMode: "classic", answer: "piano", locale: "en", attempts: 0, hasUsedContinue: false, awaitingContinue: false,
+      terminal: false, guessReceipts: {}, expiresAt: {toMillis: () => 1_900_000_000_000}}}),
   getIssuedAuthoritativeSession: async () => ({gameMode: "classic", answer: "piano", locale: "en", attempts: 0,
     hasUsedContinue: false, awaitingContinue: false, terminal: false, guessReceipts: {}, expiresAt: {toMillis: () => 1_900_000_000_000}}),
 }));
@@ -67,4 +69,24 @@ it("does not prefetch when the current question is unavailable", async () => {
   expect((await load()).riddles).toEqual([]);
   expect(mockPlayable).not.toHaveBeenCalled();
   expect(mockEnsureSession).not.toHaveBeenCalled();
+});
+
+it("waits for every parallel issuance before rejecting a failed required successor", async () => {
+  jest.useFakeTimers();
+  try {
+    mockPlayable.mockImplementation(async (index: number) => playable(index));
+    mockEnsureSession.mockImplementation(async (_user: string, _mode: string, id: string) => {
+      if (id === "classic-2") throw new Error("required issuance unavailable");
+      await new Promise(resolve => setTimeout(resolve, 200));
+      return `issued-token-for-${id}`;
+    });
+    /** Rejection is observed immediately so no deliberately failing task becomes unhandled. */
+    let settled = false;
+    /** Actual handler must keep its response pending while sibling issuance operations can still write. */
+    const pending = load().catch(error => {settled = true; return error;});
+    await jest.advanceTimersByTimeAsync(100);
+    expect(settled).toBe(false);
+    await jest.runAllTimersAsync();
+    expect(await pending).toEqual(new Error("required issuance unavailable"));
+  } finally {await jest.runAllTimersAsync(); jest.useRealTimers();}
 });

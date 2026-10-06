@@ -1,0 +1,23 @@
+FAIL src/__tests__/classicRiddleBufferLatency.test.ts
+  ● waits for every parallel issuance before rejecting a failed required successor
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      86 |     const pending = load().catch(error => {settled = true; return error;});
+      87 |     await jest.advanceTimersByTimeAsync(100);
+    > 88 |     expect(settled).toBe(false);
+         |                     ^
+      89 |     await jest.runAllTimersAsync();
+      90 |     expect(await pending).toEqual(new Error("required issuance unavailable"));
+      91 |   } finally {await jest.runAllTimersAsync(); jest.useRealTimers();}
+
+      at Object.<anonymous> (src/__tests__/classicRiddleBufferLatency.test.ts:88:21)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 4 passed, 5 total
+Snapshots:   0 total
+Time:        0.272 s, estimated 1 s
+Ran all test suites matching src/__tests__/classicRiddleBufferLatency.test.ts.

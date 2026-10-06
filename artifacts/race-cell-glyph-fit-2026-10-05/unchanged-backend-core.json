@@ -1,0 +1,13 @@
+{
+  "previousEvidence": "artifacts/race-answer-input-shape-2026-10-05",
+  "previousInputs": 2382,
+  "currentInputs": 2383,
+  "changed": [
+    "packages/portal/src/play/GameFrameControls.tsx",
+    "packages/portal/src/styles.puzzle.css"
+  ],
+  "added": [
+    "packages/portal/src/input/useGuessGlyphFit.ts"
+  ],
+  "allOtherSelectedInputsUnchanged": true
+}
