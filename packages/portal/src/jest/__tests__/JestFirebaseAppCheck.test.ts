@@ -132,7 +132,10 @@ describe("Jest Firebase App Check warm-up", () => {
   it("shares one early attestation with the authenticated readiness gate", async () => {
     /** Token request that resolves only when the test releases it. */
     let release!: () => void;
-    mockGetToken.mockImplementation(() => new Promise<{token: string}>((resolve) => {
+    mockGetToken.mockImplementation(() => new Promise<{
+      /** Attested App Check token. */
+      token: string;
+    }>((resolve) => {
       release = () => resolve({token: "attested"});
     }));
     /** Fresh adapter. */

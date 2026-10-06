@@ -17,13 +17,20 @@ const region = "us-central1";
 /** Stripe's eligible general digital-goods code for electronically supplied virtual items. */
 const yahooCoinTaxCode = "txcd_10000000";
 
+/** Stripe's CommonJS export, or the ES-module interop wrapper around it. */
+type StripeModule = typeof Stripe | {
+  /** Interop default export. */
+  default: typeof Stripe;
+  /** ES module marker. */
+  __esModule: true;
+};
+
 /** Provides stripe client behavior. */
 // Stripe is loaded on first use so every other function's cold start skips its module graph.
 const stripeClient = () => {
   /** CommonJS Stripe export, unwrapped the same way esModuleInterop would. */
   // eslint-disable-next-line @typescript-eslint/no-require-imports -- Deferred load keeps player cold starts small.
-  const loaded = require("stripe") as typeof Stripe | {
-    /** Interop default export. */ default: typeof Stripe; /** ES module marker. */ __esModule: true};
+  const loaded = require("stripe") as StripeModule;
   /** Stripe constructor. */
   const StripeClient = "__esModule" in loaded ? loaded.default : loaded;
   return new StripeClient(stripeSecretKey.value());
