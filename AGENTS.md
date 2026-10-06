@@ -10,3 +10,17 @@
 - When removing visible text, verify it is unused elsewhere and remove the corresponding key from every locale.
 - When adding visible text, add it to every supported locale or reuse an existing translated key.
 - Verify UI changes in injected browser harnesses and build all six isolated target artifacts before handoff.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues for Grindhead/riddle-quest, via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The default five labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: the glossary is `CONTEXT.md` and decisions are in `docs/adr/`. See `docs/agents/domain.md`.
