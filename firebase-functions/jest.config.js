@@ -2,12 +2,13 @@
 module.exports = {
   rootDir: ".",
   roots: ["<rootDir>"],
-  preset: "ts-jest",
   testEnvironment: "node",
   testEnvironmentOptions: {globalsCleanup: "on"},
   testMatch: ["**/__tests__/**/*.test.ts", "!**/__tests__/**/*.it.test.ts", "!lib/**"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
+    // Shared-contract tests import portal source; see jest.portalTransform.js.
+    "/packages/portal/src/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
     "^.+\\.ts$": [
       "ts-jest",
       {
