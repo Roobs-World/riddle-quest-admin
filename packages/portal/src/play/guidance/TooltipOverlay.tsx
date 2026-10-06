@@ -50,7 +50,8 @@ export function TooltipOverlay({
     /** Refreshes panel and viewport dimensions after layout changes. */
     const measure = () => {
       /** Rendered tooltip height, including translated content. */
-      const height = card.getBoundingClientRect().height;
+      // Natural height, so a card capped to the available room is not re-measured as smaller.
+      const height = Math.max(card.getBoundingClientRect().height, card.scrollHeight + card.offsetHeight - card.clientHeight);
       /** Current available viewport height. */
       const viewportHeight = window.innerHeight;
       setPanelSize(previous => previous.height === height && previous.viewportHeight === viewportHeight
