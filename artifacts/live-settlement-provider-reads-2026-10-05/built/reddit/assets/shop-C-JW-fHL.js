@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`सिक्के`,LOADING_TEXT:`दुकान लोड हो रही है...`,NO_PACKS_AVAILABLE:`अभी कोई सिक्का पैक उपलब्ध नहीं है।`,PURCHASE_BUTTON:`खरीदें`,TITLE:`सिक्का दुकान`,YOUR_BALANCE:`आपका बैलेंस`},n={CoinShop:t}})))()}r();export{n as default};

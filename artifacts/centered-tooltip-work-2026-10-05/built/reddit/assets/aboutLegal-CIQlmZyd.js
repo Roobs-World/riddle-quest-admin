@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`계정 삭제`,DATA_EXPORT:`데이터 내보내기`,SUPPORT:`지원`,THIRD_PARTY_LICENSES:`제3자 라이센스`,TITLE:`정보/법률`},n={AboutLegal:t}})))()}r();export{n as default};

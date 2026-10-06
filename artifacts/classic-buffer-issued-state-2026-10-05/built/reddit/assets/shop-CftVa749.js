@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`koin`,LOADING_TEXT:`Memuat toko...`,NO_PACKS_AVAILABLE:`Tidak ada paket koin yang tersedia saat ini.`,PURCHASE_BUTTON:`PEMBELIAN`,TITLE:`TOKO KOIN`,YOUR_BALANCE:`Saldo Anda`},n={CoinShop:t}})))()}r();export{n as default};

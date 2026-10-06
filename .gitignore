@@ -150,3 +150,7 @@ artifacts/content-reset-backup-*.json
 
 # Isolated web target artifacts
 /builds/
+
+# Verification runs copy whole target builds into artifacts/<run>/built/.
+# Their built-sha256.json manifests stay tracked as evidence; the copies stay local.
+artifacts/**/built/

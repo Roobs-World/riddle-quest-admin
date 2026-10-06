@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`Monety`,CONTINUE_BUTTON:`Kontynuuj`,STREAK_SUFFIX:`-Dzienna passa`,TITLE:`Seria wzrosła!`},n={StreakFanfare:t}})))()}r();export{n as default};

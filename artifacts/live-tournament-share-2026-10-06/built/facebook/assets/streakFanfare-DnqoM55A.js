@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`tiền xu`,CONTINUE_BUTTON:`Tiếp tục đi`,STREAK_SUFFIX:`-Dải ngày`,TITLE:`Chuỗi tăng lên!`},n={StreakFanfare:t}})))()}r();export{n as default};

@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`खाता हटाना`,DATA_EXPORT:`डेटा निर्यात`,SUPPORT:`समर्थन`,THIRD_PARTY_LICENSES:`तृतीय-पक्ष लाइसेंस`,TITLE:`के बारे में / कानूनी`},n={AboutLegal:t}})))()}r();export{n as default};

@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Excelente`,COINS_SUFFIX:` monedas`,TAP_CHEST_TO_COLLECT:`Toca el cofre para recoger tus monedas`,TITLE:`Monedas anadidas!`},n={CoinPurchase:t}})))()}r();export{n as default};

@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Toll`,COINS_SUFFIX:` Muenzen`,TAP_CHEST_TO_COLLECT:`Tippe auf die Truhe, um deine Münzen einzusammeln`,TITLE:`Muenzen hinzugefuegt!`},n={CoinPurchase:t}})))()}r();export{n as default};

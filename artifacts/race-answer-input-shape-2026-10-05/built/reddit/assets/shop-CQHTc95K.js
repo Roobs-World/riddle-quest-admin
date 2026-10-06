@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`عملات معدنية`,LOADING_TEXT:`جارٍ تحميل المتجر...`,NO_PACKS_AVAILABLE:`لا تتوفر حزم العملات المعدنية في الوقت الحالي.`,PURCHASE_BUTTON:`شراء`,TITLE:`متجر العملات`,YOUR_BALANCE:`رصيدك`},n={CoinShop:t}})))()}r();export{n as default};

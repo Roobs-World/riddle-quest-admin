@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`코인`,LOADING_TEXT:`상점 로딩 중...`,NO_PACKS_AVAILABLE:`현재 코인 팩이 없습니다.`,PURCHASE_BUTTON:`구매`,TITLE:`코인 상점`,YOUR_BALANCE:`잔액`},n={CoinShop:t}})))()}r();export{n as default};

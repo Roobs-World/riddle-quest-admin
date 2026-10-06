@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Fantastico`,COINS_SUFFIX:`Monete`,TAP_CHEST_TO_COLLECT:`Tocca il forziere per raccogliere le monete`,TITLE:`Monete aggiunte!`},n={CoinPurchase:t}})))()}r();export{n as default};

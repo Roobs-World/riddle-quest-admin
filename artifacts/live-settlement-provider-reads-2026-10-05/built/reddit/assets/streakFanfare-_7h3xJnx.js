@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` pieces`,CONTINUE_BUTTON:`Continuer`,STREAK_SUFFIX:` jours de serie`,TITLE:`Serie augmentee!`},n={StreakFanfare:t}})))()}r();export{n as default};

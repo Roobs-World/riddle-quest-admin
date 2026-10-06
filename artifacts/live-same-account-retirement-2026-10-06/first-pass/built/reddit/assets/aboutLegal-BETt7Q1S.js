@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`アカウント削除`,DATA_EXPORT:`データ エクスポート`,SUPPORT:`サポート`,THIRD_PARTY_LICENSES:`サードパーティ ライセンス`,TITLE:`概要 / 法的事項`},n={AboutLegal:t}})))()}r();export{n as default};

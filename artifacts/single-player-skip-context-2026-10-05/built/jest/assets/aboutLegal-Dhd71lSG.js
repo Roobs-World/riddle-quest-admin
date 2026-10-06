@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`Kontolöschung`,DATA_EXPORT:`Datenexport`,SUPPORT:`Unterstützung`,THIRD_PARTY_LICENSES:`Lizenzen von Drittanbietern`,TITLE:`Über / Rechtliches`},n={AboutLegal:t}})))()}r();export{n as default};

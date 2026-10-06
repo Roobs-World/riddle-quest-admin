@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Muhtesem`,COINS_SUFFIX:` para`,TAP_CHEST_TO_COLLECT:`Paralarını toplamak için sandığa dokun`,TITLE:`Para Eklendi!`},n={CoinPurchase:t}})))()}r();export{n as default};

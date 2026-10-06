@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`코인`,CONTINUE_BUTTON:`계속`,STREAK_SUFFIX:`일 연승`,TITLE:`연승 증가!`},n={StreakFanfare:t}})))()}r();export{n as default};

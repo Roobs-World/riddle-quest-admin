@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`すごい`,COINS_SUFFIX:`コイン`,TAP_CHEST_TO_COLLECT:`宝箱をタップしてコインを受け取ろう`,TITLE:`コイン追加！`},n={CoinPurchase:t}})))()}r();export{n as default};

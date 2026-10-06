@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`عملات معدنية`,CONTINUE_BUTTON:`استمر`,STREAK_SUFFIX:`-خط اليوم`,TITLE:`زيادة الخط!`},n={StreakFanfare:t}})))()}r();export{n as default};

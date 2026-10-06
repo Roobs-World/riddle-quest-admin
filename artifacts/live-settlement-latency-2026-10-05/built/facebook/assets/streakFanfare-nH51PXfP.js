@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` jeton`,CONTINUE_BUTTON:`Devam et`,STREAK_SUFFIX:` gunluk seri`,TITLE:`Seri Artti!`},n={StreakFanfare:t}})))()}r();export{n as default};

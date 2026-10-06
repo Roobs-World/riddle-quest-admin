@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:`Koin`,CONTINUE_BUTTON:`Teruskan`,STREAK_SUFFIX:`-Hari Beruntun`,TITLE:`Pukulan Meningkat!`},n={StreakFanfare:t}})))()}r();export{n as default};

@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`Hesap Silme`,DATA_EXPORT:`Veri Dışa Aktarma`,SUPPORT:`Destek`,THIRD_PARTY_LICENSES:`Üçüncü Taraf Lisansları`,TITLE:`Hakkında / Yasal`},n={AboutLegal:t}})))()}r();export{n as default};

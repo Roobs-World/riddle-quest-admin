@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={AWESOME_BUTTON:`Luar biasa`,COINS_SUFFIX:`Koin`,TAP_CHEST_TO_COLLECT:`Ketuk peti untuk mengambil koinmu`,TITLE:`Koin Ditambahkan!`},n={CoinPurchase:t}})))()}r();export{n as default};

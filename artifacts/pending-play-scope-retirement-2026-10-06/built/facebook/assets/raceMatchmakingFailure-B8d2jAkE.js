@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";import{f as t,t as n}from"./race-CCxHkZPt.js";function r(e){let n=t(e);return{status:n.recovery===`none`?`terminal-failure`:`retryable-failure`,message:`race-matchmaking-${n.reason}`,failure:n}}function i(){return(i=e((()=>{n()})))()}i();export{r as raceMatchmakingFailureResult};

@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` para`,LOADING_TEXT:`Magasa yukleniyor...`,NO_PACKS_AVAILABLE:`Su an para paketi mevcut degil.`,PURCHASE_BUTTON:`SATIN AL`,TITLE:`PARA MAGASASI`,YOUR_BALANCE:`Bakiyeniz`},n={CoinShop:t}})))()}r();export{n as default};
