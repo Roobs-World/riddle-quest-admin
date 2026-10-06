@@ -12,6 +12,15 @@ submission work. Historical receipts remain in the dashboard with excluded statu
 
 The command first runs `pnpm verify:all-targets`. No target release adapter starts unless that shared gate succeeds. It then runs all configured provider and distribution adapters in a deterministic order and stops at the first failure.
 
+Every single-target release (`pnpm release:<target>`) and every adapter inside the combined release plays its own freshly produced artifact in a real browser before reporting `Release handoff ready`:
+
+- Neutral HTML5 targets, Netflix, Yahoo and GameSnacks run `node scripts/release/verify-packaged-games.mjs --target <target>`, which serves the exact package and solves a riddle, collects the reward and reloads. Evidence is written to `artifacts/release-e2e/packaged-games-<target>.json`.
+- Reddit runs the Reddit browser suite against the build its candidate just staged.
+- Facebook runs the Facebook browser suite inside `preflight:facebook-upload`, before any ZIP or handoff is prepared.
+- Jest (`verify:production:extended`) and YouTube (artifact evidence) already gate on their browser suites.
+
+A failed gameplay gate fails the release; no handoff is reported ready.
+
 Review the complete plan without building, uploading, packaging, or publishing:
 
 ```bash

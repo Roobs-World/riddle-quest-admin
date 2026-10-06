@@ -13,6 +13,9 @@ import {
   runPlatformRelease,
 } from "./platform-releases.mjs";
 
+/** Identifies the post-adapter browser gameplay gate in recorded invocations. */
+const isEndToEndGate = ({args}) => args[0] === "scripts/release/verify-packaged-games.mjs" || args.at(-1) === "test:reddit:playwright";
+
 const expectedCommands = new Map([
   ["jest", ["--filter", "@qwordly/portal", "release:jest:timestamped"]],
   ["facebook", ["--filter", "@qwordly/portal", "release:facebook"]],
@@ -184,7 +187,17 @@ test("the combined release verifies once before running every adapter", async ()
   assert.deepEqual(invocations[0].args, ["verify:all-targets"]);
   assert.equal(invocations.filter(({args}) => args[0] === "prepare:html5-handoffs").length, 1);
   assert.equal(invocations.find(({args}) => args[1] === "itch").environment.HTML5_SOURCE_PREPARED, "1");
-  assert.deepEqual(invocations.slice(1).filter(({args}) => args[0] !== "prepare:html5-handoffs").map(({args}) => args), [
+  /** Every packaged adapter is followed directly by gameplay against its own artifact. */
+  const packagedGates = invocations.flatMap((invocation, index) => invocation.args[0] === "scripts/release/verify-packaged-games.mjs"
+    ? [{target: invocation.args.at(-1), previous: invocations[index - 1].args}] : []);
+  assert.deepEqual(packagedGates.map(({target}) => target).sort(), listPlatformReleasePlans().map(({target}) => target)
+    .filter(target => !["jest", "youtube", "facebook", "reddit"].includes(target)).sort());
+  for (const {target, previous} of packagedGates) assert.deepEqual(previous, expectedCommands.get(target));
+  /** Reddit plays its freshly staged build after the candidate is prepared. */
+  const redditGate = invocations.findIndex(({args}) => args.at(-1) === "test:reddit:playwright");
+  assert.deepEqual(invocations[redditGate - 1].args, expectedCommands.get("reddit"));
+  assert.equal(invocations[redditGate].environment.PORTAL_USE_EXISTING_BUILD, "1");
+  assert.deepEqual(invocations.slice(1).filter(({args}) => args[0] !== "prepare:html5-handoffs").filter(command => !isEndToEndGate(command)).map(({args}) => args), [
     expectedCommands.get("jest"),
     expectedCommands.get("facebook"),
     expectedCommands.get("youtube"),
@@ -249,7 +262,7 @@ test("the Facebook adapter performs only the local preflight and immutable hando
   );
   assert.equal(
     portalPackage.scripts["preflight:facebook-upload"],
-    "pnpm build:facebook && node scripts/prepare-facebook-draft.mjs",
+    "pnpm build:facebook && pnpm test:facebook:playwright && node scripts/prepare-facebook-draft.mjs",
   );
   assert.equal(portalPackage.scripts["facebook:draft"], "node scripts/facebook-draft-evidence.mjs");
 
@@ -282,18 +295,30 @@ test("dry runs describe a target without invoking its adapter", async () => {
   assert.match(lines.join("\n"), /no build, upload, package, or publish action/u);
 });
 
-test("execution delegates exactly once and reports the platform handoff", async () => {
+test("execution delegates once, plays the produced artifact, then reports the platform handoff", async () => {
   const invocations = [];
   const lines = [];
   const result = await runPlatformRelease("reddit", {
     commandRunner: async (command) => invocations.push(command),
     log: (line) => lines.push(line),
   });
-  assert.equal(invocations.length, 1);
+  assert.equal(invocations.length, 2);
   assert.equal(invocations[0].executable, "pnpm");
   assert.deepEqual(invocations[0].args, expectedCommands.get("reddit"));
+  assert.deepEqual(invocations[1].args, ["--filter", "@qwordly/portal", "test:reddit:playwright"]);
   assert.equal(result.status, "handoff-ready");
   assert.match(lines.join("\n"), /immutable Reddit handoff|Release handoff ready/u);
+});
+
+test("a failed artifact gameplay gate never reports a handoff as ready", async () => {
+  const lines = [];
+  await assert.rejects(runPlatformRelease("itch", {
+    commandRunner: async ({args}) => {
+      if (args[0] === "scripts/release/verify-packaged-games.mjs") throw new Error("FAIL itch: solve");
+    },
+    log: (line) => lines.push(line),
+  }), /FAIL itch/u);
+  assert.doesNotMatch(lines.join("\n"), /Release handoff ready/u);
 });
 
 test("the canonical Jest adapter refuses ambient overrides of its fixed activation policy", async () => {

@@ -11,12 +11,20 @@ import {chromium, serveArtifact, verifySoloArtifact} from "./browser-artifact-su
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const execute = promisify(execFile);
-const browser = await chromium.launch({headless: true});
-const results = [];
-const targets = [...listHtml5DistributionDefinitions(),
+const allTargets = [...listHtml5DistributionDefinitions(),
   {target: "gamesnacks", artifact: "build-gamesnacks.zip", gamesnacks: true},
   {target: "netflix", directory: "builds/netflix"},
   {target: "yahoo", directory: "builds/yahoo"}];
+// `--target <name>` gates one release handoff on its own packaged gameplay.
+const targetFlag = process.argv.indexOf("--target");
+const only = targetFlag === -1 ? undefined : process.argv[targetFlag + 1];
+const targets = only ? allTargets.filter(({target}) => target === only) : allTargets;
+if (only && targets.length === 0) {
+  console.error(`No packaged browser flow is defined for ${JSON.stringify(only)}`);
+  process.exit(1);
+}
+const browser = await chromium.launch({headless: true});
+const results = [];
 try {
   for (const target of targets) {
     const temporary = await mkdtemp(path.join(tmpdir(), "riddle-artifact-e2e-"));
@@ -42,6 +50,7 @@ try {
   }
 } finally { await browser.close(); }
 await mkdir(path.join(root, "artifacts/release-e2e"), {recursive: true});
-await writeFile(path.join(root, "artifacts/release-e2e/packaged-games.json"), JSON.stringify({verifiedAt: new Date().toISOString(), scope: "Actual packaged gameplay; provider publication is not implied", results}, null, 2) + "\n");
+// A single-target gate keeps its own evidence so it never truncates the all-target report.
+await writeFile(path.join(root, `artifacts/release-e2e/packaged-games${only ? `-${only}` : ""}.json`), JSON.stringify({verifiedAt: new Date().toISOString(), scope: "Actual packaged gameplay; provider publication is not implied", results}, null, 2) + "\n");
 console.log(`${results.filter(row => row.status === "passed").length}/${targets.length} packaged browser flows passed.`);
 if (results.some(row => row.status === "failed")) process.exitCode = 1;

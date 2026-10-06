@@ -109,6 +109,26 @@ export function runReleaseCommand({
   });
 }
 
+/** Web Targets whose packaged artifact the shared browser verifier can play end to end. */
+const packagedWebTargets = new Set(["netflix", "yahoo", "gamesnacks"]);
+
+/**
+ * Returns the browser gameplay gate a target's artifact must pass before its
+ * handoff is reported ready, or null when the adapter already gates itself
+ * (Jest runs the production gate; YouTube and Facebook run their browser
+ * suites before writing a handoff).
+ */
+export function releaseEndToEndGate(plan) {
+  if (plan.delivery === "neutral-html5" || packagedWebTargets.has(plan.target)) {
+    return {executable: "node", args: ["scripts/release/verify-packaged-games.mjs", "--target", plan.target]};
+  }
+  if (plan.target === "reddit") {
+    return {executable: "pnpm", args: ["--filter", "@qwordly/portal", "test:reddit:playwright"],
+      environment: {PORTAL_USE_EXISTING_BUILD: "1"}};
+  }
+  return null;
+}
+
 /** Executes one canonical platform release while preserving its target-specific boundary. */
 export async function runPlatformRelease(
   target,
@@ -137,6 +157,13 @@ export async function runPlatformRelease(
     );
   }
   await commandRunner({...definition.command, cwd: repositoryDirectory, environment});
+  /** Gameplay check against the exact artifact this release just produced. */
+  const gate = releaseEndToEndGate(definition);
+  if (gate) {
+    log(`Playing the ${plan.title} release artifact end to end before handoff.`);
+    await commandRunner({executable: gate.executable, args: gate.args, cwd: repositoryDirectory,
+      environment: {...environment, ...gate.environment}});
+  }
   log(`Release handoff ready for ${plan.title}. ${plan.handoff}`);
   return {target, status: "handoff-ready", boundary: plan.boundary};
 }
