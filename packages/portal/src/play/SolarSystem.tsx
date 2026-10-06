@@ -64,9 +64,6 @@ type PlanetRuntime = {
   }[];
 };
 
-/** Minimum time between decorative frames (30 fps). */
-const SOLAR_FRAME_INTERVAL_MS = 1000 / 30;
-
 /** Defines the shooting star config value. */
 const SHOOTING_STAR_CONFIG = [
   {phaseOffsetSeconds: 0, startX: -185, startY: 105, endX: 185, endY: 33, scale: 86},
@@ -504,8 +501,6 @@ export function SolarSystem({
           renderer.domElement.addEventListener("webglcontextrestored", contextRestored);
 
           animation = createDecorativeAnimation({
-            // Slow orbital motion reads smoothly at 30 fps; drawing every 90-120 Hz refresh only burns battery.
-            frameIntervalMs: SOLAR_FRAME_INTERVAL_MS,
             canRender: () => !disposed && renderingReady && contextAvailable && !pausedRef.current,
             onError: (error) => failScene(error, "animate_scene"),
             render: (deltaSeconds) => {
