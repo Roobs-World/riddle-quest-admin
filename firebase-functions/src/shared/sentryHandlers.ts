@@ -15,6 +15,29 @@ import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
 import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../jest/jestAccountDeletion";
 import {captureException, flushSentry} from "./sentry";
 
+/**
+ * Browsers cache a CORS preflight for only five seconds without this header,
+ * so every guess spaced further apart paid an extra OPTIONS round trip.
+ * Matches the Jest and Facebook identity endpoints.
+ */
+const CALLABLE_PREFLIGHT_MAX_AGE_SECONDS = "3600";
+
+/**
+ * Lets browsers reuse one callable preflight instead of repeating it per request.
+ *
+ * @param callable Deployable callable produced by the Firebase SDK.
+ * @returns The same callable, with its deployment metadata, advertising a preflight cache lifetime.
+ */
+function withCachedPreflight<Callable extends object>(callable: Callable): Callable {
+  if (typeof callable !== "function") return callable;
+  /** Forwards every request after marking preflight responses cacheable. */
+  const cached = (request: Request, response: Parameters<HttpsFunction>[1]) => {
+    if (request.method === "OPTIONS") response.setHeader("Access-Control-Max-Age", CALLABLE_PREFLIGHT_MAX_AGE_SECONDS);
+    return (callable as unknown as HttpsFunction)(request, response);
+  };
+  return Object.defineProperties(cached, Object.getOwnPropertyDescriptors(callable)) as unknown as Callable;
+}
+
 /** Internal controls that are never forwarded to the Firebase runtime. */
 interface CallableBoundaryOptions {
   /** Deletion and explicitly declared pure observers do not acquire the mutation lease. */
@@ -57,7 +80,7 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
   handler: (request: CallableRequest<T>, response?: CallableResponse<Stream>) => Result | Promise<Result>,
   boundaryOptions: CallableBoundaryOptions = {},
 ): CallableFunction<T, Promise<Result>, Stream> {
-  return onCall<T, Promise<Result>, Stream>(options, async (request, response) => {
+  return withCachedPreflight(onCall<T, Promise<Result>, Stream>(options, async (request, response) => {
     /** Negotiates only the transport format before domain validation. */
     const negotiation = contentProtectionRequest(request.data);
     /** Preserves authentication and request metadata. */
@@ -86,7 +109,7 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
       }
       throw error;
     }
-  });
+  }));
 }
 
 /**
