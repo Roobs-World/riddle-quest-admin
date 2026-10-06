@@ -228,6 +228,7 @@ function rememberObservation(db: Firestore, ticketId: string, pure: boolean): vo
 /** Transaction view that rejects mutations so an unchanged observation never takes write locks. */
 function observationOnly(transaction: FirebaseFirestore.Transaction): FirebaseFirestore.Transaction {
   return new Proxy(transaction, {
+    /** Rejects mutations and forwards reads to the real transaction. */
     get(target, key) {
       if (key === "create" || key === "set" || key === "update" || key === "delete")
         return () => {throw new LiveRaceObservationRequiresWrite();};
@@ -241,6 +242,7 @@ function observationOnly(transaction: FirebaseFirestore.Transaction): FirebaseFi
 /** Transaction view that reports whether the evaluation queued any mutation. */
 function writeTracking(transaction: FirebaseFirestore.Transaction, onWrite: () => void): FirebaseFirestore.Transaction {
   return new Proxy(transaction, {
+    /** Forwards members, recording each queued mutation. */
     get(target, key) {
       /** Original SDK member, bound to the real transaction. */
       const value = Reflect.get(target, key, target);

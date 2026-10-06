@@ -18,23 +18,35 @@ function createDb(documents: Map<string, unknown>) {
   /** Paths written by committed transactions. */
   const writes: string[] = [];
   /** Records a write. */
-  const write = (ref: {/** Document path. */ path: string}, value?: unknown) => {
+  const write = (ref: {
+    /** Document path. */
+    path: string;
+  }, value?: unknown) => {
     writes.push(ref.path);
     if (value !== undefined) documents.set(ref.path, value);
   };
   /** Transaction stub backed by the document map. */
   const transaction = {
-    get: async (ref: {/** Document path. */ path: string}) =>
+    get: async (ref: {
+    /** Document path. */
+    path: string;
+  }) =>
       ({exists: documents.has(ref.path), data: () => structuredClone(documents.get(ref.path))}),
     set: write, create: write, delete: write,
-    update: (ref: {/** Document path. */ path: string}, value: object) =>
+    update: (ref: {
+    /** Document path. */
+    path: string;
+  }, value: object) =>
       write(ref, {...documents.get(ref.path) as object, ...value}),
   };
   /** Minimal Firestore surface used by the live service. */
   const db = {
     doc: (path: string) => ({path}),
     collection: (path: string) => ({doc: (id: string) => ({path: `${path}/${id}`})}),
-    runTransaction: async (operation: (value: typeof transaction) => unknown, options?: {/** Read-only flag. */ readOnly?: boolean}) => {
+    runTransaction: async (operation: (value: typeof transaction) => unknown, options?: {
+      /** Read-only flag. */
+      readOnly?: boolean;
+    }) => {
       modes.push(options?.readOnly ? "read-only" : "read-write");
       return operation(transaction);
     },
