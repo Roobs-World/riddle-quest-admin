@@ -8,12 +8,12 @@ import test from "node:test";
 
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
 const script = fileURLToPath(new URL("./validate-w3c.mjs", import.meta.url));
-const check = html => {
+const check = (html, env = process.env) => {
   const directory = mkdtempSync(path.join(tmpdir(), "rq-html-check-"));
   try {
     const file = path.join(directory, "index.html");
     writeFileSync(file, html);
-    return spawnSync(process.execPath, [script, file], {cwd: packageDirectory, encoding: "utf8"});
+    return spawnSync(process.execPath, [script, file], {cwd: packageDirectory, encoding: "utf8", env});
   } finally {
     rmSync(directory, {recursive: true, force: true});
   }
@@ -23,6 +23,13 @@ test("pinned Nu accepts a conforming document without a remote service", () => {
   const result = check('<!doctype html><html lang="en"><head><title>Game</title></head><body><main>Game</main></body></html>');
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /zero findings \(pinned Nu 26\.9\.30/);
+});
+
+test("a JVM options banner does not break the diagnostic report", () => {
+  const result = check('<!doctype html><html lang="en"><head><title>Game</title></head><body><main>Game</main></body></html>',
+    {...process.env, JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"});
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /zero findings/);
 });
 
 test("HTML errors remain a blocking release finding", () => {

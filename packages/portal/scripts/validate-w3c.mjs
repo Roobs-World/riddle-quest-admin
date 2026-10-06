@@ -23,7 +23,11 @@ const validation = spawnSync(java, [
 if (validation.error) throw new Error("The pinned Nu HTML checker could not run", {cause: validation.error});
 
 // Nu writes its JSON diagnostic report to stderr, including for a successful check.
-const report = validation.stdout.trim() || validation.stderr.trim();
+// The JVM prints "Picked up JAVA_TOOL_OPTIONS: ..." to stderr whenever such a
+// variable is set (common on CI and managed machines); it is not part of the report.
+const withoutJvmNotices = (output) => output.split("\n")
+  .filter(line => !/^Picked up (?:JAVA_TOOL_OPTIONS|_JAVA_OPTIONS|JDK_JAVA_OPTIONS):/.test(line)).join("\n").trim();
+const report = withoutJvmNotices(validation.stdout) || withoutJvmNotices(validation.stderr);
 let result;
 try {
   result = JSON.parse(report);

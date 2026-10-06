@@ -1582,5 +1582,6 @@ describeBrowser("standalone Jest browser game", () => {
       await browser.close();
       server.close();
     }
-  }, 120000);
+  // One long journey with axe and W3C checks at many states; leave headroom for slower CI machines.
+  }, 300_000);
 });
