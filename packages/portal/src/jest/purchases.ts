@@ -22,6 +22,21 @@ type IncompletePurchasePage = {
 /** Indicates whether is currency. */
 const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
 
+/**
+ * Returns a locale Intl accepts, or undefined for the runtime default.
+ *
+ * Browsers can report non-BCP 47 tags such as "en-US@posix"; passing one to
+ * Intl.NumberFormat throws and would fail the whole shop catalog.
+ */
+export const priceLocale = (locale?: string): string | undefined => {
+  if (!locale) return undefined;
+  try {
+    return Intl.getCanonicalLocales(locale)[0];
+  } catch {
+    return undefined;
+  }
+};
+
 /** Provides jest purchase coordinator behavior. */
 export class JestPurchaseCoordinator {
   /** Stores platform. */
@@ -54,7 +69,7 @@ export class JestPurchaseCoordinator {
             name: product.name || local.name,
             description: product.description || local.description,
             coins: local.coins,
-            displayPrice: new Intl.NumberFormat(locale, {
+            displayPrice: new Intl.NumberFormat(priceLocale(locale), {
               style: "currency",
               currency: product.currency,
             }).format(product.price),
@@ -112,7 +127,7 @@ export class JestPurchaseCoordinator {
             name: subscription.displayName,
             description: subscription.displayDescription ?? "",
             coins: 0,
-            displayPrice: new Intl.NumberFormat(locale, {
+            displayPrice: new Intl.NumberFormat(priceLocale(locale), {
               style: "currency",
               currency: subscription.currency,
             }).format(subscription.price),

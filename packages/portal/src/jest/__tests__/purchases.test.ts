@@ -137,6 +137,26 @@ it("maps the Jest catalog with SDK currency and trusted coin values", async () =
   );
 });
 
+it.each(["en-US@posix", "C", "not a locale", ""])(
+  "still lists products and subscriptions when the browser reports the locale %j",
+  async (locale) => {
+    /** Injected Jest platform with subscriptions. */
+    const platform = new MockJestPlatform(true);
+    /** Purchase coordinator with a verified subscription backend. */
+    const coordinator = new JestPurchaseCoordinator(platform, {
+      syncSubscriptions: async () => ({verified: true, activeSkus: [], blockedSkus: []}),
+    } as never);
+    for (const result of [await coordinator.getProducts(locale), await coordinator.getSubscriptions("p1", locale)]) {
+      expect(result.status).toBe("success");
+      if (result.status !== "success") throw new Error("Catalog unavailable");
+      expect(result.value.length).toBeGreaterThan(0);
+      for (const product of result.value) {
+        expect(product.displayPrice).toBe(new Intl.NumberFormat(undefined, {style: "currency", currency: "USD"}).format(product.price!));
+      }
+    }
+  },
+);
+
 it.each(["en-US", "en-GB", "de", "ja", "ar"])(
   "keeps the SDK checkout currency for products and subscriptions in %s",
   async (locale) => {
