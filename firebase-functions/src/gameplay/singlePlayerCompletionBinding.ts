@@ -91,6 +91,35 @@ export async function recordTerminalCompletionBinding(
   });
 }
 
+/**
+ * Reports whether {@link recordTerminalCompletionBinding} would leave the pointer as it already is.
+ *
+ * Lets a read-only caller skip a locking transaction when the terminal guess
+ * already bound this session. Any mismatch or corruption returns false so the
+ * read-write path keeps sole ownership of repairs and failures.
+ */
+export async function terminalCompletionBindingSettled(
+  transaction: FirebaseFirestore.Transaction,
+  userId: string,
+  sessionToken: string,
+  state: SinglePlayerSessionState,
+): Promise<boolean> {
+  if (!state.terminal) return false;
+  /** Pointer the read-write path would otherwise rewrite. */
+  const snapshot = await transaction.get(getSinglePlayerCompletionBindingRef(userId, state.gameMode, state.completionKey));
+  if (!snapshot.exists) return false;
+  /** Stored pointer, or undefined when the read-write path must fail closed. */
+  let existing: CompletionBinding;
+  try {
+    existing = parseCompletionBinding(snapshot.data());
+  } catch {
+    return false;
+  }
+  if (existing.gameMode !== state.gameMode || existing.completionKey !== state.completionKey) return false;
+  if (existing.sessionToken !== sessionToken) return existing.isCorrect || !state.isCorrect;
+  return existing.riddleId === state.riddleId && existing.isCorrect === state.isCorrect;
+}
+
 /** Loads a locale-independent terminal session without querying answer-bearing documents. */
 export async function getCompletionBoundAuthoritativeSession(
   userId: string,

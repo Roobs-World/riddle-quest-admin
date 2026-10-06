@@ -2,7 +2,7 @@ import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";
-import {ensureAuthoritativeSession, submitAuthoritativeGuess} from "../gameplay/singlePlayerSession";
+import {ensureAuthoritativeSession, finalizeAuthoritativeSession, submitAuthoritativeGuess} from "../gameplay/singlePlayerSession";
 import {completeAuthoritativeGame} from "../gameplay/completeGameLogic";
 import {baseAttemptLimit} from "../gameplay/singlePlayerGuessTransition";
 import {ensureUserDocumentComplete} from "../gameplay/firestoreService";
@@ -116,4 +116,28 @@ it("preserves an authoritative progression and purchase transaction amid concurr
   await Promise.all([ensureUserDocumentComplete(OWNER), advance(), ensureUserDocumentComplete(OWNER)]);
   expect((await db.doc(`users/${OWNER}`).get()).data()).toMatchObject({coins: 550, hasPurchasedApp: true,
     stats: {gamesPlayed: 10}, progress: {classicIndex: 6}, unlockedAchievements: [{achievementId: "race_debut", unlockedAt: 123}]});
+});
+
+it("finalizes an already-terminal win from a lock-free snapshot without rewriting its pointer", async () => {
+  /** A winning guess commits the terminal session and its recovery pointer. */
+  const request = await terminal(true);
+  /** Pointer written by the terminal guess. */
+  const [pointer] = (await db.collection(`users/${OWNER}/singlePlayerCompletionBindings`).get()).docs;
+  /** Records which transaction modes finalize opens. */
+  const transactions = jest.spyOn(db, "runTransaction");
+  /** Finalized state used by completion. */
+  const state = await finalizeAuthoritativeSession(OWNER, request.gameMode, request.riddleId, request.sessionToken);
+  expect(state).toMatchObject({terminal: true, isCorrect: true});
+  expect(transactions.mock.calls.map(call => call[1])).toEqual([{readOnly: true}]);
+  transactions.mockRestore();
+  expect((await pointer!.ref.get()).updateTime).toEqual(pointer!.updateTime);
+});
+
+it("still terminalizes a declined base-limit loss through the authoritative path", async () => {
+  /** A full base-limit loss is awaiting a continue decision, not yet terminal. */
+  const request = await terminal(false);
+  /** Finalized state used by completion. */
+  const state = await finalizeAuthoritativeSession(OWNER, request.gameMode, request.riddleId, request.sessionToken);
+  expect(state).toMatchObject({terminal: true, isCorrect: false});
+  expect((await db.collection(`users/${OWNER}/singlePlayerCompletionBindings`).get()).size).toBe(1);
 });
