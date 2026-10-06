@@ -43,6 +43,7 @@ import type {
   SubmitRaceGuessResponse,
 } from "@qwordly/core/race";
 import {firebaseEnvironment} from "./firebaseEnvironment";
+import {DEFAULT_GAMEPLAY_REGION} from "./platform/startupWarmup";
 
 /** Answer and hint delivery opts into encryption; older backend responses remain readable. */
 const protectedEndpoints = new Set(["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
@@ -93,12 +94,10 @@ export const auth = firebaseEnvironment.platformTarget === "jest"
 export const firebaseFirestore = getFirestore(firebaseApp);
 /** Provides functions behavior. */
 const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion || "us-central1");
-/** Jest multiplayer runs beside eur3; other capabilities retain their configured region. */
-const raceFunctions = firebaseEnvironment.platformTarget === "jest"
-  ? getFunctions(firebaseApp, "europe-west1") : functions;
-/** Jest solo runs beside the deployed eur3 endpoints; the explicit region override permits rollback. */
-const gameplayFunctions = firebaseEnvironment.platformTarget === "jest"
-  ? getFunctions(firebaseApp, firebaseEnvironment.gameplayRegion || "europe-west1") : functions;
+/** Multiplayer on every target runs beside eur3; other capabilities retain their configured region. */
+const raceFunctions = getFunctions(firebaseApp, DEFAULT_GAMEPLAY_REGION);
+/** Solo on every target runs beside eur3; the explicit region override permits rollback. */
+const gameplayFunctions = getFunctions(firebaseApp, firebaseEnvironment.gameplayRegion || DEFAULT_GAMEPLAY_REGION);
 /** Shared Functions instance used by target-specific lazy adapters. */
 export const firebaseFunctions = functions;
 

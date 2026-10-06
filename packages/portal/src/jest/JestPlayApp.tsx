@@ -68,8 +68,7 @@ function warmJestFirebaseStartup(): void {
     preconnectStartupOrigins(firebaseStartupOrigins({
       identityExchangeBaseUrl: import.meta.env.VITE_JEST_FUNCTIONS_BASE_URL,
       functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
-      // Jest gameplay runs beside eur3 unless explicitly overridden.
-      gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION || "europe-west1",
+      gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION,
       projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
     }));
   } catch (error) {

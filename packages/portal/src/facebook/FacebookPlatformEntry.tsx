@@ -84,6 +84,7 @@ function warmFacebookFirebaseStartup(): void {
     preconnectStartupOrigins(firebaseStartupOrigins({
       identityExchangeBaseUrl: import.meta.env.VITE_FACEBOOK_FUNCTIONS_BASE_URL,
       functionsRegion: import.meta.env.VITE_FIREBASE_FUNCTIONS_REGION,
+      gameplayRegion: import.meta.env.VITE_FIREBASE_GAMEPLAY_REGION,
       projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
     }));
   } catch (error) {

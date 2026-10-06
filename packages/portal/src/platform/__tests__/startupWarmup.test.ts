@@ -17,10 +17,15 @@ describe("platform startup network warm-up", () => {
     ]);
   });
 
-  it("serves gameplay from the default region when no gameplay region is configured", () => {
-    expect(firebaseStartupOrigins({functionsRegion: "us-central1", projectId: "demo"}))
-      .toEqual(expect.arrayContaining(["https://us-central1-demo.cloudfunctions.net"]));
-    expect(firebaseStartupOrigins({functionsRegion: "us-central1", projectId: "demo"}))
+  it("serves gameplay beside the database when no gameplay region is configured", () => {
+    expect(firebaseStartupOrigins({functionsRegion: "us-central1", projectId: "demo"})).toEqual(expect.arrayContaining([
+      "https://europe-west1-demo.cloudfunctions.net",
+      "https://us-central1-demo.cloudfunctions.net",
+    ]));
+  });
+
+  it("honours a gameplay region rollback", () => {
+    expect(firebaseStartupOrigins({functionsRegion: "us-central1", gameplayRegion: "us-central1", projectId: "demo"}))
       .not.toContain("https://europe-west1-demo.cloudfunctions.net");
   });
 
