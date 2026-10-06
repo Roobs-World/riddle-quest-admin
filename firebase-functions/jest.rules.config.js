@@ -89,5 +89,6 @@ module.exports = {
     "**/__tests__/race/raceTransactionReads.it.test.ts",
     "**/__tests__/race/raceUnscoredAuthority.it.test.ts",
     "**/__tests__/redditProfileRetention.it.test.ts",
+    "**/__tests__/jestAccountOperationLease.it.test.ts",
   ],
 };

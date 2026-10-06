@@ -35,7 +35,7 @@ export const getJestAccountDeletionRef = (db: Firestore, userId: string) =>
   db.collection(JEST_ACCOUNT_DELETION_COLLECTION).doc(userId);
 
 /**
- * Creates an operation lease atomically with the permanent deletion guard read.
+ * Creates an operation lease atomically with the permanent deletion guard check.
  *
  * A deletion that commits first makes this transaction retry and fail. A lease
  * that commits first is observed after the deletion guard is written, so the
@@ -54,14 +54,26 @@ export async function runWithJestAccountOperationLease<Result>(
   /** Provides bounded timeout seconds behavior. */
   const boundedTimeoutSeconds =
     Number.isFinite(timeoutSeconds) && timeoutSeconds > 0 ? timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
-  await db.runTransaction(async (transaction) => {
-    /** Provides deletion snapshot behavior. */
-    const deletionSnapshot = await transaction.get(deletionRef);
-    assertJestAccountActive(deletionSnapshot);
-    transaction.create(leaseRef, {
-      expiresAt: new Date(Date.now() + boundedTimeoutSeconds * 1_000 + JEST_ACCOUNT_OPERATION_LEASE_MARGIN_MS),
+  /** Diagnostic deadline recorded on the lease. */
+  const lease = {
+    expiresAt: new Date(Date.now() + boundedTimeoutSeconds * 1_000 + JEST_ACCOUNT_OPERATION_LEASE_MARGIN_MS),
+  };
+  try {
+    // One atomic commit instead of a read-then-commit transaction: the
+    // `exists: false` no-op delete fails the whole batch once the deletion
+    // guard exists, giving the same linearization with one fewer round trip.
+    await db.batch().delete(deletionRef, {exists: false}).create(leaseRef, lease).commit();
+  } catch {
+    // Any failure, including an ambiguous commit, takes the authoritative
+    // path. `set` keeps a lease the lost commit may already have written
+    // idempotent instead of orphaning it.
+    await db.runTransaction(async (transaction) => {
+      /** Provides deletion snapshot behavior. */
+      const deletionSnapshot = await transaction.get(deletionRef);
+      assertJestAccountActive(deletionSnapshot);
+      transaction.set(leaseRef, lease);
     });
-  });
+  }
   try {
     return await operation();
   } finally {

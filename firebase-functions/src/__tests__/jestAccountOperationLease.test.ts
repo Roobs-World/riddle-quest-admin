@@ -24,8 +24,19 @@ const mockPreserveDeletedJestAuthUser = jest.fn(async () => {
 const mockLeaseDelete = jest.fn(async () => {
   events.push("release");
 });
-/** Creates one active operation lease transactionally. */
+/** Creates one active operation lease on the transactional fallback path. */
 const mockTransactionCreate = jest.fn(() => {
+  events.push("acquire");
+});
+/** Whether the next single-commit acquisition fails for a reason other than the guard. */
+let batchCommitFailure: Error | null = null;
+/** Records the writes staged by each single-commit acquisition. */
+const mockBatchWrites = jest.fn();
+/** Commits one staged acquisition, enforcing the `exists: false` guard precondition. */
+const mockBatchCommit = jest.fn(async (writes: unknown[]) => {
+  mockBatchWrites(writes);
+  if (batchCommitFailure) throw batchCommitFailure;
+  if (deletionGuardExists) throw Object.assign(new Error("FAILED_PRECONDITION"), {code: 9});
   events.push("acquire");
 });
 
@@ -51,10 +62,36 @@ const deletionRef = {
 const firestore = Object.assign(
   () => ({
     collection: () => ({doc: () => deletionRef}),
+    batch: () => {
+      /** Writes staged on this batch. */
+      const writes: unknown[] = [];
+      /** Chainable batch surface. */
+      const batch = {
+        /** Stages a precondition-guarded delete. */
+        delete: (ref: {
+          /** Stores path. */
+          path: string;
+        }, precondition: unknown) => {
+          writes.push(["delete", ref.path, precondition]);
+          return batch;
+        },
+        /** Stages a lease creation. */
+        create: (ref: {
+          /** Stores path. */
+          path: string;
+        }, data: unknown) => {
+          writes.push(["create", ref.path, data]);
+          return batch;
+        },
+        /** Commits the staged writes atomically. */
+        commit: () => mockBatchCommit(writes),
+      };
+      return batch;
+    },
     runTransaction: async (operation: (transaction: unknown) => Promise<unknown>) =>
       operation({
         get: async () => ({exists: deletionGuardExists}),
-        create: mockTransactionCreate,
+        set: mockTransactionCreate,
       }),
   }),
   {FieldValue: {serverTimestamp: () => "server-timestamp"}},
@@ -74,6 +111,7 @@ describe("Jest account operation lease", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     deletionGuardExists = false;
+    batchCommitFailure = null;
     leaseDocuments = [];
     events.length = 0;
   });
@@ -85,6 +123,22 @@ describe("Jest account operation lease", () => {
         return "result";
       }),
     ).resolves.toBe("result");
+
+    expect(events).toEqual(["acquire", "operation", "release"]);
+    expect(mockBatchWrites).toHaveBeenCalledWith([
+      ["delete", "jestAccountDeletionTombstones/jest-user", {exists: false}],
+      ["create", expect.stringContaining("/activeOperations/"), {expiresAt: expect.any(Date)}],
+    ]);
+    expect(mockTransactionCreate).not.toHaveBeenCalled();
+  });
+
+  it("falls back to the authoritative transaction after an ambiguous single commit", async () => {
+    batchCommitFailure = new Error("DEADLINE_EXCEEDED");
+
+    await expect(runWithJestAccountOperationLease("jest-user", 60, async () => {
+      events.push("operation");
+      return "result";
+    })).resolves.toBe("result");
 
     expect(events).toEqual(["acquire", "operation", "release"]);
     expect(mockTransactionCreate).toHaveBeenCalledWith(
