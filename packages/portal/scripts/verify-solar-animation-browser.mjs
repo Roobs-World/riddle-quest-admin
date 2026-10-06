@@ -129,7 +129,8 @@ window.requestAnimationFrame=callback=>{const stack=new Error().stack.split('\\n
 window.cancelAnimationFrame=id=>{if(id<0){const callback=pending.get(id);if(callback)retained.set(id,callback);pending.delete(id);}else rawCancel(id);};
 window.controlFrames=()=>{manual=true;};
 window.pendingFrames=()=>pending.size;
-window.step=(elapsed=16)=>{frameClock+=elapsed;const callbacks=[...pending.values()];pending.clear();for(const callback of callbacks){window.probe.callbacks++;try{callback(frameClock);}catch(error){window.probe.windowErrors.push(String(error));}}};
+// One step is one capped decorative frame: SolarSystem draws at most 30 fps.
+window.step=(elapsed=34)=>{frameClock+=elapsed;const callbacks=[...pending.values()];pending.clear();for(const callback of callbacks){window.probe.callbacks++;try{callback(frameClock);}catch(error){window.probe.windowErrors.push(String(error));}}};
 window.replayFrames=()=>{for(const callback of [...retained.values()]){try{callback(frameClock);}catch(error){window.probe.windowErrors.push(String(error));}}};
 let hidden=false;Object.defineProperty(document,'hidden',{configurable:true,get:()=>hidden});
 window.visibility=value=>{hidden=value;document.dispatchEvent(new Event('visibilitychange'));};
