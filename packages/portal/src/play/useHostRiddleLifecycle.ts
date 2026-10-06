@@ -119,6 +119,12 @@ export function useHostRiddleLifecycle({
     [userId, accountGeneration, locale, services]);
   /** Only committed ownership may admit a visible read or accept its result. */
   const contextScopeRef = useRef<typeof contextScope | null>(null);
+  /** The account visit and locale whose visible board the committed context last owned. */
+  const boardScopeRef = useRef<{
+    /** Account whose board is visible. */ userId: string | undefined;
+    /** Account visit generation. */ accountGeneration: number | undefined;
+    /** Content language. */ locale: string;
+  } | null>(null);
   /** Stable content ownership excludes ordinary balance and presentation updates. */
   const preparationScope = useMemo(() => ({userId, accountGeneration, locale, services, canUsePreparedQuestions}),
     [userId, accountGeneration, locale, services, canUsePreparedQuestions]);
@@ -172,14 +178,21 @@ export function useHostRiddleLifecycle({
     contextAbortRef.current?.abort();
     contextAbortRef.current = context;
     loadInFlightRef.current = null;
-    loadedRef.current = false;
     preparedRef.current = null;
+    // Provider-owned content is released on every context change, so an old provider's
+    // question cannot seed preparation or stay reachable from the replacement.
     deliveredRiddleRef.current = null;
     deliveredScopeRef.current = null;
-    classicIndexRef.current = profile?.classicIndex;
     scheduleRecoveryRef.current = () => undefined;
-    setStartupComplete(false);
-    setStartupUnavailable(false);
+    /** A provider swap within the same account visit keeps the visible board; its reads still retire above. */
+    const board = boardScopeRef.current;
+    if (!board || board.userId !== userId || board.accountGeneration !== accountGeneration || board.locale !== locale) {
+      boardScopeRef.current = {userId, accountGeneration, locale};
+      loadedRef.current = false;
+      classicIndexRef.current = profile?.classicIndex;
+      setStartupComplete(false);
+      setStartupUnavailable(false);
+    }
     return () => {
       context.abort();
       if (contextScopeRef.current === contextScope) contextScopeRef.current = null;
