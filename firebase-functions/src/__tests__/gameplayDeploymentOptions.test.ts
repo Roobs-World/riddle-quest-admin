@@ -20,14 +20,14 @@ it("keeps live transport warm in both supported regions", () => {
   }
 });
 
-it("keeps the single-player question, guess and completion path warm", () => {
-  for (const callable of [getCurrentDailyChallenge, getClassicRiddleBuffer, completeGame, submitSinglePlayerGuess]) {
+it("keeps the single-player question, guess, hint and completion path warm", () => {
+  for (const callable of [getCurrentDailyChallenge, getClassicRiddleBuffer, completeGame, submitSinglePlayerGuess, getHint]) {
     expect(callable.__endpoint.minInstances).toBe(1);
   }
 });
 
 it("lets lower-frequency single-player actions scale to zero", () => {
-  for (const callable of [getCurrentClassicRiddle, getHint, spendCoins, skipRiddle]) {
+  for (const callable of [getCurrentClassicRiddle, spendCoins, skipRiddle]) {
     expect(callable.__endpoint.minInstances).not.toBe(1);
   }
 });
