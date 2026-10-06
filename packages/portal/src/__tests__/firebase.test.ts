@@ -187,10 +187,10 @@ describe("Firebase environment variants", () => {
     expect(mockInitializeAuth).not.toHaveBeenCalled();
   });
 
-  it("routes Jest gameplay beside Firestore without rerouting account or commerce calls", async () => {
+  it.each(["jest", "facebook"])("routes %s gameplay beside Firestore without rerouting account or commerce calls", async platformTarget => {
     mockGetFunctions.mockClear();
     mockHttpsCallable.mockClear();
-    await loadWithEnvironment({...completeEnvironment, platformTarget: "jest"});
+    await loadWithEnvironment({...completeEnvironment, platformTarget});
     /** Session operations share the database region while accounts and purchases retain their configured endpoint. */
     const multiplayerCalls = [
       "getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
@@ -228,9 +228,9 @@ describe("Firebase environment variants", () => {
     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
   });
 
-  it("can roll Jest solo back to the existing US endpoints without moving multiplayer", async () => {
+  it.each(["jest", "facebook"])("can roll %s solo back to the existing US endpoints without moving multiplayer", async platformTarget => {
     mockHttpsCallable.mockClear();
-    await loadWithEnvironment({...completeEnvironment, platformTarget: "jest", gameplayRegion: "us-central1"});
+    await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "us-central1"});
     /** A rollback must cover every session action together. */
     const soloCalls = ["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
       "completeGame", "submitSinglePlayerGuess", "getHint", "spendCoins", "skipRiddle"];
@@ -241,7 +241,7 @@ describe("Firebase environment variants", () => {
     }
   });
 
-  it.each(["jest", "facebook"])("limits the optional solo region to Jest gameplay (%s)", async platformTarget => {
+  it.each(["jest", "facebook"])("applies the optional solo region to gameplay only (%s)", async platformTarget => {
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "europe-west1"});
     /** Every session action must use one selected region; other capabilities keep their own endpoints. */
@@ -250,7 +250,7 @@ describe("Firebase environment variants", () => {
     /** Economy and account calls must not move as a side effect of gameplay regional routing. */
     const unchangedCalls = ["createYahooStripeCheckout", "confirmYahooStripeCheckout", "updateUsername", "deleteAccount"];
     for (const [instance, name] of mockHttpsCallable.mock.calls) {
-      if (soloCalls.includes(name)) expect(instance).toMatchObject({region: platformTarget === "jest" ? "europe-west1" : "europe-west2"});
+      if (soloCalls.includes(name)) expect(instance).toMatchObject({region: "europe-west1"});
       if (unchangedCalls.includes(name)) expect(instance).toMatchObject({region: "europe-west2"});
     }
   });

@@ -20,7 +20,7 @@ import {
   SKIP_COST_CLASSIC,
 } from "../shared/constants";
 import {findNewAchievements} from "./achievements";
-import {recordTerminalCompletionBinding} from "./singlePlayerCompletionBinding";
+import {recordTerminalCompletionBinding, terminalCompletionBindingSettled} from "./singlePlayerCompletionBinding";
 import {
   assertSinglePlayerSessionActive,
   isSinglePlayerSessionExpired,
@@ -293,7 +293,24 @@ export async function finalizeAuthoritativeSession(
 ): Promise<SinglePlayerSessionState> {
   /** Provides session ref behavior. */
   const sessionRef = getSessionRef(userId, sessionToken);
-  return admin.firestore().runTransaction(async (transaction) => {
+  /** Firestore handle shared by the lock-free probe and the authoritative path. */
+  const db = admin.firestore();
+  // A terminal guess has already committed the session and its pointer, so the
+  // common completion path needs no locks and no commit round trip.
+  /** Terminal state already fully recorded, read from one consistent snapshot. */
+  const settled = await db.runTransaction(async (transaction) => {
+    /** Session as of the read-only snapshot. */
+    const snapshot = await transaction.get(sessionRef);
+    if (!snapshot.exists) return undefined;
+    /** Stored session state. */
+    const state = snapshot.data() as SinglePlayerSessionState;
+    if (!state.terminal) return undefined;
+    assertSinglePlayerSessionActive(state);
+    assertSessionBinding(state, gameMode, riddleId, state.locale, state.contentKey);
+    return await terminalCompletionBindingSettled(transaction, userId, sessionToken, state) ? state : undefined;
+  }, {readOnly: true});
+  if (settled) return settled;
+  return db.runTransaction(async (transaction) => {
     /** Provides snapshot behavior. */
     const snapshot = await transaction.get(sessionRef);
     if (!snapshot.exists) {

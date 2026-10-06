@@ -16,7 +16,7 @@ import {
   GetHintResponseSchema,
 } from "@qwordly/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {gameplayCallableOptions} from "../shared/gameplayCallableOptions";
+import {gameplayCallableOptions, gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {
   grantAuthoritativeContinue,
@@ -162,7 +162,7 @@ export const spendCoins = onCallWithSentry(
  */
 export const getHint = onCallWithSentry(
   "getHint",
-  gameplayCallableOptions,
+  gameplayInteractiveCallableOptions,
   async (request: CallableRequest<z.infer<typeof GetHintRequestSchema>>) => {
     try {
       if (!request.auth) {
