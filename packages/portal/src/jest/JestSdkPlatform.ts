@@ -23,6 +23,8 @@ const PLAYER_STATE_KEYS = [
 ] as const;
 /** Defines the longest a platform subscription checkout may block the game UI. */
 const SUBSCRIPTION_CHECKOUT_TIMEOUT_MS = 30_000;
+/** Bounds provider reads and acknowledgments required for startup purchase recovery. */
+const PURCHASE_RECOVERY_TIMEOUT_MS = 15_000;
 /** Leaves enough time for a slow CDN while resolving before the outer startup watchdog. */
 const JEST_SDK_LOAD_TIMEOUT_MS = 10_000;
 /** Provides success behavior. */
@@ -342,7 +344,11 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async getIncompletePurchases() {
     try {
-      return success(await this.sdk.payments.getIncompletePurchases());
+      return success(await withTimeout<any>(
+        this.sdk.payments.getIncompletePurchases(),
+        PURCHASE_RECOVERY_TIMEOUT_MS,
+        "Jest incomplete purchase read timed out",
+      ));
     } catch (e) {
       return failure(e);
     }
@@ -356,7 +362,11 @@ export class JestSdkPlatform implements JestPlatformPort {
   async completePurchase(purchaseToken: string) {
     try {
       /** Provides result behavior. */
-      const result = await this.sdk.payments.completePurchase({purchaseToken});
+      const result = await withTimeout<any>(
+        this.sdk.payments.completePurchase({purchaseToken}),
+        PURCHASE_RECOVERY_TIMEOUT_MS,
+        "Jest purchase completion timed out",
+      );
       if (result?.result === "error") {
         captureBrowserException(new Error(String(result.error)), {
           component: "jest_sdk",

@@ -812,6 +812,79 @@ it("handles referrals, product catalogs, and incomplete purchases", async () => 
   await expect(platform.getIncompletePurchases()).resolves.toMatchObject({status: "retryable-failure"});
 });
 
+it.each(["getIncompletePurchases", "completePurchase"] as const)(
+  "bounds a permanently pending %s recovery call at 15 seconds",
+  async (operation) => {
+    jest.useFakeTimers();
+    try {
+      const mock = sdk();
+      mock.payments[operation].mockImplementation(() => new Promise(() => undefined));
+      const platform = new JestSdkPlatform(mock);
+      const settled: unknown[] = [];
+      const pending = operation === "getIncompletePurchases"
+        ? platform.getIncompletePurchases()
+        : platform.completePurchase("recoverable-token");
+      void pending.then((result) => settled.push(result));
+
+      await jest.advanceTimersByTimeAsync(14_999);
+      expect(settled).toEqual([]);
+      await jest.advanceTimersByTimeAsync(1);
+      expect(settled).toEqual([{
+        status: "retryable-failure",
+        message: operation === "getIncompletePurchases"
+          ? "Jest incomplete purchase read timed out"
+          : "Jest purchase completion timed out",
+      }]);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      jest.useRealTimers();
+    }
+  },
+);
+
+it.each([
+  ["getIncompletePurchases", "resolve"],
+  ["getIncompletePurchases", "reject"],
+  ["completePurchase", "resolve"],
+  ["completePurchase", "reject"],
+] as const)("retires a late %s recovery %s and permits a successful retry", async (operation, settlement) => {
+  jest.useFakeTimers();
+  try {
+    const mock = sdk();
+    let resolveProvider!: (value: unknown) => void;
+    let rejectProvider!: (reason: unknown) => void;
+    mock.payments[operation].mockImplementationOnce(() => new Promise((resolve, reject) => {
+      resolveProvider = resolve;
+      rejectProvider = reject;
+    }));
+    const providerSuccess = operation === "getIncompletePurchases"
+      ? {purchases: [], purchasesSigned: "signed", hasMore: false}
+      : {result: "success"};
+    mock.payments[operation].mockResolvedValue(providerSuccess);
+    const platform = new JestSdkPlatform(mock);
+    const call = () => operation === "getIncompletePurchases"
+      ? platform.getIncompletePurchases()
+      : platform.completePurchase("recoverable-token");
+    const settled: unknown[] = [];
+    void call().then((result) => settled.push(result));
+
+    await jest.advanceTimersByTimeAsync(15_000);
+    expect(settled).toEqual([expect.objectContaining({status: "retryable-failure"})]);
+    if (settlement === "resolve") resolveProvider(providerSuccess);
+    else rejectProvider(new Error("late provider failure"));
+    await jest.advanceTimersByTimeAsync(0);
+    expect(settled).toEqual([expect.objectContaining({status: "retryable-failure"})]);
+    await expect(call()).resolves.toEqual({
+      status: "success",
+      value: operation === "getIncompletePurchases" ? providerSuccess : undefined,
+    });
+    expect(jest.getTimerCount()).toBe(0);
+    expect(mock.payments[operation]).toHaveBeenCalledTimes(2);
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
 it("maps every purchase completion result", async () => {
   /** Provides mock behavior. */
   const mock = sdk();
