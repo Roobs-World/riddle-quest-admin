@@ -602,7 +602,7 @@ describe("OpenAI Service", () => {
       });
 
       mockApprovedRiddle("What flies without wings?", "time");
-      await expect(generateUniqueRiddle()).resolves.toEqual(["What flies without wings?", "time"]);
+      await expect(generateUniqueRiddle()).resolves.toEqual(["What flies without wings?", "time", "easy"]);
       expect(mockParse).toHaveBeenCalledTimes(failedCall + 3);
       expect(mockCaptureException).toHaveBeenCalledTimes(1);
     });
@@ -636,7 +636,7 @@ describe("OpenAI Service", () => {
 
         mockParse.mockClear();
         mockApprovedRiddle("What runs but never walks?", "river");
-        await expect(generateUniqueRiddle("fr")).resolves.toEqual(["What runs but never walks?", "river"]);
+        await expect(generateUniqueRiddle("fr")).resolves.toEqual(["What runs but never walks?", "river", "easy"]);
         expect(mockParse).toHaveBeenCalledTimes(3);
         expect(mockCaptureException).toHaveBeenCalledTimes(1);
       },
