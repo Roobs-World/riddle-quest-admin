@@ -34,6 +34,8 @@ jobs:
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - name: Build the shared core package the targets import
+        run: pnpm --filter @qwordly/core build
       - name: Verify every configured target
         run: pnpm verify:all-targets
       - name: Run core provider release adapters
