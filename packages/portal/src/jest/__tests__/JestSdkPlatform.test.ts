@@ -817,10 +817,14 @@ it.each(["getIncompletePurchases", "completePurchase"] as const)(
   async (operation) => {
     jest.useFakeTimers();
     try {
+      /** Provides the SDK fixture whose recovery call never settles. */
       const mock = sdk();
       mock.payments[operation].mockImplementation(() => new Promise(() => undefined));
+      /** Runs the selected recovery call with bounded provider waits. */
       const platform = new JestSdkPlatform(mock);
+      /** Records recovery outcomes to verify the deadline. */
       const settled: unknown[] = [];
+      /** Tracks the selected recovery operation through its timeout. */
       const pending = operation === "getIncompletePurchases"
         ? platform.getIncompletePurchases()
         : platform.completePurchase("recoverable-token");
@@ -850,21 +854,28 @@ it.each([
 ] as const)("retires a late %s recovery %s and permits a successful retry", async (operation, settlement) => {
   jest.useFakeTimers();
   try {
+    /** Provides the SDK fixture for delayed settlement and a subsequent retry. */
     const mock = sdk();
+    /** Resolves the original provider call after its deadline. */
     let resolveProvider!: (value: unknown) => void;
+    /** Rejects the original provider call after its deadline. */
     let rejectProvider!: (reason: unknown) => void;
     mock.payments[operation].mockImplementationOnce(() => new Promise((resolve, reject) => {
       resolveProvider = resolve;
       rejectProvider = reject;
     }));
+    /** Provides the operation-specific successful response for the retry. */
     const providerSuccess = operation === "getIncompletePurchases"
       ? {purchases: [], purchasesSigned: "signed", hasMore: false}
       : {result: "success"};
     mock.payments[operation].mockResolvedValue(providerSuccess);
+    /** Applies recovery deadlines to the delayed SDK fixture. */
     const platform = new JestSdkPlatform(mock);
+    /** Repeats the same recovery operation and receipt token. */
     const call = () => operation === "getIncompletePurchases"
       ? platform.getIncompletePurchases()
       : platform.completePurchase("recoverable-token");
+    /** Captures the timeout outcome so late provider settlement cannot replace it. */
     const settled: unknown[] = [];
     void call().then((result) => settled.push(result));
 

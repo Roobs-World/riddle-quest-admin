@@ -14,15 +14,19 @@ let db: FirebaseFirestore.Firestore;
 
 /** Retries only confirmed aborted fixture transactions once after the original batch settles. */
 const resolveConcurrentQuotaAttempts = async (operations: Array<() => Promise<boolean>>): Promise<boolean[]> => {
+  /** Retains all original outcomes before any caller retry begins. */
   const settled = await Promise.allSettled(operations.map((operation) => operation()));
+  /** Selects only confirmed numeric ABORTED failures for one retry. */
   const abortedIndexes = settled.flatMap((result, index) => {
     if (result.status === "fulfilled") return [];
+    /** Preserves the provider failure for strict classification and propagation. */
     const reason: unknown = result.reason;
     if (typeof reason !== "object" || reason === null || !("code" in reason) || reason.code !== 10) throw reason;
     return [index];
   });
   if (abortedIndexes.length > 0) {
     await new Promise<void>((resolve) => setTimeout(resolve, 50));
+    /** Collects the single retry outcome for each aborted operation. */
     const retried = await Promise.allSettled(abortedIndexes.map((index) => operations[index]()));
     retried.forEach((result, index) => {settled[abortedIndexes[index]] = result;});
   }
@@ -54,17 +58,24 @@ afterAll(async () =>
 it("settles every concurrent quota attempt before retrying a confirmed abort", async () => {
   jest.useFakeTimers();
   try {
+    /** Models a retryable Firestore transaction abort. */
     const aborted = Object.assign(new Error("injected transaction abort"), {code: 10});
+    /** Releases the pending peer only when the test permits retry. */
     let finishPeer!: (result: boolean) => void;
+    /** Detects retry before the concurrent peer has settled. */
     let peerPending = true;
+    /** Aborts once and verifies that retry waits for the peer. */
     const retry = jest.fn<Promise<boolean>, []>()
       .mockRejectedValueOnce(aborted)
       .mockImplementationOnce(async () => {
         expect(peerPending).toBe(false);
         return true;
       });
+    /** Keeps an original attempt pending while the abort is observed. */
     const peer = jest.fn(() => new Promise<boolean>((resolve) => {finishPeer = resolve;}));
+    /** Represents a valid quota denial that must not be retried. */
     const denied = jest.fn(async () => false);
+    /** Observes either outcome immediately without an unhandled rejection. */
     const collected = resolveConcurrentQuotaAttempts([retry, peer, denied]).then(
       (value) => ({status: "fulfilled", value}),
       (reason: unknown) => ({status: "rejected", reason}),
@@ -89,6 +100,7 @@ it.each([
   ["string abort code", Object.assign(new Error("invalid abort code"), {code: "10"})],
 ])(
   "propagates a non-ABORTED quota failure without retry: %s", async (_label, failure) => {
+    /** Proves a non-ABORTED provider failure is propagated without retry. */
     const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(failure);
     await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(failure);
     expect(operation).toHaveBeenCalledTimes(1);
@@ -96,7 +108,9 @@ it.each([
 );
 
 it("fails quota recovery when its single confirmed-abort retry is exhausted", async () => {
+  /** Models repeated aborts that exhaust the bounded caller retry. */
   const aborted = Object.assign(new Error("persistent transaction abort"), {code: 10});
+  /** Always aborts so the second failure must propagate. */
   const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(aborted);
   await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(aborted);
   expect(operation).toHaveBeenCalledTimes(2);
@@ -111,6 +125,7 @@ it("enforces the 20-request identity quota transactionally across concurrent ins
   );
   expect(results.filter(Boolean)).toHaveLength(20);
   expect(results.filter((value) => !value)).toHaveLength(12);
+  /** Identifies the authoritative quota row for the persisted-count assertion. */
   const quotaId = createHmac("sha256", secret)
     .update("riddle-quest-facebook-identity-rate-v1\0", "utf8")
     .update("198.51.100.7", "utf8")

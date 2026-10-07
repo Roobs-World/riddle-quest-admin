@@ -241,16 +241,21 @@ describe("Race rollout configuration cache", () => {
   });
 
   it("uses the default production clock and expires cached access after 15 seconds", async () => {
+    /** Worker marker restored after exercising the production cache default. */
     const originalWorkerId = process.env.JEST_WORKER_ID;
+    /** Emulator marker restored after exercising the production cache default. */
     const originalEmulator = process.env.FUNCTIONS_EMULATOR;
+    /** System clock controlled at the cache expiry boundary. */
     const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
     delete process.env.JEST_WORKER_ID;
     delete process.env.FUNCTIONS_EMULATOR;
     try {
+      /** Fresh rollout module initialized without test or emulator markers. */
       let productionRollout!: typeof import("../../race/raceRollout");
       jest.isolateModules(() => {
         productionRollout = require("../../race/raceRollout");
       });
+      /** Rollout reads switch from enabled to disabled after the cache expires. */
       const {db, get} = createCountingDb([
         {enabled: true, percentage: 100, allowlistHashes: []},
         {enabled: false, percentage: 0, allowlistHashes: []},
@@ -272,9 +277,11 @@ describe("Race rollout configuration cache", () => {
   });
 
   it("uses the system clock when a configured TTL omits a custom clock", async () => {
+    /** System clock controlled at the cache expiry boundary. */
     const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
     try {
       configureRaceRolloutCache({ttlMs: 5_000});
+      /** Rollout reads switch from enabled to disabled after the cache expires. */
       const {db, get} = createCountingDb([
         {enabled: true, percentage: 100, allowlistHashes: []},
         {enabled: false, percentage: 0, allowlistHashes: []},
@@ -292,15 +299,20 @@ describe("Race rollout configuration cache", () => {
   });
 
   it("retains a newer disabled rollout when an expired pending read fails", async () => {
+    /** Newer rollout read disables access while an older read remains pending. */
     const {db, get} = createCountingDb([{enabled: false, percentage: 0, allowlistHashes: []}]);
+    /** Rejects the superseded pending read after the newer value is cached. */
     let rejectRead!: (reason: Error) => void;
     get.mockImplementationOnce(() => new Promise((_, reject) => {rejectRead = reject;}));
+    /** Initial rollout read retained past its cache window. */
     const expiredRead = getRaceAccessForUser("a", "en", db);
     now = 15_000;
     await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
     expect(get).toHaveBeenCalledTimes(2);
 
+    /** Transient failure delivered only to the superseded read. */
     const failure = new Error("expired rollout read unavailable");
+    /** Rejection assertion attached before rejecting the pending provider read. */
     const rejectedRead = expect(expiredRead).rejects.toBe(failure);
     rejectRead(failure);
     await rejectedRead;
