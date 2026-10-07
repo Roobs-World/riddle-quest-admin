@@ -5,6 +5,7 @@ import {copyFile, mkdir, readFile, readdir, stat, unlink, writeFile} from "node:
 import {promisify} from "node:util";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {targetDependencyEvidencePath} from "../webTargetDependencies.ts";
 
 const execute = promisify(execFile);
 const portal = fileURLToPath(new URL("..", import.meta.url));
@@ -73,7 +74,7 @@ const manifest = {
 await writeFile(path.join(output, "game.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 // Provider metadata and marketing are added after Vite; bind them to the same
 // inventory while proving every previously audited runtime byte is unchanged.
-const inventoryPath = path.join(repository, "artifacts/target-dependencies/gamesnacks.json");
+const inventoryPath = targetDependencyEvidencePath("gamesnacks", output);
 const inventory = JSON.parse(await readFile(inventoryPath, "utf8"));
 for (const row of inventory.files) {
   const hash = createHash("sha256").update(await readFile(path.join(output, row.file))).digest("hex");
