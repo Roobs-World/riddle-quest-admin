@@ -240,6 +240,75 @@ describe("Race rollout configuration cache", () => {
     expect(get).toHaveBeenCalledTimes(2);
   });
 
+  it("uses the default production clock and expires cached access after 15 seconds", async () => {
+    const originalWorkerId = process.env.JEST_WORKER_ID;
+    const originalEmulator = process.env.FUNCTIONS_EMULATOR;
+    const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+    delete process.env.JEST_WORKER_ID;
+    delete process.env.FUNCTIONS_EMULATOR;
+    try {
+      let productionRollout!: typeof import("../../race/raceRollout");
+      jest.isolateModules(() => {
+        productionRollout = require("../../race/raceRollout");
+      });
+      const {db, get} = createCountingDb([
+        {enabled: true, percentage: 100, allowlistHashes: []},
+        {enabled: false, percentage: 0, allowlistHashes: []},
+      ]);
+      await expect(productionRollout.getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: true});
+      now = 14_999;
+      await expect(productionRollout.getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: true});
+      expect(get).toHaveBeenCalledTimes(1);
+      now = 15_000;
+      await expect(productionRollout.getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
+      expect(get).toHaveBeenCalledTimes(2);
+    } finally {
+      clock.mockRestore();
+      if (originalWorkerId === undefined) delete process.env.JEST_WORKER_ID;
+      else process.env.JEST_WORKER_ID = originalWorkerId;
+      if (originalEmulator === undefined) delete process.env.FUNCTIONS_EMULATOR;
+      else process.env.FUNCTIONS_EMULATOR = originalEmulator;
+    }
+  });
+
+  it("uses the system clock when a configured TTL omits a custom clock", async () => {
+    const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+    try {
+      configureRaceRolloutCache({ttlMs: 5_000});
+      const {db, get} = createCountingDb([
+        {enabled: true, percentage: 100, allowlistHashes: []},
+        {enabled: false, percentage: 0, allowlistHashes: []},
+      ]);
+      await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: true});
+      now = 4_999;
+      await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: true});
+      expect(get).toHaveBeenCalledTimes(1);
+      now = 5_000;
+      await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
+      expect(get).toHaveBeenCalledTimes(2);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+
+  it("retains a newer disabled rollout when an expired pending read fails", async () => {
+    const {db, get} = createCountingDb([{enabled: false, percentage: 0, allowlistHashes: []}]);
+    let rejectRead!: (reason: Error) => void;
+    get.mockImplementationOnce(() => new Promise((_, reject) => {rejectRead = reject;}));
+    const expiredRead = getRaceAccessForUser("a", "en", db);
+    now = 15_000;
+    await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
+    expect(get).toHaveBeenCalledTimes(2);
+
+    const failure = new Error("expired rollout read unavailable");
+    const rejectedRead = expect(expiredRead).rejects.toBe(failure);
+    rejectRead(failure);
+    await rejectedRead;
+    now = 15_001;
+    await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
   it("reads through when disabled", async () => {
     configureRaceRolloutCache({ttlMs: 0});
     /** Enabled rollout database. */
