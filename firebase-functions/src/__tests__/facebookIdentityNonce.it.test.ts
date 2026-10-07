@@ -12,6 +12,26 @@ const noncePath = (nonce: string) => `facebookIdentityNonces/${createHash("sha25
 /** Provides db behavior. */
 let db: FirebaseFirestore.Firestore;
 
+/** Retries only confirmed aborted fixture transactions once after the original batch settles. */
+const resolveConcurrentQuotaAttempts = async (operations: Array<() => Promise<boolean>>): Promise<boolean[]> => {
+  const settled = await Promise.allSettled(operations.map((operation) => operation()));
+  const abortedIndexes = settled.flatMap((result, index) => {
+    if (result.status === "fulfilled") return [];
+    const reason: unknown = result.reason;
+    if (typeof reason !== "object" || reason === null || !("code" in reason) || reason.code !== 10) throw reason;
+    return [index];
+  });
+  if (abortedIndexes.length > 0) {
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
+    const retried = await Promise.allSettled(abortedIndexes.map((index) => operations[index]()));
+    retried.forEach((result, index) => {settled[abortedIndexes[index]] = result;});
+  }
+  return settled.map((result) => {
+    if (result.status === "rejected") throw result.reason;
+    return result.value;
+  });
+};
+
 beforeAll(async () => {
   if (!PROJECT_ID.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")) {
     throw new Error("facebook-nonce-tests-require-local-demo-emulator");
@@ -31,15 +51,73 @@ afterAll(async () =>
   ]),
 );
 
+it("settles every concurrent quota attempt before retrying a confirmed abort", async () => {
+  jest.useFakeTimers();
+  try {
+    const aborted = Object.assign(new Error("injected transaction abort"), {code: 10});
+    let finishPeer!: (result: boolean) => void;
+    let peerPending = true;
+    const retry = jest.fn<Promise<boolean>, []>()
+      .mockRejectedValueOnce(aborted)
+      .mockImplementationOnce(async () => {
+        expect(peerPending).toBe(false);
+        return true;
+      });
+    const peer = jest.fn(() => new Promise<boolean>((resolve) => {finishPeer = resolve;}));
+    const denied = jest.fn(async () => false);
+    const collected = resolveConcurrentQuotaAttempts([retry, peer, denied]).then(
+      (value) => ({status: "fulfilled", value}),
+      (reason: unknown) => ({status: "rejected", reason}),
+    );
+    await jest.advanceTimersByTimeAsync(100);
+    expect(retry).toHaveBeenCalledTimes(1);
+    peerPending = false;
+    finishPeer(true);
+    await jest.advanceTimersByTimeAsync(50);
+    await expect(collected).resolves.toEqual({status: "fulfilled", value: [true, true, false]});
+    expect(retry).toHaveBeenCalledTimes(2);
+    expect(peer).toHaveBeenCalledTimes(1);
+    expect(denied).toHaveBeenCalledTimes(1);
+  } finally {
+    jest.useRealTimers();
+  }
+});
+
+it.each([
+  ["plain error", new Error("storage unavailable")],
+  ["unavailable code", Object.assign(new Error("not aborted"), {code: 14})],
+  ["string abort code", Object.assign(new Error("invalid abort code"), {code: "10"})],
+])(
+  "propagates a non-ABORTED quota failure without retry: %s", async (_label, failure) => {
+    const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(failure);
+    await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(failure);
+    expect(operation).toHaveBeenCalledTimes(1);
+  },
+);
+
+it("fails quota recovery when its single confirmed-abort retry is exhausted", async () => {
+  const aborted = Object.assign(new Error("persistent transaction abort"), {code: 10});
+  const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(aborted);
+  await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(aborted);
+  expect(operation).toHaveBeenCalledTimes(2);
+});
+
 it("enforces the 20-request identity quota transactionally across concurrent instances", async () => {
   /** Provides secret behavior. */
   const secret = "distributed-rate-limit-secret-at-least-32-characters";
-  /** Provides results behavior. */
-  const results = await Promise.all(
-    Array.from({length: 32}, () => consumeFacebookRequestQuota("198.51.100.7", secret, db, NOW)),
+  /** All 32 first attempts still compete concurrently for the same authoritative quota row. */
+  const results = await resolveConcurrentQuotaAttempts(
+    Array.from({length: 32}, () => () => consumeFacebookRequestQuota("198.51.100.7", secret, db, NOW)),
   );
   expect(results.filter(Boolean)).toHaveLength(20);
   expect(results.filter((value) => !value)).toHaveLength(12);
+  const quotaId = createHmac("sha256", secret)
+    .update("riddle-quest-facebook-identity-rate-v1\0", "utf8")
+    .update("198.51.100.7", "utf8")
+    .digest("hex");
+  expect((await db.collection("facebookIdentityRateLimits").doc(quotaId).get()).data()).toMatchObject({
+    count: 20, resetAtMs: NOW + 60_000,
+  });
   await expect(consumeFacebookRequestQuota("198.51.100.8", secret, db, NOW)).resolves.toBe(true);
   await expect(consumeFacebookRequestQuota("198.51.100.7", secret, db, NOW + 60_000)).resolves.toBe(true);
 
