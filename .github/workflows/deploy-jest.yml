@@ -15,7 +15,7 @@ jobs:
     name: Verify, upload and activate Jest build
     if: github.ref == 'refs/heads/jest'
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 180
     environment: jest-production
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -32,6 +32,7 @@ jobs:
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+        timeout-minutes: 15
       - name: Install the release sandbox
         run: sudo apt-get update && sudo apt-get install --yes bubblewrap
       - name: Run the immutable build release without game publication
