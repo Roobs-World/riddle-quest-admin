@@ -41,6 +41,17 @@ const call = (
 describe("Facebook client configuration", () => {
   beforeEach(() => jest.clearAllMocks());
 
+  it.each([null, undefined, [], {unexpected: true}])(
+    "rejects malformed configuration requests before accessing account state: %p",
+    async (data) => {
+      await expect(call(data, {uid, token: {provider: "facebook"}})).rejects.toMatchObject({
+        code: "invalid-argument",
+      });
+      expect(mockSetFeatureGate).not.toHaveBeenCalled();
+      expect(mockGet).not.toHaveBeenCalled();
+    },
+  );
+
   it("exposes only enabled booleans and the durable ad-free entitlement", () => {
     expect(
       resolveFacebookClientConfiguration({
