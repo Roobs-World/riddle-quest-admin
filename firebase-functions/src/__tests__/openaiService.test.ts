@@ -573,6 +573,34 @@ describe("OpenAI Service", () => {
       });
     });
 
+    test.each([1, 2, 3])("rejects a candidate when model call %i times out and permits a later recovery", async (failedCall) => {
+      /** Models the SDK timeout without including provider request data in telemetry. */
+      const timeout = Object.assign(new Error("private timeout details"), {
+        name: "APIConnectionTimeoutError",
+        request: {authorization: "private credential"},
+      });
+      if (failedCall > 1) {
+        mockParse.mockResolvedValueOnce(parsedRiddleResponse("What flies without wings?", "time"));
+      }
+      if (failedCall > 2) {
+        mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("time"));
+      }
+      mockParse.mockRejectedValueOnce(timeout);
+
+      await expect(generateUniqueRiddle()).resolves.toBeNull();
+      expect(mockParse).toHaveBeenCalledTimes(failedCall);
+      expect(mockLogger.info).not.toHaveBeenCalled();
+      expect(mockCaptureException).toHaveBeenCalledTimes(1);
+      expect(mockCaptureException).toHaveBeenCalledWith(timeout, {
+        errorClass: "APIConnectionTimeoutError",
+      });
+
+      mockApprovedRiddle("What flies without wings?", "time");
+      await expect(generateUniqueRiddle()).resolves.toEqual(["What flies without wings?", "time"]);
+      expect(mockParse).toHaveBeenCalledTimes(failedCall + 3);
+      expect(mockCaptureException).toHaveBeenCalledTimes(1);
+    });
+
     test("throws error when OPENAI_API_KEY is missing", async () => {
       delete process.env.OPENAI_API_KEY;
 
