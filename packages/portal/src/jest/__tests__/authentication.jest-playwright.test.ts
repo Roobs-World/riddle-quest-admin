@@ -712,6 +712,14 @@ describeBrowser("Jest authentication integration", () => {
     expect(share.shareText).toContain("both earn 100 coins");
     expect(share.shareImage).toMatch(/^data:image\/png;base64,/);
 
+    await page.evaluate(() => {
+      /** Restores normal canvas capture after the next oversized share image. */
+      const original = HTMLCanvasElement.prototype.toDataURL;
+      HTMLCanvasElement.prototype.toDataURL = function () {
+        HTMLCanvasElement.prototype.toDataURL = original;
+        return `data:image/png;base64,${"A".repeat(2 * 1024 * 1024)}`;
+      };
+    });
     await page.evaluate(() =>
       window.dispatchEvent(
         new CustomEvent("riddle-quest:share-referral", {
@@ -733,6 +741,7 @@ describeBrowser("Jest authentication integration", () => {
     expect(secondResultShare.reference).toMatch(/^rq_fc_v2_[0-9a-f]{16}$/);
     expect(secondResultShare.reference).not.toBe(share.reference);
     expect(secondResultShare.entryPayload).toEqual(expect.objectContaining({riddleId: "classic-riddle-2"}));
+    expect(secondResultShare).not.toHaveProperty("shareImage");
 
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:share-invite")));
     await page.waitForFunction(

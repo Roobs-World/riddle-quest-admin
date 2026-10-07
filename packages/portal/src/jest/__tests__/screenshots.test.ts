@@ -9,6 +9,17 @@ it("rejects non-PNG and oversized screenshots", async () => {
   expect(await sizeCheckedScreenshotProvider(() => "data:image/jpeg;base64,YQ==")()).toBeNull();
   expect(await sizeCheckedScreenshotProvider(() => `data:image/png;base64,${"A".repeat(2_800_000)}`)()).toBeNull();
 });
+it("rejects base64 expansion that exceeds the URL limit even when decoded bytes fit", async () => {
+  /** A 1.5 MiB image expands to 2 MiB before the data URL prefix is added. */
+  const image = `data:image/png;base64,${"A".repeat(2 * 1024 * 1024)}`;
+  expect(await sizeCheckedScreenshotProvider(async () => image)()).toBeNull();
+});
+it("accepts the largest base64 block below the URL limit and rejects the next block", async () => {
+  /** Largest multiple-of-four payload that fits with the PNG data URL prefix. */
+  const image = `data:image/png;base64,${"A".repeat(2 * 1024 * 1024 - 24)}`;
+  expect(await sizeCheckedScreenshotProvider(() => image)()).toBe(image);
+  expect(await sizeCheckedScreenshotProvider(() => `${image}AAAA`)()).toBeNull();
+});
 it("accepts a small PNG data URL", async () =>
   expect(await sizeCheckedScreenshotProvider(() => "data:image/png;base64,YQ==")()).toBe("data:image/png;base64,YQ=="));
 it("accounts for single-padding PNG data URLs", async () =>
