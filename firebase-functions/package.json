@@ -23,7 +23,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js",
     "pretest:coverage": "pnpm build",
-    "test:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" firebase emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm exec jest --config jest.production-coverage.config.js --runInBand --coverage\"",
+    "test:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --max-old-space-size=6144\" firebase emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm exec jest --config jest.production-coverage.config.js --runInBand --coverage\"",
     "pretest:scalability:coverage": "node scripts/prepare-deploy.js",
     "test:scalability:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.scalability-coverage.config.js --runInBand",
     "pretest:race:coverage": "pnpm build && node --test scripts/race-delivery-replay.test.js scripts/race-match-calibration.test.js scripts/race-match-benchmark.test.js",
