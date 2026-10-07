@@ -43,6 +43,7 @@ overrides:
   postcss: "8.5.25"
   protobufjs: "7.6.5"
   qs: "6.16.0"
+  source-map-js: "1.2.2"
   "minimatch@3>brace-expansion": "1.1.21"
   "minimatch@8>brace-expansion": "2.1.7"
   "minimatch@9>brace-expansion": "2.1.7"

@@ -88,7 +88,7 @@ export const RACE_ROLLOUT_CACHE_TTL_MS = 15_000;
 let rolloutCacheTtlMs = process.env.FUNCTIONS_EMULATOR === "true" || process.env.JEST_WORKER_ID !== undefined
   ? 0 : RACE_ROLLOUT_CACHE_TTL_MS;
 /** Clock seam for cache expiry tests. */
-let rolloutCacheNow: () => number = () => Date.now();
+let rolloutCacheNow: () => number = Date.now;
 /** Pending or settled rollout reads shared by concurrent callers of the same database. */
 let rolloutCache = new WeakMap<Firestore, {
   /** Monotonic expiry of this entry. */ expiresAtMs: number;
@@ -99,7 +99,7 @@ export function configureRaceRolloutCache(options: {
   /** Entry lifetime; zero disables caching. */ ttlMs: number;
   /** Optional clock. */ now?: () => number}): void {
   rolloutCacheTtlMs = Math.max(0, options.ttlMs);
-  rolloutCacheNow = options.now ?? (() => Date.now());
+  rolloutCacheNow = options.now ?? Date.now;
   rolloutCache = new WeakMap();
 }
 
