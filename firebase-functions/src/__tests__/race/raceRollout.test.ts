@@ -248,4 +248,54 @@ describe("Race rollout configuration cache", () => {
     await assertRaceAccess("a", "en", db);
     expect(get).toHaveBeenCalledTimes(2);
   });
+
+  it("keeps a newer entry when an expired read fails late", async () => {
+    /** Settles the first, slow read. */
+    let rejectFirst: (error: Error) => void = () => undefined;
+    /** Slow failing read, then a healthy one. */
+    const get = jest.fn()
+      .mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectFirst = reject; }))
+      .mockResolvedValue({exists: true, data: () => ({enabled: true, percentage: 100, allowlistHashes: []})});
+    /** Database backed by the queued reads. */
+    const db = {doc: jest.fn(() => ({get}))} as unknown as FirebaseFirestore.Firestore;
+    /** First check, still in flight when its window expires. */
+    const first = assertRaceAccess("a", "en", db);
+    now = 15_000;
+    await expect(assertRaceAccess("a", "en", db)).resolves.toBeUndefined();
+    rejectFirst(new Error("unavailable"));
+    await expect(first).rejects.toThrow("unavailable");
+    await expect(assertRaceAccess("a", "en", db)).resolves.toBeUndefined();
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses the wall clock when no clock is supplied", async () => {
+    configureRaceRolloutCache({ttlMs: 15_000});
+    /** Enabled rollout database. */
+    const {db, get} = createCountingDb([{enabled: true, percentage: 100, allowlistHashes: []}]);
+    await assertRaceAccess("a", "en", db);
+    await assertRaceAccess("a", "en", db);
+    expect(get).toHaveBeenCalledTimes(1);
+  });
+
+  it("caches for the production window outside tests and the emulator", async () => {
+    /** Environment restored after loading a fresh module. */
+    const {JEST_WORKER_ID: workerId, FUNCTIONS_EMULATOR: emulator} = process.env;
+    delete process.env.JEST_WORKER_ID;
+    delete process.env.FUNCTIONS_EMULATOR;
+    try {
+      await jest.isolateModulesAsync(async () => {
+        /** Fresh module that reads the production cache policy at load time. */
+        const fresh = await import("../../race/raceRollout");
+        /** Enabled rollout database. */
+        const {db, get} = createCountingDb([{enabled: true, percentage: 100, allowlistHashes: []}]);
+        await fresh.assertRaceAccess("a", "en", db);
+        await fresh.assertRaceAccess("b", "en", db);
+        expect(fresh.RACE_ROLLOUT_CACHE_TTL_MS).toBe(15_000);
+        expect(get).toHaveBeenCalledTimes(1);
+      });
+    } finally {
+      process.env.JEST_WORKER_ID = workerId;
+      if (emulator !== undefined) process.env.FUNCTIONS_EMULATOR = emulator;
+    }
+  });
 });
