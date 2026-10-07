@@ -240,6 +240,61 @@ describe("Race rollout configuration cache", () => {
     expect(get).toHaveBeenCalledTimes(2);
   });
 
+  it("caches with the production window and real clock outside tests and the emulator", async () => {
+    /** Saved worker marker, restored after the isolated load. */
+    const workerId = process.env.JEST_WORKER_ID;
+    /** Saved emulator marker, restored after the isolated load. */
+    const emulator = process.env.FUNCTIONS_EMULATOR;
+    delete process.env.JEST_WORKER_ID;
+    delete process.env.FUNCTIONS_EMULATOR;
+    try {
+      /** Freshly loaded module that sees production process markers. */
+      let isolated!: typeof import("../../race/raceRollout");
+      jest.isolateModules(() => {
+        isolated = jest.requireActual("../../race/raceRollout");
+      });
+      /** Enabled rollout database. */
+      const {db, get} = createCountingDb([{enabled: true, percentage: 100, allowlistHashes: []}]);
+      await isolated.assertRaceAccess("a", "en", db);
+      await isolated.assertRaceAccess("b", "en", db);
+      expect(get).toHaveBeenCalledTimes(1);
+    } finally {
+      process.env.JEST_WORKER_ID = workerId;
+      if (emulator === undefined) delete process.env.FUNCTIONS_EMULATOR;
+      else process.env.FUNCTIONS_EMULATOR = emulator;
+    }
+  });
+
+  it("uses the real clock when none is supplied", async () => {
+    configureRaceRolloutCache({ttlMs: 15_000});
+    /** Enabled rollout database. */
+    const {db, get} = createCountingDb([{enabled: true, percentage: 100, allowlistHashes: []}]);
+    await assertRaceAccess("a", "en", db);
+    await assertRaceAccess("b", "en", db);
+    expect(get).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a newer entry when an expired read fails late", async () => {
+    /** Settles the first, slow read. */
+    let failFirst!: (error: Error) => void;
+    /** First read stays pending; later reads succeed. */
+    const get = jest.fn()
+      .mockImplementationOnce(() => new Promise((_resolve, reject) => {
+        failFirst = reject;
+      }))
+      .mockImplementation(async () => ({exists: true, data: () => ({enabled: true, percentage: 100, allowlistHashes: []})}));
+    /** Database with a slow first read. */
+    const db = {doc: jest.fn(() => ({get}))} as unknown as FirebaseFirestore.Firestore;
+    /** Access check waiting on the slow read. */
+    const slow = assertRaceAccess("a", "en", db);
+    now = 15_000;
+    await expect(assertRaceAccess("b", "en", db)).resolves.toBeUndefined();
+    failFirst(new Error("unavailable"));
+    await expect(slow).rejects.toThrow("unavailable");
+    await expect(assertRaceAccess("c", "en", db)).resolves.toBeUndefined();
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
   it("reads through when disabled", async () => {
     configureRaceRolloutCache({ttlMs: 0});
     /** Enabled rollout database. */
