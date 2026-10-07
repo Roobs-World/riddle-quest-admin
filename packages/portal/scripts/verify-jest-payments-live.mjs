@@ -1,8 +1,21 @@
-import {existsSync, lstatSync} from "node:fs";
+import {existsSync, lstatSync, mkdirSync, writeFileSync} from "node:fs";
+import path from "node:path";
+import {fileURLToPath} from "node:url";
 import {chromium} from "@playwright/test";
+import {
+  assertCompletedJestPaymentSettlement, assertNoRelevantJestPaymentErrors, assertSandboxJestCheckout,
+  captureJestPaymentGameErrors,
+  collectRedactedJestPaymentDiagnostics, confirmedJestFirstPurchaseBonus, confirmedJestSandboxCoins,
+  loadExactJestPaymentGame,
+  readJestPaymentCatalog, readJestPaymentGameErrors, readJestPaymentWalletBalance, readJestSandboxCheckout,
+  settleSandboxJestPurchase, verifyReloadedJestPaymentWallet,
+} from "./jest-payment-live-acceptance.mjs";
 
 const gameId = process.env.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801";
 const gameUrl = process.env.JEST_DEPLOYED_GAME_URL || "https://jest.com/g/riddle-q";
+const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION;
+const evidenceDirectory = process.env.JEST_PAYMENT_EVIDENCE_DIR ||
+  fileURLToPath(new URL("../.jest-upload-receipts/payment-qa/", import.meta.url));
 const productSku = process.env.JEST_SANDBOX_PAYMENT_SKU ||
   "com.roobsworld.riddlequest.coinpack1";
 const subscriptionSku = process.env.JEST_SANDBOX_SUBSCRIPTION_SKU ||
@@ -11,10 +24,10 @@ const statePath = process.env.JEST_SANDBOX_STORAGE_STATE ||
   "/tmp/riddle-quest-jest-sandbox-state.json";
 const functionsBaseUrl = process.env.JEST_FUNCTIONS_BASE_URL ||
   "https://us-central1-riddle-quest-ec2b2.cloudfunctions.net";
+const expectedCoins = confirmedJestSandboxCoins(productSku);
 
-if (!existsSync(statePath)) {
-  throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
-}
+if (!expectedBuildVersion) throw new Error("JEST_EXPECTED_BUILD_VERSION is required for exact-build verification.");
+if (!existsSync(statePath)) throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
 const stateMetadata = lstatSync(statePath);
 if (!stateMetadata.isFile() || stateMetadata.isSymbolicLink() || (stateMetadata.mode & 0o777) !== 0o600) {
   throw new Error(`Jest sandbox browser state must be a regular owner-only 0600 file: ${statePath}`);
@@ -28,171 +41,116 @@ if (process.env.JEST_SANDBOX_PAYMENT_CONFIRM !== productSku) {
 
 const browser = await chromium.launch({headless: process.env.JEST_DEPLOYED_HEADED !== "1"});
 const context = await browser.newContext({storageState: statePath, viewport: {width: 390, height: 844}});
+await context.addInitScript(captureJestPaymentGameErrors, {gameId});
 if (process.env.FIREBASE_APPCHECK_DEBUG_TOKEN) {
   await context.addInitScript((token) => {
     globalThis.FIREBASE_APPCHECK_DEBUG_TOKEN = token;
   }, process.env.FIREBASE_APPCHECK_DEBUG_TOKEN);
 }
 const page = await context.newPage();
+const {diagnostics, failure} = collectRedactedJestPaymentDiagnostics(page, {gameId, functionsBaseUrl});
+let stage = "startup";
+let verification;
+let game;
+let gameErrorsRecorded = 0;
+const collectGameErrors = async () => {
+  const errors = await game.evaluate(readJestPaymentGameErrors);
+  diagnostics.gameErrors.push(...errors.slice(gameErrorsRecorded));
+  gameErrorsRecorded = errors.length;
+};
+const recordEvidence = (summary) => {
+  mkdirSync(evidenceDirectory, {recursive: true, mode: 0o700});
+  const output = path.join(evidenceDirectory, "EVIDENCE-" + Date.now() + ".json");
+  writeFileSync(output, JSON.stringify({...summary, diagnostics}, null, 2) + "\n", {flag: "wx", mode: 0o600});
+};
 
 try {
-  await page.goto(gameUrl, {waitUntil: "domcontentloaded"});
-  await page.waitForFunction(
-    (expectedGameId) => [...document.querySelectorAll("iframe")].some((iframe) => {
-      try {
-        return new URL(iframe.src).hostname === `${expectedGameId}.builds.jest.com`;
-      } catch {
-        return false;
-      }
-    }),
-    gameId,
-    {timeout: 30_000},
-  );
-  await page.waitForTimeout(1_000);
-
-  const game = page.frames().find((frame) => {
-    try {
-      return new URL(frame.url()).hostname === `${gameId}.builds.jest.com`;
-    } catch {
-      return false;
-    }
-  });
-  if (!game) throw new Error("The deployed Jest game frame was not found.");
+  game = await loadExactJestPaymentGame(page, {gameUrl, gameId, expectedBuildVersion});
   await game.waitForFunction(() => {
-    try {
-      return typeof globalThis.JestSDK?.getPlayer().playerId === "string";
-    } catch {
-      return false;
-    }
+    try {return typeof globalThis.JestSDK?.getPlayer().playerId === "string";} catch {return false;}
   }, undefined, {timeout: 30_000});
 
-  const playableContent = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
-  const startupError = game.locator(".route-missing");
-  await playableContent.or(startupError).first().waitFor({timeout: 30_000});
-  if (await startupError.isVisible()) {
-    const message = (await startupError.innerText()).replace(/\s+/g, " ").trim();
-    throw new Error(`The deployed Jest game did not finish startup: ${message}`);
-  }
-
-  const letsPlay = game.getByRole("button", {name: /let's play/i});
-  if (await letsPlay.isVisible()) {
-    await letsPlay.click();
-    const onboardingContinue = game.getByRole("button", {name: /got it/i});
-    if (await onboardingContinue.isVisible()) await onboardingContinue.click();
-  }
-  await game.locator(".riddle-card h1").waitFor({timeout: 30_000});
-
-  const catalog = await game.evaluate(async ({expectedProductSku, expectedSubscriptionSku}) => {
-    const [products, subscriptions, incomplete] = await Promise.all([
-      globalThis.JestSDK.payments.getProducts(),
-      globalThis.JestSDK.payments.getSubscriptions(),
-      globalThis.JestSDK.payments.getIncompletePurchases(),
-    ]);
-    return {
-      product: products.find(({sku}) => sku === expectedProductSku),
-      subscription: subscriptions.subscriptions.find(({sku}) => sku === expectedSubscriptionSku),
-      incomplete: {
-        hasMore: incomplete.hasMore,
-        count: incomplete.purchases.length,
-        signed: typeof incomplete.purchasesSigned === "string",
-      },
-    };
-  }, {expectedProductSku: productSku, expectedSubscriptionSku: subscriptionSku});
+  const catalog = await game.evaluate(readJestPaymentCatalog,
+    {expectedProductSku: productSku, expectedSubscriptionSku: subscriptionSku});
 
   if (!catalog.product || !Number.isFinite(catalog.product.price) || catalog.product.currency !== "USD") {
     throw new Error(`Jest product ${productSku} is missing a valid USD price.`);
   }
-  if (
-    !catalog.subscription ||
-    !Number.isFinite(catalog.subscription.price) ||
-    catalog.subscription.currency !== "USD" ||
-    catalog.subscription.billingPeriod !== "monthly"
-  ) {
+  if (!catalog.subscription || !Number.isFinite(catalog.subscription.price) ||
+      catalog.subscription.currency !== "USD" || catalog.subscription.billingPeriod !== "monthly") {
     throw new Error(`Jest subscription ${subscriptionSku} is missing valid monthly USD billing.`);
   }
   if (!catalog.incomplete.signed) throw new Error("Jest returned an unsigned purchase recovery queue.");
-  if (catalog.incomplete.hasMore || catalog.incomplete.count !== 0) {
+  if (catalog.incomplete.hasMore !== false || catalog.incomplete.count !== 0) {
     throw new Error("The application did not drain the Jest purchase recovery queue before becoming playable.");
   }
+  await collectGameErrors();
+  assertNoRelevantJestPaymentErrors(diagnostics);
+  const initialCoins = await game.evaluate(readJestPaymentWalletBalance);
 
+  stage = "sandbox checkout";
   await game.evaluate((sku) => {
     globalThis.__RIDDLE_QUEST_PAYMENT_TEST__ = globalThis.JestSDK.payments.beginPurchase({productSku: sku});
   }, productSku);
+  await page.getByText(/Sandbox mode\. You won't be charged for this purchase\./i)
+    .waitFor({state: "visible", timeout: 15_000});
+  await page.getByRole("button", {name: /get with jest (?:balance|wallet)/i}).click({timeout: 5_000});
+  const purchase = await game.evaluate(readJestSandboxCheckout);
+  assertSandboxJestCheckout(purchase, productSku);
 
-  const sandboxNotice = page.getByText(/Sandbox mode\. You won't be charged for this purchase\./i);
-  await sandboxNotice.waitFor({state: "visible", timeout: 15_000});
-  const checkoutAction = page.getByRole("button", {name: /get with jest (?:balance|wallet)/i});
-  try {
-    await checkoutAction.click({timeout: 5_000});
-  } catch (error) {
-    const visibleButtons = await page.getByRole("button").allInnerTexts();
-    throw new Error(
-      `Jest sandbox checkout action was not found. Visible buttons: ${JSON.stringify(visibleButtons)}`,
-      {cause: error},
-    );
-  }
-
-  const purchase = await game.evaluate(async () => await globalThis.__RIDDLE_QUEST_PAYMENT_TEST__);
-  if (
-    purchase?.result !== "success" ||
-    purchase.purchase?.productSku !== productSku ||
-    typeof purchase.purchase.purchaseToken !== "string" ||
-    typeof purchase.purchaseSigned !== "string"
-  ) {
-    throw new Error(`Jest sandbox checkout did not return a valid signed purchase (${purchase?.result ?? "unknown"}).`);
-  }
-
-  const verification = await game.evaluate(async ({baseUrl, signed, token}) => {
-    const playerId = globalThis.JestSDK.getPlayer().playerId;
-    const grant = async () => {
-      const response = await fetch(`${baseUrl}/grantJestPurchase`, {
-        method: "POST",
-        headers: {"content-type": "application/json"},
-        body: JSON.stringify({purchaseSigned: signed, playerId, purchaseToken: token}),
-      });
-      return {ok: response.ok, body: await response.json()};
-    };
-    const first = await grant();
-    const replay = await grant();
-    const completed = await globalThis.JestSDK.payments.completePurchase({purchaseToken: token});
-    const remaining = await globalThis.JestSDK.payments.getIncompletePurchases();
-    return {
-      first,
-      replay,
-      completed,
-      stillIncomplete: remaining.purchases.some(({purchaseToken}) => purchaseToken === token),
-    };
-  }, {
+  stage = "authoritative grant and replay";
+  verification = await game.evaluate(settleSandboxJestPurchase, {
     baseUrl: functionsBaseUrl.replace(/\/$/, ""),
     signed: purchase.purchaseSigned,
     token: purchase.purchase.purchaseToken,
+    expectedCoins,
+    initialCoins,
+    expectedAchievementBonus: confirmedJestFirstPurchaseBonus,
   });
+  assertCompletedJestPaymentSettlement(verification);
+  await collectGameErrors();
+  assertNoRelevantJestPaymentErrors(diagnostics);
 
-  if (!verification.first.ok || verification.first.body.alreadyProcessed !== false) {
-    throw new Error("The authoritative backend did not grant the new Jest purchase exactly once.");
-  }
-  if (
-    !verification.replay.ok ||
-    verification.replay.body.alreadyProcessed !== true ||
-    verification.replay.body.newCoins !== verification.first.body.newCoins
-  ) {
-    throw new Error("The authoritative backend did not reject the replay idempotently.");
-  }
-  if (verification.completed?.result !== "success" || verification.stillIncomplete) {
-    throw new Error("Jest did not complete and remove the granted purchase from recovery.");
-  }
-
-  console.log(JSON.stringify({
+  stage = "reloaded app wallet";
+  const restoredBalance = await verifyReloadedJestPaymentWallet(page, {
+    gameUrl, gameId, expectedBuildVersion, confirmedBalance: verification.newCoins,
+  });
+  game = restoredBalance.game;
+  gameErrorsRecorded = 0;
+  await collectGameErrors();
+  assertNoRelevantJestPaymentErrors(diagnostics);
+  mkdirSync(evidenceDirectory, {recursive: true, mode: 0o700});
+  const screenshot = path.join(evidenceDirectory, "payment-balance-" + Date.now() + ".png");
+  writeFileSync(screenshot, "", {flag: "wx", mode: 0o600});
+  await restoredBalance.game.locator(".game-header").screenshot({path: screenshot});
+  const summary = {
+    passed: true,
+    build: expectedBuildVersion,
+    coinsExpected: expectedCoins,
+    initialCoins,
+    newCoins: verification.newCoins,
+    reloadedCoinBadgeVerified: true,
+    formattedBalance: restoredBalance.formattedBalance,
     checkout: "sandbox-zero-dollar",
     productSku,
     productPrice: catalog.product.price,
     productCurrency: catalog.product.currency,
     subscriptionSku,
     subscriptionPrice: catalog.subscription.price,
-    coinsAwarded: verification.first.body.coinsAwarded,
-    idempotentReplay: true,
-    completed: true,
-  }, null, 2));
+    ...verification,
+  };
+  recordEvidence(summary);
+  console.log(JSON.stringify({...summary, diagnostics}, null, 2));
+} catch (error) {
+  if (game && !game.isDetached()) {
+    await collectGameErrors().catch(() => {});
+  }
+  recordEvidence({passed: false, stage, ...failure(error),
+    durableGrantConfirmed: verification?.durableGrantConfirmed ?? null,
+    purchaseCompleted: verification?.purchaseCompleted ?? null,
+    settlementStage: verification?.stage ?? null});
+  console.error("Sandbox payment QA failed during " + stage + "; only redacted evidence was saved.");
+  process.exitCode = 1;
 } finally {
   await context.close();
   await browser.close();
