@@ -45,6 +45,8 @@ type HostRiddleLifecycleOptions = Readonly<{
   onPlayable?: () => void;
   /** Resynchronizes host state before each automatic recovery attempt. */
   onRecoveryAttempt: () => void;
+  /** A retired game frame cannot receive content, so automatic recovery starts no authority read. */
+  recoverySuspended?: boolean;
 }>;
 
 /** Interface exposed to host routing and rendering. */
@@ -94,6 +96,7 @@ export function useHostRiddleLifecycle({
   setNotice,
   onPlayable,
   onRecoveryAttempt,
+  recoverySuspended = false,
 }: HostRiddleLifecycleOptions): HostRiddleLifecycle {
   /** Current accepted play mode. */
   const [gameMode, setGameMode] = useState<WebGameMode>(initialGameMode);
@@ -385,12 +388,15 @@ export function useHostRiddleLifecycle({
   );
   /** Latest load implementation used by recovery timers. */
   const loadRiddleRef = useRef(loadRiddle);
+  /** Latest suspension observed by recovery timers and browser signals. */
+  const recoverySuspendedRef = useRef(recoverySuspended);
   useLayoutEffect(() => {
     profileRef.current = profile;
     gameModeRef.current = gameMode;
     loadRiddleRef.current = loadRiddle;
     onRecoveryAttemptRef.current = onRecoveryAttempt;
-  }, [profile, gameMode, loadRiddle, onRecoveryAttempt]);
+    recoverySuspendedRef.current = recoverySuspended;
+  }, [profile, gameMode, loadRiddle, onRecoveryAttempt, recoverySuspended]);
 
   useEffect(() => {
     /** Recovery work stays bound to the commit that installed these listeners. */
@@ -413,7 +419,8 @@ export function useHostRiddleLifecycle({
     };
     /** Resynchronizes the host and retries the current riddle context. */
     const recoverRiddle = async () => {
-      if (loadedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
+      if (loadedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false ||
+        recoverySuspendedRef.current) return;
       recovering = true;
       try {
         onRecoveryAttemptRef.current();
