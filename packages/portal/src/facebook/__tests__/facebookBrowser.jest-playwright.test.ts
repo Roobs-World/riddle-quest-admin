@@ -744,10 +744,20 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.onboarding-clues').waitFor();
       await successPage.locator('.onboarding-card .play-primary').click();
       await successPage.locator('.onboarding-card').waitFor({state: 'detached'});
-      await successPage.evaluate(() => localStorage.setItem(
-        'riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest', 'seen'));
       await successPage.locator('.game-bottom-navigation button').last().click();
       await successPage.locator('.profile-page').waitFor();
+      // A first profile visit shows the profile tour for this Facebook account; finish it like a player would.
+      for (let step = 0; step < 8; step++) {
+        /** Open profile-tour step, if the tour is (still) showing. */
+        const tourStep = successPage.locator('.tooltip-backdrop');
+        try {
+          await tourStep.first().waitFor({timeout: 1_500});
+        } catch {
+          break;
+        }
+        await tourStep.first().locator('button').last().click();
+      }
+      await successPage.locator('.tooltip-backdrop').waitFor({state: 'detached'});
       await successPage.locator('.profile-invite-button').click();
       await successPage.waitForFunction(() => window.__facebookEvents.includes("share:INVITE"));
       expect(await successPage.locator('.profile-invite-button').innerText()).not.toMatch(/100|Jest/);

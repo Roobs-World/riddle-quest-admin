@@ -1,7 +1,13 @@
 import type {Page} from "@playwright/test";
 /** Completes the platform-owned onboarding flow before a focused mock-harness scenario. */
 export async function completeMockOnboarding(page: Page): Promise<void> {
-  await page.getByRole("button", {name: /let's play/i}).click();
+  /** Welcome action, clicked once the card's entrance animation has settled. */
+  const play = page.getByRole("button", {name: /let's play/i});
+  await play.waitFor();
+  // A loaded machine can stretch the 420 ms entrance well past the action timeout.
+  await page.locator(".onboarding-card").first().evaluate((card) =>
+    Promise.all(card.getAnimations({subtree: true}).map((animation) => animation.finished.catch(() => undefined))));
+  await play.click();
   await page
     .locator(".onboarding-card")
     .getByRole("button", {name: /got it/i})

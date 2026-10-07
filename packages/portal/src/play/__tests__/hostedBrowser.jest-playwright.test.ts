@@ -526,6 +526,8 @@ describeBrowser("standalone Jest browser game", () => {
       expect(Math.abs(compactLayout.contentBottom - 568)).toBeLessThanOrEqual(1);
       expect(compactLayout.navigationBottom).toBeGreaterThanOrEqual(567);
       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
+      // Onboarding hands focus back to the board on a later frame; slow machines can sample while it is still inert.
+      await compactPage.waitForFunction(() => !document.querySelector(".game-content")?.closest("[inert],[aria-hidden=true]"));
       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
 
       await compactPage.getByRole("button", {name: /^settings$/i}).click();

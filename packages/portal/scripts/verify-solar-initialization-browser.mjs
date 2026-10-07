@@ -56,7 +56,8 @@ export async function verifySolarInitialization({page,width,url,baseline,metric,
    if(scenario==='deferred-driver-failure')await page.evaluate(()=>{window.failResource={kind:'MeshBasicMaterial',occurrence:1};});
    await page.evaluate(()=>window.pause(false));
   }
-  await settle();
+  // Scene construction is asynchronous; wait for it instead of a fixed delay, then settle so a second construction would still show.
+  await page.waitForFunction(()=>window.probe.rendererConstructions>=1,undefined,{timeout:15000}).catch(()=>{});await settle();
   const expectedConstructors=1;
   await check('first eligible state initializes only its current owner',await value('rendererConstructions'),expectedConstructors);
   if(scenario==='deferred-driver-failure') {

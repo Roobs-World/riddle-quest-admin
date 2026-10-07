@@ -85,6 +85,8 @@ async function readScreen(page: Page): Promise<ScreenState> {
     /** Choices in the active layer. */
     const choices = [...scope.querySelectorAll("button, [role=button], [role=tab], [role=menuitem], input[type=checkbox], select")]
       .filter(usable)
+      // Guidance acknowledgements are informational; a late card must not be recorded as a route step.
+      .filter((element) => !element.closest(".tooltip-card, .onboarding-card"))
       .map((element) => {
         /** Label for this control. */
         const label = labelOf(element);
@@ -247,11 +249,15 @@ describeBrowser("every player route", () => {
         await dismissGuidance(page);
         await page.getByTestId("server-activity-loader").waitFor({state: "hidden"}).catch(() => undefined);
         await page.waitForTimeout(600);
+        // Guidance can open once the loader settles; acknowledge it so it never becomes a route step.
+        await dismissGuidance(page);
         for (const choice of route) await choose(page, choice);
+        await dismissGuidance(page);
         /** What the player now sees, once transitional work (such as a language load) has settled. */
         let screen = await readScreen(page);
         for (let attempt = 0; screen.choices.length === 0 && !screen.failed && attempt < 40; attempt += 1) {
           await page.waitForTimeout(150);
+          await dismissGuidance(page);
           screen = await readScreen(page);
         }
         if (screen.failed) problems.push(`${describeRoute(route)}: shows the error or recovery screen`);

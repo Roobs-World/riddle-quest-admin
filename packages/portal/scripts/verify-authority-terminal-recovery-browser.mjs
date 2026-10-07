@@ -144,7 +144,7 @@ window.profile=()=>source.loadProfile(uid);window.probe.ready=true;
    await page.screenshot({path:path.join(output,`${width}-${height}-${attempts}-${provider}-pending.png`)});
    await page.evaluate(()=>window.releaseCompletion());
    await page.waitForFunction(()=>window.probe.saves.some(x=>Object.hasOwn(x,'activeGame')&&x.activeGame===null));
-   metric('completion uses the original issued round',await page.evaluate(()=>window.probe.completions.map(x=>({riddleId:x.riddleId,sessionToken:x.sessionToken}))),[await page.evaluate(()=>{const r=window.probe.inbound.find(x=>x.type==='host:riddleLoaded').payload.riddle;return{riddleId:r.riddleId,sessionToken:r.sessionToken};})]);
+   /* Held completions are re-sent on the 1 s/2 s retry schedule, so only distinct rounds matter here; the authority-once check covers idempotency. */metric('completion uses the original issued round',await page.evaluate(()=>[...new Map(window.probe.completions.map(x=>[x.riddleId+'\u0000'+x.sessionToken,{riddleId:x.riddleId,sessionToken:x.sessionToken}])).values()]),[await page.evaluate(()=>{const r=window.probe.inbound.find(x=>x.type==='host:riddleLoaded').payload.riddle;return{riddleId:r.riddleId,sessionToken:r.sessionToken};})]);
    metric('completion advances the authority once',await page.evaluate(async()=>{const p=await window.profile(),b=window.probe.before;return[p.gamesPlayed-b.gamesPlayed,p.wins-b.wins];}),[1,1]);
    for(let step=0;step<10&&await page.locator('.modal-victory').count();step++){
     const chest=page.locator('.coin-award[data-coin-collection="pending"] .reward-chest');
