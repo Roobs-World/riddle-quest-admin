@@ -33,6 +33,19 @@ function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTrans
   };
 }
 
+/**
+ * Localized subscription benefits, limited to what the game actually provides.
+ *
+ * The verified Jest entitlement only records Premium status on the account
+ * (`hasActiveSubscription`); it grants no coins, hints or other gameplay items.
+ * Add a benefit here only after its server-authoritative grant exists.
+ */
+export const SUBSCRIPTION_BENEFIT_KEYS = [
+  "CoinShop.SUBSCRIPTION_BENEFIT_STATUS",
+  "CoinShop.SUBSCRIPTION_BENEFIT_SUPPORT",
+  "CoinShop.SUBSCRIPTION_BENEFIT_RENEWAL",
+] as const;
+
 /** Renders products supplied by the Jest platform purchase catalog. */
 export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
@@ -92,6 +105,15 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
               </span>
             )}
             <small className="shop-product-description">{copy.description}</small>
+            {product.productType === "subscription" ? (
+              <div className="shop-subscription-benefits">
+                <strong>{tr("CoinShop.SUBSCRIPTION_BENEFITS_TITLE")}</strong>
+                <ul>
+                  {SUBSCRIPTION_BENEFIT_KEYS.map((key) => <li key={key}>{tr(key)}</li>)}
+                </ul>
+                <small>{tr("CoinShop.SUBSCRIPTION_COINS_NOTE")}</small>
+              </div>
+            ) : null}
             {product.productType !== "subscription" && product.coins > 0 ? (
               <small className="shop-product-description">
                 {tr("CoinShop.PACK_BUYING_POWER", {
