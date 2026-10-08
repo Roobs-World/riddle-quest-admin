@@ -112,32 +112,33 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   if (await guestContinue.isVisible()) {
     await guestContinue.click();
   }
-  /** Provides coin tooltip behavior. */
-  const coinTooltip = page.locator(".tooltip-card");
-  await coinTooltip.getByRole("heading", {name: /open the coin shop/i}).waitFor();
-  expect(await coinTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameCoins-title");
+  /** Provides first tour tooltip behavior; new players start on the riddle, not the coin shop. */
+  const hintTooltip = page.locator(".tooltip-card");
+  await hintTooltip.getByRole("heading", {name: /use a hint/i}).waitFor();
+  expect(await hintTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameHint-title");
   /** Provides tooltip continue behavior. */
-  const tooltipContinue = coinTooltip.getByRole("button", {name: /got it/i});
+  const tooltipContinue = hintTooltip.getByRole("button", {name: /got it/i});
   await page.waitForFunction(() => document.activeElement?.matches(".tooltip-card .play-primary"));
   expect(await tooltipContinue.evaluate((button) => document.activeElement === button)).toBe(true);
   await page.keyboard.press("Tab");
   expect(await tooltipContinue.evaluate((button) => document.activeElement === button)).toBe(true);
   await page.keyboard.press("Escape");
-  expect(await coinTooltip.isVisible()).toBe(true);
+  expect(await hintTooltip.isVisible()).toBe(true);
   if (checkTooltipAccessibility) await expectAccessible(page, "guided tooltip");
-  expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
-  /** Provides [coin button box, spotlight box] behavior. */
-  const [coinButtonBox, spotlightBox] = await Promise.all([
-    page.locator(".coin-pill[data-tooltip='gameCoins']").boundingBox(),
+  /** Provides [hint button box, spotlight box] behavior. */
+  const [hintButtonBox, spotlightBox] = await Promise.all([
+    page.locator("[data-tooltip='gameHint']").boundingBox(),
     page.locator(".tooltip-spotlight").boundingBox(),
   ]);
-  expect(coinButtonBox).not.toBeNull();
+  expect(hintButtonBox).not.toBeNull();
   expect(spotlightBox).not.toBeNull();
-  expect(spotlightBox!.x).toBeLessThan(coinButtonBox!.x);
-  expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(coinButtonBox!.x + coinButtonBox!.width);
+  expect(spotlightBox!.x).toBeLessThan(hintButtonBox!.x);
+  expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(hintButtonBox!.x + hintButtonBox!.width);
   /** Keeps the game fixed while each tour target is highlighted. */
   const headerTop = await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top);
-  for (let step = 0; step < 4; step += 1) {
+  // Classic tour: hint, submit, skip. The coin shop step is deferred until after the first level.
+  for (let step = 0; step < 3; step += 1) {
+    expect(await page.locator("[data-tooltip-id='gameCoins']").count()).toBe(0);
     await page.waitForTimeout(180);
     expect(await page.locator(".game-app").evaluate((element) => element.scrollTop)).toBe(0);
     expect(await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top)).toBe(
@@ -152,6 +153,15 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
     ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none"});
     await page.getByRole("button", {name: /got it/i}).click();
   }
+  // A harness profile that has already won meets the coin shop only after the gameplay tour.
+  /** Provides coin tooltip behavior. */
+  const coinTooltip = page.locator(".tooltip-backdrop[data-tooltip-id='gameCoins']");
+  await coinTooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+  if (await coinTooltip.isVisible()) {
+    expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
+    await coinTooltip.getByRole("button", {name: /got it/i}).click();
+  }
+  await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
 };
 
 describeBrowser("standalone Jest browser game", () => {
@@ -1095,6 +1105,21 @@ describeBrowser("standalone Jest browser game", () => {
         if (await victoryChest.isVisible() && await victoryChest.isEnabled()) await victoryChest.click();
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
       }
+      // Dismiss any post-win guidance; the coin shop tip is introduced no earlier than a completed level.
+      /** Post-win guidance card. */
+      const postWinTooltip = page.locator(".tooltip-card");
+      await postWinTooltip.waitFor({state: "visible", timeout: 2_000}).catch(() => undefined);
+      for (let step = 0; step < 5 && (await postWinTooltip.isVisible()); step += 1) {
+        await postWinTooltip.getByRole("button", {name: /got it/i}).click();
+        await page.waitForTimeout(250);
+      }
+      expect(
+        await page.evaluate(() =>
+          Object.keys(localStorage).some(
+            (key) => key.startsWith("riddleQuest:tooltipSeen:gameCoins:") && localStorage.getItem(key) === "seen",
+          ),
+        ),
+      ).toBe(true);
       await page.waitForFunction(
         () =>
           (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <=

@@ -8,14 +8,43 @@ import {
   getProfileTour,
   getOnboardingTotalSteps,
   getTooltipPanelStyle,
+  hasSeenContextualTooltip,
+  hasSeenTooltipTour,
   PROFILE_TOUR,
 } from "../guidance/guidanceConfig";
+import type {ProductSummary} from "../types";
+
+/** Provides a purchasable coin pack so shop guidance is eligible. */
+const shopProduct: ProductSummary = {
+  productId: "coins_small",
+  name: "Coins",
+  description: "A small coin pack",
+  coins: 100,
+  displayPrice: "$0.99",
+};
+
+/** Provides a completed classic win. */
+const classicWin = {
+  id: "classic-win-1",
+  kind: "win" as const,
+  riddleId: "riddle-1",
+  gameMode: "classic" as const,
+  sessionToken: "session-token-classic-win-0001",
+  attempts: 2,
+  isCorrect: true,
+};
+
+/** Creates an in-memory local guidance marker reader. */
+const createMarkers = (seen: string[]) => ({hasSeen: (_area: "local", key: string) => seen.includes(key)});
 
 describe("guidance configuration", () => {
   it("builds anonymous and user-scoped storage keys", () => {
     expect(createGuidanceStorageKey("onboarding")).toBe("riddleQuest:onboarding:anonymous");
     expect(createGuidanceStorageKey("onboarding", "user-1")).toBe("riddleQuest:onboarding:user-1");
     expect(createTooltipTourStorageKey("gameTour", "user-1")).toBe(
+      "riddleQuest:tooltipSequenceSeen:gameTour:v3:user-1",
+    );
+    expect(createTooltipTourStorageKey("gameTour", "user-1", "v2")).toBe(
       "riddleQuest:tooltipSequenceSeen:gameTour:v2:user-1",
     );
     expect(createTooltipTourStorageKey("profileTour", "user-1")).toBe(
@@ -25,14 +54,64 @@ describe("guidance configuration", () => {
 
   it("selects onboarding and game tour steps for each player mode", () => {
     expect(getOnboardingTotalSteps()).toBe(2);
-    expect(getGameTour("classic")).toEqual(["gameCoins", "gameHint", "submitAnswer", "gameSkip"]);
-    expect(getGameTour("challenge")).toEqual(["gameCoins", "gameHint", "submitAnswer"]);
+    expect(getGameTour("classic")).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
+    expect(getGameTour("challenge")).toEqual(["gameHint", "submitAnswer"]);
     expect(getGameTour("classic", false)).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("challenge", false)).toEqual(["gameHint", "submitAnswer"]);
     expect(getGameTour("classic", false, false)).toEqual(["submitAnswer"]);
     expect(getGameTour("classic", true, false)).toEqual(["submitAnswer"]);
     expect(getProfileTour()).toEqual(PROFILE_TOUR);
     expect(getProfileTour(false)).toEqual(PROFILE_TOUR.filter(id => id !== "profileTreasure"));
+  });
+
+  it("never points a new player at the coin shop before they have won a level", () => {
+    expect(getGameTour("classic")).not.toContain("gameCoins");
+    /** Provides first riddle state behavior. */
+    const firstRiddle = {...createInitialGameSession(), products: [shopProduct]};
+    /** Provides coin tip eligibility behavior. */
+    const coinTip = (
+      state: typeof firstRiddle,
+      modal: Parameters<typeof getContextualTooltipCandidates>[1],
+      economy = true,
+    ) =>
+      getContextualTooltipCandidates(state, modal, economy).find(({id}) => id === "gameCoins")?.when;
+    expect(coinTip(firstRiddle, null)).toBe(false);
+    expect(coinTip({...firstRiddle, guesses: [{}] as typeof firstRiddle.guesses}, null)).toBe(false);
+    expect(coinTip({...firstRiddle, lastOutcome: {...classicWin, kind: "loss", isCorrect: false}}, null)).toBe(false);
+    expect(coinTip({...firstRiddle, lastOutcome: classicWin}, "victory")).toBe(false);
+    expect(coinTip({...firstRiddle, lastOutcome: classicWin}, null)).toBe(true);
+    expect(coinTip({...firstRiddle, products: [], lastOutcome: classicWin}, null)).toBe(false);
+    expect(coinTip({...firstRiddle, lastOutcome: classicWin}, null, false)).toBe(false);
+    /** Provides profile with wins behavior. */
+    const withWins = (totalWins: number) => ({
+      ...firstRiddle,
+      profile: {totalWins, wins: totalWins} as typeof firstRiddle.profile,
+    });
+    expect(coinTip(withWins(0), null)).toBe(false);
+    expect(coinTip(withWins(1), null)).toBe(true);
+    expect(coinTip(withWins(1), "hint")).toBe(false);
+  });
+
+  it("keeps returning players' completed legacy game tour and its coin step as seen", () => {
+    expect(hasSeenTooltipTour(createMarkers([]), "gameTour", "user-1")).toBe(false);
+    expect(hasSeenContextualTooltip(createMarkers([]), "gameCoins", "user-1")).toBe(false);
+    /** Provides legacy markers behavior. */
+    const legacy = createMarkers(["riddleQuest:tooltipSequenceSeen:gameTour:v2:user-1"]);
+    expect(hasSeenTooltipTour(legacy, "gameTour", "user-1")).toBe(true);
+    expect(hasSeenContextualTooltip(legacy, "gameCoins", "user-1")).toBe(true);
+    expect(hasSeenContextualTooltip(legacy, "hintAfterWrongGuess", "user-1")).toBe(false);
+    expect(hasSeenTooltipTour(legacy, "profileTour", "user-1")).toBe(false);
+    /** Provides current markers behavior. */
+    const current = createMarkers(["riddleQuest:tooltipSequenceSeen:gameTour:v3:user-1"]);
+    expect(hasSeenTooltipTour(current, "gameTour", "user-1")).toBe(true);
+    expect(hasSeenContextualTooltip(current, "gameCoins", "user-1")).toBe(false);
+    expect(
+      hasSeenContextualTooltip(
+        createMarkers(["riddleQuest:tooltipSeen:gameCoins:user-1"]),
+        "gameCoins",
+        "user-1",
+      ),
+    ).toBe(true);
   });
 
   it("keeps wrong-answer hint guidance absent when the target has no economy", () => {
@@ -51,7 +130,15 @@ describe("guidance configuration", () => {
   it("derives contextual tooltip eligibility in priority order", () => {
     /** Provides base state behavior. */
     const baseState = createInitialGameSession();
+    expect(getContextualTooltipCandidates(baseState, null).map(({id}) => id)).toEqual([
+      "achievementEarned",
+      "leaderboardFifthCorrectAnswer",
+      "classicFromDaily",
+      "gameCoins",
+      "hintAfterWrongGuess",
+    ]);
     expect(getContextualTooltipCandidates(baseState, null).map(({when}) => when)).toEqual([
+      false,
       false,
       false,
       false,
@@ -117,7 +204,7 @@ describe("guidance configuration", () => {
           guesses: [{}] as typeof baseState.guesses,
         },
         null,
-      )[3]?.when,
+      )[4]?.when,
     ).toBe(true);
   });
 

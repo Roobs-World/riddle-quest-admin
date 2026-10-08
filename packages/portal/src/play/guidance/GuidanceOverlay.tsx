@@ -8,6 +8,8 @@ import {
   getGameTour,
   getOnboardingTotalSteps,
   getProfileTour,
+  hasSeenContextualTooltip,
+  hasSeenTooltipTour,
   TOOLTIP_KEYS,
   TOOLTIP_SELECTORS,
   type TooltipId,
@@ -106,10 +108,10 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       // winning milestone explicitly instead of relying on an intermediate board.
       if (onboardingStep !== null || sequence.length > 0 ||
         !hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) ||
-        !seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId))) return;
+        !hasSeenTooltipTour(seenMarkers, "gameTour", userId)) return;
       /** Dismissal makes the winning context eligible without changing its saved progress. */
       const candidate = getContextualTooltipCandidates(current, null, economyAvailable).find(({id, when}) =>
-        when && !seenMarkers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)));
+        when && !hasSeenContextualTooltip(seenMarkers, id, userId));
       if (candidate) {
         setSequence([candidate.id]);
         setSequenceName(`contextual:${candidate.id}`);
@@ -225,7 +227,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       setOnboardingStep(0);
       return;
     }
-    if (!seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId))) {
+    if (!hasSeenTooltipTour(seenMarkers, "gameTour", userId)) {
       setSequence(getGameTour(state.gameMode, commerceAvailable, economyAvailable));
       setSequenceName("gameTour");
       setSequenceIndex(0);
@@ -255,7 +257,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       onboardingStep !== null ||
       sequence.length > 0 ||
       !hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) ||
-      !seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId))
+      !hasSeenTooltipTour(seenMarkers, "gameTour", userId)
     ) {
       return;
     }
@@ -264,7 +266,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     /** Provides candidate behavior. */
     const candidate = candidates.find(
       ({id, when}) =>
-        when && !seenMarkers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)),
+        when && !hasSeenContextualTooltip(seenMarkers, id, userId),
     );
     if (!candidate) {
       return;
@@ -282,6 +284,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     state.guesses.length,
     state.lastOutcome,
     state.lastRewards,
+    state.products,
     state.profile,
     userId,
   ]);
@@ -291,13 +294,13 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     /** Provides contextual guidance ready behavior. */
     const contextualGuidanceReady =
       hasCompletedPlayerOnboarding(createGuidanceStorageKey("onboarding", userId)) &&
-      seenMarkers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId));
+      hasSeenTooltipTour(seenMarkers, "gameTour", userId);
     /** Indicates whether has pending tooltip. */
     const hasPendingTooltip =
       contextualGuidanceReady &&
       getContextualTooltipCandidates(state, modal, economyAvailable).some(
         ({id, when}) =>
-          when && !seenMarkers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)),
+          when && !hasSeenContextualTooltip(seenMarkers, id, userId),
       );
     if (!hasPendingTooltip) {
       setCompletionPopupsPending(null);
@@ -315,6 +318,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     state.gameMode,
     state.lastOutcome,
     state.lastRewards,
+    state.products,
     state.profile,
     userId,
   ]);
