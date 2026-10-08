@@ -18,21 +18,21 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES} from '@qwordly/core/race';
+import {LIVE_RACE_WAIT_MS,RACE_RULES} from '@qwordly/core/race';
 import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 import ${JSON.stringify(path.join(root,'src/styles.race-lobby.css'))};
 import ${JSON.stringify(path.join(root,'src/styles.race-gameplay.css'))};
 const params=new URLSearchParams(location.search),locale=params.get('locale')??'en',mode=params.get('mode')??'racing';
 await setLocaleAndWait(locale);window.expectedCopy=key=>tr(key);
-const initial=Date.now(),created=initial-30000,starts=mode==='countdown'?initial+3500:initial-5000;
+const initial=Date.now(),created=initial-LIVE_RACE_WAIT_MS/2,starts=mode==='countdown'?initial+3500:initial-5000;
 const long=params.has('long');
 const text=locale==='ar'?(long?'أي أداة تستخدم إبرة مغناطيسية وتحتوي على قرص يوضح اتجاهات الشمال والجنوب والشرق والغرب لمساعدة الناس على معرفة الطريق؟':'ما الجزء الصلب من الرأس الذي يحمي الدماغ؟'):(long?'Which navigation tool uses a magnetic needle and a labelled dial to show north, south, east, and west when you need to find your way?':'Which hard part of your head protects your brain?');
 const player={displayName:'Test player',avatarUrl:null,bot:false,correctCount:0};
 const opponent={displayName:'Test rival',avatarUrl:null,bot:false,correctCount:0};
 const snapshot=()=>{const now=Date.now(),phase=mode==='searching'||mode==='private'?'searching':now<starts?'countdown':'racing';
 const run=phase==='searching'?null:{runId:'a'.repeat(64),role:'creator',status:phase==='countdown'?'scheduled':'active',serverNowMs:now,startsAtMs:starts,categoryId:'science',locale,rules:RACE_RULES,correctCount:0,wallElapsedMs:Math.max(0,now-starts),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-starts),events:[],currentRiddle:phase==='countdown'?null:{riddleId:'layout-clue',text,answerLength:5,position:0,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},opponent:{displayName:opponent.displayName,avatarUrl:null,adjustedFinishMs:300000,events:[]}};
-return {ticketId:'a'.repeat(64),phase,serverNowMs:now,searchEndsAtMs:created+(mode==='private'?900000:60000),startsAtMs:phase==='searching'?null:starts,player,opponent:phase==='searching'?null:opponent,run,result:null,rewardCoins:0,...(mode==='private'?{challengeId:'live_'+'c'.repeat(64)}:{})};};
+return {ticketId:'a'.repeat(64),phase,serverNowMs:now,searchEndsAtMs:created+(mode==='private'?900000:LIVE_RACE_WAIT_MS),startsAtMs:phase==='searching'?null:starts,player,opponent:phase==='searching'?null:opponent,run,result:null,rewardCoins:0,...(mode==='private'?{challengeId:'live_'+'c'.repeat(64)}:{})};};
 const transport={join:async()=>snapshot(),update:async()=>snapshot()};
 createRoot(document.getElementById('root')).render(<LiveRaceGame transport={transport} locale={locale} categoryId='science' createChallenge={mode==='private'} coins={100} ownerId='layout-test' onClose={()=>{}}/>);
 `);
@@ -55,7 +55,7 @@ try{
    assert.equal(await wheel.innerText(),'');assert.equal(await page.locator('.live-race-status p').count(),0);
    assert.equal(await wheel.getAttribute('data-phase'),mode);
    const before=Number(await wheel.getAttribute('aria-valuenow'));
-   if(mode==='searching')assert.ok(before>=49&&before<=55,'resumed search must start near its server-owned halfway point');
+   if(mode==='searching')assert.ok(before>=49&&before<=70,'resumed search must start near its server-owned halfway point of the short bot-fallback window');
    await page.waitForTimeout(1200);
    const after=Number(await wheel.getAttribute('aria-valuenow'));assert.ok(after>before,'ring must fill as real time passes');
    await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('.live-race-search-fill').evaluate(el=>getComputedStyle(el).transitionProperty),'none');

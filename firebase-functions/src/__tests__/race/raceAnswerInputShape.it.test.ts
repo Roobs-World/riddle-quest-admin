@@ -94,19 +94,18 @@ it.each(whitespace)("does not offer newly authored uneditable slots %s or consum
 });
 
 it("selects a compatible waiting candidate behind an incompatible retained source", async () => {
-  /** Charlie's real queue entry excludes Alice's temporarily stale lease without starting a match. */
+  /** Alice's retained seat keeps a live lease inside its search window, so only deck compatibility excludes it. */
   const source = await reserve("public");
-  /** The healthy candidate is issued through the production public queue. */
-  const c = await joinLiveRaceForUser(C, {locale: "en", categoryId: "history", requestId: "behind-valid-seat"}, {db, nowMs: NOW + 11000});
-  expect(c.phase).toBe("searching");
-  /** Recovering the retained seat renews its canonical lease; the fixture restores both queue IDs in order. */
-  await updateLiveRaceForUser(A, {ticketId: source.ticketId, action: "poll", requestId: "refresh-first-seat"}, {db, nowMs: NOW + 11500});
-  /** Incompatible first candidate retains its original archive and renewed lease. */
+  /** Incompatible first candidate retains its original archive before any other player searches. */
   const stored = await replaceAnswer(source.ticketId, "a b", 14);
+  /** The healthy candidate is issued through the production public queue and cannot pair with the bad source. */
+  const c = await joinLiveRaceForUser(C, {locale: "en", categoryId: "history", requestId: "behind-valid-seat"}, {db, nowMs: NOW + 1000});
+  expect(c.phase).toBe("searching");
+  /** The fixture restores both queue IDs in order so the malformed source leads the shared queue. */
   await db.doc(`liveRaceQueues/${stored.pool}`).update({tickets: [source.ticketId, c.ticketId]});
   /** One malformed leading source must not hide a valid human opponent behind it. */
-  const b = await joinLiveRaceForUser(B, {locale: "en", categoryId: "history", requestId: "behind-fresh-seat"}, {db, nowMs: NOW + 12000});
-  expect(b).toMatchObject({phase: "countdown", startsAtMs: NOW + 17000, opponent: {displayName: "Charlie"}});
+  const b = await joinLiveRaceForUser(B, {locale: "en", categoryId: "history", requestId: "behind-fresh-seat"}, {db, nowMs: NOW + 2000});
+  expect(b).toMatchObject({phase: "countdown", startsAtMs: NOW + 7000, opponent: {displayName: "Charlie"}});
   expect((await db.collection("liveRaceMatches").get()).docs.map(snapshot => snapshot.id)).toEqual([c.ticketId]);
   expect((await db.doc(`liveRaceQueues/${stored.pool}`).get()).data()?.tickets).toEqual([]);
   expect((await db.doc(`liveRaceTickets/${source.ticketId}`).get()).data()).toEqual(stored);
