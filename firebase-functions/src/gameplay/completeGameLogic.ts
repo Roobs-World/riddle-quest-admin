@@ -15,7 +15,7 @@ import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
   getStreakRewardBonus,
-  ACHIEVEMENT_UNLOCK_COIN_REWARD,
+  SOLO_ACHIEVEMENT_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
@@ -420,7 +420,7 @@ async function commitAuthoritativeCompletion(
     /** Provides newly unlocked achievement ids behavior. */
     const newlyUnlockedAchievementIds = newAchievements.map((entry) => entry.achievementId);
     /** Provides achievement bonus behavior. */
-    const achievementBonus = data.isCorrect ? countCoinRewardAchievements(newlyUnlockedAchievementIds) * ACHIEVEMENT_UNLOCK_COIN_REWARD : 0;
+    const achievementBonus = data.isCorrect ? countCoinRewardAchievements(newlyUnlockedAchievementIds) * SOLO_ACHIEVEMENT_COIN_REWARD : 0;
     /** Provides coins earned behavior. */
     const coinsEarned = data.isCorrect ? baseWinCoins + dailyStreakBonus + levelUpBonus + achievementBonus : 0;
     /** Provides new balance behavior. */

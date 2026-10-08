@@ -38,8 +38,8 @@ describe("YouTube local economy parity", () => {
       classicSkipCost: 100,
       classicWinCoins: 25,
       dailyWinCoins: 75,
-      levelUpCoins: 50,
-      achievementCoins: 25,
+      levelUpCoins: 10,
+      achievementCoins: 10,
     });
     expect(createEmptyYouTubeSave("content-v1").progression.coins).toBe(YOUTUBE_STARTING_COINS);
   });
@@ -58,9 +58,9 @@ describe("YouTube local economy parity", () => {
     expect(getYouTubeLevelFromXp(210)).toBe(3);
 
     expect(getYouTubeDailyStreakBonus(0)).toBe(0);
-    expect(getYouTubeDailyStreakBonus(1)).toBe(20);
-    expect(getYouTubeDailyStreakBonus(7)).toBe(40);
-    expect(getYouTubeDailyStreakBonus(98)).toBe(300);
+    expect(getYouTubeDailyStreakBonus(1)).toBe(10);
+    expect(getYouTubeDailyStreakBonus(7)).toBe(20);
+    expect(getYouTubeDailyStreakBonus(98)).toBe(100);
     expect(nextYouTubeDailyStreak(6, "2026-08-19", "2026-08-20")).toBe(7);
     expect(nextYouTubeDailyStreak(6, "2026-08-18", "2026-08-20")).toBe(1);
   });

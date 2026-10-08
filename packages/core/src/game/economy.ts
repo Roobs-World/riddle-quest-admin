@@ -32,3 +32,24 @@ export function getCoinPackBuyingPower(coins: number): CoinPackBuyingPower {
   const balance = Number.isSafeInteger(coins) && coins > 0 ? coins : 0;
   return {hints: Math.floor(balance / SOLO_COIN_COSTS.hint), continues: Math.floor(balance / SOLO_COIN_COSTS.continue)};
 }
+
+/**
+ * One-off bonuses settled alongside a solo win and reported as separate
+ * `rewardBreakdown` lines. They stay well below the smallest base win so a
+ * completion that happens to trigger several of them never dwarfs an ordinary
+ * riddle reward.
+ */
+export const SOLO_BONUS_COINS = Object.freeze({levelUp: 10, achievement: 10});
+
+/** Daily-streak bonus schedule: a small flat bonus that grows weekly up to a cap. */
+export const DAILY_STREAK_BONUS = Object.freeze({initial: 10, weeklyStep: 10, intervalDays: 7, max: 100});
+
+/** Returns the bonus paid on a Daily win for the active streak day. */
+export function getDailyStreakBonusCoins(streakValue: number): number {
+  /** Whole, non-negative streak days. */
+  const streak = Math.max(0, Math.floor(streakValue));
+  if (streak === 0) return 0;
+  /** Completed weekly milestones within the active streak. */
+  const milestones = Math.floor(streak / DAILY_STREAK_BONUS.intervalDays);
+  return Math.min(DAILY_STREAK_BONUS.initial + milestones * DAILY_STREAK_BONUS.weeklyStep, DAILY_STREAK_BONUS.max);
+}
