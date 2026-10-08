@@ -66,15 +66,77 @@
   justify-items: center;
   text-align: center;
 }
+.modal-victory .fanfare-content,
+.modal-reward .fanfare-content {
+  min-height: 0;
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 1.2dvh, 12px);
+}
+.modal-victory .fanfare-content > *,
+.modal-reward .fanfare-content > * {
+  flex-shrink: 0;
+}
+/* The chest is the only element that gives up space, so the action button stays in view. */
+.modal-victory .fanfare-content > .coin-award,
+.modal-reward .fanfare-content > .coin-award {
+  min-height: 0;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 1dvh, 7px);
+}
+.modal-victory .coin-award > *,
+.modal-reward .coin-award > * {
+  flex-shrink: 0;
+}
+.modal-victory .coin-award > .reward-chest,
+.modal-reward .coin-award > .reward-chest {
+  height: clamp(56px, 22dvh, 180px);
+  min-height: 48px;
+  flex: 0 1 auto;
+  grid-template-rows: minmax(0, 1fr);
+}
+.modal-victory .reward-chest img,
+.modal-reward .reward-chest img {
+  height: 100%;
+  max-height: none;
+}
+.modal-victory .fanfare-title,
+.modal-victory .coin-award > strong,
+.modal-reward .coin-award > strong {
+  font-size: clamp(20px, 4.4dvh, 29px);
+}
+.modal-victory .coin-award > span,
+.modal-reward .coin-award > span {
+  min-height: 0;
+  font-size: clamp(13px, 2.4dvh, 16px);
+}
+@media (max-height: 500px) {
+  .modal-victory .fanfare-burst,
+  .modal-reward .fanfare-burst {
+    display: none;
+  }
+  .modal-victory .reward-summary span {
+    padding: 4px 10px;
+  }
+  .modal-victory .fanfare-content > :is(.play-primary, .play-secondary),
+  .modal-reward .fanfare-content > .play-primary {
+    min-height: 36px;
+  }
+}
 .fanfare-burst {
-  width: 110px;
-  height: 110px;
+  width: clamp(40px, 10dvh, 110px);
+  height: clamp(40px, 10dvh, 110px);
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: radial-gradient(circle, #fff8bc 0 24%, #fec880 25% 49%, #8c5dbe 50% 60%, transparent 61%);
   color: #401f40;
-  font-size: 46px;
+  font-size: clamp(18px, 4.2dvh, 46px);
   animation: fanfare-pop 0.65s cubic-bezier(0.2, 1.6, 0.4, 1);
 }
 @keyframes fanfare-pop {

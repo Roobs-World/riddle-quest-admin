@@ -22,6 +22,38 @@ const expectModalCentered = async (page: Page) => {
   });
   expect(offset).toBeLessThanOrEqual(1);
 };
+/** Checks a chest reward fanfare fits the viewport without scrolling and keeps its action visible. */
+const expectRewardModalFits = async (page: Page) => {
+  expect(
+    await page.locator(".game-modal").evaluate((modal) => {
+      /** Backdrop that would otherwise scroll an oversized modal. */
+      const backdrop = modal.parentElement!;
+      /** Primary action that advances the fanfare. */
+      const action = modal.querySelector(".reward-continue")!.getBoundingClientRect();
+      /** Chest that must remain on screen and tappable. */
+      const chest = modal.querySelector(".reward-chest")?.getBoundingClientRect();
+      /** Rendered modal bounds in viewport coordinates. */
+      const rect = modal.getBoundingClientRect();
+      return {
+        modalOverflowHidden: getComputedStyle(modal).overflowY === "hidden",
+        backdropOverflowHidden: getComputedStyle(backdrop).overflowY === "hidden",
+        modalContentFits: modal.scrollHeight <= modal.clientHeight + 1,
+        backdropContentFits: backdrop.scrollHeight <= backdrop.clientHeight + 1,
+        modalInViewport: rect.top >= -1 && rect.bottom <= innerHeight + 1,
+        actionVisible: action.top >= rect.top - 1 && action.bottom <= Math.min(rect.bottom, innerHeight) + 1,
+        chestVisible: Boolean(chest && chest.height >= 40 && chest.top >= rect.top - 1 && chest.bottom <= action.top),
+      };
+    }),
+  ).toEqual({
+    modalOverflowHidden: true,
+    backdropOverflowHidden: true,
+    modalContentFits: true,
+    backdropContentFits: true,
+    modalInViewport: true,
+    actionVisible: true,
+    chestVisible: true,
+  });
+};
 /** Provides expect accessible behavior. */
 const expectAccessible = async (page: Page, state: string) => {
   await page.evaluate(async () => {
@@ -1040,7 +1072,16 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForTimeout(2800);
       expect(await page.locator(".modal-victory").count()).toBe(1);
 
-      await page.setViewportSize({width: 844, height: 390});
+      for (const viewport of [
+        {width: 390, height: 844},
+        {width: 360, height: 640},
+        {width: 320, height: 568},
+        {width: 640, height: 360},
+        {width: 844, height: 390},
+      ]) {
+        await page.setViewportSize(viewport);
+        await expectRewardModalFits(page);
+      }
       // Complete every reward step before returning to gameplay.
       for (let step = 0; step < 10 && (await page.locator(".modal-victory").count()) > 0; step += 1) {
         /** Reward step before advancing. */
