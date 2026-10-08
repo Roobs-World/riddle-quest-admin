@@ -166,7 +166,8 @@
     filter 130ms ease,
     box-shadow 130ms ease;
 }
-.game-input-actions button:hover:not(:disabled) {
+.game-input-actions button:hover:not(:disabled),
+.game-bottom-navigation .multiplayer-navigation-action:hover {
   filter: brightness(1.05);
   transform: translateY(-2px);
 }
@@ -176,7 +177,8 @@
 .game-input-actions > button:only-child {
   grid-column: 1 / -1;
 }
-.game-input-actions button:active:not(:disabled) {
+.game-input-actions button:active:not(:disabled),
+.game-bottom-navigation .multiplayer-navigation-action:active {
   transform: translateY(1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
 }
@@ -235,28 +237,36 @@
   background: rgba(64, 31, 64, 0.08);
   transform: translateY(-2px);
 }
+/*
+ * The multiplayer entry is the bar's only labelled action, so it uses the
+ * game's primary action treatment (Submit in .game-input-actions): shared
+ * tokens, radius, display face, shadow, and hover/press motion instead of a
+ * bespoke palette.
+ */
 .game-bottom-navigation .multiplayer-navigation-action {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
-  padding-inline: 14px;
-  color: #171717;
-  background: #fff3cd;
-  border-radius: 999px;
-  box-shadow: 0 8px 18px rgba(23, 62, 76, 0.25);
+  padding-inline: clamp(12px, 3vw, 18px);
+  color: var(--play-ink);
+  background: var(--play-gold);
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
   font:
-    400 clamp(13px, 2.4vw, 18px)/1 "Poetsen One",
+    400 clamp(13px, 3.4vw, 18px)/1 "Poetsen One",
     "Poppins",
     sans-serif;
+  transition:
+    transform 130ms ease,
+    filter 130ms ease,
+    box-shadow 130ms ease;
 }
 .game-bottom-navigation .multiplayer-navigation-action:hover {
-  background: #ff9e2c;
-  color: #171717;
+  background: var(--play-gold);
 }
 .game-bottom-navigation .multiplayer-navigation-action .native-control-icon {
-  width: 21px;
-  height: 21px;
   fill: currentColor;
 }
 .game-bottom-navigation img,
@@ -318,6 +328,7 @@
 @media (prefers-reduced-motion: reduce) {
   .game-input-actions button,
   .game-bottom-navigation button,
+  .game-bottom-navigation .multiplayer-navigation-action,
   .key {
     transition: none;
   }
