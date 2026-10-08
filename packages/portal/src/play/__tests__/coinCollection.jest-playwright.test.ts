@@ -113,7 +113,9 @@ describeBrowser("solo coin collection and successor routing", () => {
       const nextLevel = page.getByRole("button", {name: /next level/i});
       /** Provides continue reward behavior. */
       const continueReward = page.locator(".modal-victory .reward-continue");
-      expect(await continueReward.isDisabled()).toBe(true);
+      // Coins are already granted: the CTA never waits on the chest celebration.
+      expect(await continueReward.isDisabled()).toBe(false);
+      expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
       await page.evaluate(() => {
         /** Provides meter behavior. */
         const meter = document.querySelector<HTMLElement>("[data-coin-meter]");
@@ -125,7 +127,6 @@ describeBrowser("solo coin collection and successor routing", () => {
           },
         });
       });
-      await chest.click();
       await page.waitForFunction(
         () => document.querySelector(".coin-award")?.getAttribute("data-coin-collection") === "complete",
         undefined,
@@ -137,7 +138,6 @@ describeBrowser("solo coin collection and successor routing", () => {
         const priorStep = (await page.locator(".modal-victory .sequence-progress").innerText()).split("/")[0];
         await continueReward.click();
         await page.waitForFunction(previous => document.querySelector(".modal-victory .sequence-progress")?.textContent?.trim().split("/")[0] !== previous, priorStep);
-        if (await chest.isVisible() && await chest.isEnabled()) await chest.click();
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
       }
       expect(await nextLevel.isEnabled()).toBe(true);

@@ -262,18 +262,26 @@
   object-fit: contain;
   pointer-events: none;
 }
-.reward-chest.waiting {
-  animation: reward-chest-wobble 1.15s ease-in-out infinite;
-}
-.reward-chest.waiting:hover,
-.reward-chest.waiting:focus-visible {
-  filter: drop-shadow(0 14px 15px rgba(123, 70, 125, 0.48)) brightness(1.05);
-}
 .reward-chest.collecting,
 .reward-chest.collected {
-  cursor: default;
-  opacity: 1;
   animation: reward-chest-open 0.48s cubic-bezier(0.2, 1.45, 0.4, 1) both;
+}
+/* Next is the key CTA that keeps players moving between rounds, so it dominates every secondary action. */
+.fanfare-content > .reward-continue {
+  justify-self: stretch;
+  width: 100%;
+  min-height: 64px;
+  margin-top: 4px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  font:
+    900 24px/1.1 "Manrope",
+    sans-serif;
+  box-shadow: 0 5px 0 #916812;
+}
+.fanfare-content > .reward-continue:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #916812;
 }
 .reward-continue:disabled {
   border-color: #a9a2ad;
@@ -300,28 +308,6 @@
   filter: drop-shadow(0 4px 3px rgba(64, 31, 64, 0.32));
   animation: reward-coin-flight var(--coin-duration) cubic-bezier(0.34, 0.02, 0.2, 1) var(--coin-delay) forwards;
   will-change: transform, opacity;
-}
-@keyframes reward-chest-wobble {
-  0%,
-  38%,
-  100% {
-    transform: rotate(0deg) translateY(0);
-  }
-  44% {
-    transform: rotate(-5deg) translate(-3px, -2px);
-  }
-  50% {
-    transform: rotate(5deg) translate(3px, 0);
-  }
-  56% {
-    transform: rotate(-4deg) translate(-2px, -3px);
-  }
-  62% {
-    transform: rotate(3deg) translate(2px, 0);
-  }
-  68% {
-    transform: rotate(0deg) translateY(-2px);
-  }
 }
 @keyframes reward-chest-open {
   0% {
@@ -357,15 +343,7 @@
   font-weight: 900;
 }
 @media (prefers-reduced-motion: reduce) {
-  .reward-chest.waiting {
-    animation: reward-chest-reduced 1.4s ease-in-out infinite;
-  }
   .reward-coin-particle {
     animation-timing-function: linear;
-  }
-}
-@keyframes reward-chest-reduced {
-  50% {
-    transform: scale(1.035);
   }
 }

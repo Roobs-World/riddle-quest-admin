@@ -5,7 +5,6 @@ import {
   createVictoryFanfareSteps,
   getActiveCoinAward,
   getActiveFanfareStep,
-  isCoinCollectionPending,
   isFanfareModal,
   type FanfareAwardState,
   type FanfareStep,
@@ -206,13 +205,7 @@ describe("fanfare sequence", () => {
     expect(getActiveCoinAward(createAwardState({modal: "shop"}), {kind: "victory"}, {kind: "coins"})).toBeNull();
   });
 
-  it("tracks pending collections and fanfare modal kinds", () => {
-    /** Provides award behavior. */
-    const award = {id: "award-1", amount: 10, total: 20};
-    expect(isCoinCollectionPending(award, null)).toBe(true);
-    expect(isCoinCollectionPending(award, "award-1")).toBe(false);
-    expect(isCoinCollectionPending({...award, amount: 0}, null)).toBe(false);
-    expect(isCoinCollectionPending(null, null)).toBe(false);
+  it("identifies fanfare modal kinds", () => {
     expect(isFanfareModal("victory")).toBe(true);
     expect(isFanfareModal("reward")).toBe(true);
     expect(isFanfareModal("profile")).toBe(false);

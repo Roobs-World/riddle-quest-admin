@@ -112,11 +112,6 @@ export function getActiveCoinAward(
   return null;
 }
 
-/** Reports whether a positive coin award still requires player collection. */
-export function isCoinCollectionPending(award: FanfareCoinAward | null, collectedAwardId: string | null): boolean {
-  return Boolean(award && award.amount > 0 && collectedAwardId !== award.id);
-}
-
 /** Identifies modal kinds that can render a fanfare sequence. */
 export function isFanfareModal(modal: GameModal): modal is "victory" | "reward" {
   return modal === "victory" || modal === "reward";

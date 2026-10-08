@@ -364,15 +364,12 @@ describeBrowser("Jest authentication integration", () => {
     }, scenario === "milestone-failure");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator(".modal-victory").waitFor();
-    await page.getByRole("button", {name: /tap the chest/i}).waitFor();
+    await page.locator(".modal-victory .coin-award").waitFor();
     /** Provides fanfare steps behavior. */
     const fanfareSteps: string[] = [];
     for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       fanfareSteps.push(await page.locator(".modal-victory").innerText());
       expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
-      if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
-        await page.getByRole("button", {name: /tap the chest/i}).click();
-      }
       await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
       await page.locator(".reward-continue").click();
     }
@@ -452,14 +449,11 @@ describeBrowser("Jest authentication integration", () => {
       .getByRole("button", {name: /submit/i})
       .click();
     await page.locator(".modal-victory").waitFor();
-    await page.getByRole("button", {name: /tap the chest/i}).waitFor();
+    await page.locator(".modal-victory .coin-award").waitFor();
     for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       await page.locator(".reward-continue").waitFor();
       /** Provides current step behavior. */
       const currentStep = await page.locator(".modal-victory").textContent();
-      if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
-        await page.getByRole("button", {name: /tap the chest/i}).click();
-      }
       await page.waitForFunction(() =>
         Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")),
       );
@@ -514,9 +508,6 @@ describeBrowser("Jest authentication integration", () => {
         .click();
       await page.locator(".modal-victory").waitFor();
       for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step++) {
-        /** Provides chest behavior. */
-        const chest = page.getByRole("button", {name: /tap the chest/i});
-        if (await chest.isVisible()) await chest.click();
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
         await page.locator(".reward-continue").click();
       }
