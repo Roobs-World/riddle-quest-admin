@@ -101,6 +101,8 @@ jobs:
       - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
       - name: Build the shared core package the targets import
         run: pnpm --filter @qwordly/core build
+      - name: Build the solo artifacts the YouTube browser suite also plays
+        run: pnpm build:netflix && pnpm build:yahoo
       - name: Run the YouTube release adapter
         run: node scripts/release/run-platform-release.mjs youtube
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
