@@ -264,8 +264,6 @@ export function GameModalView({
     titles[state.modal] = tr("Achievements.FANFARE_TITLE");
   } else if (activeFanfareStep?.kind === "level") {
     titles.victory = tr("LevelUpFanfare.TITLE");
-  } else if (activeFanfareStep?.kind === "rank") {
-    titles.victory = tr("RankUpFanfare.TITLE");
   } else if (activeFanfareStep?.kind === "referral") {
     titles.reward = tr("VictoryModal.REFERRAL_REWARD_TITLE");
   }

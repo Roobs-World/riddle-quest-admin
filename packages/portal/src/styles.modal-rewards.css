@@ -116,7 +116,8 @@
   font-size: clamp(13px, 2.4dvh, 16px);
 }
 @media (max-height: 500px) {
-  .modal-victory .fanfare-burst,
+  /* The level-up step keeps its single compact sparkle; other steps drop it for room. */
+  .modal-victory .fanfare-content:not(:has(.level-up-summary)) > .fanfare-burst,
   .modal-reward .fanfare-burst {
     display: none;
   }
@@ -126,6 +127,35 @@
   .modal-victory .fanfare-content > :is(.play-primary, .play-secondary),
   .modal-reward .fanfare-content > .play-primary {
     min-height: 36px;
+  }
+  /* Safety net: the win popup has no close button, so its content scrolls while Next stays pinned. */
+  .modal-victory .fanfare-content,
+  .modal-reward .fanfare-content {
+    flex: 0 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .modal-victory .fanfare-content > .reward-continue,
+  .modal-reward .fanfare-content > .reward-continue {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    min-height: 44px;
+    margin-top: 0;
+    padding: 8px 16px;
+    border-radius: 14px;
+    font-size: 18px;
+    box-shadow: 0 3px 0 #916812;
+  }
+  .modal-victory .fanfare-content > .reward-continue:active:not(:disabled),
+  .modal-reward .fanfare-content > .reward-continue:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #916812;
+  }
+  .modal-victory .fanfare-content > .play-secondary {
+    min-height: 32px;
+    padding: 4px 14px;
+    font-size: 14px;
   }
 }
 .fanfare-burst {
@@ -190,6 +220,21 @@
   text-align: center;
   text-shadow: 0 3px 0 #fec880;
 }
+.level-up-achievements {
+  max-width: 340px;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px 10px;
+  color: #401f40;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.level-up-achievements > span {
+  color: #7b467d;
+}
 .level-up-guidance {
   max-width: 340px;
   margin: 0;
@@ -206,15 +251,21 @@
     gap: 8px;
   }
   .fanfare-content:has(.level-up-summary) > .fanfare-burst {
-    width: 76px;
-    height: 76px;
-    font-size: 32px;
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
   }
   .level-up-number {
     font-size: 44px;
   }
   .level-up-guidance {
     padding: 6px 12px;
+  }
+  .level-up-summary {
+    gap: 4px;
+  }
+  .level-up-achievements {
+    font-size: 14px;
   }
 }
 .achievement-icon.large {

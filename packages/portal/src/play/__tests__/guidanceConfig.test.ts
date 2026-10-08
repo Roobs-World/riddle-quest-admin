@@ -64,10 +64,14 @@ describe("guidance configuration", () => {
     expect(getProfileTour(false)).toEqual(PROFILE_TOUR.filter(id => id !== "profileTreasure"));
   });
 
-  it("never points a new player at the coin shop before they have won a level", () => {
+  it("introduces the coin shop at the start of a later riddle, never before the first win", () => {
     expect(getGameTour("classic")).not.toContain("gameCoins");
     /** Provides first riddle state behavior. */
-    const firstRiddle = {...createInitialGameSession(), products: [shopProduct]};
+    const firstRiddle = {
+      ...createInitialGameSession(),
+      products: [shopProduct],
+      riddle: {riddleId: "riddle-2"} as NonNullable<ReturnType<typeof createInitialGameSession>["riddle"]>,
+    };
     /** Provides coin tip eligibility behavior. */
     const coinTip = (
       state: typeof firstRiddle,
@@ -75,21 +79,27 @@ describe("guidance configuration", () => {
       economy = true,
     ) =>
       getContextualTooltipCandidates(state, modal, economy).find(({id}) => id === "gameCoins")?.when;
-    expect(coinTip(firstRiddle, null)).toBe(false);
-    expect(coinTip({...firstRiddle, guesses: [{}] as typeof firstRiddle.guesses}, null)).toBe(false);
-    expect(coinTip({...firstRiddle, lastOutcome: {...classicWin, kind: "loss", isCorrect: false}}, null)).toBe(false);
-    expect(coinTip({...firstRiddle, lastOutcome: classicWin}, "victory")).toBe(false);
-    expect(coinTip({...firstRiddle, lastOutcome: classicWin}, null)).toBe(true);
-    expect(coinTip({...firstRiddle, products: [], lastOutcome: classicWin}, null)).toBe(false);
-    expect(coinTip({...firstRiddle, lastOutcome: classicWin}, null, false)).toBe(false);
     /** Provides profile with wins behavior. */
-    const withWins = (totalWins: number) => ({
+    const withWins = (totalWins: number, overrides: Partial<typeof firstRiddle> = {}) => ({
       ...firstRiddle,
       profile: {totalWins, wins: totalWins} as typeof firstRiddle.profile,
+      ...overrides,
     });
+    // Never before the first win.
+    expect(coinTip(firstRiddle, null)).toBe(false);
     expect(coinTip(withWins(0), null)).toBe(false);
+    expect(coinTip(withWins(0, {lastOutcome: classicWin}), null)).toBe(false);
+    // Never at the stage transition: the won riddle is still on the board, with or without its popup.
+    expect(coinTip(withWins(1, {lastOutcome: classicWin}), "victory")).toBe(false);
+    expect(coinTip(withWins(1, {lastOutcome: classicWin}), null)).toBe(false);
+    expect(coinTip(withWins(1, {lastOutcome: {...classicWin, kind: "loss", isCorrect: false}}), null)).toBe(false);
+    // Only once a later riddle has loaded and the player has not guessed yet.
     expect(coinTip(withWins(1), null)).toBe(true);
+    expect(coinTip(withWins(1, {riddle: null}), null)).toBe(false);
+    expect(coinTip(withWins(1, {guesses: [{}] as typeof firstRiddle.guesses}), null)).toBe(false);
     expect(coinTip(withWins(1), "hint")).toBe(false);
+    expect(coinTip(withWins(1, {products: []}), null)).toBe(false);
+    expect(coinTip(withWins(1), null, false)).toBe(false);
   });
 
   it("keeps returning players' completed legacy game tour and its coin step as seen", () => {

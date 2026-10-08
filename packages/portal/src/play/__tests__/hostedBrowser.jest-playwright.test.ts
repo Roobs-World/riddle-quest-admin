@@ -153,7 +153,7 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
     ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none"});
     await page.getByRole("button", {name: /got it/i}).click();
   }
-  // A harness profile that has already won meets the coin shop only after the gameplay tour.
+  // A harness profile that has already won meets the coin shop at the start of a riddle, after the gameplay tour.
   /** Provides coin tooltip behavior. */
   const coinTooltip = page.locator(".tooltip-backdrop[data-tooltip-id='gameCoins']");
   await coinTooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
@@ -1098,7 +1098,8 @@ describeBrowser("standalone Jest browser game", () => {
         }, priorStep);
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
       }
-      // Dismiss any post-win guidance; the coin shop tip is introduced no earlier than a completed level.
+      // Dismiss any remaining guidance; the coin shop tip only appears at the start of a riddle after a win,
+      // never at the stage transition, and this harness profile already met it after the gameplay tour.
       /** Post-win guidance card. */
       const postWinTooltip = page.locator(".tooltip-card");
       await postWinTooltip.waitFor({state: "visible", timeout: 2_000}).catch(() => undefined);

@@ -15,10 +15,8 @@ export type FanfareStep =
   | {
       /** Stores kind. */
       kind: "level";
-    }
-  | {
-      /** Stores kind. */
-      kind: "rank";
+      /** Achievements unlocked by the same completion, listed compactly inside the level-up step. */
+      achievementIds: string[];
     }
   | {
       /** Stores kind. */
@@ -54,13 +52,16 @@ export type FanfareAwardState = Pick<
  *
  * A stage transition shows the win result plus at most one extra celebration,
  * so finishing a riddle never becomes a chain of popups. An actual level-up
- * (reported by the authority for this completion) takes the single slot and
- * stands in for the rank change that accompanies it; otherwise the first newly
- * unlocked achievement does. Every unlock remains listed in the profile.
+ * (reported by the authority for this completion) takes the single slot,
+ * stands in for the rank change that accompanies it and lists every newly
+ * unlocked achievement inline; otherwise the first newly unlocked achievement
+ * takes it. Every unlock remains listed in the profile.
  */
 export function createVictoryFanfareSteps(reward: GameSessionState["lastRewards"]): FanfareStep[] {
   if (!reward) return [];
-  if (reward.leveledUp === true) return [{kind: "victory"}, {kind: "level"}];
+  if (reward.leveledUp === true) {
+    return [{kind: "victory"}, {kind: "level", achievementIds: [...reward.newlyUnlockedAchievementIds]}];
+  }
 
   /** First achievement unlocked by this completion, when any. */
   const achievementId = reward.newlyUnlockedAchievementIds[0];

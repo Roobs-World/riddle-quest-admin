@@ -44,7 +44,7 @@ describe("fanfare sequence", () => {
         newLevel: 2,
         newlyUnlockedAchievementIds: [],
       }),
-    ).toEqual([{kind: "victory"}, {kind: "level"}]);
+    ).toEqual([{kind: "victory"}, {kind: "level", achievementIds: []}]);
   });
 
   it("shows level-up only on an actual level-up", () => {
@@ -74,11 +74,26 @@ describe("fanfare sequence", () => {
       newLevel: 3,
       newlyUnlockedAchievementIds: ["first_win", "perfect_guess", "classic_perfect"],
     };
-    expect(createVictoryFanfareSteps(crowdedReward)).toEqual([{kind: "victory"}, {kind: "level"}]);
+    // Level-up takes the single slot and carries every unlock so none is silently dropped.
+    expect(createVictoryFanfareSteps(crowdedReward)).toEqual([
+      {kind: "victory"},
+      {kind: "level", achievementIds: ["first_win", "perfect_guess", "classic_perfect"]},
+    ]);
     expect(createVictoryFanfareSteps({...crowdedReward, leveledUp: false})).toEqual([
       {kind: "victory"},
       {kind: "achievement", achievementId: "first_win"},
     ]);
+  });
+
+  it("surfaces First Win inside the level-up the server reports for a first win", () => {
+    expect(
+      createVictoryFanfareSteps({
+        coinsEarned: 10,
+        leveledUp: true,
+        newLevel: 2,
+        newlyUnlockedAchievementIds: ["first_win"],
+      }),
+    ).toEqual([{kind: "victory"}, {kind: "level", achievementIds: ["first_win"]}]);
   });
 
   it("builds purchase and achievement reward steps", () => {
@@ -114,10 +129,10 @@ describe("fanfare sequence", () => {
 
   it("clamps active sequence indices", () => {
     /** Provides steps behavior. */
-    const steps: FanfareStep[] = [{kind: "victory"}, {kind: "level"}];
+    const steps: FanfareStep[] = [{kind: "victory"}, {kind: "level", achievementIds: []}];
     expect(getActiveFanfareStep([], 0)).toBeUndefined();
     expect(getActiveFanfareStep(steps, -4)).toEqual({kind: "victory"});
-    expect(getActiveFanfareStep(steps, 9)).toEqual({kind: "level"});
+    expect(getActiveFanfareStep(steps, 9)).toEqual({kind: "level", achievementIds: []});
   });
 
   it("resolves victory and auxiliary coin awards", () => {

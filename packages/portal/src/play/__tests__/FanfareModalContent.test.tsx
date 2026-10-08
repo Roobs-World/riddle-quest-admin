@@ -75,16 +75,26 @@ describe("fanfare modal content", () => {
       ),
     ).toContain("achievement-unlock");
     /** Raw server-rendered level-up step markup. */
-    const levelUpMarkup = renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />);
+    const levelUpMarkup = renderToString(
+      <VictoryFanfareContent {...sharedProps} activeStep={{kind: "level", achievementIds: []}} />,
+    );
     /** Level-up step markup as plain text runs. */
     const levelUp = levelUpMarkup.replaceAll("<!-- -->", "");
     expect(levelUp).toMatch(/<strong class="level-up-number">Level 3<\/strong>/);
     expect(levelUp).toContain("level-up-guidance");
     expect(levelUp.match(/✦/g)).toHaveLength(1);
     expect(levelUp).not.toContain("fanfare-emblem");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />)).not.toContain(
-      "rank-emblem",
-    );
+    expect(levelUp).not.toContain("level-up-achievements");
+    /** Level-up step that also unlocked achievements on the same completion. */
+    const levelUpWithAchievements = renderToString(
+      <VictoryFanfareContent {...sharedProps} activeStep={{kind: "level", achievementIds: ["first_win", "unknown-id"]}} />,
+    ).replaceAll("<!-- -->", "");
+    expect(levelUpWithAchievements).toContain('class="level-up-achievements"');
+    expect(levelUpWithAchievements).toContain("New Achievement");
+    expect(levelUpWithAchievements).toMatch(/<strong>[^<]*First Win<\/strong>/);
+    expect(levelUpWithAchievements).toContain("unknown-id");
+    expect(levelUpWithAchievements).not.toContain("achievement-unlock");
+    expect(levelUpWithAchievements.match(/✦/g)).toHaveLength(1);
     /** Provides victory without sharing behavior. */
     const victoryWithoutSharing = renderToString(
       <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />,

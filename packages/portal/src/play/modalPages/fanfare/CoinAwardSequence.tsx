@@ -99,6 +99,7 @@ export function CoinAwardSequence({amount, total, onBalancePreview}: CoinAwardSe
       latestRef.current.onBalancePreview(latestRef.current.finalBalance);
     };
     // Mount-scoped: callers remount with a new key for each award.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Plays the coin animation, or completes immediately when the target meter is unavailable. */

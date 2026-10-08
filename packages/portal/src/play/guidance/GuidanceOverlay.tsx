@@ -266,7 +266,8 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     /** Provides candidate behavior. */
     const candidate = candidates.find(
       ({id, when}) =>
-        when && !hasSeenContextualTooltip(seenMarkers, id, userId),
+        // The start-of-riddle coin tip waits behind a blocking prompt such as post-win registration.
+        when && !(id === "gameCoins" && interactionBlocked) && !hasSeenContextualTooltip(seenMarkers, id, userId),
     );
     if (!candidate) {
       return;
@@ -277,6 +278,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   }, [
     modal,
     economyAvailable,
+    interactionBlocked,
     onboardingStep,
     sequence.length,
     seenMarkers,
@@ -286,6 +288,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     state.lastRewards,
     state.products,
     state.profile,
+    state.riddle,
     userId,
   ]);
 
@@ -299,8 +302,9 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     const hasPendingTooltip =
       contextualGuidanceReady &&
       getContextualTooltipCandidates(state, modal, economyAvailable).some(
+        // The coin tip belongs to the next riddle's start, not the completion sequence it would otherwise delay.
         ({id, when}) =>
-          when && !hasSeenContextualTooltip(seenMarkers, id, userId),
+          when && id !== "gameCoins" && !hasSeenContextualTooltip(seenMarkers, id, userId),
       );
     if (!hasPendingTooltip) {
       setCompletionPopupsPending(null);
@@ -320,6 +324,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     state.lastRewards,
     state.products,
     state.profile,
+    state.riddle,
     userId,
   ]);
 

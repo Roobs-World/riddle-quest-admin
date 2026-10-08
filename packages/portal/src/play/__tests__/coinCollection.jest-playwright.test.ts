@@ -80,6 +80,12 @@ describeBrowser("solo coin collection and successor routing", () => {
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+        /** The coin meter's Web Animations call fails so the award must still complete without it. */
+        const animate = Element.prototype.animate;
+        Element.prototype.animate = function (this: Element, ...args: Parameters<Element["animate"]>) {
+          if (this.matches("[data-coin-meter]")) throw new Error("Animation API unavailable");
+          return animate.apply(this, args);
+        };
       });
       // Select either Daily completion or the supported post-Daily Classic launch.
       await page.goto(`http://127.0.0.1:${address.port}/?harness=jest${mode === "classic" ? "&dailyCompleted=1" : ""}`);
@@ -116,17 +122,8 @@ describeBrowser("solo coin collection and successor routing", () => {
       // Coins are already granted: the CTA never waits on the chest celebration.
       expect(await continueReward.isDisabled()).toBe(false);
       expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
-      await page.evaluate(() => {
-        /** Provides meter behavior. */
-        const meter = document.querySelector<HTMLElement>("[data-coin-meter]");
-        if (!meter) throw new Error("Coin meter missing");
-        Object.defineProperty(meter, "animate", {
-          configurable: true,
-          value: () => {
-            throw new Error("Animation API unavailable");
-          },
-        });
-      });
+      // The meter animation failure is installed before page load (see addInitScript) because the
+      // celebration auto-starts shortly after the popup opens.
       await page.waitForFunction(
         () => document.querySelector(".coin-award")?.getAttribute("data-coin-collection") === "complete",
         undefined,

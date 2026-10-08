@@ -24,7 +24,7 @@ export type TooltipId =
 /**
  * Ordered tooltips shown on a new player's first riddle.
  * @remarks The coin shop is deliberately absent so new players go straight into
- * play; it is introduced contextually once they have won a level.
+ * play; it is introduced contextually at the start of a riddle after their first win.
  */
 export const GAME_TOUR: readonly TooltipId[] = ["gameHint", "submitAnswer", "gameSkip"];
 
@@ -161,7 +161,7 @@ export function getProfileTour(commerceAvailable = true): TooltipId[] {
 
 /** Returns contextual tooltip candidates in their display priority order. */
 export function getContextualTooltipCandidates(
-  state: Pick<GameSessionState, "gameMode" | "guesses" | "lastOutcome" | "lastRewards" | "products" | "profile">,
+  state: Pick<GameSessionState, "gameMode" | "guesses" | "lastOutcome" | "lastRewards" | "products" | "profile" | "riddle">,
   modal: GameModal,
   economyAvailable = true,
 ): Array<{
@@ -187,11 +187,12 @@ export function getContextualTooltipCandidates(
       when: modal === null && state.lastOutcome?.kind === "win" && state.gameMode === "challenge",
     },
     {
-      // The coin shop is introduced only after the player has won a level and earned coins. The profile
-      // fallback keeps it pending when a higher-priority tip claims the victory moment.
+      // The coin shop is introduced only after the player has won a level and earned coins, and never at
+      // the stage transition: it waits until a later riddle has loaded and before its first guess.
       id: "gameCoins",
-      when: economyAvailable && modal === null && state.products.length > 0 &&
-        (state.lastOutcome?.kind === "win" || (state.profile?.totalWins ?? state.profile?.wins ?? 0) > 0),
+      when: economyAvailable && modal === null && state.products.length > 0 && state.riddle !== null &&
+        !state.lastOutcome && state.guesses.length === 0 &&
+        (state.profile?.totalWins ?? state.profile?.wins ?? 0) > 0,
     },
     {
       id: "hintAfterWrongGuess",

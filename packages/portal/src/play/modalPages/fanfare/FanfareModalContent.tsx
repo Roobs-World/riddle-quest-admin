@@ -1,7 +1,6 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
 import type {GameSessionState} from "../../gameSession";
 import {useTranslator} from "../../i18n";
-import {getRankForLevel} from "../../ranks";
 import {CoinAwardSequence} from "./CoinAwardSequence";
 import type {FanfareCoinAward, FanfareStep} from "./fanfareSequence";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
@@ -86,8 +85,6 @@ export function VictoryFanfareContent({
   const recoveredAdvancePending = Boolean(recoveredWin && !state.completionAcknowledged);
   /** Provides victory level behavior. */
   const victoryLevel = state.lastRewards?.newLevel;
-  /** Provides victory rank behavior. */
-  const victoryRank = getRankForLevel(victoryLevel ?? 1);
 
   return (
     <div className="fanfare-content">
@@ -111,12 +108,22 @@ export function VictoryFanfareContent({
             {tr("LevelUpFanfare.LEVEL_PREFIX")}
             {victoryLevel}
           </strong>
+          {activeStep.achievementIds.length > 0 ? (
+            <p className="level-up-achievements">
+              <span>{tr("Achievements.NEW_ACHIEVEMENT")}</span>
+              {activeStep.achievementIds.map((achievementId) => {
+                /** Unlocked achievement listed inline so a level-up never hides it. */
+                const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
+                return (
+                  <strong key={achievementId}>
+                    {achievement?.icon ?? "🏆"}{" "}
+                    {achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}
+                  </strong>
+                );
+              })}
+            </p>
+          ) : null}
           <p className="level-up-guidance">{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</p>
-        </div>
-      ) : activeStep.kind === "rank" ? (
-        <div className="reward-summary">
-          <strong>{tr(victoryRank.nameKey)}</strong>
-          <span>{tr("RankUpFanfare.SUBTITLE")}</span>
         </div>
       ) : (
         <>
