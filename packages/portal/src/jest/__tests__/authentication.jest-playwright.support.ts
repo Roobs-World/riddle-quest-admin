@@ -101,8 +101,8 @@ export const advanceToRegistration = async (page: Page) => {
   await page.getByRole("button", {name: /register or log in/i}).click();
   await page.locator('.modal-profile').waitFor({state: 'detached'});
   await page.getByText("Keep your progress", {exact: true}).waitFor();
-  expect(await page.getByRole("button", {name: /^register$/i}).isVisible()).toBe(true);
-  expect(await page.getByRole("button", {name: /^log in$/i}).isVisible()).toBe(true);
+  expect(await page.getByRole("button", {name: /^register \/ login$/i}).isVisible()).toBe(true);
+  expect(await page.getByRole("button", {name: /^log in$/i}).count()).toBe(0);
   expect(await page.getByRole("button", {name: /play as guest/i}).isVisible()).toBe(true);
 };
 

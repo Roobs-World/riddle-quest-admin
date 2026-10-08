@@ -476,7 +476,6 @@ export function JestPlayApp() {
     open: open registration prompt,
     dismiss: dismiss registration,
     register,
-    login,
   } behavior. */
   const {
     showRegistration,
@@ -485,7 +484,6 @@ export function JestPlayApp() {
     open: openRegistrationPrompt,
     dismiss: dismissRegistration,
     register,
-    login,
   } = useJestRegistration({
     platform,
     backend,
@@ -617,7 +615,6 @@ export function JestPlayApp() {
           blocked={pendingPlatformOperations > 0 || registrationPending}
           session={session}
           onRegister={register}
-          onLogin={login}
           onDismiss={dismissRegistration}
         />
       ) : null}

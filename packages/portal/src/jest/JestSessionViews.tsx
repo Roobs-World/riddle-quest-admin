@@ -61,7 +61,6 @@ export function JestRegistrationAlert({
   blocked,
   session,
   onRegister,
-  onLogin,
   onDismiss,
 }: {
   /** Stores blocked. */
@@ -70,8 +69,6 @@ export function JestRegistrationAlert({
   session: JestSession;
   /** Stores on register. */
   onRegister: () => void;
-  /** Stores on login. */
-  onLogin: () => void;
   /** Stores on dismiss. */
   onDismiss: () => void;
 }) {
@@ -96,10 +93,7 @@ export function JestRegistrationAlert({
         ) : null}
         <p>{tr("Profile.JEST_REGISTRATION_DESCRIPTION")}</p>
         <button className="play-primary" onClick={onRegister}>
-          {tr("Profile.JEST_REGISTER_BUTTON")}
-        </button>
-        <button className="play-secondary" onClick={onLogin}>
-          {tr("Profile.JEST_LOGIN_BUTTON")}
+          {tr("Profile.JEST_REGISTER_OR_LOGIN_BUTTON")}
         </button>
         <button className="play-text-button" onClick={onDismiss}>
           {tr("Profile.JEST_PLAY_AS_GUEST_BUTTON")}
