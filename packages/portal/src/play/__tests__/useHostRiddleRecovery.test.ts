@@ -72,7 +72,7 @@ const deferred = <T>() => {
   return {promise, resolve};
 };
 /** Creates one lifecycle around stable injected delivery callbacks. */
-const setup = (loadRiddle: HostServices["loadRiddle"]) => {
+const setup = (loadRiddle: HostServices["loadRiddle"], recoverySuspended?: boolean) => {
   /** Records accepted riddle messages after authority work settles. */
   const postToGame = jest.fn<(message: HostToGameMessage) => void>();
   /** Records correlated operation acknowledgements. */
@@ -87,7 +87,7 @@ const setup = (loadRiddle: HostServices["loadRiddle"]) => {
       activity += 1;
       try {return await operation();} finally {activity -= 1;}
     },
-    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt};
+    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt, recoverySuspended};
   /** Exposed lifecycle under the same fake browser signals as the recovery owner. */
   const lifecycle = useHostRiddleLifecycle(options);
   cleanup = effects[0]() || undefined;
@@ -107,6 +107,19 @@ beforeEach(() => {
   Object.defineProperty(globalThis, "navigator", {configurable: true, value: {onLine: true}});
 });
 afterEach(() => {retire(); jest.useRealTimers();});
+
+it("starts no authority read while a retired game frame suspends recovery", async () => {
+  /** Any read here would be an unrequested authority request behind the recovery screen. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockResolvedValue(riddle);
+  /** Host whose bridge validation failed before the first recovery timer fired. */
+  const owner = setup(load, true);
+  await jest.advanceTimersByTimeAsync(30_000);
+  window.dispatchEvent(new Event("online"));
+  document.dispatchEvent(new Event("visibilitychange"));
+  await jest.advanceTimersByTimeAsync(30_000);
+  expect(load).not.toHaveBeenCalled();
+  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
+});
 
 it("releases a hanging content wait and accepts only its recovery response", async () => {
   /** First request never settles before its delivery deadline. */
