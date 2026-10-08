@@ -76,7 +76,14 @@ describe("fanfare modal content", () => {
         <VictoryFanfareContent {...sharedProps} activeStep={{kind: "achievement", achievementId: "first_win"}} />,
       ),
     ).toContain("achievement-unlock");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />)).toContain("3");
+    /** Raw server-rendered level-up step markup. */
+    const levelUpMarkup = renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />);
+    /** Level-up step markup as plain text runs. */
+    const levelUp = levelUpMarkup.replaceAll("<!-- -->", "");
+    expect(levelUp).toMatch(/<strong class="level-up-number">Level 3<\/strong>/);
+    expect(levelUp).toContain("level-up-guidance");
+    expect(levelUp.match(/✦/g)).toHaveLength(1);
+    expect(levelUp).not.toContain("fanfare-emblem");
     expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />)).not.toContain(
       "rank-emblem",
     );

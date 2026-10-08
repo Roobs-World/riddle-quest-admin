@@ -174,7 +174,49 @@
   margin: 0;
   font-weight: 500;
 }
-.fanfare-emblem,
+.level-up-summary {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.level-up-number {
+  display: block;
+  color: #7b467d;
+  font-family: var(--rq-font-display);
+  font-weight: 400;
+  font-size: clamp(48px, 15vw, 72px);
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 3px 0 #fec880;
+}
+.level-up-guidance {
+  max-width: 340px;
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: #fff1c9;
+  color: #401f40;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+@media (max-height: 500px) {
+  .fanfare-content:has(.level-up-summary) {
+    gap: 8px;
+  }
+  .fanfare-content:has(.level-up-summary) > .fanfare-burst {
+    width: 76px;
+    height: 76px;
+    font-size: 32px;
+  }
+  .level-up-number {
+    font-size: 44px;
+  }
+  .level-up-guidance {
+    padding: 6px 12px;
+  }
+}
 .achievement-icon.large {
   display: grid;
   place-items: center;

@@ -112,13 +112,12 @@ export function VictoryFanfareContent({
       ) : activeStep.kind === "achievement" ? (
         <AchievementFanfare achievementId={activeStep.achievementId} />
       ) : activeStep.kind === "level" ? (
-        <div className="reward-summary">
-          <span className="fanfare-emblem">✦</span>
-          <strong>
+        <div className="level-up-summary">
+          <strong className="level-up-number">
             {tr("LevelUpFanfare.LEVEL_PREFIX")}
             {victoryLevel}
           </strong>
-          <span>{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</span>
+          <p className="level-up-guidance">{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</p>
         </div>
       ) : activeStep.kind === "rank" ? (
         <div className="reward-summary">
