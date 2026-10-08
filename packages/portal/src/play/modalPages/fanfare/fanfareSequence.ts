@@ -1,5 +1,4 @@
 import type {GameModal, GameSessionState} from "../../gameSession";
-import {getRankForLevel} from "../../ranks";
 
 /** A single screen in a victory or auxiliary reward celebration. */
 export type FanfareStep =
@@ -50,24 +49,22 @@ export type FanfareAwardState = Pick<
   "auxiliaryFanfare" | "lastOutcome" | "lastRewards" | "modal" | "profile"
 >;
 
-/** Builds the ordered celebration steps for a server-authoritative victory reward. */
+/**
+ * Builds the steps shown between two riddles for a server-authoritative victory reward.
+ *
+ * A stage transition shows the win result plus at most one extra celebration,
+ * so finishing a riddle never becomes a chain of popups. An actual level-up
+ * (reported by the authority for this completion) takes the single slot and
+ * stands in for the rank change that accompanies it; otherwise the first newly
+ * unlocked achievement does. Every unlock remains listed in the profile.
+ */
 export function createVictoryFanfareSteps(reward: GameSessionState["lastRewards"]): FanfareStep[] {
   if (!reward) return [];
+  if (reward.leveledUp === true) return [{kind: "victory"}, {kind: "level"}];
 
-  /** Provides victory level behavior. */
-  const victoryLevel = reward.newLevel;
-  /** Provides reached new rank behavior. */
-  const reachedNewRank =
-    reward.leveledUp === true &&
-    victoryLevel !== undefined &&
-    getRankForLevel(Math.max(1, victoryLevel - 1)).id !== getRankForLevel(victoryLevel).id;
-
-  return [
-    {kind: "victory"},
-    ...reward.newlyUnlockedAchievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
-    ...(reward.leveledUp ? ([{kind: "level"}] as FanfareStep[]) : []),
-    ...(reachedNewRank ? ([{kind: "rank"}] as FanfareStep[]) : []),
-  ];
+  /** First achievement unlocked by this completion, when any. */
+  const achievementId = reward.newlyUnlockedAchievementIds[0];
+  return achievementId ? [{kind: "victory"}, {kind: "achievement", achievementId}] : [{kind: "victory"}];
 }
 
 /** Builds the ordered celebration steps for a purchase or achievement reward. */

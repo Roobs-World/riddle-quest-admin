@@ -1,6 +1,5 @@
 {
   "GameMessages": {
-    "COINS_EARNED": "Số tiền kiếm được:",
     "GAME_LOST": "Trò chơi thua: Trả lời đúng -",
     "GAME_WON": "Trò chơi đã thắng: Số lần thử -",
     "HINT_USED": "Gợi ý được sử dụng: Chi phí -",

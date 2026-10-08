@@ -1,6 +1,5 @@
 {
   "GameMessages": {
-    "COINS_EARNED": "Koin yang Diperoleh:",
     "GAME_LOST": "Permainan Kalah: Jawaban Benar -",
     "GAME_WON": "Permainan Dimenangkan: Percobaan -",
     "HINT_USED": "Petunjuk yang Digunakan: Biaya -",

@@ -1,6 +1,5 @@
 {
   "GameMessages": {
-    "COINS_EARNED": "획득 코인: ",
     "GAME_LOST": "게임 패배: 정답 - ",
     "GAME_WON": "게임 승리: 시도 - ",
     "HINT_USED": "힌트 사용: 비용 - ",

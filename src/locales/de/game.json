@@ -1,6 +1,5 @@
 {
   "GameMessages": {
-    "COINS_EARNED": "Muenzen verdient: ",
     "GAME_LOST": "Spiel verloren: richtige Antwort - ",
     "GAME_WON": "Spiel gewonnen: Versuche - ",
     "HINT_USED": "Hinweis genutzt: Kosten - ",

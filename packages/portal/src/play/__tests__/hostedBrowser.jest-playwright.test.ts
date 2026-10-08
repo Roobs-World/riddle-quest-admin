@@ -1037,9 +1037,8 @@ describeBrowser("standalone Jest browser game", () => {
         await page.getByRole("button", {name: /^next$/i}).click();
       }
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
-      // The completion notice belongs to this riddle and may clear as the next one loads.
-      expect(await page.locator(".game-content > .game-notice").innerText()).toMatch(/coins earned/i);
-      expect(await page.locator(".riddle-surface .game-notice").count()).toBe(0);
+      // The victory result is the only surface for the reward: no coin notice is layered under it.
+      expect(await page.locator(".game-notice").count()).toBe(0);
       expect(await page.locator("#game-modal-title").evaluate((heading) => getComputedStyle(heading).textAlign)).toBe(
         "center",
       );
@@ -1142,9 +1141,9 @@ describeBrowser("standalone Jest browser game", () => {
           );
         }),
       ).toBe(true);
-      // Clear the transient reward notice before measuring the riddle on its own.
+      // No reward notice follows the victory result between riddles.
+      expect(await page.locator(".game-notice").count()).toBe(0);
       await page.keyboard.press("a");
-      await page.locator(".game-notice").waitFor({state: "hidden"});
       for (const viewport of [
         {width: 390, height: 844},
         {width: 390, height: 600},
