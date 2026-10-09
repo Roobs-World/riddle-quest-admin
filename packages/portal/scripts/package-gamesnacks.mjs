@@ -73,7 +73,10 @@ const manifest = {
 await writeFile(path.join(output, "game.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 // Provider metadata and marketing are added after Vite; bind them to the same
 // inventory while proving every previously audited runtime byte is unchanged.
-const inventoryPath = path.join(repository, "artifacts/target-dependencies/gamesnacks.json");
+const inventoryPath = path.join(
+  process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR ?? path.join(repository, "artifacts/target-dependencies"),
+  "gamesnacks.json",
+);
 const inventory = JSON.parse(await readFile(inventoryPath, "utf8"));
 for (const row of inventory.files) {
   const hash = createHash("sha256").update(await readFile(path.join(output, row.file))).digest("hex");
