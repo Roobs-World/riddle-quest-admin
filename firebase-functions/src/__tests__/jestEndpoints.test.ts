@@ -358,9 +358,11 @@ describe("signed Jest subscription selection", () => {
 });
 
 describe("Premium subscription coin grants", () => {
+  /** Fixed server clock for grant decisions. */
   const now = 1_800_000_000_000;
 
   it("matches the coin pack priced at £10 / $9.99", () => {
+    /** Coin pack sold at £10 / $9.99. */
     const tenPoundPack = DEFAULT_PRODUCT_PRICING.find((product) => product.regionalPrices[0]?.amount === 9.99);
     expect(PREMIUM_SUBSCRIPTION_MONTHLY_COINS).toBe(tenPoundPack?.coins);
   });
