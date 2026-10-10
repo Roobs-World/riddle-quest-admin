@@ -23,7 +23,7 @@ test("production verification uses the canonical release E2E gate without downgr
 });
 
 test("backend production coverage retains the unit thresholds and includes the emulator paths", async () => {
-  assert.match(functions.scripts["test:coverage"], /firebase emulators:exec --project demo-/u);
+  assert.match(functions.scripts["test:coverage"], /node scripts\/run-isolated-emulators\.js emulators:exec --project demo-/u);
   assert.match(functions.scripts["test:coverage"], /--only firestore,storage,database/u);
   const {default: config} = await import("../../firebase-functions/jest.production-coverage.config.js");
   const {default: base} = await import("../../firebase-functions/jest.config.js");
