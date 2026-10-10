@@ -11,7 +11,8 @@ const execute = promisify(execFile);
 const git = args => execFileSync('git', args, {cwd: releaseRepository, encoding: 'utf8'}).trim();
 async function workspaceDigest() {
   // Derived evidence and the completion ledger change during successful verification.
-  const files = git(['ls-files', '--cached', '--others', '--exclude-standard', '-z']).split('\0')
+  const files = git(['ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', '.',
+    ':(exclude).codex/**', ':(exclude)artifacts/**', ':(exclude)docs/reports/platform-release-readiness/src/data.json']).split('\0')
     .filter(file => file && !file.startsWith('.codex/') && !file.startsWith('artifacts/') &&
       file !== 'docs/reports/platform-release-readiness/src/data.json').sort();
   const hash = createHash('sha256');
