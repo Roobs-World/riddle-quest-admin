@@ -1,5 +1,4 @@
 import type {GameModal, GameSessionState} from "../../gameSession";
-import {getRankForLevel} from "../../ranks";
 
 /** A single screen in a victory or auxiliary reward celebration. */
 export type FanfareStep =
@@ -16,10 +15,8 @@ export type FanfareStep =
   | {
       /** Stores kind. */
       kind: "level";
-    }
-  | {
-      /** Stores kind. */
-      kind: "rank";
+      /** Achievements unlocked by the same completion, listed compactly inside the level-up step. */
+      achievementIds: string[];
     }
   | {
       /** Stores kind. */
@@ -50,24 +47,25 @@ export type FanfareAwardState = Pick<
   "auxiliaryFanfare" | "lastOutcome" | "lastRewards" | "modal" | "profile"
 >;
 
-/** Builds the ordered celebration steps for a server-authoritative victory reward. */
+/**
+ * Builds the steps shown between two riddles for a server-authoritative victory reward.
+ *
+ * A stage transition shows the win result plus at most one extra celebration,
+ * so finishing a riddle never becomes a chain of popups. An actual level-up
+ * (reported by the authority for this completion) takes the single slot,
+ * stands in for the rank change that accompanies it and lists every newly
+ * unlocked achievement inline; otherwise the first newly unlocked achievement
+ * takes it. Every unlock remains listed in the profile.
+ */
 export function createVictoryFanfareSteps(reward: GameSessionState["lastRewards"]): FanfareStep[] {
   if (!reward) return [];
+  if (reward.leveledUp === true) {
+    return [{kind: "victory"}, {kind: "level", achievementIds: [...reward.newlyUnlockedAchievementIds]}];
+  }
 
-  /** Provides victory level behavior. */
-  const victoryLevel = reward.newLevel;
-  /** Provides reached new rank behavior. */
-  const reachedNewRank =
-    reward.leveledUp === true &&
-    victoryLevel !== undefined &&
-    getRankForLevel(Math.max(1, victoryLevel - 1)).id !== getRankForLevel(victoryLevel).id;
-
-  return [
-    {kind: "victory"},
-    ...reward.newlyUnlockedAchievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
-    ...(reward.leveledUp ? ([{kind: "level"}] as FanfareStep[]) : []),
-    ...(reachedNewRank ? ([{kind: "rank"}] as FanfareStep[]) : []),
-  ];
+  /** First achievement unlocked by this completion, when any. */
+  const achievementId = reward.newlyUnlockedAchievementIds[0];
+  return achievementId ? [{kind: "victory"}, {kind: "achievement", achievementId}] : [{kind: "victory"}];
 }
 
 /** Builds the ordered celebration steps for a purchase or achievement reward. */
@@ -113,11 +111,6 @@ export function getActiveCoinAward(
   }
 
   return null;
-}
-
-/** Reports whether a positive coin award still requires player collection. */
-export function isCoinCollectionPending(award: FanfareCoinAward | null, collectedAwardId: string | null): boolean {
-  return Boolean(award && award.amount > 0 && collectedAwardId !== award.id);
 }
 
 /** Identifies modal kinds that can render a fanfare sequence. */

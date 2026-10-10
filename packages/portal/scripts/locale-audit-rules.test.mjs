@@ -36,7 +36,7 @@ test("rejects every removed platform-incompatible locale feature", () => {
 
 test("allows current Jest-native account, sharing, and accessibility keys", () => {
   assert.equal(isUnsupportedJestLocaleKey("Accessibility.SHARE_SYSTEM"), false);
-  assert.equal(isUnsupportedJestLocaleKey("Profile.JEST_REGISTER_BUTTON"), false);
+  assert.equal(isUnsupportedJestLocaleKey("Profile.JEST_REGISTER_OR_LOGIN_BUTTON"), false);
   assert.equal(isUnsupportedJestLocaleKey("Profile.UPGRADE_ACCOUNT_BUTTON"), false);
   assert.equal(isUnsupportedJestLocaleKey("Settings.SOUND_TOGGLE"), false);
 });

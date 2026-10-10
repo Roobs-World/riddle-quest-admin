@@ -22,6 +22,38 @@ const expectModalCentered = async (page: Page) => {
   });
   expect(offset).toBeLessThanOrEqual(1);
 };
+/** Checks a chest reward fanfare fits the viewport without scrolling and keeps its action visible. */
+const expectRewardModalFits = async (page: Page) => {
+  expect(
+    await page.locator(".game-modal").evaluate((modal) => {
+      /** Backdrop that would otherwise scroll an oversized modal. */
+      const backdrop = modal.parentElement!;
+      /** Primary action that advances the fanfare. */
+      const action = modal.querySelector(".reward-continue")!.getBoundingClientRect();
+      /** Chest that must remain on screen and tappable. */
+      const chest = modal.querySelector(".reward-chest")?.getBoundingClientRect();
+      /** Rendered modal bounds in viewport coordinates. */
+      const rect = modal.getBoundingClientRect();
+      return {
+        modalOverflowHidden: getComputedStyle(modal).overflowY === "hidden",
+        backdropOverflowHidden: getComputedStyle(backdrop).overflowY === "hidden",
+        modalContentFits: modal.scrollHeight <= modal.clientHeight + 1,
+        backdropContentFits: backdrop.scrollHeight <= backdrop.clientHeight + 1,
+        modalInViewport: rect.top >= -1 && rect.bottom <= innerHeight + 1,
+        actionVisible: action.top >= rect.top - 1 && action.bottom <= Math.min(rect.bottom, innerHeight) + 1,
+        chestVisible: Boolean(chest && chest.height >= 40 && chest.top >= rect.top - 1 && chest.bottom <= action.top),
+      };
+    }),
+  ).toEqual({
+    modalOverflowHidden: true,
+    backdropOverflowHidden: true,
+    modalContentFits: true,
+    backdropContentFits: true,
+    modalInViewport: true,
+    actionVisible: true,
+    chestVisible: true,
+  });
+};
 /** Provides expect accessible behavior. */
 const expectAccessible = async (page: Page, state: string) => {
   await page.evaluate(async () => {
@@ -80,32 +112,33 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   if (await guestContinue.isVisible()) {
     await guestContinue.click();
   }
-  /** Provides coin tooltip behavior. */
-  const coinTooltip = page.locator(".tooltip-card");
-  await coinTooltip.getByRole("heading", {name: /open the coin shop/i}).waitFor();
-  expect(await coinTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameCoins-title");
+  /** Provides first tour tooltip behavior; new players start on the riddle, not the coin shop. */
+  const hintTooltip = page.locator(".tooltip-card");
+  await hintTooltip.getByRole("heading", {name: /use a hint/i}).waitFor();
+  expect(await hintTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameHint-title");
   /** Provides tooltip continue behavior. */
-  const tooltipContinue = coinTooltip.getByRole("button", {name: /got it/i});
+  const tooltipContinue = hintTooltip.getByRole("button", {name: /got it/i});
   await page.waitForFunction(() => document.activeElement?.matches(".tooltip-card .play-primary"));
   expect(await tooltipContinue.evaluate((button) => document.activeElement === button)).toBe(true);
   await page.keyboard.press("Tab");
   expect(await tooltipContinue.evaluate((button) => document.activeElement === button)).toBe(true);
   await page.keyboard.press("Escape");
-  expect(await coinTooltip.isVisible()).toBe(true);
+  expect(await hintTooltip.isVisible()).toBe(true);
   if (checkTooltipAccessibility) await expectAccessible(page, "guided tooltip");
-  expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
-  /** Provides [coin button box, spotlight box] behavior. */
-  const [coinButtonBox, spotlightBox] = await Promise.all([
-    page.locator(".coin-pill[data-tooltip='gameCoins']").boundingBox(),
+  /** Provides [hint button box, spotlight box] behavior. */
+  const [hintButtonBox, spotlightBox] = await Promise.all([
+    page.locator("[data-tooltip='gameHint']").boundingBox(),
     page.locator(".tooltip-spotlight").boundingBox(),
   ]);
-  expect(coinButtonBox).not.toBeNull();
+  expect(hintButtonBox).not.toBeNull();
   expect(spotlightBox).not.toBeNull();
-  expect(spotlightBox!.x).toBeLessThan(coinButtonBox!.x);
-  expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(coinButtonBox!.x + coinButtonBox!.width);
+  expect(spotlightBox!.x).toBeLessThan(hintButtonBox!.x);
+  expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(hintButtonBox!.x + hintButtonBox!.width);
   /** Keeps the game fixed while each tour target is highlighted. */
   const headerTop = await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top);
-  for (let step = 0; step < 4; step += 1) {
+  // Classic tour: hint, submit, skip. The coin shop step is deferred until after the first level.
+  for (let step = 0; step < 3; step += 1) {
+    expect(await page.locator("[data-tooltip-id='gameCoins']").count()).toBe(0);
     await page.waitForTimeout(180);
     expect(await page.locator(".game-app").evaluate((element) => element.scrollTop)).toBe(0);
     expect(await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top)).toBe(
@@ -120,6 +153,15 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
     ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none"});
     await page.getByRole("button", {name: /got it/i}).click();
   }
+  // A harness profile that has already won meets the coin shop at the start of a riddle, after the gameplay tour.
+  /** Provides coin tooltip behavior. */
+  const coinTooltip = page.locator(".tooltip-backdrop[data-tooltip-id='gameCoins']");
+  await coinTooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
+  if (await coinTooltip.isVisible()) {
+    expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
+    await coinTooltip.getByRole("button", {name: /got it/i}).click();
+  }
+  await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
 };
 
 describeBrowser("standalone Jest browser game", () => {
@@ -417,22 +459,17 @@ describeBrowser("standalone Jest browser game", () => {
       await expectAccessible(page, "achievement reward");
       expect(await multiplayerAchievementPopup.getByText("Race Debut", {exact: true}).isVisible()).toBe(true);
       await multiplayerAchievementPopup.getByRole("button", {name: /^next$/i}).click();
-      /** Provides multiplayer chest behavior. */
-      const multiplayerChest = multiplayerAchievementPopup.getByRole("button", {name: /tap the chest/i});
-      await multiplayerChest.waitFor();
       /** Provides multiplayer continue behavior. */
       const multiplayerContinue = multiplayerAchievementPopup.getByRole("button", {name: /awesome/i});
-      expect(await multiplayerContinue.isDisabled()).toBe(true);
-      expect(await multiplayerChest.evaluate((element) => getComputedStyle(element).animationName)).toContain(
-        "reward-chest-wobble",
-      );
-      expect(await multiplayerChest.locator("img").getAttribute("src")).toMatch(/chest-closed/);
-      await multiplayerChest.click();
-      expect(await multiplayerChest.locator("img").getAttribute("src")).toMatch(/chest-open/);
-      expect(await page.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
       await multiplayerContinue.waitFor({state: "visible"});
-      await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
-      expect((await page.locator(".game-header .coin-pill strong").innerText()).trim()).toBe(String(Number(mainGameCoinBalance) + 25));
+      // Granted coins never wait for a chest tap, and the CTA is never disabled for collection.
+      expect(await multiplayerContinue.isDisabled()).toBe(false);
+      expect(await multiplayerAchievementPopup.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
+      await multiplayerAchievementPopup.locator(".reward-chest img[src*='chest-open']").waitFor();
+      await page.waitForFunction(
+        (expected) => document.querySelector(".game-header .coin-pill strong")?.textContent?.trim() === expected,
+        String(Number(mainGameCoinBalance) + 25),
+      );
       await multiplayerContinue.click();
       await multiplayerAchievementPopup.waitFor({state: "detached"});
       /** Provides daily page behavior. */
@@ -995,44 +1032,43 @@ describeBrowser("standalone Jest browser game", () => {
         await page.getByRole("button", {name: /^next$/i}).click();
       }
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
-      // The completion notice belongs to this riddle and may clear as the next one loads.
-      expect(await page.locator(".game-content > .game-notice").innerText()).toMatch(/coins earned/i);
-      expect(await page.locator(".riddle-surface .game-notice").count()).toBe(0);
+      // The victory result is the only surface for the reward: no coin notice is layered under it.
+      expect(await page.locator(".game-notice").count()).toBe(0);
       expect(await page.locator("#game-modal-title").evaluate((heading) => getComputedStyle(heading).textAlign)).toBe(
         "center",
       );
       await page.screenshot({path: "/tmp/jest-feedback-victory.png"});
       await expectAccessible(page, "victory reward");
-      /** Provides victory chest behavior. */
-      const victoryChest = page.getByRole("button", {name: /tap the chest/i});
       /** Provides victory continue behavior. */
       const victoryContinue = page.locator(".modal-victory .reward-continue");
-      await victoryChest.waitFor();
-      expect(await victoryContinue.isDisabled()).toBe(true);
-      expect(await victoryChest.evaluate((element) => getComputedStyle(element).animationName)).toContain(
-        "reward-chest-wobble",
-      );
+      await victoryContinue.waitFor();
+      // Coins are granted with the popup: no chest tap exists and Next never waits on collection.
+      expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
+      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
+      /** Next is the dominant CTA, above the secondary share action. */
+      const victoryContinueBox = await victoryContinue.boundingBox();
+      /** Provides victory share box behavior. */
+      const victoryShareBox = await page.getByRole("button", {name: /invite a friend/i}).boundingBox();
+      expect(victoryContinueBox?.height ?? 0).toBeGreaterThanOrEqual(60);
+      expect(victoryContinueBox?.y ?? Infinity).toBeLessThan(victoryShareBox?.y ?? 0);
       await page.keyboard.press("Escape");
       expect(await page.locator(".modal-victory").count()).toBe(1);
-      await page.waitForTimeout(50);
-      /** Provides balance before victory collection behavior. */
-      const balanceBeforeVictoryCollection = Number(
-        (await page.locator(".game-header .coin-pill strong").innerText()).replace(/,/g, ""),
-      );
-      await victoryChest.click();
-      expect(await page.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
-      await page.waitForFunction(
-        (startingBalance) =>
-          Number(document.querySelector(".game-header .coin-pill strong")?.textContent?.replace(/,/g, "") ?? "0") >
-          startingBalance,
-        balanceBeforeVictoryCollection,
-      );
-      await page.waitForFunction(() => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled);
       /** Displayed collection must match the authority receipt rather than a retired fixed reward. */
       const confirmedVictoryCoins = await page.evaluate(() => Number(Reflect.get(window, "__confirmedVictoryCoins")));
       expect(confirmedVictoryCoins).toBeGreaterThan(0);
-      expect(Number((await page.locator(".game-header .coin-pill strong").innerText()).replace(/,/g, ""))).toBe(
-        balanceBeforeVictoryCollection + confirmedVictoryCoins,
+      expect(Number((await page.locator(".modal-victory .coin-award > strong").innerText()).replace(/[^\d]/g, ""))).toBe(
+        confirmedVictoryCoins,
+      );
+      /** Granted total announced by the popup. */
+      const victoryAwardBalance = Number(
+        (await page.locator(".modal-victory .coin-award > span").innerText()).replace(/[^\d]/g, ""),
+      );
+      await page.locator(".modal-victory .reward-chest img[src*='chest-open']").waitFor();
+      await page.waitForFunction(
+        (finalBalance) =>
+          Number(document.querySelector(".game-header .coin-pill strong")?.textContent?.replace(/,/g, "") ?? "0") ===
+          finalBalance,
+        victoryAwardBalance,
       );
       await page.getByRole("button", {name: /invite a friend/i}).click();
       await page.locator('[data-testid="server-activity-loader"]').waitFor({state: "detached"});
@@ -1040,7 +1076,16 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForTimeout(2800);
       expect(await page.locator(".modal-victory").count()).toBe(1);
 
-      await page.setViewportSize({width: 844, height: 390});
+      for (const viewport of [
+        {width: 390, height: 844},
+        {width: 360, height: 640},
+        {width: 320, height: 568},
+        {width: 640, height: 360},
+        {width: 844, height: 390},
+      ]) {
+        await page.setViewportSize(viewport);
+        await expectRewardModalFits(page);
+      }
       // Complete every reward step before returning to gameplay.
       for (let step = 0; step < 10 && (await page.locator(".modal-victory").count()) > 0; step += 1) {
         /** Reward step before advancing. */
@@ -1051,9 +1096,24 @@ describeBrowser("standalone Jest browser game", () => {
           const modal = document.querySelector(".modal-victory");
           return !modal || modal.querySelector(".sequence-progress")?.textContent !== previous;
         }, priorStep);
-        if (await victoryChest.isVisible() && await victoryChest.isEnabled()) await victoryChest.click();
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
       }
+      // Dismiss any remaining guidance; the coin shop tip only appears at the start of a riddle after a win,
+      // never at the stage transition, and this harness profile already met it after the gameplay tour.
+      /** Post-win guidance card. */
+      const postWinTooltip = page.locator(".tooltip-card");
+      await postWinTooltip.waitFor({state: "visible", timeout: 2_000}).catch(() => undefined);
+      for (let step = 0; step < 5 && (await postWinTooltip.isVisible()); step += 1) {
+        await postWinTooltip.getByRole("button", {name: /got it/i}).click();
+        await page.waitForTimeout(250);
+      }
+      expect(
+        await page.evaluate(() =>
+          Object.keys(localStorage).some(
+            (key) => key.startsWith("riddleQuest:tooltipSeen:gameCoins:") && localStorage.getItem(key) === "seen",
+          ),
+        ),
+      ).toBe(true);
       await page.waitForFunction(
         () =>
           (document.querySelector(".game-bottom-navigation")?.getBoundingClientRect().bottom ?? Infinity) <=
@@ -1076,9 +1136,9 @@ describeBrowser("standalone Jest browser game", () => {
           );
         }),
       ).toBe(true);
-      // Clear the transient reward notice before measuring the riddle on its own.
+      // No reward notice follows the victory result between riddles.
+      expect(await page.locator(".game-notice").count()).toBe(0);
       await page.keyboard.press("a");
-      await page.locator(".game-notice").waitFor({state: "hidden"});
       for (const viewport of [
         {width: 390, height: 844},
         {width: 390, height: 600},
@@ -1561,14 +1621,8 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await registeredPage.locator(".modal-reward").innerText()).toMatch(/\+250/);
       /** Provides purchase continue behavior. */
       const purchaseContinue = registeredPage.getByRole("button", {name: /awesome/i});
-      expect(await purchaseContinue.isDisabled()).toBe(true);
-      await registeredPage.keyboard.press("Escape");
-      expect(await registeredPage.locator(".modal-reward").count()).toBe(1);
-      await registeredPage.getByRole("button", {name: /tap the chest/i}).click();
-      expect(await registeredPage.locator(".reward-coin-particle").count()).toBeGreaterThan(0);
-      await registeredPage.waitForFunction(
-        () => !(document.querySelector(".reward-continue") as HTMLButtonElement)?.disabled,
-      );
+      expect(await purchaseContinue.isDisabled()).toBe(false);
+      expect(await registeredPage.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
       await purchaseContinue.click();
       await registeredPage.locator(".game-shell-alert").waitFor({state: "detached", timeout: 5_000});
       await registeredPage

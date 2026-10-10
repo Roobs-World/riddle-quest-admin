@@ -1,4 +1,12 @@
-import {getCoinPackBuyingPower, getSoloWinCoins, SOLO_COIN_COSTS} from "../economy";
+import {
+  DAILY_STREAK_BONUS,
+  getCoinPackBuyingPower,
+  getDailyStreakBonusCoins,
+  getSoloWinCoins,
+  SOLO_BONUS_COINS,
+  SOLO_COIN_COSTS,
+  SOLO_WIN_COINS,
+} from "../economy";
 import {DEFAULT_PRODUCT_PRICING} from "../../pricing/catalog";
 import {REDDIT_GOLD_PRODUCTS} from "../../pricing/redditCatalog";
 
@@ -45,4 +53,27 @@ describe("solo coin economy", () => {
     expect(getCoinPackBuyingPower(DEFAULT_PRODUCT_PRICING[0].coins)).toEqual({hints: 10, continues: 5});
     expect(getCoinPackBuyingPower(DEFAULT_PRODUCT_PRICING.at(-1)!.coins)).toEqual({hints: 280, continues: 140});
   });
+
+  it("keeps one-off bonuses smaller than any base win so they never dwarf a riddle reward", () => {
+    expect(SOLO_BONUS_COINS).toEqual({levelUp: 10, achievement: 10});
+    expect(DAILY_STREAK_BONUS).toEqual({initial: 10, weeklyStep: 10, intervalDays: 7, max: 100});
+    /** Smallest base reward any solved riddle can pay. */
+    const smallestWin = Math.min(...Object.values(SOLO_WIN_COINS.classic));
+    expect(SOLO_BONUS_COINS.levelUp).toBeLessThan(smallestWin);
+    expect(SOLO_BONUS_COINS.achievement).toBeLessThan(smallestWin);
+    expect(getDailyStreakBonusCoins(1)).toBeLessThan(smallestWin);
+    // Reported case: an easy first Daily win that starts a streak, levels up and
+    // unlocks first_win + daily_completed used to pay 75 + 20 + 50 + 2 * 25 = 195.
+    /** Bonus-heavy first Daily win under the current table. */
+    const firstDailyWin = getSoloWinCoins("challenge", "easy") + getDailyStreakBonusCoins(1) +
+      SOLO_BONUS_COINS.levelUp + 2 * SOLO_BONUS_COINS.achievement;
+    expect(firstDailyWin).toBe(115);
+    // Stacked bonuses stay below the riddle's own reward instead of exceeding it.
+    expect(firstDailyWin).toBeLessThan(2 * getSoloWinCoins("challenge", "easy"));
+  });
+
+  it.each([[0, 0], [-2, 0], [1, 10], [6.9, 10], [7, 20], [14, 30], [63, 100], [500, 100]])(
+    "pays the daily-streak bonus for a %s-day streak", (streak, expected) => {
+      expect(getDailyStreakBonusCoins(streak)).toBe(expected);
+    });
 });

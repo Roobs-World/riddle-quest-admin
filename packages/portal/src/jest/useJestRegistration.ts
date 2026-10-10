@@ -229,27 +229,6 @@ export function useJestRegistration({
       complete();
     });
   }, [complete, platform, sessionRef, trackFunnel, withPlatformActivity]);
-  /** Provides login behavior. */
-  const login = useCallback(() => {
-    setRegistrationFailure(null);
-    setRegistrationPending(true);
-    void withPlatformActivity(() =>
-      platform.login(createRegistrationEntryPayload(sourceRef.current, sessionRef.current?.entryIntent ?? {})),
-    ).then((result) => {
-      if (result.status !== "success") {
-        setRegistrationPending(false);
-        trackFunnel("login_failed", {status: result.status});
-        return;
-      }
-      if (!overlayRef.current) return complete();
-      try {
-        overlayRef.current.closeButtonAction();
-      } catch (error) {
-        console.warn("[riddle-quest] Jest registration overlay close after login failed", error);
-        complete();
-      }
-    });
-  }, [complete, platform, sessionRef, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
     /** Opens signup only after a voluntary profile action. */
@@ -269,16 +248,14 @@ export function useJestRegistration({
     window.addEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
     window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
     window.addEventListener("riddle-quest:register-player", register);
-    window.addEventListener("riddle-quest:login-player", login);
     window.addEventListener("riddle-quest:dismiss-registration", dismiss);
     return () => {
       window.removeEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
       window.removeEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
       window.removeEventListener("riddle-quest:register-player", register);
-      window.removeEventListener("riddle-quest:login-player", login);
       window.removeEventListener("riddle-quest:dismiss-registration", dismiss);
     };
-  }, [dismiss, login, open, register, showPrompt]);
+  }, [dismiss, open, register, showPrompt]);
 
-  return {showRegistration, registrationPending, registrationFailure, open, dismiss, register, login};
+  return {showRegistration, registrationPending, registrationFailure, open, dismiss, register};
 }

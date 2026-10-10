@@ -1,6 +1,5 @@
 {
   "GameMessages": {
-    "COINS_EARNED": "Kazanilan jeton: ",
     "GAME_LOST": "Oyun kaybedildi: Dogru cevap - ",
     "GAME_WON": "Oyun kazanildi: Deneme - ",
     "HINT_USED": "Ipucu kullanildi: Maliyet - ",

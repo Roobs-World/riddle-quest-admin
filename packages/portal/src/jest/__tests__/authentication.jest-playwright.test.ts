@@ -364,15 +364,12 @@ describeBrowser("Jest authentication integration", () => {
     }, scenario === "milestone-failure");
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator(".modal-victory").waitFor();
-    await page.getByRole("button", {name: /tap the chest/i}).waitFor();
+    await page.locator(".modal-victory .coin-award").waitFor();
     /** Provides fanfare steps behavior. */
     const fanfareSteps: string[] = [];
     for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       fanfareSteps.push(await page.locator(".modal-victory").innerText());
       expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
-      if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
-        await page.getByRole("button", {name: /tap the chest/i}).click();
-      }
       await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
       await page.locator(".reward-continue").click();
     }
@@ -419,11 +416,11 @@ describeBrowser("Jest authentication integration", () => {
     await page.keyboard.press("Backspace");
     expect(await draft.textContent()).toBe(before);
     await page.waitForFunction(() => document.querySelector(".jest-registration-dialog")?.contains(document.activeElement));
-    expect(await dialog.getByRole("button", {name: /^register$/i}).evaluate(button => button === document.activeElement)).toBe(true);
+    expect(await dialog.getByRole("button", {name: /^register \/ login$/i}).evaluate(button => button === document.activeElement)).toBe(true);
     await page.keyboard.press("Shift+Tab");
     expect(await dialog.getByRole("button", {name: /play as guest/i}).evaluate(button => button === document.activeElement)).toBe(true);
     await page.keyboard.press("Tab");
-    expect(await dialog.getByRole("button", {name: /^register$/i}).evaluate(button => button === document.activeElement)).toBe(true);
+    expect(await dialog.getByRole("button", {name: /^register \/ login$/i}).evaluate(button => button === document.activeElement)).toBe(true);
     await page.keyboard.press("Shift+Tab");
     await page.keyboard.press("Enter");
     await dialog.waitFor({state: "detached"});
@@ -452,14 +449,11 @@ describeBrowser("Jest authentication integration", () => {
       .getByRole("button", {name: /submit/i})
       .click();
     await page.locator(".modal-victory").waitFor();
-    await page.getByRole("button", {name: /tap the chest/i}).waitFor();
+    await page.locator(".modal-victory .coin-award").waitFor();
     for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       await page.locator(".reward-continue").waitFor();
       /** Provides current step behavior. */
       const currentStep = await page.locator(".modal-victory").textContent();
-      if (await page.getByRole("button", {name: /tap the chest/i}).isVisible()) {
-        await page.getByRole("button", {name: /tap the chest/i}).click();
-      }
       await page.waitForFunction(() =>
         Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")),
       );
@@ -514,9 +508,6 @@ describeBrowser("Jest authentication integration", () => {
         .click();
       await page.locator(".modal-victory").waitFor();
       for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step++) {
-        /** Provides chest behavior. */
-        const chest = page.getByRole("button", {name: /tap the chest/i});
-        if (await chest.isVisible()) await chest.click();
         await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
         await page.locator(".reward-continue").click();
       }
@@ -616,7 +607,7 @@ describeBrowser("Jest authentication integration", () => {
         return dispatch(event);
       }) as typeof window.dispatchEvent;
     });
-    await page.getByRole("button", {name: /^register$/i}).click();
+    await page.getByRole("button", {name: /^register \/ login$/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     await page.waitForFunction(
       () =>
@@ -875,7 +866,7 @@ describeBrowser("Jest authentication integration", () => {
         inviterName: "Authenticated Solver",
       }),
     );
-    await recipient.page.getByRole("button", {name: /^register$/i}).click();
+    await recipient.page.getByRole("button", {name: /^register \/ login$/i}).click();
     await recipient.page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     await recipient.page.waitForFunction(
       () =>
@@ -900,31 +891,6 @@ describeBrowser("Jest authentication integration", () => {
     await rewardedCreator.page.getByRole("heading", {name: /a friend joined/i}).waitFor({timeout: 15_000});
     expect(await rewardedCreator.page.locator(".game-modal").innerText()).toContain("+100");
     await rewardedCreator.context.close();
-  });
-
-  it("logs an existing Jest player in from the onboarding choice", async () => {
-    /** Provides {context, page} behavior. */
-    const {context, page} = await openHarness(browser);
-    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
-    await advanceToRegistration(page);
-    await page.getByRole("button", {name: /^log in$/i}).click();
-    await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
-    await page.waitForFunction(
-      () =>
-        (
-          window as typeof window & {
-            /** Stores riddle quest jest auth test. */
-            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-          }
-        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.backendExchanges.length === 2,
-    );
-    /** Provides state behavior. */
-    const state = await getHarnessState(page);
-    expect(state.calls).toContain("sdk.login");
-    expect(state.calls).toContain("sdk.registration.closeButtonAction");
-    expect(state.calls).not.toContain("sdk.registration.loginButtonAction");
-    expect(state.backendExchanges.at(-1)).toBe("signed:jest-auth-player-stable:true");
-    await context.close();
   });
 
   it("skips the registration step for an already registered Jest player and restores platform data", async () => {
@@ -1129,7 +1095,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "overlay-failure"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /^register$/i}).click();
+    await page.getByRole("button", {name: /^register \/ login$/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     await page.waitForFunction(
       () =>
@@ -1159,14 +1125,14 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "overlay-login-failure"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /^register$/i}).click();
+    await page.getByRole("button", {name: /^register \/ login$/i}).click();
 
     await page
       .getByRole("alert")
       .filter({hasText: /check your internet connection and try again/i})
       .waitFor();
     /** Provides register button behavior. */
-    const registerButton = page.getByRole("button", {name: /^register$/i});
+    const registerButton = page.getByRole("button", {name: /^register \/ login$/i});
     await registerButton.waitFor();
     await expect(registerButton.isEnabled()).resolves.toBe(true);
     /** Provides state behavior. */
@@ -1188,7 +1154,7 @@ describeBrowser("Jest authentication integration", () => {
     state = await getHarnessState(page);
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
     expect(state.preferenceWrites.some((value) => typeof value.registrationPromptDismissedAt === "number")).toBe(false);
-    expect(await page.getByRole("button", {name: /^register$/i}).isVisible()).toBe(true);
+    expect(await page.getByRole("button", {name: /^register \/ login$/i}).isVisible()).toBe(true);
     await context.close();
   });
 
@@ -1198,7 +1164,7 @@ describeBrowser("Jest authentication integration", () => {
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
     /** Provides register button behavior. */
-    const registerButton = page.getByRole("button", {name: /^register$/i});
+    const registerButton = page.getByRole("button", {name: /^register \/ login$/i});
     await registerButton.click();
 
     await page
@@ -1219,7 +1185,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "duplicate-close"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /^register$/i}).click();
+    await page.getByRole("button", {name: /^register \/ login$/i}).click();
     await page.getByText(/what has keys/i).waitFor({timeout: 15_000});
     await page.waitForFunction(
       () =>
@@ -1262,7 +1228,7 @@ describeBrowser("Jest authentication integration", () => {
         );
       });
     });
-    await page.getByRole("button", {name: /^register$/i}).click();
+    await page.getByRole("button", {name: /^register \/ login$/i}).click();
     await page.getByRole("heading", {name: /startup failed/i}).waitFor({timeout: 15_000});
     expect(await page.getByText(/unexpected error occurred/i).isVisible()).toBe(true);
     expect(
@@ -1293,7 +1259,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "registration-account-deleted"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
-    await page.getByRole("button", {name: /^register$/i}).click();
+    await page.getByRole("button", {name: /^register \/ login$/i}).click();
 
     await page.getByRole("heading", {name: /account deleted/i}).waitFor({timeout: 15_000});
     /** Provides state behavior. */

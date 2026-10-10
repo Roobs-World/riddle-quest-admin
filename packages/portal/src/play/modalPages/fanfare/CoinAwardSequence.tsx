@@ -44,7 +44,10 @@ type CoinParticleStyle = CSSProperties & {
   "--coin-duration": string;
 };
 
-/** Inputs required to animate and report a collected coin award. */
+/** Delay before the automatic coin celebration starts, letting the modal settle first. */
+export const COIN_AWARD_AUTO_START_MS = 280;
+
+/** Inputs required to celebrate a coin award the server has already granted. */
 export type CoinAwardSequenceProps = {
   /** Stores amount. */
   amount: number;
@@ -52,12 +55,13 @@ export type CoinAwardSequenceProps = {
   total: number;
   /** Stores on balance preview. */
   onBalancePreview: (balance: number | null) => void;
-  /** Stores on collected. */
-  onCollected: () => void;
 };
 
-/** Renders the interactive treasure-chest coin collection sequence. */
-export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}: CoinAwardSequenceProps) {
+/**
+ * Celebrates an already-granted, server-authoritative coin award. The chest opens and coins fly to the
+ * balance meter automatically; the animation is purely decorative and never gates the player.
+ */
+export function CoinAwardSequence({amount, total, onBalancePreview}: CoinAwardSequenceProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
   /** Provides [phase, set phase] behavior. */
@@ -65,7 +69,7 @@ export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}
   /** Provides [particles, set particles] behavior. */
   const [particles, setParticles] = useState<CoinParticle[]>([]);
   /** Provides chest ref behavior. */
-  const chestRef = useRef<HTMLButtonElement | null>(null);
+  const chestRef = useRef<HTMLDivElement | null>(null);
   /** Provides timers ref behavior. */
   const timersRef = useRef<number[]>([]);
   /** Provides safe amount behavior. */
@@ -75,17 +79,33 @@ export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}
   /** Starts ing balance. */
   const startingBalance = Math.max(0, finalBalance - safeAmount);
 
-  useLayoutEffect(() => {
-    onBalancePreview(startingBalance);
-    return () => {
-      for (const timer of timersRef.current) window.clearTimeout(timer);
-      timersRef.current = [];
-    };
-  }, [onBalancePreview, startingBalance]);
+  /** Latest award values, read by the mount-scoped celebration so prop updates never restart or strand it. */
+  const latestRef = useRef({finalBalance, onBalancePreview, safeAmount, startingBalance});
+  latestRef.current = {finalBalance, onBalancePreview, safeAmount, startingBalance};
 
-  /** Starts the coin animation or completes immediately when the target meter is unavailable. */
-  const collectCoins = () => {
-    if (phase !== "waiting" || safeAmount <= 0) return;
+  useLayoutEffect(() => {
+    /** Provides timers behavior. */
+    const timers = timersRef.current;
+    latestRef.current.onBalancePreview(latestRef.current.startingBalance);
+    if (latestRef.current.safeAmount > 0) {
+      timers.push(
+        window.setTimeout(() => playCollection(), isPlayerReducedMotionEnabled() ? 0 : COIN_AWARD_AUTO_START_MS),
+      );
+    }
+    return () => {
+      for (const timer of timers) window.clearTimeout(timer);
+      timers.length = 0;
+      // The coins are already granted; leaving mid-animation must never strand a partial balance.
+      latestRef.current.onBalancePreview(latestRef.current.finalBalance);
+    };
+    // Mount-scoped: callers remount with a new key for each award.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** Plays the coin animation, or completes immediately when the target meter is unavailable. */
+  function playCollection() {
+    /** Provides latest award values behavior. */
+    const {finalBalance, onBalancePreview, safeAmount, startingBalance} = latestRef.current;
     /** Provides chest rect behavior. */
     const chestRect = chestRef.current?.getBoundingClientRect();
     /** Provides meter behavior. */
@@ -95,7 +115,6 @@ export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}
     if (!chestRect || !meter || !meterRect) {
       onBalancePreview(finalBalance);
       setPhase("collected");
-      onCollected();
       return;
     }
 
@@ -152,7 +171,6 @@ export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}
         if (index === nextParticles.length - 1) {
           setParticles([]);
           setPhase("collected");
-          onCollected();
         }
         try {
           meter.animate?.(
@@ -165,29 +183,18 @@ export function CoinAwardSequence({amount, total, onBalancePreview, onCollected}
       }, particle.delayMs + particle.durationMs);
       timersRef.current.push(timer);
     });
-  };
+  }
 
   return (
     <div className="coin-award" data-coin-collection={phase === "collected" ? "complete" : "pending"}>
-      <button
-        ref={chestRef}
-        type="button"
-        className={`reward-chest ${phase}`}
-        disabled={phase !== "waiting"}
-        onClick={collectCoins}
-        aria-label={tr("CoinPurchase.TAP_CHEST_TO_COLLECT")}
-      >
+      <div ref={chestRef} className={`reward-chest ${phase}`} aria-hidden="true">
         <img src={phase === "waiting" ? treasureChestClosedUrl : treasureChestUrl} alt="" />
-      </button>
+      </div>
       <strong>
         +{safeAmount.toLocaleString()}
         {tr("CoinPurchase.COINS_SUFFIX")}
       </strong>
-      <span aria-live="polite">
-        {phase === "collected"
-          ? `${finalBalance.toLocaleString()} ${tr("CoinShop.COINS_SUFFIX")}`
-          : tr("CoinPurchase.TAP_CHEST_TO_COLLECT")}
-      </span>
+      <span aria-live="polite">{`${finalBalance.toLocaleString()} ${tr("CoinShop.COINS_SUFFIX")}`}</span>
       {particles.length > 0 &&
         createPortal(
           <div className="reward-coin-particles" aria-hidden="true">

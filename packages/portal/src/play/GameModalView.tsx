@@ -16,7 +16,6 @@ import {
   createVictoryFanfareSteps,
   getActiveCoinAward,
   getActiveFanfareStep,
-  isCoinCollectionPending,
 } from "./modalPages/fanfare/fanfareSequence";
 /** A nested confirmation owns focus ahead of its containing modal. */
 const getModalFocusScope = (modal: HTMLElement | null): HTMLElement | null =>
@@ -99,8 +98,6 @@ export function GameModalView({
   const [victoryStepIndex, setVictoryStepIndex] = useState(0);
   /** Provides [reward step index, set reward step index] behavior. */
   const [rewardStepIndex, setRewardStepIndex] = useState(0);
-  /** Provides [collected coin step, set collected coin step] behavior. */
-  const [collectedCoinStep, setCollectedCoinStep] = useState<string | null>(null);
   /** Provides modal ref behavior. */
   const modalRef = useRef<HTMLElement | null>(null);
   /** Last native focus can resume after another surface temporarily covers this modal. */
@@ -141,9 +138,7 @@ export function GameModalView({
       if (!listening || !policy.modal || policy.interactionBlocked || !modal?.isConnected || modal.closest("[inert]") || event.defaultPrevented || event.isComposing || event.keyCode === 229) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        /** Provides collecting coins behavior. */
-        const collectingCoins = modal?.querySelector("[data-coin-collection='pending']");
-        if (policy.modal !== "victory" && !(policy.modal === "continue" && (policy.guessPending || policy.continuationPending)) && !collectingCoins) {
+        if (policy.modal !== "victory" && !(policy.modal === "continue" && (policy.guessPending || policy.continuationPending))) {
           policy.onClose();
         }
         return;
@@ -224,12 +219,10 @@ export function GameModalView({
 
   useEffect(() => {
     setVictoryStepIndex(0);
-    setCollectedCoinStep(null);
   }, [state.lastOutcome?.id]);
 
   useEffect(() => {
     setRewardStepIndex(0);
-    setCollectedCoinStep(null);
   }, [state.auxiliaryFanfare?.id]);
 
   if (!state.modal) {
@@ -245,8 +238,6 @@ export function GameModalView({
   const activeRewardStep = getActiveFanfareStep(auxiliarySteps, rewardStepIndex);
   /** Provides active coin award behavior. */
   const activeCoinAward = getActiveCoinAward(state, activeVictoryStep, activeRewardStep);
-  /** Provides coin collection pending behavior. */
-  const coinCollectionPending = isCoinCollectionPending(activeCoinAward, collectedCoinStep);
   /** Provides titles behavior. */
   const titles: Record<Exclude<GameModal, null>, string> = {
     victory: tr("VictoryModal.TITLE"),
@@ -273,14 +264,12 @@ export function GameModalView({
     titles[state.modal] = tr("Achievements.FANFARE_TITLE");
   } else if (activeFanfareStep?.kind === "level") {
     titles.victory = tr("LevelUpFanfare.TITLE");
-  } else if (activeFanfareStep?.kind === "rank") {
-    titles.victory = tr("RankUpFanfare.TITLE");
   } else if (activeFanfareStep?.kind === "referral") {
     titles.reward = tr("VictoryModal.REFERRAL_REWARD_TITLE");
   }
   /** Indicates whether is mandatory outcome. */
   const isMandatoryOutcome =
-    state.modal === "victory" || coinCollectionPending || (state.modal === "continue" && (state.guessPending || continuationPending));
+    state.modal === "victory" || (state.modal === "continue" && (state.guessPending || continuationPending));
   /** Provides advance victory fanfare behavior. */
   const advanceVictoryFanfare = () => {
     if (victoryStepIndex + 1 < victorySteps.length) {
@@ -333,10 +322,8 @@ export function GameModalView({
           <VictoryFanfareContent
             activeCoinAward={activeCoinAward}
             activeStep={activeVictoryStep}
-            coinCollectionPending={coinCollectionPending}
             onAdvance={advanceVictoryFanfare}
             onBalancePreview={onCoinBalancePreview}
-            onCoinCollected={() => setCollectedCoinStep(activeCoinAward?.id ?? null)}
             state={state}
             stepCount={victorySteps.length}
             stepIndex={victoryStepIndex}
@@ -347,10 +334,8 @@ export function GameModalView({
           <RewardFanfareContent
             activeCoinAward={activeCoinAward}
             activeStep={activeRewardStep}
-            coinCollectionPending={coinCollectionPending}
             onAdvance={advanceRewardFanfare}
             onBalancePreview={onCoinBalancePreview}
-            onCoinCollected={() => setCollectedCoinStep(activeCoinAward?.id ?? null)}
             stepCount={auxiliarySteps.length}
             stepIndex={rewardStepIndex}
           />

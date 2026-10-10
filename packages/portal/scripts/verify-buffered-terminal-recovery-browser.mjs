@@ -97,7 +97,7 @@ window.profile=()=>source.loadProfile(uid);
     metric('completed victory remains visible until native dismissal',await page.locator('.modal-victory').count(),1);
    }
    for(let step=0;step<10&&await page.locator('.modal-victory').count();step++){
-    const chest=page.locator('.coin-award[data-coin-collection="pending"] .reward-chest');if(await chest.count()){await chest.click();await page.locator('.coin-award[data-coin-collection="complete"]').waitFor();}
+    if(await page.locator('.coin-award[data-coin-collection="pending"]').count())await page.locator('.coin-award[data-coin-collection="complete"]').waitFor();
     await page.locator('.modal-victory button').filter({hasText:/Next/i}).last().click();await page.waitForTimeout(50);
    }
    await page.getByRole('heading',{name:/What has a face/i}).waitFor();

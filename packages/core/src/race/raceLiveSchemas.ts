@@ -4,8 +4,13 @@ import {RaceCategoryIdSchema, RaceLocaleSchema} from "./raceDefinitionSchemas";
 import {RaceRunViewSchema, type SocialReportCategory} from "./raceSchemas";
 import type {ListLiveRaceHistoryResponse} from "./raceLiveHistorySchemas";
 
-/** Server-owned lobby, countdown and victory constants. */
-export const LIVE_RACE_WAIT_MS = 60_000;
+/**
+ * Server-owned public search window before the authority seats the bot opponent.
+ *
+ * Kept short so a sparse player pool never leaves a player searching: platform
+ * review requires an opponent within seconds, and the countdown follows it.
+ */
+export const LIVE_RACE_WAIT_MS = 6_000;
 /** Defines the live race countdown ms value. */
 export const LIVE_RACE_COUNTDOWN_MS = 5_000;
 /** Defines the live race win coins value. */

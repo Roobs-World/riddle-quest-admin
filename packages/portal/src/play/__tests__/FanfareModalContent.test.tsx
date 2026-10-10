@@ -29,8 +29,8 @@ describe("fanfare modal content", () => {
       acceptedGuesses: [{attempt: 1, feedback: [..."PIANO"].map(letter => ({letter, status: "green"}))}],
     }});
     /** Content uses the same reducer-derived recovered state as the real modal shell. */
-    const props = {activeStep, state, activeCoinAward: null, coinCollectionPending: false,
-      onAdvance: noop, onBalancePreview: noop, onCoinCollected: noop, stepCount: 1, stepIndex: 0};
+    const props = {activeStep, state, activeCoinAward: null,
+      onAdvance: noop, onBalancePreview: noop, stepCount: 1, stepIndex: 0};
     expect(renderToString(<VictoryFanfareContent {...props} />)).toContain('disabled=""');
     expect(renderToString(<VictoryFanfareContent {...props}
       state={gameSessionReducer(state, {type: "completionAcknowledged"})} />)).not.toContain('disabled=""');
@@ -59,10 +59,8 @@ describe("fanfare modal content", () => {
     /** Provides shared props behavior. */
     const sharedProps = {
       activeCoinAward: null,
-      coinCollectionPending: false,
       onAdvance: noop,
       onBalancePreview: noop,
-      onCoinCollected: noop,
       state,
       stepCount: 1,
       stepIndex: 0,
@@ -76,10 +74,27 @@ describe("fanfare modal content", () => {
         <VictoryFanfareContent {...sharedProps} activeStep={{kind: "achievement", achievementId: "first_win"}} />,
       ),
     ).toContain("achievement-unlock");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "level"}} />)).toContain("3");
-    expect(renderToString(<VictoryFanfareContent {...sharedProps} activeStep={{kind: "rank"}} />)).not.toContain(
-      "rank-emblem",
+    /** Raw server-rendered level-up step markup. */
+    const levelUpMarkup = renderToString(
+      <VictoryFanfareContent {...sharedProps} activeStep={{kind: "level", achievementIds: []}} />,
     );
+    /** Level-up step markup as plain text runs. */
+    const levelUp = levelUpMarkup.replaceAll("<!-- -->", "");
+    expect(levelUp).toMatch(/<strong class="level-up-number">Level 3<\/strong>/);
+    expect(levelUp).toContain("level-up-guidance");
+    expect(levelUp.match(/✦/g)).toHaveLength(1);
+    expect(levelUp).not.toContain("fanfare-emblem");
+    expect(levelUp).not.toContain("level-up-achievements");
+    /** Level-up step that also unlocked achievements on the same completion. */
+    const levelUpWithAchievements = renderToString(
+      <VictoryFanfareContent {...sharedProps} activeStep={{kind: "level", achievementIds: ["first_win", "unknown-id"]}} />,
+    ).replaceAll("<!-- -->", "");
+    expect(levelUpWithAchievements).toContain('class="level-up-achievements"');
+    expect(levelUpWithAchievements).toContain("New Achievement");
+    expect(levelUpWithAchievements).toMatch(/<strong>[^<]*First Win<\/strong>/);
+    expect(levelUpWithAchievements).toContain("unknown-id");
+    expect(levelUpWithAchievements).not.toContain("achievement-unlock");
+    expect(levelUpWithAchievements.match(/✦/g)).toHaveLength(1);
     /** Provides victory without sharing behavior. */
     const victoryWithoutSharing = renderToString(
       <VictoryFanfareContent {...sharedProps} activeStep={{kind: "victory"}} />,
@@ -105,10 +120,8 @@ describe("fanfare modal content", () => {
     /** Provides shared props behavior. */
     const sharedProps = {
       activeCoinAward: null,
-      coinCollectionPending: false,
       onAdvance: noop,
       onBalancePreview: noop,
-      onCoinCollected: noop,
       stepCount: 2,
       stepIndex: 0,
     };
@@ -121,10 +134,64 @@ describe("fanfare modal content", () => {
       "sequence-progress",
     );
     expect(
-      renderToString(
-        <CoinAwardSequence amount={10.6} total={30.4} onBalancePreview={noop} onCollected={noop} />,
-      ).replaceAll("<!-- -->", ""),
+      renderToString(<CoinAwardSequence amount={10.6} total={30.4} onBalancePreview={noop} />).replaceAll(
+        "<!-- -->",
+        "",
+      ),
     ).toContain("+11 Coins");
+  });
+
+  it("shows granted coins without a tap-to-collect chest", () => {
+    /** Provides markup behavior. */
+    const markup = renderToString(<CoinAwardSequence amount={195} total={1195} onBalancePreview={noop} />).replaceAll(
+      "<!-- -->",
+      "",
+    );
+    expect(markup).toContain("+195 Coins");
+    expect(markup).toContain((1195).toLocaleString());
+    expect(markup).not.toContain("Tap the chest");
+    expect(markup).not.toMatch(/<button[^>]*reward-chest/);
+  });
+
+  it("keeps Next enabled and above secondary actions while coins are awarded", () => {
+    /** Provides state behavior. */
+    const state = {
+      ...createInitialGameSession(),
+      completionAcknowledged: true,
+      lastRewards: {coinsEarned: 195, totalCoins: 1195, newlyUnlockedAchievementIds: []},
+    };
+    /** Provides victory markup behavior. */
+    const victoryMarkup = renderToString(
+      <ReferralSharingProvider capability={referralSharing}>
+        <VictoryFanfareContent
+          activeCoinAward={{id: "victory-1", amount: 195, total: 1195}}
+          activeStep={{kind: "victory"}}
+          onAdvance={noop}
+          onBalancePreview={noop}
+          state={state}
+          stepCount={1}
+          stepIndex={0}
+        />
+      </ReferralSharingProvider>,
+    );
+    /** Provides next button behavior. */
+    const nextButton = victoryMarkup.match(/<button[^>]*reward-continue[^>]*>/)?.[0];
+    expect(nextButton).toBeDefined();
+    expect(nextButton).not.toContain("disabled");
+    expect(victoryMarkup.indexOf("reward-continue")).toBeLessThan(victoryMarkup.indexOf("play-secondary"));
+
+    /** Provides reward markup behavior. */
+    const rewardMarkup = renderToString(
+      <RewardFanfareContent
+        activeCoinAward={{id: "purchase-1", amount: 250, total: 400}}
+        activeStep={{kind: "purchase"}}
+        onAdvance={noop}
+        onBalancePreview={noop}
+        stepCount={1}
+        stepIndex={0}
+      />,
+    );
+    expect(rewardMarkup.match(/<button[^>]*reward-continue[^>]*>/)?.[0]).not.toContain("disabled");
   });
 
   it("keeps victory progress valid when reward details refresh mid-sequence", () => {
@@ -135,10 +202,8 @@ describe("fanfare modal content", () => {
       <VictoryFanfareContent
         activeCoinAward={null}
         activeStep={{kind: "victory"}}
-        coinCollectionPending={false}
         onAdvance={noop}
         onBalancePreview={noop}
-        onCoinCollected={noop}
         state={state}
         stepCount={1}
         stepIndex={5}

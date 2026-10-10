@@ -86,7 +86,14 @@ export function useJestPurchase({
           price: product.price,
           currency: product.currency,
         });
-        return {success: true, productId, purchaseType: "subscription"};
+        return {
+          success: true,
+          productId,
+          purchaseType: "subscription",
+          ...(subscribed.value.premiumCoinsAwarded > 0 && subscribed.value.newCoins !== undefined
+            ? {coinsAwarded: subscribed.value.premiumCoinsAwarded, newCoins: subscribed.value.newCoins}
+            : {}),
+        };
       }
       /** Provides result behavior. */
       const result = await purchases.purchase(productId, session.player.playerId);
