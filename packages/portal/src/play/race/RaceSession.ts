@@ -17,7 +17,7 @@ import {editRaceInput, isRaceSlotEditable} from "./logic/raceInput";
 import type {RaceOperation} from "./logic/raceOperations";
 import {ownsRaceMatchmaking, resolveRaceMatchmaking, findOwnedRaceOpponent, observeRaceMatchResult, parseOwnedRaceMatch, raceMatchDelivery, raceDiscoveryFailure} from "./logic/raceMatchDiscovery";
 import {requestedRaceState, assertRequestedRaceRun} from "./logic/raceRequestSelection";
-import {existingRaceRunId, isCreatorRaceEntry, selectedRaceChallengeId, raceEntryView} from "./logic/raceEntrySelection";
+import {existingRaceRunId, isCreatorRaceEntry, selectedRaceChallengeId, raceEntryView, canCancelRaceInvitation} from "./logic/raceEntrySelection";
 import {canRetryRaceMatch, failedRaceDiscovery, failedRaceRecovery, retryRaceMatchIntent, restoredRaceFailure, needsRaceCatalog, recoveredRaceCatalog, type RaceMatchIntent} from "./logic/raceDiscoveryRecovery";
 import {recordOwnedRaceStart} from "./logic/raceStartDelivery";
 import {getAdjustedRaceTime} from "./logic/racePresentation";
@@ -671,9 +671,9 @@ export class RaceSession {
   }
   /** Creator cancellation uses the invitation's explicit capability, never an ID prefix. */
   cancelInvitation = (): void => {
-    /** Only a ready/waiting creator view authorizes local cancellation intent. */
+    /** Open and incompatible creator views share the same privately accepted capability. */
     const entry = raceEntryView(this.state);
-    if (!this.active || this.state.pending || !selectedRaceChallengeId(this.state) || !entry || !["ready", "waiting"].includes(entry.status) || !("invitation" in entry) || !entry.invitation?.canCancel) return;
+    if (!this.active || this.state.pending || !selectedRaceChallengeId(this.state) || !canCancelRaceInvitation(entry)) return;
     this.send("raceInviteCancel", "game:cancelRaceInvite", {challengeId: selectedRaceChallengeId(this.state), locale: this.entry.locale});
   };
   /** Projects terminal presentation only after pending mutations can no longer change it. */

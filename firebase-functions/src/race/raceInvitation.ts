@@ -187,16 +187,19 @@ async function resolveRaceEntryForUser(userId: string, challengeId: string, loca
       }
       if (invitation.challengeId !== challengeId) return {entry: {status: "unavailable", reason: "invalid", serverNowMs}};
     }
-    /** Recording validation also determines the authoritative creator. */
+    /** A valid reservation remains independent of an incompatible recording. */
     let challenge: RaceChallengeRecord | undefined;
+    /** Only structural recording failures can use the creator's negotiated recovery facts. */
+    let recordingInvalid = false;
     if (recording.exists) {
       try {challenge = parseChallengeRecord(recording.data(), recording.id);} catch (error) {
-        if (error instanceof HttpsError) return {entry: {status: "unavailable", reason: "invalid", serverNowMs}};
-        throw error;
+        if (error instanceof HttpsError) recordingInvalid = true;
+        else throw error;
       }
     }
     /** Creator identity never comes from the client or from a referral payload. */
-    const creatorId = invitation?.creatorId ?? challenge!.creatorId;
+    const creatorId = invitation?.creatorId ?? challenge?.creatorId;
+    if (!creatorId || invitation && recording.exists && recording.data()?.creatorId !== invitation.creatorId) return {entry: {status: "unavailable", reason: "invalid", serverNowMs}};
     if (challenge && invitation && (challenge.creatorId !== creatorId || challenge.locale !== invitation.locale)) return {entry: {status: "unavailable", reason: "invalid", serverNowMs}};
     /** Account deletion and bidirectional blocks protect both waiting and ready reads. */
     const [creatorDeletion, outgoingBlock, incomingBlock] = await Promise.all([
@@ -209,6 +212,9 @@ async function resolveRaceEntryForUser(userId: string, challengeId: string, loca
     if (invitation?.recipientId && invitation.recipientId !== userId && invitation.creatorId !== userId) return {entry: {status: "unavailable", reason: "claimed", serverNowMs}};
     if (invitation?.cancelledAtMs !== undefined) return {entry: {status: "cancelled", invitation: invitationView(invitation, userId), serverNowMs}, challenge, invitation};
     if (invitation && invitation.expiresAtMs <= serverNowMs || challenge && challenge.expiresAtMs <= serverNowMs) return {entry: RaceEntryResponseSchema.parse(stripUndefined({status: "expired", invitation: invitation && invitationView(invitation, userId), serverNowMs})), challenge, invitation};
+    if (recordingInvalid) return {entry: options.includeViewerRole && invitation?.creatorId === userId
+      ? RaceEntryResponseSchema.parse({status: "unavailable", reason: "invalid", invitation: {...invitationView(invitation, userId), role: "creator"}, serverNowMs})
+      : {status: "unavailable", reason: "invalid", serverNowMs}};
     if (challenge && challenge.status !== "active") return {entry: {status: "unavailable", reason: "inactive", serverNowMs}, challenge, invitation};
     /** Recover the one accepted attempt rather than advertising a forbidden second start. */
     let existingRunId: string | undefined;

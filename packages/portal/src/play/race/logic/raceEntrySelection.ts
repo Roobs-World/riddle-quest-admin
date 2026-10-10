@@ -80,3 +80,9 @@ export function assertExistingRaceRun(state: RaceSessionState, run: RaceRunView)
       run.opponent && (run.opponent.displayName !== entry.challenge.creator.displayName ||
         run.opponent.adjustedFinishMs !== entry.challenge.adjustedTimeToBeatMs))) throw new Error("Wrong existing challenge attempt");
 }
+
+/** Only an accepted creator capability permits cancellation of an open or incompatible invitation. */
+export function canCancelRaceInvitation(entry: RaceEntryResponse | null | undefined): boolean {
+  return Boolean(entry && (entry.status === "ready" || entry.status === "waiting" || entry.status === "unavailable" && entry.reason === "invalid") &&
+    entry.invitation?.role === "creator" && entry.invitation.canCancel);
+}

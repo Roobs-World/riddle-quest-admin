@@ -11,6 +11,7 @@ import type {
   ListFacebookContextBoardResponse,
 } from "@qwordly/core/race";
 import {tr} from "../../i18n";
+import {canCancelRaceInvitation} from "../logic/raceEntrySelection";
 import {formatRaceTime} from "../logic/racePresentation";
 
 /** Displays available server-provided categories and navigation to race results. */
@@ -275,7 +276,7 @@ export function RaceChallengePanel({
       ) : (
         <p role="status">{tr(entryStatus?.status === "waiting" ? "RaceTo10.WAITING_PUBLICATION" : entryStatus?.status === "cancelled" ? "RaceTo10.INVITATION_CANCELLED" : entryStatus?.status === "expired" ? "RaceTo10.INVITATION_EXPIRED" : entryStatus?.status === "unavailable" ? "RaceTo10.ERROR_GENERIC" : "RaceTo10.LOADING_CHALLENGE")}</p>
       )}
-      {entryStatus && (entryStatus.status === "waiting" || entryStatus.status === "ready") && entryStatus.invitation?.canCancel && onCancel && (
+      {canCancelRaceInvitation(entryStatus) && onCancel && (
         <button className="race-secondary" disabled={busy} onClick={onCancel}>{tr("RaceTo10.CANCEL_INVITATION")}</button>
       )}
     </div>

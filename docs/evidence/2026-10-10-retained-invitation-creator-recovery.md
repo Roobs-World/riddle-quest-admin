@@ -1,0 +1,11 @@
+# Retained invitation creator recovery
+
+The saved four-case reproduction from 5 October was rerun against the current source and failed in all four cases. Malformed recorded clue, rules or ghost metadata removed the cancellation action even though the independently validated invitation reservation still belonged to the authenticated creator. A cancelled reservation also lost its terminal state on cold reload.
+
+The corrected entry resolver checks the reservation, account deletion, provider identity, blocks, locale and ownership before exposing explicitly negotiated creator recovery facts. Old clients receive the existing invalid-readiness shape. The schema rejects recipient recovery facts, private account identifiers and recovery facts attached to other unavailable reasons. Both the retained controller and its rendered panel use the accepted creator capability. Cancellation remains bound to the private original invitation selection.
+
+Verification before the source-bound completion run passed 426 core unit tests, 3,240 portal unit tests and 1,890 backend tests across 114 suites. The portal unit command skips its browser suites; the separate retained-panel browser verified eight desktop/mobile outcomes, including repeated-click cancellation, cold reload, blocked/recipient/legacy denial, no recorded starts, no external requests and no overflow. The styled cancellation control retained its 48-pixel touch target. The real Firestore emulator tests verified unchanged balances, no recipient claim, one cancellation receipt, no runs and no attempts. All seven isolated client targets and the Reddit client/server build passed.
+
+The declared task in `docs/development-tasks/retained-invitation-creator-recovery.json` reruns ten local checks and records the exact revision and workspace digest only if the source remains unchanged throughout verification. Its generated receipt is authoritative for this scoped local correction. No production database or provider upload is involved.
+
+This report concerns the retained recorded controller and panel. The currently mounted LiveRaceEntry flow is unchanged. Broader historical multiplayer manifests and the incomplete YouTube release evidence retain their existing acceptance requirements. Local verification does not establish deployment or provider acceptance.

@@ -1,0 +1,119 @@
+{
+  "taskId": "multiplayer:retained-invitation-creator-recovery",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
+  "work": "Preserve authenticated creator cancellation for a valid retained invitation reservation when recorded clues, rules or ghost events are malformed. Negotiate privacy-safe creator recovery facts explicitly, preserve old unnegotiated response shapes, and retain cancellation lifecycle on cold reload. Enforce deletion, block, locale and ownership checks before recovery. Keep cancellation bound to the privately accepted invitation, idempotent under retries and repeated clicks, without recipient claims, balance changes, new runs or attempts. Verify the retained controller and panel on desktop and mobile. The current LiveRaceEntry flow and unrelated historical acceptance gates remain outside this scoped correction.",
+  "checks": [
+    {
+      "id": "core-unit-regressions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/core",
+        "test",
+        "--runInBand"
+      ]
+    },
+    {
+      "id": "portal-unit-regressions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand"
+      ]
+    },
+    {
+      "id": "retained-creator-panel-browser",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-retained-creator-recovery-browser.mjs"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "documented-declarations",
+      "executable": "pnpm",
+      "args": [
+        "check:tsdoc"
+      ]
+    },
+    {
+      "id": "source-size-boundaries",
+      "executable": "pnpm",
+      "args": [
+        "check:file-sizes"
+      ]
+    },
+    {
+      "id": "node22-backend-lint-build",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "lint"
+      ]
+    },
+    {
+      "id": "node22-demo-race-coverage",
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "GCLOUD_PROJECT=demo-riddle-quest-multiplayer",
+        "FIREBASE_PROJECT_ID=demo-riddle-quest-multiplayer",
+        "OPENAI_API_KEY=test-openai-api-key",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "test:race:coverage"
+      ]
+    },
+    {
+      "id": "seven-isolated-platform-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ]
+    },
+    {
+      "id": "reddit-client-server-build",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/reddit-app",
+        "build"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "artifacts/retained-creator-recovery-2026-10-10/browser.json",
+      "label": "Eight retained-panel browser outcomes"
+    }
+  ],
+  "remainingGates": [
+    "Publish backend and client changes through their separately authorized release paths.",
+    "Provider acceptance and the broader retained multiplayer and YouTube release requirements still require their own complete evidence."
+  ],
+  "nextAction": "Review the source-bound local receipt, publish through the authorized release paths, and refresh the private central operations register."
+}
