@@ -56,27 +56,27 @@
   "artifacts": [
     {
       "target": "jest",
-      "file": "packages/portal/dist-jest/index.html"
+      "file": "builds/jest/index.html"
     },
     {
       "target": "facebook",
-      "file": "packages/portal/dist-facebook/index.html"
+      "file": "builds/facebook/index.html"
     },
     {
       "target": "reddit",
-      "file": "packages/portal/dist-reddit/index.html"
+      "file": "builds/reddit/index.html"
     },
     {
       "target": "youtube",
-      "file": "packages/portal/dist-youtube/index.html"
+      "file": "builds/youtube/index.html"
     },
     {
       "target": "netflix",
-      "file": "packages/portal/dist-netflix/index.html"
+      "file": "builds/netflix/index.html"
     },
     {
       "target": "yahoo",
-      "file": "packages/portal/dist-yahoo/index.html"
+      "file": "builds/yahoo/index.html"
     },
     {
       "target": "gamesnacks",
