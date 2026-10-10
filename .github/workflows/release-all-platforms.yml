@@ -40,11 +40,14 @@ jobs:
         run: pnpm verify:all-targets
       - name: Discard regenerated browser evidence before the clean-source adapters
         # The browser gates rewrite committed screenshots under artifacts/;
-        # the Facebook draft refuses to stage from a dirty worktree.
+        # the Facebook draft refuses to stage from a dirty worktree. The
+        # adapters' own builds then write their dependency inventories outside
+        # the checkout, as the Jest release already does.
         run: |
           git checkout -- artifacts
           git clean -fdq -- artifacts
           git status --short | head -20
+          echo "RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR=$RUNNER_TEMP/target-dependencies" >> "$GITHUB_ENV"
       - name: Run core provider release adapters
         # Jest is published by deploy-jest.yml and YouTube is packaged by the
         # parallel youtube job, because each adapter repeats the multi-hour
