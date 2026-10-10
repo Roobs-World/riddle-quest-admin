@@ -1,5 +1,5 @@
 import {getCoinPackBuyingPower} from "@qwordly/core/game";
-import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
+import {DEFAULT_PRODUCT_PRICING, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
 import {useSubscriptionManagement} from "./useSubscriptionManagement";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 import {useTranslator} from "../../i18n";
@@ -36,11 +36,13 @@ function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTrans
 /**
  * Localized subscription benefits, limited to what the game actually provides.
  *
- * The verified Jest entitlement only records Premium status on the account
- * (`hasActiveSubscription`); it grants no coins, hints or other gameplay items.
+ * The verified Jest entitlement records Premium status on the account
+ * (`hasActiveSubscription`) and the server grants
+ * `PREMIUM_SUBSCRIPTION_MONTHLY_COINS` every 30 days while it stays active.
  * Add a benefit here only after its server-authoritative grant exists.
  */
 export const SUBSCRIPTION_BENEFIT_KEYS = [
+  "CoinShop.SUBSCRIPTION_BENEFIT_COINS",
   "CoinShop.SUBSCRIPTION_BENEFIT_STATUS",
   "CoinShop.SUBSCRIPTION_BENEFIT_SUPPORT",
   "CoinShop.SUBSCRIPTION_BENEFIT_RENEWAL",
@@ -109,9 +111,10 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
               <div className="shop-subscription-benefits">
                 <strong>{tr("CoinShop.SUBSCRIPTION_BENEFITS_TITLE")}</strong>
                 <ul>
-                  {SUBSCRIPTION_BENEFIT_KEYS.map((key) => <li key={key}>{tr(key)}</li>)}
+                  {SUBSCRIPTION_BENEFIT_KEYS.map((key) => (
+                    <li key={key}>{tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()})}</li>
+                  ))}
                 </ul>
-                <small>{tr("CoinShop.SUBSCRIPTION_COINS_NOTE")}</small>
               </div>
             ) : null}
             {product.productType !== "subscription" && product.coins > 0 ? (

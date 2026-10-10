@@ -20,6 +20,7 @@ it("offers the ordinary next action without advertising unavailable guest coin a
 });
 import {ShopModalPage, SUBSCRIPTION_BENEFIT_KEYS} from "../modalPages/commerce/ShopModalPage";
 import {tr} from "../i18n";
+import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
 import {ShopSubscriptionContext} from "../modalPages/commerce/ShopSubscriptionContext";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../modalPages/commerce/commerceCosts";
 import type {ProductSummary} from "../types";
@@ -108,12 +109,13 @@ describe("commerce modal pages", () => {
     /** Active plan keeps the same benefit summary. */
     const activeHtml = renderToString(<ShopModalPage balance={0} products={products.slice(2, 3)} onPurchase={noop} />);
 
-    expect(SUBSCRIPTION_BENEFIT_KEYS).toHaveLength(3);
+    expect(SUBSCRIPTION_BENEFIT_KEYS).toHaveLength(4);
     for (const html of [offerHtml, activeHtml]) {
       expect(html).toContain("shop-subscription-benefits");
       expect(html).toContain("What you get");
-      for (const key of SUBSCRIPTION_BENEFIT_KEYS) expect(html).toContain(tr(key));
-      expect(html).toContain("Premium does not include coins, hints or other in-game items.");
+      for (const key of SUBSCRIPTION_BENEFIT_KEYS)
+        expect(html).toContain(tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()}));
+      expect(html).toContain(`${PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()} coins added to your balance every 30 days`);
     }
     expect(offerHtml).toContain("£2.99 / month");
     expect(offerHtml).toContain("Premium status on your Riddle Quest account");

@@ -300,7 +300,7 @@ describe("useJestPurchase", () => {
     });
     subscribe.mockResolvedValue({
       status: "success",
-      value: {activeSku: "premium-monthly", blockedSkus: ["premium-yearly"]},
+      value: {activeSku: "premium-monthly", blockedSkus: ["premium-yearly"], premiumCoinsAwarded: 0},
     });
 
     await expect(purchaseProduct("premium-monthly")).resolves.toEqual({

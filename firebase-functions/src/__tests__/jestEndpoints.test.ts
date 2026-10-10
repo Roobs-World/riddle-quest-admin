@@ -19,8 +19,12 @@ import {
   isSafeLegacyJestPurchaseGrantId,
 } from "../jest/jestPurchaseReceipts";
 import {createJestReferralRewardId, createJestReferralVerificationId} from "../jest/jestReferralReceipts";
-import {JEST_COIN_PRODUCTS} from "../jest/jestProductCatalog";
-import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
+import {JEST_COIN_PRODUCTS, resolvePremiumCoinGrant} from "../jest/jestProductCatalog";
+import {
+  DEFAULT_PRODUCT_PRICING,
+  PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS,
+  PREMIUM_SUBSCRIPTION_MONTHLY_COINS,
+} from "@qwordly/core/pricing/catalog";
 
 /** Provides request behavior. */
 const request = (input: {
@@ -350,6 +354,37 @@ describe("signed Jest subscription selection", () => {
         [supporter]: "supporter",
       }),
     ).toEqual([yearly]);
+  });
+});
+
+describe("Premium subscription coin grants", () => {
+  const now = 1_800_000_000_000;
+
+  it("matches the coin pack priced at £10 / $9.99", () => {
+    const tenPoundPack = DEFAULT_PRODUCT_PRICING.find((product) => product.regionalPrices[0]?.amount === 9.99);
+    expect(PREMIUM_SUBSCRIPTION_MONTHLY_COINS).toBe(tenPoundPack?.coins);
+  });
+
+  it("grants the monthly coins on the first verified active sync", () => {
+    expect(resolvePremiumCoinGrant(true, undefined, now)).toBe(PREMIUM_SUBSCRIPTION_MONTHLY_COINS);
+  });
+
+  it("grants nothing without an active subscription", () => {
+    expect(resolvePremiumCoinGrant(false, undefined, now)).toBe(0);
+    expect(resolvePremiumCoinGrant(false, now - PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS * 3, now)).toBe(0);
+  });
+
+  it("grants once per 30 days however often the subscription is synced", () => {
+    expect(resolvePremiumCoinGrant(true, now - 1, now)).toBe(0);
+    expect(resolvePremiumCoinGrant(true, now - PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS + 1, now)).toBe(0);
+    expect(resolvePremiumCoinGrant(true, now - PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, now)).toBe(
+      PREMIUM_SUBSCRIPTION_MONTHLY_COINS,
+    );
+  });
+
+  it("treats a malformed stored grant time as never granted", () => {
+    expect(resolvePremiumCoinGrant(true, "yesterday", now)).toBe(PREMIUM_SUBSCRIPTION_MONTHLY_COINS);
+    expect(resolvePremiumCoinGrant(true, Number.NaN, now)).toBe(PREMIUM_SUBSCRIPTION_MONTHLY_COINS);
   });
 });
 

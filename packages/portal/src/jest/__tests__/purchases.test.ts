@@ -325,10 +325,44 @@ it("verifies a subscription before applying the active entitlement and never com
   };
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1")).toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: ["premium-yearly"]},
+    value: {activeSku: "premium", blockedSkus: ["premium-yearly"], premiumCoinsAwarded: 0},
   });
   expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscription.signed", "p1");
   expect(platform.completePurchase).not.toHaveBeenCalled();
+});
+
+it("reports the Premium coins granted when a new subscription is verified", async () => {
+  /** Provides platform behavior. */
+  const platform = new MockJestPlatform(true);
+  platform.beginSubscription = async () => ({
+    status: "success",
+    value: {
+      subscription: {
+        sku: "premium",
+        displayName: "Premium",
+        displayDescription: null,
+        price: 4.99,
+        currency: "USD",
+        billingPeriod: "monthly",
+        status: "active",
+      },
+      subscriptionSigned: "subscription.signed",
+    },
+  });
+  /** Provides backend behavior. */
+  const backend = {
+    syncSubscriptions: jest.fn(async () => ({
+      verified: true,
+      activeSkus: ["premium"],
+      blockedSkus: [],
+      premiumCoinsAwarded: 3400,
+      newCoins: 3700,
+    })),
+  };
+  expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1")).toEqual({
+    status: "success",
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 3400, newCoins: 3700},
+  });
 });
 
 it("rejects an unverified active subscription", async () => {
@@ -367,7 +401,7 @@ it("refreshes and verifies an existing subscription after an already-subscribed 
 
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1")).toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: []},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0},
   });
   expect(platform.getSubscriptions).toHaveBeenCalledTimes(1);
   expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscriptions.refreshed", "p1");
@@ -709,7 +743,7 @@ it("normalizes verifier errors and omitted blocked subscription lists", async ()
     } as never).subscribe("premium", "p1"),
   ).resolves.toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: []},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0},
   });
   await expect(
     new JestPurchaseCoordinator(platform, {
@@ -729,7 +763,7 @@ it("normalizes verifier errors and omitted blocked subscription lists", async ()
     } as never).subscribe("premium", "p1"),
   ).resolves.toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: []},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0},
   });
   await expect(
     new JestPurchaseCoordinator(platform, {
