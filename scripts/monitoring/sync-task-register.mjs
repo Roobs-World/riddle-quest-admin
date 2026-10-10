@@ -163,15 +163,24 @@ if (health.ai) {
   if (ai?.status === 'Blocked') Object.assign(ai, {status: 'Verification pending', description: 'Production has an AI key configured; optional feature behavior still needs verification.', nextAction: 'Verify host, coach, draft and AI bee behavior with the configured approved key'});
 }
 coverage.push({project: 'beehive', source: 'production health', retrievedAt: now, status: health.ok ? 'Healthy' : 'Unhealthy', storage: health.storage, ai: health.ai});
+// Reviewed follow-ups remain in the existing dashboard data through every refresh.
+const supplemental = snapshot.queries.supplemental_tasks?.rows ?? [];
+for (const row of supplemental) {
+  if (!row.id || !row.project || !row.title || !row.description || !row.status || !Array.isArray(row.requirements) || !row.sources?.length) throw new Error('Invalid supplemental task');
+  const {requirements: texts, ...task} = row;
+  tasks.push({...task, requirementIds: texts.map(text => requirement(row.project, 'acceptance', text, row.sources[0], row.id))});
+}
+for (const project of new Set(supplemental.map(row => row.project))) coverage.push({project, source: 'reviewed supplemental follow-ups', retrievedAt: now, status: 'Read', records: supplemental.filter(row => row.project === project).length});
 const ids = tasks.map(x => x.id);
 if (new Set(ids).size !== ids.length) throw new Error('Duplicate task IDs: ' + [...new Set(ids.filter((id, i) => ids.indexOf(id) !== i))].join(', '));
 tasks.sort((a,b) => a.project.localeCompare(b.project) || a.kind.localeCompare(b.kind) || a.id.localeCompare(b.id));
 const projects = [
   {id: 'riddle-quest', name: 'Riddle Quest', repository: 'https://github.com/Grindhead/riddle-quest', taskCount: tasks.filter(x => x.project === 'riddle-quest').length},
+  ...[...new Set(supplemental.map(row => row.project).filter(id => !['beehive', 'riddle-quest'].includes(id)))].map(id => ({id, name: id, taskCount: tasks.filter(row => row.project === id).length})),
   {id: 'beehive', name: 'BeeHive / The Hive', repository: 'https://github.com/Grindhead/the-hive', liveUrl: 'https://buzz-tv-six.vercel.app', taskCount: tasks.filter(x => x.project === 'beehive').length},
 ];
 const register = {schemaVersion: '1.0', dashboardId: snapshot.id, generatedAt: now, projects, coverage, tasks, requirements, documents,
-  caveats: ['Snapshot updated by dashboard:sync; this API is read-only and does not watch local workspaces.', 'Historical development receipts, source-reported completion, provider approval and publication are distinct.', 'Concurrent source edits may require a new sync. Repository paths and line numbers refer to the captured sources.', 'Coverage includes both repositories, all task manifests, source Markdown checklists, reviewed release/outreach actions and GitHub issues; other chats and repositories are outside this register.']};
+  caveats: ['Snapshot updated by dashboard:sync; this API is read-only and does not watch local workspaces.', 'Historical development receipts, source-reported completion, provider approval and publication are distinct.', 'Concurrent source edits may require a new sync. Repository paths and line numbers refer to the captured sources.', 'Coverage includes both primary repositories, task manifests, source Markdown checklists, reviewed release/outreach actions, GitHub issues and explicitly reviewed supplemental follow-ups. Other projects have only the stated supplemental coverage; other chats are outside this register.']};
 register.digest = hash(JSON.stringify(register));
 await mkdir(path.join(output, 'src'), {recursive: true});
 await writeFile(path.join(output, 'src/task-register.json'), JSON.stringify(register, null, 2) + '\n');
