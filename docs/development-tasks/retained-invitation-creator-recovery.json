@@ -12,6 +12,14 @@
   "work": "Preserve authenticated creator cancellation for a valid retained invitation reservation when recorded clues, rules or ghost events are malformed. Negotiate privacy-safe creator recovery facts explicitly, preserve old unnegotiated response shapes, and retain cancellation lifecycle on cold reload. Enforce deletion, block, locale and ownership checks before recovery. Keep cancellation bound to the privately accepted invitation, idempotent under retries and repeated clicks, without recipient claims, balance changes, new runs or attempts. Verify the retained controller and panel on desktop and mobile. The current LiveRaceEntry flow and unrelated historical acceptance gates remain outside this scoped correction.",
   "checks": [
     {
+      "id": "source-digest-regressions",
+      "executable": "node",
+      "args": [
+        "--test",
+        "scripts/release/development-source-digest.test.mjs"
+      ]
+    },
+    {
       "id": "core-unit-regressions",
       "executable": "pnpm",
       "args": [

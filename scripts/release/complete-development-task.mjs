@@ -1,28 +1,14 @@
 #!/usr/bin/env node
 import {execFile, execFileSync} from 'node:child_process';
 import {readFile} from 'node:fs/promises';
-import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {promisify} from 'node:util';
 import {releaseRepository} from './html5-handoff-preparation.mjs';
 import {recordDevelopmentCompletion, publishDevelopmentCompletion} from './development-progress.mjs';
 import {googleClient, snapshotStore} from '../../tooling/deployment-monitor/google.mjs';
+import {developmentSourceDigest} from './development-source-digest.mjs';
 const execute = promisify(execFile);
 const git = args => execFileSync('git', args, {cwd: releaseRepository, encoding: 'utf8'}).trim();
-async function workspaceDigest() {
-  // Derived evidence and the completion ledger change during successful verification.
-  const files = git(['ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', '.',
-    ':(exclude).codex/**', ':(exclude)artifacts/**', ':(exclude)docs/reports/platform-release-readiness/src/data.json']).split('\0')
-    .filter(file => file && !file.startsWith('.codex/') && !file.startsWith('artifacts/') &&
-      file !== 'docs/reports/platform-release-readiness/src/data.json').sort();
-  const hash = createHash('sha256');
-  for (const file of files) {
-    hash.update(file).update('\0');
-    try { hash.update(await readFile(path.join(releaseRepository, file))); }
-    catch (error) { if (error.code !== 'ENOENT') throw error; hash.update('deleted'); }
-  }
-  return hash.digest('hex');
-}
 const revision = git(['rev-parse', 'HEAD']);
 let completion;
 if (process.argv[2] === '--ci') {
@@ -43,14 +29,14 @@ if (process.argv[2] === '--ci') {
   if (!process.argv[2]) throw new Error('Usage: complete-development-task.mjs task.json | --ci | --retry receipt.json [--publish]');
   const task = JSON.parse(await readFile(process.argv[2], 'utf8'));
   if (!Array.isArray(task.checks) || !task.checks.length) throw new Error('Task must declare required checks');
-  const sourceDigest = await workspaceDigest();
+  const sourceDigest = await developmentSourceDigest(releaseRepository);
   const checks = [];
   for (const check of task.checks) {
     if (!check.id || !check.executable || !Array.isArray(check.args)) throw new Error('Invalid check command');
     const result = await execute(check.executable, check.args, {cwd: releaseRepository, maxBuffer: 32 * 1024 * 1024});
     checks.push({id: check.id, status: 'passed', evidence: `${check.executable} ${check.args.join(' ')}; output SHA-256 ${createHash('sha256').update(result.stdout).update(result.stderr).digest('hex')}`});
   }
-  if (git(['rev-parse', 'HEAD']) !== revision || await workspaceDigest() !== sourceDigest) throw new Error('Revision changed during verification');
+  if (git(['rev-parse', 'HEAD']) !== revision || await developmentSourceDigest(releaseRepository) !== sourceDigest) throw new Error('Revision changed during verification');
   completion = {taskId: task.taskId, targets: task.targets, work: task.work, revision,
     sourceDigest,
     completedAt: new Date().toISOString(), trigger: 'local verified handoff',
