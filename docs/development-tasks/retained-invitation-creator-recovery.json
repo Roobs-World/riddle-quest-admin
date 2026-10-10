@@ -116,7 +116,8 @@
   "artifacts": [
     {
       "file": "artifacts/retained-creator-recovery-2026-10-10/browser.json",
-      "label": "Eight retained-panel browser outcomes"
+      "label": "Eight retained-panel browser outcomes",
+      "target": "jest"
     }
   ],
   "remainingGates": [
