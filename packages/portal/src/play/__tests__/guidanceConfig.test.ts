@@ -50,6 +50,9 @@ describe("guidance configuration", () => {
     expect(createTooltipTourStorageKey("profileTour", "user-1")).toBe(
       "riddleQuest:tooltipSequenceSeen:profileTour:v3:user-1",
     );
+    expect(createTooltipTourStorageKey("otherTour", "user-1")).toBe(
+      "riddleQuest:tooltipSequenceSeen:otherTour:v2:user-1",
+    );
   });
 
   it("selects onboarding and game tour steps for each player mode", () => {
@@ -100,6 +103,9 @@ describe("guidance configuration", () => {
     expect(coinTip(withWins(1), "hint")).toBe(false);
     expect(coinTip(withWins(1, {products: []}), null)).toBe(false);
     expect(coinTip(withWins(1), null, false)).toBe(false);
+    // Older profiles report wins without totalWins; profiles with neither count as no wins.
+    expect(coinTip({...firstRiddle, profile: {wins: 2} as typeof firstRiddle.profile}, null)).toBe(true);
+    expect(coinTip({...firstRiddle, profile: {} as typeof firstRiddle.profile}, null)).toBe(false);
   });
 
   it("keeps returning players' completed legacy game tour and its coin step as seen", () => {

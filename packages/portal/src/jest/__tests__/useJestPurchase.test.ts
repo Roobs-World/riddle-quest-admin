@@ -266,6 +266,39 @@ describe("useJestPurchase", () => {
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
 
+  it("reports Premium coins granted with a new subscription", async () => {
+    /** Provides subscription behavior. */
+    const subscription = product({
+      productId: "premium-monthly",
+      productType: "subscription",
+      subscriptionStatus: "inactive",
+    });
+    /** Provides {purchase product, subscribe} behavior. */
+    const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
+    subscribe.mockResolvedValueOnce({
+      status: "success",
+      value: {activeSku: "premium-monthly", blockedSkus: [], premiumCoinsAwarded: 3400, newCoins: 3700},
+    });
+    await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
+      success: true,
+      productId: "premium-monthly",
+      purchaseType: "subscription",
+      coinsAwarded: 3400,
+      newCoins: 3700,
+    });
+
+    // A grant without a reported balance leaves the displayed balance to the next profile load.
+    subscribe.mockResolvedValueOnce({
+      status: "success",
+      value: {activeSku: "premium-monthly", blockedSkus: [], premiumCoinsAwarded: 3400},
+    });
+    await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
+      success: true,
+      productId: "premium-monthly",
+      purchaseType: "subscription",
+    });
+  });
+
   it("activates a verified subscription and removes conflicting billing cadences", async () => {
     /** Provides monthly behavior. */
     const monthly = product({
