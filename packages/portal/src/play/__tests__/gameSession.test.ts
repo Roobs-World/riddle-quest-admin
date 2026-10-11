@@ -824,3 +824,245 @@ it("returns from commerce to an unspent Continue boundary, but not a resolved lo
     expect(reduce(resolved, {type: "closeModal"}).modal).toBeNull();
   }
 });
+
+
+it.each(["typed", "preview", "confirmed"])("preserves Turkish dotted I in a %s single-player attempt", kind => {
+  /** Content locale owns letter casing even while presentation uses another language. */
+  const loaded = {...riddle, evaluation: {answer: "izmir", locale: "tr"}};
+  /** An editable attempt can include either a provisional or authoritative hinted position. */
+  let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+  if (kind !== "typed") state = reduce(state, {type: kind === "preview" ? "previewHint" : "applyHint", index: 0, letter: "i"});
+  for (const letter of kind === "typed" ? "izmir" : "zmir") state = reduce(state, {type: "typeLetter", letter});
+  expect(state.currentLetters).toEqual(["İ", "Z", "M", "İ", "R"]);
+  state = reduce(state, {type: "guessRequested"});
+  expect(state.guesses[0].feedback).toEqual(Array(5).fill("green"));
+});
+
+it("keeps Turkish dotted and dotless typed I distinct", () => {
+  /** A one-cell Turkish question distinguishes intentional uppercase I from lowercase i. */
+  const loaded = {...riddle, answerLength: 1, evaluation: {answer: "i", locale: "tr"}};
+  /** The visible state starts with no input or server mutations. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+  expect(reduce(state, {type: "typeLetter", letter: "i"}).currentLetters).toEqual(["İ"]);
+  expect(reduce(state, {type: "typeLetter", letter: "I"}).currentLetters).toEqual(["I"]);
+});
+
+
+it.each([["izmir", "İ"], ["IRMAK", "I"]])("projects a historical Turkish I hint against immutable %s content", (answer, expected) => {
+  /** The trusted current question distinguishes a dotted answer from a valid dotless answer. */
+  const loaded = {...riddle, evaluation: {answer, locale: "tr"}};
+  /** Historical receipt identity and balance are outside this local glyph projection. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+  /** The projected glyph retains the purchased position and confirmed balance. */
+  const hinted = reduce(state, {type: "applyHint", index: 0, letter: "I", newCoins: 275});
+  expect(hinted.currentLetters[0]).toBe(expected);
+  expect(hinted.hintRevealedIndices).toEqual([0]);
+});
+
+it("does not reinterpret an ambiguous historical hint without immutable Turkish evaluation", () => {
+  /** A legacy question without evaluation cannot establish which Turkish I was purchased. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  expect(reduce(state, {type: "applyHint", index: 0, letter: "I"}).currentLetters[0]).toBe("I");
+});
+
+
+it.each([["izmir", "İ", "i"], ["izmir", "I", "i"], ["IRMAK", "I", "ı"]])(
+  "keeps confirmed Turkish %s hint %s keyboard feedback under canonical %s", (answer, letter, key) => {
+    /** Immutable Turkish content determines both displayed hint and keyboard feedback identity. */
+    const loaded = {...riddle, evaluation: {answer, locale: "tr"}};
+    /** A freshly confirmed grant starts before any submitted guess can mask hint feedback. */
+    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+    /** Confirmation must color precisely the hinted symbol without leaking to the other Turkish I. */
+    const hinted = reduce(state, {type: "applyHint", index: 0, letter});
+    expect(hinted.letterStates).toEqual({[key]: "green"});
+  },
+);
+
+
+it.each(["loaded", "queued", "provider", "continue", "rollback"] as const)(
+  "keeps authoritative hint keyboard feedback through %s recovery", kind => {
+    /** An older checkpoint has no purchased hint or keyboard feedback. */
+    const prior = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    /** Journal fields intentionally predate the server's paid hint. */
+    const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
+      completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = prior;
+    /** Recovery state must merge knowledge instead of replacing a confirmed purchase. */
+    const base = {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
+      completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds};
+    /** Server-owned hint is confirmed even without any submitted guess. */
+    const loaded = {...riddle, revealedHints: [{index: 0, letter: "P"}]};
+    /** Actual recovery reducer begins from the current host-issued question. */
+    let state = reduce(prior, {type: "loadRiddle", riddle: loaded});
+    if (kind === "queued") state = reduce(state, {type: "restoreQueuedGuesses", base, guesses: [], draft: currentLetters});
+    if (kind === "provider") state = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId,
+      sessionToken: riddle.sessionToken, currentLetters, activeSlotIndex, hintRevealedIndices: [], guesses: [],
+      engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+      awaitingContinue: false, letterStates: {}});
+    if (kind === "continue") state = reduce(state, {type: "continueGranted"});
+    if (kind === "rollback") state = reduce(state, {type: "restoreConfirmedRiddle", riddle: loaded, base});
+    expect(state.letterStates.p).toBe("green");
+    expect(state.currentLetters[0]).toBe("P");
+    expect(state.activeSlotIndex).not.toBe(0);
+  },
+);
+
+
+it("does not promote a provisional hint to confirmed keyboard knowledge during recovery", () => {
+  /** Current question has no purchased hint. */
+  const loaded = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  /** A pending letter can still be rejected without leaving green keyboard feedback. */
+  const preview = reduce(loaded, {type: "previewHint", index: 0, letter: "P"});
+  /** Continue's history projection must not confirm an unrelated pending purchase. */
+  const projected = reduce(preview, {type: "continueGranted"});
+  expect(projected.letterStates.p).toBeUndefined();
+  expect(reduce(projected, {type: "rejectHint"}).letterStates.p).toBeUndefined();
+});
+
+it("does not carry a prior question's hint feedback into its successor", () => {
+  /** The completed predecessor contains confirmed hint knowledge. */
+  const prior = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {...riddle,
+    revealedHints: [{index: 0, letter: "P"}]}});
+  /** A successor without hints owns a new empty keyboard projection. */
+  const next = reduce(prior, {type: "loadRiddle", riddle: {...riddle,
+    riddleId: "next-riddle", sessionToken: "next-session-token"}});
+  expect(next.letterStates).toEqual({});
+});
+
+
+it.each([-1, 0.5, NaN, Infinity, 5])("ignores invalid hint position %s without phantom locks", index => {
+  /** A valid editable question owns only its five integer cell positions. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  expect(reduce(state, {type: "previewHint", index, letter: "P"})).toBe(state);
+  expect(reduce(state, {type: "applyHint", index, letter: "P"})).toBe(state);
+  /** A failed confirmation retires only the provisional reveal, restoring its original selection. */
+  const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+  /** The rejected positional metadata cannot disable ordinary subsequent typing. */
+  const restored = reduce(preview, {type: "applyHint", index, letter: "P"});
+  expect(restored.pendingHintState).toBeNull();
+  expect(restored.hintRevealedIndices).toEqual([]);
+  expect(restored.activeSlotIndex).toBe(0);
+  expect(reduce(restored, {type: "typeLetter", letter: "A"}).currentLetters[0]).toBe("A");
+});
+
+
+it.each(["", " ", "XX", "ß", "a" + "\u0301".repeat(32)])("rejects hint letters that cannot occupy one cell: %j", letter => {
+  /** One valid question has no confirmed hint locks. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  expect(reduce(state, {type: "previewHint", index: 0, letter})).toBe(state);
+  expect(reduce(state, {type: "applyHint", index: 0, letter})).toBe(state);
+  /** A malformed confirmation must retire its valid optimistic preview. */
+  const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+  /** Restored draft remains editable after rejecting impossible cell content. */
+  const restored = reduce(preview, {type: "applyHint", index: 0, letter});
+  expect(restored.hintRevealedIndices).toEqual([]);
+  expect(restored.pendingHintState).toBeNull();
+  expect(reduce(restored, {type: "typeLetter", letter: "A"}).currentLetters[0]).toBe("A");
+});
+
+it.each(["E\u0301", "👩‍🚀", "कि", "a" + "\u0301".repeat(31)])("preserves valid combining hint cells: %j", letter => {
+  /** Existing one-grapheme hints remain valid even with multiple code points. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  for (const type of ["previewHint", "applyHint"] as const) {
+    /** Every valid reveal occupies exactly its owned slot. */
+    const hinted = reduce(state, {type, index: 0, letter});
+    expect(hinted.currentLetters[0]).toBe(letter.toLocaleUpperCase("en"));
+    expect(hinted.hintRevealedIndices).toEqual([0]);
+  }
+});
+
+
+it.each([["en", "PIANO", "piano"], ["tr", "İZMİR", "izmir"]])(
+  "retires a saved %s draft newly committed as %s/%s", (locale, draft, accepted) => {
+    /** Current authority has accepted the word that an older local checkpoint still calls a draft. */
+    const issued = {...riddle, attemptsUsed: 1, evaluation: {answer: "zombi", locale},
+      acceptedGuesses: [{attempt: 1, feedback: [...accepted].map(letter => ({letter, status: "yellow" as const}))}]};
+    /** Same-session reload owns the newer history before restoring local intent. */
+    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued});
+    /** The retained checkpoint predates the authoritative attempt. */
+    const restored = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
+      currentLetters: [...draft], activeSlotIndex: 3, hintRevealedIndices: [], guesses: [],
+      engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+      awaitingContinue: false, letterStates: {}});
+    expect(restored.currentLetters).toEqual(Array(5).fill(""));
+    expect(restored.activeSlotIndex).toBe(0);
+    expect(restored.guesses[0].guess.join("")).toBe(accepted);
+  },
+);
+
+it.each(["unrelated-draft", "same-counter", "missing-history"])("preserves checkpoint intent without consumption proof: %s", kind => {
+  /** Only an advanced authoritative matching row proves that a saved draft was already submitted. */
+  const issued = {...riddle, attemptsUsed: 1, ...(kind !== "missing-history" ? {
+    acceptedGuesses: [{attempt: 1, feedback: [..."piano"].map(letter => ({letter, status: "yellow" as const}))}],
+  } : {})};
+  /** Unrelated unsent letters or a current checkpoint must survive a reload. */
+  const currentLetters = kind === "unrelated-draft" ? ["C", "L", "", "", ""] : [..."PIANO"];
+  /** The fresh authority-issued question is eligible for provider reconciliation. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued});
+  /** Restoration carries its own acknowledged attempt count independently of draft contents. */
+  const restored = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
+    currentLetters, activeSlotIndex: 2, hintRevealedIndices: [], guesses: [],
+    engineSnapshot: {guesses: [], attemptsUsed: kind === "same-counter" ? 1 : 0, hasUsedContinue: false, gameOver: false},
+    awaitingContinue: false, letterStates: {}});
+  expect(restored.currentLetters).toEqual(currentLetters);
+  expect(restored.activeSlotIndex).toBe(2);
+});
+
+it("keeps purchased cells when retiring a newly accepted saved draft", () => {
+  /** Paid hint ownership survives clearing the other cells of an accepted word. */
+  const issued = {...riddle, attemptsUsed: 1, revealedHints: [{index: 0, letter: "P"}],
+    acceptedGuesses: [{attempt: 1, feedback: [..."piano"].map(letter => ({letter, status: "yellow" as const}))}]};
+  /** Current host hint locks outrank the old checkpoint. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued});
+  /** The consumed draft is cleared only outside confirmed hint cells. */
+  const restored = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
+    currentLetters: [..."PIANO"], activeSlotIndex: 3, hintRevealedIndices: [0], guesses: [],
+    engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
+    awaitingContinue: false, letterStates: {}});
+  expect(restored.currentLetters).toEqual(["P", "", "", "", ""]);
+  expect(restored.activeSlotIndex).toBe(1);
+  expect(restored.hintRevealedIndices).toEqual([0]);
+  expect(restored.letterStates.p).toBe("green");
+});
+
+
+it.each(["reject", "save"])("preserves typing after an unconfirmed hint during %s", kind => {
+  /** The hint starts after one player-owned letter, with the cursor ready for the next one. */
+  let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  state = reduce(state, {type: "typeLetter", letter: "C"});
+  state = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+  state = reduce(state, {type: "typeLetter", letter: "A"});
+  state = reduce(state, {type: "typeLetter", letter: "N"});
+  /** Projection rolls back only the unconfirmed hint, retaining subsequent player intent. */
+  const recovered = kind === "reject" ? reduce(state, {type: "rejectHint"}) : createSavedGame(state)!;
+  expect(recovered.currentLetters).toEqual(["C", "A", "N", "", ""]);
+  expect(recovered.activeSlotIndex).toBe(3);
+  expect(recovered.hintRevealedIndices).toEqual([]);
+  if (kind === "reject") {
+    state = recovered as GameSessionState;
+    state = reduce(state, {type: "typeLetter", letter: "O"});
+    state = reduce(state, {type: "typeLetter", letter: "N"});
+    expect(state.currentLetters.join("")).toBe("CANON");
+  }
+});
+
+
+it.each(["reject", "save"])("retains untouched and deliberate preview selection during %s", kind => {
+  for (const intent of ["unchanged", "focused", "ignored", "typed-emptied", "focused-same"] as const) {
+    /** Original selection differs from the automatic preview cursor. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = reduce(state, {type: "typeLetter", letter: "C"});
+    state = reduce(state, {type: "selectSlot", index: 3});
+    state = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+    if (intent === "focused") state = reduce(state, {type: "selectSlot", index: 4});
+    if (intent === "ignored") state = reduce(state, {type: "typeLetter", letter: " "});
+    if (intent === "focused-same") state = reduce(state, {type: "selectSlot", index: 1});
+    if (intent === "typed-emptied") {
+      state = reduce(state, {type: "typeLetter", letter: "A"});
+      state = reduce(state, {type: "backspace"});
+    }
+    /** Ignored input leaves the original intent intact; explicit focus remains player-owned. */
+    const recovered = kind === "reject" ? reduce(state, {type: "rejectHint"}) : createSavedGame(state)!;
+    expect(recovered.activeSlotIndex).toBe(intent === "focused" ? 4 : intent === "focused-same" || intent === "typed-emptied" ? 1 : 3);
+    expect(recovered.currentLetters).toEqual(["C", "", "", "", ""]);
+  }
+});

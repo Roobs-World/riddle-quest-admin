@@ -37,3 +37,12 @@ it("keeps independent ranks without modifying canonical history", () => {
   expect(getRaceLetterStates(rows)).toEqual({a: "yellow", b: "green", c: "yellow"});
   expect(rows).toEqual(before);
 });
+
+
+/** Confirmed reveals are stronger than prior guesses and use the immutable race content locale. */
+it.each([["en", "P", "p"], ["tr", "İ", "i"], ["tr", "I", "ı"]])(
+  "projects server hint %s/%s under keyboard identity %s", (locale, letter, key) => {
+    expect(getRaceLetterStates([{guess: [letter], feedback: ["red"]}], locale, [{index: 0, letter}]))
+      .toEqual({[key]: "green"});
+  },
+);

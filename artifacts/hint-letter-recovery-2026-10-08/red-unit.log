@@ -1,0 +1,478 @@
+FAIL src/play/__tests__/useGameMessageRouter.test.ts
+  ● rejects malformed hint cell content " "
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": 0,
+    +       "letter": " ",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      307 |     operation: "hint", ok: true, data: {index: 0, revealedLetter},
+      308 |   }});
+    > 309 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      310 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      311 | });
+      312 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:309:31
+
+  ● rejects malformed hint cell content "XX"
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": 0,
+    +       "letter": "XX",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      307 |     operation: "hint", ok: true, data: {index: 0, revealedLetter},
+      308 |   }});
+    > 309 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      310 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      311 | });
+      312 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:309:31
+
+  ● rejects malformed hint cell content "ß"
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": 0,
+    +       "letter": "ß",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      307 |     operation: "hint", ok: true, data: {index: 0, revealedLetter},
+      308 |   }});
+    > 309 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      310 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      311 | });
+      312 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:309:31
+
+  ● rejects malformed hint cell content "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́"
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": 0,
+    +       "letter": "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      307 |     operation: "hint", ok: true, data: {index: 0, revealedLetter},
+      308 |   }});
+    > 309 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      310 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      311 | });
+      312 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:309:31
+
+FAIL src/play/__tests__/gameSession.test.ts
+  ● rejects hint letters that cannot occupy one cell: ""
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 3
+    + Received  + 9
+
+    @@ -1,7 +1,7 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": 1,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+          "",
+    @@ -17,11 +17,13 @@
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     0,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": 0,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      949 |   /** One valid question has no confirmed hint locks. */
+      950 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 951 |   expect(reduce(state, {type: "previewHint", index: 0, letter})).toBe(state);
+          |                                                                  ^
+      952 |   expect(reduce(state, {type: "applyHint", index: 0, letter})).toBe(state);
+      953 |   /** A malformed confirmation must retire its valid optimistic preview. */
+      954 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:951:66
+
+  ● rejects hint letters that cannot occupy one cell: " "
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  -  4
+    + Received  + 10
+
+    @@ -1,27 +1,29 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": 1,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+    +     " ",
+          "",
+          "",
+          "",
+          "",
+    -     "",
+        ],
+        "engineSnapshot": Object {
+          "attemptsUsed": 0,
+          "gameOver": false,
+          "guesses": Array [],
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     0,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": 0,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      949 |   /** One valid question has no confirmed hint locks. */
+      950 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 951 |   expect(reduce(state, {type: "previewHint", index: 0, letter})).toBe(state);
+          |                                                                  ^
+      952 |   expect(reduce(state, {type: "applyHint", index: 0, letter})).toBe(state);
+      953 |   /** A malformed confirmation must retire its valid optimistic preview. */
+      954 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:951:66
+
+  ● rejects hint letters that cannot occupy one cell: "XX"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  -  4
+    + Received  + 10
+
+    @@ -1,27 +1,29 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": 1,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+    +     "XX",
+          "",
+          "",
+          "",
+          "",
+    -     "",
+        ],
+        "engineSnapshot": Object {
+          "attemptsUsed": 0,
+          "gameOver": false,
+          "guesses": Array [],
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     0,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": 0,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      949 |   /** One valid question has no confirmed hint locks. */
+      950 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 951 |   expect(reduce(state, {type: "previewHint", index: 0, letter})).toBe(state);
+          |                                                                  ^
+      952 |   expect(reduce(state, {type: "applyHint", index: 0, letter})).toBe(state);
+      953 |   /** A malformed confirmation must retire its valid optimistic preview. */
+      954 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:951:66
+
+  ● rejects hint letters that cannot occupy one cell: "ß"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  -  4
+    + Received  + 10
+
+    @@ -1,27 +1,29 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": 1,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+    +     "SS",
+          "",
+          "",
+          "",
+          "",
+    -     "",
+        ],
+        "engineSnapshot": Object {
+          "attemptsUsed": 0,
+          "gameOver": false,
+          "guesses": Array [],
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     0,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": 0,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      949 |   /** One valid question has no confirmed hint locks. */
+      950 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 951 |   expect(reduce(state, {type: "previewHint", index: 0, letter})).toBe(state);
+          |                                                                  ^
+      952 |   expect(reduce(state, {type: "applyHint", index: 0, letter})).toBe(state);
+      953 |   /** A malformed confirmation must retire its valid optimistic preview. */
+      954 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:951:66
+
+  ● rejects hint letters that cannot occupy one cell: "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  -  4
+    + Received  + 10
+
+    @@ -1,27 +1,29 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": 1,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+    +     "Á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́",
+          "",
+          "",
+          "",
+          "",
+    -     "",
+        ],
+        "engineSnapshot": Object {
+          "attemptsUsed": 0,
+          "gameOver": false,
+          "guesses": Array [],
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     0,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": 0,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      949 |   /** One valid question has no confirmed hint locks. */
+      950 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 951 |   expect(reduce(state, {type: "previewHint", index: 0, letter})).toBe(state);
+          |                                                                  ^
+      952 |   expect(reduce(state, {type: "applyHint", index: 0, letter})).toBe(state);
+      953 |   /** A malformed confirmation must retire its valid optimistic preview. */
+      954 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:951:66
+
+Test Suites: 2 failed, 2 total
+Tests:       9 failed, 141 passed, 150 total
+Snapshots:   0 total
+Time:        0.362 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts|src/play/__tests__/useGameMessageRouter.test.ts.

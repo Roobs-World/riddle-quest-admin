@@ -904,7 +904,7 @@ describe("Race Session ownership and authority orchestration", () => {
     h.session.retry(); h.reject("raceResume", "Still unavailable."); h.session.retry();
     h.respond("raceResume", await authority.resumeRace(h.run.runId));
     expect(h.session.getSnapshot()).toMatchObject({error: null, pending: null, currentLetters: [hinted ? "c" : "z", "l", "o", "", ""],
-      activeSlotIndex: hinted ? 1 : 0, raceGuesses: [], run: {correctCount: 1, totalPenaltyMs: hinted ? 15000 : 0}});
+      activeSlotIndex: hinted ? 3 : 0, raceGuesses: [], run: {correctCount: 1, totalPenaltyMs: hinted ? 15000 : 0}});
     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
     expect(h.effects.some(effect => effect.kind === "outcome")).toBe(false);
   });
@@ -1065,7 +1065,7 @@ describe("Race Session ownership and authority orchestration", () => {
     confirmed.currentRiddle!.revealedLetters = [{index: 0, letter: question === "successor" ? "c" : "p"}, {index: 3, letter: question === "successor" ? "c" : "n"}];
     h.respond("raceGuess", {run: confirmed, isCorrect: question === "successor", autoSkipped: false,
       feedback: [...(question === "successor" ? "piano" : "zzzzz")].map(letter => ({letter, status: question === "successor" ? "green" : "red"}))});
-    expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: [question === "successor" ? "c" : "p", "l", "o", question === "successor" ? "c" : "n", ""], activeSlotIndex: 1});
+    expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: [question === "successor" ? "c" : "p", "l", "o", question === "successor" ? "c" : "n", ""], activeSlotIndex: 4});
     expect(h.session.getSnapshot().raceGuesses).toHaveLength(question === "successor" ? 0 : 1);
     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
   });

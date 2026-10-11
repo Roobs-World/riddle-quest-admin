@@ -3,8 +3,8 @@
   "samples": [
     {
       "width": 1280,
-      "completionReconnectMs": 1.199999999254942,
-      "startupReconnectMs": 1.0999999977648258,
+      "completionReconnectMs": 1,
+      "startupReconnectMs": 1.5,
       "effectReplayRecovered": true,
       "synchronousAcknowledgementStoppedRetries": true,
       "currentProfilePreserved": true,
@@ -16,8 +16,8 @@
     },
     {
       "width": 390,
-      "completionReconnectMs": 1.199999999254942,
-      "startupReconnectMs": 0.9000000022351742,
+      "completionReconnectMs": 1,
+      "startupReconnectMs": 1.0999999940395355,
       "effectReplayRecovered": true,
       "synchronousAcknowledgementStoppedRetries": true,
       "currentProfilePreserved": true,

@@ -1,0 +1,1 @@
+[{"locale":"en","side":"baseline","medianMs":2.05,"rangeMs":[1.9,2.3]},{"locale":"en","side":"candidate","medianMs":0.95,"rangeMs":[0.9,1.1]},{"locale":"hi","side":"baseline","medianMs":2.85,"rangeMs":[2.85,3.3]},{"locale":"hi","side":"candidate","medianMs":1.3,"rangeMs":[1.25,1.6]}]

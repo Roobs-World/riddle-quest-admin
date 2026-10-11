@@ -1,0 +1,16 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/395c3b7c9315a968ab151a9ef563553e658e2bbf6cc85caa7f09ed266ec858d9/facebook.json",
+    "artifacts/target-dependencies/custom/9e04276fcf2145fce88986b1e73cca22c275881d41677bdc2b2e17d0ecc4def6/reddit.json",
+    "artifacts/target-dependencies/custom/fa5f0f1f0f4de2aaf4d2a4e8a08a9b1e0d65da44a6d1045208e0a9d7ef93884f/facebook.json",
+    "artifacts/target-dependencies/custom/8a2fe8bff79f5e894ade5fd2d49805faa5c8dc25edec93ab2fdd64242388c36f/jest.json",
+    "artifacts/target-dependencies/custom/ac9e0be9a0f33a13cc52fd97ec26d9eff08b4e9634d581c0920cedad4c3c4d38/youtube.json",
+    "artifacts/target-dependencies/custom/1668e83112bf13bf20f0ed620cad5ddd7ac197f3f577457cafd97138b97dae89/yahoo.json",
+    "artifacts/target-dependencies/custom/fee92c9b952fd8b78f73e43431b12737f6af6f8f0bbd1100ed14a075ea8f081d/netflix.json"
+  ],
+  "buildRoots": [
+    "/tmp/pagehide-checkpoint-fix-builds-20261009a",
+    "/tmp/riddle-quest-facebook-browser-LdPYoE"
+  ],
+  "allAbsent": true
+}

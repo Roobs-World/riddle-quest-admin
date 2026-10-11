@@ -48,3 +48,25 @@ describe("protected gameplay content", () => {
     await expect(readProtectedContent(altered)).rejects.toThrow();
   });
 });
+
+it("round-trips a larger multilingual pack without changing ciphertext or decoded content", async () => {
+  /** Multiple encoded byte values and UTF-8 widths exercise direct hexadecimal conversion. */
+  const pack = Array.from({length: 400}, (_, index) => ({index,
+    clue: `谜语 مرحبا café हिन्दी ${index}`, answer: `İZMİR-${index}`,
+    values: Array.from({length: 256}, (_value, byte) => byte),
+  }));
+  /** Existing protected bytes remain immutable across repeated reads. */
+  const envelope = await protectContent(pack);
+  /** A read must not rewrite the transport bytes supplied by its caller. */
+  const original = {...envelope};
+  expect(envelope.data.length).toBeGreaterThan(100_000);
+  await expect(readProtectedContent(envelope)).resolves.toEqual(pack);
+  await expect(readProtectedContent(envelope)).resolves.toEqual(pack);
+  expect(envelope).toEqual(original);
+});
+
+it.each(["AA", "a", "ag", "00\n", " 00", "00 ", "００"])("rejects noncanonical hexadecimal input %p", async data => {
+  /** Authentication must never receive malformed hexadecimal envelopes. */
+  const valid = await protectContent({answer: "ok"});
+  await expect(readProtectedContent({...valid, data})).rejects.toThrow("content-protection-invalid");
+});

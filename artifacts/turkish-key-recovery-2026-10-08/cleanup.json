@@ -1,0 +1,16 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/dae48c1f684090f6525d58cac19946ecbc60343cf63baf4b6092c14db2599d73/jest.json",
+    "artifacts/target-dependencies/custom/7a36a6fbb04d9c4b61622333630feacd6e2f22e5e97fb2c92867ab79fff80eb1/facebook.json",
+    "artifacts/target-dependencies/custom/a75103d47c70a502c4130d6c8f00666648699e2f68ae19bc779ed34f7d857840/facebook.json",
+    "artifacts/target-dependencies/custom/dcaffedb788536c4f8467ccc1aaabdb0141b7df28d68f1bf7efcc7e99bee7c4f/youtube.json",
+    "artifacts/target-dependencies/custom/880f5987eaa6b36296e5fb1724a03f30011ab61214f92df9bb7898e55cbb77c4/netflix.json",
+    "artifacts/target-dependencies/custom/3295927e9ea0dc2696d4f606f3d9d175ac30edb2a39c7fbec4e1ad2c22069aaa/reddit.json",
+    "artifacts/target-dependencies/custom/9a3fa3f51b2d242dd7294d9243be1a833ac63273af2e8085d607ac36efd905c2/yahoo.json"
+  ],
+  "buildRoots": [
+    "/tmp/turkish-key-recovery-builds-20261008a",
+    "/tmp/riddle-quest-facebook-browser-wp7OjN"
+  ],
+  "allAbsent": true
+}

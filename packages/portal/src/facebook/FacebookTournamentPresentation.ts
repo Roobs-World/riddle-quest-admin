@@ -144,18 +144,28 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
   };
   return {
     /** Opens one explicitly requested native share/create dialog using a fresh official best score. */
-    async share(locale: RaceLocale): Promise<PlatformResult<void>> {
+    async share(locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>> {
       return runFacebookSdkDialog(sdk, async () => {
         try {
           if (!active(locale)) return {status: "unavailable", message: "facebook-tournament-inactive"};
+          if (signal?.aborted) return {status: "cancelled"};
+          /** Presentation retirement cannot admit native UI from a late original read. */
+          const retired = Object.assign(new Error("facebook-tournament-share-retired"), {code: "USER_CANCELLED"});
           /** Preparation may expire locally without changing either original read promise. */
           let expired = false;
           /** One shared budget covers standings and metadata, ending before native dialog admission. */
           let timeout: ReturnType<typeof setTimeout> | undefined;
           /** A timer boundary cannot admit the next SDK read from an already fulfilled race. */
-          const assertPreparing = () => {if (expired) throw new Error("facebook-tournament-share-preparation-timeout");};
-          /** Both original read promises retain rejection observers after local expiry. */
+          const assertPreparing = () => {
+            if (signal?.aborted) throw retired;
+            if (expired) throw new Error("facebook-tournament-share-preparation-timeout");
+          };
+          /** One registered listener is removed before native dialog admission. */
+          let cancelPreparation: (() => void) | undefined;
+          /** Both original read promises retain rejection observers after local expiry or retirement. */
           const deadline = new Promise<never>((_resolve, reject) => {
+            cancelPreparation = () => reject(retired);
+            signal?.addEventListener("abort", cancelPreparation, {once: true});
             timeout = setTimeout(() => {expired = true; reject(new Error("facebook-tournament-share-preparation-timeout"));}, 8000);
           });
           /** Exact-schema official standings authorize only the current best. */
@@ -172,7 +182,11 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
             }
             native = await Promise.race([current(), deadline]);
             assertPreparing();
-          } finally {if (timeout !== undefined) clearTimeout(timeout);}
+          } finally {
+            if (timeout !== undefined) clearTimeout(timeout);
+            if (cancelPreparation) signal?.removeEventListener("abort", cancelPreparation);
+          }
+          assertPreparing();
           if (!live(board, locale) || !board.currentPlayer) {
             return {status: "unavailable", message: "facebook-tournament-inactive"};
           }
@@ -184,6 +198,7 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
               return {status: "unavailable", message: "RaceTo10.ERROR_LOCALE_MISMATCH"};
             }
             if (!matches(native, board)) return {status: "unavailable", message: "facebook-tournament-context-mismatch"};
+            assertPreparing();
             await sdk.tournament!.shareAsync({score: board.currentPlayer.adjustedTimeMs, data: envelope(board)});
           } else {
             /** Native creation is itself the explicit provider dialog; do not open a second share dialog. */
@@ -192,6 +207,7 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
             if (!image || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(image) || image.length > 2_800_000) {
               throw new Error("facebook-tournament-image-unavailable");
             }
+            assertPreparing();
             await sdk.tournament!.createAsync({initialScore: board.currentPlayer.adjustedTimeMs,
               config: {title: tr("RaceTo10.HUB_TOURNAMENTS"), image, sortOrder: "LOWER_IS_BETTER",
                 scoreFormat: "NUMERIC", endTime: board.endsAtMs / 1000}, data: envelope(board)});

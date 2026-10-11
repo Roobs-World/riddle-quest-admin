@@ -1,0 +1,43 @@
+{
+  "mode": "production",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 2,
+  "checks": 18,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "timer:none:guess:interval",
+      "name": "only current callback may renew its exact request",
+      "actual": 0,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "timer:none:guess:interval",
+      "name": "only current callback may renew its exact request",
+      "actual": 0,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Pending-play retry scope retirement
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/solo-retry-clock-rollback-2026-10-09/probe.mjs:70:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

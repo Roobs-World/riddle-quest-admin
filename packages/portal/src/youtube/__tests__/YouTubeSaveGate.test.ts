@@ -68,3 +68,34 @@ describe("YouTubeSaveGate", () => {
     expect(gate.blocked).toBe(false);
   });
 });
+
+it("coalesces retries and exit flushes while an exact save is still in flight", async () => {
+  /** Provider completion is held independently of the game's local mutation attempts. */
+  let release!: () => void;
+  /** Only one exact serialized write may reach the provider before that completion. */
+  const saveData = jest.fn((_serialized: string) => new Promise<void>(resolve => {release = resolve;}));
+  /** The real gate owns serialization, uncertainty and write ordering. */
+  const gate = new YouTubeSaveGate({saveData}), save = createEmptyYouTubeSave("content-v1");
+  save.revision = 1;
+  /** First commit reserves immutable bytes before awaiting the provider. */
+  const first = gate.commit(save);
+  await Promise.resolve();
+  expect(gate.writing).toBe(true);
+  expect(gate.pendingRevision).toBe(1);
+  /** Mutating caller-owned data cannot change an already reserved revision. */
+  const exact = saveData.mock.calls[0]![0];
+  save.progression.coins = 999;
+  gate.flush();
+  /** Explicit retry shares the outstanding write instead of starting another one. */
+  const retry = gate.retry();
+  /** A newer revision cannot overtake the uncertain original write. */
+  const newer = createEmptyYouTubeSave("content-v1"); newer.revision = 2;
+  await expect(gate.commit(newer)).rejects.toBeInstanceOf(YouTubeSaveBlockedError);
+  expect(saveData).toHaveBeenCalledTimes(1);
+  expect(exact).not.toContain("999");
+  release();
+  await Promise.all([first, retry]);
+  expect(gate.writing).toBe(false);
+  expect(gate.pendingRevision).toBeNull();
+  expect(gate.blocked).toBe(false);
+});

@@ -1,5 +1,6 @@
 import {afterEach, describe, expect, it} from "@jest/globals";
-import {createPendingPlayJournalStorage, pendingPlayScope, isPendingPlayJournalSupersededByWin, reconcileConfirmedPendingPlay, createRejectedPlayDraft, type PendingGuessJournal} from "../pendingGuessJournal";
+import { pendingPlayScope, reconcileConfirmedPendingPlay, createRejectedPlayDraft, type PendingGuessJournal} from "../pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
 /** The values used by this regression scenario. */
 const values = new Map<string, string>();
 /** Provides storage behavior. */
@@ -174,7 +175,7 @@ describe("pending guess journal", () => {
     expect(readPendingGuessJournal(scope)).toMatchObject({riddle: {index: 5}, draftActiveSlotIndex: 2, successors: [{riddle: {index: 6}}]});
   });
 
-  it.each(["predecessor", "successor"])("retires only a %s paid action owned by a completed buffered predecessor", owner => {
+  it.each(["predecessor", "successor"])("preserves a %s paid action while reconciling a completed buffered predecessor", owner => {
     /** One issued successor retains a draft while paid delivery is reconciled. */
     const pending = journal();pending.riddle.index = 4;
     pending.successors = [{riddle: {...pending.riddle,index: 5,riddleId: "classic-5",sessionToken: "00000000-0000-4000-8000-000000000005"},base: pending.base,draft: ["P", "I", "", "", ""]}];
@@ -183,7 +184,7 @@ describe("pending guess journal", () => {
     pending.coinAction = {type: "game:spendCoins",requestId: "continued-buffered-action",payload: {riddleId: target.riddleId,sessionToken: target.sessionToken,gameMode: "classic",reason: "continue"}};
     /** Valid host terminal history is the sole reason the predecessor may be retired. */
     const won = {...pending.riddle,attemptsUsed: 1,acceptedGuesses: [{attempt: 1,feedback: [..."PIANO"].map(letter => ({letter,status: "green" as const}))}]};
-    expect(reconcileConfirmedPendingPlay(pending, won)?.coinAction).toEqual(owner === "predecessor" ? undefined : pending.coinAction);
+    expect(reconcileConfirmedPendingPlay(pending, won)?.coinAction).toEqual(pending.coinAction);
     expect(reconcileConfirmedPendingPlay(pending, won)?.draftActiveSlotIndex).toBeUndefined();
   });
 
@@ -212,12 +213,12 @@ describe("pending guess journal", () => {
         feedback: [...(index === attempts - 1 ? "PIANO" : "QQQQQ")].map(letter => ({letter,
           status: index === attempts - 1 ? "green" as const : "red" as const}))}))};
     pending.queue[0]!.feedback = Array(5).fill("red");
-    expect(isPendingPlayJournalSupersededByWin(pending, won)).toBe(true);
+    expect(reconcileConfirmedPendingPlay(pending, won)).toBeNull();
     expect(pending.queue).toHaveLength(1);
     expect(pending.riddle.attemptsUsed).toBe(0);
     pending.coinAction = {type: "game:spendCoins", requestId: "continue-request", payload: {
       riddleId: won.riddleId, sessionToken: won.sessionToken, gameMode: won.gameMode, reason: "continue"}};
-    expect(isPendingPlayJournalSupersededByWin(pending, won)).toBe(true);
+    expect(reconcileConfirmedPendingPlay(pending, won)?.coinAction).toEqual(pending.coinAction);
   });
 
   it.each(["missing-proof", "wrong-proof", "foreign-token", "foreign-riddle", "foreign-mode", "successor", "foreign-queued-guess", "foreign-paid-action"])(
@@ -236,7 +237,7 @@ describe("pending guess journal", () => {
       if (boundary === "foreign-queued-guess") pending.queue[0]!.message.payload.sessionToken += "other";
       if (boundary === "foreign-paid-action") pending.coinAction = {type: "game:spendCoins", requestId: "continue-request",
         payload: {riddleId: won.riddleId, sessionToken: "other-issued-question-000001", gameMode: won.gameMode, reason: "continue"}};
-      expect(isPendingPlayJournalSupersededByWin(pending, won)).toBe(false);
+      expect(reconcileConfirmedPendingPlay(pending, won)).toBe(pending);
       expect(pending.queue).toHaveLength(1);
     });
 
@@ -325,4 +326,91 @@ it.each([-1, 5, 1.5, "2"])("rejects malformed persisted draft selection %p", (sl
   values.set(`riddleQuest:pendingPlay:v1:${scope}`, JSON.stringify({...pending,
     successors: [{riddle: pending.riddle, base: pending.base, draft: [], draftActiveSlotIndex: slot}]}));
   expect(readPendingGuessJournal(scope)).toBeNull();
+});
+
+it("reuses matching durable draft bytes without requiring another successful write", () => {
+  /** Concrete durable bytes survive a later write restriction. */
+  let durable: string | null = null;
+  /** This target permits the initial request admission and rejects all later writes. */
+  const adapter = createPendingPlayJournalStorage({getItem: () => durable, setItem: (_key, value) => {
+    if (durable !== null) throw new Error("Writes restricted after admission");
+    durable = value;
+  }, removeItem: () => {durable = null;}});
+  /** One immutable request remains the pending journal's owner. */
+  const pending = journal();
+  expect(adapter.write(pending)).toBe(true);
+  expect(adapter.write(pending, true)).toBe(true);
+  pending.draft = ["P"];
+  expect(adapter.write(pending, true)).toBe(false);
+  expect(JSON.parse(durable!).draft).not.toEqual(["P"]);
+});
+it("rewrites a removed checkpoint and retries a failed changed draft instead of trusting memory", () => {
+  /** Storage contents can disappear independently of the in-memory journal. */
+  let durable: string | null = null;
+  /** A transient storage failure must not acknowledge an unpersisted player letter. */
+  let fail = false;
+  /** The target exposes both external removal and an intermittent writer failure. */
+  const adapter = createPendingPlayJournalStorage({getItem: () => durable, setItem: (_key, value) => {
+    if (fail) throw new Error("Transient failure");
+    durable = value;
+  }, removeItem: () => {durable = null;}});
+  /** A mutable draft remains retryable after its first write fails. */
+  const pending = journal();
+  expect(adapter.write(pending)).toBe(true);
+  durable = null;
+  expect(adapter.write(pending, true)).toBe(true);
+  pending.draft = ["P"];
+  fail = true;
+  expect(adapter.write(pending, true)).toBe(false);
+  fail = false;
+  expect(adapter.write(pending, true)).toBe(true);
+  expect(JSON.parse(durable!).draft).toEqual(["P"]);
+});
+it("keeps a usable writer when the optional equality read is restricted", () => {
+  /** Only the write capability is available in this target fixture. */
+  let durable: string | null = null;
+  /** An unavailable read falls back to the original unconditional write behavior. */
+  const adapter = createPendingPlayJournalStorage({getItem: () => {throw new Error("Read restricted");},
+    setItem: (_key, value) => {durable = value;}, removeItem: () => {durable = null;}});
+  expect(adapter.write(journal(), true)).toBe(true);
+  expect(durable).not.toBeNull();
+});
+
+it.each(["{", JSON.stringify({owner: "foreign", expiresAt: "Infinity"}), JSON.stringify({owner: "foreign", expiresAt: Number.MAX_SAFE_INTEGER}), JSON.stringify({owner: "foreign", expiresAt: "16000"}), JSON.stringify({owner: {}, expiresAt: 16000})])("recovers delivery from invalid persisted lease %s", raw => {
+  values.set(`riddleQuest:pendingPlayLease:v1:${scope}`, raw);
+  expect(acquirePendingPlayLease(scope, "new-tab", 1000)).toBe(true);
+  expect(JSON.parse(values.get(`riddleQuest:pendingPlayLease:v1:${scope}`)!)).toEqual({owner: "new-tab", expiresAt: 16000});
+});
+it("bounds a foreign lease after the browser wall clock moves backward", () => {
+  expect(acquirePendingPlayLease(scope, "old-tab", 100000)).toBe(true);
+  expect(acquirePendingPlayLease(scope, "new-tab", 1000)).toBe(true);
+});
+
+it("does not admit a command when renewing its expired lease silently fails", () => {
+  /** Previously owned bytes do not establish a renewed delivery lifetime. */
+  const retained = JSON.stringify({owner: "same-tab", expiresAt: 999});
+  /** The storage fault returns stale bytes despite an apparently successful write. */
+  const unreliable = createPendingPlayJournalStorage({getItem: () => retained, setItem: () => {}, removeItem: () => {}});
+  expect(unreliable.acquire(scope, "same-tab", 1000)).toBe(false);
+});
+it("does not admit a command when another revision replaces its new lease", () => {
+  /** A competing revision can keep the owner text but revoke the requested deadline. */
+  const altered = JSON.stringify({owner: "same-tab", expiresAt: 999999});
+  /** First observation is empty; verification sees a different stored revision. */
+  let reads = 0;
+  /** Adapter seam exposes the exact persistence race without relying on timing. */
+  const unreliable = createPendingPlayJournalStorage({getItem: () => reads++ ? altered : null, setItem: () => {}, removeItem: () => {}});
+  expect(unreliable.acquire(scope, "same-tab", 1000)).toBe(false);
+});
+
+it.each(["İ", "ı"])("restores exact Turkish Hint request bytes and identity for %s", letter => {
+  /** A displayed Turkish hint can occur in a later paid request. */
+  const pending = journal();
+  pending.queue = [];
+  pending.coinAction = {type: "game:requestHint", requestId: "turkish-hint-0001", payload: {
+    riddleId: pending.riddle.riddleId, gameMode: "classic", sessionToken: pending.riddle.sessionToken,
+    requestId: "turkish-hint-0001", currentAttempt: [letter, "", "", "", ""],
+  }};
+  expect(writePendingGuessJournal(pending)).toBe(true);
+  expect(readPendingGuessJournal(scope)?.coinAction).toEqual(pending.coinAction);
 });

@@ -1,0 +1,26 @@
+[
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/turkish-virtual-dotless-key-2026-10-08/package.before.json",
+    "beforeSha256": "bd875c5370f2139bc4ccfdc17da5d86bacc4c6799a2d23e1f841efde535e8358",
+    "afterSha256": "e967e2a22d9ac735f124c4e0431b1f30de440ad13ce92cc1881fe6c4dc69a708"
+  },
+  {
+    "path": "packages/portal/scripts/verify-turkish-virtual-keys-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "afterSha256": "8bfe97b765195e1566d16c6f35426a746a54a255bbd592dc81446c51772c88d8"
+  },
+  {
+    "path": "packages/portal/src/play/GameFrameControls.tsx",
+    "before": "artifacts/turkish-virtual-dotless-key-2026-10-08/controls.before.tsx",
+    "beforeSha256": "e678a673c191de559242ef3099ce8f15963063818ec5a4c32b5227e72f73f3b8",
+    "afterSha256": "2a39c5d4a4e7209e9d27e75953fb0536af985b9d1e8c3a643f218b4fdb312d26"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/GameFrameControls.test.tsx",
+    "before": "artifacts/turkish-virtual-dotless-key-2026-10-08/test.before.tsx",
+    "beforeSha256": "a8f0d98235cc85e5b3953137adc2532b678e91ffb265506bf9e091d85dc9f958",
+    "afterSha256": "e817dfd183553648c40f6d3145103e5588030b4e3ea7f3c64d9650c820e00fb5"
+  }
+]

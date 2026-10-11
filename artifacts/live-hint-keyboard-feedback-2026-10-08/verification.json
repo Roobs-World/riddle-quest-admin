@@ -1,0 +1,12 @@
+{
+  "sourceInputs": 2491,
+  "ownedInputs": 5,
+  "clientTests": 3013,
+  "liveHintBrowserAssertions": 48,
+  "builtBrowserChecks": 23,
+  "targetBuilds": 6,
+  "devvitBuilt": true,
+  "builtFiles": 1299,
+  "deployed": false,
+  "goalComplete": false
+}

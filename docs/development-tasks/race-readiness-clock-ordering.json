@@ -46,7 +46,7 @@
         "--config",
         "firebase.race-verification.json",
         "--only",
-        "firestore",
+        "firestore,database",
         "--project",
         "demo-riddle-quest-multiplayer",
         "pnpm exec jest --config jest.race-coverage.config.js --runInBand"

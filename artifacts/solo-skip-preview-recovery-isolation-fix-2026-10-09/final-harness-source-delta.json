@@ -1,0 +1,7 @@
+{
+  "changed": [
+    "packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts"
+  ],
+  "productionInputsUnchanged": true,
+  "reason": "Bound browser waits and check receipt settlement independently of retained successor drafts."
+}

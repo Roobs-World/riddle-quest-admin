@@ -1,0 +1,22 @@
+{
+  "firebase-functions/src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts": {
+    "before": "d155a6290064bf1bc6e645ef37d657ebc616c502ee2aa5312107e69bfd0af917",
+    "after": "64757291f492495d41da3ab4e1f6bb5112df467a559c97ff073eabb2efb1870d"
+  },
+  "firebase-functions/src/race/raceLiveGuessReceipt.ts": {
+    "before": "e82d6524f18cbff1b81faee86a6bd51a7c25a464133babb099a6ac2c7d43480c",
+    "after": "40dfe37768e3d5eaffa96c00e0c55761505f2f8a4ddf98537a0763390543b15e"
+  },
+  "packages/portal/src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts": {
+    "before": "da31fc2005ec4d04f36bbc08a15cfaafc8baf609e052a5000b3070e70a7a25b4",
+    "after": "dcb56fad59b2091a06997ea9cc65cb068a92fb028fd43980fa7dc940f63d2e1c"
+  },
+  "packages/portal/src/play/race/logic/liveRaceDraft.ts": {
+    "before": "8317719db38d94d5051d05553f14077b661c6dcce8c4b86c76d62c3d12ba811f",
+    "after": "f8d5054744f83aeb82da58a77917f4e3690587f7c8d8b3350f8477966727b611"
+  },
+  "packages/portal/src/play/race/logic/liveRaceDraftCheckpoint.ts": {
+    "before": "00dbbd6c5fae19a8e4ab75a2535f2cbcd5ff657d057cc30e6b38afb4c126b54f",
+    "after": "515af956b2ef833b223cfc482acd0981a9e2598e41fc99787a18ceae5de5c92f"
+  }
+}

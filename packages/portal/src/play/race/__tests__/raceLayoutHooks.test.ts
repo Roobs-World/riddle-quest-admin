@@ -53,6 +53,11 @@ class TestElement {
   /** Stores rect. */
   public rect = {bottom: 0, top: 0};
 
+  /** Models whether the native browser renders this control. */
+  public visible = true;
+  /** Hidden controls cannot participate in the dialog focus loop. */
+  public checkVisibility(): boolean {return this.visible;}
+
   /** Provides query selector all behavior. */
   public querySelectorAll(): TestElement[] {
     return this.focusable;
@@ -326,6 +331,18 @@ describe("useRaceDialogFocus", () => {
     const tabBeforeConfirmationMount = keyboardEvent("Tab");
     keydownHandler?.(tabBeforeConfirmationMount);
     expect(tabBeforeConfirmationMount.preventDefault).not.toHaveBeenCalled();
+  });
+  it("excludes non-rendered controls from both ends of the focus loop", () => {
+    /** The native visibility predicate models a collapsed details descendant. */
+    const hidden = new TestElement();hidden.visible = false;
+    /** The committed dialog has two visible controls between hidden descendants. */
+    const first = new TestElement(), last = new TestElement(), harness = install();
+    harness.dialog.focusable = [hidden, first, last, hidden];mountRaceEffects();
+    testDocument.activeElement = first;keydownHandler?.(keyboardEvent("Tab", true));
+    expect(testDocument.activeElement).toBe(last);
+    testDocument.activeElement = last;keydownHandler?.(keyboardEvent("Tab"));
+    expect(testDocument.activeElement).toBe(first);
+    expect(hidden.focus).not.toHaveBeenCalled();
   });
   it("recaptures escaped focus in both directions and preserves owned key events", () => {
     /** Provides harness behavior. */

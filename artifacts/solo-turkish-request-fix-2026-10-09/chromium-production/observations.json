@@ -1,0 +1,450 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "displayed Turkish hint remains in the submitted attempt",
+    "actual": "İ",
+    "expected": "İ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "bridge and callable admit the exact paid request",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "reload parser preserves the exact request bytes",
+    "actual": {
+      "type": "game:requestHint",
+      "requestId": "hint-79538974-78d2-4180-8fd6-7dd45f311cbb",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-79538974-78d2-4180-8fd6-7dd45f311cbb",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "expected": {
+      "type": "game:requestHint",
+      "requestId": "hint-79538974-78d2-4180-8fd6-7dd45f311cbb",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-79538974-78d2-4180-8fd6-7dd45f311cbb",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "journal survives timer retirement",
+    "actual": "hint-79538974-78d2-4180-8fd6-7dd45f311cbb",
+    "expected": "hint-79538974-78d2-4180-8fd6-7dd45f311cbb"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "displayed Turkish hint remains in the submitted attempt",
+    "actual": "İ",
+    "expected": "İ"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "bridge and callable admit the exact paid request",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "reload parser preserves the exact request bytes",
+    "actual": {
+      "type": "game:requestHint",
+      "requestId": "hint-2d3fd01c-2a1d-443d-97f4-a95cd71925db",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-2d3fd01c-2a1d-443d-97f4-a95cd71925db",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "expected": {
+      "type": "game:requestHint",
+      "requestId": "hint-2d3fd01c-2a1d-443d-97f4-a95cd71925db",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-2d3fd01c-2a1d-443d-97f4-a95cd71925db",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "journal survives timer retirement",
+    "actual": "hint-2d3fd01c-2a1d-443d-97f4-a95cd71925db",
+    "expected": "hint-2d3fd01c-2a1d-443d-97f4-a95cd71925db"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "displayed Turkish hint remains in the submitted attempt",
+    "actual": "İ",
+    "expected": "İ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "bridge and callable admit the exact paid request",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "reload parser preserves the exact request bytes",
+    "actual": {
+      "type": "game:requestHint",
+      "requestId": "hint-cd17caa7-ee87-45a3-b47a-c1234f9b89dd",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-cd17caa7-ee87-45a3-b47a-c1234f9b89dd",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "expected": {
+      "type": "game:requestHint",
+      "requestId": "hint-cd17caa7-ee87-45a3-b47a-c1234f9b89dd",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-cd17caa7-ee87-45a3-b47a-c1234f9b89dd",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "journal survives timer retirement",
+    "actual": "hint-cd17caa7-ee87-45a3-b47a-c1234f9b89dd",
+    "expected": "hint-cd17caa7-ee87-45a3-b47a-c1234f9b89dd"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-forward",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "displayed Turkish hint remains in the submitted attempt",
+    "actual": "İ",
+    "expected": "İ"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "bridge and callable admit the exact paid request",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "reload parser preserves the exact request bytes",
+    "actual": {
+      "type": "game:requestHint",
+      "requestId": "hint-49af886a-6b9e-4917-960f-a953540f0266",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-49af886a-6b9e-4917-960f-a953540f0266",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "expected": {
+      "type": "game:requestHint",
+      "requestId": "hint-49af886a-6b9e-4917-960f-a953540f0266",
+      "payload": {
+        "riddleId": "classic_1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "requestId": "hint-49af886a-6b9e-4917-960f-a953540f0266",
+        "currentAttempt": [
+          "İ",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "journal survives timer retirement",
+    "actual": "hint-49af886a-6b9e-4917-960f-a953540f0266",
+    "expected": "hint-49af886a-6b9e-4917-960f-a953540f0266"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval-rollback",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  }
+]

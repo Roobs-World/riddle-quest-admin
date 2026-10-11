@@ -1,3 +1,4 @@
+import {SinglePlayerGuessSchema, SinglePlayerAttemptCellSchema} from "../validation/singlePlayerInput";
 import {AcceptedGuessesSchema} from "../validation/acceptedGuesses";
 import {RevealedHintsSchema} from "../validation/revealedHints";
 /**
@@ -271,11 +272,7 @@ export const GameSubmitGuessMessageSchema = envelope(
       riddleId: RiddleIdSchema,
       gameMode: GameModeSchema,
       sessionToken: z.string().min(20).max(128),
-      guess: z
-        .string()
-        .min(1)
-        .max(7)
-        .regex(/^[a-z]+$/i),
+      guess: SinglePlayerGuessSchema,
       requestId: z.string().min(8).max(128),
     })
     .strict(),
@@ -294,10 +291,7 @@ export const GameRequestHintMessageSchema = envelope(
     requestId: z.string().min(8).max(128),
     currentAttempt: z
       .array(
-        z
-          .string()
-          .max(1)
-          .regex(/^[a-z]?$/i),
+        SinglePlayerAttemptCellSchema,
       )
       .max(7),
   }),

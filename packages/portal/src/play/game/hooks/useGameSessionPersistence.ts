@@ -62,8 +62,9 @@ export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispat
     /** Passive registration preserves restoration-before-saving startup ordering. */
     const owner = backgroundOwnerRef.current;
     /** Browser lifecycle supplies only a signal; checkpoint policy stays in the module. */
-    const saveBeforeBackgrounding = () => {
-      if (owner === null || backgroundOwnerRef.current !== owner || document.visibilityState !== "hidden") return;
+    const saveBeforeBackgrounding = (event: Event) => {
+      if (owner === null || backgroundOwnerRef.current !== owner ||
+        event.type === "visibilitychange" && document.visibilityState !== "hidden") return;
       /** Background saves include committed changes before passive checkpoint effects run. */
       const committed = committedRef.current;
       // A pending account replacement must not save through the previous adapter.
@@ -80,6 +81,10 @@ export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispat
       }
     };
     document.addEventListener("visibilitychange", saveBeforeBackgrounding);
-    return () => document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
+    window.addEventListener("pagehide", saveBeforeBackgrounding);
+    return () => {
+      document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
+      window.removeEventListener("pagehide", saveBeforeBackgrounding);
+    };
   }, [checkpoints, stateRef]);
 };

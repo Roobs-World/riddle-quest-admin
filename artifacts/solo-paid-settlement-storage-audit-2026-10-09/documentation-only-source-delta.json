@@ -1,0 +1,7 @@
+{
+  "changed": [
+    "packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts"
+  ],
+  "productionInputsUnchanged": true,
+  "reason": "Three missing test declaration comments added after all browser jobs drained."
+}

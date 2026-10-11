@@ -1,0 +1,102 @@
+{
+  "chromium": {
+    "baseline": {
+      "firstRiddleMs": {
+        "medianMs": 93.5,
+        "rangeMs": [
+          88.80000000004657,
+          107.0999999998603
+        ]
+      },
+      "readyToRiddleMs": {
+        "medianMs": 23.700000000186265,
+        "rangeMs": [
+          23.4000000001397,
+          26
+        ]
+      },
+      "feedbackMs": {
+        "medianMs": 12.600000000093132,
+        "rangeMs": [
+          12.300000000046566,
+          12.800000000046566
+        ]
+      }
+    },
+    "current": {
+      "firstRiddleMs": {
+        "medianMs": 90.30000000004657,
+        "rangeMs": [
+          87.20000000018626,
+          109.69999999995343
+        ]
+      },
+      "readyToRiddleMs": {
+        "medianMs": 24.600000000093132,
+        "rangeMs": [
+          23.200000000186265,
+          29.5
+        ]
+      },
+      "feedbackMs": {
+        "medianMs": 12.799999999813735,
+        "rangeMs": [
+          12.300000000046566,
+          13.399999999906868
+        ]
+      }
+    }
+  },
+  "firefox": {
+    "baseline": {
+      "firstRiddleMs": {
+        "medianMs": 89,
+        "rangeMs": [
+          82,
+          194
+        ]
+      },
+      "readyToRiddleMs": {
+        "medianMs": 18,
+        "rangeMs": [
+          16,
+          20
+        ]
+      },
+      "feedbackMs": {
+        "medianMs": 10,
+        "rangeMs": [
+          9,
+          11
+        ]
+      }
+    },
+    "current": {
+      "firstRiddleMs": {
+        "medianMs": 88,
+        "rangeMs": [
+          83,
+          104
+        ]
+      },
+      "readyToRiddleMs": {
+        "medianMs": 16,
+        "rangeMs": [
+          16,
+          21
+        ]
+      },
+      "feedbackMs": {
+        "medianMs": 9,
+        "rangeMs": [
+          8,
+          11
+        ]
+      }
+    }
+  },
+  "verdict": "No measurable latency difference: median changes are smaller than run-to-run variation.",
+  "conditions": "5 alternating cold contexts per side per engine, same production builds, injected trusted provider, local unthrottled server, 390x844, no live backend",
+  "wallClockSpeedupClaimed": false,
+  "goalComplete": false
+}

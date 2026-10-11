@@ -1,0 +1,186 @@
+[
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "replacement keeps the same millisecond and content",
+    "actual": [
+      1791544251865,
+      [
+        "t",
+        "e",
+        "",
+        ""
+      ]
+    ],
+    "expected": [
+      1791544251865,
+      [
+        "t",
+        "e",
+        "",
+        ""
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "replacement receives a distinct writer identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "stale instance can continue local typing",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "stale typing cannot overwrite replacement bytes",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-c2b3dbae-e96a-4f13-991b-1aa03a6baa66\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544251865}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-c2b3dbae-e96a-4f13-991b-1aa03a6baa66\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544251865}"
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "stale cleanup cannot remove replacement bytes",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-c2b3dbae-e96a-4f13-991b-1aa03a6baa66\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544251865}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-c2b3dbae-e96a-4f13-991b-1aa03a6baa66\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544251865}"
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "replacement keeps the same millisecond and content",
+    "actual": [
+      1791544253560,
+      [
+        "t",
+        "e",
+        "",
+        ""
+      ]
+    ],
+    "expected": [
+      1791544253560,
+      [
+        "t",
+        "e",
+        "",
+        ""
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "replacement receives a distinct writer identity",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "stale instance can continue local typing",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "stale typing cannot overwrite replacement bytes",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-8d64694a-d2b7-4dc2-a8bb-baa402bee9d5\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544253560}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-8d64694a-d2b7-4dc2-a8bb-baa402bee9d5\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544253560}"
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "stale cleanup cannot remove replacement bytes",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-8d64694a-d2b7-4dc2-a8bb-baa402bee9d5\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544253560}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-8d64694a-d2b7-4dc2-a8bb-baa402bee9d5\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791544253560}"
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "replacement",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

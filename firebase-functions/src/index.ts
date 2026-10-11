@@ -158,5 +158,5 @@ export {monitorRaceRecoveryHealth} from "./race/raceRecoveryHealth";
 
 export {replenishClassicSupply} from "./riddles/classicSupplyWorker";
 
-export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/raceLiveCallables";
+export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/raceLiveCallables";
 export {setLiveRacePushSubscription, deliverLiveRaceChallengePush} from "./race/raceLivePushJobs";

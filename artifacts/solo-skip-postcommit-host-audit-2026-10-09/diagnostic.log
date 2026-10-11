@@ -1,0 +1,71 @@
+FAIL ../../artifacts/solo-skip-postcommit-host-audit-2026-10-09/diagnostic.test.ts
+  ● keeps committed Skip successful after successor loading: transport
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 8
+
+    @@ -11,6 +11,14 @@
+              "dailyChallengeCurrentQuestion": 0,
+              "dailyChallengeIndex": 0,
+            },
+          },
+        ],
+    +   Array [
+    +     "skip-committed",
+    +     "skip",
+    +     false,
+    +     undefined,
+    +     "Successor load failed",
+    +     "retryable",
+    +   ],
+      ]
+
+      762 |  await harness.handlers.skipRiddle({type:'game:skipRiddle',requestId:'skip-committed',payload:{gameMode:'classic',riddleId:'classic-fake-1',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      763 |  expect(paid).toHaveBeenCalledTimes(1);
+    > 764 |  expect(harness.postOperation.mock.calls.filter(call=>call[1]==='skip')).toEqual([['skip-committed','skip',true,result]]);
+          |                                                                          ^
+      765 | });
+      766 |
+
+      at ../../artifacts/solo-skip-postcommit-host-audit-2026-10-09/diagnostic.test.ts:764:74
+
+  ● keeps committed Skip successful after successor loading: definitive
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 8
+
+    @@ -11,6 +11,14 @@
+              "dailyChallengeCurrentQuestion": 0,
+              "dailyChallengeIndex": 0,
+            },
+          },
+        ],
+    +   Array [
+    +     "skip-committed",
+    +     "skip",
+    +     false,
+    +     undefined,
+    +     "Successor load failed",
+    +     "rejected",
+    +   ],
+      ]
+
+      762 |  await harness.handlers.skipRiddle({type:'game:skipRiddle',requestId:'skip-committed',payload:{gameMode:'classic',riddleId:'classic-fake-1',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      763 |  expect(paid).toHaveBeenCalledTimes(1);
+    > 764 |  expect(harness.postOperation.mock.calls.filter(call=>call[1]==='skip')).toEqual([['skip-committed','skip',true,result]]);
+          |                                                                          ^
+      765 | });
+      766 |
+
+      at ../../artifacts/solo-skip-postcommit-host-audit-2026-10-09/diagnostic.test.ts:764:74
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 32 skipped, 1 passed, 35 total
+Snapshots:   0 total
+Time:        0.551 s
+Ran all test suites with tests matching "keeps committed Skip successful".
+Test results written to: ../../artifacts/solo-skip-postcommit-host-audit-2026-10-09/results.json

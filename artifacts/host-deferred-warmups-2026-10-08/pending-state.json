@@ -1,0 +1,31 @@
+{
+  "stage": "startup artifact budget investigation",
+  "goalActive": true,
+  "ownedFiles": "owned-files.json",
+  "sourceFreeze": "source-before.json",
+  "portalUnitTests": 2991,
+  "targetedUnitTests": 35,
+  "prototypeCases": 3,
+  "prototypeChecks": 15,
+  "prototypeRedFailures": 2,
+  "buildJob": {
+    "sessionId": 7994,
+    "status": "terminal",
+    "exitCode": 1,
+    "failure": "Jest initial resources 576779 bytes exceed 576716.8-byte budget"
+  },
+  "unitJob": {
+    "sessionId": 36572,
+    "status": "terminal",
+    "exitCode": 0
+  },
+  "remaining": [
+    "Reduce actual initial resource bytes without raising audit budget",
+    "Expand deferred ownership regressions including admitted-work preservation",
+    "Refresh source freeze after any edits",
+    "Build all six targets plus Devvit",
+    "Run final static, adjacent and built-game checks",
+    "Preserve artifacts and exact cleanup",
+    "Write final verifier and evidence report"
+  ]
+}

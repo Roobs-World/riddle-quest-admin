@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.592557ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.053161ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.009929ms)
+✔ rejects imports between different target owners (1.578499ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.596203ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.855596ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.02122ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.880232ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.988358ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.644625ms)
+✔ aggregates violations in deterministic file and source order (0.750907ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 133.986369
+Web Target boundary audit passed (324 files, 1403 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-en-CTpOndwM.js   87.86 kB │ gzip: 47.71 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-pt-BqXPpvqA.js   90.15 kB │ gzip: 48.97 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-nl-CHygzN0o.js   90.54 kB │ gzip: 49.14 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-id-CqKpYaAk.js   91.21 kB │ gzip: 49.50 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-it-zAAKGqrL.js   91.35 kB │ gzip: 49.61 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-es-CshQqOfB.js   91.65 kB │ gzip: 49.76 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-de-DZ5nPS_a.js   92.15 kB │ gzip: 50.01 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-tr-BnppSHRp.js   92.54 kB │ gzip: 50.23 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-pl-7yR8sDkl.js   92.70 kB │ gzip: 50.35 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-fr-B49D6qku.js   93.56 kB │ gzip: 50.78 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-ja-DOkvg3EX.js   94.66 kB │ gzip: 51.40 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-vi-3ZqACu0_.js   96.78 kB │ gzip: 52.54 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-ko-COs4saEq.js   97.36 kB │ gzip: 52.86 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-ar-B1DSWtis.js  102.12 kB │ gzip: 55.43 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/index-2lFsiP2H.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-ru-Do2W-TWP.js  114.09 kB │ gzip: 61.94 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/playable-pack-hi-NdJRaKkP.js  134.49 kB │ gzip: 73.00 kB
+../../../../../../tmp/live-draft-storage-recovery-builds-20261009a/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.01s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

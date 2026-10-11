@@ -1,0 +1,35 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 4,
+  "checks": 24,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "expired-read",
+      "name": "only an active owner may admit deferred riddle read",
+      "actual": 1,
+      "expected": 0
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Retired or expired delivery cannot admit deferred provider work
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/host-expired-riddle-2026-10-08/baseline-probe.mjs:56:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

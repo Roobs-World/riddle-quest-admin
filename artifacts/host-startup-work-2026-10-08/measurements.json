@@ -1,0 +1,687 @@
+[
+  {
+    "pair": 1,
+    "side": "baseline",
+    "root": "/tmp/host-startup-compare-20261008a-1-baseline",
+    "initialBytes": 576715,
+    "resources": [
+      {
+        "name": "./assets/index-BC9EMRks.js",
+        "bytes": 43,
+        "sha256": "bbec135ade216a605c345006c4a29beef8008ab9492594100e434c38bb3d22d6"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/achievements-C-fyuymw.js",
+        "bytes": 4430,
+        "sha256": "25aa4bc348ac987663c594b368eccb7a894034169a2a3b51b907b8d80c2f1054"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-gS7Hsjhb.js",
+        "bytes": 32030,
+        "sha256": "facd55bd94c6105afd017faf186174c4d50bc1f7d59ad29e52982fd97672c034"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/achievements-sYgjKsXL.js",
+        "bytes": 11471,
+        "sha256": "cf4fbc32d8d1e8f4e6de2839b8fdfc2df8914bea4a547e5600aa13f67b258753"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-BwA0-YhC.js",
+        "bytes": 269407,
+        "sha256": "9f3633db75bb71ddaad10ba3b616cf76a86b74822b2e04fd50ce7cf81bc2c736"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievementMilestones.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/race/raceAchievementDefinitions.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievements.ts"
+    ]
+  },
+  {
+    "pair": 1,
+    "side": "current",
+    "root": "/tmp/host-startup-compare-20261008a-1-current",
+    "initialBytes": 566836,
+    "resources": [
+      {
+        "name": "./assets/index-z16A5Yo1.js",
+        "bytes": 43,
+        "sha256": "f956a6b0c7314020d5f4a0c1791773f05296defec0f3fcbc20ba5e489f0ce5a1"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-CGEdpCJu.js",
+        "bytes": 36352,
+        "sha256": "7735927cdf4fbcb8b8a9960e688165127894dbfc8d477168202022a4352de884"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/predictCompletionAchievements-CTYIa9qo.js",
+        "bytes": 1713,
+        "sha256": "7ef4d000d5fa23699f94201e56944cfdb29d46769b173a8417767ffaa19bb18b"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-C6gwT6PZ.js",
+        "bytes": 269394,
+        "sha256": "1b78404c158c5034e95516a3913bd3a4a30eec24c905c8a201c17918e58008b8"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": []
+  },
+  {
+    "pair": 2,
+    "side": "baseline",
+    "root": "/tmp/host-startup-compare-20261008a-2-baseline",
+    "initialBytes": 576715,
+    "resources": [
+      {
+        "name": "./assets/index-BC9EMRks.js",
+        "bytes": 43,
+        "sha256": "bbec135ade216a605c345006c4a29beef8008ab9492594100e434c38bb3d22d6"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/achievements-C-fyuymw.js",
+        "bytes": 4430,
+        "sha256": "25aa4bc348ac987663c594b368eccb7a894034169a2a3b51b907b8d80c2f1054"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-gS7Hsjhb.js",
+        "bytes": 32030,
+        "sha256": "facd55bd94c6105afd017faf186174c4d50bc1f7d59ad29e52982fd97672c034"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/achievements-sYgjKsXL.js",
+        "bytes": 11471,
+        "sha256": "cf4fbc32d8d1e8f4e6de2839b8fdfc2df8914bea4a547e5600aa13f67b258753"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-BwA0-YhC.js",
+        "bytes": 269407,
+        "sha256": "9f3633db75bb71ddaad10ba3b616cf76a86b74822b2e04fd50ce7cf81bc2c736"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievementMilestones.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/race/raceAchievementDefinitions.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievements.ts"
+    ]
+  },
+  {
+    "pair": 2,
+    "side": "current",
+    "root": "/tmp/host-startup-compare-20261008a-2-current",
+    "initialBytes": 566836,
+    "resources": [
+      {
+        "name": "./assets/index-z16A5Yo1.js",
+        "bytes": 43,
+        "sha256": "f956a6b0c7314020d5f4a0c1791773f05296defec0f3fcbc20ba5e489f0ce5a1"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-CGEdpCJu.js",
+        "bytes": 36352,
+        "sha256": "7735927cdf4fbcb8b8a9960e688165127894dbfc8d477168202022a4352de884"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/predictCompletionAchievements-CTYIa9qo.js",
+        "bytes": 1713,
+        "sha256": "7ef4d000d5fa23699f94201e56944cfdb29d46769b173a8417767ffaa19bb18b"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-C6gwT6PZ.js",
+        "bytes": 269394,
+        "sha256": "1b78404c158c5034e95516a3913bd3a4a30eec24c905c8a201c17918e58008b8"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": []
+  },
+  {
+    "pair": 3,
+    "side": "baseline",
+    "root": "/tmp/host-startup-compare-20261008a-3-baseline",
+    "initialBytes": 576715,
+    "resources": [
+      {
+        "name": "./assets/index-BC9EMRks.js",
+        "bytes": 43,
+        "sha256": "bbec135ade216a605c345006c4a29beef8008ab9492594100e434c38bb3d22d6"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/achievements-C-fyuymw.js",
+        "bytes": 4430,
+        "sha256": "25aa4bc348ac987663c594b368eccb7a894034169a2a3b51b907b8d80c2f1054"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-gS7Hsjhb.js",
+        "bytes": 32030,
+        "sha256": "facd55bd94c6105afd017faf186174c4d50bc1f7d59ad29e52982fd97672c034"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/achievements-sYgjKsXL.js",
+        "bytes": 11471,
+        "sha256": "cf4fbc32d8d1e8f4e6de2839b8fdfc2df8914bea4a547e5600aa13f67b258753"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-BwA0-YhC.js",
+        "bytes": 269407,
+        "sha256": "9f3633db75bb71ddaad10ba3b616cf76a86b74822b2e04fd50ce7cf81bc2c736"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievementMilestones.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/race/raceAchievementDefinitions.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievements.ts"
+    ]
+  },
+  {
+    "pair": 3,
+    "side": "current",
+    "root": "/tmp/host-startup-compare-20261008a-3-current",
+    "initialBytes": 566836,
+    "resources": [
+      {
+        "name": "./assets/index-z16A5Yo1.js",
+        "bytes": 43,
+        "sha256": "f956a6b0c7314020d5f4a0c1791773f05296defec0f3fcbc20ba5e489f0ce5a1"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-CGEdpCJu.js",
+        "bytes": 36352,
+        "sha256": "7735927cdf4fbcb8b8a9960e688165127894dbfc8d477168202022a4352de884"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/predictCompletionAchievements-CTYIa9qo.js",
+        "bytes": 1713,
+        "sha256": "7ef4d000d5fa23699f94201e56944cfdb29d46769b173a8417767ffaa19bb18b"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-C6gwT6PZ.js",
+        "bytes": 269394,
+        "sha256": "1b78404c158c5034e95516a3913bd3a4a30eec24c905c8a201c17918e58008b8"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": []
+  },
+  {
+    "pair": 4,
+    "side": "baseline",
+    "root": "/tmp/host-startup-compare-20261008a-4-baseline",
+    "initialBytes": 576715,
+    "resources": [
+      {
+        "name": "./assets/index-BC9EMRks.js",
+        "bytes": 43,
+        "sha256": "bbec135ade216a605c345006c4a29beef8008ab9492594100e434c38bb3d22d6"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/achievements-C-fyuymw.js",
+        "bytes": 4430,
+        "sha256": "25aa4bc348ac987663c594b368eccb7a894034169a2a3b51b907b8d80c2f1054"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-gS7Hsjhb.js",
+        "bytes": 32030,
+        "sha256": "facd55bd94c6105afd017faf186174c4d50bc1f7d59ad29e52982fd97672c034"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/achievements-sYgjKsXL.js",
+        "bytes": 11471,
+        "sha256": "cf4fbc32d8d1e8f4e6de2839b8fdfc2df8914bea4a547e5600aa13f67b258753"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-BwA0-YhC.js",
+        "bytes": 269407,
+        "sha256": "9f3633db75bb71ddaad10ba3b616cf76a86b74822b2e04fd50ce7cf81bc2c736"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievementMilestones.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/race/raceAchievementDefinitions.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievements.ts"
+    ]
+  },
+  {
+    "pair": 4,
+    "side": "current",
+    "root": "/tmp/host-startup-compare-20261008a-4-current",
+    "initialBytes": 566836,
+    "resources": [
+      {
+        "name": "./assets/index-z16A5Yo1.js",
+        "bytes": 43,
+        "sha256": "f956a6b0c7314020d5f4a0c1791773f05296defec0f3fcbc20ba5e489f0ce5a1"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-CGEdpCJu.js",
+        "bytes": 36352,
+        "sha256": "7735927cdf4fbcb8b8a9960e688165127894dbfc8d477168202022a4352de884"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/predictCompletionAchievements-CTYIa9qo.js",
+        "bytes": 1713,
+        "sha256": "7ef4d000d5fa23699f94201e56944cfdb29d46769b173a8417767ffaa19bb18b"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-C6gwT6PZ.js",
+        "bytes": 269394,
+        "sha256": "1b78404c158c5034e95516a3913bd3a4a30eec24c905c8a201c17918e58008b8"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": []
+  },
+  {
+    "pair": 5,
+    "side": "baseline",
+    "root": "/tmp/host-startup-compare-20261008a-5-baseline",
+    "initialBytes": 576715,
+    "resources": [
+      {
+        "name": "./assets/index-BC9EMRks.js",
+        "bytes": 43,
+        "sha256": "bbec135ade216a605c345006c4a29beef8008ab9492594100e434c38bb3d22d6"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/achievements-C-fyuymw.js",
+        "bytes": 4430,
+        "sha256": "25aa4bc348ac987663c594b368eccb7a894034169a2a3b51b907b8d80c2f1054"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-gS7Hsjhb.js",
+        "bytes": 32030,
+        "sha256": "facd55bd94c6105afd017faf186174c4d50bc1f7d59ad29e52982fd97672c034"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/achievements-sYgjKsXL.js",
+        "bytes": 11471,
+        "sha256": "cf4fbc32d8d1e8f4e6de2839b8fdfc2df8914bea4a547e5600aa13f67b258753"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-BwA0-YhC.js",
+        "bytes": 269407,
+        "sha256": "9f3633db75bb71ddaad10ba3b616cf76a86b74822b2e04fd50ce7cf81bc2c736"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievementMilestones.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/race/raceAchievementDefinitions.ts",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/achievements.ts"
+    ]
+  },
+  {
+    "pair": 5,
+    "side": "current",
+    "root": "/tmp/host-startup-compare-20261008a-5-current",
+    "initialBytes": 566836,
+    "resources": [
+      {
+        "name": "./assets/index-z16A5Yo1.js",
+        "bytes": 43,
+        "sha256": "f956a6b0c7314020d5f4a0c1791773f05296defec0f3fcbc20ba5e489f0ce5a1"
+      },
+      {
+        "name": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323,
+        "sha256": "fa2eba114b7100e0f47404641cd03e82678a28e17b62f6e950ff17b9efd11166"
+      },
+      {
+        "name": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007,
+        "sha256": "f3f61a353705dafe6a3c51e918c95071ed3271022f90cd75db05f5ac1e4767e5"
+      },
+      {
+        "name": "./assets/preload-helper-ClC2XIXo.js",
+        "bytes": 1339,
+        "sha256": "44050a22ac7c39224368cb1da3f1627325997b7d103cea691b8f261a1b94bb4e"
+      },
+      {
+        "name": "./assets/i18n-CGEdpCJu.js",
+        "bytes": 36352,
+        "sha256": "7735927cdf4fbcb8b8a9960e688165127894dbfc8d477168202022a4352de884"
+      },
+      {
+        "name": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109,
+        "sha256": "c814b27b5f36b17db2dec1fac3a80302e48594f3255947abc4a1ece07cf2deae"
+      },
+      {
+        "name": "./assets/core-game--jMNYXVl.js",
+        "bytes": 2738,
+        "sha256": "e4e58d5d9f3ca82066646485e46958c0bf0bd8c50e20e6950f459e598833e409"
+      },
+      {
+        "name": "./assets/predictCompletionAchievements-CTYIa9qo.js",
+        "bytes": 1713,
+        "sha256": "7ef4d000d5fa23699f94201e56944cfdb29d46769b173a8417767ffaa19bb18b"
+      },
+      {
+        "name": "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+        "bytes": 2350,
+        "sha256": "171176e4a02e5bbaf38dadb4fb5df9ff587ba1c6e1ed566eca3c32d5df971fbe"
+      },
+      {
+        "name": "./assets/jest-C6gwT6PZ.js",
+        "bytes": 269394,
+        "sha256": "1b78404c158c5034e95516a3913bd3a4a30eec24c905c8a201c17918e58008b8"
+      },
+      {
+        "name": "./assets/jest-5XhavRTo.css",
+        "bytes": 33468,
+        "sha256": "333e626c9a3139e4a5306409aacd8ddeb78f77ce83d8315e07432b72f734294e"
+      }
+    ],
+    "eagerCatalog": []
+  }
+]

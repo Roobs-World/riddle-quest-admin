@@ -1,0 +1,163 @@
+{
+  "browserDatasets": [
+    {
+      "log": "final-chromium-development-settlement.log",
+      "engine": "chromium",
+      "mode": "development",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 16,
+      "checks": 106,
+      "failures": []
+    },
+    {
+      "log": "final-chromium-development-takeover.log",
+      "engine": "chromium",
+      "mode": "development",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 2,
+      "checks": 20,
+      "failures": []
+    },
+    {
+      "log": "final-chromium-production-settlement.log",
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 16,
+      "checks": 106,
+      "failures": []
+    },
+    {
+      "log": "final-chromium-production-takeover.log",
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 2,
+      "checks": 20,
+      "failures": []
+    },
+    {
+      "log": "final-firefox-development-settlement.log",
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 16,
+      "checks": 106,
+      "failures": []
+    },
+    {
+      "log": "final-firefox-development-takeover.log",
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 2,
+      "checks": 20,
+      "failures": []
+    },
+    {
+      "log": "final-firefox-production-settlement.log",
+      "engine": "firefox",
+      "mode": "production",
+      "browserVersion": "153.0",
+      "journeys": 16,
+      "checks": 106,
+      "failures": []
+    },
+    {
+      "log": "final-firefox-production-takeover.log",
+      "engine": "firefox",
+      "mode": "production",
+      "browserVersion": "153.0",
+      "journeys": 2,
+      "checks": 20,
+      "failures": []
+    },
+    {
+      "log": "chromium-initialization-fixed.log",
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 8,
+      "checks": 42,
+      "failures": []
+    },
+    {
+      "log": "firefox-initialization-fixed.log",
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 8,
+      "checks": 42,
+      "failures": []
+    },
+    {
+      "log": "final-chromium-development-initialization.log",
+      "engine": "chromium",
+      "mode": "development",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 8,
+      "checks": 42,
+      "failures": []
+    },
+    {
+      "log": "final-firefox-production-initialization.log",
+      "engine": "firefox",
+      "mode": "production",
+      "browserVersion": "153.0",
+      "journeys": 8,
+      "checks": 42,
+      "failures": []
+    },
+    {
+      "log": "chromium-replacement.log",
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 4,
+      "checks": 10,
+      "failures": []
+    },
+    {
+      "log": "firefox-replacement.log",
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 4,
+      "checks": 10,
+      "failures": []
+    },
+    {
+      "log": "final-chromium-development-replacement.log",
+      "engine": "chromium",
+      "mode": "development",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 4,
+      "checks": 10,
+      "failures": []
+    },
+    {
+      "log": "final-firefox-production-replacement.log",
+      "engine": "firefox",
+      "mode": "production",
+      "browserVersion": "153.0",
+      "journeys": 4,
+      "checks": 10,
+      "failures": []
+    }
+  ],
+  "totalJourneys": 120,
+  "totalChecks": 712,
+  "clientTests": 3237,
+  "hostedJourneys": 14,
+  "sourceInputs": 2561,
+  "startup": {
+    "initialResourceBytes": 576558,
+    "budgetBytes": 576716.8,
+    "headroomBytes": 158.80000000004657
+  },
+  "archive": {
+    "builtFiles": 1316,
+    "metadataArchived": 6,
+    "ownedBuildRootRemoved": true
+  }
+}

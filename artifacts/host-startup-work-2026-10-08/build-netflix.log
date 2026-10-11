@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.374026ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.885761ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.987883ms)
+✔ rejects imports between different target owners (1.425099ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.5858ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.803632ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.213519ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.759118ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.035501ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.655161ms)
+✔ aggregates violations in deterministic file and source order (0.746244ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.685203
+Web Target boundary audit passed (321 files, 1391 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-en-Cv3y3Y91.js   87.86 kB │ gzip: 47.70 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-pt-BrHtSzAD.js   90.15 kB │ gzip: 48.96 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-nl-BMfKZY0C.js   90.54 kB │ gzip: 49.16 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-id-CXKy86Hf.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-it-C6JLLap6.js   91.35 kB │ gzip: 49.62 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-es-Da-RpXVH.js   91.65 kB │ gzip: 49.76 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-de-C8SRvCpd.js   92.15 kB │ gzip: 50.02 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-tr-EX_9XMPv.js   92.54 kB │ gzip: 50.22 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-pl-AqsIacq2.js   92.70 kB │ gzip: 50.35 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-fr-DvggXYJN.js   93.56 kB │ gzip: 50.75 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-ja-Bx6lIcZR.js   94.66 kB │ gzip: 51.40 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-vi-vXVoEDxj.js   96.78 kB │ gzip: 52.58 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-ko-CWz09eNQ.js   97.36 kB │ gzip: 52.86 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-ar-CNqMXn2R.js  102.12 kB │ gzip: 55.40 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/index-ZIMk6aZb.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-ru-DDtLCsEo.js  114.09 kB │ gzip: 61.94 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/playable-pack-hi-BlazY9uY.js  134.49 kB │ gzip: 73.00 kB
+../../../../../../tmp/host-startup-work-builds-20261008a/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.00s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

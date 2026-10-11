@@ -212,9 +212,12 @@ function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins,
   const [busy, setBusy] = useState(false);
   /** Prevents a retired board from accepting late provider or authority responses. */
   const active = useRef(true);
+  /** Pending native preparation belongs to this committed board operation. */
+  const pendingShare = useRef<AbortController | null>(null);
   /** Native feedback belongs to the exact committed provider operation. */
   const shareOwner = useRef({provider: tournaments, share: tournaments?.share});
   useLayoutEffect(() => {
+    pendingShare.current?.abort();
     shareOwner.current = {provider: tournaments, share: tournaments?.share};
   }, [tournaments, tournaments?.share]);
   /** Board owns the same modal focus boundary as live play. */
@@ -222,7 +225,7 @@ function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins,
   /** No nested quit confirmation exists on a read-only board. */
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: false, dismissQuitConfirmation: () => {}, requestClose: onClose});
-  useLayoutEffect(() => {active.current = true; return () => {active.current = false;};}, []);
+  useLayoutEffect(() => {active.current = true; return () => {active.current = false; pendingShare.current?.abort();};}, []);
   useEffect(() => {
     /** Effect lifetime prevents stale tournament reads from updating a retired board. */
     let current = true;
@@ -251,15 +254,18 @@ function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins,
     if (!active.current || sharing.current || !provider || !method ||
       owner.provider !== provider || owner.share !== method) return;
     sharing.current = true; setBusy(true);
+    /** Original SDK UI remains occupied even if this signal later retires presentation. */
+    const controller = new AbortController();
+    pendingShare.current = controller;
     try {
       /** Validated provider outcome controls the board refresh and localized error state. */
-      const result = await method.call(provider, locale);
+      const result = await method.call(provider, locale, controller.signal);
       if (!active.current || shareOwner.current !== owner) return;
       if (result.status === "success") {setError(null); setRetry(value => value + 1);}
       else if (result.status !== "cancelled") setError(result.message === "RaceTo10.ERROR_LOCALE_MISMATCH"
         ? "RaceTo10.ERROR_LOCALE_MISMATCH" : "RaceTo10.ERROR_GENERIC");
     } catch {if (active.current && shareOwner.current === owner) setError("RaceTo10.ERROR_GENERIC");}
-    finally {sharing.current = false; if (active.current) setBusy(false);}
+    finally {if (pendingShare.current === controller) pendingShare.current = null; sharing.current = false; if (active.current) setBusy(false);}
   };
   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby={presentation.titleId}
     tabIndex={-1} data-analytics-screen={presentation.analyticsScreen}>

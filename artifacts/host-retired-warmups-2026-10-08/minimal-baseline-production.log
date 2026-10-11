@@ -1,0 +1,43 @@
+{
+  "mode": "production",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 3,
+  "checks": 16,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retired-start",
+      "name": "retired startup admits no content preparation",
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retired-account",
+      "name": "account replacement cannot warm a retired frame",
+      "actual": 2,
+      "expected": 1
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Only committed recovery suspension can control provider admission
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-host-retired-warmups-browser.mjs:50:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

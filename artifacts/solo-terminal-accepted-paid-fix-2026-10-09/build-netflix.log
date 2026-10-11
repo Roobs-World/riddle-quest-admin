@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (13.283436ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.782186ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.894633ms)
+✔ rejects imports between different target owners (1.840788ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (1.020784ms)
+✔ rejects Devvit imports outside Reddit-owned source (2.014206ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (2.071184ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (1.042865ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.836519ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.898813ms)
+✔ aggregates violations in deterministic file and source order (1.101988ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.33394
+Web Target boundary audit passed (325 files, 1413 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-en-DkYajtqz.js   87.86 kB │ gzip: 47.71 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-pt-DZYv4_DS.js   90.15 kB │ gzip: 48.95 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-nl-xr5eDgiM.js   90.54 kB │ gzip: 49.18 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-id-CimQQ1jM.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-it-B-qXv98z.js   91.35 kB │ gzip: 49.59 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-es-CXSQnu-P.js   91.65 kB │ gzip: 49.73 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-de-BUbw5PRh.js   92.15 kB │ gzip: 50.04 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-tr-DFImXS2Y.js   92.54 kB │ gzip: 50.23 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-pl-Ccw4lHJF.js   92.70 kB │ gzip: 50.34 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-fr-pX5I67HG.js   93.56 kB │ gzip: 50.78 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-ja-emDF4C-S.js   94.66 kB │ gzip: 51.35 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-vi-C8JbRQZy.js   96.78 kB │ gzip: 52.56 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-ko-C3GIMxzh.js   97.36 kB │ gzip: 52.88 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-ar-vXKdYMw0.js  102.12 kB │ gzip: 55.45 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/index-Rg8zNcbB.js             105.45 kB │ gzip: 35.29 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-ru-DEQKbyff.js  114.09 kB │ gzip: 61.95 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/playable-pack-hi-D1IDHvR1.js  134.49 kB │ gzip: 73.01 kB
+../../../../../../tmp/solo-terminal-accepted-paid-fix-builds-20261009a/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.22s
+$ node scripts/audit-standalone-artifact.mjs netflix
+netflix artifact audit passed: 24 files, 1.80 MiB

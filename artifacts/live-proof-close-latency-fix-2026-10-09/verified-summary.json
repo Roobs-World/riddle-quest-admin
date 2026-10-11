@@ -1,0 +1,64 @@
+{
+  "browserDatasets": [
+    {
+      "log": "chromium-production.log",
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 2,
+      "checks": 20
+    },
+    {
+      "log": "chromium-development.log",
+      "engine": "chromium",
+      "mode": "development",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 2,
+      "checks": 20
+    },
+    {
+      "log": "firefox-production.log",
+      "engine": "firefox",
+      "mode": "production",
+      "browserVersion": "153.0",
+      "journeys": 2,
+      "checks": 20
+    },
+    {
+      "log": "firefox-development.log",
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 2,
+      "checks": 20
+    },
+    {
+      "log": "full-chromium-production.log",
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 22,
+      "checks": 176
+    },
+    {
+      "log": "full-firefox-development.log",
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 22,
+      "checks": 176
+    }
+  ],
+  "journeys": 52,
+  "checks": 432,
+  "clientTests": 3237,
+  "startup": {
+    "initialResourceBytes": 576558,
+    "budgetBytes": 576716.8
+  },
+  "archive": {
+    "builtFiles": 1316,
+    "metadataArchived": 6,
+    "ownedBuildRootRemoved": true
+  }
+}

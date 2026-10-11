@@ -1,0 +1,1697 @@
+{
+  "engine": "chromium",
+  "mode": "development",
+  "browserVersion": "153.0.8010.12",
+  "observations": [
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "valid retained letters",
+      "actual": "P",
+      "expected": "P"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "typing stays playable",
+      "actual": "PA",
+      "expected": "PA"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "valid retained letters",
+      "actual": "P",
+      "expected": "P"
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "typing stays playable",
+      "actual": "PA",
+      "expected": "PA"
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "object",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "valid retained letters",
+      "actual": "P",
+      "expected": "P"
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "typing stays playable",
+      "actual": "PA",
+      "expected": "PA"
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "multiple",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "valid retained letters",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "typing stays playable",
+      "actual": "PIA",
+      "expected": "PIA"
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "locked",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "valid retained letters",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "typing stays playable",
+      "actual": "PIA",
+      "expected": "PIA"
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 390,
+      "bad": "valid",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "valid retained letters",
+      "actual": "P",
+      "expected": "P"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "typing stays playable",
+      "actual": "PA",
+      "expected": "PA"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "valid retained letters",
+      "actual": "P",
+      "expected": "P"
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "typing stays playable",
+      "actual": "PA",
+      "expected": "PA"
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "object",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "valid retained letters",
+      "actual": "P",
+      "expected": "P"
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "typing stays playable",
+      "actual": "PA",
+      "expected": "PA"
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "multiple",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "valid retained letters",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "typing stays playable",
+      "actual": "PIA",
+      "expected": "PIA"
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "locked",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "Continue granted once",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "five attempts preserved",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "continued board reset",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "one provisional charge",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "purchased hint stays locked",
+      "actual": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "valid retained letters",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "hint keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "exact paid delivery",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "exact durable paid message",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "exact paid retry",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "retry cannot charge twice",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "typing stays playable",
+      "actual": "PIA",
+      "expected": "PIA"
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "receipt leaves the grant active",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "confirmed charge matches projection",
+      "actual": 520,
+      "expected": 520
+    },
+    {
+      "width": 1280,
+      "bad": "valid",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

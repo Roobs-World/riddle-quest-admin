@@ -1,0 +1,11 @@
+# Recovery from malformed hint letter cells
+
+A correlated hint response containing XX at a valid position previously locked both symbols into one answer cell. In the rendered game, normal typing then produced XXİZMİ instead of İZMİR. Nine original unit failures and this browser reproduction are retained.
+
+A shared leaf validator now requires nonblank string content within the existing 32-UTF-16-unit hint budget, exactly one grapheme in the raw letter and exactly one after locale uppercase casing. The handler rejects malformed metadata with the existing generic notice and rolls back its provisional reveal. Both reducer paths independently use the same validator; an invalid confirmation restores the draft and selection. The casing check also rejects a single raw ß that expands into two displayed symbols. Bounded length checks precede segmentation, so overbudget data is not segmented or uppercased.
+
+Fourteen added behavior cases cover empty, whitespace, multiple-symbol, expanding and oversized hints, plus valid combining E, Hindi, joined emoji and the 32-unit boundary. Valid hints retain their existing casing and stored glyph behavior. The focused suites pass 150 tests; the full client suite passes 3,042 tests in 304 suites with 96 intentional skips. TypeScript, TSDoc and file-size gates pass.
+
+Eighty rendered-game journeys pass across Chromium and Firefox, development/production React, 390/1280 pixel widths and physical/virtual typing. They request a hint through the UI, receive a correlated malformed-letter response, then enter and submit İZMİR normally with five green cells and no browser errors. Valid multi-code-point graphemes are verified in the reducer regressions; these browser journeys exercise rejection and recovery. Host responses are injected fixtures, not real paid backend transactions or balance-reconciliation certification. The permanent regression is registered in the full game browser chain.
+
+All six isolated targets and the Devvit server build; 23 checks against the exact rebuilt artifacts pass. Evidence retains 1,299 built files, source hashes, original failures and the reverse-checkable seven-input patch under `artifacts/hint-letter-recovery-2026-10-08/`. No server grants, receipts, translated copy or deployments change. The unlimited improvement goal remains active.

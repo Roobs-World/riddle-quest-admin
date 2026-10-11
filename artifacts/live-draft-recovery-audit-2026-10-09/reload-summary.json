@@ -1,0 +1,35 @@
+{
+  "journeys": 8,
+  "checks": 48,
+  "sourceUnchangedSinceAudit": true,
+  "runs": [
+    {
+      "engine": "chromium",
+      "mode": "development",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 2,
+      "checks": 12
+    },
+    {
+      "engine": "chromium",
+      "mode": "production",
+      "browserVersion": "153.0.8010.12",
+      "journeys": 2,
+      "checks": 12
+    },
+    {
+      "engine": "firefox",
+      "mode": "development",
+      "browserVersion": "153.0",
+      "journeys": 2,
+      "checks": 12
+    },
+    {
+      "engine": "firefox",
+      "mode": "production",
+      "browserVersion": "153.0",
+      "journeys": 2,
+      "checks": 12
+    }
+  ]
+}

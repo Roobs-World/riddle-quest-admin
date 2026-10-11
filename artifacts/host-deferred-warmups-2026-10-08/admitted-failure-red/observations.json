@@ -1,0 +1,44 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "active-start",
+    "name": "deferred adapter has not started content work",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "active-start",
+    "name": "only an active owner may admit deferred warmups",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "active-start",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "active-start",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "active-start",
+    "name": "no unhandled rejection",
+    "actual": [
+      "Error: Late admitted preparation failure"
+    ],
+    "expected": []
+  }
+]

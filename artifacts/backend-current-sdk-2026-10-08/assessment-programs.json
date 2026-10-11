@@ -1,0 +1,18 @@
+{
+  "baseline-config-correction/baseline.config.cjs": "ad743ccc424ec4a60391c3ccf9c7586698cc0a7a385c85774e7845b28d5c7729",
+  "baseline-override-correction/baseline.config.cjs": "0d3491dbf276d576955ee7c5d6eb5841695328e303bb8c8891aaa96322469151",
+  "compile.cjs": "178a41de108279984d0a456f1f15a37894c06eb443294cbbe58ee9513595f9a5",
+  "fixture-correction/singlePlayerHintLocale.it.test.ts": "8d25331801852f83cd99016eab3a6e7db26e82bbc8bd6c56f23d9ca5ebd206a1",
+  "focused/baseline-transform.cjs": "63e73d109232e46b3037523e9e81c8fa7d43e9e3e8a048e5122670a4a34b1ed0",
+  "focused/baseline.config.cjs": "815f2099a67e613f29713535a05a258597cb36c8c036215c53c25a105a45bfea",
+  "focused/integration.config.cjs": "0d1b288deb90e3254aa8e03a99c9b2d5e62ced450049c04f2a82866048bc765a",
+  "focused/sdk-entry-template.cjs": "3a17bf09ed8412960df531d6acf8e799c54f1175dde378159b20748a2cb5f6ca",
+  "focused/sdk-entry.cjs": "3a17bf09ed8412960df531d6acf8e799c54f1175dde378159b20748a2cb5f6ca",
+  "focused/singlePlayerSession.before.ts": "e70c3b29a28e43196e005d5b0c6907ccac6bd4201c583e0b96471c08d62eff40",
+  "integration.config.cjs": "7a589f2c31f035087538ac848d35f32e981a63a49326ad1a00d4ba8aa94c959f",
+  "run-focused.mjs": "b22e7e8cebaca07b9733e64340506b763629b73e2fc8e4b138c53e03111ff99c",
+  "run-integrations.mjs": "a5b900cfeef2fa826e329b09df01aa51081027e048c4367ee74fea22f4005229",
+  "runtime-static.cjs": "e24d660753a508336519e77f98e742ad3afcb7e9a719e6c2e3660e73948e7f74",
+  "sdk-entry.cjs": "39dd7da936f8dd5273c19ad502d679a2a3b0f19084814a496f7c6065a3a84572",
+  "singlePlayerHintLocale.it.test.ts": "0da55b5cb8d619d6f3c66fd6a86906ec8f86660f272e37dc8305cbe9969b3c81"
+}

@@ -1,0 +1,192 @@
+--- a/packages/portal/scripts/verify-turkish-answer-input-browser.mjs
++++ b/packages/portal/scripts/verify-turkish-answer-input-browser.mjs
+@@ -54,7 +54,7 @@
+   for(const width of [390,1280])for(const method of ['physical','virtual','shifted-physical'])for(const hint of [false,true,'paid']){
+     const page=await browser.newPage({viewport:{width,height:844}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
+     await page.goto('http://127.0.0.1:'+server.address().port+'/?hint='+hint);await page.getByRole('heading',{name:'Which city is on the Turkish Aegean coast?',exact:true}).waitFor();await page.evaluate(()=>document.activeElement?.blur());
+-    if(hint==='paid'){await page.locator('.game-input-actions button[data-tooltip=gameHint]').first().click();await page.locator('.modal-hint .play-primary').click();await page.waitForFunction(()=>window.hintConfirmed);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const cls=await page.locator('.keyboard button').filter({hasText:/^İ$/}).getAttribute('class');assert.equal(cls,'key green');}const text=hint?'zmir':'izmir';if(method==='physical')await page.keyboard.type(text);else if(method==='shifted-physical')await page.evaluate(text=>{for(const key of text.toLocaleUpperCase('tr'))window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));},text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toLocaleUpperCase('tr')+'$')}).click();
++    if(hint==='paid'){await page.locator('.game-input-actions button[data-tooltip=gameHint]').first().click();await page.locator('.modal-hint .play-primary').click();await page.waitForFunction(()=>window.hintConfirmed);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const cls=await page.locator('.keyboard button').filter({hasText:/^İ$/}).getAttribute('class');assert.equal(cls,'key green');}if(hint===true)assert.equal(await page.locator('.keyboard button').filter({hasText:/^İ$/}).getAttribute('class'),'key green');const text=hint?'zmir':'izmir';if(method==='physical')await page.keyboard.type(text);else if(method==='shifted-physical')await page.evaluate(text=>{for(const key of text.toLocaleUpperCase('tr'))window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));},text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toLocaleUpperCase('tr')+'$')}).click();
+     const draft=await page.locator('.guess-row').first().textContent();assert.equal(draft.replaceAll(/\s/g,''),'İZMİR');
+     await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('Enter');await page.waitForFunction(()=>window.sentGuesses.length===1);await page.waitForFunction(()=>document.querySelector('.guess-row')?.querySelectorAll('.green').length===5);
+     const guess=await page.evaluate(()=>window.sentGuesses[0].payload.guess);assert.equal(guess.toLocaleLowerCase('tr'),'izmir');
+--- a/packages/portal/src/play/__tests__/gameSession.test.ts
++++ b/packages/portal/src/play/__tests__/gameSession.test.ts
+@@ -877,3 +877,53 @@
+     expect(hinted.letterStates).toEqual({[key]: "green"});
+   },
+ );
++
++
++it.each(["loaded", "queued", "provider", "continue", "rollback"] as const)(
++  "keeps authoritative hint keyboard feedback through %s recovery", kind => {
++    /** An older checkpoint has no purchased hint or keyboard feedback. */
++    const prior = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
++    /** Journal fields intentionally predate the server's paid hint. */
++    const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
++      completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = prior;
++    /** Recovery state must merge knowledge instead of replacing a confirmed purchase. */
++    const base = {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
++      completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds};
++    /** Server-owned hint is confirmed even without any submitted guess. */
++    const loaded = {...riddle, revealedHints: [{index: 0, letter: "P"}]};
++    /** Actual recovery reducer begins from the current host-issued question. */
++    let state = reduce(prior, {type: "loadRiddle", riddle: loaded});
++    if (kind === "queued") state = reduce(state, {type: "restoreQueuedGuesses", base, guesses: [], draft: currentLetters});
++    if (kind === "provider") state = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId,
++      sessionToken: riddle.sessionToken, currentLetters, activeSlotIndex, hintRevealedIndices: [], guesses: [],
++      engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
++      awaitingContinue: false, letterStates: {}});
++    if (kind === "continue") state = reduce(state, {type: "continueGranted"});
++    if (kind === "rollback") state = reduce(state, {type: "restoreConfirmedRiddle", riddle: loaded, base});
++    expect(state.letterStates.p).toBe("green");
++    expect(state.currentLetters[0]).toBe("P");
++    expect(state.activeSlotIndex).not.toBe(0);
++  },
++);
++
++
++it("does not promote a provisional hint to confirmed keyboard knowledge during recovery", () => {
++  /** Current question has no purchased hint. */
++  const loaded = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
++  /** A pending letter can still be rejected without leaving green keyboard feedback. */
++  const preview = reduce(loaded, {type: "previewHint", index: 0, letter: "P"});
++  /** Continue's history projection must not confirm an unrelated pending purchase. */
++  const projected = reduce(preview, {type: "continueGranted"});
++  expect(projected.letterStates.p).toBeUndefined();
++  expect(reduce(projected, {type: "rejectHint"}).letterStates.p).toBeUndefined();
++});
++
++it("does not carry a prior question's hint feedback into its successor", () => {
++  /** The completed predecessor contains confirmed hint knowledge. */
++  const prior = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {...riddle,
++    revealedHints: [{index: 0, letter: "P"}]}});
++  /** A successor without hints owns a new empty keyboard projection. */
++  const next = reduce(prior, {type: "loadRiddle", riddle: {...riddle,
++    riddleId: "next-riddle", sessionToken: "next-session-token"}});
++  expect(next.letterStates).toEqual({});
++});
+--- a/packages/portal/src/play/gameSession.ts
++++ b/packages/portal/src/play/gameSession.ts
+@@ -123,6 +123,24 @@
+   return computeLetterStates(guesses.map(row => ({...row, guess: row.guess.map(letter => letter.toLocaleLowerCase(locale))})));
+ };
+ 
++/** Purchased hint symbols remain known when guess history or a recovery checkpoint changes. */
++const withConfirmedHintFeedback = (state: GameSessionState): GameSessionState => {
++  /** Copy only when confirmed knowledge is absent from the current keyboard projection. */
++  let letterStates = state.letterStates;
++  for (const index of state.hintRevealedIndices) {
++    if (index === state.pendingHintState?.index) continue;
++    /** A locked slot without a glyph cannot establish keyboard knowledge. */
++    const letter = state.currentLetters[index];
++    if (!letter) continue;
++    /** Immutable content locale owns the hinted symbol's keyboard identity. */
++    const key = letter.toLocaleLowerCase(state.riddle?.evaluation?.locale ?? state.locale);
++    if (letterStates[key] === "green") continue;
++    if (letterStates === state.letterStates) letterStates = {...letterStates};
++    letterStates[key] = "green";
++  }
++  return letterStates === state.letterStates ? state : {...state, letterStates};
++};
++
+ /** Restores the visible round while keeping the paid Continue round's existing row reset. */
+ const recoveredGuesses = (riddle: BridgeRiddle): ScoredGuess[] | undefined =>
+   riddle.acceptedGuesses?.filter(({attempt}) => !riddle.hasUsedContinue || attempt > 5)
+@@ -234,7 +252,7 @@
+       /** Grapheme cells preserve the issued answer shape and purchased hint locks. */
+       const letters = Array.from({length: action.riddle.answerLength}, () => "");
+       for (const hint of hints) letters[hint.index] = hint.letter;
+-      return {
++      return withConfirmedHintFeedback({
+         ...state,
+         riddle: action.riddle,
+         canRestoreCheckpoint: true,
+@@ -257,7 +275,7 @@
+         optimisticAchievementIds: [],
+         auxiliaryFanfare: null,
+         letterStates: computeStates(snapshot.guesses, action.riddle.evaluation?.locale ?? state.locale),
+-      };
++      });
+     }
+     case "typeLetter": {
+       if (!canEditCurrentGuess(state)) {
+@@ -385,7 +403,7 @@
+           ? firstEditableSlot(currentLetters,state.hintRevealedIndices) : restored.activeSlotIndex};
+       }
+       // A saved gameplay checkpoint cannot dismiss a utility page opened since it was captured.
+-      return questionIndependentModals.has(state.modal) ? {...restored, modal: state.modal} : restored;
++      return withConfirmedHintFeedback(questionIndependentModals.has(state.modal) ? {...restored, modal: state.modal} : restored);
+     }
+     case "restoreConfirmedRiddle": {
+       // A rollback's older issued copy cannot reopen this already confirmed terminal round.
+@@ -395,10 +413,14 @@
+       /** The loaded used by the current operation. */
+       const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: action.riddle});
+       if (loaded.riddle && getConfirmedRiddleOutcome(loaded.riddle)) return loaded;
+-      return {...loaded, ...action.base, profile: loaded.profile, guessPending: false, pendingGuessState: null,
++      return withConfirmedHintFeedback({...loaded, ...action.base, profile: loaded.profile, guessPending: false, pendingGuessState: null,
+         canRestoreCheckpoint: false,
++        currentLetters: action.base.currentLetters.map((letter, index) => loaded.hintRevealedIndices.includes(index)
++          ? loaded.currentLetters[index] : letter),
++        activeSlotIndex: loaded.hintRevealedIndices.includes(action.base.activeSlotIndex)
++          ? loaded.activeSlotIndex : action.base.activeSlotIndex,
+         modal: questionIndependentModals.has(state.modal) ? state.modal : action.base.modal,
+-        notice: null, lastRewards: null};
++        notice: null, lastRewards: null});
+     }
+     case "guessCheckpointAdvanced": {
+       if (!state.pendingGuessState) return state;
+@@ -460,7 +482,7 @@
+         ? {...state.profile, achievements: [...new Set([...state.profile.achievements, ...optimisticAchievementIds])]}
+         : state.profile;
+ 
+-      return {
++      return withConfirmedHintFeedback({
+         ...state,
+         canRestoreCheckpoint: false,
+         profile,
+@@ -489,7 +511,7 @@
+           ? {coinsEarned: 0, newlyUnlockedAchievementIds: optimisticAchievementIds}
+           : state.lastRewards,
+         letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale),
+-      };
++      });
+     }
+     case "previewHint": {
+       if (!state.riddle || state.pendingHintState || state.hintRevealedIndices.includes(action.index) ||
+@@ -677,7 +699,7 @@
+         /** Editable selection is reconciled with authoritative purchased hint locks. */
+         const activeSlotIndex = hintIndices.includes(action.activeSlotIndex)
+           ? firstEditableSlot(restoredLetters, hintIndices) : action.activeSlotIndex;
+-        return {
++        return withConfirmedHintFeedback({
+           ...state,
+           canRestoreCheckpoint: false,
+           currentLetters: restoredLetters,
+@@ -696,7 +718,7 @@
+           lastOutcome: pendingOutcome,
+           completionAcknowledged: false,
+           letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale),
+-        };
++        });
+       }
+     case "continueGranted": {
+       if (!state.engineSnapshot) return state;
+@@ -709,7 +731,7 @@
+       };
+       /** Provides next letters behavior. */
+       const nextLetters = resetAttemptLetters(state);
+-      return {
++      return withConfirmedHintFeedback({
+         ...state,
+         guesses: snapshot.guesses,
+         guessPending: false,
+@@ -720,7 +742,7 @@
+         modal: null,
+         notice: null,
+         letterStates: {},
+-      };
++      });
+     }
+     case "declineContinue":
+       if (state.modal !== "continue" || !state.riddle || !state.engineSnapshot) {

@@ -1,6 +1,7 @@
 import type {ScoredGuess} from "@qwordly/core/game";
 import type {SavedGame} from "../platform/types";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
+import {rejectHintPreview} from "./hintPreview";
 
 /** Isolates adapter-owned checkpoint values from reducer-owned progress. */
 const cloneGuesses = (guesses: ScoredGuess[]): ScoredGuess[] =>
@@ -32,16 +33,7 @@ export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): 
     state.riddle?.sessionToken === state.pendingCoinSpend.sessionToken) {
     state = {...state, ...state.pendingCoinSpend.continueState};
   }
-  if (state.pendingHintState) {
-    /** Unconfirmed hint details restored before saving. */
-    const {index, previousLetter, previousActiveSlotIndex} = state.pendingHintState;
-    /** Current draft with any unconfirmed hint removed. */
-    const currentLetters = [...state.currentLetters];
-    currentLetters[index] = previousLetter;
-    state = {...state, currentLetters, activeSlotIndex: previousActiveSlotIndex,
-      hintRevealedIndices: state.hintRevealedIndices.filter((candidate) => candidate !== index),
-      pendingHintState: null};
-  }
+  if (state.pendingHintState) state = rejectHintPreview(state);
   if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
   return {
     schemaVersion: 1,

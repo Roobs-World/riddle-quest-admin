@@ -257,3 +257,106 @@ it("uses the delivered mode when an unchanged Classic question follows a Daily i
   expect(owner.stateRef.current.gameMode).toBe("classic");
   expect(owner.stateRef.current.currentLetters[0]).toBe("P");
 });
+
+
+it.each([["tr", undefined, ["İ", "I"]], ["en", "tr", ["İ", "I"]], ["tr", "en", ["I", "I"]]] as const)(
+  "cases authoritative guess cells with host %s and immutable content %s", async (locale, contentLocale, expected) => {
+    /** The current question's immutable locale overrides the interface locale when present. */
+    const state = {...createInitialGameSession(), locale, riddle: {...repeatedRiddle, answerLength: 2,
+      evaluation: contentLocale ? {answer: "iI", locale: contentLocale} : undefined}};
+    /** Observe the actual bridge-to-reducer translation without local guess prediction. */
+    const dispatch = jest.fn();
+    /** A retained direct response is interpreted under its current question context. */
+    const router = useGameMessageRouter({dispatch, stateRef: {current: state},
+      postToHost: jest.fn(), requestRiddle: jest.fn()});
+    await router({type: "host:operationResult", requestId: "direct-guess", payload: {
+      operation: "guess", ok: true, data: {feedback: [{letter: "i", status: "green"},
+        {letter: "ı", status: "yellow"}], attempts: 1, isCorrect: false, gameOver: false},
+    }});
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "guessResolved",
+      feedback: {guess: expected, feedback: ["green", "yellow"]}}));
+  },
+);
+
+
+it.each([-1, 0.5, NaN, Infinity, 5])("rejects a successful hint with invalid position %s", async index => {
+  /** Malformed success metadata must not leave the provisional hint looking purchased. */
+  const dispatch = jest.fn();
+  /** The current host question supplies the authoritative positional bounds. */
+  const state = {...createInitialGameSession(), riddle: repeatedRiddle};
+  /** The genuine router resolves the paid journal's accepted operation result. */
+  const router = useGameMessageRouter({dispatch, stateRef: {current: state},
+    postToHost: jest.fn(), requestRiddle: jest.fn()});
+  await router({type: "host:operationResult", requestId: "invalid-hint", payload: {
+    operation: "hint", ok: true, data: {index, revealedLetter: "P"},
+  }});
+  expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+    [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+});
+
+
+it.each(["", " ", "XX", "ß", "a" + "\u0301".repeat(32)])("rejects malformed hint cell content %j", async revealedLetter => {
+  /** Observe rejection instead of displaying a malformed paid hint as confirmed. */
+  const dispatch = jest.fn();
+  /** Locale and width are supplied by the current immutable question. */
+  const state = {...createInitialGameSession(), riddle: repeatedRiddle};
+  /** Correlated hint metadata passes through the production router. */
+  const router = useGameMessageRouter({dispatch, stateRef: {current: state},
+    postToHost: jest.fn(), requestRiddle: jest.fn()});
+  await router({type: "host:operationResult", requestId: "invalid-hint-letter", payload: {
+    operation: "hint", ok: true, data: {index: 0, revealedLetter},
+  }});
+  expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+    [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+});
+
+
+it.each(["short", "long", "bad-status", "multiple-symbol", "expanding", "zero", "fraction", "nan", "infinite", "over-limit", "is-correct-type", "game-over-type", "continue-type"])(
+  "rejects malformed guess result %s and reloads current authoritative progress", async kind => {
+    /** A five-cell current question owns the accepted response shape. */
+    const state = {...createInitialGameSession(), riddle: repeatedRiddle};
+    /** Capture recovery without interpreting partial server metadata as gameplay. */
+    const dispatch = jest.fn();
+    /** Reload reconciles an attempt that the server may already have committed. */
+    const requestRiddle = jest.fn();
+    /** Ordinary nonterminal feedback is otherwise valid. */
+    let feedback = [..."piano"].map(letter => ({letter, status: "yellow"}));
+    if (kind === "short") feedback = feedback.slice(0, 4);
+    if (kind === "long") feedback.push({letter: "x", status: "red"});
+    if (kind === "bad-status") feedback[2].status = "unknown";
+    if (kind === "multiple-symbol") feedback[2].letter = "XX";
+    if (kind === "expanding") feedback[2].letter = "ß";
+    /** Malformed counters must not advance client attempts or establish an outcome. */
+    const attempts = kind === "zero" ? 0 : kind === "fraction" ? 0.5 : kind === "nan" ? NaN :
+      kind === "infinite" ? Infinity : kind === "over-limit" ? 6 : 1;
+    /** The correlated result reaches the production operation handler. */
+    const router = useGameMessageRouter({dispatch, stateRef: {current: state},
+      postToHost: jest.fn(), requestRiddle});
+    await router({type: "host:operationResult", requestId: "malformed-guess", payload: {
+      operation: "guess", ok: true, data: {feedback, attempts,
+        isCorrect: kind === "is-correct-type" ? "true" : false,
+        gameOver: kind === "game-over-type" ? "false" : false,
+        ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+    }});
+    expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+      [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+    expect(requestRiddle).toHaveBeenCalledTimes(1);
+  },
+);
+
+it("accepts the sixth authoritative attempt after a granted Continue", async () => {
+  /** Continue owns the supported sixth attempt for this same question. */
+  const state = {...createInitialGameSession(), riddle: {...repeatedRiddle, hasUsedContinue: true}};
+  /** Valid server data remains authoritative without requesting another read. */
+  const dispatch = jest.fn();
+  /** Reconciliation is reserved for malformed responses. */
+  const requestRiddle = jest.fn();
+  /** The ordinary router receives a complete terminal result. */
+  const router = useGameMessageRouter({dispatch, stateRef: {current: state}, postToHost: jest.fn(), requestRiddle});
+  await router({type: "host:operationResult", payload: {operation: "guess", ok: true, data: {
+    feedback: [..."piano"].map(letter => ({letter, status: "red"})), attempts: 6,
+    isCorrect: false, gameOver: true, canContinue: false,
+  }}});
+  expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "guessResolved", attempts: 6}));
+  expect(requestRiddle).not.toHaveBeenCalled();
+});

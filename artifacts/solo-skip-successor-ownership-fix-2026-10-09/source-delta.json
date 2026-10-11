@@ -1,0 +1,8 @@
+{
+  "changed": [
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts"
+  ],
+  "added": [
+    "packages/portal/src/play/__tests__/skipSuccessorOwnership.test.ts"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/e1e9238cdc8af2288bfab3b3cc7672feffc8125268b9e4375dd2e55a071475d9/youtube.json",
+    "artifacts/target-dependencies/custom/f8ff696cff7073e37b496072ad36f87cb359e9d5da43d1eb1dd096e83c664976/yahoo.json",
+    "artifacts/target-dependencies/custom/862b61b759036f736c3dc013899c16dc16e75e8028b226991071aaa6372ea323/netflix.json",
+    "artifacts/target-dependencies/custom/db0515ef1fe2ac73de2750cad88642df53ca3a91611ddbaaad610105fca87083/facebook.json",
+    "artifacts/target-dependencies/custom/992ec7ea4a7d2796b94da43d9c693b2b7cac239b4e9f74ec207be66fcaf89aed/jest.json",
+    "artifacts/target-dependencies/custom/c4cffff7d8f8e556bed98c56b48986db51c4c24c4aaaa45c0fe89eb86625795c/reddit.json"
+  ],
+  "buildRoots": [
+    "/tmp/live-guess-receipt-proof-builds-20261009a",
+    "/tmp/live-guess-receipt-compiled-20261009a",
+    "/tmp/live-guess-receipt-final-compiled-20261009a"
+  ],
+  "emulatorTemporaryRoots": [
+    "/tmp/riddle-quest-emulators-cVSS3l",
+    "/tmp/riddle-quest-emulators-JCbOJ6"
+  ],
+  "allAbsent": true
+}

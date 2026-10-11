@@ -13,7 +13,7 @@ import {parseRaceMatchCandidate, projectRaceMatchCandidate, raceMatchCandidateEq
 import {classifyRaceMatchFailure, raceMatchFailure} from "@qwordly/core/race";
 
 import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
-import {raceCandidateNeedsFreshness, selectRaceFreshCandidate} from "./raceMatchFreshness";
+import {raceCandidateNeedsFreshness, raceFreshnessInspectionBatch, selectRaceFreshCandidate} from "./raceMatchFreshness";
 import {raceRecordingFingerprint} from "./raceDeckSnapshot";
 import {offerRaceBot, replayRaceBotOffer} from "./raceBot";
 
@@ -258,7 +258,19 @@ export async function findRecordedRaceMatch(
       if (baseline && !inspected.has(candidate.document.id) && context.policy.algorithmVersion === 3) {
         if (meter.documentReadAttempts >= RACE_MATCH_DOCUMENT_READ_BUDGET - 30) return true;
         if (freshnessChecks[candidate.band] >= context.policy.freshness.maxAdditionalChecks) continue;
-        freshnessChecks[candidate.band]++;
+        /** Already inspected records terminate prefetch so an earlier winner cannot be skipped. */
+        const pending = [];
+        for (const item of ordered.slice(index, index + 4)) {
+          if (inspected.has(item.document.id)) break;
+          pending.push(item);
+        }
+        /** Keep the committing fallback reserve and charge every speculative check to its band. */
+        const group = raceFreshnessInspectionBatch(pending, context.policy,
+          context.policy.freshness.maxAdditionalChecks - freshnessChecks[candidate.band],
+          RACE_MATCH_DOCUMENT_READ_BUDGET - 30 - meter.documentReadAttempts);
+        if (!group.length) return true;
+        freshnessChecks[candidate.band] += group.length;
+        await inspectMany(group.map(item => item.document.id));
       }
       if (!(await inspect(candidate.document.id)).challenge) {previousRejected = true; continue;}
       baseline ??= candidate;

@@ -1,0 +1,236 @@
+[
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "held accepted command permits newer local draft",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "checkpoint contains the newer unsent cells",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "another request consumes the recovered word before proof resolves",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "fresh poll observes both accepted guesses",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "current editable draft still contains the consumed word",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "consumed word is persisted at the newer canonical count",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "persisted cells still contain consumed word",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "exact historical receipt lookup occurred once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "replacement does not automatically replay a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "concurrent",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "held accepted command permits newer local draft",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "checkpoint contains the newer unsent cells",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "another request consumes the recovered word before proof resolves",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "fresh poll observes both accepted guesses",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "current editable draft still contains the consumed word",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "consumed word is persisted at the newer canonical count",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "persisted cells still contain consumed word",
+    "actual": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ],
+    "expected": [
+      "z",
+      "z",
+      "z",
+      "z"
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "exact historical receipt lookup occurred once",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "replacement does not automatically replay a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "concurrent",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

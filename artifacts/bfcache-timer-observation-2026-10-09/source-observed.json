@@ -1,0 +1,4 @@
+{
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "8dec8b2158bb404b14b8773d9fc87d6bfd8763013a9f9c1e2f6493f2f5a77fa9",
+  "packages/portal/src/play/game/hooks/useGameSessionPersistence.ts": "a5e2a68c4cdff9b021f16729cdbc04e5bf348b262a3d620cb5c2ef33901667a4"
+}

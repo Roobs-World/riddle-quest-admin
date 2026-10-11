@@ -1,0 +1,32 @@
+[
+  {
+    "original": "artifacts/target-dependencies/custom/11fe75aa4eeb58b02efdf03a2ca1060c34f94de1b41cb2b2bb110d41ea7048b9/jest.json",
+    "preserved": "artifacts/live-tournament-share-retirement-2026-10-08/target-dependencies/jest.json",
+    "sha256": "d520abba1021cfdf8b13085af854c29badefc2eb471e206a1245a0780f2625e8"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/cb34118ca636445bae2382f01f39abcccf37486aff43f265eb89684c1174f69b/facebook.json",
+    "preserved": "artifacts/live-tournament-share-retirement-2026-10-08/target-dependencies/facebook.json",
+    "sha256": "414481248026474e4147662c607e3986289f7431c9187476376fd8f5ef379d42"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/d612cc57aaa6fb882d132bf5b94c556e637f61df89b27e19dd8238565652cd8d/yahoo.json",
+    "preserved": "artifacts/live-tournament-share-retirement-2026-10-08/target-dependencies/yahoo.json",
+    "sha256": "43f12204408cb908b87e54eea9c52c02bdc02aaf0b62cd64202eb66210786971"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/081f0bb15ed52f9496b94f8837a225f28296b2c55681bcc1fac8b7709400a44d/reddit.json",
+    "preserved": "artifacts/live-tournament-share-retirement-2026-10-08/target-dependencies/reddit.json",
+    "sha256": "d3e6f9d764f71501dd22728f6f1520dfa5acfca5e9177ded63033bc05a3eb4a9"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/71d92dbdf96d576aaf60c2e5aab08407a48dcf8c358f73ec98a29b904c7b1cbd/youtube.json",
+    "preserved": "artifacts/live-tournament-share-retirement-2026-10-08/target-dependencies/youtube.json",
+    "sha256": "3899d0ba22a962f5db9bf17df0d82f1e2ff75d0910252597ef473b7861887bd4"
+  },
+  {
+    "original": "artifacts/target-dependencies/custom/2e8c7ff72a62960f7c80811c5158a944301845a22079b9f6e54ba56b5376c0a2/netflix.json",
+    "preserved": "artifacts/live-tournament-share-retirement-2026-10-08/target-dependencies/netflix.json",
+    "sha256": "98f43c2708092a0901b131822234819952ce49646c882c3d7449f12a8f70666d"
+  }
+]

@@ -1,0 +1,25 @@
+$ node scripts/verify-race-options-commit-browser.mjs && RACE_OPTIONS_REACT_MODE=production node scripts/verify-race-options-commit-browser.mjs
+[
+  {
+    "name": "committed retry retains its committed adapter during abandoned render",
+    "actual": "original",
+    "expected": "original"
+  },
+  {
+    "name": "committed replacement receives subsequent retry",
+    "actual": "replacement",
+    "expected": "replacement"
+  }
+]
+[
+  {
+    "name": "committed retry retains its committed adapter during abandoned render",
+    "actual": "original",
+    "expected": "original"
+  },
+  {
+    "name": "committed replacement receives subsequent retry",
+    "actual": "replacement",
+    "expected": "replacement"
+  }
+]

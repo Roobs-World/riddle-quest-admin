@@ -1,0 +1,482 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "journal survives timer retirement",
+    "actual": "guess-4e632376-c027-413f-b5bc-2aa6bdf46e85",
+    "expected": "guess-4e632376-c027-413f-b5bc-2aa6bdf46e85"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "every new queued draft letter remains durable",
+    "actual": "CAN",
+    "expected": "CAN"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "changed draft letters keep their writes",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "journal survives timer retirement",
+    "actual": "hint-70763bfa-da7f-4ae6-be2f-cbc3ba8ac3e9",
+    "expected": "hint-70763bfa-da7f-4ae6-be2f-cbc3ba8ac3e9"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "journal survives timer retirement",
+    "actual": "continue-913a086c-42bc-4303-96fe-d7a0f62a7482",
+    "expected": "continue-913a086c-42bc-4303-96fe-d7a0f62a7482"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-4a96745f-7163-49bf-89e8-5d4caf0a7e75",
+    "expected": "skip-4a96745f-7163-49bf-89e8-5d4caf0a7e75"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "journal survives timer retirement",
+    "actual": "guess-0302212a-b7d0-458b-bf2b-815d6936422c",
+    "expected": "guess-0302212a-b7d0-458b-bf2b-815d6936422c"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "every new queued draft letter remains durable",
+    "actual": "CAN",
+    "expected": "CAN"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "changed draft letters keep their writes",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "journal survives timer retirement",
+    "actual": "hint-c77f9e27-7e21-4486-9696-1a80db748fc5",
+    "expected": "hint-c77f9e27-7e21-4486-9696-1a80db748fc5"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:hint:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "journal survives timer retirement",
+    "actual": "continue-cfae351f-9aaa-43d2-b20f-ac1b5eca4d09",
+    "expected": "continue-cfae351f-9aaa-43d2-b20f-ac1b5eca4d09"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:continue:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "journal survives timer retirement",
+    "actual": "skip-fe18c8fe-151f-493b-b7df-90ca5e196066",
+    "expected": "skip-fe18c8fe-151f-493b-b7df-90ca5e196066"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:skip:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 1,
+    "expected": 1
+  }
+]

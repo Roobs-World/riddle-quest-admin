@@ -1,0 +1,23 @@
+FAIL src/play/__tests__/gameSession.test.ts
+  ● projects a historical Turkish I hint against immutable izmir content
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "İ"
+    Received: "I"
+
+      855 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+      856 |   const hinted = reduce(state, {type: "applyHint", index: 0, letter: "I", newCoins: 275});
+    > 857 |   expect(hinted.currentLetters[0]).toBe(expected);
+          |                                    ^
+      858 |   expect(hinted.hintRevealedIndices).toEqual([0]);
+      859 | });
+      860 |
+
+      at src/play/__tests__/gameSession.test.ts:857:36
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 85 passed, 86 total
+Snapshots:   0 total
+Time:        0.263 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts.

@@ -1,0 +1,1 @@
+const base=require("/home/craig-beswetherick/Documents/riddle-quest/packages/portal/jest.config.cjs");module.exports={...base,rootDir:"/home/craig-beswetherick/Documents/riddle-quest/packages/portal",roots:["/home/craig-beswetherick/Documents/riddle-quest/artifacts/solo-terminal-paid-liveness-audit-2026-10-09"],testMatch:['**/diagnostic.test.tsx']};

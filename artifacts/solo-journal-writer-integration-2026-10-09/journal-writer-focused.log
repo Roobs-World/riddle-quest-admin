@@ -1,0 +1,6 @@
+
+Test Suites: 6 passed, 6 total
+Tests:       98 passed, 98 total
+Snapshots:   0 total
+Time:        0.296 s, estimated 1 s
+Ran all test suites within paths "src/play/__tests__/journalWriter.test.ts", "src/play/__tests__/pendingGuessJournal.test.ts", "src/play/__tests__/useProvisionalPlayRecovery.test.ts", "src/play/__tests__/skipPreviewOwnership.test.ts", "src/play/__tests__/terminalPaidLiveness.test.ts", "src/play/__tests__/paidSettlementPersistence.test.ts".

@@ -1,0 +1,23 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-match", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 33545.
+i  Running script: node scripts/run-with-functions-node.js /home/craig-beswetherick/Documents/riddle-quest/artifacts/freshness-alternating-2026-10-09/entry.cjs
+profile-baseline passed
+profile-candidate passed
+pair-0-baseline passed
+pair-0-candidate passed
+pair-1-candidate passed
+pair-1-baseline passed
+pair-2-baseline passed
+pair-2-candidate passed
+pair-3-candidate passed
+pair-3-baseline passed
+pair-4-baseline passed
+pair-4-candidate passed
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

@@ -1,0 +1,226 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "preparation or dialog owns shared gate",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "committed close removes board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "closed preparation releases shared gate immediately",
+    "actual": "unavailable",
+    "expected": "success"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "closed preparation clears local budget",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "closed preparation cannot admit obsolete native dialog",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "closed standings cannot admit subsequent metadata",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "standings-timeout",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "preparation or dialog owns shared gate",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "committed close removes board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "closed preparation releases shared gate immediately",
+    "actual": "unavailable",
+    "expected": "success"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "closed preparation clears local budget",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "closed preparation cannot admit obsolete native dialog",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "closed standings cannot admit subsequent metadata",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "metadata-timeout",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "preparation or dialog owns shared gate",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "committed close removes board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "closed preparation releases shared gate immediately",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "closed preparation clears local budget",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "closed preparation cannot admit obsolete native dialog",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "closed standings cannot admit subsequent metadata",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "admitted dialog releases only at natural settlement",
+    "actual": "success",
+    "expected": "success"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "dialog-share",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

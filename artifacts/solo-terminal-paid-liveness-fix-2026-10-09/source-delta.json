@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "packages/portal/src/play/__tests__/confirmedLossRecovery.test.ts",
+    "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts",
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+    "packages/portal/src/play/pendingGuessJournal.ts"
+  ],
+  "added": [
+    "packages/portal/src/play/__tests__/terminalPaidLiveness.test.ts"
+  ],
+  "removed": []
+}

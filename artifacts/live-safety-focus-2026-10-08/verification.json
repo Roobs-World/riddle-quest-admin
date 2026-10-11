@@ -1,0 +1,25 @@
+{
+  "sourceInputs": 2489,
+  "ownedInputs": 4,
+  "unitTests": 2993,
+  "currentSurfaceBrowserAssertions": 252,
+  "builtBrowserTests": 23,
+  "builtFiles": 1299,
+  "targetBuilds": 6,
+  "devvitBuilt": true,
+  "inventories": 13,
+  "pointerOverlapWasFixtureOmission": true,
+  "deployed": false,
+  "goalComplete": false,
+  "terminalSessions": {
+    "14424": 0,
+    "1185": 0,
+    "92257": 0,
+    "34426": 1,
+    "12006": 0,
+    "17184": 0,
+    "13081": 0,
+    "39651": 0,
+    "32111": 0
+  }
+}

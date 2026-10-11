@@ -10,7 +10,7 @@ From `firebase-functions` on Node 22:
 pnpm race:match:benchmark
 ```
 
-The command builds the backend and starts Firestore with the dedicated `demo-riddle-quest-match-benchmark` project. The worker refuses absent/remote emulator endpoints, any other project and unknown options before loading the backend. It seeds and clears only its demo fixtures, never a production database. Its six scenarios exercise canonical archived recordings through the real matcher:
+The command builds the backend and starts Firestore with the dedicated `demo-riddle-quest-match` project. The worker refuses absent/remote emulator endpoints, any other project and unknown options before loading the backend. It seeds and clears only its demo fixtures, never a production database. Its six scenarios exercise canonical archived recordings through the real matcher:
 
 | Scenario | Pool | Required outcome | Local warm-process p95 target |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ Every successful new intent is replayed without acceptance. Reports include scen
 Default iterations are five per scenario. For a larger local sample after building:
 
 ```sh
-pnpm exec firebase emulators:exec --only firestore --project demo-riddle-quest-match-benchmark 'node scripts/race-match-benchmark.js --iterations 20'
+node scripts/run-isolated-emulators.js emulators:exec --only firestore --project demo-riddle-quest-match 'node scripts/race-match-benchmark.js --iterations 20'
 ```
 
 Use `--scenario dense|sparse|exclusions|empty|capped|freshness` for diagnosis. A warm synthetic emulator sample is a repeatable regression baseline, not a production percentile estimate. Setup/cleanup is outside lookup timing. The 15-second production guard stops issuing work; in-flight reads may finish later, so it is not a guaranteed end-to-end response deadline.

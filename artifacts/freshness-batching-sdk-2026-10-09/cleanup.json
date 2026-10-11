@@ -1,0 +1,19 @@
+{
+  "ports": [
+    39391,
+    45211,
+    46555,
+    34965,
+    35683,
+    44393,
+    39253,
+    46879,
+    44301,
+    44401,
+    34379,
+    35705
+  ],
+  "allClosed": true,
+  "compiledOutputRemoved": true,
+  "isolatedStorageTemporaryDirectoryRemoved": true
+}

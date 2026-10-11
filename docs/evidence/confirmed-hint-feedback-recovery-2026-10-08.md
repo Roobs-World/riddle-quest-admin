@@ -1,0 +1,11 @@
+# Confirmed hint feedback across recovery
+
+Purchased hint cells previously survived host reload but their keyboard feedback was rebuilt only from submitted guesses. Provider restoration, queued-play restoration, rollback and Continue also replaced or cleared that feedback. Five focused recovery regressions fail on the preceding reducer. A browser probe loading those exact saved reducer bytes reproduces an uncolored Turkish İ key beside its restored green hint cell before any guess.
+
+A shared projection now merges confirmed locked hint symbols into keyboard feedback after loading, recovery, resolved guesses and Continue. It uses the immutable content locale, skips pending provisional hints and empty cells, and copies the feedback map only when missing knowledge must be added. Continue still resets submitted history while retaining purchased hints. Rollback now also preserves host-issued hint cells and chooses an editable slot when its older checkpoint points at a purchased cell.
+
+Seven added behavior cases cover the five recovery paths, provisional hint rejection and resetting knowledge for a successor question. The full client suite passes 3,010 tests in 304 suites with 96 intentional skips. TypeScript, TSDoc and file-size gates pass.
+
+All 72 rendered-game journeys pass across Chromium and Firefox, development and production React, 390/1280 pixel widths, ordinary physical input, virtual keys and shifted Turkish DOM key events. Twenty-four journeys assert restored hint keyboard feedback before typing; another twenty-four assert newly confirmed hint feedback before guessing. The loaded-hint failure is reproduced with a Vite source-load override, without replacing workspace production source. An initial fixture used a transform override too late for TypeScript parsing; its diagnostic is retained separately. Purchase responses remain injected host fixtures, not production backend transactions.
+
+All six isolated targets and the Devvit server build. Twenty-three exact built-artifact browser checks pass. Source hashes, the reverse-checkable three-input patch, 1,299 built files and terminal logs are retained under `artifacts/confirmed-hint-feedback-recovery-2026-10-08/`. Backend code, receipts, grants and translated copy are unchanged. Nothing is deployed; the unlimited improvement goal remains active.

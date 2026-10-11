@@ -42,7 +42,7 @@ it("replaces newly locked hint letters and repairs their selected slot without l
   draft = editLiveRaceDraft(view.run!.currentRiddle!, draft, "slot", 0);
   /** Paid host hint locks the selected cell. */
   const next = structuredClone(view); next.run!.currentRiddle!.revealedLetters = [{index: 0, letter: "t"}];
-  expect(reconcileLiveRaceDraft(draft, view, next)).toMatchObject({letters: ["t", "e", "", ""], activeSlotIndex: 1, revision: draft.revision});
+  expect(reconcileLiveRaceDraft(draft, view, next)).toMatchObject({letters: ["t", "e", "", ""], activeSlotIndex: 2, revision: draft.revision});
 });
 
 it.each(["untouched", "new-word", "emptied", "focus", "ignored"])("rejecting a live guess preserves the correct draft intent (%s)", edit => {
@@ -68,4 +68,20 @@ it("keeps ignored input and clock reconciliation from advancing the local edit r
   expect(editLiveRaceDraft(prompt, draft, "slot", -1)).toBe(draft);
   expect(editLiveRaceDraft(prompt, draft, "text", " ")).toBe(draft);
   expect(reconcileLiveRaceDraft(draft, view, {...view, serverNowMs: 2000})).toBe(draft);
+});
+
+
+it.each([["te", 0, "t", "st", 2], ["tes", 2, "s", "t", 3]] as const)("continues after hint locking %s at %s", (prefix, index, letter, suffix, target) => {
+  /** Selecting an earlier filled letter must not discard the rest of the unsent word. */
+  const prompt = view.run!.currentRiddle!;
+  /** Existing prefix remains player-owned while a hint is in flight. */
+  const filled = editLiveRaceDraft(prompt, createLiveRaceDraft(prompt), "text", prefix);
+  /** Deliberate selection can point at a populated cell that the hint later locks. */
+  const selected = editLiveRaceDraft(prompt, filled, "slot", index);
+  /** A newly confirmed hint locks the selected cell while the next cell is already filled. */
+  const next = structuredClone(view); next.run!.currentRiddle!.revealedLetters = [{index, letter}];
+  /** Hint recovery must choose empty space before replacing existing input. */
+  const recovered = reconcileLiveRaceDraft(selected, view, next);
+  expect(recovered.activeSlotIndex).toBe(target);
+  expect(editLiveRaceDraft(next.run!.currentRiddle!, recovered, "text", suffix).letters.join("")).toBe("test");
 });

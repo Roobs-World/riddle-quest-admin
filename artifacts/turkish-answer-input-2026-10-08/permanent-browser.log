@@ -1,0 +1,1 @@
+$ node scripts/verify-turkish-answer-input-browser.mjs && TURKISH_INPUT_REACT_MODE=production node scripts/verify-turkish-answer-input-browser.mjs

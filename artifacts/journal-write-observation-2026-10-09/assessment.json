@@ -1,0 +1,8 @@
+{
+  "journeys": 16,
+  "ownershipChecks": 96,
+  "duplicateContinueWrites": 4,
+  "productionChanged": false,
+  "latencyMeasured": false,
+  "browser": "Chromium 153.0.8010.12"
+}

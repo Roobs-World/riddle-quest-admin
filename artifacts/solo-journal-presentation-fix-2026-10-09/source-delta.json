@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+    "packages/portal/src/play/gameSession.ts",
+    "packages/portal/src/play/gameSessionTypes.ts",
+    "packages/portal/src/play/pendingGuessJournal.ts"
+  ],
+  "added": [
+    "packages/portal/src/play/__tests__/pendingJournalPresentation.test.tsx"
+  ],
+  "removed": []
+}

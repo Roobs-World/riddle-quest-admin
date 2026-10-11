@@ -1,0 +1,16 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/edf3b98969430fba0491b9e332cb0025570e212f62a324f105c539d606b66916/yahoo.json",
+    "artifacts/target-dependencies/custom/b27cbc198d1e15b894980e827475e5dbbb2aedc03ea5b935de51d402149768bd/netflix.json",
+    "artifacts/target-dependencies/custom/d430c64d2759b3adaf97ea6e67cd9dc6b3ad5cfbe3e8e0b37c2793a9e0640a20/facebook.json",
+    "artifacts/target-dependencies/custom/57b7eb9ccebbbb449c71a25cc337e286dd21c99393f4b4699bd52abdc93a5f47/youtube.json",
+    "artifacts/target-dependencies/custom/ab25e7938f532b20df347e7c2fc39679239295598b426cf9d63266f7134b9ab4/reddit.json",
+    "artifacts/target-dependencies/custom/1c8c8c8713f0c6aa3f346d34f63f81c32132c11deea1eb29fc9e84d06c083319/facebook.json",
+    "artifacts/target-dependencies/custom/e6a80402299fbfd7b4ba7482aaf04dcadfb03c0eab004510512e9ef1063217ba/jest.json"
+  ],
+  "buildRoots": [
+    "/tmp/journal-write-deduplication-builds-20261009a",
+    "/tmp/riddle-quest-facebook-browser-6AxrX0"
+  ],
+  "allAbsent": true
+}

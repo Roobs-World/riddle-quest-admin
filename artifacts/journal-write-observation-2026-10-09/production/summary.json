@@ -1,0 +1,80 @@
+[
+  {
+    "width": 390,
+    "scenario": "timer:none:guess:interval",
+    "writes": 2,
+    "consecutiveDuplicates": 0,
+    "bytes": [
+      1251,
+      1265
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timer:none:hint:interval",
+    "writes": 2,
+    "consecutiveDuplicates": 0,
+    "bytes": [
+      1160,
+      1161
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timer:none:continue:interval",
+    "writes": 2,
+    "consecutiveDuplicates": 1,
+    "bytes": [
+      1880,
+      1880
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timer:none:skip:interval",
+    "writes": 1,
+    "consecutiveDuplicates": 0,
+    "bytes": [
+      1069
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timer:none:guess:interval",
+    "writes": 2,
+    "consecutiveDuplicates": 0,
+    "bytes": [
+      1251,
+      1265
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timer:none:hint:interval",
+    "writes": 2,
+    "consecutiveDuplicates": 0,
+    "bytes": [
+      1160,
+      1161
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timer:none:continue:interval",
+    "writes": 2,
+    "consecutiveDuplicates": 1,
+    "bytes": [
+      1880,
+      1880
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timer:none:skip:interval",
+    "writes": 1,
+    "consecutiveDuplicates": 0,
+    "bytes": [
+      1069
+    ]
+  }
+]

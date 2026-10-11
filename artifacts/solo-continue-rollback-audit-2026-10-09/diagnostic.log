@@ -1,0 +1,98 @@
+FAIL ../../artifacts/solo-continue-rollback-audit-2026-10-09/diagnostic.test.tsx
+  ● keeps a newly host-confirmed hint when Continue is rejected
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+        "P",
+    -   "I",
+    +   "",
+      ]
+
+      10 | it('keeps a newly host-confirmed hint when Continue is rejected',()=>{
+      11 |  const current=gameSessionReducer(pending(),{type:'loadRiddle',riddle:{...riddle,revealedHints:[{index:0,letter:'P'},{index:1,letter:'I'}]}});
+    > 12 |  const rolledBack=reject(current);expect(rolledBack.hintRevealedIndices).toEqual([0,1]);expect(rolledBack.currentLetters.slice(0,2)).toEqual(['P','I']);expect(rolledBack.letterStates.i).toBe('green');
+         |                                                                                                                                      ^
+      13 | });
+      14 | it('does not undo a host-confirmed Continue grant when an older local preview is rejected',()=>{
+      15 |  const current=gameSessionReducer(pending(),{type:'loadRiddle',riddle:{...riddle,hasUsedContinue:true,awaitingContinue:false}});
+
+      at Object.<anonymous> (../../artifacts/solo-continue-rollback-audit-2026-10-09/diagnostic.test.tsx:12:134)
+
+  ● does not undo a host-confirmed Continue grant when an older local preview is rejected
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      14 | it('does not undo a host-confirmed Continue grant when an older local preview is rejected',()=>{
+      15 |  const current=gameSessionReducer(pending(),{type:'loadRiddle',riddle:{...riddle,hasUsedContinue:true,awaitingContinue:false}});
+    > 16 |  const rolledBack=reject(current);expect(rolledBack.engineSnapshot?.hasUsedContinue).toBe(true);expect(rolledBack.modal).toBeNull();
+         |                                                                                      ^
+      17 | });
+      18 | it.each(['win','loss'])('does not reopen a host-confirmed terminal %s on Continue rejection',kind=>{
+      19 |  const acceptedGuesses=Array.from({length:6},(_,index)=>({attempt:index+1,feedback:[...(index===5&&kind==='win'?'PIANO':'PIZZA')].map(letter=>({letter,status:index===5&&kind==='win'?'green' as const:'red' as const}))}));
+
+      at Object.<anonymous> (../../artifacts/solo-continue-rollback-audit-2026-10-09/diagnostic.test.tsx:16:86)
+
+  ● does not reopen a host-confirmed terminal win on Continue rejection
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: {"attempts": 6, "gameMode": "classic", "id": "00000000-0000-4000-8000-000000000001-win-6", "isCorrect": true, "kind": "win", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}
+    Received: null
+
+      19 |  const acceptedGuesses=Array.from({length:6},(_,index)=>({attempt:index+1,feedback:[...(index===5&&kind==='win'?'PIANO':'PIZZA')].map(letter=>({letter,status:index===5&&kind==='win'?'green' as const:'red' as const}))}));
+      20 |  const current=gameSessionReducer(pending(),{type:'loadRiddle',riddle:{...riddle,hasUsedContinue:true,awaitingContinue:false,attemptsUsed:6,acceptedGuesses}});
+    > 21 |  expect(current.lastOutcome?.kind).toBe(kind);const rolledBack=reject(current);expect(rolledBack.lastOutcome).toEqual(current.lastOutcome);expect(rolledBack.engineSnapshot?.gameOver).toBe(true);expect(rolledBack.engineSnapshot?.attemptsUsed).toBe(6);
+         |                                                                                                               ^
+      22 | });
+      23 | it('keeps a player-owned utility page open during Continue rollback',()=>{
+      24 |  const current=gameSessionReducer(pending(),{type:'openModal',modal:'shop'});expect(reject(current).modal).toBe('shop');
+
+      at ../../artifacts/solo-continue-rollback-audit-2026-10-09/diagnostic.test.tsx:21:111
+
+  ● does not reopen a host-confirmed terminal loss on Continue rejection
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: {"attempts": 6, "gameMode": "classic", "id": "00000000-0000-4000-8000-000000000001-loss-6", "isCorrect": false, "kind": "loss", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}
+    Received: null
+
+      19 |  const acceptedGuesses=Array.from({length:6},(_,index)=>({attempt:index+1,feedback:[...(index===5&&kind==='win'?'PIANO':'PIZZA')].map(letter=>({letter,status:index===5&&kind==='win'?'green' as const:'red' as const}))}));
+      20 |  const current=gameSessionReducer(pending(),{type:'loadRiddle',riddle:{...riddle,hasUsedContinue:true,awaitingContinue:false,attemptsUsed:6,acceptedGuesses}});
+    > 21 |  expect(current.lastOutcome?.kind).toBe(kind);const rolledBack=reject(current);expect(rolledBack.lastOutcome).toEqual(current.lastOutcome);expect(rolledBack.engineSnapshot?.gameOver).toBe(true);expect(rolledBack.engineSnapshot?.attemptsUsed).toBe(6);
+         |                                                                                                               ^
+      22 | });
+      23 | it('keeps a player-owned utility page open during Continue rollback',()=>{
+      24 |  const current=gameSessionReducer(pending(),{type:'openModal',modal:'shop'});expect(reject(current).modal).toBe('shop');
+
+      at ../../artifacts/solo-continue-rollback-audit-2026-10-09/diagnostic.test.tsx:21:111
+
+  ● keeps a player-owned utility page open during Continue rollback
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "shop"
+    Received: "continue"
+
+      22 | });
+      23 | it('keeps a player-owned utility page open during Continue rollback',()=>{
+    > 24 |  const current=gameSessionReducer(pending(),{type:'openModal',modal:'shop'});expect(reject(current).modal).toBe('shop');
+         |                                                                                                            ^
+      25 | });
+      26 | it('restores the ordinary exhausted round after an unchanged Continue rejection',()=>{
+      27 |  const rolledBack=reject(pending());expect(rolledBack.engineSnapshot?.hasUsedContinue).toBe(false);expect(rolledBack.modal).toBe('continue');expect(rolledBack.profile?.coins).toBe(600);expect(rolledBack.pendingCoinSpend).toBeNull();
+
+      at Object.<anonymous> (../../artifacts/solo-continue-rollback-audit-2026-10-09/diagnostic.test.tsx:24:108)
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 1 passed, 6 total
+Snapshots:   0 total
+Time:        0.336 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-continue-rollback-audit-2026-10-09/results.json

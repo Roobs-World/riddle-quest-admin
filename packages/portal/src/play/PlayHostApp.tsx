@@ -235,6 +235,7 @@ export function PlayHostApp({
     setNotice,
     onPlayable: reportPlayable,
     onStartupUnavailable: reportStartupUnavailable,
+    recoverySuspended: bridgeUnavailable,
     onRecoveryAttempt: sendRecoveryInit,
   });
   useEffect(() => {

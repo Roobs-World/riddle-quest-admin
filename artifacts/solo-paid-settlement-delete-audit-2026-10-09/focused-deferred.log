@@ -1,0 +1,55 @@
+FAIL src/play/__tests__/terminalPaidLiveness.test.ts
+  ● retains a settlement route for terminal win with held charge=true
+
+    expect(received).toBeNull()
+
+    Received: {"base": {"activeSlotIndex": 0, "auxiliaryFanfare": null, "canRestoreCheckpoint": true, "completionAcknowledged": false, "currentLetters": ["", "", "", "", ""], "engineSnapshot": {"attemptsUsed": 5, "gameOver": false, "guesses": [], "hasUsedContinue": false}, "gameMode": "classic", "guessPending": false, "guesses": [], "hintRevealedIndices": [], "initialized": false, "lastOutcome": null, "lastRewards": null, "leaderboard": [], "leaderboardLoadError": false, "leaderboardLoading": false, "leaderboardRequestId": null, "leaderboardType": "xp", "letterStates": {}, "locale": "en", "modal": "continue", "muted": false, "notice": null, "optimisticAchievementIds": [], "paused": false, "pendingCoinSpend": null, "pendingGuessState": null, "pendingHintState": null, "products": [], "profile": {"achievements": [], "classicIndex": 1, "coins": 600, "gamesPlayed": 2, "level": 2, "username": "Alice", "winStreak": 1, "wins": 1, "xp": 100}, "riddle": {"answerLength": 5, "attemptsUsed": 5, "awaitingContinue": true, "evaluation": {"answer": "piano", "locale": "en"}, "gameMode": "classic", "hasUsedContinue": false, "index": 1, "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001", "text": "Clue"}, "user": {"isAnonymous": true, "uid": "Alice"}}, "coinAction": {"payload": {"amount": 50, "gameMode": "classic", "reason": "continue", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}, "requestId": "continue-held-terminal", "type": "game:spendCoins"}, "confirmedClassicIndex": 1, "draft": ["", "", "", "", ""], "draftActiveSlotIndex": 0, "queue": [], "riddle": {"answerLength": 5, "attemptsUsed": 5, "awaitingContinue": true, "evaluation": {"answer": "piano", "locale": "en"}, "gameMode": "classic", "hasUsedContinue": false, "index": 1, "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001", "text": "Clue"}, "scope": "Alice:1:en", "successors": [], "version": 1}
+
+      54 |     expect(stateRef.current.pendingCoinSpend).toBeNull();expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+      55 |     if(buffered){expect(storage.read(scope)?.successors).toEqual(record.successors);expect(storage.read(scope)?.queue).toEqual(record.queue);expect(storage.read(scope)?.coinAction).toBeUndefined();}
+    > 56 |     else expect(storage.read(scope)).toBeNull();}
+         |                                      ^
+      57 |  }finally{if(prior)Object.defineProperty(globalThis,'window',prior);else Reflect.deleteProperty(globalThis,'window');}
+      58 | });
+      59 |
+
+      at src/play/__tests__/terminalPaidLiveness.test.ts:56:38
+
+  ● retains a settlement route for terminal loss with held charge=true
+
+    expect(received).toBeNull()
+
+    Received: {"base": {"activeSlotIndex": 0, "auxiliaryFanfare": null, "canRestoreCheckpoint": true, "completionAcknowledged": false, "currentLetters": ["", "", "", "", ""], "engineSnapshot": {"attemptsUsed": 5, "gameOver": false, "guesses": [], "hasUsedContinue": false}, "gameMode": "classic", "guessPending": false, "guesses": [], "hintRevealedIndices": [], "initialized": false, "lastOutcome": null, "lastRewards": null, "leaderboard": [], "leaderboardLoadError": false, "leaderboardLoading": false, "leaderboardRequestId": null, "leaderboardType": "xp", "letterStates": {}, "locale": "en", "modal": "continue", "muted": false, "notice": null, "optimisticAchievementIds": [], "paused": false, "pendingCoinSpend": null, "pendingGuessState": null, "pendingHintState": null, "products": [], "profile": {"achievements": [], "classicIndex": 1, "coins": 600, "gamesPlayed": 2, "level": 2, "username": "Alice", "winStreak": 1, "wins": 1, "xp": 100}, "riddle": {"answerLength": 5, "attemptsUsed": 5, "awaitingContinue": true, "evaluation": {"answer": "piano", "locale": "en"}, "gameMode": "classic", "hasUsedContinue": false, "index": 1, "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001", "text": "Clue"}, "user": {"isAnonymous": true, "uid": "Alice"}}, "coinAction": {"payload": {"amount": 50, "gameMode": "classic", "reason": "continue", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}, "requestId": "continue-held-terminal", "type": "game:spendCoins"}, "confirmedClassicIndex": 1, "draft": ["", "", "", "", ""], "draftActiveSlotIndex": 0, "queue": [], "riddle": {"answerLength": 5, "attemptsUsed": 5, "awaitingContinue": true, "evaluation": {"answer": "piano", "locale": "en"}, "gameMode": "classic", "hasUsedContinue": false, "index": 1, "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001", "text": "Clue"}, "scope": "Alice:1:en", "successors": [], "version": 1}
+
+      54 |     expect(stateRef.current.pendingCoinSpend).toBeNull();expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+      55 |     if(buffered){expect(storage.read(scope)?.successors).toEqual(record.successors);expect(storage.read(scope)?.queue).toEqual(record.queue);expect(storage.read(scope)?.coinAction).toBeUndefined();}
+    > 56 |     else expect(storage.read(scope)).toBeNull();}
+         |                                      ^
+      57 |  }finally{if(prior)Object.defineProperty(globalThis,'window',prior);else Reflect.deleteProperty(globalThis,'window');}
+      58 | });
+      59 |
+
+      at src/play/__tests__/terminalPaidLiveness.test.ts:56:38
+
+  ● retains a settlement route for terminal win with held charge=true
+
+    expect(received).toBeUndefined()
+
+    Received: {"payload": {"amount": 50, "gameMode": "classic", "reason": "continue", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}, "requestId": "continue-held-terminal", "type": "game:spendCoins"}
+
+      53 |     expect(recovery.handleQueuedGuessResult({type:'host:operationResult',requestId:record.coinAction!.requestId,payload:{operation:'spendCoins',ok:false,errorKind:'rejected',error:'Fixture rejection'}})).toBe(false);
+      54 |     expect(stateRef.current.pendingCoinSpend).toBeNull();expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+    > 55 |     if(buffered){expect(storage.read(scope)?.successors).toEqual(record.successors);expect(storage.read(scope)?.queue).toEqual(record.queue);expect(storage.read(scope)?.coinAction).toBeUndefined();}
+         |                                                                                                                                                                                      ^
+      56 |     else expect(storage.read(scope)).toBeNull();}
+      57 |  }finally{if(prior)Object.defineProperty(globalThis,'window',prior);else Reflect.deleteProperty(globalThis,'window');}
+      58 | });
+
+      at src/play/__tests__/terminalPaidLiveness.test.ts:55:182
+
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       3 failed, 93 passed, 96 total
+Snapshots:   0 total
+Time:        0.37 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/skipPreviewOwnership.test.ts|src/play/__tests__/pendingGuessJournal.test.ts|src/play/__tests__/skipSuccessorOwnership.test.ts|src/play/__tests__/terminalPaidLiveness.test.ts|src/play/__tests__/terminalPaidReceiptPresentation.test.ts.

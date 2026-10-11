@@ -1,0 +1,158 @@
+FAIL src/__tests__/firebase.test.ts
+  ● Firebase browser adapter › initializes Firebase once and declares every callable endpoint
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 1
+
+    @@ -35,10 +35,11 @@
+        "recordRaceAnalytics",
+        "getRaceEntry",
+        "cancelRaceInvite",
+        "joinLiveRace",
+        "retireLiveRaceJoin",
+    +   "confirmLiveGuessReceipt",
+        "updateLiveRace",
+        "getLiveRaceChallenge",
+        "sendLiveRaceChallenge",
+        "listLiveRaceChallenges",
+        "listLiveRaceHistory",
+
+      82 |     );
+      83 |     expect(mockGetFunctions).toHaveBeenCalledWith(firebaseApp, "us-central1");
+    > 84 |     expect(mockHttpsCallable.mock.calls.map((call) => call[1])).toEqual([
+         |                                                                 ^
+      85 |       "createYahooStripeCheckout",
+      86 |       "confirmYahooStripeCheckout",
+      87 |       "getCurrentDailyChallenge",
+
+      at Object.<anonymous> (src/__tests__/firebase.test.ts:84:65)
+
+  ● Firebase environment variants › routes jest gameplay beside Firestore without rerouting account or commerce calls
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "region": "europe-west2",
+    +   "region": "europe-west1",
+      }
+
+      224 |     ];
+      225 |     for (const [instance, name] of mockHttpsCallable.mock.calls) {
+    > 226 |       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
+          |                        ^
+      227 |     }
+      228 |     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
+      229 |   });
+
+      at src/__tests__/firebase.test.ts:226:24
+
+  ● Firebase environment variants › routes facebook gameplay beside Firestore without rerouting account or commerce calls
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "region": "europe-west2",
+    +   "region": "europe-west1",
+      }
+
+      224 |     ];
+      225 |     for (const [instance, name] of mockHttpsCallable.mock.calls) {
+    > 226 |       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
+          |                        ^
+      227 |     }
+      228 |     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
+      229 |   });
+
+      at src/__tests__/firebase.test.ts:226:24
+
+
+Summary of all failing tests
+FAIL src/__tests__/firebase.test.ts
+  ● Firebase browser adapter › initializes Firebase once and declares every callable endpoint
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 1
+
+    @@ -35,10 +35,11 @@
+        "recordRaceAnalytics",
+        "getRaceEntry",
+        "cancelRaceInvite",
+        "joinLiveRace",
+        "retireLiveRaceJoin",
+    +   "confirmLiveGuessReceipt",
+        "updateLiveRace",
+        "getLiveRaceChallenge",
+        "sendLiveRaceChallenge",
+        "listLiveRaceChallenges",
+        "listLiveRaceHistory",
+
+      82 |     );
+      83 |     expect(mockGetFunctions).toHaveBeenCalledWith(firebaseApp, "us-central1");
+    > 84 |     expect(mockHttpsCallable.mock.calls.map((call) => call[1])).toEqual([
+         |                                                                 ^
+      85 |       "createYahooStripeCheckout",
+      86 |       "confirmYahooStripeCheckout",
+      87 |       "getCurrentDailyChallenge",
+
+      at Object.<anonymous> (src/__tests__/firebase.test.ts:84:65)
+
+  ● Firebase environment variants › routes jest gameplay beside Firestore without rerouting account or commerce calls
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "region": "europe-west2",
+    +   "region": "europe-west1",
+      }
+
+      224 |     ];
+      225 |     for (const [instance, name] of mockHttpsCallable.mock.calls) {
+    > 226 |       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
+          |                        ^
+      227 |     }
+      228 |     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
+      229 |   });
+
+      at src/__tests__/firebase.test.ts:226:24
+
+  ● Firebase environment variants › routes facebook gameplay beside Firestore without rerouting account or commerce calls
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "region": "europe-west2",
+    +   "region": "europe-west1",
+      }
+
+      224 |     ];
+      225 |     for (const [instance, name] of mockHttpsCallable.mock.calls) {
+    > 226 |       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});
+          |                        ^
+      227 |     }
+      228 |     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
+      229 |   });
+
+      at src/__tests__/firebase.test.ts:226:24
+
+
+Test Suites: 1 failed, 16 skipped, 305 passed, 306 of 322 total
+Tests:       3 failed, 96 skipped, 3093 passed, 3192 total
+Snapshots:   0 total
+Time:        10.426 s, estimated 125 s
+Ran all test suites.

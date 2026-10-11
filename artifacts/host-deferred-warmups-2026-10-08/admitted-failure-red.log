@@ -1,0 +1,37 @@
+{
+  "mode": "development",
+  "engine": "chromium",
+  "browserVersion": "153.0.8010.12",
+  "cases": 1,
+  "checks": 5,
+  "failures": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "active-start",
+      "name": "no unhandled rejection",
+      "actual": [
+        "Error: Late admitted preparation failure"
+      ],
+      "expected": []
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Only committed recovery suspension can control provider admission
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/host-deferred-warmups-2026-10-08/admitted-failure-probe.mjs:54:283 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

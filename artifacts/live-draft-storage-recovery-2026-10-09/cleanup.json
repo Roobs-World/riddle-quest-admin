@@ -1,0 +1,17 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/53f7624cfa0d892519adee0f5d20c602aaa38e7172fa498533e2ab5e21fdbb9f/facebook.json",
+    "artifacts/target-dependencies/custom/83ac1faf3054c2f77e1aae4b8cd0c48ccc73979a9ee692a3c5b998fa2f0a786b/yahoo.json",
+    "artifacts/target-dependencies/custom/288cdbf203be2825f0c589ce97a8646eda083855edc22ff9424f2a9b233f451b/netflix.json",
+    "artifacts/target-dependencies/custom/dc40d44e56378d3abf6e3ed3fdf6868b76e29f67d3f0c00ac411d4c28d0d86c8/jest.json",
+    "artifacts/target-dependencies/custom/ca6178b9b3123442659fde10b07556d285fac3227630deaea0bc4fed4d96c854/facebook.json",
+    "artifacts/target-dependencies/custom/2850484ffff318f27ed32875023287566b2d49db18537c792e09f27291fc8ea0/youtube.json",
+    "artifacts/target-dependencies/custom/10995d4fb10888e771462d44e7b1d2f148f3de21dbaeac1b39e31e6397651941/reddit.json"
+  ],
+  "buildRoots": [
+    "/tmp/live-draft-storage-recovery-builds-20261009a",
+    "/tmp/riddle-quest-facebook-browser-k8kVcK"
+  ],
+  "facebookFixtureRemovedByHarness": true,
+  "allAbsent": true
+}

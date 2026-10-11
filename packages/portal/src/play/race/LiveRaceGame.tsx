@@ -9,7 +9,7 @@ import {liveRaceDeliveryDeadline, liveRaceCommandRejected, confirmUnavailableLiv
 import {createLiveRaceRetirement} from "./logic/liveRaceRetirement";
 import {liveRacePollInterval} from "./logic/liveRacePolling";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {LiveRaceViewSchema, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@qwordly/core/race";
+import {LiveRaceViewSchema, type LiveGuessReceiptQuery, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@qwordly/core/race";
 import {tr} from "../i18n";
 import {createRequestId} from "../requestIds";
 import {RaceTopbar} from "./components/RaceHeader";
@@ -19,6 +19,7 @@ import {useRaceGameplayFit} from "./hooks/useRaceGameplayFit";
 import {useAnswerKeyboard} from "../game/hooks/useAnswerKeyboard";
 import {createLiveRaceDraft, editLiveRaceDraft, reconcileLiveRaceDraft, rejectLiveRaceDraft, type LiveRaceDraft} from "./logic/liveRaceDraft";
 import {useLiveRaceDraft} from "./hooks/useLiveRaceDraft";
+import {createLiveRaceDraftStorage} from "./logic/liveRaceDraftStorage";
 import {confirmedGuessesKey, getRaceLetterStates} from "./logic/racePresentation";
 
 /** Lobby and live race presentation use one target-owned authenticated transport. */
@@ -38,6 +39,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
 }) {
   /** Viewer-specific snapshot from the authoritative match. */
   const [view, setView] = useState<LiveRaceView | null>(null);
+  /** Checkpoints contain unsent presentation only and belong to this mounted account journey. */
+  const [draftStorage] = useState(() => createLiveRaceDraftStorage(ownerId));
   /** Confirmed blocks immediately mask the retired rival on every visible surface. */
   const [blocked, setBlocked] = useState(false);
   /** Latest accepted snapshot available to asynchronous transport callbacks. */
@@ -50,6 +53,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     command: UpdateLiveRace;
     /** Immutable input checkpoint for definitive rejection recovery. */
     draft: LiveRaceDraft;
+    /** Locator identifies the original accepted attempt without persisting its submitted word. */
+    receipt: LiveGuessReceiptQuery;
   } | null>(null);
   /** Initial join or player command currently awaiting confirmation. */
   const [busy, setBusy] = useState(false);
@@ -103,6 +108,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const active = useRef(true);
   /** Retirement releases local waits for commands and superseded polls while their adapter receipts remain observed. */
   const waitOwner = useRef<AbortController | null>(null);
+  /** Optional draft proof can retire without cancelling authoritative seat delivery. */
+  const draftProofWait = useRef<AbortController | null>(null);
+  /** Rendering untouched canonical cells must not replace a checkpoint awaiting proof. */
+  const draftRecoveryBase = useRef<LiveRaceDraft | null>(null);
   useLayoutEffect(() => {
     active.current = true;
     // A receipt microtask can run before passive cleanup after a replacement commits.
@@ -133,7 +142,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   /** Unused nested-dialog anchor required by the shared focus controller. */
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   /** Accepts a validated snapshot without erasing in-progress answer input. */
-  const apply = useCallback((value: LiveRaceView) => {
+  const apply = useCallback((value: LiveRaceView, restored: LiveRaceDraft | null = null) => {
     /** Provides next behavior. */
     const next = LiveRaceViewSchema.parse(value);
     if (!active.current || closed.current) return;
@@ -143,7 +152,9 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     setNow(observedNow);
     /** Capture the prior authority identity before queued React draft reconciliation runs. */
     const previous = viewRef.current;
-    updateDraft(current => reconcileLiveRaceDraft(current, previous, next));
+    /** Canonical presentation remains independent of optional historical draft proof. */
+    updateDraft(current => restored ?? reconcileLiveRaceDraft(current, previous, next));
+    if (["result", "cancelled"].includes(next.phase)) draftStorage.clear();
     viewRef.current = next;
     setView(next);
     reschedulePoll();
@@ -152,7 +163,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       completedCallback.current?.(next);
       window.dispatchEvent(new CustomEvent("riddle-quest:live-race-completed", {detail: {ownerId}}));
     }
-  }, [ownerId, updateDraft, reschedulePoll]);
+  }, [ownerId, updateDraft, reschedulePoll, draftStorage]);
   /** Sends one owned join, progress poll or idempotent player command. */
   const deliver = useCallback(async () => {
     /** Stable command selected before starting an asynchronous delivery. */
@@ -173,13 +184,47 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     reschedulePoll();
     if (command || !viewRef.current) setBusy(true);
     /** Accepts an owned receipt; late superseded deliveries cannot rewind gameplay. */
-    const accept = (result: LiveRaceView) => {
+    const accept = async (result: LiveRaceView) => {
       if (closed.current || !active.current) {
         retireSeat(result);
         return;
       }
       if (latestDelivery.current !== delivery || invitationUnavailableRef.current) return;
-      apply(result);
+      /** Only first-question recovery can wait for optional immutable receipt evidence. */
+      let restored: LiveRaceDraft | null = null;
+      if (!viewRef.current?.run?.currentRiddle && result.run?.currentRiddle) {
+        /** This optional lookup belongs to the exact accepting delivery. */
+        const proof = new AbortController();
+        draftProofWait.current = proof;
+        /** Account retirement also cancels the optional wait. */
+        const abortProof = () => proof.abort();
+        lifetime.signal.addEventListener("abort", abortProof, {once: true});
+        if (lifetime.signal.aborted) proof.abort();
+        /** Reading captures immutable predecessor bytes before canonical presentation can render. */
+        const recovery = draftStorage.restoreWithReceipt(LiveRaceViewSchema.parse(result),
+          closeRequested.current || !transport.confirmGuessReceipt ? undefined : query => transport.confirmGuessReceipt!(query), proof.signal);
+        apply(result);
+        /** Exact canonical presentation and letter intent admit optional late recovery. */
+        const published = viewRef.current, originalDraft = getDraft();
+        draftRecoveryBase.current = originalDraft;
+        setBusy(false);
+        try {
+          restored = await recovery;
+        } finally {
+          lifetime.signal.removeEventListener("abort", abortProof);
+          if (draftProofWait.current === proof) {
+            draftProofWait.current = null;
+            draftRecoveryBase.current = null;
+          }
+        }
+        if (closed.current || !active.current) {retireSeat(result); return;}
+        if (latestDelivery.current !== delivery || invitationUnavailableRef.current || viewRef.current !== published) return;
+        /** New letters outrank old recovery; cursor-only intent can coexist with proven cells. */
+        const currentDraft = getDraft();
+        if (closeRequested.current || currentDraft.revision !== originalDraft.revision) restored = null;
+        else if (restored && currentDraft !== originalDraft) restored = {...restored, activeSlotIndex: currentDraft.activeSlotIndex};
+      }
+      apply(result, restored);
       if (submittedDraft.current?.command === command) submittedDraft.current = null;
       if (pending.current === command) pending.current = null;
       refreshRequired.current = false;
@@ -203,9 +248,9 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         transport.update(command ?? {ticketId: viewRef.current.ticketId, action: "poll", requestId: createRequestId("live-poll")}),
         Boolean(viewRef.current && !command), late => {
           // Owned late commands can recover before retry; polls remain superseded observations.
-          if (closed.current || !active.current || !delivery.poll && pending.current === command) accept(late);
+          if (closed.current || !active.current || !delivery.poll && pending.current === command) void accept(late).catch(() => undefined);
         }, lifetime.signal);
-      accept(result);
+      await accept(result);
     } catch (failure) {
       if (inFlight.current === delivery && active.current && !closed.current) {
         if (!viewRef.current && !command && liveRaceCommandRejected(failure)) {
@@ -246,7 +291,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         }
       }
     }
-  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft, reschedulePoll, retireSeat, ownerId]);
+  }, [transport, locale, categoryId, createChallenge, challengeId, rematchOfTicketId, apply, updateDraft, reschedulePoll, retireSeat, ownerId, getDraft, draftStorage]);
   /** Signals never bypass delivery ownership or outage backoff. */
   const refresh = useCallback(() => {
     refreshQueued.current = true;
@@ -303,10 +348,32 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         if (closed.current) return;
         /** Last accepted ticket remains owned by this retired account journey. */
         const current = viewRef.current;
+        draftStorage.clear();
         retireSeat(current);
       });
     };
-  }, [deliver, refresh, retireSeat]);
+  }, [deliver, refresh, retireSeat, draftStorage]);
+  /** Only cells deliberately composed after submission carry the original request locator. */
+  const draftReceipt = (current: LiveRaceDraft) => {
+    /** The submitted word itself is never eligible for receipt-assisted recovery. */
+    const submitted = submittedDraft.current;
+    return submitted && current.revision > submitted.draft.revision ? submitted.receipt : undefined;
+  };
+  useLayoutEffect(() => {
+    if (!closeRequested.current && !closed.current &&
+      (!draftRecoveryBase.current || draft.revision !== draftRecoveryBase.current.revision))
+      draftStorage.save(view, draft, draftReceipt(draft));
+  }, [view, draft, draftStorage]);
+  useEffect(() => {
+    /** Final local edits survive navigation without replaying their transport commands. */
+    const checkpoint = () => {
+      if (active.current && !closeRequested.current && !closed.current &&
+        (!draftRecoveryBase.current || getDraft().revision !== draftRecoveryBase.current.revision))
+        draftStorage.save(viewRef.current, getDraft(), draftReceipt(getDraft()));
+    };
+    window.addEventListener("pagehide", checkpoint);
+    return () => window.removeEventListener("pagehide", checkpoint);
+  }, [draftStorage, getDraft]);
   useEffect(() => {
     if (view?.phase !== "countdown" || view.startsAtMs === null) return;
     /** The lobby clock stops updating the gameplay owner as soon as racing begins. */
@@ -356,10 +423,12 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   /** Leaves the owned seat and returns to the multiplayer intro. */
   const close = () => {
     if (closed.current || closeRequested.current) return;
+    draftStorage.clear();
     /** Snapshot whose ticket and prompt own the current interaction. */
     const current = viewRef.current;
     if (!invitationUnavailableRef.current && (!current && !joinRejected.current || current && !["result", "cancelled"].includes(current.phase))) {
       closeRequested.current = true;
+      draftProofWait.current?.abort();
       setClosing(true);
       if (current) pending.current = {ticketId: current.ticketId, action: "leave", requestId: leaveId.current};
       refreshRequired.current = false;
@@ -379,7 +448,12 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     const riddle = viewRef.current?.run?.currentRiddle;
     if (riddle && canDraft && active.current && !closed.current && !closeRequested.current && pending.current?.action !== "leave" &&
       (viewRef.current?.phase === "racing" || viewRef.current?.phase === "countdown" && serverNow() >= (viewRef.current.startsAtMs ?? Infinity)))
-      updateDraft(current => editLiveRaceDraft(riddle, current, kind, value));
+      updateDraft(current => {
+        /** Changed letters supersede optional historical recovery without blocking this input. */
+        const next = editLiveRaceDraft(riddle, current, kind, value);
+        if (next.revision !== current.revision) draftProofWait.current?.abort();
+        return next;
+      });
   };
   /** Stable command selected before starting an asynchronous delivery. */
   const command = (action: "guess" | "hint" | "skip") => {
@@ -391,24 +465,30 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     /** Every admitted input transition precedes the explicit submit, independently of rendering. */
     const latestDraft = getDraft();
     if (action === "guess" && latestDraft.letters.some(letter => !letter)) return;
+    draftProofWait.current?.abort();
     pending.current = {ticketId: current.ticketId, action, requestId: createRequestId(`live-${action}`),
       riddleId: riddle.riddleId, ...(action === "guess" ? {guess: latestDraft.letters.join("")} : {})};
     if (action === "guess") {
-      submittedDraft.current = {command: pending.current, draft: {...latestDraft, letters: [...latestDraft.letters]}};
+      submittedDraft.current = {command: pending.current, draft: {...latestDraft, letters: [...latestDraft.letters]},
+        receipt: {ticketId: current.ticketId, requestId: pending.current.requestId, riddleId: riddle.riddleId, position: riddle.position, guessesUsedBefore: riddle.guessesUsed}};
       updateDraft(() => createLiveRaceDraft(riddle, latestDraft.revision));
     }
     void deliver();
   };
-  useAnswerKeyboard({active: canDraft,
+  useAnswerKeyboard({active: canDraft, locale,
     onLetter: letter => input("letter", letter), onBackspace: () => input("backspace"), onSubmit: () => command("guess")});
   useRaceGameplayFit({active: phase === "racing", screenRef: dialogRef, viewportRef, gameplayRef});
   /** Server-confirmed guesses shown in the existing answer board. */
   const guesses = view?.run?.currentRiddle?.confirmedGuesses;
   /** Content identity of the guess history; polls deliver equal histories as new objects. */
   const guessesKey = confirmedGuessesKey(guesses);
+  /** Server-confirmed hint knowledge can change without adding a submitted guess. */
+  const revealedLetters = view?.run?.currentRiddle?.revealedLetters;
+  /** Equal poll snapshots retain the keyboard projection while new hints invalidate it. */
+  const revealedKey = revealedLetters?.map(({index, letter}) => `${index}\u0000${letter}`).join("\u0001") ?? "";
   /** Draft edits retain keyboard feedback until a new authoritative guess history arrives. */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by content so unchanged polls skip the reduction
-  const letterStates = useMemo(() => getRaceLetterStates(guesses ?? []), [guessesKey]);
+  const letterStates = useMemo(() => getRaceLetterStates(guesses ?? [], locale, revealedLetters), [guessesKey, revealedKey, locale]);
   /** Local privacy masking cannot change private scoring or the server winner. */
   const shownView = blocked && view ? {...view, opponent: view.opponent ? {...view.opponent,
     displayName: tr("RaceTo10.BLOCK_SUCCESS"), avatarUrl: null, level: 1} : null,

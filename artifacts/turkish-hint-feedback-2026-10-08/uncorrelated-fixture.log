@@ -1,0 +1,11 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at /home/craig-beswetherick/Documents/riddle-quest/artifacts/turkish-hint-feedback-2026-10-08/probe.mjs:59:225 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

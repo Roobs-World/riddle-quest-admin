@@ -1,0 +1,7 @@
+{
+  "packages/portal/src/play/race/LiveRaceGame.tsx": "90f7007f1ea6c87978f932902493fcd687d2ce3cfab9799cd73aacf6c5102a68",
+  "packages/portal/src/play/race/hooks/useLiveRaceSignals.ts": "520e395a4977178a86db35b119e5ad9d88637eeccf30c39c9cd7b74e232da854",
+  "packages/portal/src/play/race/logic/liveRacePolling.ts": "02adcbea97cb14554ce3efa7ad40a75a61e4783283bd33b43d47bde055564c36",
+  "packages/portal/scripts/verify-live-poll-scheduling-browser.mjs": "9044a5b8b332290bf49d50d12c9f159c487ae75b54802589368f1c62aaa5d548",
+  "packages/portal/scripts/verify-live-signal-watchdog-browser.mjs": "2c500315e72a0db81b0c182f992cbff30efd337437cc9006c2c7d3ffae67130a"
+}

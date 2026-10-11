@@ -1,0 +1,9 @@
+# Live multiplayer confirmed hint keyboard feedback
+
+The active LiveRaceGame displayed a locked server-revealed P hint but left its virtual keyboard key uncolored before a guess. The initial rendered-screen probe reproduces this on the preceding source. Three unit regressions also fail when confirmed English P, Turkish dotted İ and Turkish dotless I must override older red guess feedback.
+
+The shared race keyboard projection now includes server-confirmed revealed symbols, normalized using the content locale. LiveRaceGame memoization includes their content identity, so newly accepted hints invalidate feedback even when guess history is unchanged. Equal poll snapshots retain the projection. New question snapshots without hints reset old knowledge.
+
+The focused suite passes 11 tests; the full client suite passes 3,013 tests in 304 suites with 96 intentional skips. TypeScript, TSDoc and file-size gates pass. A permanent browser regression is registered in the game browser chain and runs both React modes. Forty-eight assertions pass across Chromium and Firefox, development/production React, and 390/1280 pixel widths. Each restored or newly accepted English hint scenario checks green keyboard feedback, stability across an equal authoritative poll and reset after skipping to a successor. Turkish symbol identity is covered in unit tests, not these rendered English fixtures. These are injected live transports, not real remote multiplayer sessions.
+
+All six isolated targets and the Devvit server build. Twenty-three exact built-artifact browser checks pass. Evidence retains 1,299 built files, selected input hashes, original failures and the reverse-checkable five-input patch under `artifacts/live-hint-keyboard-feedback-2026-10-08/`. No server, grants, translated copy or deployment changes are included. The unlimited improvement goal remains active.

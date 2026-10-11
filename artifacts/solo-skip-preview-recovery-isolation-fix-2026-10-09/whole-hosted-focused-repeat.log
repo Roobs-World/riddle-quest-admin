@@ -1,0 +1,29 @@
+FAIL src/play/__tests__/queuedCoinActions.jest-playwright.test.ts (30.225 s)
+  ● queued coin actions › shows a purchased hint and the buffered Skip successor before server confirmation
+
+    thrown: "Exceeded timeout of 30000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      at _getError (../../node_modules/.pnpm/jest-circus@30.5.2_supports-color@8.1.1/node_modules/jest-circus/build/jestAdapterInit.js:1985:12)
+          at Array.map (<anonymous>)
+
+    Cause:
+        thrown: "Exceeded timeout of 30000 ms for a test.
+        Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+          257 |   });
+          258 |
+        > 259 |   it("shows a purchased hint and the buffered Skip successor before server confirmation", async () => {
+              |     ^
+          260 |     /** Browser page used to exercise immediate coin actions. */
+          261 |     const page = await browser.newPage({viewport: {width: 390, height: 844}});
+          262 |     // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+
+          at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:259:5
+          at Object.<anonymous> (src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:11:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 13 skipped, 14 total
+Snapshots:   0 total
+Time:        30.326 s, estimated 49 s
+Ran all test suites matching src/play/__tests__/queuedCoinActions.jest-playwright.test.ts with tests matching "shows a purchased hint and the buffered Skip successor before server confirmation".

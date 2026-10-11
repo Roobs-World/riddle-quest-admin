@@ -1,0 +1,11 @@
+{
+  "matchedPriorSelectedInputs": 2481,
+  "additionalBackendRuntimeInputs": [
+    "firebase-functions/.nvmrc",
+    "firebase-functions/jest.portalTransform.js",
+    "firebase-functions/jest.production-coverage.config.js",
+    "firebase-functions/jest.race-coverage.config.js",
+    "firebase-functions/jest.scalability-coverage.config.js",
+    "firebase.json"
+  ]
+}

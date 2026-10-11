@@ -1,0 +1,206 @@
+[
+  {
+    "width": 320,
+    "method": "virtual",
+    "hint": false,
+    "answer": "izmir",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 320,
+    "method": "virtual",
+    "hint": false,
+    "answer": "IRMAK",
+    "draft": "IRMAK",
+    "guess": "IRMAK",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 320,
+    "method": "physical",
+    "hint": false,
+    "answer": "izmir",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 320,
+    "method": "physical",
+    "hint": false,
+    "answer": "IRMAK",
+    "draft": "IRMAK",
+    "guess": "IRMAK",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": false,
+    "answer": "izmir",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": false,
+    "answer": "IRMAK",
+    "draft": "IRMAK",
+    "guess": "IRMAK",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": false,
+    "answer": "izmir",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": false,
+    "answer": "IRMAK",
+    "draft": "IRMAK",
+    "guess": "IRMAK",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": false,
+    "answer": "izmir",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": false,
+    "answer": "IRMAK",
+    "draft": "IRMAK",
+    "guess": "IRMAK",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": false,
+    "answer": "izmir",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": false,
+    "answer": "IRMAK",
+    "draft": "IRMAK",
+    "guess": "IRMAK",
+    "greenLetters": 5,
+    "requestChecks": [
+      {
+        "bridge": true,
+        "callable": true,
+        "alternateCallable": true
+      }
+    ],
+    "browserErrors": []
+  }
+]

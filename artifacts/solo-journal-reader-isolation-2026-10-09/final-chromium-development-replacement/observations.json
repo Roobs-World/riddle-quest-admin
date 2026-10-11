@@ -1,0 +1,77 @@
+{
+  "engine": "chromium",
+  "mode": "development",
+  "browserVersion": "153.0.8010.12",
+  "observations": [
+    {
+      "width": 390,
+      "phase": "local",
+      "name": "replacement lifetime can save its own draft",
+      "actual": "A",
+      "expected": "A"
+    },
+    {
+      "width": 390,
+      "phase": "local",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "takeover",
+      "name": "replacement lifetime preserves other paid request",
+      "actual": "skip-other-mounted-owner",
+      "expected": "skip-other-mounted-owner"
+    },
+    {
+      "width": 390,
+      "phase": "takeover",
+      "name": "replacement lifetime cannot adopt other draft",
+      "actual": "B",
+      "expected": "B"
+    },
+    {
+      "width": 390,
+      "phase": "takeover",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "local",
+      "name": "replacement lifetime can save its own draft",
+      "actual": "A",
+      "expected": "A"
+    },
+    {
+      "width": 1280,
+      "phase": "local",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "takeover",
+      "name": "replacement lifetime preserves other paid request",
+      "actual": "skip-other-mounted-owner",
+      "expected": "skip-other-mounted-owner"
+    },
+    {
+      "width": 1280,
+      "phase": "takeover",
+      "name": "replacement lifetime cannot adopt other draft",
+      "actual": "B",
+      "expected": "B"
+    },
+    {
+      "width": 1280,
+      "phase": "takeover",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

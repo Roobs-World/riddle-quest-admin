@@ -1,0 +1,667 @@
+FAIL src/play/__tests__/useGameMessageRouter.test.ts
+  ● rejects malformed guess result short and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 18
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result long and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 22
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "red",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +           "X",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result bad-status and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 18
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result multiple-symbol and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "XX",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result expanding and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "SS",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result zero and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 0,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result fraction and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 0.5,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result nan and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": NaN,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result infinite and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": Infinity,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result over-limit and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 6,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result is-correct-type and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result game-over-type and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+  ● rejects malformed guess result continue-type and reloads current authoritative progress
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  6
+    + Received  + 20
+
+      Array [
+        Array [
+          Object {
+    -       "type": "guessFailed",
+    -     },
+    +       "attempts": 1,
+    +       "canContinue": false,
+    +       "feedback": Object {
+    +         "feedback": Array [
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+    +           "yellow",
+              ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +         "guess": Array [
+    +           "P",
+    +           "I",
+    +           "A",
+    +           "N",
+    +           "O",
+    +         ],
+    +       },
+    +       "gameOver": false,
+    +       "isCorrect": false,
+    +       "type": "guessResolved",
+          },
+        ],
+      ]
+
+      339 |         ...(kind === "continue-type" ? {canContinue: "false"} : {})},
+      340 |     }});
+    > 341 |     expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
+          |                                 ^
+      342 |       [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      343 |     expect(requestRiddle).toHaveBeenCalledTimes(1);
+      344 |   },
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:341:33
+
+Test Suites: 1 failed, 1 total
+Tests:       13 failed, 41 passed, 54 total
+Snapshots:   0 total
+Time:        0.281 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/useGameMessageRouter.test.ts.

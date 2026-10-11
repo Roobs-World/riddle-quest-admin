@@ -1,0 +1,39 @@
+{
+  "mode": "production",
+  "checks": 5,
+  "failures": [
+    {
+      "width": 390,
+      "height": 568,
+      "scenario": "commit-state",
+      "name": "background writes belong to the committed game and adapter",
+      "actual": [],
+      "expected": [
+        {
+          "version": "B",
+          "riddle": "classic_1",
+          "draft": "PIANO",
+          "outcome": null
+        }
+      ]
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Committed background checkpoint ownership
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/pagehide-checkpoint-diagnosis-2026-10-09/probe.mjs:66:232 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -45,9 +45,10 @@ export function useRaceDialogFocus({
     /** Only controls in the native Tab sequence participate in the focus loop. */
     const focusable = Array.from(
       activeDialog.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [href], [tabindex]:not([tabindex="-1"])',
       ),
-    ).filter((control) => control.tabIndex >= 0);
+    ).filter((control) => control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]") &&
+      control.checkVisibility({visibilityProperty: true}));
     if (focusable.length === 0) {
       event.preventDefault();
       activeDialog.focus({preventScroll: true});

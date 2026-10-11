@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "9d48dabf2d039839049aa0655fe7d63708f5d95bc664d78f0c73d1b5b592df59",
+  "packages/portal/src/play/pendingGuessJournal.ts": "b6426ab775b217e18bc01e19d651f5668151b53436993f643ef910778262e315",
+  "packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts": "38d24ee474cf24977852ff3c83ba2604d1ba87b16c3a5c9b860a75087c7a312c"
+}

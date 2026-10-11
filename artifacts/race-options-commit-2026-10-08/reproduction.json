@@ -1,0 +1,20 @@
+{
+  "confirmedModes": [
+    "development",
+    "production"
+  ],
+  "command": "node artifacts/race-options-commit-2026-10-08/probe.mjs",
+  "terminalExitCodes": {
+    "development": 1,
+    "production": 1
+  },
+  "hookSha256": "537124d2037d5ed13078120631a5e8af3d8ff0520a58e9fd07e3c1c2706c2bce",
+  "productionSourceChanged": false,
+  "fixVerified": false,
+  "goalComplete": false,
+  "candidateFixtureVerified": true,
+  "candidateExitCodes": {
+    "development": 0,
+    "production": 0
+  }
+}

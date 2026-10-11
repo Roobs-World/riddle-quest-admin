@@ -1,0 +1,95 @@
+  console.error
+    DIAGNOSTIC {
+      text: 'Classic\n' +
+        '175\n' +
+        'What has a face and hands but no arms?\n' +
+        'Q\n' +
+        'W\n' +
+        'E\n' +
+        'R\n' +
+        'T\n' +
+        'Y\n' +
+        'U\n' +
+        'I\n' +
+        'O\n' +
+        'P\n' +
+        'A\n' +
+        'S\n' +
+        'D\n' +
+        'F\n' +
+        'G\n' +
+        'H\n' +
+        'J\n' +
+        'K\n' +
+        'L\n' +
+        'Z\n' +
+        'X\n' +
+        'C\n' +
+        'V\n' +
+        'B\n' +
+        'N\n' +
+        'M\n' +
+        'Hint\n' +
+        'SUBMIT\n' +
+        'Skip\n' +
+        'Multiplayer',
+      storage: {
+        'riddleQuest:pendingPlayLease:v1:jest-guest:1:en': '{"owner":"pending-owner-17d42291-8fd3-4a59-854d-782c9c2afbea","expiresAt":1791577162461}',
+        'riddleQuest:pendingPlay:v1:jest-guest:1:en': '{"version":1,"scope":"jest-guest:1:en","riddle":{"riddleId":"classic-fake-1","text":"What has keys but cannot open doors?","answerLength":5,"evaluation":{"answer":"piano","locale":"en"},"sessionToken":"00000000-0000-4000-8000-000000000001","gameMode":"classic","index":1,"attemptsUsed":0,"hasUsedContinue":false,"awaitingContinue":false},"confirmedClassicIndex":1,"base":{"currentLetters":["P","","","",""],"activeSlotIndex":1,"guesses":[],"engineSnapshot":{"guesses":[],"attemptsUsed":0,"hasUsedContinue":false,"gameOver":false},"modal":null,"lastOutcome":null,"completionAcknowledged":false,"letterStates":{"p":"green"},"profile":{"username":"Guest Solver","coins":275,"level":3,"xp":420,"winStreak":2,"gamesPlayed":7,"wins":5,"achievements":["first_win","daily_spark"],"classicIndex":1,"totalHintsUsed":1},"lastRewards":null,"optimisticAchievementIds":[]},"successors":[{"riddle":{"riddleId":"classic-fake-2","text":"What has a face and hands but no arms?","answerLength":5,"evaluation":{"answer":"clock","locale":"en"},"sessionToken":"00000000-0000-4000-8000-000000000002","gameMode":"classic","index":2,"attemptsUsed":0,"hasUsedContinue":false,"awaitingContinue":false},"base":{"currentLetters":["","","","",""],"activeSlotIndex":0,"guesses":[],"engineSnapshot":{"guesses":[],"attemptsUsed":0,"hasUsedContinue":false,"gameOver":false},"modal":null,"lastOutcome":null,"completionAcknowledged":false,"letterStates":{},"profile":{"username":"Guest Solver","coins":175,"level":3,"xp":420,"winStreak":2,"gamesPlayed":7,"wins":5,"achievements":["first_win","daily_spark"],"classicIndex":2,"totalHintsUsed":1},"lastRewards":null,"optimisticAchievementIds":[]},"draft":["","","","",""],"draftActiveSlotIndex":0}],"queue":[],"draft":["P","","","",""],"draftActiveSlotIndex":1}'
+      },
+      hint: {
+        type: 'host:operationResult',
+        requestId: 'hint-43b8bdd6-f5fe-4213-a409-f04018f873d4',
+        payload: {
+          operation: 'hint',
+          ok: true,
+          data: [Object],
+          error: undefined,
+          errorKind: undefined
+        },
+        sentAt: 1791577147410
+      },
+      skip: {
+        type: 'host:operationResult',
+        requestId: 'skip-46060d13-c9b1-4575-8879-f96bddc512d3',
+        payload: {
+          operation: 'skip',
+          ok: true,
+          data: [Object],
+          error: undefined,
+          errorKind: undefined
+        },
+        sentAt: 1791577147470
+      }
+    }
+
+      337 |       expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
+      338 |     } catch (error) {
+    > 339 |       console.error("DIAGNOSTIC", await page.evaluate(() => ({text: document.body.innerText, storage: Object.fromEntries(Object.keys(localStorage).filter(key => key.includes("pendingPlay")).map(key => [key, localStorage.getItem(key)])), hint: Reflect.get(window, "__held_hint"), skip: Reflect.get(window, "__held_skip")})));
+          |               ^
+      340 |       throw error;
+      341 |     } finally {
+      342 |       await page.close();
+
+      at Object.<anonymous> (src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:339:15)
+
+FAIL src/play/__tests__/queuedCoinActions.jest-playwright.test.ts (5.248 s)
+  ● queued coin actions › shows a purchased hint and the buffered Skip successor before server confirmation
+
+    page.waitForFunction: Timeout 4000ms exceeded.
+
+      333 |       await page.waitForFunction(() => Reflect.has(window, "__held_skip"));
+      334 |       await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("skip"));
+    > 335 |       await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
+          |                  ^
+      336 |       await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
+      337 |       expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
+      338 |     } catch (error) {
+
+      at Object.<anonymous> (src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:335:18)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 13 skipped, 14 total
+Snapshots:   0 total
+Time:        5.35 s, estimated 31 s
+Ran all test suites matching src/play/__tests__/queuedCoinActions.jest-playwright.test.ts with tests matching "shows a purchased hint and the buffered Skip successor before server confirmation".

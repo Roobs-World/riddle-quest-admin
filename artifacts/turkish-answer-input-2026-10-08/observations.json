@@ -1,0 +1,13 @@
+{
+  "typed": "izmir",
+  "answer": "izmir",
+  "contentLocale": "tr",
+  "actual": [
+    "cell red",
+    "cell green",
+    "cell green",
+    "cell red",
+    "cell green"
+  ],
+  "expected": "five green letters"
+}

@@ -1,0 +1,15 @@
+{
+  "selectedSourceInputs": 2487,
+  "coreCopyFiles": 390,
+  "coreTests": 391,
+  "backendUnitTests": 1758,
+  "integrationSuitePathsPassedAcrossCorrectedRuns": 87,
+  "resumedIntegrationTests": 450,
+  "initialFullSelectionTests": 1252,
+  "initialFixtureFailures": 1,
+  "interruptedCorrectedExitCode": 143,
+  "compiledInputs": 395,
+  "goalComplete": false,
+  "productionSourceChanged": false,
+  "deployed": false
+}

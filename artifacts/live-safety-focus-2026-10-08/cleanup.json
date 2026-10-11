@@ -1,0 +1,23 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/ec04d7aea3f45b7aed1b799155cf1aaf3bd7e2f6b1f0a2f9406d7248adf4523e/reddit.json",
+    "artifacts/target-dependencies/custom/5730f55725274edb4ca0db51032b512cc2703db18207eeaaf81c7967dab7023c/netflix.json",
+    "artifacts/target-dependencies/custom/636da851c0318d4b598537b562bda030d6d81651aede475be9ececde34b06d42/netflix.json",
+    "artifacts/target-dependencies/custom/859bbe732dea983cadd307dc902abf318d0c5c6ccb20ea1f7feb211114fcaca4/youtube.json",
+    "artifacts/target-dependencies/custom/0b360ea9403ff52ae25eb594e2d4be605e270ccb2dfcff01e3e8faa3f14b90ce/reddit.json",
+    "artifacts/target-dependencies/custom/2f605d2f3e243c2219d616a46a65658847768f955c821c3dd0e2538753d59e08/jest.json",
+    "artifacts/target-dependencies/custom/d1e2043f8b49f6c396451eb0c63f67a31c72de60764cd5d74aa1bfea8e7ca295/facebook.json",
+    "artifacts/target-dependencies/custom/3db2a893bde2dddd5f6bcc0a3d3b13938a388edcc4be83d088f8fc2b3c4fd060/facebook.json",
+    "artifacts/target-dependencies/custom/049972f4620b37d551a882bf77445cdac3f27a583cc64114fea8cfaac8ccf005/youtube.json",
+    "artifacts/target-dependencies/custom/d74769dfb9f1b903e06e5387427653e54df3fb876c156b37078077835ac39ccb/yahoo.json",
+    "artifacts/target-dependencies/custom/8fa2f27bddcef7ce722bff9378ba51d037d9d472187ab2cbc51ca1cbe4de2836/facebook.json",
+    "artifacts/target-dependencies/custom/62f8f60768821a3986020c97479448dbc516a8e8320d1b63d745b451c2654f1b/jest.json",
+    "artifacts/target-dependencies/custom/8ce9e6948ab27e7b73693686967f25a987c104380191166bb5e7957b8668b173/yahoo.json"
+  ],
+  "buildRoots": [
+    "/tmp/live-safety-focus-builds-20261008a",
+    "/tmp/live-safety-focus-builds-20261008b",
+    "/tmp/riddle-quest-facebook-browser-qkSRpq"
+  ],
+  "allAbsent": true
+}

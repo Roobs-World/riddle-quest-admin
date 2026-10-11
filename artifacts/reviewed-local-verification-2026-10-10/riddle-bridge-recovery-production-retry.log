@@ -1,0 +1,6 @@
+{
+  "reactMode": "production",
+  "baseline": false,
+  "checks": 82,
+  "failures": []
+}

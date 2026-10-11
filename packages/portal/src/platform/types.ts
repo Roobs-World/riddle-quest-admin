@@ -477,8 +477,8 @@ export type TournamentCapability = {
   list(locale: RaceLocale): Promise<ListFacebookTournamentResponse>;
   /** Records an idempotent completed run and returns refreshed standings. */
   record(runId: string, locale: RaceLocale): Promise<RecordFacebookTournamentRunResponse>;
-  /** Opens a provider-owned share dialog using its fresh authoritative current-player best. */
-  share?(locale: RaceLocale): Promise<PlatformResult<void>>;
+  /** Opens a provider-owned share dialog using its fresh authoritative best; cancellation retires preparation only. */
+  share?(locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>>;
 };
 
 /** Server-authoritative board for the currently active Facebook thread/group context. */

@@ -1,0 +1,92 @@
+FAIL ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/diagnostic.test.ts
+  ● Skip ownership: preview-wrong-index
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      27 |    if(target==='preview-advanced')stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:{...next,index:3,riddleId:'classic-3',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      28 |    const riddle=target==='preview-wrong-index'?{...next,index:4}:target==='preview-wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+    > 29 |    expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:preview!.requestId,payload:{riddle}})).toBe(target==='preview-valid');
+         |                                                                                                                  ^
+      30 |   }else{
+      31 |    let requestId=action.requestId;
+      32 |    if(target==='reject-owned-preview'){recovery.requestSkip();const paid=post.mock.calls.map(call=>call[0]).find(message=>message.type==='game:skipRiddle');const preview=post.mock.calls.map(call=>call[0]).find(message=>message.type==='game:loadRiddle'&&message.requestId?.startsWith('skip-preview-'));expect(paid).toBeDefined();expect(preview).toBeDefined();requestId=paid!.requestId!;expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:preview!.requestId,payload:{riddle:next}})).toBe(true);stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:next});}
+
+      at ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/diagnostic.test.ts:29:114
+
+  ● Skip ownership: preview-wrong-mode
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      27 |    if(target==='preview-advanced')stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:{...next,index:3,riddleId:'classic-3',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      28 |    const riddle=target==='preview-wrong-index'?{...next,index:4}:target==='preview-wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+    > 29 |    expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:preview!.requestId,payload:{riddle}})).toBe(target==='preview-valid');
+         |                                                                                                                  ^
+      30 |   }else{
+      31 |    let requestId=action.requestId;
+      32 |    if(target==='reject-owned-preview'){recovery.requestSkip();const paid=post.mock.calls.map(call=>call[0]).find(message=>message.type==='game:skipRiddle');const preview=post.mock.calls.map(call=>call[0]).find(message=>message.type==='game:loadRiddle'&&message.requestId?.startsWith('skip-preview-'));expect(paid).toBeDefined();expect(preview).toBeDefined();requestId=paid!.requestId!;expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:preview!.requestId,payload:{riddle:next}})).toBe(true);stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:next});}
+
+      at ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/diagnostic.test.ts:29:114
+
+  ● Skip ownership: preview-advanced
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      27 |    if(target==='preview-advanced')stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:{...next,index:3,riddleId:'classic-3',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      28 |    const riddle=target==='preview-wrong-index'?{...next,index:4}:target==='preview-wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+    > 29 |    expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:preview!.requestId,payload:{riddle}})).toBe(target==='preview-valid');
+         |                                                                                                                  ^
+      30 |   }else{
+      31 |    let requestId=action.requestId;
+      32 |    if(target==='reject-owned-preview'){recovery.requestSkip();const paid=post.mock.calls.map(call=>call[0]).find(message=>message.type==='game:skipRiddle');const preview=post.mock.calls.map(call=>call[0]).find(message=>message.type==='game:loadRiddle'&&message.requestId?.startsWith('skip-preview-'));expect(paid).toBeDefined();expect(preview).toBeDefined();requestId=paid!.requestId!;expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:preview!.requestId,payload:{riddle:next}})).toBe(true);stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:next});}
+
+      at ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/diagnostic.test.ts:29:114
+
+  ● Skip ownership: reject-preview
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      34 |    if(target==='reject-advanced')stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:{...next,index:3,riddleId:'classic-3',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      35 |    recovery.handleQueuedGuessResult({type:'host:operationResult',requestId,payload:{operation:'skip',ok:false,errorKind:'rejected',error:'Rejected'}});
+    > 36 |    expect(stateRef.current.riddle?.index).toBe(target==='reject-advanced'?3:target==='reject-preview'?2:1);
+         |                                           ^
+      37 |    expect(storage.read(scope)).toBeNull();
+      38 |   }
+      39 |
+
+      at ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/diagnostic.test.ts:36:43
+
+  ● Skip ownership: reject-advanced
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 3
+    Received: 1
+
+      34 |    if(target==='reject-advanced')stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:{...next,index:3,riddleId:'classic-3',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+      35 |    recovery.handleQueuedGuessResult({type:'host:operationResult',requestId,payload:{operation:'skip',ok:false,errorKind:'rejected',error:'Rejected'}});
+    > 36 |    expect(stateRef.current.riddle?.index).toBe(target==='reject-advanced'?3:target==='reject-preview'?2:1);
+         |                                           ^
+      37 |    expect(storage.read(scope)).toBeNull();
+      38 |   }
+      39 |
+
+      at ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/diagnostic.test.ts:36:43
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 3 passed, 8 total
+Snapshots:   0 total
+Time:        0.212 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-skip-preview-rejection-audit-2026-10-09/results.json

@@ -114,7 +114,7 @@ export class RaceDrafts {
       /** Server hints always replace their own draft positions. */
       const currentLetters = [...record.letters];
       for (const reveal of riddle.revealedLetters) currentLetters[reveal.index] = reveal.letter;
-      return {currentLetters, activeSlotIndex: isRaceSlotEditable(riddle, record.activeSlotIndex) ? record.activeSlotIndex : findFirstEditableRaceSlot(riddle)};
+      return {currentLetters, activeSlotIndex: isRaceSlotEditable(riddle, record.activeSlotIndex) ? record.activeSlotIndex : findFirstEditableRaceSlot(riddle, currentLetters)};
     } catch {return undefined;}
   }
   /** A later successful read may confirm only this live journey's exact attempted write. */

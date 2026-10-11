@@ -1,0 +1,11 @@
+{
+  "changed": [
+    "packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts",
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+    "packages/portal/src/play/gameSession.ts"
+  ],
+  "added": [
+    "packages/portal/src/play/__tests__/continueRollbackFreshness.test.ts"
+  ],
+  "removed": []
+}

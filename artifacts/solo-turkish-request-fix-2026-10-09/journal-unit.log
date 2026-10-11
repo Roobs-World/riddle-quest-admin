@@ -1,0 +1,5 @@
+Test Suites: 1 passed, 1 total
+Tests:       63 passed, 63 total
+Snapshots:   0 total
+Time:        0.236 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/pendingGuessJournal.test.ts.

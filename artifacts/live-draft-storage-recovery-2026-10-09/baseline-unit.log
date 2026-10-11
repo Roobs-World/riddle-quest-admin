@@ -1,0 +1,23 @@
+FAIL src/play/race/__tests__/liveRaceDraftStorage.test.ts
+  ● storage becoming readable cannot silently claim an unseen competing checkpoint (true)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "{\"version\":1,\"writerId\":\"live-draft-writer-6494452d-6c71-4c60-8d90-a81a73ddc4fa\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"run-1\\\",\\\"en\\\",\\\"question-1\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1000}"
+    Received: "{\"version\":1,\"writerId\":\"live-draft-writer-98d391ca-3747-4b5a-aad5-8dcd68d2c330\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"run-1\\\",\\\"en\\\",\\\"question-1\\\",0,0]\",\"letters\":[\"x\",\"\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1000}"
+
+      129 |   unreadable = false;
+      130 |   old.save(view, {...f.draft, letters: ["x", "", "", ""]});
+    > 131 |   if (competing) {expect(f.raw).toBe(before); old.clear(); expect(f.raw).toBe(before);}
+          |                                 ^
+      132 |   else expect(f.owner().restore(view)?.letters).toEqual(["x", "", "", ""]);
+      133 | });
+      134 |
+
+      at src/play/race/__tests__/liveRaceDraftStorage.test.ts:131:33
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 15 passed, 16 total
+Snapshots:   0 total
+Time:        0.244 s, estimated 1 s
+Ran all test suites matching src/play/race/__tests__/liveRaceDraftStorage.test.ts.

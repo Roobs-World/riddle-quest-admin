@@ -1,0 +1,39 @@
+✔ the release identity is fixed to the Riddle Quest Jest game (0.728601ms)
+✔ the upload gate binds the exact archive bytes, version, game and activation intent (6.055692ms)
+✔ the upload gate rejects a different commit or dirty-state transition (1.042765ms)
+✔ upload path overrides are absolute-only and preserve their defaults (0.200911ms)
+✔ release child processes receive only the allowlist and isolated runtime paths (0.234675ms)
+✔ Vite loads public browser values outside the portal root (1.099483ms)
+✔ release sandbox mount order hides credentials and preserves read-only provenance (0.454421ms)
+✔ post-gate sandbox protects source and artifact while only receipts remain writable (0.222862ms)
+✔ persistent release credentials cannot retain activation intent (1.262803ms)
+✔ release credentials honor XDG_CONFIG_HOME without exposing it to child processes (0.25362ms)
+✔ dependency fingerprints detect tooling changes but ignore known build caches (3.209379ms)
+✔ the game-and-build upload barrier is atomic, owner-private, and blocks retries (1.409841ms)
+✔ the game-and-source barrier blocks new build versions until manual reconciliation (2.226167ms)
+✔ an accepted source barrier remains until an explicit reconciled removal (1.216424ms)
+✔ upload attempt barriers transition from transmitting to ambiguous or accepted (1.681716ms)
+✔ only the documented HTTP 202 processing response is accepted (0.238061ms)
+✔ the persisted 202 receipt remains pending until an authoritative Jest confirmation (0.83915ms)
+✔ the release sequence gates, packages, verifies, and uploads one immutable artifact (2.82929ms)
+✔ the public interface exposes one isolated canonical command per release target (0.936554ms)
+✔ the root package exposes target releases and one combined release command (3.184793ms)
+✔ target plans preserve distinct external effects (0.378317ms)
+✔ standalone web and PWA destinations cannot dispatch a build through either release interface (1.190705ms)
+✔ the combined release verifies once before running every adapter (1.189003ms)
+✔ the Facebook adapter performs only the local preflight and immutable handoff (0.64378ms)
+✔ dry runs describe a target without invoking its adapter (0.207273ms)
+✔ execution delegates once, plays the produced artifact, then reports the platform handoff (0.398134ms)
+✔ a failed artifact gameplay gate never reports a handoff as ready (0.336528ms)
+✔ the canonical Jest adapter refuses ambient overrides of its fixed activation policy (0.218734ms)
+✔ the CLI rejects extra stages and supports a read-only plan (36.637706ms)
+✔ formatted plans always disclose command, effect, handoff, and runbook (0.132721ms)
+✔ the process adapter forwards termination and awaits child teardown (53.461847ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.018317

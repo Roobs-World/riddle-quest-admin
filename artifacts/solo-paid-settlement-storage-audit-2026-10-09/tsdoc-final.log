@@ -1,0 +1,6 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 3 production declarations are undocumented.
+- packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts:9 target
+- packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts:38 adapters
+- packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts:73 delivered
+[ELIFECYCLE] Command failed with exit code 1.

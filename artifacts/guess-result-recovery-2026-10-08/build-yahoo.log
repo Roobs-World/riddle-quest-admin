@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.181134ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (1.983116ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.865472ms)
+✔ rejects imports between different target owners (1.671245ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.755481ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.039659ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.151722ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.711558ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.968715ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.737537ms)
+✔ aggregates violations in deterministic file and source order (1.692045ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.065261
+Web Target boundary audit passed (322 files, 1394 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-en-C5FskxHB.js   87.86 kB │ gzip: 47.71 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-pt-LV_UBAQD.js   90.15 kB │ gzip: 48.95 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-nl-DPygk5zJ.js   90.54 kB │ gzip: 49.13 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-id-BngCSI-4.js   91.21 kB │ gzip: 49.51 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-it-BSJFMpj9.js   91.35 kB │ gzip: 49.60 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-es-CXMwZ9_D.js   91.65 kB │ gzip: 49.79 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-de-BOY_S2cH.js   92.15 kB │ gzip: 50.03 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-tr-iU9N3xbd.js   92.54 kB │ gzip: 50.25 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-pl-QhvdRm3e.js   92.70 kB │ gzip: 50.33 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-fr-S4CfVskl.js   93.56 kB │ gzip: 50.81 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-ja-D3JnlLem.js   94.66 kB │ gzip: 51.38 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-vi-CCstBSZU.js   96.78 kB │ gzip: 52.55 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-ko-DUVMjOTs.js   97.36 kB │ gzip: 52.85 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-ar-gK-nCj5P.js  102.12 kB │ gzip: 55.47 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/index-B4OacA9T.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-ru-oS9p3fRn.js  114.09 kB │ gzip: 61.93 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/playable-pack-hi-Bz2pjgSd.js  134.49 kB │ gzip: 72.98 kB
+../../../../../../tmp/guess-result-recovery-builds-20261008a/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 997ms
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

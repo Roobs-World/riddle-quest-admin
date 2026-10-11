@@ -1,0 +1,34 @@
+[
+  {
+    "kind": "valid",
+    "status": "opened",
+    "chunks": [
+      {
+        "revision": null
+      }
+    ]
+  },
+  {
+    "kind": "missing",
+    "status": "opened",
+    "chunks": [
+      {
+        "revision": null
+      }
+    ]
+  },
+  {
+    "kind": "malformed",
+    "status": "rejected",
+    "name": "TypeError",
+    "code": null,
+    "message": "ticket.data(...).expiresAt?.toMillis is not a function"
+  },
+  {
+    "kind": "expired",
+    "status": "rejected",
+    "name": "Error",
+    "code": "not-found",
+    "message": "Live observation expired."
+  }
+]

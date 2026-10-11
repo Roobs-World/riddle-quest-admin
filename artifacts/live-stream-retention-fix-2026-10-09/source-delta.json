@@ -1,0 +1,10 @@
+{
+  "firebase-functions/src/__tests__/race/raceLiveSignals.it.test.ts": {
+    "before": "1604febf2551e5646eda0c68ed20046ae413a4f61093680264fdb195caa5f18d",
+    "after": "ece00d04cb2bb0d41e57687d56c60b673573b0a6f14ced5e8be4ffbdc3929e56"
+  },
+  "firebase-functions/src/race/raceLiveStream.ts": {
+    "before": "0d81326f5b52efa2c28f9f261aacd16668ae6c2e880e16b0f937788c73351b53",
+    "after": "724e9b60650abaa227698138cbf2044004188ef0f711725f0552a9380f4686f1"
+  }
+}

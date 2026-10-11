@@ -1,0 +1,202 @@
+[
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "XX",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "ß",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": " ",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "XX",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "ß",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": " ",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "XX",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "ß",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": " ",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "malformedLetter": "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "XX",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "ß",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": " ",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "malformedLetter": "á́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́́",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  }
+]

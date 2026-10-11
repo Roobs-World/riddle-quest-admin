@@ -1,0 +1,58 @@
+[
+  {
+    "name": "builds",
+    "sessionId": 28613,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "builds.log"
+  },
+  {
+    "name": "units",
+    "sessionId": 92970,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "portal-units.log"
+  },
+  {
+    "name": "matrix",
+    "sessionId": 59702,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "browser-matrix.log"
+  },
+  {
+    "name": "adjacent",
+    "sessionId": 13490,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "adjacent.log"
+  },
+  {
+    "name": "minimal",
+    "sessionId": 59698,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "minimal-matrix.log"
+  },
+  {
+    "name": "built-games",
+    "sessionId": 77127,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "built-browser.log"
+  },
+  {
+    "name": "profile-abandon",
+    "sessionId": 7432,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "profile-abandon-supplement.log"
+  },
+  {
+    "name": "static",
+    "sessionId": 24391,
+    "status": "terminal",
+    "exitCode": 0,
+    "log": "types-final.log"
+  }
+]

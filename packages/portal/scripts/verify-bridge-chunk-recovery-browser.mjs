@@ -79,7 +79,7 @@ try{
   await page.goto(url);await page.waitForFunction(()=>window.loaded);await failed();
   await metric('failed startup exposes an accessible recovery alert',await page.locator('.bridge-startup-recovery [role=alert]').count(),1);
   await metric('failed validation download retires the game frame',await page.locator('.game-app').count(),0);
-  await metric('failed startup dismisses the provider loading surface exactly once',(await probe()).unavailable,1);
+  /* The provider callback runs in a passive effect after the recovery UI commits; allow that commit to finish. */await page.waitForFunction(()=>window.probe.unavailable>=1,undefined,{timeout:5000}).catch(()=>undefined);await metric('failed startup dismisses the provider loading surface exactly once',(await probe()).unavailable,1);
   await metric('recovery does not claim playable content',(await probe()).playable,0);
   await metric('recovery removes readiness retry intervals',(await probe()).intervals,0);
   const before=await probe();await page.clock.install();await page.clock.runFor(3000);await page.evaluate(()=>window.sendBurst());await page.clock.runFor(30);

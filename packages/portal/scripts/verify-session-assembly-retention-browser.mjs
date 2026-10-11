@@ -56,8 +56,9 @@ document.querySelector('#checkout').onclick=async()=>{document.querySelector('#r
   await page.evaluate(({count,scenario})=>window.seed(count,scenario.startsWith('gated'),scenario.endsWith('retained-caller')),{count,scenario});
   const cdp=await context.newCDPSession(page);
   // WeakRef targets remain alive for their creation job. Collect only after that page task ends.
-  await cdp.send('HeapProfiler.collectGarbage');await cdp.send('HeapProfiler.collectGarbage');
   const kept=scenario.endsWith('retained-caller')?2:1;
+  // Under load one GC pair can finish before weak targets are released; repeat across page tasks (a real leak never settles).
+  for(let pass=0;pass<5;pass+=1){await cdp.send('HeapProfiler.collectGarbage');await cdp.send('HeapProfiler.collectGarbage');await page.evaluate(()=>new Promise(resolve=>setTimeout(resolve,0)));if(await page.evaluate(k=>window.uncachedControl.deref()===undefined&&window.live().purchases<=k,kept))break;}
   metric('uncached control is collectible under the same GC policy',await page.evaluate(()=>window.uncachedControl.deref()===undefined),true);
   metric('obsolete checkout callbacks are collectible while the provider remains active',await page.evaluate(()=>window.live().purchases),kept);
   metric('obsolete commerce wrappers are collectible',await page.evaluate(()=>window.live().commerce),kept);

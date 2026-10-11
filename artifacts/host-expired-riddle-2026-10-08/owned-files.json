@@ -1,0 +1,23 @@
+[
+  {
+    "path": "packages/portal/scripts/verify-host-deferred-riddle-browser.mjs",
+    "before": "artifacts/host-expired-riddle-2026-10-08/probe-before.txt",
+    "beforeSha256": "429c9b40371ca8af1ba87891b9be7280a14e6354ad50d51e662a6f5cd7122a90",
+    "after": "artifacts/host-expired-riddle-2026-10-08/owned-00-after.txt",
+    "afterSha256": "7d75337d7b824a12e4c90ea513539fdf88b76c503810f2c1b3b3e8856bb33c60"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts",
+    "before": "artifacts/host-expired-riddle-2026-10-08/test-before.txt",
+    "beforeSha256": "70cf263f7e1e3b8f08fc56640b1f94bf93209a94ecb03b621283927c6794194e",
+    "after": "artifacts/host-expired-riddle-2026-10-08/owned-01-after.txt",
+    "afterSha256": "1cada77d632dcfe17b357492d99837124df781e579c9f3726e8dab1f1e4a3552"
+  },
+  {
+    "path": "packages/portal/src/play/useHostRiddleLifecycle.ts",
+    "before": "artifacts/host-expired-riddle-2026-10-08/lifecycle-before.txt",
+    "beforeSha256": "6a5e250412044c8e18597830d3715cdcbebe5805787075f1173440e18d333aa8",
+    "after": "artifacts/host-expired-riddle-2026-10-08/owned-02-after.txt",
+    "afterSha256": "21c2903d336ab2480f19e399aa1c0245b13448baea101850905549f032cbda7c"
+  }
+]

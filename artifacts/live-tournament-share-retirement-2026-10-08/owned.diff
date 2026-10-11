@@ -1,0 +1,279 @@
+--- a/packages/portal/src/facebook/FacebookTournamentPresentation.ts
++++ b/packages/portal/src/facebook/FacebookTournamentPresentation.ts
+@@ -144,18 +144,28 @@
+   };
+   return {
+     /** Opens one explicitly requested native share/create dialog using a fresh official best score. */
+-    async share(locale: RaceLocale): Promise<PlatformResult<void>> {
++    async share(locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>> {
+       return runFacebookSdkDialog(sdk, async () => {
+         try {
+           if (!active(locale)) return {status: "unavailable", message: "facebook-tournament-inactive"};
++          if (signal?.aborted) return {status: "cancelled"};
++          /** Presentation retirement cannot admit native UI from a late original read. */
++          const retired = Object.assign(new Error("facebook-tournament-share-retired"), {code: "USER_CANCELLED"});
+           /** Preparation may expire locally without changing either original read promise. */
+           let expired = false;
+           /** One shared budget covers standings and metadata, ending before native dialog admission. */
+           let timeout: ReturnType<typeof setTimeout> | undefined;
+           /** A timer boundary cannot admit the next SDK read from an already fulfilled race. */
+-          const assertPreparing = () => {if (expired) throw new Error("facebook-tournament-share-preparation-timeout");};
+-          /** Both original read promises retain rejection observers after local expiry. */
++          const assertPreparing = () => {
++            if (signal?.aborted) throw retired;
++            if (expired) throw new Error("facebook-tournament-share-preparation-timeout");
++          };
++          /** One registered listener is removed before native dialog admission. */
++          let cancelPreparation: (() => void) | undefined;
++          /** Both original read promises retain rejection observers after local expiry or retirement. */
+           const deadline = new Promise<never>((_resolve, reject) => {
++            cancelPreparation = () => reject(retired);
++            signal?.addEventListener("abort", cancelPreparation, {once: true});
+             timeout = setTimeout(() => {expired = true; reject(new Error("facebook-tournament-share-preparation-timeout"));}, 8000);
+           });
+           /** Exact-schema official standings authorize only the current best. */
+@@ -172,7 +182,11 @@
+             }
+             native = await Promise.race([current(), deadline]);
+             assertPreparing();
+-          } finally {if (timeout !== undefined) clearTimeout(timeout);}
++          } finally {
++            if (timeout !== undefined) clearTimeout(timeout);
++            if (cancelPreparation) signal?.removeEventListener("abort", cancelPreparation);
++          }
++          assertPreparing();
+           if (!live(board, locale) || !board.currentPlayer) {
+             return {status: "unavailable", message: "facebook-tournament-inactive"};
+           }
+@@ -184,6 +198,7 @@
+               return {status: "unavailable", message: "RaceTo10.ERROR_LOCALE_MISMATCH"};
+             }
+             if (!matches(native, board)) return {status: "unavailable", message: "facebook-tournament-context-mismatch"};
++            assertPreparing();
+             await sdk.tournament!.shareAsync({score: board.currentPlayer.adjustedTimeMs, data: envelope(board)});
+           } else {
+             /** Native creation is itself the explicit provider dialog; do not open a second share dialog. */
+@@ -192,6 +207,7 @@
+             if (!image || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(image) || image.length > 2_800_000) {
+               throw new Error("facebook-tournament-image-unavailable");
+             }
++            assertPreparing();
+             await sdk.tournament!.createAsync({initialScore: board.currentPlayer.adjustedTimeMs,
+               config: {title: tr("RaceTo10.HUB_TOURNAMENTS"), image, sortOrder: "LOWER_IS_BETTER",
+                 scoreFormat: "NUMERIC", endTime: board.endsAtMs / 1000}, data: envelope(board)});
+--- a/packages/portal/src/play/race/RaceTournamentEntry.tsx
++++ b/packages/portal/src/play/race/RaceTournamentEntry.tsx
+@@ -212,9 +212,12 @@
+   const [busy, setBusy] = useState(false);
+   /** Prevents a retired board from accepting late provider or authority responses. */
+   const active = useRef(true);
++  /** Pending native preparation belongs to this committed board operation. */
++  const pendingShare = useRef<AbortController | null>(null);
+   /** Native feedback belongs to the exact committed provider operation. */
+   const shareOwner = useRef({provider: tournaments, share: tournaments?.share});
+   useLayoutEffect(() => {
++    pendingShare.current?.abort();
+     shareOwner.current = {provider: tournaments, share: tournaments?.share};
+   }, [tournaments, tournaments?.share]);
+   /** Board owns the same modal focus boundary as live play. */
+@@ -222,7 +225,7 @@
+   /** No nested quit confirmation exists on a read-only board. */
+   const quitDialogRef = useRef<HTMLDivElement | null>(null);
+   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: false, dismissQuitConfirmation: () => {}, requestClose: onClose});
+-  useLayoutEffect(() => {active.current = true; return () => {active.current = false;};}, []);
++  useLayoutEffect(() => {active.current = true; return () => {active.current = false; pendingShare.current?.abort();};}, []);
+   useEffect(() => {
+     /** Effect lifetime prevents stale tournament reads from updating a retired board. */
+     let current = true;
+@@ -251,15 +254,18 @@
+     if (!active.current || sharing.current || !provider || !method ||
+       owner.provider !== provider || owner.share !== method) return;
+     sharing.current = true; setBusy(true);
++    /** Original SDK UI remains occupied even if this signal later retires presentation. */
++    const controller = new AbortController();
++    pendingShare.current = controller;
+     try {
+       /** Validated provider outcome controls the board refresh and localized error state. */
+-      const result = await method.call(provider, locale);
++      const result = await method.call(provider, locale, controller.signal);
+       if (!active.current || shareOwner.current !== owner) return;
+       if (result.status === "success") {setError(null); setRetry(value => value + 1);}
+       else if (result.status !== "cancelled") setError(result.message === "RaceTo10.ERROR_LOCALE_MISMATCH"
+         ? "RaceTo10.ERROR_LOCALE_MISMATCH" : "RaceTo10.ERROR_GENERIC");
+     } catch {if (active.current && shareOwner.current === owner) setError("RaceTo10.ERROR_GENERIC");}
+-    finally {sharing.current = false; if (active.current) setBusy(false);}
++    finally {if (pendingShare.current === controller) pendingShare.current = null; sharing.current = false; if (active.current) setBusy(false);}
+   };
+   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby={presentation.titleId}
+     tabIndex={-1} data-analytics-screen={presentation.analyticsScreen}>
+--- a/packages/portal/src/platform/types.ts
++++ b/packages/portal/src/platform/types.ts
+@@ -477,8 +477,8 @@
+   list(locale: RaceLocale): Promise<ListFacebookTournamentResponse>;
+   /** Records an idempotent completed run and returns refreshed standings. */
+   record(runId: string, locale: RaceLocale): Promise<RecordFacebookTournamentRunResponse>;
+-  /** Opens a provider-owned share dialog using its fresh authoritative current-player best. */
+-  share?(locale: RaceLocale): Promise<PlatformResult<void>>;
++  /** Opens a provider-owned share dialog using its fresh authoritative best; cancellation retires preparation only. */
++  share?(locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>>;
+ };
+ 
+ /** Server-authoritative board for the currently active Facebook thread/group context. */
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -216,7 +216,8 @@
+     "test:live-tournament-projection:browser": "node scripts/verify-live-tournament-projection-browser.mjs && TOURNAMENT_PROJECTION_MODE=production node scripts/verify-live-tournament-projection-browser.mjs",
+     "test:live-tournament-lookup-deadline:browser": "node scripts/verify-live-tournament-lookup-deadline-browser.mjs && TOURNAMENT_LOOKUP_MODE=production node scripts/verify-live-tournament-lookup-deadline-browser.mjs",
+     "test:jest-purchase-recovery:browser": "node scripts/verify-jest-purchase-recovery-browser.mjs",
+-    "test:live-tournament-share-preparation:browser": "node scripts/verify-live-tournament-share-preparation-browser.mjs && SHARE_PREPARATION_MODE=production node scripts/verify-live-tournament-share-preparation-browser.mjs"
++    "test:live-tournament-share-preparation:browser": "node scripts/verify-live-tournament-share-preparation-browser.mjs && SHARE_PREPARATION_MODE=production node scripts/verify-live-tournament-share-preparation-browser.mjs",
++    "test:live-tournament-share-retirement:browser": "node scripts/verify-live-tournament-share-retirement-browser.mjs && SHARE_RETIREMENT_MODE=production node scripts/verify-live-tournament-share-retirement-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- a/packages/portal/src/facebook/__tests__/FacebookTournamentSharePreparation.test.ts
++++ b/packages/portal/src/facebook/__tests__/FacebookTournamentSharePreparation.test.ts
+@@ -120,11 +120,13 @@
+     release = () => kind === "cancelled" ? reject({code: "USER_CANCELLED"}) : kind === "failure" ? reject(new Error("Native share failure")) : resolve(); admit();
+   }));
+   /** Original sharing occupies one native SDK dialog slot. */
+-  const original = createFacebookTournamentPresentation(options)!.share("en");
++  const controller = new AbortController();
++  /** Retirement after native admission cannot free the occupied SDK slot. */
++  const original = createFacebookTournamentPresentation(options)!.share("en", controller.signal);
+   /** Independent native consent must remain excluded while the dialog is open. */
+   const notifications = createFacebookNotificationCapability(sdk)!;
+   try {
+-    await ready;
++    await ready; controller.abort();
+     expect(jest.getTimerCount()).toBe(0);
+     await jest.advanceTimersByTimeAsync(16000);
+     await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+@@ -160,3 +162,47 @@
+     release(); await observed; jest.useRealTimers();
+   }
+ });
++
++
++it.each(["standings", "metadata"])("retires %s preparation immediately without admitting a late dialog", async stage => {
++  jest.useFakeTimers();
++  /** Retiring presentation must not cancel a remotely executing SDK read. */
++  const {options, sdk, board, native} = fixture();
++  /** Admission signals distinguish real preparation from a scheduling guess. */
++  let admit!: () => void;
++  /** The original promise settles only after its local owner has retired. */
++  let release!: () => void;
++  /** Explicitly observed original read admission. */
++  const ready = new Promise<void>(resolve => {admit = resolve;});
++  if (stage === "standings") options.list.mockImplementationOnce(() => new Promise(resolve => {release = () => resolve(board); admit();}));
++  else jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = () => resolve(native); admit();}));
++  /** Board-owned cancellation applies only before native UI admission. */
++  const controller = new AbortController();
++  /** Target adapter owns the optional preparation-cancellation contract. */
++  const share = createFacebookTournamentPresentation(options)!.share;
++  /** Original operation and notification adapter share the real SDK gate. */
++  const original = share("en", controller.signal), notifications = createFacebookNotificationCapability(sdk)!;
++  try {
++    await ready; controller.abort(); await jest.advanceTimersByTimeAsync(0);
++    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "success"});
++    await expect(original).resolves.toMatchObject({status: "cancelled"});
++    expect(jest.getTimerCount()).toBe(0);
++    release(); await jest.advanceTimersByTimeAsync(0);
++    expect(sdk.tournament!.shareAsync).not.toHaveBeenCalled();
++    expect(sdk.tournament!.createAsync).not.toHaveBeenCalled();
++    expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(stage === "metadata" ? 1 : 0);
++    expect(options.reportFailure).not.toHaveBeenCalled();
++  } finally {release(); await jest.advanceTimersByTimeAsync(8000); await original; jest.useRealTimers();}
++});
++
++
++it("does not admit preparation for an already retired board", async () => {
++  /** No provider read or deadline is needed after explicit retirement. */
++  const {options, sdk} = fixture();
++  /** The original owner has already committed retirement. */
++  const controller = new AbortController(); controller.abort();
++  await expect(createFacebookTournamentPresentation(options)!.share("en", controller.signal)).resolves.toMatchObject({status: "cancelled"});
++  expect(options.list).not.toHaveBeenCalled();
++  expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
++  await expect(createFacebookNotificationCapability(sdk)!.requestPermission()).resolves.toMatchObject({status: "success"});
++});
+--- /dev/null
++++ b/packages/portal/scripts/verify-live-tournament-share-retirement-browser.mjs
+@@ -0,0 +1,68 @@
++/** Native tournament sharing exercises committed UI ownership through the real Facebook dialog adapter. */
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium,firefox} from '@playwright/test';
++const engine=process.env.SHARE_RETIREMENT_BROWSER??'chromium',mode=process.env.SHARE_RETIREMENT_MODE??'development';
++const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const evidence=path.resolve(process.env.SHARE_RETIREMENT_REPORT_DIR??path.join(portal,'../../artifacts/live-tournament-share-retirement-2026-10-08',engine+'-'+mode));
++await mkdir(evidence,{recursive:true});
++const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/share-retirement-probe-'));
++let browser,server,browserVersion;const observations=[];
++try{
++ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
++ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++ await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';
++import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,'src/play/race/RaceTournamentEntry.tsx'))};import {createFacebookTournamentPresentation} from ${JSON.stringify(path.join(portal,'src/facebook/FacebookTournamentPresentation.ts'))};import {createFacebookNotificationCapability} from ${JSON.stringify(path.join(portal,'src/facebook/FacebookNotificationCapability.ts'))};import {ListFacebookTournamentResponseSchema} from '@qwordly/core/race';import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};import ${JSON.stringify(path.join(portal,'src/styles.css'))};
++const nativeSetTimeout=window.setTimeout.bind(window),nativeClearTimeout=window.clearTimeout.bind(window),waits=new Map();window.setTimeout=(callback,delay,...args)=>{if(delay!==8000)return nativeSetTimeout(callback,delay,...args);const id=nativeSetTimeout(()=>{waits.delete(id);callback(...args);},120000);waits.set(id,()=>callback(...args));return id;};window.clearTimeout=id=>{waits.delete(id);nativeClearTimeout(id);};window.expirePreparation=()=>{for(const [id,callback] of [...waits]){waits.delete(id);nativeClearTimeout(id);callback();}};window.preparationTimers=()=>[...waits.keys()];
++window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});const scenario=new URLSearchParams(location.search).get('scenario');window.probe={reads:0,authority:0,lookups:0,native:[],notifications:0,permissionResults:[],shareResults:[],diagnostics:[],errors:[],unhandled:[],renders:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
++const startsAtMs=Math.floor(Date.now()/86400000)*86400000,endsAtMs=startsAtMs+86400000,tournamentId='facebook-race10-en-'+new Date(startsAtMs).toISOString().slice(0,10);let score=9000,active=true,consumed=false,subscribed=false,dialogConsumed=false;const dialog=scenario.startsWith('dialog-'),quick=scenario==='early-success',create=scenario==='create-timeout'||scenario==='dialog-create';
++function board(){const currentPlayer={rank:1,adjustedTimeMs:score,isCurrentPlayer:true};return ListFacebookTournamentResponseSchema.parse({tournamentId,locale:'en',startsAtMs,endsAtMs,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,standings:[currentPlayer],currentPlayer});}const data={kind:'rq-race10-tournament-v1',locale:'en',tournamentId,startsAtMs,endsAtMs},native={getID:()=> 'native-fixture',getContextID:()=> 'context-fixture',getEndTime:()=>endsAtMs/1000,getPayload:()=>data};
++function held(kind,value){return new Promise((resolve,reject)=>{let done=false;window[kind==='standings'?'finishStandings':'finishMetadata']=()=>{if(done)return;done=true;scenario.endsWith('-rejection')?reject(new Error('Late original preparation failure')):create&&kind==='metadata'?reject({code:'TOURNAMENT_NOT_FOUND'}):resolve(value);};});}
++function nativeDialog(kind,input){window.probe.native.push({kind,score:kind==='create'?input.initialScore:input.score});if(!dialog||dialogConsumed)return Promise.resolve(kind==='create'?native:undefined);dialogConsumed=true;return new Promise((resolve,reject)=>{let done=false;window.finishDialog=()=>{if(done)return;done=true;if(scenario==='dialog-failure')reject(new Error('Original native dialog failure'));else if(scenario==='dialog-cancelled')reject({code:'USER_CANCELLED'});else resolve(kind==='create'?native:undefined);};});}
++const sdk={getSupportedAPIs:()=>['getTournamentAsync','tournament.createAsync','tournament.shareAsync','tournament.postScoreAsync','player.canSubscribeBotAsync','player.isSubscribedBotAsync','player.subscribeBotAsync'],context:{getID:()=> 'context-fixture'},getTournamentAsync:()=>{window.probe.lookups++;if(!dialog&&!quick&&!consumed&&!scenario.includes('standings')&&window.probe.authority===1){consumed=true;return held('metadata',native);}return create?Promise.reject({code:'TOURNAMENT_NOT_FOUND'}):Promise.resolve(native);},tournament:{postScoreAsync:async()=>{},shareAsync:input=>nativeDialog('share',input),createAsync:input=>nativeDialog('create',input)},player:{isSubscribedBotAsync:async()=>subscribed,canSubscribeBotAsync:async()=>true,subscribeBotAsync:async()=>{window.probe.notifications++;subscribed=true;}}};
++const nativePresentation=createFacebookTournamentPresentation({sdk,enabled:true,ageCategory:'13_plus',isActive:()=>active,getLocale:()=> 'en',renderImage:()=> 'data:image/png;base64,YQ==',list:()=>{window.probe.authority++;if(!dialog&&!quick&&(scenario.includes('standings')||scenario==='budget')&&window.probe.authority===1)return held('standings',board());return Promise.resolve(board());},reportFailure:error=>{window.probe.diagnostics.push(error.message);if(scenario==='telemetry')throw Error('Optional reporter unavailable');}}),notifications=createFacebookNotificationCapability(sdk),tournaments={list:async()=>{window.probe.reads++;return board();},record:async()=>{throw Error('Unexpected record');},share:async (locale,signal)=>{const result=await nativePresentation.share(locale,signal);window.probe.shareResults.push(result.status);return result;}};
++window.restoreShare=()=>{active=true;score=7000;};const presentation={titleId:'preparation-fixture',analyticsScreen:'preparation_fixture',onRecordFailure:()=>{}},post=()=>{},never=new Promise(()=>{});function Suspend({held}){if(held)throw never;return null;}
++function App(){const [closed,setClosed]=React.useState(false);const [coins,setCoins]=React.useState(100),[version,setVersion]=React.useState(0),[suspended,setSuspended]=React.useState(false);window.probe.renders.push({version,suspended});return <><button data-permission style={{position:'fixed',bottom:4,right:4,zIndex:2147483647}} onClick={()=>void notifications.requestPermission().then(result=>window.probe.permissionResults.push(result.status))}>Permission fixture</button><button data-retire style={{position:'fixed',bottom:124,left:4,zIndex:2147483647}} onClick={()=>{tournaments.share=async (locale,signal)=>nativePresentation.share(locale,signal);setCoins(800);}}>Retire fixture</button><button data-profile style={{position:'fixed',bottom:44,right:4,zIndex:2147483647}} onClick={()=>{if(scenario==='inactive')active=false;setCoins(800);setVersion(v=>v+1);}}>Profile fixture</button><button data-prepare style={{position:'fixed',bottom:4,left:4,zIndex:2147483647}} onClick={()=>React.startTransition(()=>{setVersion(v=>v+1);setSuspended(true);})}>Prepare fixture</button><button data-abandon style={{position:'fixed',bottom:44,left:4,zIndex:2147483647}} onClick={()=>{setSuspended(false);setCoins(800);}}>Abandon fixture</button><React.Suspense fallback={<output data-suspended>Suspended fixture</output>}><div data-version={version}>{!closed && <RaceTournamentEntry ownerId='fixture-player' locale='en' tournamentLocale='en' coins={coins} tournaments={tournaments} presentation={presentation} postToHost={post} onClose={()=>setClosed(true)}/>}<output data-closed={closed}/></div><Suspend held={suspended}/></React.Suspense></>;}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++
++`);
++ await build({root:scratch,configFile:false,publicDir:path.join(portal,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'share-baseline',enforce:'pre',async load(id){if(process.env.SHARE_RETIREMENT_BASELINE_FILE&&id.endsWith('/FacebookTournamentPresentation.ts'))return readFile(process.env.SHARE_RETIREMENT_BASELINE_FILE,'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++ server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
++ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
++ browser=await (engine==='firefox'?firefox:chromium).launch({headless:true,...(engine==='firefox'&&process.env.SHARE_RETIREMENT_FIREFOX_EXECUTABLE?{executablePath:process.env.SHARE_RETIREMENT_FIREFOX_EXECUTABLE}:{})});browserVersion=browser.version();
++ const scenarios=process.env.SHARE_RETIREMENT_MINIMAL==='1'?['standings-timeout','metadata-timeout','dialog-share']:['standings-timeout','metadata-timeout','standings-rejection','metadata-rejection','create-timeout','method-standings','method-metadata','dialog-share','dialog-create','dialog-cancelled','dialog-failure'];
++ for(const [width,height] of process.env.SHARE_RETIREMENT_QUICK==='1'?[[390,844]]:[[390,568],[390,844],[1280,844]])for(const scenario of scenarios){
++ const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),external=[];
++ await context.route('**/*',route=>{if(new URL(route.request().url()).origin===origin)return route.continue();external.push(route.request().url());return route.abort();});
++ const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
++ const settle=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
++ const permission=async()=>{const n=await page.evaluate(()=>window.probe.permissionResults.length);await page.locator('[data-permission]').click();await page.waitForFunction(n=>window.probe.permissionResults.length>n,n);return page.evaluate(()=>window.probe.permissionResults.at(-1));};
++ await page.goto(origin+'/?scenario='+scenario);await page.locator('.race-tournaments li').waitFor();await page.locator('.race-tournaments button').click();
++ await page.waitForFunction(()=>typeof window.finishStandings==='function'||typeof window.finishMetadata==='function'||typeof window.finishDialog==='function');
++ metric('preparation or dialog owns shared gate',await permission(),'unavailable');
++ const method=scenario.startsWith('method-');
++ if(method)await page.locator('[data-retire]').click();else {await page.locator('.race-close').click();await page.locator('[data-closed=true]').waitFor({state:'attached'});}
++ await settle();
++ const dialog=scenario.startsWith('dialog-');
++ metric('committed close removes board',await page.locator('.race-screen').count(),method?1:0);
++ metric('closed preparation releases shared gate immediately',await permission(),dialog?'unavailable':'success');
++ metric('closed preparation clears local budget',await page.evaluate(()=>window.preparationTimers().length),0);
++ await page.evaluate(()=>{window.finishStandings?.();window.finishMetadata?.();});await settle();
++ metric('closed preparation cannot admit obsolete native dialog',await page.evaluate(()=>window.probe.native.length),dialog?1:0);
++ metric('closed standings cannot admit subsequent metadata',await page.evaluate(()=>window.probe.lookups),scenario.includes('standings')?0:1);
++ if(dialog){await page.evaluate(()=>window.finishDialog());await page.waitForFunction(()=>window.probe.shareResults.length===1);metric('admitted dialog releases only at natural settlement',await permission(),'success');}
++ metric('no external provider traffic',external,[]);metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await page.evaluate(()=>window.probe.unhandled),[]);
++ await page.screenshot({path:path.join(evidence,[width,height,scenario].join('-')+'.png')});await context.close();
++ }
++
++}finally{
++ await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});await writeFile(path.join(evidence,'observations.json'),JSON.stringify(observations,null,2)+'\n');
++}
++const failures=observations.filter(x=>JSON.stringify(x.actual)!==JSON.stringify(x.expected));
++console.log(JSON.stringify({mode,engine,browserVersion,cases:new Set(observations.map(x=>[x.width,x.height,x.scenario].join(':'))).size,checks:observations.length,failures},null,2));
++assert.equal(failures.length,0,'Share preparation must release abandoned waits and retain admitted native dialog occupancy');

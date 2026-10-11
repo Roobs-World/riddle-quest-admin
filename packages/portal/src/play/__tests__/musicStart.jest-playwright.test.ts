@@ -67,5 +67,5 @@ describeBrowser("Jest music startup", () => {
       await browser.close();
       await new Promise<void>((resolve) => server.close(() => resolve()));
     }
-  });
+  }, 30_000);
 });

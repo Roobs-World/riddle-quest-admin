@@ -63,12 +63,19 @@ const createLazyHostServices = (
     },
   },
   /** Starts initial riddle downloads after the target adapter has loaded. */
-  preloadInitialRiddles(locale) {
-    void loadServices().then((services) => services.preloadInitialRiddles?.(locale)).catch(() => undefined);
+  preloadInitialRiddles(locale, signal) {
+    if (signal?.aborted) return;
+    void loadServices().then((services) => {
+      if (!signal?.aborted) return services.preloadInitialRiddles?.(locale, signal);
+    }).catch(() => undefined);
   },
   /** Loads riddle. */
-  async loadRiddle(input) {
-    return (await loadServices()).loadRiddle(input);
+  async loadRiddle(input, signal) {
+    signal?.throwIfAborted();
+    /** Shared module loading remains available to other active callers. */
+    const services = await loadServices();
+    signal?.throwIfAborted();
+    return services.loadRiddle(input);
   },
   /** Loads profile. */
   async loadProfile(userId) {

@@ -751,3 +751,20 @@ it.each(["deadline-exceeded", "functions/deadline-exceeded"])("translates %s del
   expect(message).not.toContain("deadline-exceeded");
   expect(message).not.toBe("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE");
 });
+
+it.each(['unavailable','transport','definitive'] as const)('keeps committed Skip successful after successor loading: %s',async failure=>{
+/** Authority succeeds before the independently failing content loader. */
+ const services=createFakeHostServices();
+/** Immutable accepted payment fixture. */
+ const result={newCoins:550,newProgress:{classicIndex:2,dailyChallengeIndex:0,dailyChallengeCurrentQuestion:0},costDeducted:50};
+/** The authoritative paid operation must occur once. */
+ const paid=jest.spyOn(services,'skipRiddle').mockResolvedValue(result);
+/** Actual host handlers with a bounded injected loader contract. */
+ const harness=createHarness(services);
+ if(failure==='unavailable')harness.loadAndPostRiddle.mockResolvedValue(false);
+ else harness.loadAndPostRiddle.mockRejectedValue(Object.assign(new Error('Successor load failed'),{code:failure==='transport'?'unavailable':'failed-precondition'}));
+ await harness.handlers.skipRiddle({type:'game:skipRiddle',requestId:'skip-committed',payload:{gameMode:'classic',riddleId:'classic-fake-1',sessionToken:'00000000-0000-4000-8000-000000000003'}});
+ expect(paid).toHaveBeenCalledTimes(1);
+ if(failure!=='unavailable')expect(harness.postOperation.mock.calls.filter(call=>call[1]==='loadRiddle')).toEqual([['skip-committed','loadRiddle',false,undefined,'Successor load failed']]);
+ expect(harness.postOperation.mock.calls.filter(call=>call[1]==='skip')).toEqual([['skip-committed','skip',true,result]]);
+});

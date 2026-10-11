@@ -1,0 +1,162 @@
+[
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": -1,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": 0.5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": 5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": "missing",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": -1,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": 0.5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": 5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": "missing",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": -1,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": 0.5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": 5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": "paid",
+    "invalidIndex": "missing",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": -1,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": 0.5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": 5,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": "paid",
+    "invalidIndex": "missing",
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  }
+]

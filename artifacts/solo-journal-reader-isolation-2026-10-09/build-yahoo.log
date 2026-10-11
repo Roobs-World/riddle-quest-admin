@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (12.208737ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.180839ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.96525ms)
+✔ rejects imports between different target owners (1.752441ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.593945ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.808472ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.00786ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.708253ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (0.948016ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.65397ms)
+✔ aggregates violations in deterministic file and source order (0.908972ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.208744
+Web Target boundary audit passed (331 files, 1436 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-en-CDdKxrga.js   87.86 kB │ gzip: 47.72 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-pt-BPBTZVF2.js   90.15 kB │ gzip: 48.94 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-nl-MYZPA-Q1.js   90.54 kB │ gzip: 49.14 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-id-B6aoOCoU.js   91.21 kB │ gzip: 49.53 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-it-JIyM3aGE.js   91.35 kB │ gzip: 49.57 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-es-CcxGZBiQ.js   91.65 kB │ gzip: 49.75 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-de-Dns_clP5.js   92.15 kB │ gzip: 50.03 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-tr-BcSWQR9t.js   92.54 kB │ gzip: 50.24 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-pl-DDcz1yN5.js   92.70 kB │ gzip: 50.32 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-fr-CNzfwu00.js   93.56 kB │ gzip: 50.74 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-ja-bQodP83T.js   94.66 kB │ gzip: 51.40 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-vi-C63dMzCW.js   96.78 kB │ gzip: 52.54 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-ko-4DbygLxb.js   97.36 kB │ gzip: 52.85 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-ar-DuBkTXsK.js  102.12 kB │ gzip: 55.42 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/index-CBJwPpPG.js             105.45 kB │ gzip: 35.29 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-ru-DF0IYcvx.js  114.09 kB │ gzip: 61.91 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/playable-pack-hi-CMjxQQEv.js  134.49 kB │ gzip: 72.97 kB
+../../../../../../tmp/solo-journal-reader-isolated-build/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.03s
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

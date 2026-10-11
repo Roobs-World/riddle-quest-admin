@@ -1,0 +1,13 @@
+# Single-player malformed journal presentation — 2026-10-09
+
+A local recovery defect is reproduced against current source. The journal reader accepts `base.guesses` as long as it is an array, without checking each scored row. A stored `null`, `{}`, or `{guess:null,feedback:[]}` row therefore survives the reader. Restoring the journal through the real reducer with its queued guess crashes while rebuilding letter states, before gameplay can recover. The unmodified control restores and renders successfully.
+
+The artifact fixture writes a complete journal through the production storage helper, confirms the exact pending request ID survives its reader, restores the queued word using the same message-to-word mapping as `useProvisionalPlayRecovery.restoreSegment`, and renders the real controlled board. The final four-case run has three expected-behavior failures and one passing control. This is a corruption diagnostic, not a passing regression or deployed incident claim.
+
+The initial presentation-only probe omitted queued preview application and exposed two later board-render crashes. The final probe includes the actual queued projection and exposes all three earlier reducer failures. Both logs remain; only the final run is used for the diagnosis. No deliberately malformed value is written to any player account or existing user storage.
+
+Evidence: `artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx`, its Jest configuration, `diagnostic.log`, `results.json`, `presentation-only.log`, and unchanged-source proof. A read-only GitHub issue query returned no open issues; its empty result is retained as `open-issues.json`. No issue was modified.
+
+Next action: validate or safely reconstruct the presentation checkpoint independently from retained authoritative messages. Preserve exact request bytes, IDs, order, account/locale ownership and any valid unsubmitted draft. Use current canonical history/profile/hint locks when recovering malformed presentation, including already-accepted queued attempts, rather than blindly discarding the whole journal or replaying another guess. Cover root/successor corruption, current host history, original retry identity and unchanged normal recovery in injected browsers and unit tests, then build all six isolated targets plus Devvit.
+
+A total raw-size cap is not introduced by this audit: the admitted bridge clue/profile contract contains unbounded fields, so an arbitrary cap could discard otherwise valid pending receipts. All 2,546 selected project inputs match the preceding decoder cohort; production source is unchanged, no fix is claimed yet, and the broader improvement goal remains active.

@@ -1,0 +1,15 @@
+{
+  "buildRoot": "/tmp/live-stream-heartbeat-expiry-builds-20261009a",
+  "compiledRoot": "/tmp/live-stream-heartbeat-expiry-compiled-20261009a",
+  "redEmulatorTemporary": "/tmp/riddle-quest-emulators-GQBPrQ",
+  "emulatorTemporary": "/tmp/riddle-quest-emulators-1LwV6g",
+  "metadata": [
+    "artifacts/target-dependencies/custom/5aa1a91486686c55d9b56553d76f6160b2913cd0cb3d7972f8ac8784df9c65ea/jest.json",
+    "artifacts/target-dependencies/custom/166b95179e4f72573982342b6c31906121b70bfb984a10b1571f84ce9d1454e5/facebook.json",
+    "artifacts/target-dependencies/custom/697563dec148d3eb1a06d9624f5bcb35bc75773c8286c05c0ea664b20050a32e/yahoo.json",
+    "artifacts/target-dependencies/custom/b88f06aed2b45989e31ecd0e8f40b8c280403e43c9540b2338de9103522b132d/youtube.json",
+    "artifacts/target-dependencies/custom/bf64fbf5f76c51cb66a2bcf220379278e5d857883c202cce3218570fd1c7419e/reddit.json",
+    "artifacts/target-dependencies/custom/84a8801096a6dfc5ba11469c91b4739e7eb201bfc8f089fee49c64199bb4bf67/netflix.json"
+  ],
+  "allAbsent": true
+}

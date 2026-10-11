@@ -1,0 +1,12 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/48c9e425193574e65cf94914c9e6ab477912313186f58331b55feed9eb47aa30/netflix.json",
+    "artifacts/target-dependencies/custom/5792784d601a319b3f8a6c5b8a3886b5a9a77d197b9051769597dec1dd5354ca/facebook.json",
+    "artifacts/target-dependencies/custom/7aed88995fac96461e2763ba6f7589115fec525a3b345dd6aa0c8a5fe0d430c8/jest.json",
+    "artifacts/target-dependencies/custom/92efe1d03dc9f5312629fca5e7de445f8c32e769c324a95152f5301d0e60f805/yahoo.json",
+    "artifacts/target-dependencies/custom/823995557ad35bcbe686f5c9fcaa0a2b2f33191b8d5e23b5246633a3ac478cef/youtube.json",
+    "artifacts/target-dependencies/custom/05c4206c069f58345a3f892571dfe2dd9d56dab08ae1cc12c68da1ed73a077a3/reddit.json"
+  ],
+  "buildRoot": "/tmp/live-post-submit-draft-builds-20261009a",
+  "allAbsent": true
+}

@@ -1,0 +1,50 @@
+FAIL src/play/__tests__/gameSession.test.ts
+  ● keeps confirmed Turkish izmir hint İ keyboard feedback under canonical i
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "i": "green",
+    +   "i̇": "green",
+      }
+
+      875 |     /** Confirmation must color precisely the hinted symbol without leaking to the other Turkish I. */
+      876 |     const hinted = reduce(state, {type: "applyHint", index: 0, letter});
+    > 877 |     expect(hinted.letterStates).toEqual({[key]: "green"});
+          |                                 ^
+      878 |   },
+      879 | );
+      880 |
+
+      at src/play/__tests__/gameSession.test.ts:877:33
+
+  ● keeps confirmed Turkish IRMAK hint I keyboard feedback under canonical ı
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "ı": "green",
+    +   "i": "green",
+      }
+
+      875 |     /** Confirmation must color precisely the hinted symbol without leaking to the other Turkish I. */
+      876 |     const hinted = reduce(state, {type: "applyHint", index: 0, letter});
+    > 877 |     expect(hinted.letterStates).toEqual({[key]: "green"});
+          |                                 ^
+      878 |   },
+      879 | );
+      880 |
+
+      at src/play/__tests__/gameSession.test.ts:877:33
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 87 passed, 89 total
+Snapshots:   0 total
+Time:        0.256 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts.

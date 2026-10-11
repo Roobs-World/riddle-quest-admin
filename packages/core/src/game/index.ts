@@ -33,3 +33,5 @@ export {
 } from "./achievementMilestones";
 
 export * from "./economy";
+
+export {isSinglePlayerKeyboardLetter} from "./singlePlayerKeyboard";

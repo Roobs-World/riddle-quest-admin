@@ -1,0 +1,11 @@
+{
+  "coreTests": 417,
+  "clientTests": 3131,
+  "backendUnitTests": 1769,
+  "journalFocusedTests": 63,
+  "sdkTests": 5,
+  "browserJourneys": 16,
+  "browserAssertions": 160,
+  "compiledFiles": 398,
+  "compiledRootRemoved": true
+}

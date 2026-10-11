@@ -1,0 +1,5 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 2 production declarations are undocumented.
+- packages/portal/src/play/__tests__/terminalPaidReceiptPresentation.test.ts:54 before
+- packages/portal/src/play/__tests__/terminalPaidReceiptPresentation.test.ts:55 router
+[ELIFECYCLE] Command failed with exit code 1.

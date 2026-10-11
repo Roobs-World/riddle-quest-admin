@@ -1,0 +1,49 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-state",
+    "name": "mounted game owns one background listener",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-state",
+    "name": "background writes belong to the committed game and adapter",
+    "actual": [],
+    "expected": [
+      {
+        "version": "B",
+        "riddle": "classic_1",
+        "draft": "PIANO",
+        "outcome": null
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-state",
+    "name": "retirement releases the background listener",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-state",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "commit-state",
+    "name": "no unhandled promises",
+    "actual": [],
+    "expected": []
+  }
+]

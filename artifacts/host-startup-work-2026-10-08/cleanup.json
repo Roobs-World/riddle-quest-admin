@@ -1,0 +1,37 @@
+{
+  "buildRoots": [
+    "/tmp/host-startup-work-builds-20261008a",
+    "/tmp/host-startup-profile-20261008a",
+    "/tmp/host-startup-compare-20261008a-1-baseline",
+    "/tmp/host-startup-compare-20261008a-1-current",
+    "/tmp/host-startup-compare-20261008a-2-baseline",
+    "/tmp/host-startup-compare-20261008a-2-current",
+    "/tmp/host-startup-compare-20261008a-3-baseline",
+    "/tmp/host-startup-compare-20261008a-3-current",
+    "/tmp/host-startup-compare-20261008a-4-baseline",
+    "/tmp/host-startup-compare-20261008a-4-current",
+    "/tmp/host-startup-compare-20261008a-5-baseline",
+    "/tmp/host-startup-compare-20261008a-5-current",
+    "/tmp/riddle-quest-facebook-browser-BMD7pn"
+  ],
+  "metadata": [
+    "artifacts/target-dependencies/custom/01903c2561ea98540c88db633194ecb3eb1af0878258e36d0931632becfcbbbd/jest.json",
+    "artifacts/target-dependencies/custom/02b5a59c41ce1bdd86010763d5724d546cc9b8bcdca9d98d3a85599045fd3173/jest.json",
+    "artifacts/target-dependencies/custom/42108c68e9a5d59c468b0b5cb03f9adaa7e8a548bc8f4a04475e5e2234f704fc/jest.json",
+    "artifacts/target-dependencies/custom/4587e12f6bf025e9f56bc6ba5dc731850a4d8314ca3255b5ad8bd498e70ccca5/facebook.json",
+    "artifacts/target-dependencies/custom/480dad199e2b880eebf331c3952ddfa0ea57dca5e7cf1f92901727a2e09d5b59/jest.json",
+    "artifacts/target-dependencies/custom/652b1b965f651933930793cf213ad2ce8fc396a1a82308df436f5735db8d6daf/youtube.json",
+    "artifacts/target-dependencies/custom/66e5c8683b1bb6d33c705415bac2e6295bd895e26a3e9235bbe018b23db2d8df/jest.json",
+    "artifacts/target-dependencies/custom/67f920f87b3c63d11e320aea664651638cf42f974db3e63116d0f71801a95817/yahoo.json",
+    "artifacts/target-dependencies/custom/837b41ac90235e1b34fc1c96b07744dd8090745f632734efe2dbc61b2e88f25c/jest.json",
+    "artifacts/target-dependencies/custom/9244b116d7a8ed1bf14314a12c1a93c7d5bf6a13266ece17b9f54d8952c686c0/jest.json",
+    "artifacts/target-dependencies/custom/92bbee437e9582e0fb8738b72b6592bdfa6908d1541ba494dace18c869a9b409/jest.json",
+    "artifacts/target-dependencies/custom/a0ffac9c732aa072bbdb5f4b07b1e72f028b8bf6995720598692ee017f6dcf24/jest.json",
+    "artifacts/target-dependencies/custom/a4f5715cbf645b1f50d46015501302494e41640bb76badb45d094d9a27abe875/netflix.json",
+    "artifacts/target-dependencies/custom/a9a5a1a90f58e0e280563eb4dfd33e6e5195d2bea04dcaf5cab319c23ca9231b/jest.json",
+    "artifacts/target-dependencies/custom/bb31bb12a0bfc6db04a3bb3cbb5bd73dc115e1759dae10445dbcc83fb6b907ad/jest.json",
+    "artifacts/target-dependencies/custom/c09455ac9d66da4b096cf1eda8e4f9561c3fdbd2e6424dd18433ab9be4a97841/jest.json",
+    "artifacts/target-dependencies/custom/e232e79e9d6307ab00f26d44bfa1ec32182c643d1c68ce6252d3d838dcc4c7bb/facebook.json",
+    "artifacts/target-dependencies/custom/e307de226fe796697a994d992a3996821994e04203875b1b147531b6ef5b06db/reddit.json"
+  ]
+}

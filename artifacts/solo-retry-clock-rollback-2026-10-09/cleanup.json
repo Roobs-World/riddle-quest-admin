@@ -1,0 +1,12 @@
+{
+  "buildRoot": "/tmp/solo-retry-clock-rollback-builds-20261009a",
+  "metadata": [
+    "artifacts/target-dependencies/custom/1a80c0d4c537f199f810e9527b1dafc8292408cb88d96f9af36f371c1e8a1f1f/jest.json",
+    "artifacts/target-dependencies/custom/9db735805f32c1f3568e604257bb98556db591e276fd8b39f46f7a8dc96615c8/netflix.json",
+    "artifacts/target-dependencies/custom/719d61af4036a5aafffc5954bfc2df5587f6cab19da2d9e6490d670ec7ff953f/youtube.json",
+    "artifacts/target-dependencies/custom/34a719d7c6b5507024a26539010d6c9fba675161fd45068632581b4f4f5ed9d0/yahoo.json",
+    "artifacts/target-dependencies/custom/48b90cb7bfa6a48e73376ed312975b51aa456720d9acbc9d5550a61cf29ebd40/reddit.json",
+    "artifacts/target-dependencies/custom/db288f7f5afe02fc967e94d07546243a3d5aaf5a103841e54717f64dc3dfbec9/facebook.json"
+  ],
+  "allAbsent": true
+}

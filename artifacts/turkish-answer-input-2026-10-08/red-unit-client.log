@@ -1,0 +1,109 @@
+FAIL src/play/__tests__/gameSession.test.ts
+  ● preserves Turkish dotted I in a typed single-player attempt
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Array [
+    -   "İ",
+    +   "I",
+        "Z",
+        "M",
+    -   "İ",
+    +   "I",
+        "R",
+      ]
+
+      834 |   if (kind !== "typed") state = reduce(state, {type: kind === "preview" ? "previewHint" : "applyHint", index: 0, letter: "i"});
+      835 |   for (const letter of kind === "typed" ? "izmir" : "zmir") state = reduce(state, {type: "typeLetter", letter});
+    > 836 |   expect(state.currentLetters).toEqual(["İ", "Z", "M", "İ", "R"]);
+          |                                ^
+      837 |   state = reduce(state, {type: "guessRequested"});
+      838 |   expect(state.guesses[0].feedback).toEqual(Array(5).fill("green"));
+      839 | });
+
+      at src/play/__tests__/gameSession.test.ts:836:32
+
+  ● preserves Turkish dotted I in a preview single-player attempt
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Array [
+    -   "İ",
+    +   "I",
+        "Z",
+        "M",
+    -   "İ",
+    +   "I",
+        "R",
+      ]
+
+      834 |   if (kind !== "typed") state = reduce(state, {type: kind === "preview" ? "previewHint" : "applyHint", index: 0, letter: "i"});
+      835 |   for (const letter of kind === "typed" ? "izmir" : "zmir") state = reduce(state, {type: "typeLetter", letter});
+    > 836 |   expect(state.currentLetters).toEqual(["İ", "Z", "M", "İ", "R"]);
+          |                                ^
+      837 |   state = reduce(state, {type: "guessRequested"});
+      838 |   expect(state.guesses[0].feedback).toEqual(Array(5).fill("green"));
+      839 | });
+
+      at src/play/__tests__/gameSession.test.ts:836:32
+
+  ● preserves Turkish dotted I in a confirmed single-player attempt
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Array [
+    -   "İ",
+    +   "I",
+        "Z",
+        "M",
+    -   "İ",
+    +   "I",
+        "R",
+      ]
+
+      834 |   if (kind !== "typed") state = reduce(state, {type: kind === "preview" ? "previewHint" : "applyHint", index: 0, letter: "i"});
+      835 |   for (const letter of kind === "typed" ? "izmir" : "zmir") state = reduce(state, {type: "typeLetter", letter});
+    > 836 |   expect(state.currentLetters).toEqual(["İ", "Z", "M", "İ", "R"]);
+          |                                ^
+      837 |   state = reduce(state, {type: "guessRequested"});
+      838 |   expect(state.guesses[0].feedback).toEqual(Array(5).fill("green"));
+      839 | });
+
+      at src/play/__tests__/gameSession.test.ts:836:32
+
+  ● keeps Turkish dotted and dotless typed I distinct
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "İ",
+    +   "I",
+      ]
+
+      844 |   /** The visible state starts with no input or server mutations. */
+      845 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
+    > 846 |   expect(reduce(state, {type: "typeLetter", letter: "i"}).currentLetters).toEqual(["İ"]);
+          |                                                                           ^
+      847 |   expect(reduce(state, {type: "typeLetter", letter: "I"}).currentLetters).toEqual(["I"]);
+      848 | });
+      849 |
+
+      at Object.<anonymous> (src/play/__tests__/gameSession.test.ts:846:75)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 79 passed, 83 total
+Snapshots:   0 total
+Time:        0.253 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts.

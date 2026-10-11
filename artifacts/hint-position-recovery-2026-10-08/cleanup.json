@@ -1,0 +1,16 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/5b3af4343a7b225942b80d6b3810c8165835d087cb125e0143629b43d474bdaf/netflix.json",
+    "artifacts/target-dependencies/custom/d68bc52123cf72874c156ab14b65fead698ff865ae1d79bacaf2ca583e0fe884/youtube.json",
+    "artifacts/target-dependencies/custom/01e374166b0c756039edae22688f35795f559600755128e238504f35af37c591/facebook.json",
+    "artifacts/target-dependencies/custom/19999b1aa8b8c605e93bc84feb7d14f7ee102f00e326eb92ad5d2752c3f88226/jest.json",
+    "artifacts/target-dependencies/custom/dde6740deaca9b0bdce8d0c00d17d641c64f9b217ee160329ef1c8c4eb5f1c02/yahoo.json",
+    "artifacts/target-dependencies/custom/1d3914b089adbc67312a4688e049670926dcf9a6fd1a2b9aa998aaad3d45357c/facebook.json",
+    "artifacts/target-dependencies/custom/bf78a26226b6f4867a68a192ce20554135695efb68fa3075b1c4b65055f6c643/reddit.json"
+  ],
+  "buildRoots": [
+    "/tmp/hint-position-recovery-builds-20261008a",
+    "/tmp/riddle-quest-facebook-browser-6bWsfA"
+  ],
+  "allAbsent": true
+}

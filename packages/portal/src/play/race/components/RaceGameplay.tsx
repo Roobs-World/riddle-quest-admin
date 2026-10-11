@@ -131,6 +131,7 @@ export function RaceGameplay({
               />
             </section>
             <ControlledKeyboard
+              locale={run.locale}
               letterStates={letterStates}
               onLetter={onLetter}
               onBackspace={onBackspace}

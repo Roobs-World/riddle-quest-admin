@@ -201,9 +201,9 @@ export type HostServices = {
   readonly products: ProductSummary[];
   /** Stores auth. */
   readonly auth: AuthAdapter;
-  /** Starts loading the Daily riddle and issued Classic queue for the initial play session. */
-  preloadInitialRiddles?: (locale: string) => void;
-  /** Loads riddle. */
+  /** Starts initial Daily/Classic preparation; cancellation retires deferred admission before provider work starts. */
+  preloadInitialRiddles?: (locale: string, signal?: AbortSignal) => void;
+  /** Loads a riddle; optional cancellation retires deferred admission, not already admitted provider work. */
   loadRiddle(input: {
     /** Stores game mode. */
     gameMode: WebGameMode;
@@ -217,7 +217,7 @@ export type HostServices = {
     sessionToken?: string;
     /** Stores riddle id. */
     riddleId?: string;
-  }): Promise<BridgeRiddle>;
+  }, signal?: AbortSignal): Promise<BridgeRiddle>;
   /** Loads profile. */
   loadProfile(userId: string): Promise<BridgeProfile | null>;
   /** Completes game. */

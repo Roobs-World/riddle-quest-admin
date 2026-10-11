@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -uo pipefail
+RETIRED_WARMUPS_BASELINE_FILE="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-retired-warmups-2026-10-08/lifecycle-before.txt" RETIRED_WARMUPS_QUICK=1 RETIRED_WARMUPS_MODE=development RETIRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-retired-warmups-2026-10-08/minimal-baseline-development" node packages/portal/scripts/verify-host-retired-warmups-browser.mjs > "artifacts/host-retired-warmups-2026-10-08/minimal-baseline-development.log" 2>&1
+code=$?; echo "minimal-baseline-development $code"; test "$code" -eq 1 || exit 2
+RETIRED_WARMUPS_QUICK=1 RETIRED_WARMUPS_MODE=development RETIRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-retired-warmups-2026-10-08/minimal-green-development" node packages/portal/scripts/verify-host-retired-warmups-browser.mjs > "artifacts/host-retired-warmups-2026-10-08/minimal-green-development.log" 2>&1
+code=$?; echo "minimal-green-development $code"; test "$code" -eq 0 || exit 2
+RETIRED_WARMUPS_BASELINE_FILE="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-retired-warmups-2026-10-08/lifecycle-before.txt" RETIRED_WARMUPS_QUICK=1 RETIRED_WARMUPS_MODE=production RETIRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-retired-warmups-2026-10-08/minimal-baseline-production" node packages/portal/scripts/verify-host-retired-warmups-browser.mjs > "artifacts/host-retired-warmups-2026-10-08/minimal-baseline-production.log" 2>&1
+code=$?; echo "minimal-baseline-production $code"; test "$code" -eq 1 || exit 2
+RETIRED_WARMUPS_QUICK=1 RETIRED_WARMUPS_MODE=production RETIRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-retired-warmups-2026-10-08/minimal-green-production" node packages/portal/scripts/verify-host-retired-warmups-browser.mjs > "artifacts/host-retired-warmups-2026-10-08/minimal-green-production.log" 2>&1
+code=$?; echo "minimal-green-production $code"; test "$code" -eq 0 || exit 2

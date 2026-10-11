@@ -91,7 +91,7 @@ it("prepares silently and strips origin IDs from the guarded provider read", asy
   /** Only adapter work occurs during the visible victory. */
   const owner = setup(); await start(owner);
   expect(await owner.lifecycle.loadRiddle(prepare, "prepare-next")).toBe(true);
-  expect(owner.load).toHaveBeenLastCalledWith(next);
+  expect(owner.load).toHaveBeenLastCalledWith(next, expect.any(AbortSignal));
   expect(owner.load).toHaveBeenCalledTimes(2);
   expect(owner.post).not.toHaveBeenCalled(); expect(owner.notice).not.toHaveBeenCalled();
   expect(owner.operation).not.toHaveBeenCalled(); expect(owner.activity).not.toHaveBeenCalled();
@@ -117,6 +117,7 @@ it("deduplicates pending and ready preparation for the same predecessor", async 
   const held = deferred<ReturnType<typeof question>>(); owner.load.mockImplementationOnce(() => held.promise);
   /** Original optional request remains pending while a replay is admitted without a second read. */
   const pending = owner.lifecycle.loadRiddle(prepare);
+  await Promise.resolve(); await Promise.resolve();
   await owner.lifecycle.loadRiddle(prepare); expect(owner.load).toHaveBeenCalledTimes(2);
   held.resolve(question(2)); await pending; await owner.lifecycle.loadRiddle(prepare);
   expect(owner.load).toHaveBeenCalledTimes(2);
@@ -165,6 +166,7 @@ it("bounds an optional read and ignores its late completion", async () => {
   const held = deferred<ReturnType<typeof question>>(); owner.load.mockImplementationOnce(() => held.promise);
   /** Deadline races the held authority result using the real content lifecycle helper. */
   const pending = owner.lifecycle.loadRiddle(prepare);
+  await Promise.resolve(); await Promise.resolve();
   await jest.advanceTimersByTimeAsync(RIDDLE_LOAD_DEADLINE_MS); expect(await pending).toBe(false);
   held.resolve(question(2)); await Promise.resolve(); expect(owner.post).not.toHaveBeenCalled(); expect(owner.notice).not.toHaveBeenCalled();
   await owner.lifecycle.loadRiddle(next, "after-deadline"); expect(owner.load).toHaveBeenCalledTimes(3);
@@ -175,7 +177,8 @@ it("keeps a pending preparation from replacing the result of an ordinary Next", 
   /** Old prepared result belongs to the now-dismissed predecessor. */
   const held = deferred<ReturnType<typeof question>>(); owner.load.mockImplementationOnce(() => held.promise);
   /** Optional read is overtaken by the ordinary correlated load. */
-  const pending = owner.lifecycle.loadRiddle(prepare); await owner.lifecycle.loadRiddle(next, "next-now");
+  const pending = owner.lifecycle.loadRiddle(prepare);
+  await Promise.resolve(); await Promise.resolve(); await owner.lifecycle.loadRiddle(next, "next-now");
   held.resolve(question(2)); expect(await pending).toBe(false);
   expect(owner.post).toHaveBeenCalledTimes(1); expect(owner.post.mock.calls[0]![0]).toMatchObject({requestId: "next-now"});
 });
@@ -186,6 +189,7 @@ it.each(["userId", "accountGeneration", "locale", "services"] as const)("retires
   const held = deferred<ReturnType<typeof question>>(); owner.load.mockImplementationOnce(() => held.promise);
   /** A retained old callback must not issue provider work in the replacement scope. */
   const pending = owner.lifecycle.loadRiddle(prepare);
+  await Promise.resolve(); await Promise.resolve();
   if (key === "userId") owner.options.userId = "replacement";
   if (key === "accountGeneration") owner.options.accountGeneration = 2;
   if (key === "locale") owner.options.locale = "fr";
@@ -214,6 +218,7 @@ it("does not let an older failed preparation clear a newer slot for the same pre
   const held = deferred<ReturnType<typeof question>>(); owner.load.mockImplementationOnce(() => held.promise);
   /** Original read retains the same predecessor identity but no longer owns the cache slot. */
   const old = owner.lifecycle.loadRiddle(prepare);
+  await Promise.resolve(); await Promise.resolve();
   owner.load.mockRejectedValueOnce(new Error("ordinary unavailable")); await owner.lifecycle.loadRiddle(next, "failed-next");
   await owner.lifecycle.loadRiddle(prepare); held.reject(new Error("old optional read failed")); expect(await old).toBe(false);
   await owner.lifecycle.loadRiddle(next, "prepared-retry"); expect(owner.load).toHaveBeenCalledTimes(4);

@@ -1,0 +1,12 @@
+{
+  "buildRoot": "/tmp/standalone-save-ordering-audit-builds-20261009a",
+  "metadata": [
+    "artifacts/target-dependencies/custom/7b300d54ef838e3fcdb0e484fa42ae1fd5125c5f0922b4690726433f45b112de/youtube.json",
+    "artifacts/target-dependencies/custom/b23121e6a94b62b58e645297a57e047f0df8adb0998739e50983b432257ff34f/yahoo.json",
+    "artifacts/target-dependencies/custom/a3b18fac811560fa221764bf2fb70ffe27bdb767c173461257893689d0e5d131/jest.json",
+    "artifacts/target-dependencies/custom/92805be3eefa5215acf4d866f748a281580ffd0ab7627febca81664b5d7ad65f/netflix.json",
+    "artifacts/target-dependencies/custom/1e146c643d8be7571186090f4e80c26e60ba2aca5595b60f68353f7b5da7684e/reddit.json",
+    "artifacts/target-dependencies/custom/e4765318aa7578ad4ff4a6c41bb1f73832cffa2689782a0071761c2b69d22ad0/facebook.json"
+  ],
+  "allAbsent": true
+}

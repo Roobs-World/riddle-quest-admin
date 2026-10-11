@@ -108,8 +108,8 @@
     "height": 568,
     "scenario": "eof",
     "name": "retirement cancels queued health callbacks",
-    "actual": 14,
-    "expected": 14
+    "actual": 13,
+    "expected": 13
   },
   {
     "width": 390,
@@ -1360,8 +1360,8 @@
     "height": 844,
     "scenario": "healthy",
     "name": "retirement cancels queued health callbacks",
-    "actual": 18,
-    "expected": 18
+    "actual": 17,
+    "expected": 17
   },
   {
     "width": 390,
@@ -1932,8 +1932,8 @@
     "height": 844,
     "scenario": "headers",
     "name": "retirement cancels queued health callbacks",
-    "actual": 13,
-    "expected": 13
+    "actual": 12,
+    "expected": 12
   },
   {
     "width": 1280,
@@ -2204,8 +2204,8 @@
     "height": 844,
     "scenario": "healthy",
     "name": "retirement cancels queued health callbacks",
-    "actual": 18,
-    "expected": 18
+    "actual": 17,
+    "expected": 17
   },
   {
     "width": 1280,
@@ -2504,8 +2504,8 @@
     "height": 844,
     "scenario": "pending",
     "name": "retirement cancels queued health callbacks",
-    "actual": 15,
-    "expected": 15
+    "actual": 14,
+    "expected": 14
   },
   {
     "width": 1280,

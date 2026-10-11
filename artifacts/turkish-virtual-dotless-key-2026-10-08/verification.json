@@ -1,0 +1,13 @@
+{
+  "sourceInputs": 2493,
+  "ownedInputs": 4,
+  "clientTests": 3018,
+  "virtualKeyboardJourneys": 24,
+  "raceBrowserAssertions": 48,
+  "builtBrowserChecks": 23,
+  "targetBuilds": 6,
+  "devvitBuilt": true,
+  "builtFiles": 1299,
+  "deployed": false,
+  "goalComplete": false
+}

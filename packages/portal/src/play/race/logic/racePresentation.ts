@@ -19,15 +19,15 @@ export const createRaceAttempt = (riddle: RaceRiddle | null): string[] => {
   return Array.from({length: riddle.answerLength}, (_, index) => revealed.get(index) ?? "");
 };
 
-/** Finds the first answer slot that has not been revealed by the server. */
-export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null): number => {
+/** Selects an empty unlocked cell before allowing replacement of an existing draft letter. */
+export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null, letters: readonly string[] = []): number => {
   if (!riddle) return 0;
   /** Answer positions already fixed by server-authoritative hints. */
   const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
-  return (
-    Array.from({length: riddle.answerLength}, (_, position) => position).find((position) => !revealed.has(position)) ??
-    0
-  );
+  /** Fixed answer positions bound selection independently of supplied draft length. */
+  const positions = Array.from({length: riddle.answerLength}, (_, position) => position);
+  return positions.find(position => !revealed.has(position) && !letters[position]) ??
+    positions.find(position => !revealed.has(position)) ?? 0;
 };
 
 /** Immediately advances to the already-downloaded next riddle while the server records the skip. */
@@ -190,16 +190,20 @@ export const confirmedGuessesKey = (guesses: readonly ScoredGuess[] | undefined)
   guesses ? guesses.map(({guess, feedback}) => `${guess.join("\u0000")}\u0001${feedback.join(",")}`).join("\u0002") : "";
 
 /** Keeps the strongest server-scored feedback observed for each keyboard letter. */
-export const getRaceLetterStates = (guesses: readonly ScoredGuess[]): Record<string, Feedback> => {
+export const getRaceLetterStates = (guesses: readonly ScoredGuess[], locale = "en",
+  revealedLetters: Readonly<RaceRiddle["revealedLetters"]> = []): Record<string, Feedback> => {
   /** Provides states behavior. */
   const states: Record<string, Feedback> = {};
   for (const scoredGuess of guesses) {
     scoredGuess.guess.forEach((letter, index) => {
       /** Provides status behavior. */
       const status = scoredGuess.feedback[index];
-      if (!letter || !status || (raceFeedbackStrength[states[letter.toLowerCase()]] ?? 0) > (raceFeedbackStrength[status] ?? 0)) return;
-      states[letter.toLowerCase()] = status;
+      if (!letter || !status || (raceFeedbackStrength[states[letter.toLocaleLowerCase(locale)]] ?? 0) > (raceFeedbackStrength[status] ?? 0)) return;
+      states[letter.toLocaleLowerCase(locale)] = status;
     });
+  }
+  for (const {letter} of revealedLetters) {
+    if (letter) states[letter.toLocaleLowerCase(locale)] = "green";
   }
   return states;
 };

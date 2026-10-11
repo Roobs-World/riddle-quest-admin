@@ -241,7 +241,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
         for (const [index, letter] of revealed) currentLetters[index] = letter;
         attempt = {...attempt, currentLetters,
           activeSlotIndex: revealed.has(draft.activeSlotIndex)
-            ? findFirstEditableRaceSlot(run.currentRiddle) : draft.activeSlotIndex};
+            ? findFirstEditableRaceSlot(run.currentRiddle, currentLetters) : draft.activeSlotIndex};
       }
       return {run, entryStatus: null, challenge: null, activeChallengeId: run.challengeId,
         receivedAtMs: now, adjustedNow: run.adjustedElapsedMs, ...attempt};
@@ -291,7 +291,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       }
       return {run: result.run, receivedAtMs: now,
         ...(confirmation.resetAttempt ? raceAttemptState(result.run) : {currentLetters,
-          activeSlotIndex: revealed.has(state.activeSlotIndex) ? findFirstEditableRaceSlot(result.run.currentRiddle) : state.activeSlotIndex}),
+          activeSlotIndex: revealed.has(state.activeSlotIndex) ? findFirstEditableRaceSlot(result.run.currentRiddle, currentLetters) : state.activeSlotIndex}),
         ...(confirmation.guesses ? {raceGuesses: raceGuessHistory(result.run, original!, confirmation.guesses)} : {}),
         feedback: result.isCorrect ? "correct" : "incorrect",
         ...(result.autoSkipped ? {penaltyFlash: "RaceTo10.SKIP_PENALTY"} : {}),
@@ -343,7 +343,7 @@ export function applyRaceAuthority(state: RaceSessionState, operation: RaceOpera
       const activeSlotIndex = draft?.activeSlotIndex ?? state.activeSlotIndex;
       for (const [index, letter] of revealed) currentLetters[index] = letter;
       return {run: result.run, receivedAtMs: now, currentLetters,
-        activeSlotIndex: revealed.has(activeSlotIndex) ? findFirstEditableRaceSlot(prompt) : activeSlotIndex,
+        activeSlotIndex: revealed.has(activeSlotIndex) ? findFirstEditableRaceSlot(prompt, currentLetters) : activeSlotIndex,
         raceGuesses: raceHintHistory(result.run, original!, draft?.guesses ?? state.raceGuesses),
         penaltyFlash: "RaceTo10.HINT_PENALTY"};
     }

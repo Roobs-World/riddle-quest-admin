@@ -1,0 +1,82 @@
+FAIL src/play/race/__tests__/raceLayoutHooks.test.ts
+  ● useRaceDialogFocus › wraps Tab focus in both directions within the active dialog
+
+    TypeError: control.checkVisibility is not a function
+
+      49 |       ),
+      50 |     ).filter((control) => control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]") &&
+    > 51 |       control.checkVisibility({visibilityProperty: true}));
+         |               ^
+      52 |     if (focusable.length === 0) {
+      53 |       event.preventDefault();
+      54 |       activeDialog.focus({preventScroll: true});
+
+      at src/play/race/hooks/useRaceDialogFocus.ts:51:15
+          at Array.filter (<anonymous>)
+      at src/play/race/hooks/useRaceDialogFocus.ts:50:7
+      at keyDown (src/play/race/hooks/useRaceDialogFocus.ts:78:22)
+      at Object.<anonymous> (src/play/race/__tests__/raceLayoutHooks.test.ts:269:21)
+
+  ● useRaceDialogFocus › recaptures escaped focus in both directions and preserves owned key events
+
+    TypeError: control.checkVisibility is not a function
+
+      49 |       ),
+      50 |     ).filter((control) => control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]") &&
+    > 51 |       control.checkVisibility({visibilityProperty: true}));
+         |               ^
+      52 |     if (focusable.length === 0) {
+      53 |       event.preventDefault();
+      54 |       activeDialog.focus({preventScroll: true});
+
+      at src/play/race/hooks/useRaceDialogFocus.ts:51:15
+          at Array.filter (<anonymous>)
+      at src/play/race/hooks/useRaceDialogFocus.ts:50:7
+      at keyDown (src/play/race/hooks/useRaceDialogFocus.ts:78:22)
+      at Object.<anonymous> (src/play/race/__tests__/raceLayoutHooks.test.ts:341:23)
+
+
+Summary of all failing tests
+FAIL src/play/race/__tests__/raceLayoutHooks.test.ts
+  ● useRaceDialogFocus › wraps Tab focus in both directions within the active dialog
+
+    TypeError: control.checkVisibility is not a function
+
+      49 |       ),
+      50 |     ).filter((control) => control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]") &&
+    > 51 |       control.checkVisibility({visibilityProperty: true}));
+         |               ^
+      52 |     if (focusable.length === 0) {
+      53 |       event.preventDefault();
+      54 |       activeDialog.focus({preventScroll: true});
+
+      at src/play/race/hooks/useRaceDialogFocus.ts:51:15
+          at Array.filter (<anonymous>)
+      at src/play/race/hooks/useRaceDialogFocus.ts:50:7
+      at keyDown (src/play/race/hooks/useRaceDialogFocus.ts:78:22)
+      at Object.<anonymous> (src/play/race/__tests__/raceLayoutHooks.test.ts:269:21)
+
+  ● useRaceDialogFocus › recaptures escaped focus in both directions and preserves owned key events
+
+    TypeError: control.checkVisibility is not a function
+
+      49 |       ),
+      50 |     ).filter((control) => control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]") &&
+    > 51 |       control.checkVisibility({visibilityProperty: true}));
+         |               ^
+      52 |     if (focusable.length === 0) {
+      53 |       event.preventDefault();
+      54 |       activeDialog.focus({preventScroll: true});
+
+      at src/play/race/hooks/useRaceDialogFocus.ts:51:15
+          at Array.filter (<anonymous>)
+      at src/play/race/hooks/useRaceDialogFocus.ts:50:7
+      at keyDown (src/play/race/hooks/useRaceDialogFocus.ts:78:22)
+      at Object.<anonymous> (src/play/race/__tests__/raceLayoutHooks.test.ts:341:23)
+
+
+Test Suites: 1 failed, 16 skipped, 303 passed, 304 of 320 total
+Tests:       2 failed, 96 skipped, 2990 passed, 3088 total
+Snapshots:   0 total
+Time:        9.814 s, estimated 136 s
+Ran all test suites.

@@ -1,0 +1,1 @@
+{"reason":"Before-source key escaping initially kept the default transformer; the subsequent generated config had a syntax error. Neither run is baseline regression evidence. The corrected entry validates the config, removes stale result files, requires exactly two failed and two passed real tests, and requires an applied-source hash record."}

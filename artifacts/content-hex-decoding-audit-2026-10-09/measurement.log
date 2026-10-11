@@ -1,0 +1,4 @@
+{"locale":"en","side":"baseline","medianMs":2.970030160000001,"rangeMs":[2.9161146200000005,3.563832739999998]}
+{"locale":"en","side":"candidate","medianMs":0.5920256199999995,"rangeMs":[0.5873011699999984,0.8185673199999974]}
+{"locale":"hi","side":"baseline","medianMs":4.492672269999994,"rangeMs":[4.459621550000001,4.651356300000002]}
+{"locale":"hi","side":"candidate","medianMs":0.8873793800000022,"rangeMs":[0.8802516700000069,0.9253618400000004]}

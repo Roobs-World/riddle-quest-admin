@@ -1,0 +1,30 @@
+{
+  "mode": "development",
+  "checks": 1,
+  "samples": 0,
+  "failures": [
+    {
+      "name": "confirmed live hint colors keyboard before any guess",
+      "actual": "key",
+      "expected": "key green"
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Live race confirmed hint keyboard feedback
+
+1 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-hint-keyboard-feedback-2026-10-08/probe.mjs:43:320 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

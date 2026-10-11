@@ -1,0 +1,25 @@
+{
+  "firestore": {
+    "rules": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/firestore.rules",
+    "indexes": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/firestore.indexes.json"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 33219,
+      "websocketPort": 43459
+    },
+    "hub": {
+      "host": "127.0.0.1",
+      "port": 43939
+    },
+    "logging": {
+      "host": "127.0.0.1",
+      "port": 37571
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  }
+}

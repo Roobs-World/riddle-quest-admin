@@ -1,0 +1,29 @@
+{
+  "journeys": 12,
+  "assertions": 240,
+  "failures": 0,
+  "sourceInputsUnchanged": 2525,
+  "browserEngines": [
+    "Chromium",
+    "Firefox 153"
+  ],
+  "reactModes": [
+    "development",
+    "production"
+  ],
+  "viewportSizes": [
+    [
+      390,
+      568
+    ],
+    [
+      390,
+      844
+    ],
+    [
+      1280,
+      844
+    ]
+  ],
+  "scope": "Injected signal transport; production React gameplay; accelerated stream deadlines, unchanged polling intervals"
+}

@@ -1,3 +1,4 @@
+import {Timestamp} from "firebase-admin/firestore";
 import {HttpsError, type CallableResponse} from "firebase-functions/v2/https";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import type {Firestore} from "./raceSetupService";
@@ -15,14 +16,16 @@ export async function streamLiveRaceChanges(db: Firestore, userId: string, ticke
     assertJestAccountActive(deletion);
     if (!owner.exists || !ticket.exists || ticket.data()?.userId !== userId)
       throw new HttpsError("permission-denied", "Live observation unavailable.");
-    if (ticket.data()!.expiresAt?.toMillis() <= Date.now()) throw new HttpsError("not-found", "Live observation expired.");
+    /** Only a real retained timestamp can admit this private subscription. */
+    const expiry = ticket.data()!.expiresAt;
+    if (!(expiry instanceof Timestamp) || expiry.toMillis() <= Date.now()) throw new HttpsError("not-found", "Live observation expired.");
   });
   if (response.signal.aborted) return;
   await new Promise<void>((resolve, reject) => {
     /** Cleanups release listeners on expiry, connection loss, deletion and send failures. */
     const subscriptions: (() => void)[] = [];
     /** Last observed revision and ordered writes belong to this bounded connection. */
-    let revision: string | null = null, stopped = false, pending = Promise.resolve();
+    let revision: string | null = null, expiresAtMs = 0, stopped = false, pending = Promise.resolve();
     /** Releasing observers never waits for a game mutation or account deletion. */
     const finish = (error?: unknown) => {
       if (stopped) return;
@@ -36,8 +39,8 @@ export async function streamLiveRaceChanges(db: Firestore, userId: string, ticke
     /** Serializes chunks so an earlier send cannot arrive after a newer revision. */
     const send = () => {
       /** Capture this revision before subsequent snapshots advance it. */
-      const chunk = {revision};
-      pending = pending.then(async () => {if (!stopped && !await response.sendChunk(chunk)) finish();})
+      const chunk = {revision, expiresAtMs};
+      pending = pending.then(async () => {if (!stopped && !await response.sendChunk({revision: chunk.expiresAtMs > Date.now() ? chunk.revision : null})) finish();})
         .catch(finish);
     };
     response.signal.addEventListener("abort", abort, {once: true});
@@ -51,8 +54,9 @@ export async function streamLiveRaceChanges(db: Firestore, userId: string, ticke
       subscriptions.push(db.doc(`liveRaceSignals/${ticketId}`).onSnapshot(snapshot => {
         if (stopped) return;
         /** Match notifications are private and expire with their owned seat. */
-        const next = snapshot.data()?.revision;
-        revision = typeof next === "string" && snapshot.data()!.expiresAt?.toMillis() > Date.now() ? next : null;
+        const next = snapshot.data()?.revision, expiry = snapshot.data()?.expiresAt;
+        expiresAtMs = expiry instanceof Timestamp ? expiry.toMillis() : 0;
+        revision = typeof next === "string" && expiresAtMs > Date.now() ? next : null;
         send();
       }, finish));
       if (response.signal.aborted) finish();

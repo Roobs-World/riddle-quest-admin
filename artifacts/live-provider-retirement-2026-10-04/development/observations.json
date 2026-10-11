@@ -1414,20 +1414,16 @@
     "height": 568,
     "scenario": "commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 390,
     "height": 568,
     "scenario": "commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -1570,20 +1566,16 @@
     "height": 568,
     "scenario": "owner-commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 390,
     "height": 568,
     "scenario": "owner-commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -1684,20 +1676,16 @@
     "height": 568,
     "scenario": "remove-commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 390,
     "height": 568,
     "scenario": "remove-commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -3288,20 +3276,16 @@
     "height": 844,
     "scenario": "commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 390,
     "height": 844,
     "scenario": "commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -3444,20 +3428,16 @@
     "height": 844,
     "scenario": "owner-commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 390,
     "height": 844,
     "scenario": "owner-commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -3558,20 +3538,16 @@
     "height": 844,
     "scenario": "remove-commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 390,
     "height": 844,
     "scenario": "remove-commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -5162,20 +5138,16 @@
     "height": 844,
     "scenario": "commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 1280,
     "height": 844,
     "scenario": "commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,
@@ -5318,20 +5290,16 @@
     "height": 844,
     "scenario": "owner-commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 1280,
     "height": 844,
     "scenario": "owner-commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,
@@ -5432,20 +5400,16 @@
     "height": 844,
     "scenario": "remove-commit",
     "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
+    "actual": [],
+    "expected": []
   },
   {
     "width": 1280,
     "height": 844,
     "scenario": "remove-commit",
     "name": "retirement retries share one key",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,

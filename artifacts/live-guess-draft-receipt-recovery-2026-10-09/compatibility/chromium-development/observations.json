@@ -1,0 +1,142 @@
+[
+  {
+    "width": 390,
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "name": "injected authority returns identical seat and question",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "en",
+      "q0",
+      0,
+      0
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "en",
+      "q0",
+      0,
+      0
+    ]
+  },
+  {
+    "width": 390,
+    "name": "recovered seat restores unsent letters on reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "name": "reload does not replay a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "injected authority returns identical seat and question",
+    "actual": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "en",
+      "q0",
+      0,
+      0
+    ],
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "en",
+      "q0",
+      0,
+      0
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "recovered seat restores unsent letters on reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "name": "reload does not replay a guess",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

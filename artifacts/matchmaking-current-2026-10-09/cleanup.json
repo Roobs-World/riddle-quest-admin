@@ -1,0 +1,21 @@
+{
+  "ports": [
+    {
+      "port": 33219,
+      "closed": true
+    },
+    {
+      "port": 43459,
+      "closed": true
+    },
+    {
+      "port": 43939,
+      "closed": true
+    },
+    {
+      "port": 37571,
+      "closed": true
+    }
+  ],
+  "compiledOutputRemoved": true
+}

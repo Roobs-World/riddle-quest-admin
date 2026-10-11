@@ -64,6 +64,7 @@ export type GameSessionState = {
     /** Previewed answer position. */ index: number;
     /** Letter replaced by the preview. */ previousLetter: string;
     /** Keyboard position before the preview. */ previousActiveSlotIndex: number;
+    /** Admitted player edits or selections outrank the automatic preview cursor, including undone edits. */ hasPlayerIntent: boolean;
   } | null;
   /** Serializable snapshot of the deterministic game engine. */ engineSnapshot: GameEngineSnapshot | null;
   /** Modal currently presented above the game. */ modal: GameModal;
@@ -194,6 +195,8 @@ export type GameSessionAction =
       base: PendingGuessState;
       /** The guesses used by the current operation. */
       guesses: string[];
+      /** Original attempt slots used only to reconcile corrupt presentation with complete host history. */
+      guessAttempts?: number[];
       /** The draft used by the current operation. */
       draft: string[];
       /** Saved selection within the unsubmitted draft; absent in legacy journals. */

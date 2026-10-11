@@ -1,0 +1,43 @@
+[
+  {
+    "session": 75561,
+    "scope": "focused units and types",
+    "exit": 0
+  },
+  {
+    "session": 84126,
+    "scope": "first corrected browser journey",
+    "exit": 0
+  },
+  {
+    "session": 35032,
+    "scope": "full client units/types and static gates before documentation correction",
+    "exit": 0,
+    "note": "TSDoc log contained two undocumented declarations; shell continued to successful file-size audit. Corrected in final static job."
+  },
+  {
+    "session": 54624,
+    "scope": "pre-documentation target cohort",
+    "exit": 0
+  },
+  {
+    "session": 26331,
+    "scope": "64 injected Chrome/Firefox dev/prod journeys",
+    "exit": 0
+  },
+  {
+    "session": 91801,
+    "scope": "final TSDoc and file-size gates",
+    "exit": 0
+  },
+  {
+    "session": 42899,
+    "scope": "final six targets and Devvit server cohort",
+    "exit": 0
+  },
+  {
+    "session": 39090,
+    "scope": "22 exact built checks and dedicated Facebook check",
+    "exit": 0
+  }
+]

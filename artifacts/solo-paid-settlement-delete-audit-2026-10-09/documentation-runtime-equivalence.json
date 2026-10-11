@@ -1,0 +1,7 @@
+{
+  "files": [
+    "paidSettlement.ts",
+    "pendingGuessJournal.ts"
+  ],
+  "emittedJavaScriptIdentical": true
+}

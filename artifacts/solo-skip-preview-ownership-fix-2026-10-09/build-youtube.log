@@ -1,0 +1,42 @@
+$ pnpm check:target-boundaries && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE=1 YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact:fixture
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (14.678639ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.369639ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.9141ms)
+✔ rejects imports between different target owners (1.807544ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.806188ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.973385ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.563262ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.853116ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.411814ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.710175ms)
+✔ aggregates violations in deterministic file and source order (0.940872ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 155.153864
+Web Target boundary audit passed (325 files, 1413 module references).
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for youtube...
+transforming...
+✓ 50 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/youtube-content-manifest.json          0.34 kB │ gzip:  0.25 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/index.html                             0.89 kB │ gzip:  0.44 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/third-party-licenses.txt               1.73 kB │ gzip:  0.89 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/assets/playable-pack-en-Co6Grdrb.js    3.12 kB │ gzip:  1.75 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/assets/index-DgcjrTMP.js              99.64 kB │ gzip: 34.17 kB
+../../../../../../tmp/solo-skip-preview-ownership-fix-builds-20261009a/youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 951ms
+$ node scripts/audit-youtube-artifact.mjs --allow-incomplete-fixture
+YouTube artifact audit passed: 9 files, 0.32 MiB total and conservative initial transfer, 1 locale(s)

@@ -119,7 +119,11 @@
     "test:deployments:live": "node scripts/release/verify-live-web-games.mjs",
     "development:complete": "node scripts/release/complete-development-task.mjs",
     "test:architecture": "node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs scripts/monitoring/publish-release-status.test.mjs",
-    "prepare:html5-handoffs": "node scripts/release/package-html5-release.mjs"
+    "prepare:html5-handoffs": "node scripts/release/package-html5-release.mjs",
+    "dashboard:sync": "node scripts/monitoring/sync-task-register.mjs",
+    "dashboard:test": "node --test scripts/monitoring/task-api.test.mjs",
+    "dashboard:build": "node scripts/monitoring/package-task-dashboard.mjs",
+    "dashboard:deploy": "vercel --scope craig-beswethericks-projects-d44935d2 deploy --project prj_PcEv2s5xKie76Rd9LaFWsuRQwOsZ --prebuilt --prod --non-interactive"
   },
   "engines": {
     "node": ">=24.17.0"

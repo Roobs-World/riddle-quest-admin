@@ -1,0 +1,24 @@
+{
+  "ownedInputs": 3,
+  "sourceInputs": 2488,
+  "unitTests": 2992,
+  "permanentBrowserAssertions": 4,
+  "resourceMatrices": 8,
+  "builtBrowserTests": 23,
+  "buildTargets": 6,
+  "devvitServerBuilt": true,
+  "builtFiles": 1299,
+  "inventories": 7,
+  "obsoleteClockFixturePassed": false,
+  "currentProductionCallerForHook": false,
+  "productionDeployment": false,
+  "goalComplete": false,
+  "terminalSessions": {
+    "43350": 0,
+    "80187": 0,
+    "90454": 0,
+    "3803": 0,
+    "72708": 1,
+    "68543": 0
+  }
+}

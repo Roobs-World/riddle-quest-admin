@@ -1,0 +1,57 @@
+{
+  "engine": "firefox",
+  "mode": "development",
+  "browserVersion": "153.0",
+  "journeys": 2,
+  "checks": 20,
+  "failures": [
+    {
+      "width": 390,
+      "phase": "write-takeover",
+      "name": "passive draft persistence preserves other tab paid receipt",
+      "actual": null,
+      "expected": {
+        "type": "game:skipRiddle",
+        "requestId": "skip-other-tab-required",
+        "payload": {
+          "gameMode": "classic",
+          "riddleId": "classic_3",
+          "sessionToken": "00000000-0000-4000-8000-000000000003"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "phase": "write-takeover",
+      "name": "passive draft persistence preserves other tab paid receipt",
+      "actual": null,
+      "expected": {
+        "type": "game:skipRiddle",
+        "requestId": "skip-other-tab-required",
+        "payload": {
+          "gameMode": "classic",
+          "riddleId": "classic_3",
+          "sessionToken": "00000000-0000-4000-8000-000000000003"
+        }
+      }
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/solo-journal-draft-takeover-audit-2026-10-09/browser.mjs:123:213 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

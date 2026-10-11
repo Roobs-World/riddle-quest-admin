@@ -1,0 +1,9 @@
+{
+  "packages/portal/src/play/race/LiveRaceGame.tsx": "fae37564bf972d7aa3ef411447ac8e3b0f80224dedd053aba83af1ba21cca8a3",
+  "packages/portal/src/play/race/hooks/useLiveRaceDraft.ts": "fc35abb67b39a3c0ce4293da696f5c68aca58c9a549a4ab4ac127f771490a9b7",
+  "packages/portal/src/play/race/logic/liveRaceDraft.ts": "8317719db38d94d5051d05553f14077b661c6dcce8c4b86c76d62c3d12ba811f",
+  "packages/portal/src/play/race/logic/raceDraftStorage.ts": "9ea833e12b6e13bb7dfabd1f07306a63d0668ed4a6511b3815f2a095ff617551",
+  "firebase-functions/src/race/raceLiveService.ts": "9c2f3285af6b36fdab6a50976cab64c18c3adbf492e6c2a2d05a73d41ca53681",
+  "packages/portal/scripts/verify-live-reconnect-input-browser.mjs": "5188928f00500ff2a926a2c6b40f4b24adf5612ddfe612ff09a195d0ff854acf",
+  "packages/portal/src/play/race/__tests__/liveRaceDraft.test.ts": "774eb554d7236d7ebb1176ee3b5f2418b7f1854ba19b0b112fdcfeab950a4cd5"
+}

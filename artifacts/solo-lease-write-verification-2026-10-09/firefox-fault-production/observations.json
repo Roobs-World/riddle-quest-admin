@@ -1,0 +1,210 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "failed renewal does not retransmit a queued command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "failed renewal retains its durable request",
+    "actual": "guess-e5605fdb-e92c-4a83-a10e-09c8e1d8043d",
+    "expected": "guess-e5605fdb-e92c-4a83-a10e-09c8e1d8043d"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "successful renewal retransmits the same durable request",
+    "actual": "guess-e5605fdb-e92c-4a83-a10e-09c8e1d8043d",
+    "expected": "guess-e5605fdb-e92c-4a83-a10e-09c8e1d8043d"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "successful renewal posts exactly one retry",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "journal survives timer retirement",
+    "actual": "guess-e5605fdb-e92c-4a83-a10e-09c8e1d8043d",
+    "expected": "guess-e5605fdb-e92c-4a83-a10e-09c8e1d8043d"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "every new queued draft letter remains durable",
+    "actual": "CAN",
+    "expected": "CAN"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "changed draft letters keep their writes",
+    "actual": 5,
+    "expected": 5
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "failed renewal does not retransmit a queued command",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "failed renewal retains its durable request",
+    "actual": "guess-a081762b-f7c6-4ba3-a66a-348ee7033b31",
+    "expected": "guess-a081762b-f7c6-4ba3-a66a-348ee7033b31"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "successful renewal retransmits the same durable request",
+    "actual": "guess-a081762b-f7c6-4ba3-a66a-348ee7033b31",
+    "expected": "guess-a081762b-f7c6-4ba3-a66a-348ee7033b31"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "successful renewal posts exactly one retry",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "only current callback may renew its exact request",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "retired callback cannot acquire a lease",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "journal survives timer retirement",
+    "actual": "guess-a081762b-f7c6-4ba3-a66a-348ee7033b31",
+    "expected": "guess-a081762b-f7c6-4ba3-a66a-348ee7033b31"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "self-contained fixture makes no external requests",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "no unhandled errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "durable writes retain changed drafts and skip only the duplicate Continue payload",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "every new queued draft letter remains durable",
+    "actual": "CAN",
+    "expected": "CAN"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "timer:none:guess:interval",
+    "name": "changed draft letters keep their writes",
+    "actual": 5,
+    "expected": 5
+  }
+]

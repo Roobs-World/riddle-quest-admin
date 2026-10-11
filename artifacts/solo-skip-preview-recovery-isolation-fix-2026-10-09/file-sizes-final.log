@@ -1,0 +1,11 @@
+$ node --test scripts/source-size-metric.test.mjs && node scripts/audit-file-sizes.mjs
+✔ scripts/source-size-metric.test.mjs (25.641399ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.246698
+Maintainable-file size audit passed: 1301 source files within enforced limits.

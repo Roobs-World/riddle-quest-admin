@@ -1,0 +1,4 @@
+{
+  "packages/portal/src/play/useHostRiddleLifecycle.ts": "21c2903d336ab2480f19e399aa1c0245b13448baea101850905549f032cbda7c",
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "9d48dabf2d039839049aa0655fe7d63708f5d95bc664d78f0c73d1b5b592df59"
+}

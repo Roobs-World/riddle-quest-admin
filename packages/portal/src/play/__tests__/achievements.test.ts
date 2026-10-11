@@ -1,7 +1,8 @@
 import {describe, expect, it} from "@jest/globals";
 import {RACE_ACHIEVEMENT_IDS} from "@qwordly/core/race";
 import {PlayerProgressSchema, PlayerStatsSchema} from "@qwordly/core/validation";
-import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress, predictCompletionAchievementIds} from "../achievements";
+import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress} from "../achievements";
+import {predictCompletionAchievementIds} from "../predictCompletionAchievements";
 
 describe("multiplayer achievement presentation", () => {
   it("defines every authoritative multiplayer achievement with localized copy", () => {

@@ -4,6 +4,7 @@ import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
 import {gameSessionReducer, type GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
+import {isSingleAnswerCell} from "./answerCell";
 
 /** Gets object. */
 const getObject = (data: unknown): Record<string, unknown> =>
@@ -15,28 +16,32 @@ const getNumber = (value: unknown) => (typeof value === "number" ? value : undef
 /** Gets string array. */
 const getStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
-/** Parses canonical guess feedback returned by the backend. */
-const getGuessFeedback = (
-  value: unknown,
-): Array<{
-  /** Stores letter. */
-  letter: string[];
-  /** Stores feedback. */
+/** Parses a complete server-scored row atomically, without dropping malformed cells. */
+const getGuessFeedback = (value: unknown, locale: string, answerLength: number): {
+  /** Canonical displayed symbols, one per answer cell. */
+  guess: string[];
+  /** Positionally aligned server scoring colors. */
   feedback: Array<"green" | "yellow" | "red">;
-}> =>
-  Array.isArray(value)
-    ? value.flatMap((item) => {
-        /** Provides entry behavior. */
-        const entry = getObject(item);
-        /** Provides letter behavior. */
-        const letter = getString(entry.letter);
-        /** Provides status behavior. */
-        const status = entry.status;
-        return letter && (status === "green" || status === "yellow" || status === "red")
-          ? [{letter: [letter.toUpperCase()], feedback: [status]}]
-          : [];
-      })
-    : [];
+} | null => {
+  if (!Array.isArray(value) || answerLength < 1 || value.length !== answerLength) return null;
+  /** Every accepted symbol remains aligned with its own server color. */
+  const guess: string[] = [];
+  /** Partial rows are discarded rather than projected as accepted history. */
+  const feedback: Array<"green" | "yellow" | "red"> = [];
+  for (const item of value) {
+    /** Each operation cell is validated before it can enter the board. */
+    const entry = getObject(item);
+    /** Only bounded graphemes survive their displayed casing. */
+    const letter = getString(entry.letter);
+    /** Server scoring statuses have exactly three supported values. */
+    const status = entry.status;
+    if (!isSingleAnswerCell(letter, locale) ||
+      (status !== "green" && status !== "yellow" && status !== "red")) return null;
+    guess.push(letter.toLocaleUpperCase(locale));
+    feedback.push(status);
+  }
+  return {guess, feedback};
+};
 
 /** Describes game dispatch. */
 type GameDispatch = Dispatch<Parameters<typeof gameSessionReducer>[1]>;
@@ -121,20 +126,25 @@ export function useGameMessageRouter({
           const data = getObject(message.payload.data);
           if (message.payload.operation === "guess") {
             /** Provides feedback items behavior. */
-            const feedbackItems = getGuessFeedback(data.feedback);
+            const feedback = getGuessFeedback(data.feedback,
+              stateRef.current.riddle?.evaluation?.locale ?? stateRef.current.locale,
+              stateRef.current.riddle?.answerLength ?? 0);
             /** Provides attempts behavior. */
             const attempts = getNumber(data.attempts);
-            if (attempts === undefined || feedbackItems.length === 0) {
+            /** A granted Continue is the only source of a sixth accepted attempt. */
+            const maxAttempts = 5 + Number(stateRef.current.engineSnapshot?.hasUsedContinue ??
+              stateRef.current.riddle?.hasUsedContinue ?? false);
+            if (!feedback || attempts === undefined || !Number.isInteger(attempts) || attempts < 1 || attempts > maxAttempts ||
+              typeof data.isCorrect !== "boolean" || typeof data.gameOver !== "boolean" ||
+              (data.canContinue !== undefined && typeof data.canContinue !== "boolean")) {
               dispatch({type: "guessFailed"});
               dispatch({type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
+              requestRiddle();
               return;
             }
             dispatch({
               type: "guessResolved",
-              feedback: {
-                guess: feedbackItems.flatMap((item) => item.letter),
-                feedback: feedbackItems.flatMap((item) => item.feedback),
-              },
+              feedback,
               attempts,
               isCorrect: data.isCorrect === true,
               gameOver: data.gameOver === true,
@@ -154,8 +164,14 @@ export function useGameMessageRouter({
             const revealedLetter = getString(data.revealedLetter);
             /** Provides achievement ids behavior. */
             const achievementIds = getStringArray(data.newlyUnlockedAchievementIds);
-            if (index !== undefined && revealedLetter) {
+            if (index !== undefined && Number.isInteger(index) && index >= 0 &&
+              index < (stateRef.current.riddle?.answerLength ?? 0) &&
+              isSingleAnswerCell(revealedLetter, stateRef.current.riddle?.evaluation?.locale ?? stateRef.current.locale)) {
               dispatch({type: "applyHint", index, letter: revealedLetter, newCoins: getNumber(data.newCoins)});
+            } else {
+              dispatch({type: "rejectHint"});
+              dispatch({type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
+              return;
             }
             if (achievementIds.length > 0)
               dispatch({

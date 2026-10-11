@@ -1,0 +1,58 @@
+[
+  {
+    "browser": "chromium-production",
+    "width": 390,
+    "scenario": "wrong",
+    "name": "reload to first usable board ms",
+    "actual": 91.65513400000009
+  },
+  {
+    "browser": "chromium-production",
+    "width": 390,
+    "scenario": "timeout",
+    "name": "reload to first usable board ms",
+    "actual": 2376.7917710000006
+  },
+  {
+    "browser": "chromium-production",
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "reload to first usable board ms",
+    "actual": 91.33814299999995
+  },
+  {
+    "browser": "chromium-production",
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "reload to first usable board ms",
+    "actual": 2377.719889
+  },
+  {
+    "browser": "firefox-production",
+    "width": 390,
+    "scenario": "wrong",
+    "name": "reload to first usable board ms",
+    "actual": 161.2551239999998
+  },
+  {
+    "browser": "firefox-production",
+    "width": 390,
+    "scenario": "timeout",
+    "name": "reload to first usable board ms",
+    "actual": 2429.700277
+  },
+  {
+    "browser": "firefox-production",
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "reload to first usable board ms",
+    "actual": 161.6377790000006
+  },
+  {
+    "browser": "firefox-production",
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "reload to first usable board ms",
+    "actual": 2436.926458
+  }
+]

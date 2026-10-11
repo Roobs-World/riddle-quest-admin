@@ -4,6 +4,8 @@ import {useLayoutEffect, useRef} from "react";
 export type AnswerKeyboardOptions = {
   /** Stores active. */
   active: boolean;
+  /** Immutable content locale owns physical-key casing. */
+  locale?: string;
   /** Stores on letter. */
   onLetter: (letter: string) => void;
   /** Stores on backspace. */
@@ -13,11 +15,11 @@ export type AnswerKeyboardOptions = {
 };
 
 /** Maps physical keyboard input to a controlled answer editor while preserving text-field behavior. */
-export const useAnswerKeyboard = ({active, onLetter, onBackspace, onSubmit}: AnswerKeyboardOptions): void => {
+export const useAnswerKeyboard = ({active, locale = "en", onLetter, onBackspace, onSubmit}: AnswerKeyboardOptions): void => {
   /** Native subscriptions follow the committed editor without replacement after each answer edit. */
-  const optionsRef = useRef({active, onLetter, onBackspace, onSubmit});
-  useLayoutEffect(() => {optionsRef.current = {active, onLetter, onBackspace, onSubmit};},
-    [active, onLetter, onBackspace, onSubmit]);
+  const optionsRef = useRef({active, locale, onLetter, onBackspace, onSubmit});
+  useLayoutEffect(() => {optionsRef.current = {active, locale, onLetter, onBackspace, onSubmit};},
+    [active, locale, onLetter, onBackspace, onSubmit]);
   useLayoutEffect(() => {
     // Retire the listener before parent layout callbacks can reach a removed editor.
     if (!active) return;
@@ -39,9 +41,9 @@ export const useAnswerKeyboard = ({active, onLetter, onBackspace, onSubmit}: Ans
       if (event.key === "Enter" && target instanceof Element &&
         target.closest("button, a[href], summary, [role='button'], [role='link']")) return;
 
-      if (/^[a-z]$/i.test(event.key)) {
+      if (/^[a-z]$/i.test(event.key) || options.locale === "tr" && /^[İı]$/.test(event.key)) {
         event.preventDefault();
-        options.onLetter(event.key.toUpperCase());
+        options.onLetter(event.key.toLocaleUpperCase(options.locale));
       } else if (event.key === "Backspace") {
         event.preventDefault();
         options.onBackspace();

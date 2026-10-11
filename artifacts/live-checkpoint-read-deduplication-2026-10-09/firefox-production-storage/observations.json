@@ -1,0 +1,256 @@
+[
+  {
+    "width": 390,
+    "scenario": "competing-recovery",
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "competing-recovery",
+    "name": "recovered reads keep local typing responsive",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "competing-recovery",
+    "name": "unseen competing checkpoint survives recovery",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-b8c4c82a-08e7-42c4-805d-692ba8a4fe58\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545450283}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-b8c4c82a-08e7-42c4-805d-692ba8a4fe58\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545450283}"
+  },
+  {
+    "width": 390,
+    "scenario": "competing-recovery",
+    "name": "unseen checkpoint survives old-instance cleanup",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-b8c4c82a-08e7-42c4-805d-692ba8a4fe58\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545450283}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-b8c4c82a-08e7-42c4-805d-692ba8a4fe58\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545450283}"
+  },
+  {
+    "width": 390,
+    "scenario": "competing-recovery",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "competing-recovery",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "empty-recovery",
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "empty-recovery",
+    "name": "recovered empty storage keeps local typing responsive",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "empty-recovery",
+    "name": "verified empty key accepts a new checkpoint",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "empty-recovery",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "empty-recovery",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "competing-recovery",
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "competing-recovery",
+    "name": "recovered reads keep local typing responsive",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "competing-recovery",
+    "name": "unseen competing checkpoint survives recovery",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-bf3770eb-77e4-4b9f-bdb7-0f17954c4af3\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545453749}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-bf3770eb-77e4-4b9f-bdb7-0f17954c4af3\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545453749}"
+  },
+  {
+    "width": 1280,
+    "scenario": "competing-recovery",
+    "name": "unseen checkpoint survives old-instance cleanup",
+    "actual": "{\"version\":1,\"writerId\":\"live-draft-writer-bf3770eb-77e4-4b9f-bdb7-0f17954c4af3\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545453749}",
+    "expected": "{\"version\":1,\"writerId\":\"live-draft-writer-bf3770eb-77e4-4b9f-bdb7-0f17954c4af3\",\"binding\":\"[\\\"Alice\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\",\\\"en\\\",\\\"q0\\\",0,0]\",\"letters\":[\"t\",\"e\",\"\",\"\"],\"activeSlotIndex\":2,\"savedAtMs\":1791545453749}"
+  },
+  {
+    "width": 1280,
+    "scenario": "competing-recovery",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "competing-recovery",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "empty-recovery",
+    "name": "partial draft before native reload",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "empty-recovery",
+    "name": "recovered empty storage keeps local typing responsive",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "empty-recovery",
+    "name": "verified empty key accepts a new checkpoint",
+    "actual": [
+      "t",
+      "e",
+      "s",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "s",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "empty-recovery",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "empty-recovery",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

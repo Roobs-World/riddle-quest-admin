@@ -1,0 +1,22 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/d65348edcf3be94faff67a52099aa4d960cc919a0ae4a87feb15ee52e8b5e240/jest.json",
+    "artifacts/target-dependencies/custom/9d29a8494821234d12f9fd69fa18eda3d44fa98303ffbfd0b140d269e5e41ead/youtube.json",
+    "artifacts/target-dependencies/custom/32ed51e1d3590235e64a2dd70406ca83c76bd070d76fccd12e13466766d1420a/reddit.json",
+    "artifacts/target-dependencies/custom/0346fcfcd5c840696fd115b55a7e8d65c5216ae5bbe21aa04d1ddd34924283ae/yahoo.json",
+    "artifacts/target-dependencies/custom/95e8eccb1d3ac5b99437136f8eb7005eaf3bf01bd2bebd70a3fd103c90044904/facebook.json",
+    "artifacts/target-dependencies/custom/561f36aff8fcaad556409a80819b7fa560ab4511f43688c9d2f5146aa0093066/netflix.json",
+    "artifacts/target-dependencies/custom/5784063240e605fbdf697a22f136bbe5a3d8abc2a9aedc415b7bbee1c03754aa/facebook.json"
+  ],
+  "buildRoots": [
+    "/tmp/live-guess-receipt-adapters-builds-20261009a",
+    "/tmp/live-guess-receipt-adapters-compiled-20261009a",
+    "/tmp/live-guess-receipt-adapters-compiled-20261009b"
+  ],
+  "emulatorTemporaryRoots": [
+    "/tmp/riddle-quest-emulators-xnoNKq",
+    "/tmp/riddle-quest-emulators-8s9yTW"
+  ],
+  "facebookFixture": "/tmp/riddle-quest-facebook-browser-wSkqsc",
+  "allAbsent": true
+}

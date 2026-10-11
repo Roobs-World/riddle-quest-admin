@@ -1,0 +1,170 @@
+[
+  {
+    "run": "initial",
+    "name": "firestore",
+    "key": "port",
+    "port": 43547,
+    "open": false
+  },
+  {
+    "run": "initial",
+    "name": "firestore",
+    "key": "websocketPort",
+    "port": 41861,
+    "open": false
+  },
+  {
+    "run": "initial",
+    "name": "database",
+    "key": "port",
+    "port": 38517,
+    "open": false
+  },
+  {
+    "run": "initial",
+    "name": "storage",
+    "key": "port",
+    "port": 44835,
+    "open": false
+  },
+  {
+    "run": "initial",
+    "name": "hub",
+    "key": "port",
+    "port": 34191,
+    "open": false
+  },
+  {
+    "run": "initial",
+    "name": "logging",
+    "key": "port",
+    "port": 37065,
+    "open": false
+  },
+  {
+    "run": "corrected",
+    "name": "firestore",
+    "key": "port",
+    "port": 42907,
+    "open": false
+  },
+  {
+    "run": "corrected",
+    "name": "firestore",
+    "key": "websocketPort",
+    "port": 37697,
+    "open": false
+  },
+  {
+    "run": "corrected",
+    "name": "database",
+    "key": "port",
+    "port": 37313,
+    "open": false
+  },
+  {
+    "run": "corrected",
+    "name": "storage",
+    "key": "port",
+    "port": 43761,
+    "open": false
+  },
+  {
+    "run": "corrected",
+    "name": "hub",
+    "key": "port",
+    "port": 35877,
+    "open": false
+  },
+  {
+    "run": "corrected",
+    "name": "logging",
+    "key": "port",
+    "port": 37977,
+    "open": false
+  },
+  {
+    "run": "focused",
+    "name": "firestore",
+    "key": "port",
+    "port": 34777,
+    "open": false
+  },
+  {
+    "run": "focused",
+    "name": "firestore",
+    "key": "websocketPort",
+    "port": 40629,
+    "open": false
+  },
+  {
+    "run": "focused",
+    "name": "database",
+    "key": "port",
+    "port": 46593,
+    "open": false
+  },
+  {
+    "run": "focused",
+    "name": "storage",
+    "key": "port",
+    "port": 42411,
+    "open": false
+  },
+  {
+    "run": "focused",
+    "name": "hub",
+    "key": "port",
+    "port": 36657,
+    "open": false
+  },
+  {
+    "run": "focused",
+    "name": "logging",
+    "key": "port",
+    "port": 33393,
+    "open": false
+  },
+  {
+    "run": "resumed",
+    "name": "firestore",
+    "key": "port",
+    "port": 40855,
+    "open": false
+  },
+  {
+    "run": "resumed",
+    "name": "firestore",
+    "key": "websocketPort",
+    "port": 37797,
+    "open": false
+  },
+  {
+    "run": "resumed",
+    "name": "database",
+    "key": "port",
+    "port": 36399,
+    "open": false
+  },
+  {
+    "run": "resumed",
+    "name": "storage",
+    "key": "port",
+    "port": 45307,
+    "open": false
+  },
+  {
+    "run": "resumed",
+    "name": "hub",
+    "key": "port",
+    "port": 43867,
+    "open": false
+  },
+  {
+    "run": "resumed",
+    "name": "logging",
+    "key": "port",
+    "port": 32851,
+    "open": false
+  }
+]

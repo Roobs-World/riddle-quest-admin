@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-require-imports -- Emulator worker loads the compiled backend. */
 "use strict";
-const PROJECT = "demo-riddle-quest-match-benchmark";
+const PROJECT = "demo-riddle-quest-match";
 const LATENCY_TARGET_MS = {dense: 1500, sparse: 1500, exclusions: 5000, empty: 1500, capped: 10000, freshness: 3000};
 const SCENARIOS = ["dense", "sparse", "exclusions", "empty", "capped", "freshness"];
 
@@ -24,6 +24,14 @@ function distribution(values) {
   if (!values.length) return {count: 0, p50: null, p95: null, max: null};
   const sorted = [...values].sort((a, b) => a - b);
   return {count: values.length, p50: sorted[Math.ceil(sorted.length * 0.5) - 1], p95: sorted[Math.ceil(sorted.length * 0.95) - 1], max: sorted.at(-1)};
+}
+/** Successful work must select a seeded eligible recording and preserve its exact replay receipt. */
+function validMatchedResult(response, records, scenario, previous) {
+  if (!response || response.status !== "matched" || !/^[a-f0-9]{64}$/.test(response.offerId ?? "")) return false;
+  const selected = records.find(record => record.challengeId === response.challenge?.challengeId);
+  if (!selected || response.challenge.locale !== selected.locale || response.challenge.categoryId !== selected.categoryId) return false;
+  if (["exclusions", "freshness"].includes(scenario) && selected.challengeId !== "healthy") return false;
+  return previous === undefined || JSON.stringify(response) === JSON.stringify(previous);
 }
 /** Captured production telemetry accompanies actual elapsed lookup time, rather than mocked storage latency. */
 async function main(args = process.argv.slice(2)) {
@@ -77,6 +85,7 @@ async function main(args = process.argv.slice(2)) {
       const samples = [];
       for (let index = 0; index < options.iterations; index++) {
         const input = {locale: "en", categoryId: "history", requestId: `benchmark-${scenario}-${index}`};
+        let originalResponse;
         for (const phase of ["new", "replay"]) {
           if (phase === "replay" && samples.at(-1)?.status !== "matched") break;
           telemetry = undefined;
@@ -84,10 +93,16 @@ async function main(args = process.argv.slice(2)) {
           const started = performance.now();
           let status;
           let failureReason;
-          try {status = (await findRecordedRaceMatch(player, input, {db, nowMs})).status;}
+          let resultCorrect = true;
+          try {
+            const response = await findRecordedRaceMatch(player, input, {db, nowMs});
+            status = response.status;
+            if (status === "matched") resultCorrect = validMatchedResult(response, records, scenario, originalResponse);
+            if (phase === "new") originalResponse = response;
+          }
           catch (error) {status = "failure"; failureReason = error.details?.matchmaking?.reason ?? "unclassified";}
           if (!telemetry) throw Error("Lookup telemetry was not captured.");
-          samples.push({phase, status, failureReason, eventCount, elapsedMs: performance.now() - started, ...telemetry});
+          samples.push({phase, status, failureReason, resultCorrect, eventCount, elapsedMs: performance.now() - started, ...telemetry});
         }
       }
       for (const phase of ["new", "replay"]) {
@@ -95,7 +110,7 @@ async function main(args = process.argv.slice(2)) {
         if (!rows.length) continue;
         const latency = distribution(rows.map(row => row.elapsedMs));
         const expected = scenario === "empty" ? "empty" : scenario === "capped" ? "failure" : "matched";
-        const checks = {policyAttribution: rows.every(row => row.status !== "matched" || row.policyHash === DEFAULT_RACE_MATCH_POLICY.hash && row.policyRevision === DEFAULT_RACE_MATCH_POLICY.policy.revision), oneTerminalEvent: rows.every(row => row.eventCount === 1), expectedOutcome: rows.every(row => row.status === expected && (scenario !== "capped" || row.failureReason === "search-budget-exceeded")),
+        const checks = {correctRecordingAndReplay: rows.every(row => row.resultCorrect), policyAttribution: rows.every(row => row.status !== "matched" || row.policyHash === DEFAULT_RACE_MATCH_POLICY.hash && row.policyRevision === DEFAULT_RACE_MATCH_POLICY.policy.revision), oneTerminalEvent: rows.every(row => row.eventCount === 1), expectedOutcome: rows.every(row => row.status === expected && (scenario !== "capped" || row.failureReason === "search-budget-exceeded")),
           canonicalReadBound: rows.every(row => row.documentReadAttempts <= 1000), candidateReadBound: rows.every(row => row.candidateDocumentsRead <= 200),
           transactionBound: rows.every(row => row.transactionAttempts <= 200), replayReadBound: phase !== "replay" || rows.every(row => row.documentReadAttempts <= 10),
           localLatencyTarget: latency.p95 <= LATENCY_TARGET_MS[scenario]};
@@ -119,5 +134,5 @@ async function main(args = process.argv.slice(2)) {
   if (!report.passed) process.exitCode = 1;
   return report;
 }
-module.exports = {validateOptions, distribution, main};
+module.exports = {validateOptions, distribution, validMatchedResult, main};
 if (require.main === module) main().catch(() => {process.stderr.write("Benchmark failed: check demo emulator, options and compiled backend.\n"); process.exitCode = 1;});

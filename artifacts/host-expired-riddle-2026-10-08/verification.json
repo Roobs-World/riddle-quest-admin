@@ -1,0 +1,12 @@
+{
+  "sourceInputs": 2480,
+  "ownedInputs": 3,
+  "browserAssertions": 1644,
+  "unitTests": 2992,
+  "builtBrowserTests": 23,
+  "builtFiles": 1301,
+  "startupBytes": 576715,
+  "goalComplete": false,
+  "reusedAuthorityEvidence": false,
+  "remainingCandidate": "Measure and reduce eagerly loaded startup bytes while preserving game behavior"
+}

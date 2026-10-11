@@ -1,0 +1,19 @@
+{"authoritativeRow":"IZMIR","expected":"İZMİR"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+'IZMIR' !== 'İZMİR'
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/turkish-authoritative-feedback-2026-10-08/probe.mjs:60:178 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'IZMIR',
+  expected: 'İZMİR',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

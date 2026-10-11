@@ -1,0 +1,110 @@
+[
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": false,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "physical",
+    "hint": true,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": false,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "virtual",
+    "hint": true,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "shifted-physical",
+    "hint": false,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 390,
+    "method": "shifted-physical",
+    "hint": true,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": false,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "physical",
+    "hint": true,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": false,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "virtual",
+    "hint": true,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "shifted-physical",
+    "hint": false,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  },
+  {
+    "width": 1280,
+    "method": "shifted-physical",
+    "hint": true,
+    "draft": "İZMİR",
+    "guess": "İZMİR",
+    "greenLetters": 5,
+    "browserErrors": []
+  }
+]

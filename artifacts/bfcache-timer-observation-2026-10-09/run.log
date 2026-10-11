@@ -1,0 +1,38 @@
+[
+  {
+    "name": "chromium",
+    "version": "153.0.8010.12",
+    "trace": [
+      {
+        "kind": "show",
+        "at": 1791541532923,
+        "persisted": false
+      },
+      {
+        "kind": "tick",
+        "at": 1791541537923,
+        "gap": 5000
+      }
+    ],
+    "restoredFromCache": false,
+    "nextTickDelayMs": 5000
+  },
+  {
+    "name": "firefox",
+    "version": "153.0",
+    "trace": [
+      {
+        "kind": "show",
+        "at": 1791541560147,
+        "persisted": false
+      },
+      {
+        "kind": "tick",
+        "at": 1791541565174,
+        "gap": 5028
+      }
+    ],
+    "restoredFromCache": false,
+    "nextTickDelayMs": 5027
+  }
+]

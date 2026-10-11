@@ -79,7 +79,9 @@ app.render(<React.StrictMode><RaceTo10Game locale="en" ownerId={user} coins={100
    for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}
    await a.locator('.race-gameplay .guess-board').waitFor();
    const letters=()=>a.locator('.guess-row button:not([disabled])').allTextContents().then(values=>values.map(v=>v.toLowerCase()));
-   if(scenario==='exhausted')for(let index=0;index<4;index++){await a.evaluate(()=>window.otherTab('guess','zzzz'));}
+   if(scenario==='exhausted'){for(let index=0;index<4;index++){await a.evaluate(()=>window.otherTab('guess','zzzz'));}
+    // The other tab's guesses render asynchronously; let them settle so the next click targets the live row, not a row about to lock.
+    await a.waitForFunction(()=>{const rows=document.querySelectorAll('.guess-board .guess-row');return rows.length>=5&&document.querySelector('.guess-row button:not([disabled])')?.closest('.guess-row')===rows[rows.length-1];});}
    if(['correct','exhausted'].includes(scenario)){
     await a.locator('.guess-row button:not([disabled])').first().click();await a.keyboard.type(scenario==='correct'?'test':'zzzz');await a.evaluate(()=>window.holdGuessOnce=true);await a.locator('.race-actions .submit-action').click();await a.waitForFunction(()=>typeof window.releaseReceipt==='function');
    }else if(scenario==='skip'){

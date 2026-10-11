@@ -9,6 +9,10 @@ import {useGuessGlyphFit} from "../input/useGuessGlyphFit";
 
 /** Fixed Latin shortcut letters are prepared once, independently of draft and receipt renders. */
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"].map(id => ({id, letters: id.split("")}));
+/** Turkish content needs distinct dotted and dotless I shortcuts without widening the longest row. */
+const TURKISH_KEYBOARD_ROWS = KEYBOARD_ROWS.map(row => ({...row,
+  letters: row.id === "QWERTYUIOP" ? row.letters.map(letter => letter === "I" ? "İ" : letter)
+    : row.id === "ASDFGHJKL" ? [...row.letters, "I"] : row.letters}));
 
 /** Provides game header behavior. */
 export function GameHeader({
@@ -254,12 +258,15 @@ export function GuessBoard({
 
 /** Provides controlled keyboard behavior. */
 export function ControlledKeyboard({
+  locale = "en",
   letterStates,
   onLetter,
   onBackspace,
   disabled = false,
 }: {
-  /** Stores letter states. */
+  /** Content locale distinguishes the Turkish dotted-I shortcut. */
+  locale?: string;
+  /** Strongest confirmed feedback for the displayed shortcuts. */
   letterStates: Record<string, Feedback>;
   /** Stores on letter. */
   onLetter: (letter: string) => void;
@@ -270,10 +277,10 @@ export function ControlledKeyboard({
 }) {
   /** Provides key class behavior. */
   const keyClass = (letter: string) =>
-    letterStates[letter.toLowerCase()] ? `key ${letterStates[letter.toLowerCase()]}` : "key";
+    letterStates[letter.toLocaleLowerCase(locale)] ? `key ${letterStates[letter.toLocaleLowerCase(locale)]}` : "key";
   return (
     <section className="keyboard" aria-label={tr("Accessibility.VIRTUAL_KEYBOARD")}>
-      {KEYBOARD_ROWS.map((row) => (
+      {(locale === "tr" ? TURKISH_KEYBOARD_ROWS : KEYBOARD_ROWS).map((row) => (
         <div key={row.id}>
           {row.letters.map((letter) => (
             <button className={keyClass(letter)} key={letter} disabled={disabled} onClick={() => onLetter(letter)}>
@@ -311,6 +318,7 @@ export function Keyboard({
 }) {
   return (
     <ControlledKeyboard
+      locale={state.riddle?.evaluation?.locale ?? state.locale}
       letterStates={state.letterStates}
       disabled={!canEditCurrentGuess(state)}
       onLetter={(letter) => {

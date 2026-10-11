@@ -113,7 +113,11 @@ describe("server-confirmed multiplayer draft reload", () => {
       currentRiddle: {...run.currentRiddle!, revealedLetters: [{index: 0, letter: "p"}]},
       events: [{sequence: 0, type: "hint" as const, riddlePosition: 0, wallElapsedMs: run.wallElapsedMs,
         penaltyAddedMs: RACE_HINT_PENALTY_MS, totalPenaltyMs: RACE_HINT_PENALTY_MS, adjustedElapsedMs: run.wallElapsedMs + RACE_HINT_PENALTY_MS, correctCount: 0}]};
-    expect(open(hinted, store).session.getSnapshot()).toMatchObject({currentLetters: ["p", "i", "", "", ""], activeSlotIndex: 1, run: hinted});
+    /** Recovered selection skips the already composed second letter. */
+    const restored = open(hinted, store).session;
+    expect(restored.getSnapshot()).toMatchObject({currentLetters: ["p", "i", "", "", ""], activeSlotIndex: 2, run: hinted});
+    restored.input("text", "ano");
+    expect(restored.getSnapshot().currentLetters.join("")).toBe("piano");
   });
   it.each([false, true])("does not repeat a submitted wrong word after reload: committed %s", async committed => {
     /** A lost response may represent a committed or never-delivered wrong guess. */

@@ -1,0 +1,10 @@
+[
+  {
+    "width": 390,
+    "method": "virtual",
+    "hintIndex": 0,
+    "name": "hint cursor skips populated cells",
+    "actual": 1,
+    "expected": 2
+  }
+]

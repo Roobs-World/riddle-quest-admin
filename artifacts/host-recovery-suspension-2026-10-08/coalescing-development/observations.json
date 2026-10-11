@@ -1,0 +1,4424 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "retry starts at the one-second failure backoff",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "online",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-93868459-5408-4da6-8c6e-3faf7ea2f1ae",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449786395
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-6e64db0e-8a69-40bf-9bbd-10e043d7ce51",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449786395
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-34b071a7-0510-4960-b118-fc27f66717f2",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449786372
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-a0e73a1c-8051-4f28-bb59-c9ef428ec365",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449786372
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-e82094cb-cb94-41c7-b09c-35530f550def",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449786390
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-e403f12b-cda7-45cc-a505-b58720367fe6",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-fe8e29bc-ee67-40f9-82af-d55b32abeac6",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449786413
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-795dd5df-47d0-40fc-9605-2297057f67a1",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-fe8e29bc-ee67-40f9-82af-d55b32abeac6",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449786641
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449786941
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-c7db9e5c-6778-4b79-9ed7-08f3770dc45d",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-fe8e29bc-ee67-40f9-82af-d55b32abeac6",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449787944
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449787944
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449787945
+        }
+      ],
+      "reads": [
+        {
+          "at": 136.79999999701977,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 1667.5,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        364.29999999701977,
+        1667.2999999970198
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        413.70000000298023,
+        427.8999999985099,
+        438.8999999985099,
+        449,
+        459,
+        469.1000000014901,
+        479.29999999701977,
+        489.29999999701977,
+        499.29999999701977,
+        509.5,
+        519.6000000014901,
+        529.6000000014901,
+        539.6000000014901,
+        549.7999999970198,
+        559.7999999970198,
+        569.8999999985099,
+        579.8999999985099,
+        590.1000000014901,
+        600.1000000014901,
+        610.2000000029802
+      ],
+      "failedAt": 662.2999999970198,
+      "timerCallbacks": [
+        {
+          "at": 364.20000000298023,
+          "delay": 250
+        },
+        {
+          "at": 1667.2000000029802,
+          "delay": 1000
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 114.10000000149012,
+          "delay": 250
+        },
+        {
+          "at": 665.5,
+          "delay": 250
+        },
+        {
+          "at": 667.2000000029802,
+          "delay": 1000
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "retry starts at the one-second failure backoff",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "visible",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-0d3aca85-3578-4104-9a67-6aee2ea1507d",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449788508
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-159dd38d-ea4c-4bcc-b289-f85149a1785b",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449788509
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-a70dda81-a4d7-4a45-8377-ac183f440a30",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449788488
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-32209034-dac5-42fc-a2cc-7713f95e65fc",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449788489
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-e2b523d5-5a11-4fdf-85ef-4f9e140d937d",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449788503
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-d33a3ba8-921d-4a83-96a2-9902783b333a",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-f20832d9-b969-4192-b81a-9f5777a3ab67",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449788520
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-ecda3e48-3e36-4315-a519-ce3e28886314",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-f20832d9-b969-4192-b81a-9f5777a3ab67",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449788754
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-7953cf81-15f7-4a94-9293-1f0be3a964b3",
+          "payload": {},
+          "sentAt": 1791449788806
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-5a7d2d1c-32e5-4fe3-99c5-49d3aed9d8cc",
+          "payload": {},
+          "sentAt": 1791449788806
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-6f2a983a-ddae-4517-87e3-da42214136a3",
+          "payload": {},
+          "sentAt": 1791449788821
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-7b0fa925-717b-4825-90e6-c979dd600c1e",
+          "payload": {},
+          "sentAt": 1791449788821
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-7d79f336-1377-4372-a132-c3c92dd6c247",
+          "payload": {},
+          "sentAt": 1791449788831
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-f38ec448-828a-40e8-853c-4d3577f05678",
+          "payload": {},
+          "sentAt": 1791449788831
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-e7813cf8-f99b-4263-9cfb-0de48f559ba8",
+          "payload": {},
+          "sentAt": 1791449788841
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-265e9022-456c-4fd5-9a98-3cbdd848f155",
+          "payload": {},
+          "sentAt": 1791449788841
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-630e15c6-41d7-4273-8c4a-bb9d5ad70065",
+          "payload": {},
+          "sentAt": 1791449788851
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-6fca1d91-1820-409f-a4b3-ff59361abf28",
+          "payload": {},
+          "sentAt": 1791449788851
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-196b8484-49da-475f-8b81-eb101650c47e",
+          "payload": {},
+          "sentAt": 1791449788861
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-8d7bc2f9-9703-4fc1-a672-91b7f517e698",
+          "payload": {},
+          "sentAt": 1791449788861
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-9457578b-b6a7-4bed-b9af-201a9c15f280",
+          "payload": {},
+          "sentAt": 1791449788871
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-e40e748c-7bc9-44f6-9a0e-2a2dca74be11",
+          "payload": {},
+          "sentAt": 1791449788872
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-93fdf46a-abd8-44b0-827f-bdbcc88d9ea5",
+          "payload": {},
+          "sentAt": 1791449788882
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-94260a37-6b7b-46ce-8650-be7ec69665e7",
+          "payload": {},
+          "sentAt": 1791449788882
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-2eabee78-826f-41d4-bfd0-798dbd308088",
+          "payload": {},
+          "sentAt": 1791449788892
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-18e46e3b-8454-4eba-8412-9d0d2ad713ba",
+          "payload": {},
+          "sentAt": 1791449788892
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-a4e96eb0-6190-4182-b92d-66e5f7ad2f79",
+          "payload": {},
+          "sentAt": 1791449788902
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-04e80738-0caf-4797-9925-4b5a68434f36",
+          "payload": {},
+          "sentAt": 1791449788902
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-a4b76498-51de-4b93-83e7-0e8f0a54e0bb",
+          "payload": {},
+          "sentAt": 1791449788912
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-7c6221e9-9982-4a55-b717-f982f7998a6b",
+          "payload": {},
+          "sentAt": 1791449788912
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-4a146d1e-3026-47c8-be8c-d4058ac8672e",
+          "payload": {},
+          "sentAt": 1791449788922
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-847e95da-5531-447f-9aef-cf526b771ffa",
+          "payload": {},
+          "sentAt": 1791449788922
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-d5ad6786-62c0-43cc-9bc0-7cee8834b8f3",
+          "payload": {},
+          "sentAt": 1791449788932
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-426a013e-ca7a-4150-bf92-af47d198313f",
+          "payload": {},
+          "sentAt": 1791449788932
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-d10aa644-8ee9-49dc-a8a8-3a7a0141db2b",
+          "payload": {},
+          "sentAt": 1791449788942
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-d09f395a-f632-4d81-8291-f19c1c9b22ce",
+          "payload": {},
+          "sentAt": 1791449788942
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-89e20f26-c3bc-4b68-8eef-dbc58623fee6",
+          "payload": {},
+          "sentAt": 1791449788952
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-881a233e-0c4e-416b-84fa-f546c9de7dd1",
+          "payload": {},
+          "sentAt": 1791449788952
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-fb755c91-a71e-45e0-b3c9-6004f5d710fb",
+          "payload": {},
+          "sentAt": 1791449788963
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-5ad1f30a-6a24-456f-b49b-f7f36bc91d78",
+          "payload": {},
+          "sentAt": 1791449788963
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-8884426c-2eab-42d8-abec-94bb04fc9ebf",
+          "payload": {},
+          "sentAt": 1791449788973
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-b8550882-a938-4cb8-b8ea-6a8494d8f0e1",
+          "payload": {},
+          "sentAt": 1791449788973
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-6ff35409-6ca7-4f0f-ab44-f5ef43198e45",
+          "payload": {},
+          "sentAt": 1791449788983
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-aa12e164-d5c4-4022-8af4-8055c0aa2c06",
+          "payload": {},
+          "sentAt": 1791449788983
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-e4b3f640-32ba-4380-a0f4-d5e6329021af",
+          "payload": {},
+          "sentAt": 1791449788993
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-9863b497-07f1-4323-85a1-1a11f84a1047",
+          "payload": {},
+          "sentAt": 1791449788993
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-5771e37f-f4ac-4482-afc6-c92bbafa5c41",
+          "payload": {},
+          "sentAt": 1791449789003
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-efe6cf28-13c8-4a1c-904b-8b71c38f3244",
+          "payload": {},
+          "sentAt": 1791449789003
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449789074
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-ec340141-ff67-43da-80d3-ac8beb94c0d6",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-f20832d9-b969-4192-b81a-9f5777a3ab67",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449790076
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449790077
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449790078
+        }
+      ],
+      "reads": [
+        {
+          "at": 118.90000000596046,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 1674.6000000014901,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        351.80000000447035,
+        1674.4000000059605
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        404.1000000014901,
+        418.70000000298023,
+        428.80000000447035,
+        439,
+        449.20000000298023,
+        459.30000000447035,
+        469.40000000596046,
+        479.5,
+        489.70000000298023,
+        499.80000000447035,
+        509.90000000596046,
+        520.1000000014901,
+        530.2000000029802,
+        540.3000000044703,
+        550.4000000059605,
+        560.5,
+        570.6000000014901,
+        580.7000000029802,
+        590.8000000044703,
+        601
+      ],
+      "failedAt": 670.1000000014901,
+      "timerCallbacks": [
+        {
+          "at": 351.70000000298023,
+          "delay": 250
+        },
+        {
+          "at": 1674.4000000059605,
+          "delay": 1000
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 101.60000000149012,
+          "delay": 250
+        },
+        {
+          "at": 672.8000000044703,
+          "delay": 250
+        },
+        {
+          "at": 674.3000000044703,
+          "delay": 1000
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "retry starts at the one-second failure backoff",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "mixed",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:ready",
+          "requestId": "ready-61bcc1e3-fabd-43c7-ac7b-7a7bb5cb8b9a",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449790620
+        },
+        {
+          "type": "game:resize",
+          "requestId": "resize-07b43027-f58c-4961-ae76-28bc18df3fae",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449790623
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-06b7368b-618e-4093-8ab3-d889705d90f9",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449790603
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-4b8627a0-f077-403c-90f5-296c79a405f2",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449790603
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-d8bcff43-8416-4791-a7c6-fa0c758cad12",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449790618
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-befda3b4-203a-406b-9d81-516bcd1f3d6c",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-74cfe2da-0171-4ad6-bb37-2c089cc2301a",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449790637
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-4371d147-76c2-4f1e-afa3-841e7fa3ad86",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-74cfe2da-0171-4ad6-bb37-2c089cc2301a",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449790868
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-1df02de7-f0f4-4882-a03b-bd3517e8beab",
+          "payload": {},
+          "sentAt": 1791449790907
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-dc1bf958-e2b1-4d30-b139-8730b92b9349",
+          "payload": {},
+          "sentAt": 1791449790907
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-d235b48a-d6a9-46b4-8f5c-b24f7d50a87f",
+          "payload": {},
+          "sentAt": 1791449790931
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-f06ac2f9-feae-486b-ac0c-2dc376319e6b",
+          "payload": {},
+          "sentAt": 1791449790931
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-c3ab5dad-d474-44d8-948e-bf73cefff5fa",
+          "payload": {},
+          "sentAt": 1791449790951
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-f33522ad-eeab-473c-ba7b-d3f63ee772b2",
+          "payload": {},
+          "sentAt": 1791449790951
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-95515426-1f9f-4b50-abda-4213d3cb499c",
+          "payload": {},
+          "sentAt": 1791449790971
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-1401b49f-004d-4f0e-8718-44516ae6617a",
+          "payload": {},
+          "sentAt": 1791449790971
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-721e2d6c-9bfb-4328-b16b-60ef843ba4ac",
+          "payload": {},
+          "sentAt": 1791449790992
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-5db93964-bbcd-439e-b389-587f0081fcf2",
+          "payload": {},
+          "sentAt": 1791449790992
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-9796caf5-cf40-4022-906b-8fde43ea5fe5",
+          "payload": {},
+          "sentAt": 1791449791012
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-4a97840a-ed7f-44c9-b4cc-69644b8feb31",
+          "payload": {},
+          "sentAt": 1791449791012
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-d94f1dd2-909c-4b97-b5a4-d202941fe19d",
+          "payload": {},
+          "sentAt": 1791449791032
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-9d21b478-cff8-4bf6-a604-41bad5c147aa",
+          "payload": {},
+          "sentAt": 1791449791032
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-4b9a70ec-50de-41fa-81d8-4c1625a985d9",
+          "payload": {},
+          "sentAt": 1791449791052
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-c8ee319c-1d6c-4fdc-b949-251f62e3b5db",
+          "payload": {},
+          "sentAt": 1791449791052
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-a2c70bce-aa8c-42fa-a730-01cb09a1af51",
+          "payload": {},
+          "sentAt": 1791449791072
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-e78e7e03-ce43-4821-8464-26fa7beb9605",
+          "payload": {},
+          "sentAt": 1791449791072
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-127d760d-33f2-4ec0-bfb0-33e44a3ad700",
+          "payload": {},
+          "sentAt": 1791449791093
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-2349e3c7-d737-42e1-9f12-dba9692bc07f",
+          "payload": {},
+          "sentAt": 1791449791093
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449791174
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-bdf76743-63a0-412e-af6c-1f9d1bb5b710",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-74cfe2da-0171-4ad6-bb37-2c089cc2301a",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449792176
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449792176
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449792177
+        }
+      ],
+      "reads": [
+        {
+          "at": 119.5,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 1658.7000000029802,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        350.5,
+        1658.5
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        388.8999999985099,
+        403,
+        413.20000000298023,
+        423.30000000447035,
+        433.3999999985099,
+        443.6000000014901,
+        453.70000000298023,
+        463.80000000447035,
+        473.80000000447035,
+        484.1000000014901,
+        494.20000000298023,
+        504.30000000447035,
+        514.3000000044703,
+        524.3999999985099,
+        534.6000000014901,
+        544.6000000014901,
+        554.7000000029802,
+        564.8000000044703,
+        574.8999999985099,
+        585
+      ],
+      "failedAt": 654,
+      "timerCallbacks": [
+        {
+          "at": 350.3999999985099,
+          "delay": 250
+        },
+        {
+          "at": 1658.5,
+          "delay": 1000
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 100.30000000447035,
+          "delay": 250
+        },
+        {
+          "at": 656.8000000044703,
+          "delay": 250
+        },
+        {
+          "at": 658.3999999985099,
+          "delay": 1000
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "hidden",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-e77ec73c-4c0c-4ca8-9b36-c8880596e4a9",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449792725
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-effeb58a-9ce7-4a6e-af35-bcb2321871f6",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449792725
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-40c4b831-fa9d-47ae-84ef-86c0c3ce4966",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449792705
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-c2eec4c8-1307-4f83-bbf2-973977e1ac42",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449792706
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-2c063ef4-3711-4a32-8e10-c1768cb76823",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449792720
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-d2795fc6-d9a4-43d7-abd6-f5857de08b70",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-b865d906-e7bb-44ac-aa2d-8338648b5f55",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449792738
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-264657b7-9a6a-47a8-96c8-e69c16afca8f",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-b865d906-e7bb-44ac-aa2d-8338648b5f55",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449792970
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-c82c001e-5975-40db-bb86-df5711222685",
+          "payload": {},
+          "sentAt": 1791449793022
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-831e7902-9dc2-4a9d-b0eb-4512fc4f477a",
+          "payload": {},
+          "sentAt": 1791449793022
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-8f828ed4-ea13-4e58-bee6-f906d82b120e",
+          "payload": {},
+          "sentAt": 1791449793038
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-e1b11cd5-249c-451d-b971-9bde42a14119",
+          "payload": {},
+          "sentAt": 1791449793048
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-80783259-ab72-4963-a70d-bb8a02cc9f00",
+          "payload": {},
+          "sentAt": 1791449793058
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-3138d63a-1e6c-4215-84e4-b2860679cebf",
+          "payload": {},
+          "sentAt": 1791449793068
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-2f482c8e-407a-434e-9263-424243248f32",
+          "payload": {},
+          "sentAt": 1791449793078
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-803ed992-ebe4-4249-9993-f34bb1e30782",
+          "payload": {},
+          "sentAt": 1791449793088
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-0bdad224-871c-4591-942e-988f6b95898f",
+          "payload": {},
+          "sentAt": 1791449793098
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-268a123d-a68b-44ef-8769-10d8d693351e",
+          "payload": {},
+          "sentAt": 1791449793109
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-662c1901-7a5b-4909-b6e1-01b6e53b508a",
+          "payload": {},
+          "sentAt": 1791449793119
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-c2e5859e-e577-4aec-89b8-5da11458848c",
+          "payload": {},
+          "sentAt": 1791449793129
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-760ecd05-870c-494c-b4e3-456e772862e2",
+          "payload": {},
+          "sentAt": 1791449793139
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-8082c317-bedc-4191-aad2-667855e66efe",
+          "payload": {},
+          "sentAt": 1791449793149
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-d3d0faad-2182-4a5f-a692-76e0599582c9",
+          "payload": {},
+          "sentAt": 1791449793159
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-9b439c49-45ed-4555-95c9-56c590f09f5d",
+          "payload": {},
+          "sentAt": 1791449793169
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-d3bbf497-5ac7-45c7-a321-e068ef3d1581",
+          "payload": {},
+          "sentAt": 1791449793179
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-ed8cf4b3-8e04-4662-a380-53d5e75d621b",
+          "payload": {},
+          "sentAt": 1791449793189
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-3b1bf936-fb7e-4828-a676-c70edb1c1115",
+          "payload": {},
+          "sentAt": 1791449793200
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-13d0ec52-f728-42be-bf8a-0d2f2800f4e7",
+          "payload": {},
+          "sentAt": 1791449793210
+        },
+        {
+          "type": "host:pause",
+          "requestId": "visibility-51f97019-46f2-4a7f-b4d0-8aaa88db5b31",
+          "payload": {},
+          "sentAt": 1791449793220
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449793273
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-82fecfaf-a92d-4edf-b30b-8851a7ad376e",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-b865d906-e7bb-44ac-aa2d-8338648b5f55",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449794276
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449794276
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449794277
+        },
+        {
+          "type": "host:resume",
+          "requestId": "visibility-5ab0eee1-ddc2-4f7f-882c-9b2bafedab10",
+          "payload": {},
+          "sentAt": 1791449794682
+        }
+      ],
+      "reads": [
+        {
+          "at": 120.20000000298023,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 1657.6000000014901,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        351.8999999985099,
+        1657.3999999985099
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        404.20000000298023,
+        419.29999999701977,
+        429.3999999985099,
+        439.6000000014901,
+        449.79999999701977,
+        459.8999999985099,
+        470,
+        480.20000000298023,
+        490.29999999701977,
+        500.3999999985099,
+        510.6000000014901,
+        520.6000000014901,
+        530.7000000029802,
+        540.8999999985099,
+        550.8999999985099,
+        561.1000000014901,
+        571.2000000029802,
+        581.2999999970198,
+        591.3999999985099,
+        601.5
+      ],
+      "failedAt": 653,
+      "timerCallbacks": [
+        {
+          "at": 351.8999999985099,
+          "delay": 250
+        },
+        {
+          "at": 1657.3999999985099,
+          "delay": 1000
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 101.79999999701977,
+          "delay": 250
+        },
+        {
+          "at": 655.8999999985099,
+          "delay": 250
+        },
+        {
+          "at": 657.3999999985099,
+          "delay": 1000
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "retry starts at the one-second failure backoff",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "single",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-68805e71-f2b7-440f-a7bc-833c01db2608",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449794849
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-78dd46da-7c7b-49fb-82d0-aaae3f25d4b6",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449794849
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-18ec5873-f3b8-4577-93e7-e3b8f81e436b",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449794833
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-f28673d6-f18f-4e51-87cc-1bb0ea26833f",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449794834
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-39e208f4-521c-44e9-9d11-c110bf3722ed",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449794843
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-4e73cddc-29e3-4149-97d5-ba7216c28297",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-6e0cdd28-d69e-432a-aa54-8d44c53cb619",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449794869
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-64d01e7d-e37e-4700-ab50-28e9375eb52d",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-6e0cdd28-d69e-432a-aa54-8d44c53cb619",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449795094
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449795207
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-31a447cb-00be-4c5c-af06-12154de21502",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-6e0cdd28-d69e-432a-aa54-8d44c53cb619",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449796209
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449796209
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449796210
+        }
+      ],
+      "reads": [
+        {
+          "at": 121.10000000149012,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 1460.7000000029802,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        345.40000000596046,
+        1460.5
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        390.5
+      ],
+      "failedAt": 455.70000000298023,
+      "timerCallbacks": [
+        {
+          "at": 345.40000000596046,
+          "delay": 250
+        },
+        {
+          "at": 1460.5,
+          "delay": 1000
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 95.20000000298023,
+          "delay": 250
+        },
+        {
+          "at": 458.80000000447035,
+          "delay": 250
+        },
+        {
+          "at": 460.5,
+          "delay": 1000
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "success",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-6043f0d2-a28d-4293-9285-7c0489cf90d0",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449796750
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-89c74f03-d1b3-44a3-ab46-9e2f25af7ffb",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449796751
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-e5df19a5-f455-442e-9834-980e1127a725",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449796735
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-cbdfd0d0-ed99-4d81-9a04-ea914ceb9097",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449796736
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-5b38cdb6-06dc-4e9c-98d4-dac3bee1ab6b",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449796745
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-e0c9ee9f-9b1e-4f17-9de9-a850bedc52aa",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-de8db415-853e-4da8-8935-9dca98e29d24",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449796763
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-533074c0-3e7d-4688-87df-0e35394387ca",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-de8db415-853e-4da8-8935-9dca98e29d24",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449796996
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449797290
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449797291
+        }
+      ],
+      "reads": [
+        {
+          "at": 112.79999999701977,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        345
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        387.69999999552965,
+        402.69999999552965,
+        412.69999999552965,
+        422.79999999701977,
+        432.8999999985099,
+        443,
+        453.09999999403954,
+        463.09999999403954,
+        473.19999999552965,
+        483.29999999701977,
+        493.3999999985099,
+        503.5,
+        513.5,
+        523.5999999940395,
+        533.6999999955297,
+        543.7999999970198,
+        553.7999999970198,
+        563.8999999985099,
+        574,
+        584
+      ],
+      "failedAt": 637,
+      "timerCallbacks": [
+        {
+          "at": 345,
+          "delay": 250
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 94.79999999701977,
+          "delay": 250
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "retirement stops automatic recovery reads",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "retirement releases its recovery timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "late failure cannot restore retired gameplay",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "retired",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-6ef8d0d1-6966-4ced-bd0f-8d341e4a963b",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449798849
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-20670bd6-7f84-4c50-bc8b-561768ccff41",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449798850
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-ff96f6c8-2b89-4cb4-831c-bf76e415d04e",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449798834
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-669c92ee-70af-491c-a0bd-fca0df051ddb",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449798835
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-6a075bb9-55a9-4485-9aff-5fcb9f16cfa3",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449798844
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-2b671eb4-a08b-451e-a772-d0edced2b05f",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-d7acdd4e-5a81-40dc-86af-1195064a0b95",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449798864
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-38093557-e151-4822-a6e7-d4fa6313f424",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-d7acdd4e-5a81-40dc-86af-1195064a0b95",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449799095
+        }
+      ],
+      "reads": [
+        {
+          "at": 115.30000000447035,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        345
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        389,
+        403.8999999985099,
+        413.8999999985099,
+        424,
+        434.1000000014901,
+        444.20000000298023,
+        454.30000000447035,
+        464.3999999985099,
+        474.3999999985099,
+        484.5,
+        494.6000000014901,
+        504.6000000014901,
+        514.7000000029802,
+        524.8000000044703,
+        534.8999999985099,
+        545,
+        555.1000000014901,
+        565.1000000014901,
+        575.2000000029802,
+        585.3000000044703
+      ],
+      "failedAt": 619.5,
+      "timerCallbacks": [
+        {
+          "at": 345,
+          "delay": 250
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 94.80000000447035,
+          "delay": 250
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "offline recovery does not admit another read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "offline",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-78adaf20-6c0f-46f3-8507-7e9383da911e",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449800896
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-064059c4-c153-476e-b7d4-d4300e7e0959",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449800897
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-c29977a1-9caf-4973-b23d-ef4a54231ccb",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449800872
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-ff0a9c4a-2340-47cf-8734-69c6e571f44e",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449800873
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-9fcdb37b-67c7-4f28-a08d-2585ebf295c9",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449800891
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-3fbc9a9a-5f34-45b1-9e9c-829b32148427",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-c4572502-b911-4ce7-a15c-0773530dfefa",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449800907
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-65d590c9-dcf3-4083-ab62-d22d527b137e",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-c4572502-b911-4ce7-a15c-0773530dfefa",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449801141
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449801458
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-7e291632-ccd2-473c-b518-a249ad37e001",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-c4572502-b911-4ce7-a15c-0773530dfefa",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449802865
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449802866
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449802866
+        }
+      ],
+      "reads": [
+        {
+          "at": 116.89999999850988,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 2074.6999999955297,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        350.29999999701977,
+        2074.5
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        400.5,
+        414.1000000014901,
+        424.19999999552965,
+        434.29999999701977,
+        444.3999999985099,
+        454.5,
+        464.5,
+        474.6000000014901,
+        484.69999999552965,
+        494.8999999985099,
+        504.8999999985099,
+        515,
+        525.1000000014901,
+        535.1999999955297,
+        545.2999999970198,
+        555.3999999985099,
+        565.3999999985099,
+        575.5,
+        585.6000000014901,
+        595.6000000014901
+      ],
+      "failedAt": 664.1999999955297,
+      "timerCallbacks": [
+        {
+          "at": 350.29999999701977,
+          "delay": 250
+        },
+        {
+          "at": 1669.2999999970198,
+          "delay": 1000
+        },
+        {
+          "at": 2074.5,
+          "delay": 0
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 100.19999999552965,
+          "delay": 250
+        },
+        {
+          "at": 667.5,
+          "delay": 250
+        },
+        {
+          "at": 669.2999999970198,
+          "delay": 1000
+        },
+        {
+          "at": 2072,
+          "delay": 0
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "distinct failures preserve their bounded exponential backoff",
+    "actual": [
+      1000,
+      2000
+    ],
+    "expected": [
+      1000,
+      2000
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "second genuine failure still recovers automatically",
+    "actual": 3,
+    "expected": 3
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "backoff-chain",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-0382cc15-1b7b-4b7e-8a9f-a9ce53cc879d",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449803222
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-7fb887de-3d22-4ff1-b20a-feb1c8f36e5d",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449803225
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-828a8694-3250-4ed6-82b4-b8d5c1dcdffe",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449803200
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-d936633c-eee8-4673-a451-f15ba8c795c5",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449803201
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-7db53c2a-9763-48f8-94e2-a2a785c44f27",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449803210
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-8270bf72-7444-4a34-b594-f8f6a5b477ec",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-615954af-4f96-41de-ae88-304c399026af",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449803238
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-f7a0788a-d17f-494f-b3db-70d77cb9b3f1",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-615954af-4f96-41de-ae88-304c399026af",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449803460
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449803774
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-950a81be-e101-4cb0-8e51-8fe26f4abcf3",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-615954af-4f96-41de-ae88-304c399026af",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449804777
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Second startup fixture transport failure"
+          },
+          "sentAt": 1791449804777
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-b79080eb-167b-428e-b7e0-968e0dac136e",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-615954af-4f96-41de-ae88-304c399026af",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449806777
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449806778
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449806779
+        }
+      ],
+      "reads": [
+        {
+          "at": 119.70000000298023,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 1658,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 3658.7999999970198,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        341.20000000298023,
+        1657.7999999970198,
+        3658.60000000149
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        386.70000000298023,
+        402,
+        412.1000000014901,
+        422.20000000298023,
+        432.3999999985099,
+        442.79999999701977,
+        452.8999999985099,
+        464.3999999985099,
+        474.5,
+        484.6000000014901,
+        494.70000000298023,
+        504.79999999701977,
+        514.8999999985099,
+        525,
+        536,
+        546.1000000014901,
+        556.1000000014901,
+        566.1000000014901,
+        576.2000000029802,
+        586.2999999970198
+      ],
+      "failedAt": 652.5,
+      "timerCallbacks": [
+        {
+          "at": 341.20000000298023,
+          "delay": 250
+        },
+        {
+          "at": 1657.7999999970198,
+          "delay": 1000
+        },
+        {
+          "at": 3658.60000000149,
+          "delay": 2000
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 91,
+          "delay": 250
+        },
+        {
+          "at": 655.7999999970198,
+          "delay": 250
+        },
+        {
+          "at": 657.7000000029802,
+          "delay": 1000
+        },
+        {
+          "at": 1658.5,
+          "delay": 250
+        },
+        {
+          "at": 1658.5,
+          "delay": 2000
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "reconnect signals share one provider read",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "held startup has only one recovery observer",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "reconnect signals do not wake an already owned recovery",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "one shared failure retries on its first backoff",
+    "actual": 2,
+    "expected": 2
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "recovery restores a playable question promptly",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "recovered question accepts native answer input",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "accepted startup stops its recovery timers",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "restored connectivity bypasses idle backoff promptly",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "no unhandled rejections",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "resume-backoff",
+    "diagnostic": true,
+    "name": "actual startup recovery trace",
+    "actual": {
+      "outbound": [
+        {
+          "type": "game:resize",
+          "requestId": "resize-e0b937f5-175b-4ac3-9204-b657726e95f1",
+          "payload": {
+            "width": 390,
+            "height": 568
+          },
+          "sentAt": 1791449807548
+        },
+        {
+          "type": "game:ready",
+          "requestId": "ready-31c00cb1-6da1-4e43-9ac4-4652bdffd3ff",
+          "payload": {
+            "protocolVersion": 1,
+            "surface": "html5"
+          },
+          "sentAt": 1791449807548
+        }
+      ],
+      "inbound": [
+        {
+          "type": "host:authState",
+          "requestId": "auth-6d22953e-50fa-4869-9481-4ad55cdce118",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449807532
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-f6444798-eae8-43db-a33a-dc3984f799b2",
+          "payload": {
+            "user": null,
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449807532
+        },
+        {
+          "type": "host:authState",
+          "requestId": "auth-f98ace7c-531c-4f95-9a18-d171a128a420",
+          "payload": {
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449807543
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-ba555bf4-1c39-44dd-ae75-1ade0c687460",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-806bc213-7e56-4f6f-9018-34ab5a2bd72c",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449807563
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-4be5d7d8-d72c-4b51-871d-27e09154c0cd",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-806bc213-7e56-4f6f-9018-34ab5a2bd72c",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449807793
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": false,
+            "error": "Startup fixture transport unavailable"
+          },
+          "sentAt": 1791449808090
+        },
+        {
+          "type": "host:init",
+          "requestId": "init-c0c9f66c-682f-461a-8855-636cca529014",
+          "payload": {
+            "protocolVersion": 1,
+            "sessionId": "session-806bc213-7e56-4f6f-9018-34ab5a2bd72c",
+            "locale": "en",
+            "user": {
+              "uid": "jest-guest",
+              "displayName": "Guest Solver",
+              "isAnonymous": true
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            },
+            "gameMode": "classic",
+            "products": []
+          },
+          "sentAt": 1791449808195
+        },
+        {
+          "type": "host:riddleLoaded",
+          "payload": {
+            "riddle": {
+              "riddleId": "classic-fake-1",
+              "text": "What has keys but cannot open doors?",
+              "answerLength": 5,
+              "sessionToken": "00000000-0000-4000-8000-000000000001",
+              "gameMode": "classic",
+              "index": 1,
+              "attemptsUsed": 0,
+              "hasUsedContinue": false,
+              "awaitingContinue": false,
+              "evaluation": {
+                "answer": "piano",
+                "locale": "en"
+              }
+            },
+            "profile": {
+              "username": "Guest Solver",
+              "coins": 300,
+              "level": 3,
+              "xp": 420,
+              "winStreak": 2,
+              "gamesPlayed": 7,
+              "wins": 5,
+              "achievements": [
+                "first_win",
+                "daily_spark"
+              ],
+              "classicIndex": 1
+            }
+          },
+          "sentAt": 1791449808195
+        },
+        {
+          "type": "host:operationResult",
+          "payload": {
+            "operation": "loadRiddle",
+            "ok": true,
+            "data": {
+              "riddleId": "classic-fake-1"
+            }
+          },
+          "sentAt": 1791449808196
+        }
+      ],
+      "reads": [
+        {
+          "at": 126.10000000149012,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        },
+        {
+          "at": 758,
+          "gameMode": "classic",
+          "locale": "en",
+          "classicIndex": 1
+        }
+      ],
+      "recoveries": [
+        356.1000000014901,
+        757.8000000044703
+      ],
+      "errors": [],
+      "unhandled": [],
+      "signals": [
+        402.30000000447035,
+        416.1000000014901,
+        426.1000000014901,
+        436.30000000447035,
+        446.3999999985099,
+        456.3999999985099,
+        466.5,
+        476.6000000014901,
+        486.6000000014901,
+        496.70000000298023,
+        506.80000000447035,
+        516.8999999985099,
+        527,
+        537,
+        547.1000000014901,
+        557.2000000029802,
+        567.2000000029802,
+        577.3000000044703,
+        587.3000000044703,
+        597.3999999985099
+      ],
+      "failedAt": 650.6000000014901,
+      "timerCallbacks": [
+        {
+          "at": 356.1000000014901,
+          "delay": 250
+        },
+        {
+          "at": 757.8000000044703,
+          "delay": 0
+        }
+      ],
+      "timerSchedules": [
+        {
+          "at": 105.89999999850988,
+          "delay": 250
+        },
+        {
+          "at": 653.8000000044703,
+          "delay": 250
+        },
+        {
+          "at": 655.5,
+          "delay": 1000
+        },
+        {
+          "at": 757.7000000029802,
+          "delay": 0
+        }
+      ],
+      "pendingTimers": []
+    },
+    "expected": null
+  }
+]

@@ -1,0 +1,36 @@
+[{"index":1,"queue":[],"draft":["","","","",""],"successors":[2]}]
+[{"index":1,"queue":[],"draft":["","","","",""],"successors":[2]}]
+FAIL src/play/__tests__/queuedCoinActions.jest-playwright.test.ts (27.871 s)
+  ● queued coin actions › keeps skip usable with confirm recovery
+
+    page.waitForFunction: Timeout 4000ms exceeded.
+
+      543 |         } else await page.evaluate(() => Reflect.get(window, "__releaseGuess")());
+      544 |         await page.waitForFunction(() => Reflect.get(window, "__paidRequests").length === 1);
+    > 545 |         await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:"))).catch(async error => {
+          |                    ^
+      546 |           process.stderr.write(JSON.stringify(await page.evaluate(() => Object.keys(localStorage).filter(key => key.includes("pendingPlay:v1:")).map(key => {
+      547 |             /** Retained journal diagnostic excludes identity and profile fields. */
+      548 |             const journal = JSON.parse(localStorage.getItem(key)!);
+
+      at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:545:20
+
+  ● queued coin actions › keeps skip usable with reload recovery
+
+    page.waitForFunction: Timeout 4000ms exceeded.
+
+      543 |         } else await page.evaluate(() => Reflect.get(window, "__releaseGuess")());
+      544 |         await page.waitForFunction(() => Reflect.get(window, "__paidRequests").length === 1);
+    > 545 |         await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:"))).catch(async error => {
+          |                    ^
+      546 |           process.stderr.write(JSON.stringify(await page.evaluate(() => Object.keys(localStorage).filter(key => key.includes("pendingPlay:v1:")).map(key => {
+      547 |             /** Retained journal diagnostic excludes identity and profile fields. */
+      548 |             const journal = JSON.parse(localStorage.getItem(key)!);
+
+      at src/play/__tests__/queuedCoinActions.jest-playwright.test.ts:545:20
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 12 passed, 14 total
+Snapshots:   0 total
+Time:        27.973 s
+Ran all test suites within paths "src/play/__tests__/queuedCoinActions.jest-playwright.test.ts".

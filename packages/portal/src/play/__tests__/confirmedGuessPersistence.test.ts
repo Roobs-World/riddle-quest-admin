@@ -56,6 +56,9 @@ it("checkpoints the fifth confirmed row before reload when confirmation changes 
   Object.defineProperty(globalThis, "document", {configurable: true, value: {
     addEventListener: jest.fn(), removeEventListener: jest.fn(), visibilityState: "visible",
   }});
+  Object.defineProperty(globalThis, "window", {configurable: true, value: {
+    addEventListener: jest.fn(), removeEventListener: jest.fn(),
+  }});
   /** Authoritative or observed state used to verify the current transition. */
   let state = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
     riddleId: "daily-2026-10-02", sessionToken: "00000000-0000-4000-8000-000000000001",

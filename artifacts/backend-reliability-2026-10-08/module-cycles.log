@@ -1,0 +1,12 @@
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs
+✔ scripts/audit-module-cycles.test.mjs (138.056377ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 141.667168
+Production module cycle audit passed (197 modules, 1124 runtime references).

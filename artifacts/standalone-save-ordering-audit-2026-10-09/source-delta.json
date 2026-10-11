@@ -1,0 +1,6 @@
+{
+  "packages/portal/src/youtube/__tests__/YouTubeSaveGate.test.ts": {
+    "before": "029cb288dc7253bcfdf94e9851ede24f399d32006274953a8536eda90caa046a",
+    "after": "e0753c4da9a9add42a0fc09cab7ae63a5e3f6695db64853d833d2adf40e01b00"
+  }
+}

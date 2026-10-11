@@ -1,0 +1,11 @@
+# Whole-game Turkish input verification — 2026-10-09
+
+The preceding [request-contract fix](solo-turkish-request-fix-2026-10-09.md) now has whole-game input evidence. The existing Turkish virtual keyboard already presents separate dotted `İ` and dotless `I` keys and uses the issued content locale; no further keyboard implementation change was needed.
+
+Forty-eight real `GameFrameApp` journeys pass: two answers (`izmir` and `IRMAK`), virtual-key taps and browser physical-key events, widths 320/390/1280, Chromium/Firefox 153, and development/production React. Each journey fills the exact displayed word (`İZMİR` or `IRMAK`), submits once, produces five green cells in the existing local correctness preview, colors the appropriate I key without coloring the other variant, and stays within the viewport. Every emitted request passes the actual bridge schema and both callable input declarations (144 successful request-schema checks total). No page errors occurred.
+
+The artifact-local harness derives from `packages/portal/scripts/verify-turkish-virtual-keys-browser.mjs` and adds request-contract checks plus the physical-key path. It renders the real whole solo app and injects the local host/session. Actual game message payloads are checked without rewriting their bytes. The local green preview is not presented as a deployed backend acknowledgement, reward grant, provider transport test, or physical Turkish-device test. The preceding fix's five Firestore SDK cases independently establish authoritative Hint/guess receipt behavior.
+
+Evidence is retained under `artifacts/solo-turkish-whole-game-2026-10-09`: executable harness, four engine/mode logs, all 48 observations, `summary.json`, and `source-verified.json`. All four browser run handles exited successfully; the harness closes pages, browsers, local servers and its owned scratch directory in cleanup. All 2,546 selected project source inputs remain byte-identical to the preceding fix cohort, which passed 417 core, 3,131 client and 1,769 backend unit tests and built all six isolated targets plus Devvit. Builds were not repeated for this artifact-only verification.
+
+No executable project source changed, and no deployment, publication, push or commit occurred. The broader improvement goal remains active.

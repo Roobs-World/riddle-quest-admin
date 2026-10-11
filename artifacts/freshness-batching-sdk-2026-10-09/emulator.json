@@ -1,0 +1,39 @@
+{
+  "firestore": {
+    "rules": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/firestore.rules",
+    "indexes": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/firestore.indexes.json"
+  },
+  "database": {
+    "rules": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/database.rules.json"
+  },
+  "storage": {
+    "rules": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/storage.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 39391,
+      "websocketPort": 45211
+    },
+    "database": {
+      "host": "127.0.0.1",
+      "port": 46555
+    },
+    "storage": {
+      "host": "127.0.0.1",
+      "port": 34965
+    },
+    "hub": {
+      "host": "127.0.0.1",
+      "port": 35683
+    },
+    "logging": {
+      "host": "127.0.0.1",
+      "port": 44393
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  }
+}

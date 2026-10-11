@@ -1,0 +1,7 @@
+{
+  "unchangedOriginalInputs": 2501,
+  "newInputs": [
+    "firebase-functions/src/__tests__/singlePlayerHintLocale.it.test.ts"
+  ],
+  "productionSourceChanged": false
+}

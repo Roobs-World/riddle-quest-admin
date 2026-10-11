@@ -1,3 +1,4 @@
+import {SinglePlayerGuessSchema, SinglePlayerAttemptCellSchema} from "./singlePlayerInput";
 import {z} from "zod";
 import {DailyChallengeQuestionSchema} from "./cloudFunctionsSchemas";
 
@@ -41,11 +42,7 @@ const FunctionGameModeSchema = z.enum(["challenge", "classic"]);
 /** Bounds canonical riddle identifiers accepted by gameplay callables. */
 const RiddleIdSchema = z.string().min(1).max(160);
 /** Bounds guesses to the shipped seven-keyboard-slot policy. */
-const PlayableGuessSchema = z
-  .string()
-  .min(1)
-  .max(7)
-  .regex(/^[a-z]+$/i);
+const PlayableGuessSchema = SinglePlayerGuessSchema;
 
 /** Validates the basic success message response data shape. */
 export const BasicSuccessMessageResponseSchema = z
@@ -267,10 +264,7 @@ export const GetHintRequestSchema = z
   .object({
     currentAttempt: z
       .array(
-        z
-          .string()
-          .max(1)
-          .regex(/^[a-z]?$/i),
+        SinglePlayerAttemptCellSchema,
       )
       .max(7),
     riddleId: RiddleIdSchema,

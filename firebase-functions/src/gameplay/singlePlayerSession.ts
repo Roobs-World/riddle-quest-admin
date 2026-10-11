@@ -474,7 +474,7 @@ export async function purchaseAuthoritativeHint(
     const newCoins = coins - HINT_COST_COINS + achievementCoins;
     /** Provides result behavior. */
     const result: Exclude<AuthoritativeHintResult, null> = {
-      revealedLetter: answerLetters[index].toUpperCase(),
+      revealedLetter: answerLetters[index].toLocaleUpperCase(state.locale),
       index,
       coinsCost: HINT_COST_COINS,
       newCoins,

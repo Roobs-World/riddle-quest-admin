@@ -30,7 +30,7 @@ import {
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
 } from "@qwordly/core/race";
-import {joinLiveRace, retireLiveRaceJoin, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../race/raceLiveCallables";
+import {joinLiveRace, retireLiveRaceJoin, confirmLiveGuessReceipt, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
 import {assertRaceAccess} from "../race/raceRollout";
@@ -102,6 +102,7 @@ export const REDDIT_GAMEPLAY_OPERATIONS = [
   "gameplay.race.match",
   "gameplay.race.live.join",
   "gameplay.race.live.retire",
+  "gameplay.race.live.receipt",
   "gameplay.race.live.update",
   "gameplay.race.live.history",
   "gameplay.race.live.inbox",
@@ -249,6 +250,9 @@ const dispatch = async (
       return joinLiveRace.run(callableRequest(uid, payload) as never);
     case "gameplay.race.live.retire":
       return retireLiveRaceJoin.run(callableRequest(uid, payload) as never);
+    case "gameplay.race.live.receipt":
+      // Pure observation bypasses mutation admission inside its callable; signed nonce and quota remain enforced.
+      return confirmLiveGuessReceipt.run(callableRequest(uid, payload) as never);
     case "gameplay.race.live.update":
       return updateLiveRace.run(callableRequest(uid, payload) as never);
     case "gameplay.race.live.history":
@@ -479,7 +483,7 @@ export const redditGameplay = onRequestWithSentry("redditGameplay", options, asy
       uidSecret: uidSecret.value(),
     });
     if (identity.needsUidRepair) throw new Error("reddit-session-refresh-required");
-    verifiedLive = operation === "gameplay.race.live.join" || operation === "gameplay.race.live.update" || operation === "gameplay.race.live.retire";
+    verifiedLive = operation === "gameplay.race.live.join" || operation === "gameplay.race.live.update" || operation === "gameplay.race.live.retire" || operation === "gameplay.race.live.receipt";
     /** Provides result behavior. */
     const result = await dispatch(operation, identity.uid, envelope.payload, {postId: assertion.postId});
     response.json({

@@ -1,0 +1,4663 @@
+{
+  "engine": "chromium",
+  "mode": "development",
+  "browserVersion": "153.0.8010.12",
+  "observations": [
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "null",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "confirmed hint knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "confirmed hint knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "null",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "empty",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "cells",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "missing",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "snapshot",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "locks",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "delivery preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "journal preserves original message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "retry preserves exact message",
+      "actual": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      },
+      "expected": {
+        "type": "game:submitGuess",
+        "requestId": "journal-receipt-0001",
+        "payload": {
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "gameMode": "classic",
+          "requestId": "journal-receipt-0001",
+          "guess": "PIZZA"
+        }
+      }
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "retry leaves displayed attempt count unchanged",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "bad": "extras",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "correct visible attempts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "correct row count",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "confirmed hint knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": false,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "correct visible attempts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "correct row count",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "host question owns recovery",
+      "actual": "classic_1",
+      "expected": "classic_1"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "host player owns recovery",
+      "actual": "Alice",
+      "expected": "Alice"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "lifecycle remains active",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "confirmed hint knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "unsubmitted draft survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "draft cursor survives",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "bad": "keyboard",
+      "confirmed": true,
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

@@ -221,7 +221,7 @@
     "width": 390,
     "height": 568,
     "scenario": "join-close",
-    "name": "retirement releases every local delivery deadline",
+    "name": "close retains the unresolved join before advertising another start",
     "actual": 0,
     "expected": 0
   },
@@ -229,29 +229,7 @@
     "width": 390,
     "height": 568,
     "scenario": "join-close",
-    "name": "replacement retires the selected journey before a fresh explicit start",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "replacement removes the old subscription",
-    "actual": [
-      0,
-      0
-    ],
-    "expected": [
-      0,
-      0
-    ]
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "replacement never uses the retired ticket through a new adapter",
+    "name": "failed owned leave still excludes a replacement search",
     "actual": 0,
     "expected": 0
   },
@@ -259,61 +237,45 @@
     "width": 390,
     "height": 568,
     "scenario": "join-close",
-    "name": "replacement cannot deliver a retired result to the current profile",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "replacement cannot emit a retired completion event",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "late retired receipt cannot grant a result",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "late retired receipt cannot notify completion",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "late retired leave cannot close the replacement journey",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "join-close",
-    "name": "retirement retries share one key",
+    "name": "close retries only the original leave identity",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "close cannot duplicate its unresolved join",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "same provider starts a distinct seat after cancellation",
+    "actual": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "expected": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "same provider replacement remains playable",
+    "actual": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "expected": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "join-close",
+    "name": "original close cannot leave the replacement ticket",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -2553,7 +2515,7 @@
     "width": 390,
     "height": 844,
     "scenario": "join-close",
-    "name": "retirement releases every local delivery deadline",
+    "name": "close retains the unresolved join before advertising another start",
     "actual": 0,
     "expected": 0
   },
@@ -2561,29 +2523,7 @@
     "width": 390,
     "height": 844,
     "scenario": "join-close",
-    "name": "replacement retires the selected journey before a fresh explicit start",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "replacement removes the old subscription",
-    "actual": [
-      0,
-      0
-    ],
-    "expected": [
-      0,
-      0
-    ]
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "replacement never uses the retired ticket through a new adapter",
+    "name": "failed owned leave still excludes a replacement search",
     "actual": 0,
     "expected": 0
   },
@@ -2591,61 +2531,45 @@
     "width": 390,
     "height": 844,
     "scenario": "join-close",
-    "name": "replacement cannot deliver a retired result to the current profile",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "replacement cannot emit a retired completion event",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "late retired receipt cannot grant a result",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "late retired receipt cannot notify completion",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "late retired leave cannot close the replacement journey",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "retirement retries share one key",
+    "name": "close retries only the original leave identity",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "close cannot duplicate its unresolved join",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "same provider starts a distinct seat after cancellation",
+    "actual": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "expected": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "same provider replacement remains playable",
+    "actual": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "expected": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "original close cannot leave the replacement ticket",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -4885,7 +4809,7 @@
     "width": 1280,
     "height": 844,
     "scenario": "join-close",
-    "name": "retirement releases every local delivery deadline",
+    "name": "close retains the unresolved join before advertising another start",
     "actual": 0,
     "expected": 0
   },
@@ -4893,29 +4817,7 @@
     "width": 1280,
     "height": 844,
     "scenario": "join-close",
-    "name": "replacement retires the selected journey before a fresh explicit start",
-    "actual": true,
-    "expected": true
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "replacement removes the old subscription",
-    "actual": [
-      0,
-      0
-    ],
-    "expected": [
-      0,
-      0
-    ]
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "replacement never uses the retired ticket through a new adapter",
+    "name": "failed owned leave still excludes a replacement search",
     "actual": 0,
     "expected": 0
   },
@@ -4923,61 +4825,45 @@
     "width": 1280,
     "height": 844,
     "scenario": "join-close",
-    "name": "replacement cannot deliver a retired result to the current profile",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "replacement cannot emit a retired completion event",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "late retired receipt cannot grant a result",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "late retired receipt cannot notify completion",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "late retired leave cannot close the replacement journey",
-    "actual": [],
-    "expected": []
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "old seat retires under its original provider once",
-    "actual": [
-      1
-    ],
-    "expected": [
-      1
-    ]
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "join-close",
-    "name": "retirement retries share one key",
+    "name": "close retries only the original leave identity",
     "actual": 1,
     "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "close cannot duplicate its unresolved join",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "same provider starts a distinct seat after cancellation",
+    "actual": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "expected": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "same provider replacement remains playable",
+    "actual": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "expected": [
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "join-close",
+    "name": "original close cannot leave the replacement ticket",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,

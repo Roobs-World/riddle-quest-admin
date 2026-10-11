@@ -1,0 +1,32 @@
+[
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/live-hint-keyboard-feedback-2026-10-08/package.before.json",
+    "beforeSha256": "39f614c3e7ab796f151a16ae26be7025f4fc4820d976406471d4c1123c50211d",
+    "afterSha256": "25327600cda2b30b5107ba98f210ac9c8d0110907ba8525dfcf85258d5e49a4a"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-hint-keyboard-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "afterSha256": "78c48c2aa6b10b43a8b2617b0951d501e78f54892f1e2e09cac79f4b28c68a80"
+  },
+  {
+    "path": "packages/portal/src/play/race/LiveRaceGame.tsx",
+    "before": "artifacts/live-hint-keyboard-feedback-2026-10-08/LiveRaceGame.before.tsx",
+    "beforeSha256": "4bddce6f85f397cd130e1c1feeeeb2fef7c398c307a4cc23c0acb7446c0a7518",
+    "afterSha256": "fae37564bf972d7aa3ef411447ac8e3b0f80224dedd053aba83af1ba21cca8a3"
+  },
+  {
+    "path": "packages/portal/src/play/race/__tests__/raceKeyboardFeedbackStrength.test.ts",
+    "before": "artifacts/live-hint-keyboard-feedback-2026-10-08/test.before.ts",
+    "beforeSha256": "3275419de3477275bf722a6c2924b7884156198114948976bb90980e70f5921f",
+    "afterSha256": "1bec85a2f1ecfa96c1e62cd02bc766e10c7a161653feb93c1537cc5a438364d3"
+  },
+  {
+    "path": "packages/portal/src/play/race/logic/racePresentation.ts",
+    "before": "artifacts/live-hint-keyboard-feedback-2026-10-08/racePresentation.before.ts",
+    "beforeSha256": "2dae0593a4415f91571d60aa36afc03d8216713e3db9c886b8315ff5e7d3542a",
+    "afterSha256": "1dcdd0410dd8d1e6806de9a3ce3eb154e6a257addf2927e92d6a99ad20c8aa50"
+  }
+]

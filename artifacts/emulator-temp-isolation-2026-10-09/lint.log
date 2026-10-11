@@ -1,0 +1,21 @@
+
+/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/scripts/run-isolated-emulators.js
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:17  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/scripts/run-isolated-emulators.test.js
+   2:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   7:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  31:29  error  Strings must use doublequote             quotes
+  42:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  43:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 13 problems (13 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

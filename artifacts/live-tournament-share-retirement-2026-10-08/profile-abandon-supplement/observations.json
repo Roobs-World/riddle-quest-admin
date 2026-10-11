@@ -1,0 +1,178 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "preparation or dialog owns shared gate",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "profile and abandoned render preserve admitted preparation",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "profile and abandoned render preserve original budget",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "committed close removes board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "closed preparation releases shared gate immediately",
+    "actual": "success",
+    "expected": "success"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "closed preparation clears local budget",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "closed preparation cannot admit obsolete native dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "closed standings cannot admit subsequent metadata",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "profile-metadata",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "preparation or dialog owns shared gate",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "profile and abandoned render preserve admitted preparation",
+    "actual": "unavailable",
+    "expected": "unavailable"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "profile and abandoned render preserve original budget",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "committed close removes board",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "closed preparation releases shared gate immediately",
+    "actual": "success",
+    "expected": "success"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "closed preparation clears local budget",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "closed preparation cannot admit obsolete native dialog",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "closed standings cannot admit subsequent metadata",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "no external provider traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandon-metadata",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

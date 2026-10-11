@@ -1,0 +1,651 @@
+{
+  "engine": "firefox",
+  "mode": "development",
+  "browserVersion": "153.0",
+  "observations": [
+    {
+      "width": 390,
+      "phase": "hot",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "hot",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "hot",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "phase": "hot",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "hot",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "reload",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "reload",
+      "name": "cold ownership retains exact paid request",
+      "actual": "skip-1d2776a2-6071-47a0-99fd-1b779d35e0c5",
+      "expected": "skip-1d2776a2-6071-47a0-99fd-1b779d35e0c5"
+    },
+    {
+      "width": 390,
+      "phase": "reload",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "reload",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "phase": "reload",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "reload",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "advanced",
+      "name": "rejection restores only owned preview",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "width": 390,
+      "phase": "advanced",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 390,
+      "phase": "advanced",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "advanced",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "independent",
+      "name": "rejection restores only owned preview",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "independent",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "independent",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "independent",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "authoritative",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "authoritative",
+      "name": "authoritative reply retires speculative ownership",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "width": 390,
+      "phase": "authoritative",
+      "name": "rejection restores only owned preview",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "authoritative",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000004",
+      "expected": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "width": 390,
+      "phase": "authoritative",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "authoritative",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "account",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "account",
+      "name": "rejection restores only owned preview",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "account",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "account",
+      "name": "revoked receipt preserves owned durable action",
+      "actual": "skip-4764367b-3466-434a-a931-22c20a600296",
+      "expected": "skip-4764367b-3466-434a-a931-22c20a600296"
+    },
+    {
+      "width": 390,
+      "phase": "account",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "account",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "storage-failure",
+      "name": "preview admission stays within ownership",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "storage-failure",
+      "name": "failed write cannot admit ownership",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "width": 390,
+      "phase": "storage-failure",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "storage-failure",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "storage-failure",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "wrong-index",
+      "name": "preview admission stays within ownership",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "wrong-index",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "wrong-index",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "phase": "wrong-index",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "wrong-index",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "wrong-mode",
+      "name": "preview admission stays within ownership",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "wrong-mode",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "wrong-mode",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "phase": "wrong-mode",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "wrong-mode",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "hot",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "hot",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "hot",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "phase": "hot",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "hot",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "reload",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "reload",
+      "name": "cold ownership retains exact paid request",
+      "actual": "skip-4854f547-aa35-4956-adb2-61841e34e475",
+      "expected": "skip-4854f547-aa35-4956-adb2-61841e34e475"
+    },
+    {
+      "width": 1280,
+      "phase": "reload",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "reload",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "phase": "reload",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "reload",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "advanced",
+      "name": "rejection restores only owned preview",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "width": 1280,
+      "phase": "advanced",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 1280,
+      "phase": "advanced",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "advanced",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "independent",
+      "name": "rejection restores only owned preview",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "independent",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "independent",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "independent",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "authoritative",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "authoritative",
+      "name": "authoritative reply retires speculative ownership",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "width": 1280,
+      "phase": "authoritative",
+      "name": "rejection restores only owned preview",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "authoritative",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000004",
+      "expected": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "width": 1280,
+      "phase": "authoritative",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "authoritative",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "account",
+      "name": "preview admission stays within ownership",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "account",
+      "name": "rejection restores only owned preview",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "account",
+      "name": "unrelated current session survives",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "account",
+      "name": "revoked receipt preserves owned durable action",
+      "actual": "skip-fbd6d0d8-8ffd-4645-89ab-f08296330f40",
+      "expected": "skip-fbd6d0d8-8ffd-4645-89ab-f08296330f40"
+    },
+    {
+      "width": 1280,
+      "phase": "account",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "account",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "storage-failure",
+      "name": "preview admission stays within ownership",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "storage-failure",
+      "name": "failed write cannot admit ownership",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "width": 1280,
+      "phase": "storage-failure",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "storage-failure",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "storage-failure",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-index",
+      "name": "preview admission stays within ownership",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-index",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-index",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-index",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-index",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-mode",
+      "name": "preview admission stays within ownership",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-mode",
+      "name": "rejection restores only owned preview",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-mode",
+      "name": "rejected preview cannot resurrect from storage",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-mode",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "wrong-mode",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

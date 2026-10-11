@@ -356,6 +356,7 @@ export function GameFrameApp({
     dispatch({type: "backspace"});
   }, [playFeedback]);
   useAnswerKeyboard({
+    locale: state.riddle?.evaluation?.locale ?? state.locale,
     active: online && !interactionBlocked && canEditCurrentGuess(state) && !guidanceActive && !raceOpen,
     onLetter: typeKeyboardLetter,
     onBackspace: deleteKeyboardLetter,

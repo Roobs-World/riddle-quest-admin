@@ -14,11 +14,20 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 import {assertRaceAccess} from "./raceRollout";
 import {getLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "./raceLiveService";
+import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} from "@qwordly/core/race";
+import {confirmLiveGuessReceiptForUser} from "./raceLiveGuessReceipt";
 
 /** Live transport uses the same authenticated regional boundary as recorded races. */
 const options = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
 /** Repeated input and matchmaking use the existing interactive race warm-instance policy. */
 const interactiveOptions = {...options, minInstances: 1};
+/** Optional recovery observes private proof without creating a mutation lease or renewing a seat. */
+export const confirmLiveGuessReceipt = onCallWithSentry("confirmLiveGuessReceipt", options, async request => {
+  /** Authentication exclusively selects the account; the bounded locator selects an owned attempt. */
+  const input = validateCallableRequest(LiveGuessReceiptQuerySchema, request.data, "confirmLiveGuessReceipt");
+  return validateCallableResponse(LiveGuessReceiptResultSchema,
+    await confirmLiveGuessReceiptForUser(owner(request), input), "confirmLiveGuessReceipt");
+}, {skipJestAccountOperationLease: true});
 /** Retained results are private, language-bound observations and never settle a match. */
 export const listLiveRaceHistory = onCallWithSentry("listLiveRaceHistory", options, async request => {
   /** Strict bounded input carries no account or opponent identifier. */

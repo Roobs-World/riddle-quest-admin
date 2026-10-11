@@ -1,0 +1,492 @@
+[
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "held accepted command permits newer local draft",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "checkpoint contains the newer unsent cells",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "reload to first usable board ms",
+    "actual": 91.61049000000003
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "rejoin recovers accepted command authority",
+    "actual": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    },
+    "expected": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    }
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "receipt-bound recovery of independently typed cells",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "lookup is limited to eligible ambiguous recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "normalized checkpoint removes historical locator",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "normalized checkpoint binds the confirmed attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "reload does not redeliver the held command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "wrong",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "held accepted command permits newer local draft",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "checkpoint contains the newer unsent cells",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "canonical seat received before optional proof",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "canonical board appears while optional proof waits",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "reload to first usable board ms",
+    "actual": 123.50931300000002
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "rejoin recovers accepted command authority",
+    "actual": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    },
+    "expected": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    }
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "receipt-bound recovery of independently typed cells",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "lookup is limited to eligible ambiguous recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "late acceptance cannot overwrite newly composed cells",
+    "actual": [
+      "x",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "x",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "reload does not redeliver the held command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "timeout",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "held accepted command permits newer local draft",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "checkpoint contains the newer unsent cells",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "reload to first usable board ms",
+    "actual": 93.02062100000057
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "rejoin recovers accepted command authority",
+    "actual": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    },
+    "expected": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    }
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "receipt-bound recovery of independently typed cells",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "lookup is limited to eligible ambiguous recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "normalized checkpoint removes historical locator",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "normalized checkpoint binds the confirmed attempt",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "reload does not redeliver the held command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "wrong",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "held accepted command permits newer local draft",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "checkpoint contains the newer unsent cells",
+    "actual": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "expected": [
+      "t",
+      "e",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "canonical seat received before optional proof",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "canonical board appears while optional proof waits",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "reload to first usable board ms",
+    "actual": 123.03137799999968
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "rejoin recovers accepted command authority",
+    "actual": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    },
+    "expected": {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "position": 0,
+      "guesses": 1
+    }
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "receipt-bound recovery of independently typed cells",
+    "actual": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "lookup is limited to eligible ambiguous recovery",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "late acceptance cannot overwrite newly composed cells",
+    "actual": [
+      "x",
+      "",
+      "",
+      ""
+    ],
+    "expected": [
+      "x",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "reload does not redeliver the held command",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "no browser error",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "timeout",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

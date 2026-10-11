@@ -1,0 +1,10 @@
+{
+  "sourceInputs": 2476,
+  "browserCases": 398,
+  "browserAssertions": 5712,
+  "portalTests": 2986,
+  "builtBrowserTests": 23,
+  "preservedBuiltFiles": 1301,
+  "reusedAuthorityEvidence": false,
+  "goalComplete": false
+}

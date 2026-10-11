@@ -120,11 +120,13 @@ it.each(["share", "create", "cancelled", "failure"])("retains admitted native %s
     release = () => kind === "cancelled" ? reject({code: "USER_CANCELLED"}) : kind === "failure" ? reject(new Error("Native share failure")) : resolve(); admit();
   }));
   /** Original sharing occupies one native SDK dialog slot. */
-  const original = createFacebookTournamentPresentation(options)!.share("en");
+  const controller = new AbortController();
+  /** Retirement after native admission cannot free the occupied SDK slot. */
+  const original = createFacebookTournamentPresentation(options)!.share("en", controller.signal);
   /** Independent native consent must remain excluded while the dialog is open. */
   const notifications = createFacebookNotificationCapability(sdk)!;
   try {
-    await ready;
+    await ready; controller.abort();
     expect(jest.getTimerCount()).toBe(0);
     await jest.advanceTimersByTimeAsync(16000);
     await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
@@ -159,4 +161,48 @@ it("contains an optional reporter fault while completing expired preparation", a
   } finally {
     release(); await observed; jest.useRealTimers();
   }
+});
+
+
+it.each(["standings", "metadata"])("retires %s preparation immediately without admitting a late dialog", async stage => {
+  jest.useFakeTimers();
+  /** Retiring presentation must not cancel a remotely executing SDK read. */
+  const {options, sdk, board, native} = fixture();
+  /** Admission signals distinguish real preparation from a scheduling guess. */
+  let admit!: () => void;
+  /** The original promise settles only after its local owner has retired. */
+  let release!: () => void;
+  /** Explicitly observed original read admission. */
+  const ready = new Promise<void>(resolve => {admit = resolve;});
+  if (stage === "standings") options.list.mockImplementationOnce(() => new Promise(resolve => {release = () => resolve(board); admit();}));
+  else jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = () => resolve(native); admit();}));
+  /** Board-owned cancellation applies only before native UI admission. */
+  const controller = new AbortController();
+  /** Target adapter owns the optional preparation-cancellation contract. */
+  const share = createFacebookTournamentPresentation(options)!.share;
+  /** Original operation and notification adapter share the real SDK gate. */
+  const original = share("en", controller.signal), notifications = createFacebookNotificationCapability(sdk)!;
+  try {
+    await ready; controller.abort(); await jest.advanceTimersByTimeAsync(0);
+    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "success"});
+    await expect(original).resolves.toMatchObject({status: "cancelled"});
+    expect(jest.getTimerCount()).toBe(0);
+    release(); await jest.advanceTimersByTimeAsync(0);
+    expect(sdk.tournament!.shareAsync).not.toHaveBeenCalled();
+    expect(sdk.tournament!.createAsync).not.toHaveBeenCalled();
+    expect(sdk.getTournamentAsync).toHaveBeenCalledTimes(stage === "metadata" ? 1 : 0);
+    expect(options.reportFailure).not.toHaveBeenCalled();
+  } finally {release(); await jest.advanceTimersByTimeAsync(8000); await original; jest.useRealTimers();}
+});
+
+
+it("does not admit preparation for an already retired board", async () => {
+  /** No provider read or deadline is needed after explicit retirement. */
+  const {options, sdk} = fixture();
+  /** The original owner has already committed retirement. */
+  const controller = new AbortController(); controller.abort();
+  await expect(createFacebookTournamentPresentation(options)!.share("en", controller.signal)).resolves.toMatchObject({status: "cancelled"});
+  expect(options.list).not.toHaveBeenCalled();
+  expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
+  await expect(createFacebookNotificationCapability(sdk)!.requestPermission()).resolves.toMatchObject({status: "success"});
 });

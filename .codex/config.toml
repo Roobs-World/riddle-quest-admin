@@ -1,2 +1,5 @@
 [mcp_servers.jest]
 url = "https://jest.com/mcp"
+
+[agents]
+enabled = true

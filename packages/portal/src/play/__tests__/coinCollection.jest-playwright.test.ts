@@ -57,7 +57,8 @@ describeBrowser("solo coin collection and successor routing", () => {
     try {
       /** Provides page behavior. */
       const page = await browser.newPage({viewport: {width: 390, height: 844}});
-      page.setDefaultTimeout(4_000);
+      // Slow CI runners need headroom for entrance animations to settle; the 30 s test budget still bounds it.
+      page.setDefaultTimeout(10_000);
       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
       await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       await page.addInitScript(() => {

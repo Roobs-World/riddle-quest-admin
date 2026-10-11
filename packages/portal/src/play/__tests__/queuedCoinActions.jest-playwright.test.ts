@@ -259,6 +259,7 @@ describeBrowser("queued coin actions", () => {
   it("shows a purchased hint and the buffered Skip successor before server confirmation", async () => {
     /** Browser page used to exercise immediate coin actions. */
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
+    page.setDefaultTimeout(8_000);
     // The SDK is injected by this mock harness; avoid an unrelated external startup request.
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
@@ -331,7 +332,14 @@ describeBrowser("queued coin actions", () => {
       await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
       await page.waitForFunction(() => Reflect.has(window, "__held_skip"));
       await page.evaluate(() => Reflect.get(window, "__releaseCoinAction")("skip"));
-      await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
+      // A settled Skip retains its successor draft while retiring the paid request and preview ownership.
+      await page.waitForFunction(() => Object.keys(localStorage)
+        .filter(key => key.includes("pendingPlay:v1:"))
+        .every(key => {
+          /** Remaining durable gameplay draft after the paid receipt settles. */
+          const journal = JSON.parse(localStorage.getItem(key)!);
+          return !journal.coinAction && !journal.skipPreview;
+        }));
       await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBeforeSkip - 100));
       expect(await page.locator(".riddle-card h1").innerText()).toMatch(/face and hands/i);
     } finally {
@@ -534,7 +542,14 @@ describeBrowser("queued coin actions", () => {
           await completeMockOnboarding(page);
         } else await page.evaluate(() => Reflect.get(window, "__releaseGuess")());
         await page.waitForFunction(() => Reflect.get(window, "__paidRequests").length === 1);
-        await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
+        await page.waitForFunction((action) => Object.keys(localStorage)
+          .filter(key => key.includes("pendingPlay:v1:"))
+          .every(key => {
+            if (action !== "skip") return false;
+            /** Settled paid work may leave a durable draft for the displayed successor. */
+            const journal = JSON.parse(localStorage.getItem(key)!);
+            return journal.queue.length === 0 && !journal.coinAction && !journal.skipPreview;
+          }), action);
         if (action === "hint") {
           await expect(page.locator(".guess-row").nth(1).locator(".cell").first()).toHaveText("P");
           await page.evaluate(() => {

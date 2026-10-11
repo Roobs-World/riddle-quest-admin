@@ -1,0 +1,29 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: recovered seat restores unsent letters on reload
++ actual - expected
+
+  [
+-   't',
+-   'e',
+    '',
+    '',
++   '',
++   ''
+  ]
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-draft-recovery-fix-2026-10-09/baseline-probe.mjs:80:96)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-draft-recovery-fix-2026-10-09/baseline-probe.mjs:90:3
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:472:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [ '', '', '', '' ],
+  expected: [ 't', 'e', '', '' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

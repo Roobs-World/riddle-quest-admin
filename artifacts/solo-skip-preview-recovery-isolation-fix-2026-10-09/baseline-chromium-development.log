@@ -1,0 +1,58 @@
+{
+  "engine": "chromium",
+  "mode": "development",
+  "cases": 6,
+  "checks": 32,
+  "failures": [
+    {
+      "width": 390,
+      "scenario": "success",
+      "name": "optional failure emits no failed operation",
+      "actual": [
+        [
+          "skip-preview-owned",
+          "loadRiddle",
+          true,
+          {
+            "riddleId": "classic_2"
+          }
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "scenario": "success",
+      "name": "optional failure emits no failed operation",
+      "actual": [
+        [
+          "skip-preview-owned",
+          "loadRiddle",
+          true,
+          {
+            "riddleId": "classic_2"
+          }
+        ]
+      ],
+      "expected": []
+    }
+  ]
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Committed content ownership fences delivery and retains valid requests
+
+2 !== 0
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/solo-skip-preview-recovery-isolation-fix-2026-10-09/browser-baseline.mjs:76:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

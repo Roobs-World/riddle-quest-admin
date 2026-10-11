@@ -1,0 +1,48 @@
+FAIL src/play/__tests__/confirmedGuessPersistence.test.ts
+  ● checkpoints the fifth confirmed row before reload when confirmation changes only pending state
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: window is not defined
+
+      82 |     };
+      83 |     document.addEventListener("visibilitychange", saveBeforeBackgrounding);
+    > 84 |     window.addEventListener("pagehide", saveBeforeBackgrounding);
+         |     ^
+      85 |     return () => {
+      86 |       document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
+      87 |       window.removeEventListener("pagehide", saveBeforeBackgrounding);
+
+      at src/play/game/hooks/useGameSessionPersistence.ts:84:5
+      at render (src/play/__tests__/confirmedGuessPersistence.test.ts:86:39)
+      at Object.<anonymous> (src/play/__tests__/confirmedGuessPersistence.test.ts:88:3)
+
+
+Summary of all failing tests
+FAIL src/play/__tests__/confirmedGuessPersistence.test.ts
+  ● checkpoints the fifth confirmed row before reload when confirmation changes only pending state
+
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
+    Consider using the "jsdom" test environment.
+
+    ReferenceError: window is not defined
+
+      82 |     };
+      83 |     document.addEventListener("visibilitychange", saveBeforeBackgrounding);
+    > 84 |     window.addEventListener("pagehide", saveBeforeBackgrounding);
+         |     ^
+      85 |     return () => {
+      86 |       document.removeEventListener("visibilitychange", saveBeforeBackgrounding);
+      87 |       window.removeEventListener("pagehide", saveBeforeBackgrounding);
+
+      at src/play/game/hooks/useGameSessionPersistence.ts:84:5
+      at render (src/play/__tests__/confirmedGuessPersistence.test.ts:86:39)
+      at Object.<anonymous> (src/play/__tests__/confirmedGuessPersistence.test.ts:88:3)
+
+
+Test Suites: 1 failed, 16 skipped, 303 passed, 304 of 320 total
+Tests:       1 failed, 96 skipped, 3067 passed, 3164 total
+Snapshots:   0 total
+Time:        15.258 s
+Ran all test suites.

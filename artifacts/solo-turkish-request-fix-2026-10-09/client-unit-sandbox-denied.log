@@ -1,0 +1,210 @@
+FAIL src/reddit/__tests__/RedditGatewayRedirect.test.ts
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 301 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 302 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 303 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 307 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 308 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 301 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 302 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 303 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 307 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 308 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 301 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 302 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 303 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 307 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 308 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway redirects outside the selected same-origin API route
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay redirects outside the selected same-origin API route
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion redirects outside the selected same-origin API route
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › preserves ordinary gateway responses without an automatic retry
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › preserves ordinary gameplay responses without an automatic retry
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › preserves ordinary account deletion responses without an automatic retry
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'closeAllConnections')
+
+      35 | /** Closes only suite-owned transport connections after the pending calls settle. */
+      36 | async function close(server: Server): Promise<void> {
+    > 37 |   server.closeAllConnections();
+         |          ^
+      38 |   await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+      39 | }
+      40 |
+
+      at close (src/reddit/__tests__/RedditGatewayRedirect.test.ts:37:10)
+      at Object.<anonymous> (src/reddit/__tests__/RedditGatewayRedirect.test.ts:97:24)
+
+
+Summary of all failing tests
+FAIL src/reddit/__tests__/RedditGatewayRedirect.test.ts
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 301 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 302 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 303 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 307 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway HTTP 308 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 301 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 302 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 303 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 307 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay HTTP 308 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 301 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 302 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 303 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 307 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion HTTP 308 before reaching another origin
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gateway redirects outside the selected same-origin API route
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects gameplay redirects outside the selected same-origin API route
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › rejects account deletion redirects outside the selected same-origin API route
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › preserves ordinary gateway responses without an automatic retry
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › preserves ordinary gameplay responses without an automatic retry
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+  ● Reddit native gateway redirect isolation › preserves ordinary account deletion responses without an automatic retry
+
+    listen EPERM: operation not permitted 127.0.0.1
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'closeAllConnections')
+
+      35 | /** Closes only suite-owned transport connections after the pending calls settle. */
+      36 | async function close(server: Server): Promise<void> {
+    > 37 |   server.closeAllConnections();
+         |          ^
+      38 |   await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+      39 | }
+      40 |
+
+      at close (src/reddit/__tests__/RedditGatewayRedirect.test.ts:37:10)
+      at Object.<anonymous> (src/reddit/__tests__/RedditGatewayRedirect.test.ts:97:24)
+
+
+Test Suites: 1 failed, 16 skipped, 306 passed, 307 of 323 total
+Tests:       21 failed, 96 skipped, 3110 passed, 3227 total
+Snapshots:   0 total
+Time:        9.92 s, estimated 113 s
+Ran all test suites.

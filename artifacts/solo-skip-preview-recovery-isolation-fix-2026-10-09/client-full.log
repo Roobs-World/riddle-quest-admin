@@ -1,0 +1,7 @@
+$ jest --config jest.config.cjs --runInBand
+
+Test Suites: 16 skipped, 314 passed, 314 of 330 total
+Tests:       96 skipped, 3214 passed, 3310 total
+Snapshots:   0 total
+Time:        9.376 s, estimated 113 s
+Ran all test suites.

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "measurementVersion": 2,
+  "environment": "loopback-firestore-emulator",
+  "projectId": "demo-riddle-quest-match",
+  "nodeVersion": "v22.23.1",
+  "passed": true,
+  "policyHash": "41b1ceb89aef0fb608fdf690a40a6f3a9b9c7a5800ec12760b6499cd4157ab47",
+  "policyRevision": 2,
+  "iterations": 5,
+  "limitations": [
+    "Synthetic warm process; no cloud cold starts, client transport or real network latency.",
+    "Application read attempts and query counts are not billed index scans. Emulator results do not establish production SLO compliance."
+  ],
+  "results": [
+    {
+      "scenario": "freshness",
+      "phase": "new",
+      "fixtureRecordings": 221,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 3000,
+      "checks": {
+        "correctRecordingAndReplay": true,
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 80.15772700000002,
+        "p95": 123.86469,
+        "max": 123.86469
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 113,
+        "p95": 113,
+        "max": 113
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 10,
+        "p95": 10,
+        "max": 10
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 107,
+        "p95": 107,
+        "max": 107
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 8,
+        "p95": 8,
+        "max": 8
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 24,
+        "p95": 24,
+        "max": 24
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 60,
+        "p95": 60,
+        "max": 60
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "freshness",
+      "phase": "replay",
+      "fixtureRecordings": 221,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 3000,
+      "checks": {
+        "correctRecordingAndReplay": true,
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 8.116727999999966,
+        "p95": 9.79149899999993,
+        "max": 9.79149899999993
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 9,
+        "p95": 9,
+        "max": 9
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 3,
+        "p95": 3,
+        "max": 3
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+# Guarded paid-receipt persistence, deletion and takeover
+
+The prior mounted-owner retry handled transient settlement writes but missed failed deletion and could overwrite another tab's newer draft after lease expiry. Both sequences were reproduced with failing diagnostics and successful-storage controls before this repair.
+
+Receipt presentation now settles immediately while a deferred coordinator persists its result. The concrete journal adapter captures the exact delivery owner and immutable predecessor before module loading. After loading, the coordinator rechecks the current lifetime, rendered account scope, receipt obligation and latest journal. It reads the stored predecessor, acquires and rechecks the existing cross-tab lease, then writes the latest remaining journal or deletes the settled one. A validated replacement retires an obsolete attempt without overwriting or deleting it. Restricted reads and failed writes/deletion retain the retry. Retired accounts and superseded receipts cannot clear a newer obligation. A pending deletion also blocks restoration of the obsolete paid journal during intervening React effects. Successful idle persistence cancels its renewal clock without posting another payment.
+
+The coordinator and storage transition are in `paidSettlement.ts`. Its dependencies are bound by the concrete adapter, avoiding a runtime import cycle. A named internal tuple keeps the startup invocation compact. Journal reconciliation also reuses its already-confirmed victory and exact-root identity checks instead of repeating them through a separate win-only helper. All callers and boundary tests were migrated to reconciliation; the redundant helper was removed.
+
+Final verification:
+
+- The original four diagnostic/control tests pass. Permanent tests cover transient write and delete failures, preservation of unrelated drafts, cross-tab takeover, account retirement during module loading, replacement receipts, latest draft use, unavailable readers and clock cancellation. All 100 focused tests in six suites pass.
+- Full client suite passes 3,221 tests in 315 suites. The 96 gated tests in 16 suites are skipped in that run and are not claimed covered by it.
+- Chrome and Firefox, development and production React StrictMode, each pass 16 injected journeys and 106 checks: 64 journeys and 424 checks total. At 390px and 1280px these cover accepted/rejected Skip receipts, newer drafts, account retirement, cancelled callbacks after unmount, failed deletion, and write/delete takeover by another tab. The actual router, reducer, hook and concrete journal adapter execute; storage failures, leases and clocks are controlled local fixtures.
+- All 14 hosted Hint/Continue/Skip checks pass against the built production Jest artifact.
+- Portal types, TSDoc (27,864 declarations across 1,226 files), file sizes, six isolated target builds and Devvit server builds pass. YouTube uses the fixture build.
+- Initial Jest resources are 576,664 bytes against the unchanged 576,716.8-byte budget, leaving 52.8 bytes. This measures artifact bytes, not production startup or cloud latency.
+
+Evidence is in `artifacts/solo-paid-settlement-delete-audit-2026-10-09/`. Earlier failed startup experiments, the invalid short-ID fixture failure and documentation diagnostics remain separately logged. The repaired fixture first proves the paid record is readable before testing retirement. No production guard was weakened for that fixture.
+
+The final selected-source manifest covers 2,557 inputs. The final cohort differs from the built/browser cohort only in production type comments and the corrected unit fixture. `documentation-runtime-equivalence.json` verifies identical emitted JavaScript in both touched production modules; `final-source-delta.json` records the difference. Full tests and static checks were rerun after those edits. All jobs are drained. The 1,310 output files and six target dependency inventories are archived with hashes; only the owned temporary build root and its inventories were removed.
+
+The guarantee covers these mounted receipt-persistence transitions. It does not make localStorage atomic against a tab that bypasses the game's lease protocol, guarantee durable changes if the page closes during a continuing outage, or establish safe ownership for every unrelated journal writer. No live payment-provider transaction, production cloud latency, deployment, commit or push is claimed. The broader goal remains active.

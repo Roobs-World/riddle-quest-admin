@@ -377,6 +377,12 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
             ? {
                 matchmaking: {
                   live: {
+                    /** Private proof stays on the approved same-origin gateway without a browser provider SDK. */
+                    async confirmGuessReceipt(input) {
+                      /** Optional lookup contains only a bounded historical locator and acknowledgement. */
+                      const {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} = await import("@qwordly/core/race");
+                      return LiveGuessReceiptResultSchema.parse((await postRedditGateway("/api/game/race.live.receipt", LiveGuessReceiptQuerySchema.parse(input))).result);
+                    },
                     /** Server resolves the former human from this caller's retained seat. */
                     async rematch(input) {
                       /** Same-origin join remains the only creation boundary. */

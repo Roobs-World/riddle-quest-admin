@@ -1,0 +1,11 @@
+{
+  "imports": 1,
+  "decodes": 1,
+  "concurrentPromiseShared": true,
+  "resolvedPackShared": true,
+  "retryURLs": [
+    "/local/en.js",
+    "/local/en.js?retry=1"
+  ],
+  "scope": "generated loader with injected module transport; not browser latency"
+}

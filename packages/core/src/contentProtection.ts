@@ -17,7 +17,14 @@ const hex = (bytes: Uint8Array): string => Array.from(bytes, byte => byte.toStri
 /** Rejects malformed envelopes before Web Crypto or JSON parsing. */
 const unhex = (value: unknown): Uint8Array<ArrayBuffer> => {
   if (typeof value !== "string" || !/^(?:[a-f0-9]{2})+$/u.test(value)) throw new Error("content-protection-invalid");
-  return Uint8Array.from(value.match(/../gu)!, pair => Number.parseInt(pair, 16));
+  /** One output allocation avoids retaining a string for every encoded byte. */
+  const bytes = new Uint8Array(value.length / 2);
+  for (let index = 0; index < bytes.length; index++) {
+    /** The validation guard limits each nibble to a decimal digit or lowercase a–f. */
+    const high = value.charCodeAt(index * 2), low = value.charCodeAt(index * 2 + 1);
+    bytes[index] = ((high < 58 ? high - 48 : high - 87) << 4) | (low < 58 ? low - 48 : low - 87);
+  }
+  return bytes;
 };
 /** Imports an unextractable runtime key; the published bytes remain recoverable from client code. */
 const key = () => globalThis.crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, ["encrypt", "decrypt"]);

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "packages/portal/src/facebook/FacebookTournamentPresentation.ts",
+    "snapshot": "artifacts/live-tournament-share-preparation-2026-10-06/owned-current-00.txt",
+    "sha256": "942a367eb3d518bd48cec61a970a69161ffc99ba49bdf9de108c9de1b30fba1d"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "snapshot": "artifacts/live-tournament-share-preparation-2026-10-06/owned-current-01.txt",
+    "sha256": "b7011ad0a802923aebb5815a577d58cc91d23411f2e0caeb78cb283914a2af15"
+  },
+  {
+    "path": "packages/portal/src/facebook/__tests__/FacebookTournamentSharePreparation.test.ts",
+    "snapshot": "artifacts/live-tournament-share-preparation-2026-10-06/owned-current-02.txt",
+    "sha256": "e84e624a527962a5a9a593d3b5e88ddd310f9f6dff0deeb5b7b5824c629e85ba"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-tournament-share-preparation-browser.mjs",
+    "snapshot": "artifacts/live-tournament-share-preparation-2026-10-06/owned-current-03.txt",
+    "sha256": "2e4f4725d519fc37ef6b2160073cf905eb299b55dd0de7e5da83f34dbf37804f"
+  }
+]

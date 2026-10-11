@@ -1,0 +1,444 @@
+{
+  "operations": 720,
+  "failures": 0,
+  "samples": [
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 0,
+      "count": 20,
+      "elapsedMs": 69.5,
+      "perOperationMs": 3.475,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 0,
+      "count": 20,
+      "elapsedMs": 25.399999998509884,
+      "perOperationMs": 1.2699999999254943,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 1,
+      "count": 20,
+      "elapsedMs": 25.199999999254942,
+      "perOperationMs": 1.2599999999627471,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 1,
+      "count": 20,
+      "elapsedMs": 68.5,
+      "perOperationMs": 3.425,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 2,
+      "count": 20,
+      "elapsedMs": 70,
+      "perOperationMs": 3.5,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 2,
+      "count": 20,
+      "elapsedMs": 25.700000002980232,
+      "perOperationMs": 1.2850000001490116,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 3,
+      "count": 20,
+      "elapsedMs": 25.199999999254942,
+      "perOperationMs": 1.2599999999627471,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 3,
+      "count": 20,
+      "elapsedMs": 68,
+      "perOperationMs": 3.4,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 4,
+      "count": 20,
+      "elapsedMs": 69.5,
+      "perOperationMs": 3.475,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 4,
+      "count": 20,
+      "elapsedMs": 25.800000000745058,
+      "perOperationMs": 1.290000000037253,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 5,
+      "count": 20,
+      "elapsedMs": 24.800000000745058,
+      "perOperationMs": 1.2400000000372529,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 5,
+      "count": 20,
+      "elapsedMs": 67.89999999850988,
+      "perOperationMs": 3.3949999999254943,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 6,
+      "count": 20,
+      "elapsedMs": 71.29999999701977,
+      "perOperationMs": 3.5649999998509885,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 6,
+      "count": 20,
+      "elapsedMs": 24.800000000745058,
+      "perOperationMs": 1.2400000000372529,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 7,
+      "count": 20,
+      "elapsedMs": 24.699999999254942,
+      "perOperationMs": 1.234999999962747,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 7,
+      "count": 20,
+      "elapsedMs": 66.19999999925494,
+      "perOperationMs": 3.309999999962747,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "baseline",
+      "round": 8,
+      "count": 20,
+      "elapsedMs": 69.80000000074506,
+      "perOperationMs": 3.490000000037253,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "round": 8,
+      "count": 20,
+      "elapsedMs": 24.699999999254942,
+      "perOperationMs": 1.234999999962747,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 43840
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 0,
+      "count": 20,
+      "elapsedMs": 97.59999999776483,
+      "perOperationMs": 4.879999999888241,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 0,
+      "count": 20,
+      "elapsedMs": 32,
+      "perOperationMs": 1.6,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 1,
+      "count": 20,
+      "elapsedMs": 32.19999999925494,
+      "perOperationMs": 1.609999999962747,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 1,
+      "count": 20,
+      "elapsedMs": 97,
+      "perOperationMs": 4.85,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 2,
+      "count": 20,
+      "elapsedMs": 103.80000000074506,
+      "perOperationMs": 5.190000000037253,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 2,
+      "count": 20,
+      "elapsedMs": 37.69999999925494,
+      "perOperationMs": 1.8849999999627471,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 3,
+      "count": 20,
+      "elapsedMs": 37.69999999925494,
+      "perOperationMs": 1.8849999999627471,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 3,
+      "count": 20,
+      "elapsedMs": 101,
+      "perOperationMs": 5.05,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 4,
+      "count": 20,
+      "elapsedMs": 103.5,
+      "perOperationMs": 5.175,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 4,
+      "count": 20,
+      "elapsedMs": 37.5,
+      "perOperationMs": 1.875,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 5,
+      "count": 20,
+      "elapsedMs": 37.599999997764826,
+      "perOperationMs": 1.8799999998882413,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 5,
+      "count": 20,
+      "elapsedMs": 102.10000000149012,
+      "perOperationMs": 5.105000000074506,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 6,
+      "count": 20,
+      "elapsedMs": 106.40000000223517,
+      "perOperationMs": 5.320000000111759,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 6,
+      "count": 20,
+      "elapsedMs": 41.70000000298023,
+      "perOperationMs": 2.0850000001490114,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 7,
+      "count": 20,
+      "elapsedMs": 38.79999999701977,
+      "perOperationMs": 1.9399999998509885,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 7,
+      "count": 20,
+      "elapsedMs": 105.10000000149012,
+      "perOperationMs": 5.255000000074506,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "round": 8,
+      "count": 20,
+      "elapsedMs": 102.90000000223517,
+      "perOperationMs": 5.145000000111759,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "round": 8,
+      "count": 20,
+      "elapsedMs": 38.099999997764826,
+      "perOperationMs": 1.9049999998882412,
+      "riddles": 180,
+      "classicQuestions": 180,
+      "ciphertextBytes": 67156
+    }
+  ],
+  "scope": "Protected locale decryption, UTF-8/JSON decoding and actual domain validation; excludes module/network/SDK/paint",
+  "engine": "chromium",
+  "version": "153.0.8010.12",
+  "errors": [],
+  "summary": [
+    {
+      "locale": "en",
+      "side": "baseline",
+      "medianMs": 3.475,
+      "rangeMs": [
+        3.309999999962747,
+        3.5649999998509885
+      ]
+    },
+    {
+      "locale": "en",
+      "side": "candidate",
+      "medianMs": 1.2599999999627471,
+      "rangeMs": [
+        1.234999999962747,
+        1.290000000037253
+      ]
+    },
+    {
+      "locale": "hi",
+      "side": "baseline",
+      "medianMs": 5.145000000111759,
+      "rangeMs": [
+        4.85,
+        5.320000000111759
+      ]
+    },
+    {
+      "locale": "hi",
+      "side": "candidate",
+      "medianMs": 1.8849999999627471,
+      "rangeMs": [
+        1.6,
+        2.0850000001490114
+      ]
+    }
+  ]
+}

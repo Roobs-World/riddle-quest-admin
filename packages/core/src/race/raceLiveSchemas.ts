@@ -3,6 +3,7 @@ import {RaceGuessTextSchema} from "./raceTextSchemas";
 import {RaceCategoryIdSchema, RaceLocaleSchema} from "./raceDefinitionSchemas";
 import {RaceRunViewSchema, type SocialReportCategory} from "./raceSchemas";
 import type {ListLiveRaceHistoryResponse} from "./raceLiveHistorySchemas";
+import type {LiveGuessReceiptQuery, LiveGuessReceiptResult} from "./raceLiveReceiptSchemas";
 
 /** Server-owned lobby, countdown and victory constants. */
 export const LIVE_RACE_WAIT_MS = 60_000;
@@ -82,6 +83,8 @@ export type RetireLiveRaceJoin = z.infer<typeof RetireLiveRaceJoinSchema>;
 export type RetireLiveRaceJoinResponse = z.infer<typeof RetireLiveRaceJoinResponseSchema>;
 /** Platform adapter owns the authenticated transport. */
 export type LiveRaceCapability = {
+  /** Optional read-only proof for one original accepted wrong guess; never resubmits the command. */
+  confirmGuessReceipt?(input: LiveGuessReceiptQuery): Promise<LiveGuessReceiptResult>;
   /** Retires an original join intent without cancelling a newer journey's recovered seat. */
   retireJoin?(input: RetireLiveRaceJoin): Promise<RetireLiveRaceJoinResponse>;
   /** Creates or recovers a private rematch without accepting a rival account identifier. */

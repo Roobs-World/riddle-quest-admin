@@ -1,0 +1,308 @@
+{
+  "engine": "chromium",
+  "mode": "development",
+  "browserVersion": "153.0.8010.12",
+  "observations": [
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "original request before rollback",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "retry remains exact",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "host grant survives only when confirmed",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "terminal proof survives",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "current attempt count survives",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "current outcome survives",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "modal ownership survives",
+      "actual": "continue",
+      "expected": "continue"
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "new hint glyph survives",
+      "actual": "PI",
+      "expected": "PI"
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "new hint lock survives",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        1
+      ]
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "new keyboard knowledge survives",
+      "actual": "green",
+      "expected": "green"
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "ordinary refund policy retained",
+      "actual": 570,
+      "expected": 570
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "paid receipt retired",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "kind": "hint",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "original request before rollback",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "retry remains exact",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "host grant survives only when confirmed",
+      "actual": false,
+      "expected": true
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "terminal proof survives",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "current attempt count survives",
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "current outcome survives",
+      "actual": null,
+      "expected": null
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "modal ownership survives",
+      "actual": "continue",
+      "expected": null
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "ordinary refund policy retained",
+      "actual": 570,
+      "expected": 570
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "paid receipt retired",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "width": 390,
+      "kind": "grant",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "kind": "win",
+      "name": "original request before rollback",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    },
+    {
+      "width": 390,
+      "kind": "win",
+      "name": "retry remains exact",
+      "actual": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      },
+      "expected": {
+        "type": "game:spendCoins",
+        "requestId": "continue-receipt-0001",
+        "payload": {
+          "reason": "continue",
+          "gameMode": "classic",
+          "riddleId": "classic_1",
+          "sessionToken": "00000000-0000-4000-8000-000000000001",
+          "amount": 50
+        }
+      }
+    }
+  ]
+}

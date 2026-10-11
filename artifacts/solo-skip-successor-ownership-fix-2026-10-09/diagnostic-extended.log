@@ -1,0 +1,6 @@
+Test Suites: 1 passed, 1 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        0.299 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-skip-successor-ownership-fix-2026-10-09/diagnostic-results.json

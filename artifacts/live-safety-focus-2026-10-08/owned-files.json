@@ -1,0 +1,26 @@
+[
+  {
+    "path": "packages/portal/src/play/race/hooks/useRaceDialogFocus.ts",
+    "afterSha256": "6ac25a03472724cbabd55993804d2310b21f62721fad46b2a96d91a86f567a3f",
+    "before": "artifacts/live-safety-focus-2026-10-08/focus.before.ts",
+    "beforeSha256": "2f75087f19a6a86318f2e959ccfe0fc3e72d38653ae28a39183a2ef97f60a809"
+  },
+  {
+    "path": "packages/portal/src/play/race/__tests__/raceLayoutHooks.test.ts",
+    "afterSha256": "2fdca47af8961cc58158d0e64ca0fb26295550478e594e9917530a412f3b399d",
+    "before": "artifacts/live-safety-focus-2026-10-08/raceLayoutHooks.before.ts",
+    "beforeSha256": "c7420aea6239cd271279114398325a938039ddbcc4494a84232e68fd65204557"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "afterSha256": "bacadbf9af70431559aa21d7be2f0e3f3aa4319c8321263b9b411e171e65eeb9",
+    "before": "artifacts/live-safety-focus-2026-10-08/package.before.json",
+    "beforeSha256": "25bc3d7f912f02a41fdd6a7dd831b029f30cf901733b0f4b08be6e5e1db86aa6"
+  },
+  {
+    "path": "packages/portal/scripts/verify-live-safety-focus-browser.mjs",
+    "afterSha256": "32c5c7fb35c2e31d31e45fb53af4d960aad43a4c4758a8112e25ea3db7903bff",
+    "before": null,
+    "beforeSha256": null
+  }
+]

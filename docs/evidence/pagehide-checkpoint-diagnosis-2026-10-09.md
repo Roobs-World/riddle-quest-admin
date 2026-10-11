@@ -1,0 +1,9 @@
+# Single-player pagehide checkpoint diagnosis, 9 October 2026
+
+An injected Chromium browser harness reproduces a missing single-player checkpoint in both development and production React. It mounts the real reducer and persistence hook with an initial PIAN draft, commits the player's next letter O, then dispatches a persisted pagehide event from the parent layout effect before passive checkpoint effects execute. The expected committed adapter checkpoint contains PIANO. No checkpoint is written during that lifecycle signal. Browser errors and unhandled promises are empty, and the listener ownership checks pass; the failure is specifically the absent pagehide write.
+
+The hook currently subscribes only to document visibilitychange and requires hidden visibility. This fixture sends pagehide while visibility is still visible. It establishes an ordering gap in the injected lifecycle contract, not the frequency of that ordering on real devices or proof of loss on every navigation. The proposed fix should reuse committed-state, account-generation, retirement and restoration protections while handling pagehide as an additional save signal. Duplicate visibility/pagehide delivery must remain harmless.
+
+Evidence is in `artifacts/pagehide-checkpoint-diagnosis-2026-10-09`: the exact probe, separate React-mode failure logs, screenshots, five observations per mode, and a post-run source hash inventory. The probe derives from the existing checkpoint-commit harness but commits an actual draft letter rather than only replacing a question. Initial harness relocation used a CommonJS Playwright entry and failed to import; the corrected ESM entry produced the recorded behavioral failures. Scratch builds, browser contexts and HTTP servers were closed by the harness finally block.
+
+No production code has changed in this diagnosis pass. A permanent regression test, lifecycle fix, broader ownership checks and six target builds remain outstanding.

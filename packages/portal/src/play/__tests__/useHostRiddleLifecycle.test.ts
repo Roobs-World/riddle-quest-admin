@@ -65,7 +65,7 @@ it.each([
     services: {loadRiddle: load}, withActivity: operation => operation(), postToGame: post,
     postOperation: jest.fn(), configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt: jest.fn()});
   expect(await lifecycle.loadRiddle({gameMode: mode, locale: "en"}, requestId)).toBe(false);
-  expect(load).toHaveBeenCalledTimes(1);
+  expect(load).toHaveBeenCalledTimes(requestId?.startsWith("skip-preview-") ? 0 : 1);
   expect(post).not.toHaveBeenCalled();
 });
 

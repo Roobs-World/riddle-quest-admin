@@ -637,3 +637,26 @@ it.each(["live-race-request-failed", "other-error"])("retains exact retirement n
   global.fetch = jest.fn(() => Promise.resolve({ok: false, status: 404, json: async () => ({error: marker, code: "not-found"})}) as Promise<Response>);
   await expect(postRedditGateway("/api/game/race.live.retire")).rejects.toMatchObject({code: marker === "live-race-request-failed" ? "not-found" : "unavailable"});
 });
+
+it.each(["accepted", "unconfirmed", "invalid"])("validates optional receipt proof through the same-origin adapter: %s", async status => {
+  global.fetch = jest.fn(input => {
+    if (input === "/api/session") return reply({ok: true, authenticated: true, accountGeneration: 1,
+      features: {...enabledFeatures, commerce: false, presence: false}});
+    if (input === "/api/storage/read") return reply({ok: true, preferences: {}, playerData: null});
+    return reply({ok: true, result: {status}});
+  }) as typeof fetch;
+  /** Production authenticated bootstrap exposes the same-origin optional observer. */
+  const session = await new RedditPlatformBootstrap().initialize(() => undefined);
+  if (session.status !== "success") throw new Error("expected-authenticated-session");
+  /** A historical locator is neither a guess command nor an account selector. */
+  const input = {ticketId: "a".repeat(64), requestId: "original-guess-001", riddleId: "riddle-1", position: 0, guessesUsedBefore: 0};
+  /** Lazy shared parsing must reject an untrusted acknowledgement. */
+  const operation = session.value.capabilities.matchmaking!.live!.confirmGuessReceipt!(input);
+  if (status === "invalid") await expect(operation).rejects.toThrow();
+  else await expect(operation).resolves.toEqual({status});
+  expect((global.fetch as jest.Mock).mock.calls.at(-1)).toMatchObject(["/api/game/race.live.receipt", {body: JSON.stringify(input)}]);
+  /** Extra command payload is rejected before a second gateway request. */
+  const count = (global.fetch as jest.Mock).mock.calls.length;
+  await expect(session.value.capabilities.matchmaking!.live!.confirmGuessReceipt!({...input, guess: "word"} as never)).rejects.toThrow();
+  expect((global.fetch as jest.Mock).mock.calls).toHaveLength(count);
+});

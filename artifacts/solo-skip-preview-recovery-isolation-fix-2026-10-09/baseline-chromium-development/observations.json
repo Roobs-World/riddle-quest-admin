@@ -1,0 +1,244 @@
+[
+  {
+    "width": 390,
+    "scenario": "success",
+    "name": "optional outcome follows current ownership",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "scenario": "success",
+    "name": "preview publication follows ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "success",
+    "name": "optional failure emits no failed operation",
+    "actual": [
+      [
+        "skip-preview-owned",
+        "loadRiddle",
+        true,
+        {
+          "riddleId": "classic_2"
+        }
+      ]
+    ],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "success",
+    "name": "activity released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "failure",
+    "name": "optional outcome follows current ownership",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "scenario": "failure",
+    "name": "preview publication follows ownership",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "failure",
+    "name": "optional failure emits no failed operation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "failure",
+    "name": "activity released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "recovery",
+    "name": "optional outcome follows current ownership",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 390,
+    "scenario": "recovery",
+    "name": "preview publication follows ownership",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "recovery",
+    "name": "automatic retry retains current index",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "scenario": "recovery",
+    "name": "optional failure emits no failed operation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "scenario": "recovery",
+    "name": "activity released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "scenario": "recovery",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "success",
+    "name": "optional outcome follows current ownership",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "scenario": "success",
+    "name": "preview publication follows ownership",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "success",
+    "name": "optional failure emits no failed operation",
+    "actual": [
+      [
+        "skip-preview-owned",
+        "loadRiddle",
+        true,
+        {
+          "riddleId": "classic_2"
+        }
+      ]
+    ],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "success",
+    "name": "activity released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "success",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "failure",
+    "name": "optional outcome follows current ownership",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "scenario": "failure",
+    "name": "preview publication follows ownership",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "failure",
+    "name": "optional failure emits no failed operation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "failure",
+    "name": "activity released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "failure",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "recovery",
+    "name": "optional outcome follows current ownership",
+    "actual": false,
+    "expected": false
+  },
+  {
+    "width": 1280,
+    "scenario": "recovery",
+    "name": "preview publication follows ownership",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "recovery",
+    "name": "automatic retry retains current index",
+    "actual": 1,
+    "expected": 1
+  },
+  {
+    "width": 1280,
+    "scenario": "recovery",
+    "name": "optional failure emits no failed operation",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 1280,
+    "scenario": "recovery",
+    "name": "activity released",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "scenario": "recovery",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  }
+]

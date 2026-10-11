@@ -1,0 +1,18 @@
+{
+  "sourceInputs": 2502,
+  "unchangedPriorClientInputs": 2500,
+  "ownedNewIntegrationTests": 1,
+  "backendUnitTests": 1759,
+  "fullExistingSdkSuites": 87,
+  "fullExistingSdkTests": 1252,
+  "newSdkCases": 4,
+  "totalSdkSuitePaths": 88,
+  "totalSdkTests": 1256,
+  "originalCasingSdkFailures": 2,
+  "coreCopyInputs": 390,
+  "compiledFiles": 396,
+  "closedAllocatedPorts": 30,
+  "productionSourceChanged": false,
+  "deployed": false,
+  "goalComplete": false
+}

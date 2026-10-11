@@ -1,0 +1,33 @@
+[
+  {
+    "engine": "chromium",
+    "mode": "development",
+    "width": 390,
+    "height": 844,
+    "name": "terminal recovery never resubmits accepted guesses",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "engine": "chromium",
+    "mode": "development",
+    "width": 390,
+    "height": 844,
+    "name": "payment uses original seeded receipt",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "engine": "chromium",
+    "mode": "development",
+    "width": 390,
+    "height": 844,
+    "name": "unsettled payment remains durable",
+    "actual": [
+      "seed-continue"
+    ],
+    "expected": [
+      "seed-continue"
+    ]
+  }
+]

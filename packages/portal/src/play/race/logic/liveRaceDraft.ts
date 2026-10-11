@@ -6,6 +6,8 @@ import {editRaceInput, type RaceInputState} from "./raceInput";
 export type LiveRaceDraft = RaceInputState & {
   /** Only changed letters advance intent; clock, receipt and focus updates do not. */
   revision: number;
+  /** Transient recovery version; untouched restored cells cannot outlive another accepted attempt. */
+  recoveredAtGuessesUsed?: number;
 };
 
 /** Builds an empty editable attempt while preserving confirmed hint locks. */
@@ -20,11 +22,13 @@ export function reconcileLiveRaceDraft(draft: LiveRaceDraft, previous: LiveRaceV
     previous.run?.locale !== next.run?.locale || before.riddleId !== riddle.riddleId || before.position !== riddle.position ||
     draft.letters.length !== riddle.answerLength || (next.phase !== "racing" && next.phase !== "countdown"))
     return createLiveRaceDraft(riddle ?? null, draft.revision);
+  if (draft.recoveredAtGuessesUsed !== undefined && draft.revision === 0 &&
+    draft.recoveredAtGuessesUsed !== riddle.guessesUsed) return createLiveRaceDraft(riddle, draft.revision);
   /** Canonical hints replace only their own positions, including newly locked focus. */
   const letters = draft.letters.map((letter, index) => riddle.revealedLetters.find(reveal => reveal.index === index)?.letter ?? letter);
   /** Retain reference identity when a clock or opponent observation changes no local letters. */
   const activeSlotIndex = riddle.revealedLetters.some(reveal => reveal.index === draft.activeSlotIndex)
-    ? findFirstEditableRaceSlot(riddle) : draft.activeSlotIndex;
+    ? findFirstEditableRaceSlot(riddle, letters) : draft.activeSlotIndex;
   return activeSlotIndex === draft.activeSlotIndex && letters.every((letter, index) => letter === draft.letters[index])
     ? draft : {...draft, letters, activeSlotIndex};
 }
@@ -37,7 +41,7 @@ export function editLiveRaceDraft(riddle: RaceRiddlePrompt, draft: LiveRaceDraft
   if (next === draft) return draft;
   /** Deliberately emptying a previously edited draft remains a newer intent. */
   const changed = next.letters.some((letter, index) => letter !== draft.letters[index]);
-  return {...next, revision: draft.revision + Number(changed)};
+  return {...draft, ...next, revision: draft.revision + Number(changed)};
 }
 
 /** An unaccepted command restores its original word only when no newer letters were composed. */

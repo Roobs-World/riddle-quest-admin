@@ -16,6 +16,12 @@ export function createFirebaseRaceMatchmaking(
 ): MatchmakingCapability {
   return {
   live: {
+    /** Loads receipt transport only for an eligible recovery, never during normal live play. */
+    async confirmGuessReceipt(input) {
+      /** Both the locator and private acknowledgement cross a strict shared contract. */
+      const [{confirmLiveGuessReceipt}, {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+      return LiveGuessReceiptResultSchema.parse((await confirmLiveGuessReceipt(LiveGuessReceiptQuerySchema.parse(input))).data);
+    },
     ...(options.liveRematch ? {
       /** The existing authenticated join reserves the original private opponent server-side. */
       async rematch(input: Pick<import("@qwordly/core/race").JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {

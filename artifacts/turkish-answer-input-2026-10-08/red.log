@@ -1,0 +1,16 @@
+["cell red","cell green","cell green","cell red","cell green"]
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Typing a valid Turkish ASCII answer must solve the question
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/turkish-answer-input-2026-10-08/probe.mjs:56:923 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

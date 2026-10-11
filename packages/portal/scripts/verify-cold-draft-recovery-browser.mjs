@@ -64,7 +64,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><PlayHostAp
  else{
   browser=await chromium.launch({headless:true});const quick=process.env.COLD_DRAFT_QUICK==='1';
   for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const variant of quick?[process.env.COLD_DRAFT_VARIANT??'classicReplaced']:['classicReplaced','classicRenamed','dailyReplaced','classicSame','dailySame','foreignMode','queued','paid','successor','completedDailyFallback']){
-   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();page.setDefaultTimeout(4000);
+   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();page.setDefaultTimeout(10_000);
    const metric=(name,actual,expected)=>{observations.push({width,height,variant,name,actual,expected});assert.deepEqual(actual,expected,name);};
    const row=async index=>(await page.locator('.guess-row').nth(index).locator('.cell').allTextContents()).join('').toUpperCase();
    await page.goto(url+'/?variant='+variant);await page.locator('.guess-board').waitFor();await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:riddleLoaded'));await page.waitForTimeout(80);

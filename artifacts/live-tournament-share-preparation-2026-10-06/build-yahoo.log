@@ -1,0 +1,61 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (13.427167ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.004508ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.20656ms)
+✔ rejects imports between different target owners (1.902835ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (1.077421ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.088052ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.121094ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.755281ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.01311ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.652016ms)
+✔ aggregates violations in deterministic file and source order (0.809573ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.3593
+Web Target boundary audit passed (320 files, 1391 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 64 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/core-game-i9VZudrA.js           2.02 kB │ gzip:  0.88 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-en-Uo1wq0fQ.js   87.86 kB │ gzip: 47.70 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-pt-CR-guntD.js   90.15 kB │ gzip: 48.93 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-nl-DAgTkWed.js   90.54 kB │ gzip: 49.17 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-id-CeJ5eXA3.js   91.21 kB │ gzip: 49.54 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-it-nQUdd223.js   91.35 kB │ gzip: 49.58 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-es-D98kzCBo.js   91.65 kB │ gzip: 49.76 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-de-B5tXxlDY.js   92.15 kB │ gzip: 50.01 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-tr-Bgz1Demh.js   92.54 kB │ gzip: 50.26 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-pl-BfxgaFMh.js   92.70 kB │ gzip: 50.30 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-fr-BOQUgQ1c.js   93.56 kB │ gzip: 50.76 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-ja-B987J9Iy.js   94.66 kB │ gzip: 51.38 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-vi-BgtEBJme.js   96.78 kB │ gzip: 52.55 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-ko-BuGao0yF.js   97.36 kB │ gzip: 52.86 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-ar-BVkCDbwb.js  102.12 kB │ gzip: 55.42 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/index-b-D-g6hs.js             105.36 kB │ gzip: 35.24 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-ru-BZYFqrEP.js  114.09 kB │ gzip: 61.94 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/playable-pack-hi-BTaZh4AF.js  134.49 kB │ gzip: 72.97 kB
+../../../../../../tmp/share-preparation-oct08-builds-tzqtyezc/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.03s
+$ node scripts/audit-standalone-artifact.mjs yahoo
+yahoo artifact audit passed: 24 files, 1.80 MiB

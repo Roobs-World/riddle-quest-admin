@@ -1,0 +1,23 @@
+FAIL src/play/race/__tests__/liveRaceDraft.test.ts
+  ● continues into an empty cell after a hint locks a selected populated cell
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      80 |   const next = structuredClone(view); next.run!.currentRiddle!.revealedLetters = [{index: 0, letter: "t"}];
+      81 |   const recovered = reconcileLiveRaceDraft(selected, view, next);
+    > 82 |   expect(recovered.activeSlotIndex).toBe(2);
+         |                                     ^
+      83 |   expect(editLiveRaceDraft(next.run!.currentRiddle!, recovered, "text", "st").letters.join("")).toBe("test");
+      84 | });
+      85 |
+
+      at Object.<anonymous> (src/play/race/__tests__/liveRaceDraft.test.ts:82:37)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 17 passed, 18 total
+Snapshots:   0 total
+Time:        0.232 s, estimated 1 s
+Ran all test suites matching src/play/race/__tests__/liveRaceDraft.test.ts.

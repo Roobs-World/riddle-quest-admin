@@ -1,0 +1,33 @@
+{
+  "results": {
+    "scheduling-development": {
+      "assertions": 237,
+      "diagnosticSamples": 33,
+      "failures": 0
+    },
+    "scheduling-production": {
+      "assertions": 237,
+      "diagnosticSamples": 33,
+      "failures": 0
+    },
+    "watchdog-development": {
+      "assertions": 312,
+      "diagnosticSamples": 0,
+      "failures": 0
+    },
+    "watchdog-production": {
+      "assertions": 312,
+      "diagnosticSamples": 0,
+      "failures": 0
+    }
+  },
+  "inputsUnchanged": true,
+  "sessions": {
+    "8930": 0,
+    "72943": 0,
+    "12825": 0
+  },
+  "productionSourceChanged": false,
+  "deployed": false,
+  "goalComplete": false
+}

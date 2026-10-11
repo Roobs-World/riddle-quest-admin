@@ -1,0 +1,16 @@
+failed to load config from /home/craig-beswetherick/Documents/riddle-quest/packages/portal/vite.config.ts
+file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1791453813339-bd1746d0374f9.mjs:1701
+	throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks`);
+	      ^
+
+Error: Unknown Web Target mode: production; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks
+    at resolveWebTarget (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1791453813339-bd1746d0374f9.mjs:1701:8)
+    at createWebTargetViteConfig (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1791453813339-bd1746d0374f9.mjs:1741:18)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1791453813339-bd1746d0374f9.mjs:1914:63
+    at loadConfigFromFile (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.1_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:37672:62)
+    at async resolveConfig (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.1_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:37271:22)
+    at async createBuilder (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.1_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:34841:17)
+    at async build (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.1_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:34300:18)
+    at async file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/host-startup-work-2026-10-08/profile-build.mjs:9:1
+
+Node.js v24.17.0

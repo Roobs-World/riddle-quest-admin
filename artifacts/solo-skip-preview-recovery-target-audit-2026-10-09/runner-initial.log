@@ -1,0 +1,24 @@
+FAIL ../../artifacts/solo-skip-preview-recovery-target-audit-2026-10-09/diagnostic.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../packages/portal/src/play/../packages/portal/src/analytics/events' from '../../artifacts/solo-skip-preview-recovery-target-audit-2026-10-09/diagnostic.test.ts'
+
+    To mock a module that does not exist on disk, pass `{virtual: true}` in the mock options. See https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options
+
+      55 |   useState: <T>(initial: T) => [initial, jest.fn()],
+      56 | }));
+    > 57 | jest.mock("../../packages/portal/src/play/../packages/portal/src/analytics/events", () => ({trackEvent: jest.fn()}));
+         |      ^
+      58 | jest.mock("../../packages/portal/src/play/../packages/portal/src/observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));
+      59 | jest.mock("../../packages/portal/src/play/preloadGameModals", () => ({preloadGameModals: async () => undefined}));
+      60 | import {useHostRiddleLifecycle} from "../../packages/portal/src/play/useHostRiddleLifecycle";
+
+      at Resolver._throwModNotFoundError (../../node_modules/.pnpm/jest-resolve@30.5.1/node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.<anonymous> (../../artifacts/solo-skip-preview-recovery-target-audit-2026-10-09/diagnostic.test.ts:57:6)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.205 s
+Ran all test suites with tests matching "preserves recovery target across a failed".
+Test results written to: ../../artifacts/solo-skip-preview-recovery-target-audit-2026-10-09/results.json

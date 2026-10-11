@@ -1,0 +1,21 @@
+FAIL src/play/race/__tests__/liveRaceDraftStorage.test.ts
+  ● an ambiguous post-submit marker cannot revive a consumed word after a failed checkpoint clear
+
+    expect(received).toBeNull()
+
+    Received: {"activeSlotIndex": 3, "letters": ["z", "z", "z", "z"], "revision": 0}
+
+      201 |   /** That replacement's accepted guess consumes the word while the old marker remains on disk. */
+      202 |   const accepted = structuredClone(view); accepted.run!.currentRiddle!.guessesUsed++;
+    > 203 |   expect(f.owner().restore(accepted)).toBeNull();
+          |                                       ^
+      204 | });
+      205 |
+
+      at Object.<anonymous> (src/play/race/__tests__/liveRaceDraftStorage.test.ts:203:39)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 24 passed, 25 total
+Snapshots:   0 total
+Time:        0.241 s, estimated 1 s
+Ran all test suites matching src/play/race/__tests__/liveRaceDraftStorage.test.ts.

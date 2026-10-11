@@ -1,0 +1,40 @@
+FAIL src/play/__tests__/gameSession.test.ts
+  ● retains untouched and deliberate preview selection during reject
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 3
+
+      1063 |     /** Ignored input leaves the original intent intact; explicit focus remains player-owned. */
+      1064 |     const recovered = kind === "reject" ? reduce(state, {type: "rejectHint"}) : createSavedGame(state)!;
+    > 1065 |     expect(recovered.activeSlotIndex).toBe(intent === "focused" ? 4 : intent === "focused-same" || intent === "typed-emptied" ? 1 : 3);
+           |                                       ^
+      1066 |     expect(recovered.currentLetters).toEqual(["C", "", "", "", ""]);
+      1067 |   }
+      1068 | });
+
+      at src/play/__tests__/gameSession.test.ts:1065:39
+
+  ● retains untouched and deliberate preview selection during save
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 3
+
+      1063 |     /** Ignored input leaves the original intent intact; explicit focus remains player-owned. */
+      1064 |     const recovered = kind === "reject" ? reduce(state, {type: "rejectHint"}) : createSavedGame(state)!;
+    > 1065 |     expect(recovered.activeSlotIndex).toBe(intent === "focused" ? 4 : intent === "focused-same" || intent === "typed-emptied" ? 1 : 3);
+           |                                       ^
+      1066 |     expect(recovered.currentLetters).toEqual(["C", "", "", "", ""]);
+      1067 |   }
+      1068 | });
+
+      at src/play/__tests__/gameSession.test.ts:1065:39
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 118 passed, 120 total
+Snapshots:   0 total
+Time:        0.266 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts.

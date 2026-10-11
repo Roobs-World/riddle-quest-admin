@@ -1932,8 +1932,8 @@
     "height": 844,
     "scenario": "headers",
     "name": "retirement cancels queued health callbacks",
-    "actual": 12,
-    "expected": 12
+    "actual": 11,
+    "expected": 11
   },
   {
     "width": 1280,

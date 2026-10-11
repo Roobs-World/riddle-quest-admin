@@ -1,0 +1,11 @@
+# Turkish virtual keyboard dotted and dotless I
+
+The backend answer contract permits the ASCII answer IRMAK. Turkish casing distinguishes its initial dotless I from dotted İ, but the shipped virtual keyboard exposed only İ. A rendered-game baseline loading the exact previous controls source confirms there are zero dotless-I buttons. The earlier preliminary probe waited for that missing key and timed out; the corrected baseline checks its count directly.
+
+Turkish content now uses a prepared 27-letter shortcut layout. Dotted İ remains in the top row, and dotless I extends the second row from nine to ten keys. The longest row stays at ten. Each button sends its displayed symbol, and feedback lookup uses the content locale to keep dotted i and dotless ı independent. Other content locales retain the original alphabet. These are answer symbols, not new translated UI copy.
+
+Two added component regressions verify independent Turkish colors and the unchanged English symbol set. The full client suite passes 3,018 tests in 304 suites with 96 intentional skips; TypeScript, TSDoc and file-size gates pass. Twenty-four virtual-only journeys solve both izmir and IRMAK across Chromium and Firefox, development/production React and 320/390/1280 pixel widths. They verify both keys exist, the submitted answer and five green cells, independent I/İ feedback, no browser errors and no document horizontal overflow. A permanent regression is registered in the full game browser chain.
+
+The shared keyboard is also verified in the actual LiveRaceGame with Turkish content at 390/1280 pixels in both engines and React modes. Both symbols and layout fit are checked alongside 48 recorded assertions for restored hints, newly confirmed hints, equal poll snapshots and successor resets. Multiplayer transports and solo bridge messages are injected fixtures, not remote production transactions.
+
+All six isolated targets and the Devvit server build; 23 checks against the exact rebuilt artifacts pass. Evidence retains 1,299 built files, source hashes and the reverse-checkable four-input patch under `artifacts/turkish-virtual-dotless-key-2026-10-08/`. No backend, receipt, grant or deployment changes are included. The unlimited improvement goal remains active.

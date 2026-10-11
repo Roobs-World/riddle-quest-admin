@@ -1,0 +1,27 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: only matching available checkpoints recover their cells
++ actual - expected
+
+  [
++   't',
++   'e',
+    '',
+    '',
+-   '',
+-   ''
+  ]
+
+    at metric (file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-draft-storage-recovery-2026-10-09/boundary-probe.mjs:81:105)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/live-draft-storage-recovery-2026-10-09/boundary-probe.mjs:102:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [ 't', 'e', '', '' ],
+  expected: [ '', '', '', '' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

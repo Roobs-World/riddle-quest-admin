@@ -1,0 +1,17 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/5c3d591b5dade8e3c3380f7eaf1d2a429136a31f403f8760e6aa7e130506cf3d/facebook.json",
+    "artifacts/target-dependencies/custom/c423df669b1a0ba7ac0daf45cbbb327dc8c226eb24f3a4394fb94f511dddf182/youtube.json",
+    "artifacts/target-dependencies/custom/4c4a978bd47f0d6980dbf1c5d35e288cad0106339dddbb69537dcd88ffa90ce9/yahoo.json",
+    "artifacts/target-dependencies/custom/34d5632363ebbfd8cab9251bb66b9de6e5a658b5fbd974c0363fc45ebf6eeb3a/jest.json",
+    "artifacts/target-dependencies/custom/6ec23e001a714836a0f419ab2dfc8d6a7be9fc4e9d675ac0bfe91f3e28a02855/facebook.json",
+    "artifacts/target-dependencies/custom/c2f0b56d30333560adbb38bcfc7fb8faf17ffdca8802dbf57f77ac2964f27ca5/reddit.json",
+    "artifacts/target-dependencies/custom/8e4c3aece8a4baaa0c68cc338d71413366c8dbb808bb2ab90c94004c0744c2d7/netflix.json"
+  ],
+  "buildRoots": [
+    "/tmp/live-checkpoint-read-deduplication-builds-20261009a",
+    "/tmp/riddle-quest-facebook-browser-zpqMaX"
+  ],
+  "facebookFixtureRemovedByHarness": true,
+  "allAbsent": true
+}

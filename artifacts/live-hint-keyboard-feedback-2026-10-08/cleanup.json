@@ -1,0 +1,16 @@
+{
+  "metadata": [
+    "artifacts/target-dependencies/custom/37db08e196ad96692fe4aa63c056cde3109b16ebab1bcf69e4d0ac6520083e36/netflix.json",
+    "artifacts/target-dependencies/custom/190a65b6faf3dad47ff4467892bf5027cadd06e0e997e32ffbf90bc50a533824/reddit.json",
+    "artifacts/target-dependencies/custom/e12633a6c20434ee33f1984cae944bb0641d65ab6151ac0240ecfe8449ade71d/facebook.json",
+    "artifacts/target-dependencies/custom/8afa1bca203f3d4c83eeb665cfc2919dcbea5291e82104453f1c50b8a484a35d/facebook.json",
+    "artifacts/target-dependencies/custom/56bfa83a6106cce809e05188b97e9a943107e8df6bc0570eb0e308016d399d77/jest.json",
+    "artifacts/target-dependencies/custom/4bd07c239509e0e0a146112993e09695814411a1cbc22e54f00a9800ecbb72b3/yahoo.json",
+    "artifacts/target-dependencies/custom/ad46baf0de899920f945c8b3c6e23d67f4364166e71d365e46e4bc869b259314/youtube.json"
+  ],
+  "buildRoots": [
+    "/tmp/live-hint-keyboard-feedback-builds-20261008a",
+    "/tmp/riddle-quest-facebook-browser-cQBLof"
+  ],
+  "allAbsent": true
+}

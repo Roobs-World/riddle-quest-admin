@@ -11,11 +11,13 @@ Passed on the current working source:
 - Current live delivery browser fixture: both sizes recovered a hung join with the original command ID, ignored stale polls and reconciled an accepted guess.
 - Current live lifecycle browser fixture: both sizes retired joined/pending/expired seats and resisted forward and backward wall-clock jumps.
 
+The full backend race gate passed: 113 suites, 1,879 tests; statements 93.45%, branches 90.45%, functions 96.62%, lines 95.76%. The initial run failed nine cleanup hooks because Realtime Database was not started. A nine-case diagnostic with both loopback demo emulators passed, followed by the full unchanged coverage gate. The package script, isolated configuration and 170 matching task commands now start Firestore and Realtime Database. No assertions or coverage thresholds were changed.
+
 These browser checks use in-memory authorities and loopback transport. They do not certify the hosted backend or platform SDKs.
 
 Two checks remain failed:
 
 - The older event-aggregate browser verifier expects recorded-race entry from `RaceTo10Game`. The current entry supplies live PvP and disables start without a live capability. Its first category click times out. The existing `race-invitation-creator-recovery-2026-10-05.md` already documents the retained recorded controller/view as inactive. Do not report this old fixture as a current-game pass or remove its requirements without a reachability audit.
-- Release-target integrity requires `build-youtube.zip`, which is missing. Local YouTube packaging additionally requires `build-youtube.test-report.json`; the reviewed nine-suite evidence workflow is running. No release archive readiness is claimed until that workflow and packaging pass.
+- Release-target integrity requires `build-youtube.zip`, which is missing. Local YouTube packaging additionally requires `build-youtube.test-report.json`; the reviewed nine-suite workflow stopped in the Jest browser suite when Chromium could not capture a required screenshot in the production bridge-chunk recovery fixture. Its unchanged focused retry passed all 82 assertions and screenshots. A fresh full workflow is required before packaging; this retry does not count as a completed browser suite. No release archive readiness is claimed until that workflow and packaging pass.
 
 Logs and exact SHA-256 values are in `artifacts/reviewed-local-verification-2026-10-10/checks.json`. This report is progress evidence, not a substitute for each development manifest's required checks.

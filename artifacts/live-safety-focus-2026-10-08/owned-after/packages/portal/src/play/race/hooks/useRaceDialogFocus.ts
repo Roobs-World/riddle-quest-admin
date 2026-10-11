@@ -1,0 +1,112 @@
+import {useEffect, useEffectEvent, useLayoutEffect, type RefObject} from "react";
+
+/** Parameters used to manage focus within the multiplayer dialogs. */
+export type RaceDialogFocusOptions = {
+  /** Stores dialog ref. */
+  dialogRef: RefObject<HTMLElement | null>;
+  /** Stores quit dialog ref. */
+  quitDialogRef: RefObject<HTMLDivElement | null>;
+  /** Stores quit confirmation open. */
+  quitConfirmationOpen: boolean;
+  /** Stores dismiss quit confirmation. */
+  dismissQuitConfirmation: () => void;
+  /** Stores request close. */
+  requestClose: () => void;
+};
+
+/**
+ * Contains keyboard focus within the active multiplayer dialog and restores the
+ * previously focused element when the multiplayer experience closes.
+ */
+export function useRaceDialogFocus({
+  dialogRef,
+  quitDialogRef,
+  quitConfirmationOpen,
+  dismissQuitConfirmation,
+  requestClose,
+}: RaceDialogFocusOptions): void {
+  /** Handles keys using the latest dialog state without restarting the focus lifecycle. */
+  const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (event.key !== "Escape" && event.key !== "Tab") return;
+    /** Only the currently committed, interactive multiplayer surface owns shortcuts. */
+    const raceDialog = dialogRef.current;
+    if (!raceDialog?.isConnected || raceDialog.closest("[inert]")) return;
+    // Composition and an earlier control retain ownership of their keyboard event.
+    if (event.isComposing || event.keyCode === 229 || event.defaultPrevented) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      if (quitConfirmationOpen) dismissQuitConfirmation();
+      else requestClose();
+      return;
+    }
+    /** Dialog that currently owns keyboard focus. */
+    const activeDialog = quitConfirmationOpen ? quitDialogRef.current : dialogRef.current;
+    if (!activeDialog) return;
+    /** Only controls in the native Tab sequence participate in the focus loop. */
+    const focusable = Array.from(
+      activeDialog.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [href], [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((control) => control.tabIndex >= 0 && !control.matches(":disabled") && !control.closest("[inert]") &&
+      control.checkVisibility({visibilityProperty: true}));
+    if (focusable.length === 0) {
+      event.preventDefault();
+      activeDialog.focus({preventScroll: true});
+      return;
+    }
+    /** First focusable element in the active dialog. */
+    const first = focusable[0];
+    /** Last focusable element in the active dialog. */
+    const last = focusable.at(-1)!;
+    if (!activeDialog.contains(document.activeElement)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus({preventScroll: true});
+    } else if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  useLayoutEffect(() => {
+    /** Captured callbacks retire synchronously with their native subscription. */
+    let listening = true;
+    /** Committed Effect Event routing keeps ordinary callback updates subscription-free. */
+    const keyDown = (event: KeyboardEvent) => {
+      if (listening) handleKeyDown(event);
+    };
+    document.addEventListener("keydown", keyDown);
+    return () => {
+      listening = false;
+      document.removeEventListener("keydown", keyDown);
+    };
+  }, [dialogRef]);
+
+  useEffect(() => {
+    /** Element focused before the modal race experience opened. */
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialogRef.current?.focus();
+    return () => {
+      previousFocus?.focus();
+    };
+  }, [dialogRef]);
+
+  useEffect(() => {
+    if (!quitConfirmationOpen) return;
+    /** Gameplay control to restore when confirmation is dismissed. */
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    /** Frame used to focus the newly mounted confirmation dialog. */
+    const frame = window.requestAnimationFrame(() => quitDialogRef.current?.focus());
+    return () => {
+      window.cancelAnimationFrame(frame);
+      /** A live race can reclaim focus; a closing race leaves its outer restoration in charge. */
+      const raceDialog = dialogRef.current;
+      if (!raceDialog?.isConnected || quitDialogRef.current) return;
+      if (previousFocus?.isConnected && raceDialog.contains(previousFocus) &&
+        !previousFocus.matches(":disabled, [aria-disabled='true']")) previousFocus.focus({preventScroll: true});
+      else raceDialog.focus({preventScroll: true});
+    };
+  }, [dialogRef, quitConfirmationOpen, quitDialogRef]);
+}

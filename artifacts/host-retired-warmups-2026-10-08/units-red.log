@@ -1,0 +1,41 @@
+FAIL src/play/__tests__/useHostRiddleRecovery.test.ts
+  ● starts no content warmups for a retired game frame
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 1
+
+    1: "en"
+
+      499 |   const preload = jest.fn();
+      500 |   setup(jest.fn(), {recoverySuspended: true, preloadInitialRiddles: preload});
+    > 501 |   expect(preload).not.toHaveBeenCalled();
+          |                       ^
+      502 | });
+      503 |
+      504 | it("keeps content warmups available for an active game frame", () => {
+
+      at Object.<anonymous> (src/play/__tests__/useHostRiddleRecovery.test.ts:501:23)
+
+  ● does not warm a replacement account after bridge retirement
+
+    expect(jest.fn()).toHaveBeenCalledTimes(expected)
+
+    Expected number of calls: 1
+    Received number of calls: 2
+
+      518 |   useHostRiddleLifecycle({...owner.options, userId: "replacement-player", recoverySuspended: true});
+      519 |   cleanup = effects[0]() || undefined;
+    > 520 |   expect(preload).toHaveBeenCalledTimes(1);
+          |                   ^
+      521 | });
+      522 |
+
+      at Object.<anonymous> (src/play/__tests__/useHostRiddleRecovery.test.ts:520:19)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 22 passed, 24 total
+Snapshots:   0 total
+Time:        0.507 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/useHostRiddleRecovery.test.ts.

@@ -1,0 +1,69 @@
+{
+  "before": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0",
+    "held": true,
+    "letters": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "checkpoint": {
+      "version": 1,
+      "writerId": "live-draft-writer-ff09122e-85d9-463f-a9aa-51b8d99a9814",
+      "binding": "[\"Alice\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"en\",\"q0\",0,1]",
+      "letters": [
+        "T",
+        "E",
+        "",
+        ""
+      ],
+      "activeSlotIndex": 2,
+      "guessReceipt": {
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "requestId": "live-guess-4f2ecede-0441-4a92-b63c-97ddfc6bf96d",
+        "riddleId": "q0",
+        "position": 0,
+        "guessesUsedBefore": 1
+      },
+      "savedAtMs": 1791550200845
+    },
+    "accepted": 2
+  },
+  "after": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0",
+    "letters": [
+      "t",
+      "e",
+      "",
+      ""
+    ],
+    "lookups": [
+      {
+        "owner": "Alice",
+        "operation": "receipt",
+        "ticketId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "requestId": "live-guess-4f2ecede-0441-4a92-b63c-97ddfc6bf96d",
+        "riddleId": "q0",
+        "position": 0,
+        "guessesUsedBefore": 1
+      }
+    ],
+    "checkpoint": {
+      "version": 1,
+      "writerId": "live-draft-writer-eaf53502-c50e-4925-9fbb-3e7405b2c241",
+      "binding": "[\"Alice\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"en\",\"q0\",0,2]",
+      "letters": [
+        "T",
+        "E",
+        "",
+        ""
+      ],
+      "activeSlotIndex": 2,
+      "savedAtMs": 1791550224195
+    },
+    "commands": [],
+    "errors": [],
+    "unhandled": []
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "packages/core/src/race/raceLiveSchemas.ts": "4c24bf75daf585c71448145cde7e624a431abc86f2e60abcacc91ce8daeddc92",
+  "packages/core/src/race/raceSchemas.ts": "5587a09d4e39847d865291788e6950ebe8013b42205e621a9877c05f8bfc0817",
+  "firebase-functions/src/race/raceLiveService.ts": "9c2f3285af6b36fdab6a50976cab64c18c3adbf492e6c2a2d05a73d41ca53681",
+  "firebase-functions/src/race/raceLiveState.ts": "6f4878b522f0f1c2fceabc733749ba0b359cf55b0e2ad2f001d7d319dc1a1a2f",
+  "firebase-functions/src/race/raceLiveCallables.ts": "6cb13ad6ca85dea4eca8bbe2d2b2eea739c74e6356940d5f3c3cde4f7ecde02d",
+  "packages/portal/src/play/firebaseRaceMatchmaking.ts": "25068dfe59441b73d79340fe7d7bde160a3db43638ddace55978076ebbc0f96b",
+  "packages/portal/src/reddit/RedditPlatformBootstrap.ts": "caebdbb2b9bffc542f146878a88af745acdaf0732e34f0725241e535c81a1eac",
+  "packages/reddit-app/src/server/index.ts": "224af426174f80454ca18e9d23cbf83e121875ecd0850d9e7471a804baf64cc8",
+  "firebase-functions/src/reddit/redditGameplayEndpoint.ts": "e05a83f13f8a88eb468aa556ef0080265005c4cc0834bff5ae994c039f472022"
+}

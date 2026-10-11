@@ -1,0 +1,7 @@
+[
+  "packages/portal/package.json",
+  "packages/portal/scripts/verify-journal-write-work-browser.mjs",
+  "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts",
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+  "packages/portal/src/play/pendingGuessJournal.ts"
+]

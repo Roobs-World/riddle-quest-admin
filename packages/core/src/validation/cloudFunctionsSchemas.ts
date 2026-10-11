@@ -1,3 +1,4 @@
+import {SinglePlayerGuessSchema} from "./singlePlayerInput";
 import {AcceptedGuessesSchema} from "./acceptedGuesses";
 import {RevealedHintsSchema} from "./revealedHints";
 import {z} from "zod";
@@ -7,11 +8,7 @@ export const BackendGameModeSchema = z.enum(["challenge", "classic"]);
 /** Bounds canonical riddle identifiers accepted by Cloud Functions. */
 const RiddleIdSchema = z.string().min(1, "Riddle ID is required").max(160);
 /** Bounds guesses to the shipped seven-keyboard-slot policy. */
-const PlayableGuessSchema = z
-  .string()
-  .min(1)
-  .max(7)
-  .regex(/^[a-z]+$/i);
+const PlayableGuessSchema = SinglePlayerGuessSchema;
 
 /** Validates the complete game input data shape. */
 export const CompleteGameInputSchema = z

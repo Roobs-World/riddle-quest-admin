@@ -4,10 +4,29 @@
     "indexes": "firestore.indexes.json"
   },
   "emulators": {
-    "firestore": {"host": "127.0.0.1", "port": 18199, "websocketPort": 18550},
-    "hub": {"host": "127.0.0.1", "port": 18440},
-    "logging": {"host": "127.0.0.1", "port": 18450},
-    "ui": {"enabled": false},
-    "singleProjectMode": true
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 18199,
+      "websocketPort": 18550
+    },
+    "hub": {
+      "host": "127.0.0.1",
+      "port": 18440
+    },
+    "logging": {
+      "host": "127.0.0.1",
+      "port": 18450
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true,
+    "database": {
+      "host": "127.0.0.1",
+      "port": 19000
+    }
+  },
+  "database": {
+    "rules": "database.rules.json"
   }
 }

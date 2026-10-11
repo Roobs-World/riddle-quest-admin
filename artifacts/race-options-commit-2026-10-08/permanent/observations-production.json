@@ -1,0 +1,12 @@
+[
+  {
+    "name": "committed retry retains its committed adapter during abandoned render",
+    "actual": "original",
+    "expected": "original"
+  },
+  {
+    "name": "committed replacement receives subsequent retry",
+    "actual": "replacement",
+    "expected": "replacement"
+  }
+]

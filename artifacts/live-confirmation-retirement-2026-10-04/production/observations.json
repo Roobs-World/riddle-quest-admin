@@ -843,6 +843,30 @@
     "width": 390,
     "height": 568,
     "scenario": "unavailable",
+    "name": "unavailable invitation releases its owned poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "unavailable invitation causes no idle polling callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
+    "name": "terminal recovery events do not rearm a poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "unavailable",
     "name": "terminal confirmation does not retry joining",
     "actual": 1,
     "expected": 1
@@ -953,6 +977,30 @@
     "width": 390,
     "height": 568,
     "scenario": "stable",
+    "name": "unavailable invitation releases its owned poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "unavailable invitation causes no idle polling callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
+    "name": "terminal recovery events do not rearm a poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "stable",
     "name": "terminal confirmation does not retry joining",
     "actual": 1,
     "expected": 1
@@ -1844,6 +1892,30 @@
     "name": "matching unavailable confirmation remains terminal",
     "actual": "This invitation has expired.",
     "expected": "This invitation has expired."
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "unavailable",
+    "name": "unavailable invitation releases its owned poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "unavailable",
+    "name": "unavailable invitation causes no idle polling callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "unavailable",
+    "name": "terminal recovery events do not rearm a poll timer",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
@@ -1959,6 +2031,30 @@
     "width": 390,
     "height": 844,
     "scenario": "stable",
+    "name": "unavailable invitation releases its owned poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "unavailable invitation causes no idle polling callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
+    "name": "terminal recovery events do not rearm a poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "stable",
     "name": "terminal confirmation does not retry joining",
     "actual": 1,
     "expected": 1
@@ -2850,6 +2946,30 @@
     "name": "matching unavailable confirmation remains terminal",
     "actual": "This invitation has expired.",
     "expected": "This invitation has expired."
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "unavailable",
+    "name": "unavailable invitation releases its owned poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "unavailable",
+    "name": "unavailable invitation causes no idle polling callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "unavailable",
+    "name": "terminal recovery events do not rearm a poll timer",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,
@@ -2960,6 +3080,30 @@
     "name": "matching unavailable confirmation remains terminal",
     "actual": "This invitation has expired.",
     "expected": "This invitation has expired."
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "unavailable invitation releases its owned poll timer",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "unavailable invitation causes no idle polling callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "stable",
+    "name": "terminal recovery events do not rearm a poll timer",
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,

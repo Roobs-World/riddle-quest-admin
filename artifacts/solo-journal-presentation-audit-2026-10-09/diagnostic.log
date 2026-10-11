@@ -1,0 +1,91 @@
+FAIL ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx
+  ● does not crash on malformed saved presentation null
+
+    expect(received).not.toThrow()
+
+    Error name:    "TypeError"
+    Error message: "Cannot read properties of null (reading 'guess')"
+
+          123 | /** Computes states. */
+          124 | const computeStates = (guesses: ScoredGuess[], locale: string): Record<string, Feedback> => {
+        > 125 |   return computeLetterStates(guesses.map(row => ({...row, guess: row.guess.map(letter => letter.toLocaleLowerCase(locale))})));
+              |                                                                      ^
+          126 | };
+          127 |
+          128 | /** Purchased hint symbols remain known when guess history or a recovery checkpoint changes. */
+
+      at src/play/gameSession.ts:125:70
+                at Array.map (<anonymous>)
+      at computeStates (src/play/gameSession.ts:125:38)
+      at gameSessionReducer (src/play/gameSession.ts:518:23)
+      at gameSessionReducer (src/play/gameSession.ts:357:43)
+      at gameSessionReducer (src/play/gameSession.ts:391:38)
+      at restoreAndRender (../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:15:35)
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:13
+      at Object.<anonymous> (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2235:93)
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:43
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:43
+
+  ● does not crash on malformed saved presentation {}
+
+    expect(received).not.toThrow()
+
+    Error name:    "TypeError"
+    Error message: "Cannot read properties of undefined (reading 'map')"
+
+          123 | /** Computes states. */
+          124 | const computeStates = (guesses: ScoredGuess[], locale: string): Record<string, Feedback> => {
+        > 125 |   return computeLetterStates(guesses.map(row => ({...row, guess: row.guess.map(letter => letter.toLocaleLowerCase(locale))})));
+              |                                                                            ^
+          126 | };
+          127 |
+          128 | /** Purchased hint symbols remain known when guess history or a recovery checkpoint changes. */
+
+      at src/play/gameSession.ts:125:76
+                at Array.map (<anonymous>)
+      at computeStates (src/play/gameSession.ts:125:38)
+      at gameSessionReducer (src/play/gameSession.ts:518:23)
+      at gameSessionReducer (src/play/gameSession.ts:357:43)
+      at gameSessionReducer (src/play/gameSession.ts:391:38)
+      at restoreAndRender (../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:15:35)
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:13
+      at Object.<anonymous> (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2235:93)
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:43
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:43
+
+  ● does not crash on malformed saved presentation {"feedback": [Array], "guess": null}
+
+    expect(received).not.toThrow()
+
+    Error name:    "TypeError"
+    Error message: "Cannot read properties of null (reading 'map')"
+
+          123 | /** Computes states. */
+          124 | const computeStates = (guesses: ScoredGuess[], locale: string): Record<string, Feedback> => {
+        > 125 |   return computeLetterStates(guesses.map(row => ({...row, guess: row.guess.map(letter => letter.toLocaleLowerCase(locale))})));
+              |                                                                            ^
+          126 | };
+          127 |
+          128 | /** Purchased hint symbols remain known when guess history or a recovery checkpoint changes. */
+
+      at src/play/gameSession.ts:125:76
+                at Array.map (<anonymous>)
+      at computeStates (src/play/gameSession.ts:125:38)
+      at gameSessionReducer (src/play/gameSession.ts:518:23)
+      at gameSessionReducer (src/play/gameSession.ts:357:43)
+      at gameSessionReducer (src/play/gameSession.ts:391:38)
+      at restoreAndRender (../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:15:35)
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:13
+      at Object.<anonymous> (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (../../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2235:93)
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:43
+      at ../../artifacts/solo-journal-presentation-audit-2026-10-09/diagnostic.test.tsx:21:43
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 1 passed, 4 total
+Snapshots:   0 total
+Time:        0.216 s, estimated 1 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-journal-presentation-audit-2026-10-09/results.json

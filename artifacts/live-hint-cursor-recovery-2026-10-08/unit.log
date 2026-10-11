@@ -1,0 +1,6 @@
+
+Test Suites: 126 passed, 126 total
+Tests:       1200 passed, 1200 total
+Snapshots:   0 total
+Time:        4.668 s, estimated 5 s
+Ran all test suites matching src/play/race/__tests__.

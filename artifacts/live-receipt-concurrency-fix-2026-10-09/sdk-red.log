@@ -1,0 +1,57 @@
+i  emulators: Starting emulators: firestore, database, storage
+i  emulators: Detected demo project ID "demo-riddle-quest-audit", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 46627.
+i  database: Database Emulator logging to database-debug.log
+⚠  Unexpected rules runtime error: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/craig-beswetherick/.cache/firebase/emulators/cloud-storage-rules-runtime-v1.1.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+i  Running script: node scripts/run-with-functions-node.js /home/craig-beswetherick/Documents/riddle-quest/artifacts/live-receipt-concurrency-fix-2026-10-09/sdk-entry.cjs
+[Pinned Functions runtime v22.23.1] complete current integration selection
+Starting src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts
+FAIL src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts
+  ● confirms only the current accepted attempt without mutating historical receipts
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "status": "unconfirmed",
+    +   "status": "accepted",
+      }
+
+      92 |   /** Freeze the complete private authority before observation. */
+      93 |   const before = await databaseState();
+    > 94 |   expect(await confirmLiveGuessReceiptForUser(A, query, {db, nowMs: NOW + 10000})).toEqual({status: "unconfirmed"});
+         |                                                                                    ^
+      95 |   expect(await confirmLiveGuessReceiptForUser(A, {...query, requestId: "lookup-wrong-002", guessesUsedBefore: 1}, {db, nowMs: NOW + 10000})).toEqual({status: "accepted"});
+      96 |   expect(await databaseState()).toEqual(before);
+      97 |   expect((await stored.ref.get()).updateTime!.isEqual(stored.updateTime!)).toBe(true);
+
+      at Object.<anonymous> (src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts:94:84)
+
+Starting src/__tests__/race/raceLiveGuessReceipt.it.test.ts
+PASS src/__tests__/race/raceLiveGuessReceipt.it.test.ts
+Starting src/__tests__/redditLiveGuessReceiptGateway.it.test.ts
+PASS src/__tests__/redditLiveGuessReceiptGateway.it.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 33 passed, 34 total
+Snapshots:   0 total
+Time:        7.077 s
+Ran all test suites.
+Test results written to: ../artifacts/live-receipt-concurrency-fix-2026-10-09/integration-results.json
+⚠  Script exited unsuccessfully (code 1)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  storage: Stopping Storage Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator
+
+Error: Script "node scripts/run-with-functions-node.js /home/craig-beswetherick/Documents/riddle-quest/artifacts/live-receipt-concurrency-fix-2026-10-09/sdk-entry.cjs" exited with code 1

@@ -1,0 +1,26 @@
+{
+  "chromium-firstRiddleMs": {
+    "twoSidedRankPermutationP": 0.5476190476190477,
+    "permutations": 252,
+    "roundedToMs": 0.001,
+    "diagnosticOnly": true
+  },
+  "chromium-feedbackMs": {
+    "twoSidedRankPermutationP": 0.373015873015873,
+    "permutations": 252,
+    "roundedToMs": 0.001,
+    "diagnosticOnly": true
+  },
+  "firefox-firstRiddleMs": {
+    "twoSidedRankPermutationP": 0.8095238095238095,
+    "permutations": 252,
+    "roundedToMs": 0.001,
+    "diagnosticOnly": true
+  },
+  "firefox-feedbackMs": {
+    "twoSidedRankPermutationP": 0.5714285714285714,
+    "permutations": 252,
+    "roundedToMs": 0.001,
+    "diagnosticOnly": true
+  }
+}

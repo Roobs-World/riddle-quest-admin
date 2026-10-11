@@ -1,13 +1,13 @@
-import {useEffect, useRef, useSyncExternalStore} from "react";
+import {useEffect, useLayoutEffect, useRef, useSyncExternalStore} from "react";
 import {HOST_TO_GAME_EVENT} from "../../localBridge";
 import {RaceSession} from "../RaceSession";
 import type {RaceSessionEntry, RaceSessionOptions} from "../RaceSession.types";
 
 /** React owns only subscription, bridge delivery and browser scheduling adapters. */
 export function useRaceSession(entry: RaceSessionEntry, options: RaceSessionOptions) {
-  /** Keep effect adapters fresh without replacing an owned session during render. */
+  /** Only committed renders may replace callbacks used by the active session. */
   const optionsRef = useRef(options);
-  optionsRef.current = options;
+  useLayoutEffect(() => {optionsRef.current = options;});
   /** One session module owns all lifecycle state for this mounted surface. */
   const sessionRef = useRef<RaceSession | null>(null);
   if (!sessionRef.current) sessionRef.current = new RaceSession(entry, {

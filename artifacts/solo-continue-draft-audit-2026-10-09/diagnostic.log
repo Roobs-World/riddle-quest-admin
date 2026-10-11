@@ -1,0 +1,111 @@
+FAIL ../../artifacts/solo-continue-draft-audit-2026-10-09/diagnostic.test.tsx
+  ● does not restore malformed Continue cells null
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "P",
+    +   null,
+        "",
+        "",
+        "",
+        "",
+      ]
+
+      13 | }
+      14 | it.each([[null,'','','',''],[{},'','','',''],['AB','','','','']])('does not restore malformed Continue cells %p',(...cells)=>{
+    > 15 |  const state=restore(cells as never);expect(state.currentLetters).toEqual(['P','','','','']);expect(state.engineSnapshot?.hasUsedContinue).toBe(true);expect(state.pendingCoinSpend?.requestId).toBe('continue-receipt-0001');
+         |                                                                   ^
+      16 | });
+      17 | it('keeps host-confirmed hint glyphs when restoring an otherwise valid Continue draft',()=>{
+      18 |  const state=restore(['A','I','','','']);expect(state.currentLetters).toEqual(['P','I','','','']);
+
+      at ../../artifacts/solo-continue-draft-audit-2026-10-09/diagnostic.test.tsx:15:67
+
+  ● does not restore malformed Continue cells {}
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "P",
+    +   Object {},
+        "",
+        "",
+        "",
+        "",
+      ]
+
+      13 | }
+      14 | it.each([[null,'','','',''],[{},'','','',''],['AB','','','','']])('does not restore malformed Continue cells %p',(...cells)=>{
+    > 15 |  const state=restore(cells as never);expect(state.currentLetters).toEqual(['P','','','','']);expect(state.engineSnapshot?.hasUsedContinue).toBe(true);expect(state.pendingCoinSpend?.requestId).toBe('continue-receipt-0001');
+         |                                                                   ^
+      16 | });
+      17 | it('keeps host-confirmed hint glyphs when restoring an otherwise valid Continue draft',()=>{
+      18 |  const state=restore(['A','I','','','']);expect(state.currentLetters).toEqual(['P','I','','','']);
+
+      at ../../artifacts/solo-continue-draft-audit-2026-10-09/diagnostic.test.tsx:15:67
+
+  ● does not restore malformed Continue cells "AB"
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "P",
+    +   "AB",
+        "",
+        "",
+        "",
+        "",
+      ]
+
+      13 | }
+      14 | it.each([[null,'','','',''],[{},'','','',''],['AB','','','','']])('does not restore malformed Continue cells %p',(...cells)=>{
+    > 15 |  const state=restore(cells as never);expect(state.currentLetters).toEqual(['P','','','','']);expect(state.engineSnapshot?.hasUsedContinue).toBe(true);expect(state.pendingCoinSpend?.requestId).toBe('continue-receipt-0001');
+         |                                                                   ^
+      16 | });
+      17 | it('keeps host-confirmed hint glyphs when restoring an otherwise valid Continue draft',()=>{
+      18 |  const state=restore(['A','I','','','']);expect(state.currentLetters).toEqual(['P','I','','','']);
+
+      at ../../artifacts/solo-continue-draft-audit-2026-10-09/diagnostic.test.tsx:15:67
+
+  ● keeps host-confirmed hint glyphs when restoring an otherwise valid Continue draft
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "P",
+    +   "A",
+        "I",
+        "",
+        "",
+        "",
+      ]
+
+      16 | });
+      17 | it('keeps host-confirmed hint glyphs when restoring an otherwise valid Continue draft',()=>{
+    > 18 |  const state=restore(['A','I','','','']);expect(state.currentLetters).toEqual(['P','I','','','']);
+         |                                                                       ^
+      19 |  expect(gameSessionReducer(state,{type:'typeLetter',letter:'A'}).currentLetters).toEqual(['P','I','A','','']);
+      20 | });
+      21 | it('retains a valid Continue control, cursor and original paid request',()=>{
+
+      at Object.<anonymous> (../../artifacts/solo-continue-draft-audit-2026-10-09/diagnostic.test.tsx:18:71)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 1 passed, 5 total
+Snapshots:   0 total
+Time:        0.29 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-continue-draft-audit-2026-10-09/results.json

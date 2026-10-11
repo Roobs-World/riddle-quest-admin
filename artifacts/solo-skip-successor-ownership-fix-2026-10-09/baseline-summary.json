@@ -1,0 +1,10 @@
+{
+  "checks": 136,
+  "failedAssertions": 22,
+  "failuresByCheck": {
+    "owned target admission": 8,
+    "foreign target cannot change mode or token": 8,
+    "newer draft survives old successor": 4,
+    "invalid reply leaves valid successor admissible": 2
+  }
+}

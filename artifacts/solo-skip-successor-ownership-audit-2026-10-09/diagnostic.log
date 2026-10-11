@@ -1,0 +1,75 @@
+FAIL ../../artifacts/solo-skip-successor-ownership-audit-2026-10-09/diagnostic.test.ts
+  ● early Skip successor accepts only its owned question: advanced
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      25 |   const riddle=target==='origin'?origin:target==='wrong-index'?{...next,index:4}:target==='wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+      26 |   const accepted=recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}});
+    > 27 |   expect(accepted).toBe(target==='valid');
+         |                    ^
+      28 |   if(target==='valid'){
+      29 |     stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle});
+      30 |     expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}})).toBe(false);
+
+      at ../../artifacts/solo-skip-successor-ownership-audit-2026-10-09/diagnostic.test.ts:27:20
+
+  ● late Skip successor accepts only its owned question: wrong-index
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      25 |   const riddle=target==='origin'?origin:target==='wrong-index'?{...next,index:4}:target==='wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+      26 |   const accepted=recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}});
+    > 27 |   expect(accepted).toBe(target==='valid');
+         |                    ^
+      28 |   if(target==='valid'){
+      29 |     stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle});
+      30 |     expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}})).toBe(false);
+
+      at ../../artifacts/solo-skip-successor-ownership-audit-2026-10-09/diagnostic.test.ts:27:20
+
+  ● late Skip successor accepts only its owned question: wrong-mode
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      25 |   const riddle=target==='origin'?origin:target==='wrong-index'?{...next,index:4}:target==='wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+      26 |   const accepted=recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}});
+    > 27 |   expect(accepted).toBe(target==='valid');
+         |                    ^
+      28 |   if(target==='valid'){
+      29 |     stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle});
+      30 |     expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}})).toBe(false);
+
+      at ../../artifacts/solo-skip-successor-ownership-audit-2026-10-09/diagnostic.test.ts:27:20
+
+  ● late Skip successor accepts only its owned question: advanced
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      25 |   const riddle=target==='origin'?origin:target==='wrong-index'?{...next,index:4}:target==='wrong-mode'?{...next,gameMode:'challenge' as const}:next;
+      26 |   const accepted=recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}});
+    > 27 |   expect(accepted).toBe(target==='valid');
+         |                    ^
+      28 |   if(target==='valid'){
+      29 |     stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle});
+      30 |     expect(recovery.acceptRiddleResult({type:'host:riddleLoaded',requestId:action.requestId,payload:{riddle}})).toBe(false);
+
+      at ../../artifacts/solo-skip-successor-ownership-audit-2026-10-09/diagnostic.test.ts:27:20
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 6 passed, 10 total
+Snapshots:   0 total
+Time:        0.362 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-skip-successor-ownership-audit-2026-10-09/results.json

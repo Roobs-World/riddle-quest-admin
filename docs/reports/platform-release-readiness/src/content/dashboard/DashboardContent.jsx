@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {TaskRegister} from "./TaskRegister.jsx";
 import {DeploymentMonitoring, ProviderActivity} from "./DeploymentMonitoring.jsx";
 import {BackendMonitoring} from "./BackendMonitoring.jsx";
 import {DataComponent, DataTable, Filters, MetricCard, Section, SectionHeader, useDataApp, useDashboardTabs, useSectionFilters} from "../../data-app-public.jsx";
@@ -6,6 +7,7 @@ import {Badge, Button, Progress} from "./shadcn-ui.jsx";
 import {displayDate, releaseStateTone, summarizeActions} from "./release-ui.js";
 
 export const releaseTabs = [
+  {id: "tasks", label: "Tasks and requirements", filterIds: []},
   {id: "dashboard", label: "Release actions", previousLabels: ["Dashboard"], filterIds: []},
   {id: "targets", label: "Targets", filterIds: []},
   {id: "monitoring", label: "Monitoring", filterIds: []},
@@ -141,7 +143,7 @@ function TargetViews() {
 export function DashboardContent() {
   const {reviewedRows} = useDataApp();
   const {activeTabId} = useDashboardTabs(releaseTabs);
-  const tab = releaseTabs.some(({id}) => id === activeTabId) ? activeTabId : "dashboard";
+  const tab = releaseTabs.some(({id}) => id === activeTabId) ? activeTabId : "tasks";
   const platforms = reviewedRows("platform_status");
   const releases = reviewedRows("provider_release_evidence");
   const submissions = reviewedRows("submission_activity");
@@ -157,6 +159,7 @@ export function DashboardContent() {
   const operational = services.filter(({status}) => status === "Integrated");
 
   return <article className="integration-dashboard" aria-label="Riddle Quest integration and release dashboard">
+    {tab === "tasks" && <TaskRegister />}
     {tab === "dashboard" && <div className="dashboard-view">
       <section className="integration-metrics" aria-label="Integration summary">
         <MetricCard id="metric-targets" queryId="platform_status" sourceRows={platforms} title="Release targets" value={String(platforms.length)} description="Targets represented in the reviewed release evidence." />

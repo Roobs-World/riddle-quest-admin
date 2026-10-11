@@ -1,0 +1,9 @@
+{
+  "changed": [
+    "packages/portal/src/play/gameSession.ts"
+  ],
+  "added": [
+    "packages/portal/src/play/__tests__/pendingContinueDraft.test.ts"
+  ],
+  "removed": []
+}

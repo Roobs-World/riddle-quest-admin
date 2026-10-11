@@ -900,8 +900,8 @@
     "height": 844,
     "scenario": "normal",
     "name": "retired timer callbacks cannot update animation state",
-    "actual": 16,
-    "expected": 16
+    "actual": 15,
+    "expected": 15
   },
   {
     "width": 390,

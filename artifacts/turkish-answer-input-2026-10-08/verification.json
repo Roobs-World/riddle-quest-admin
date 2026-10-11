@@ -1,0 +1,27 @@
+{
+  "sourceInputs": 2490,
+  "ownedInputs": 13,
+  "clientTests": 2997,
+  "backendTests": 1759,
+  "backendRuntime": "Node22.23.1",
+  "turkishBrowserJourneys": 32,
+  "adjacentBrowserAssertions": 1902,
+  "builtBrowserChecks": 23,
+  "targetBuilds": 6,
+  "devvitBuilt": true,
+  "builtFiles": 1299,
+  "deployed": false,
+  "historicalHintReceiptsRewritten": false,
+  "goalComplete": false,
+  "terminalSessions": {
+    "44177": 1,
+    "73863": 1,
+    "37138": 0,
+    "63074": 0,
+    "24691": 0,
+    "3125": 0,
+    "81099": 0,
+    "24910": 0,
+    "57707": 0
+  }
+}

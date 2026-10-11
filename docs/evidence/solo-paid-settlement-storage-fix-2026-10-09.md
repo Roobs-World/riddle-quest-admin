@@ -1,0 +1,19 @@
+# Paid settlement persistence recovery
+
+A transient browser-storage write failure during receipt settlement previously left obsolete paid requests and rejected Skip preview ownership in the durable journal. The handler removed those fields in memory, then stopped its delivery clock. Once storage recovered, an idle mounted game had no persistence retry. The original isolated diagnostic failed while its successful-write control passed; see `solo-paid-settlement-storage-audit-2026-10-09.md` and its original logs.
+
+The recovery hook now records a failed settlement write and keeps its existing five-second renewal clock until the latest in-memory journal persists successfully. It retries the current journal, so later drafts and requests supersede the failed snapshot. The retry is guarded by the exact committed delivery owner, clock handle, rendered account scope and journal scope. Layout retirement clears the obligation and cancels the clock. An idle persistence retry sends no settled payment and stops its clock after a successful write. Receipt presentation still settles immediately.
+
+The optional Skip branch returns before canonical delivery, so its obsolete preview check was removed from the canonical error handler. The paid-result handler reads its immutable operation once. These small simplifications keep the added recovery within the existing startup budget. Initial Jest resources are 576,647 bytes against 576,716.8 bytes: 69.8 bytes headroom. This is an artifact size measurement, not cloud or player latency.
+
+Verification:
+
+- The original diagnostic and control both pass after the fix. A permanent regression uses the actual recovery hook, reducer and journal adapter to verify recovery while idle, removal of the rejected preview, preservation of the unrelated index-3 draft, no payment repost and cancellation after success.
+- 31 focused tests in four suites pass. Full client suite passes 3,215 tests in 314 suites; 96 gated tests in 16 suites are skipped.
+- Chrome and Firefox, development and production React StrictMode, each pass ten injected browser journeys and 60 checks. Total: 40 journeys, 240 checks. At 390px and 1280px they cover accepted and rejected receipts, a newer draft, account retirement and cancelled callbacks after unmount. Rejected-preview checks preserve the unrelated future segment. The actual router, reducer, hook and concrete journal storage run in the browser; storage failures and clocks are injected.
+- All 14 hosted coin-action checks pass against the production Jest artifact, covering Hint, Continue and Skip.
+- Portal type checking, TSDoc (27,835 declarations across 1,224 files), file sizes, all six isolated targets and Devvit server builds pass. YouTube uses the fixture build.
+
+Evidence is in `artifacts/solo-paid-settlement-storage-audit-2026-10-09/`. Initial build attempts failed the unchanged startup budget; their logs remain. Final builds and browser checks share the frozen production inputs. The final source manifest covers 2,555 inputs. Three test-only declaration comments were added after all jobs drained; `documentation-only-source-delta.json` verifies this is the only difference from the built cohort. Focused tests and TSDoc were then rerun successfully. All jobs are terminal. The 1,307 outputs and six target dependency inventories are archived with hashes; only the owned temporary build root and its inventory metadata were removed.
+
+The fix targets a mounted game's recovery after journal writes become available again. It cannot guarantee persistence if the page closes while storage is still failing. Failed journal deletion and unrelated non-settlement write failures are separate paths and are not claimed fixed. No live provider transaction or production cloud behavior was tested. Nothing was deployed, committed or pushed. The broader goal remains active.

@@ -1,0 +1,383 @@
+{
+  "engine": "firefox",
+  "mode": "development",
+  "browserVersion": "153.0",
+  "observations": [
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "one committed paid call",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "one successful payment reply",
+      "actual": [
+        true
+      ],
+      "expected": [
+        true
+      ]
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "content errors have content ownership",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "payment never refunds because content failed",
+      "actual": 470,
+      "expected": 470
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "settled payment has no automatic resend",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "recovered successor is editable",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "recovery makes no second charge",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "unavailable",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "one committed paid call",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "one successful payment reply",
+      "actual": [
+        true
+      ],
+      "expected": [
+        true
+      ]
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "content errors have content ownership",
+      "actual": [
+        "loadRiddle"
+      ],
+      "expected": [
+        "loadRiddle"
+      ]
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "payment never refunds because content failed",
+      "actual": 470,
+      "expected": 470
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "settled payment has no automatic resend",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "recovered successor is editable",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "recovery makes no second charge",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "transport",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "one committed paid call",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "one successful payment reply",
+      "actual": [
+        true
+      ],
+      "expected": [
+        true
+      ]
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "content errors have content ownership",
+      "actual": [
+        "loadRiddle"
+      ],
+      "expected": [
+        "loadRiddle"
+      ]
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "payment never refunds because content failed",
+      "actual": 470,
+      "expected": 470
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "settled payment has no automatic resend",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "recovered successor is editable",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "recovery makes no second charge",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "failure": "definitive",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "one committed paid call",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "one successful payment reply",
+      "actual": [
+        true
+      ],
+      "expected": [
+        true
+      ]
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "content errors have content ownership",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "payment never refunds because content failed",
+      "actual": 470,
+      "expected": 470
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "settled payment has no automatic resend",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "recovered successor is editable",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "recovery makes no second charge",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "unavailable",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "one committed paid call",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "one successful payment reply",
+      "actual": [
+        true
+      ],
+      "expected": [
+        true
+      ]
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "content errors have content ownership",
+      "actual": [
+        "loadRiddle"
+      ],
+      "expected": [
+        "loadRiddle"
+      ]
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "payment never refunds because content failed",
+      "actual": 470,
+      "expected": 470
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "settled payment has no automatic resend",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "recovered successor is editable",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "recovery makes no second charge",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "transport",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "one committed paid call",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "one successful payment reply",
+      "actual": [
+        true
+      ],
+      "expected": [
+        true
+      ]
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "content errors have content ownership",
+      "actual": [
+        "loadRiddle"
+      ],
+      "expected": [
+        "loadRiddle"
+      ]
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "payment never refunds because content failed",
+      "actual": 470,
+      "expected": 470
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "settled payment has no automatic resend",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "recovered successor is editable",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "recovery makes no second charge",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "failure": "definitive",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

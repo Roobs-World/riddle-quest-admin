@@ -1,0 +1,9 @@
+{
+  "changed": [
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+    "packages/portal/src/play/pendingGuessJournal.ts"
+  ],
+  "added": [
+    "packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts"
+  ]
+}

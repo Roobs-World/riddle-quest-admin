@@ -1,0 +1,97 @@
+{
+  "completion": {
+    "taskId": "architecture:build-evidence-isolation",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks",
+      "itch"
+    ],
+    "work": "Keep dependency inventories independent across custom and canonical outputs; publish evidence only after writing and final postprocessing; reject late build failures and generate-only runs without leaving successful inventories.",
+    "revision": "ff57da61b142b451196ea5740ab2411664644c9f",
+    "sourceDigest": "bcaa950c10948b2251e604b4ba1abfd278c11d20d70996fd32343badd6fae9a7",
+    "completedAt": "2026-10-10T09:38:33.539Z",
+    "trigger": "reviewed local current-source verification",
+    "requiredChecks": [
+      "architecture-contracts",
+      "portal-types",
+      "canonical-artifact-inventories",
+      "tested-archive-digests"
+    ],
+    "checks": [
+      {
+        "id": "architecture-contracts",
+        "status": "passed",
+        "evidence": "Reviewed current-source check; /tmp/riddle-architecture-outstanding.log; log SHA-256 70d9f03750189ca6e5c849020bb6aee29a9e89bf544e70955d7d027f23cccecd"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "Reviewed current-source check; /tmp/riddle-portal-direct-types.log; log SHA-256 ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+      },
+      {
+        "id": "canonical-artifact-inventories",
+        "status": "passed",
+        "evidence": "Reviewed current-source check; /tmp/riddle-dependency-outstanding.log; log SHA-256 df615018f8876dc1a636acef72466abb157db0f7dbb038a40e9fc1d0dc3d8b3a"
+      },
+      {
+        "id": "tested-archive-digests",
+        "status": "passed",
+        "evidence": "Reviewed current-source check; /tmp/riddle-archive-verification.log; log SHA-256 edd4e15e0d33b83eca8e085845ea4e86c3da60109aff18fd6787310e125bd0b7"
+      }
+    ],
+    "remainingGates": [
+      "Merge the workflow into main to enable automatic accepted-revision CI updates.",
+      "Provider submission, review and publication require separate receipts."
+    ],
+    "nextAction": "Review and merge the build evidence improvements, then follow the existing platform submission gates.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "builds/jest/index.html",
+        "sha256": "a3c913f0ec0e8dda263070781bc305eebb2cecb2fa2e67cfc9455f8d37d90d70"
+      },
+      {
+        "target": "facebook",
+        "file": "builds/facebook/index.html",
+        "sha256": "9ed60637adf3d1cd1dd10160f0a74d5e04f3b03187431772b6b0682400b03eb2"
+      },
+      {
+        "target": "reddit",
+        "file": "builds/reddit/index.html",
+        "sha256": "6b691f94ed57a493c3a92a3fea6198569498a41cbb573ddfdfe456a5f8f4ed61"
+      },
+      {
+        "target": "youtube",
+        "file": "builds/youtube/index.html",
+        "sha256": "c860d23b80875595ac85bdc76456549134c966b244c8f061517748cdc2963dd7"
+      },
+      {
+        "target": "netflix",
+        "file": "builds/netflix/index.html",
+        "sha256": "4a5fa67828251df06ac1ae8aae3afe4fdfd5150a29f53216b49da3a69e652968"
+      },
+      {
+        "target": "yahoo",
+        "file": "builds/yahoo/index.html",
+        "sha256": "b5f1ba2f10672efc304a1d48f8ab06894054566d7cb27f47f5e377f98ab15cc3"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "build-gamesnacks.zip",
+        "sha256": "78320856123e4c6ca4b51f5ec36c70f21f0a12f70de6fa835d9b6aefb738aa1e"
+      },
+      {
+        "target": "itch",
+        "file": "build-itch.zip",
+        "sha256": "eb80eb7d987a4ca679b41ec76caa86504c5d4453bec18edafc1286b8e5dd34c9"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

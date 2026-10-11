@@ -1,0 +1,370 @@
+[
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "initial owner starts no premature read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "abandoned render retains committed suspension",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "only committed suspension controls recovery reads",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "only committed suspension controls recovery callbacks",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "only admitted recovery delivers content",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-suspend",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "initial owner starts no premature read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "abandoned render retains committed suspension",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "only committed suspension controls recovery reads",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "only committed suspension controls recovery callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "only admitted recovery delivers content",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "abandoned-resume",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "initial owner starts no premature read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "only committed suspension controls recovery reads",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "only committed suspension controls recovery callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "only admitted recovery delivers content",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "committed-suspend",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "initial owner starts no premature read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "abandoned render retains committed suspension",
+    "actual": "false",
+    "expected": "false"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "only committed suspension controls recovery reads",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "only committed suspension controls recovery callbacks",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "only admitted recovery delivers content",
+    "actual": 0,
+    "expected": 1
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-suspend",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "initial owner starts no premature read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "abandoned render retains committed suspension",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "only committed suspension controls recovery reads",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "only committed suspension controls recovery callbacks",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "only admitted recovery delivers content",
+    "actual": 1,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-abandoned-resume",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "initial owner starts no premature read",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "only committed suspension controls recovery reads",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "only committed suspension controls recovery callbacks",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "only admitted recovery delivers content",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "no external traffic",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "online-committed-suspend",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

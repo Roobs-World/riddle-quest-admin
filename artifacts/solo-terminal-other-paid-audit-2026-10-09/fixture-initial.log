@@ -1,0 +1,41 @@
+FAIL ../../artifacts/solo-terminal-other-paid-audit-2026-10-09/diagnostic.test.tsx
+  ● terminal win settles rejected hint
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      47 | const effect of mockEffects)effect();
+      48 |   expect(stateRef.current.lastOutcome?.kind).toBe(kind);expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+    > 49 |   expect(Boolean(storage.read(scope)?.coinAction)||stateRef.current.pendingCoinSpend===null).toBe(true);
+         |                                                                                              ^
+      50 |   if(holdCharge){expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
+      51 |     now=26000;for(const interval of intervals)interval();expect(post.mock.calls.filter(call=>call[0].requestId===record.coinAction!.requestId)).toHaveLength(2);
+      52 |     expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);
+
+      at ../../artifacts/solo-terminal-other-paid-audit-2026-10-09/diagnostic.test.tsx:49:94
+
+  ● terminal loss settles rejected hint
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      47 | const effect of mockEffects)effect();
+      48 |   expect(stateRef.current.lastOutcome?.kind).toBe(kind);expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+    > 49 |   expect(Boolean(storage.read(scope)?.coinAction)||stateRef.current.pendingCoinSpend===null).toBe(true);
+         |                                                                                              ^
+      50 |   if(holdCharge){expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
+      51 |     now=26000;for(const interval of intervals)interval();expect(post.mock.calls.filter(call=>call[0].requestId===record.coinAction!.requestId)).toHaveLength(2);
+      52 |     expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);
+
+      at ../../artifacts/solo-terminal-other-paid-audit-2026-10-09/diagnostic.test.tsx:49:94
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 passed, 4 total
+Snapshots:   0 total
+Time:        0.329 s
+Ran all test suites.
+Test results written to: ../../artifacts/solo-terminal-other-paid-audit-2026-10-09/results.json

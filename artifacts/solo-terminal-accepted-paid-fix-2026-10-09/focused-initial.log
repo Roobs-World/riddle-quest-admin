@@ -1,0 +1,17 @@
+FAIL src/play/__tests__/terminalPaidReceiptPresentation.test.ts
+  ● Test suite failed to run
+
+    [96msrc/play/__tests__/terminalPaidReceiptPresentation.test.ts[0m:[93m66[0m:[93m3[0m - [91merror[0m[90m TS1005: [0m'try' expected.
+
+    [7m66[0m  }finally{if(prior)Object.defineProperty(globalThis,'window',prior);else Reflect.deleteProperty(globalThis,'window');}
+    [7m  [0m [91m  ~~~~~~~[0m
+    [96msrc/play/__tests__/terminalPaidReceiptPresentation.test.ts[0m:[93m67[0m:[93m2[0m - [91merror[0m[90m TS1472: [0m'catch' or 'finally' expected.
+
+    [7m67[0m });
+    [7m  [0m [91m ~[0m
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.184 s
+Ran all test suites matching src/play/__tests__/terminalPaidReceiptPresentation.test.ts.

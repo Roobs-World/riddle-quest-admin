@@ -1,0 +1,27 @@
+[
+  {
+    "name": "firestore",
+    "port": 42907,
+    "open": true
+  },
+  {
+    "name": "database",
+    "port": 37313,
+    "open": true
+  },
+  {
+    "name": "storage",
+    "port": 43761,
+    "open": false
+  },
+  {
+    "name": "hub",
+    "port": 35877,
+    "open": false
+  },
+  {
+    "name": "logging",
+    "port": 37977,
+    "open": false
+  }
+]

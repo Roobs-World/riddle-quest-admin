@@ -1,0 +1,6 @@
+
+Test Suites: 3 passed, 3 total
+Tests:       62 passed, 62 total
+Snapshots:   0 total
+Time:        0.305 s, estimated 1 s
+Ran all test suites within paths "src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts", "src/play/race/__tests__/liveRaceDraftStorage.test.ts", "src/play/race/__tests__/liveRaceDraft.test.ts".

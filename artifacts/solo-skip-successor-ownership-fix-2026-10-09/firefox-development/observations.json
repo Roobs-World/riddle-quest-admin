@@ -1,0 +1,1095 @@
+{
+  "engine": "firefox",
+  "mode": "development",
+  "browserVersion": "153.0",
+  "observations": [
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "owned target admission",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "valid",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "origin",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "owned target admission",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "newer draft survives old successor",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "early",
+      "target": "advanced",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "valid",
+      "name": "owned target admission",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "valid",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "valid",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "valid",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "valid",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "origin",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "origin",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "origin",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "origin",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "origin",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "origin",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "advanced",
+      "name": "owned target admission",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "advanced",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "advanced",
+      "name": "newer draft survives old successor",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "advanced",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "advanced",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 390,
+      "phase": "late",
+      "target": "advanced",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "owned target admission",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "valid",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "origin",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-index",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "wrong-mode",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "owned target admission",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "newer draft survives old successor",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "paid settlement cannot replace current round",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "paid settlement preserves successor draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "early",
+      "target": "advanced",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "valid",
+      "name": "owned target admission",
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "valid",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "valid",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "valid",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "valid",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "origin",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "origin",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "origin",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "origin",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "origin",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "origin",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-index",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "owned target admission",
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000001",
+      "expected": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "invalid reply leaves valid successor admissible",
+      "actual": "00000000-0000-4000-8000-000000000002",
+      "expected": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "",
+      "expected": ""
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "wrong-mode",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "advanced",
+      "name": "owned target admission",
+      "actual": 3,
+      "expected": 3
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "advanced",
+      "name": "foreign target cannot change mode or token",
+      "actual": "00000000-0000-4000-8000-000000000003",
+      "expected": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "advanced",
+      "name": "newer draft survives old successor",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "advanced",
+      "name": "duplicate or stale delivery preserves draft",
+      "actual": "Q",
+      "expected": "Q"
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "advanced",
+      "name": "no gameplay auto posts",
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "width": 1280,
+      "phase": "late",
+      "target": "advanced",
+      "name": "no browser errors",
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

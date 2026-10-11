@@ -1,0 +1,48 @@
+[
+  {
+    "session": 81100,
+    "scope": "full existing 87 SDK suites under pinned Node22",
+    "exit": 0
+  },
+  {
+    "session": 21222,
+    "scope": "1759 backend units and pinned type/lint gates before new test",
+    "exit": 0
+  },
+  {
+    "session": 7181,
+    "scope": "first focused fixture failed due legitimate purchase achievement grant",
+    "exit": 1
+  },
+  {
+    "session": 71113,
+    "scope": "first focused test TSDoc/file-size gates",
+    "exit": 0
+  },
+  {
+    "session": 86285,
+    "scope": "comparison rejected unexpected baseline success because override was not applied",
+    "exit": 1
+  },
+  {
+    "session": 41157,
+    "scope": "final test TSDoc/file-size gates",
+    "exit": 0
+  },
+  {
+    "session": 50706,
+    "scope": "final pinned backend type/lint gates including new test",
+    "exit": 0
+  },
+  {
+    "session": 43472,
+    "scope": "comparison config syntax mistake; not regression evidence",
+    "exit": 0,
+    "note": "Wrapper accepted expected exit code despite no real baseline tests; retained and replaced by strict test-count/hash validation."
+  },
+  {
+    "session": 53789,
+    "scope": "strict real before-source two expected failures and current four passes",
+    "exit": 0
+  }
+]

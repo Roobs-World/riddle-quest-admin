@@ -1,0 +1,15 @@
+node:internal/fs/promises:607
+  return await PromisePrototypeThen(
+         ^
+
+Error: ENOENT: no such file or directory, access '/home/craig-beswetherick/Documents/riddle-quest/build-youtube.zip'
+    at async access (node:internal/fs/promises:607:10)
+    at async verifyYouTubeZip (file:///home/craig-beswetherick/Documents/riddle-quest/scripts/release/verify-release-target-e2e.mjs:36:3)
+    at async file:///home/craig-beswetherick/Documents/riddle-quest/scripts/release/verify-release-target-e2e.mjs:47:1 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'access',
+  path: '/home/craig-beswetherick/Documents/riddle-quest/build-youtube.zip'
+}
+
+Node.js v24.17.0

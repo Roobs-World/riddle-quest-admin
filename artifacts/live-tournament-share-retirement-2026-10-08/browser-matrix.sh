@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SHARE_RETIREMENT_BROWSER=chromium SHARE_RETIREMENT_MODE=development SHARE_RETIREMENT_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox SHARE_RETIREMENT_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-share-retirement-2026-10-08/chromium-development" node packages/portal/scripts/verify-live-tournament-share-retirement-browser.mjs > "artifacts/live-tournament-share-retirement-2026-10-08/chromium-development.log" 2>&1
+echo "chromium-development passed"
+SHARE_RETIREMENT_BROWSER=chromium SHARE_RETIREMENT_MODE=production SHARE_RETIREMENT_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox SHARE_RETIREMENT_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-share-retirement-2026-10-08/chromium-production" node packages/portal/scripts/verify-live-tournament-share-retirement-browser.mjs > "artifacts/live-tournament-share-retirement-2026-10-08/chromium-production.log" 2>&1
+echo "chromium-production passed"
+SHARE_RETIREMENT_BROWSER=firefox SHARE_RETIREMENT_MODE=development SHARE_RETIREMENT_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox SHARE_RETIREMENT_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-share-retirement-2026-10-08/firefox-development" node packages/portal/scripts/verify-live-tournament-share-retirement-browser.mjs > "artifacts/live-tournament-share-retirement-2026-10-08/firefox-development.log" 2>&1
+echo "firefox-development passed"
+SHARE_RETIREMENT_BROWSER=firefox SHARE_RETIREMENT_MODE=production SHARE_RETIREMENT_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox SHARE_RETIREMENT_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/live-tournament-share-retirement-2026-10-08/firefox-production" node packages/portal/scripts/verify-live-tournament-share-retirement-browser.mjs > "artifacts/live-tournament-share-retirement-2026-10-08/firefox-production.log" 2>&1
+echo "firefox-production passed"

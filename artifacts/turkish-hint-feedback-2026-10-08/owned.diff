@@ -1,0 +1,55 @@
+--- a/packages/portal/scripts/verify-turkish-answer-input-browser.mjs
++++ b/packages/portal/scripts/verify-turkish-answer-input-browser.mjs
+@@ -26,7 +26,7 @@
+ sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',owner),'seen');
+ localStorage.setItem(createTooltipTourStorageKey('gameTour',owner),'seen');
+ function host(message){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:message}));}
+-window.addEventListener('riddle-quest:game-to-host',event=>{if(event.detail.type!=='game:ready'||initialized)return;
++window.addEventListener('riddle-quest:game-to-host',event=>{if(event.detail.type==='game:requestHint'){setTimeout(()=>{host({type:'host:operationResult',requestId:event.detail.requestId,payload:{operation:'hint',ok:true,data:{index:0,revealedLetter:'İ',newCoins:545}}});window.hintConfirmed=true;},100);return;}if(event.detail.type!=='game:ready'||initialized)return;
+  initialized=true;setTimeout(async()=>{await setLocaleAndWait('tr');
+  host({type:'host:init',payload:{protocolVersion:1,sessionId:'keyboard-fixture',locale:'tr',gameMode:'classic',
+  user:{uid:owner,isAnonymous:false,accountGeneration:1},profile:{username:'Player',coins:570,level:2,xp:150,
+@@ -51,10 +51,10 @@
+   });
+   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+   browser = await (process.env.TURKISH_INPUT_ENGINE==='firefox'?firefox:chromium).launch({headless:true,...(process.env.TURKISH_INPUT_ENGINE==='firefox'&&process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH}:{})});
+-  for(const width of [390,1280])for(const method of ['physical','virtual','shifted-physical'])for(const hint of [false,true]){
++  for(const width of [390,1280])for(const method of ['physical','virtual','shifted-physical'])for(const hint of [false,true,'paid']){
+     const page=await browser.newPage({viewport:{width,height:844}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
+     await page.goto('http://127.0.0.1:'+server.address().port+'/?hint='+hint);await page.getByRole('heading',{name:'Which city is on the Turkish Aegean coast?',exact:true}).waitFor();await page.evaluate(()=>document.activeElement?.blur());
+-    const text=hint?'zmir':'izmir';if(method==='physical')await page.keyboard.type(text);else if(method==='shifted-physical')await page.evaluate(text=>{for(const key of text.toLocaleUpperCase('tr'))window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));},text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toLocaleUpperCase('tr')+'$')}).click();
++    if(hint==='paid'){await page.locator('.game-input-actions button[data-tooltip=gameHint]').first().click();await page.locator('.modal-hint .play-primary').click();await page.waitForFunction(()=>window.hintConfirmed);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));const cls=await page.locator('.keyboard button').filter({hasText:/^İ$/}).getAttribute('class');assert.equal(cls,'key green');}const text=hint?'zmir':'izmir';if(method==='physical')await page.keyboard.type(text);else if(method==='shifted-physical')await page.evaluate(text=>{for(const key of text.toLocaleUpperCase('tr'))window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));},text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toLocaleUpperCase('tr')+'$')}).click();
+     const draft=await page.locator('.guess-row').first().textContent();assert.equal(draft.replaceAll(/\s/g,''),'İZMİR');
+     await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('Enter');await page.waitForFunction(()=>window.sentGuesses.length===1);await page.waitForFunction(()=>document.querySelector('.guess-row')?.querySelectorAll('.green').length===5);
+     const guess=await page.evaluate(()=>window.sentGuesses[0].payload.guess);assert.equal(guess.toLocaleLowerCase('tr'),'izmir');
+--- a/packages/portal/src/play/__tests__/gameSession.test.ts
++++ b/packages/portal/src/play/__tests__/gameSession.test.ts
+@@ -864,3 +864,16 @@
+   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+   expect(reduce(state, {type: "applyHint", index: 0, letter: "I"}).currentLetters[0]).toBe("I");
+ });
++
++
++it.each([["izmir", "İ", "i"], ["izmir", "I", "i"], ["IRMAK", "I", "ı"]])(
++  "keeps confirmed Turkish %s hint %s keyboard feedback under canonical %s", (answer, letter, key) => {
++    /** Immutable Turkish content determines both displayed hint and keyboard feedback identity. */
++    const loaded = {...riddle, evaluation: {answer, locale: "tr"}};
++    /** A freshly confirmed grant starts before any submitted guess can mask hint feedback. */
++    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: loaded});
++    /** Confirmation must color precisely the hinted symbol without leaking to the other Turkish I. */
++    const hinted = reduce(state, {type: "applyHint", index: 0, letter});
++    expect(hinted.letterStates).toEqual({[key]: "green"});
++  },
++);
+--- a/packages/portal/src/play/gameSession.ts
++++ b/packages/portal/src/play/gameSession.ts
+@@ -539,7 +539,8 @@
+         currentLetters: nextLetters.slice(0, state.riddle.answerLength),
+         activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
+         hintRevealedIndices,
+-        letterStates: {...state.letterStates, [action.letter.toLowerCase()]: "green"},
++        letterStates: {...state.letterStates,
++          [nextLetters[action.index].toLocaleLowerCase(state.riddle.evaluation?.locale ?? state.locale)]: "green"},
+         profile: withProfileCoins(state.profile, action.newCoins),
+         pendingHintState: null,
+         notice: null,

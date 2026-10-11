@@ -1,0 +1,5 @@
+{
+  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "8dec8b2158bb404b14b8773d9fc87d6bfd8763013a9f9c1e2f6493f2f5a77fa9",
+  "packages/portal/src/play/pendingGuessJournal.ts": "3aaefdf41061dff45fd9d0b66ea2f6f8805b384944630d3f836b13e842c5a513",
+  "artifacts/journal-write-observation-2026-10-09/probe.mjs": "b7378b12f72fe0425475bb4be0854a64a060e9fe11943d1f15926a61aa64a155"
+}

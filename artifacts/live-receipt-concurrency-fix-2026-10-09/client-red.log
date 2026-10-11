@@ -1,0 +1,56 @@
+FAIL src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts
+  ● invalidates untouched restored cells on a later accepted attempt (proof=false)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+        "A",
+    -   "",
+    +   "e",
+        "",
+        "",
+      ]
+
+      173 |   const later = structuredClone(canonical); later.run!.currentRiddle!.guessesUsed++;
+      174 |   later.run!.currentRiddle!.revealedLetters = [{index: 0, letter: "A"}];
+    > 175 |   expect(reconcileLiveRaceDraft(restored, canonical, later).letters).toEqual(["A", "", "", ""]);
+          |                                                                      ^
+      176 |   const focused = editLiveRaceDraft(canonical.run!.currentRiddle!, restored, "slot", 3);
+      177 |   expect(reconcileLiveRaceDraft(focused, canonical, later).letters).toEqual(["A", "", "", ""]);
+      178 |   const edited = editLiveRaceDraft(canonical.run!.currentRiddle!, restored, "letter", "x");
+
+      at src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts:175:70
+
+  ● invalidates untouched restored cells on a later accepted attempt (proof=true)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+        "A",
+    -   "",
+    +   "e",
+        "",
+        "",
+      ]
+
+      173 |   const later = structuredClone(canonical); later.run!.currentRiddle!.guessesUsed++;
+      174 |   later.run!.currentRiddle!.revealedLetters = [{index: 0, letter: "A"}];
+    > 175 |   expect(reconcileLiveRaceDraft(restored, canonical, later).letters).toEqual(["A", "", "", ""]);
+          |                                                                      ^
+      176 |   const focused = editLiveRaceDraft(canonical.run!.currentRiddle!, restored, "slot", 3);
+      177 |   expect(reconcileLiveRaceDraft(focused, canonical, later).letters).toEqual(["A", "", "", ""]);
+      178 |   const edited = editLiveRaceDraft(canonical.run!.currentRiddle!, restored, "letter", "x");
+
+      at src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts:175:70
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 22 passed, 24 total
+Snapshots:   0 total
+Time:        0.25 s, estimated 1 s
+Ran all test suites within paths "src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts".

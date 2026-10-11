@@ -1,0 +1,8 @@
+$ node scripts/audit-tsdoc.mjs
+TSDoc audit failed: 5 production declarations are undocumented.
+- packages/portal/src/play/paidSettlement.ts:35 current
+- packages/portal/src/play/paidSettlement.ts:38 scope
+- packages/portal/src/play/paidSettlement.ts:44 now
+- packages/portal/src/play/paidSettlement.ts:48 scope
+- packages/portal/src/play/pendingGuessJournal.ts:330 scope
+[ELIFECYCLE] Command failed with exit code 1.

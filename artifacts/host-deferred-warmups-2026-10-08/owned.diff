@@ -1,0 +1,243 @@
+--- a/packages/portal/src/play/services.ts
++++ b/packages/portal/src/play/services.ts
+@@ -63,8 +63,11 @@
+     },
+   },
+   /** Starts initial riddle downloads after the target adapter has loaded. */
+-  preloadInitialRiddles(locale) {
+-    void loadServices().then((services) => services.preloadInitialRiddles?.(locale)).catch(() => undefined);
++  preloadInitialRiddles(locale, signal) {
++    if (signal?.aborted) return;
++    void loadServices().then((services) => {
++      if (!signal?.aborted) return services.preloadInitialRiddles?.(locale, signal);
++    }).catch(() => undefined);
+   },
+   /** Loads riddle. */
+   async loadRiddle(input) {
+--- a/packages/portal/src/play/useHostRiddleLifecycle.ts
++++ b/packages/portal/src/play/useHostRiddleLifecycle.ts
+@@ -6,6 +6,9 @@
+ import type {AuthSnapshot, HostServices, WebGameMode} from "./types";
+ import {preloadGameModals} from "./preloadGameModals";
+ import {riddleLoadDeadline} from "./riddleLoadDeadline";
++
++/** Reports riddle failures through the fixed host diagnostic scope. */
++const reportRiddleFailure = (error: unknown) => captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
+ 
+ /** Input required to own the host's complete single-player riddle lifecycle. */
+ type HostRiddleLifecycleOptions = Readonly<{
+@@ -166,6 +169,15 @@
+       entry.scope === current &&
+       deliveredScopeRef.current === entry.scope && deliveredRiddleRef.current?.sessionToken === entry.parentToken;
+   };
++  /** Deferred content preparation retires independently of already admitted visible reads. */
++  const warmupAbortRef = useRef<AbortController | null>(null);
++  useLayoutEffect(() => {
++    /** Only a committed context may retain lazy warmup admission. */
++    const warmup = new AbortController();
++    warmupAbortRef.current = warmup;
++    if (recoverySuspended) warmup.abort();
++    return () => {warmup.abort();};
++  }, [contextScope, recoverySuspended]);
+   /** Latest recovery scheduler used by failed load attempts. */
+   const scheduleRecoveryRef = useRef<() => void>(() => undefined);
+   /** Latest accepted mode used by recovery. */
+@@ -282,6 +294,14 @@
+       /** Obsolete successes and failures cannot mutate the latest board's host state. */
+       const ownsDelivery = () => contextScopeRef.current === contextScope && contextVersion === contextVersionRef.current &&
+         deliveryRef.current === delivery && !delivery.signal.aborted;
++      /** Ordinary and Daily-fallback successes publish the same correlated authoritative snapshot. */
++      const acceptRiddle = (riddle: Awaited<ReturnType<HostServices["loadRiddle"]>>) => {
++        loadedRef.current = true;
++        deliveredRiddleRef.current = riddle;
++        deliveredScopeRef.current = preparationScope;
++        postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
++        postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
++      };
+       /** Complete pending load outcome. */
+       const pending = (async () => {
+         try {
+@@ -306,15 +326,7 @@
+             ? await riddleLoadDeadline(services.loadRiddle(input), delivery.signal)
+             : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input), delivery.signal)));
+           if (!ownsDelivery()) return false;
+-          loadedRef.current = true;
+-          deliveredRiddleRef.current = riddle;
+-          deliveredScopeRef.current = preparationScope;
+-          postToGame({
+-            type: "host:riddleLoaded",
+-            requestId,
+-            payload: {riddle, profile: profileRef.current},
+-          });
+-          postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
++          acceptRiddle(riddle);
+           trackEvent("level_start", {
+             game_mode: riddle.gameMode,
+             level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
+@@ -332,7 +344,7 @@
+           /** Server-confirmed completion is an expected routing outcome. */
+           const dailyCompleted = input.gameMode === "challenge" && typeof error === "object" &&
+             error !== null && "code" in error && error.code === "daily-completed";
+-          if (!dailyCompleted) captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
++          if (!dailyCompleted) reportRiddleFailure(error);
+           /** Safe player-facing failure notice. */
+           const message = getHostErrorMessage(error);
+           // Confirmed Daily completion routes both launch and Next Level requests to Classic.
+@@ -346,11 +358,7 @@
+                 gameMode: "classic", locale: input.locale, classicIndex: classicIndexRef.current,
+               }), delivery.signal));
+               if (!ownsDelivery()) return false;
+-              loadedRef.current = true;
+-              deliveredRiddleRef.current = riddle;
+-              deliveredScopeRef.current = preparationScope;
+-              postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
+-              postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
++              acceptRiddle(riddle);
+               setStartupComplete(true);
+               setStartupUnavailable(false);
+               // Completion is an expected launch decision, not a failure notice.
+@@ -362,7 +370,7 @@
+               return true;
+             } catch (fallbackError) {
+               if (!ownsDelivery()) return false;
+-              captureBrowserException(fallbackError, {component: "play_host", operation: "loadRiddle"});
++              reportRiddleFailure(fallbackError);
+               /** Safe failure text returned through the original correlated load request. */
+               const fallbackMessage = getHostErrorMessage(fallbackError);
+               setNotice(fallbackMessage);
+@@ -403,7 +411,7 @@
+     const contextSignal = contextAbortRef.current!.signal;
+     if (!userId) return;
+     // A retired frame cannot consume newly issued Classic or Daily preparation.
+-    if (!recoverySuspendedRef.current) services.preloadInitialRiddles?.(locale);
++    if (!recoverySuspendedRef.current) services.preloadInitialRiddles?.(locale, warmupAbortRef.current!.signal);
+     /** Whether this context generation has been disposed. */
+     let cancelled = false;
+     /** Active recovery timer. */
+--- a/packages/portal/src/play/types.ts
++++ b/packages/portal/src/play/types.ts
+@@ -201,8 +201,8 @@
+   readonly products: ProductSummary[];
+   /** Stores auth. */
+   readonly auth: AuthAdapter;
+-  /** Starts loading the Daily riddle and issued Classic queue for the initial play session. */
+-  preloadInitialRiddles?: (locale: string) => void;
++  /** Starts initial Daily/Classic preparation; cancellation retires deferred admission before provider work starts. */
++  preloadInitialRiddles?: (locale: string, signal?: AbortSignal) => void;
+   /** Loads riddle. */
+   loadRiddle(input: {
+     /** Stores game mode. */
+--- a/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
++++ b/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
+@@ -505,7 +505,7 @@
+   /** Active startup still benefits from target-owned preparation. */
+   const preload = jest.fn();
+   setup(jest.fn(), {preloadInitialRiddles: preload});
+-  expect(preload).toHaveBeenCalledWith("en");
++  expect(preload).toHaveBeenCalledWith("en", expect.any(AbortSignal));
+   expect(preload).toHaveBeenCalledTimes(1);
+ });
+ 
+@@ -520,3 +520,27 @@
+   cleanup = effects[0]() || undefined;
+   expect(preload).toHaveBeenCalledTimes(1);
+ });
++
++
++it("retires deferred warmup admission when the owner unmounts", () => {
++  /** Target facade receives a signal before its lazy adapter finishes loading. */
++  const preload = jest.fn();
++  setup(jest.fn(), {preloadInitialRiddles: preload});
++  /** Original signal owns only this content context. */
++  const signal = preload.mock.calls[0]![1] as AbortSignal;
++  expect(signal.aborted).toBe(false);
++  retire();
++  expect(signal.aborted).toBe(true);
++});
++
++it("retires deferred warmup admission when bridge suspension commits", () => {
++  /** No new context read or warmup is required to retire the old request. */
++  const preload = jest.fn();
++  /** Stable account and provider keep their original visible read ownership. */
++  const owner = setup(jest.fn(), {preloadInitialRiddles: preload});
++  /** Original facade admission is independently revocable. */
++  const signal = preload.mock.calls[0]![1] as AbortSignal;
++  beginRender(); useHostRiddleLifecycle({...owner.options, recoverySuspended: true});
++  expect(signal.aborted).toBe(true);
++  expect(preload).toHaveBeenCalledTimes(1);
++});
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -219,7 +219,8 @@
+     "test:live-tournament-share-preparation:browser": "node scripts/verify-live-tournament-share-preparation-browser.mjs && SHARE_PREPARATION_MODE=production node scripts/verify-live-tournament-share-preparation-browser.mjs",
+     "test:live-tournament-share-retirement:browser": "node scripts/verify-live-tournament-share-retirement-browser.mjs && SHARE_RETIREMENT_MODE=production node scripts/verify-live-tournament-share-retirement-browser.mjs",
+     "test:host-recovery-suspension:browser": "node scripts/verify-host-recovery-suspension-browser.mjs && RECOVERY_SUSPENSION_MODE=production node scripts/verify-host-recovery-suspension-browser.mjs",
+-    "test:host-retired-warmups:browser": "node scripts/verify-host-retired-warmups-browser.mjs && RETIRED_WARMUPS_MODE=production node scripts/verify-host-retired-warmups-browser.mjs"
++    "test:host-retired-warmups:browser": "node scripts/verify-host-retired-warmups-browser.mjs && RETIRED_WARMUPS_MODE=production node scripts/verify-host-retired-warmups-browser.mjs",
++    "test:host-deferred-warmups:browser": "node scripts/verify-host-deferred-warmups-browser.mjs && DEFERRED_WARMUPS_MODE=production node scripts/verify-host-deferred-warmups-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- /dev/null
++++ b/packages/portal/scripts/verify-host-deferred-warmups-browser.mjs
+@@ -0,0 +1,51 @@
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium,firefox} from '@playwright/test';
++const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
++const mode=process.env.DEFERRED_WARMUPS_MODE??'development',engine=process.env.DEFERRED_WARMUPS_BROWSER??'chromium';
++const output=path.resolve(process.env.DEFERRED_WARMUPS_REPORT_DIR??path.join(portal,'../../artifacts/host-deferred-warmups-2026-10-08',engine+'-'+mode));
++await mkdir(output,{recursive:true});
++const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/deferred-warmups-'));
++const observations=[];let browser,server,browserVersion;
++try {
++ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
++ await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';
++import {createHostServices} from ${JSON.stringify(path.join(portal,'src/play/services.ts'))};
++import {useHostRiddleLifecycle} from ${JSON.stringify(path.join(portal,'src/play/useHostRiddleLifecycle.ts'))};
++const scenario=new URLSearchParams(location.search).get('scenario'),initial=scenario==='retired-start';
++window.probe={reads:[],warmups:[],posts:[],recoveries:0,errors:[],unhandled:[],renders:[]};
++window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
++const nativeSetTimeout=window.setTimeout.bind(window),nativeClearTimeout=window.clearTimeout.bind(window),timers=new Map();
++window.setTimeout=(callback,delay,...args)=>{if(delay!==250)return nativeSetTimeout(callback,delay,...args);const id=nativeSetTimeout(()=>{timers.delete(id);callback(...args);},120000);timers.set(id,()=>callback(...args));return id;};window.clearTimeout=id=>{timers.delete(id);nativeClearTimeout(id);};window.fireRecovery=()=>{for(const [id,callback] of [...timers]){timers.delete(id);nativeClearTimeout(id);callback();}};window.timerCount=()=>timers.size;
++const riddle={riddleId:'classic_2',text:'What has keys but cannot open doors?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000002',gameMode:'classic',index:2};
++const services=createHostServices('fake'),postToGame=message=>window.probe.posts.push(message),postOperation=()=>{},setNotice=()=>{},withActivity=operation=>operation(),onRecoveryAttempt=()=>window.probe.recoveries++,never=new Promise(()=>{});
++function Owner({changed,speculative}){const recoverySuspended=initial||(scenario==='retired-account'&&changed);window.probe.renders.push({changed,speculative,recoverySuspended});const lifecycle=useHostRiddleLifecycle({userId:changed?'replacement-player':'fixture-player',accountGeneration:1,profile:{classicIndex:2},initialGameMode:'classic',locale:'en',services,withActivity,postToGame,postOperation,configurationWarning:null,setNotice,onRecoveryAttempt,recoverySuspended});if(speculative)throw never;return <main data-owner data-generation={changed?1:0} data-suspended={recoverySuspended}><output>{lifecycle.startupComplete?'Ready':'Waiting'}</output></main>;}
++function App(){const [changed,setChanged]=React.useState(false),[speculative,setSpeculative]=React.useState(false),[closed,setClosed]=React.useState(false);return <><button data-speculate onClick={()=>React.startTransition(()=>{setChanged(true);setSpeculative(true);})}>Speculate fixture</button><button data-close onClick={()=>setClosed(true)}>Close fixture</button><button data-commit onClick={()=>{setChanged(true);setSpeculative(false);}}>Commit fixture</button><React.Suspense fallback={<output data-fallback>Pending fixture</output>}>{!closed&&<Owner changed={changed} speculative={speculative}/>}</React.Suspense></>;}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++`);
++ await build({root:scratch,configFile:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'held-fake-adapter',enforce:'pre',async load(id){if(id.endsWith('/fakeServices.ts'))return `await new Promise(resolve=>{window.releaseAdapter=resolve;});export const createFakeHostServices=()=>({products:[],auth:{subscribe:()=>()=>{}},preloadInitialRiddles:locale=>window.probe.warmups.push(locale),loadRiddle:async input=>{window.probe.reads.push(input);return {riddleId:'classic_2',text:'What has keys?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000002',gameMode:'classic',index:2};}});`;}}],build:{outDir:'dist',minify:false,target:'esnext'}});
++ server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname;const file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
++ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;
++ browser=await (engine==='firefox'?firefox:chromium).launch({headless:true,...(engine==='firefox'&&process.env.DEFERRED_WARMUPS_FIREFOX_EXECUTABLE?{executablePath:process.env.DEFERRED_WARMUPS_FIREFOX_EXECUTABLE}:{})});browserVersion=browser.version();
++ for(const [width,height] of process.env.DEFERRED_WARMUPS_QUICK==='1'?[[390,844]]:[[390,568],[390,844],[1280,844]])for(const scenario of ['unmount','retired-account','active-start']){
++  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),external=[];
++  await context.route('**/*',route=>{if(new URL(route.request().url()).origin===origin)return route.continue();external.push(route.request().url());return route.abort();});
++  const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
++  await page.goto(origin+'/?scenario='+scenario);await page.locator('[data-owner]').waitFor();await page.waitForFunction(()=>window.timerCount()===1);
++  await page.waitForFunction(()=>typeof window.releaseAdapter==='function');
++  metric('deferred adapter has not started content work',await page.evaluate(()=>window.probe.warmups.length),0);
++  if(scenario==='unmount'){await page.locator('[data-close]').click();await page.locator('[data-owner]').waitFor({state:'detached'});}
++  if(scenario==='retired-account'){await page.locator('[data-commit]').click();await page.locator('[data-owner][data-generation="1"][data-suspended=true]').waitFor();}
++  await page.evaluate(()=>window.releaseAdapter());await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
++  metric('only an active owner may admit deferred warmups',await page.evaluate(()=>window.probe.warmups.length>0),scenario==='active-start');
++  metric('no external traffic',external,[]);metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await page.evaluate(()=>window.probe.unhandled),[]);
++  await page.screenshot({path:path.join(output,[width,height,scenario].join('-')+'.png')});await context.close();
++ }
++}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2)+'\n');}
++const failures=observations.filter(x=>JSON.stringify(x.actual)!==JSON.stringify(x.expected));console.log(JSON.stringify({mode,engine,browserVersion,cases:new Set(observations.map(x=>[x.width,x.height,x.scenario].join(':'))).size,checks:observations.length,failures},null,2));assert.equal(failures.length,0,'Only committed recovery suspension can control provider admission');

@@ -368,6 +368,14 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   /** Read-only polls have no command binding or receipt to persist. */
   const binding = input.action === "poll" ? "" : createHash("sha256").update(JSON.stringify(input)).digest("hex");
   if (receipt?.exists && receipt.data()?.binding !== binding) throw new HttpsError("invalid-argument", "Live command id reused.");
+  /** Private proof identifies only a newly accepted wrong guess that retains its question. */
+  let guessProof: {
+    /** Original viewer-owned ticket. */ ticketId: string;
+    /** Question whose accepted attempt advances. */ riddleId: string;
+    /** Repeated content cannot cross positions. */ position: number;
+    /** Canonical attempt version before acceptance. */ guessesUsedBefore: number;
+    /** Canonical attempt version committed with this receipt. */ guessesUsedAfter: number;
+  } | undefined;
   if (checks.some(check => check.exists)) {
     matchChanged ||= match.players[1 - seat].displayName !== "Riddle Quest player" || match.players[1 - seat].avatarUrl !== null || match.winner === undefined;
     match.players[1 - seat] = {...match.players[1 - seat], displayName: "Riddle Quest player", avatarUrl: null, level: 1};
@@ -386,8 +394,15 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
       /** Provides run behavior. */
       const run = applyActionRateLimit(refreshRaceRun(match.runs[seat], nowMs), userId, nowMs);
       // Scoring uses the existing hint/guess rules, without an opponent recording.
-      match.runs[seat] = input.action === "guess" ? applyRaceGuess(run, {riddleId: input.riddleId!, guess: input.guess!}, nowMs).run :
-        input.action === "hint" ? applyRaceHint(run, {riddleId: input.riddleId!}, nowMs).run : applyRaceSkip(run, {riddleId: input.riddleId!}, nowMs);
+      if (input.action === "guess") {
+        /** Scalars are captured before the scoring engine can advance the attempt or question. */
+        const position = run.currentPosition, guessesUsedBefore = run.guessesUsed;
+        /** Only the authoritative scoring result can establish eligible recovery evidence. */
+        const guessed = applyRaceGuess(run, {riddleId: input.riddleId!, guess: input.guess!}, nowMs);
+        match.runs[seat] = guessed.run;
+        if (!guessed.isCorrect && !guessed.autoSkipped && guessed.run.currentPosition === position && guessed.run.guessesUsed === guessesUsedBefore + 1)
+          guessProof = {ticketId: input.ticketId, riddleId: input.riddleId!, position, guessesUsedBefore, guessesUsedAfter: guessed.run.guessesUsed};
+      } else match.runs[seat] = input.action === "hint" ? applyRaceHint(run, {riddleId: input.riddleId!}, nowMs).run : applyRaceSkip(run, {riddleId: input.riddleId!}, nowMs);
       /** Provides changed behavior. */
       const changed = match.runs[seat];
       changed.lastActionAtMs = Math.max(nowMs, changed.lastActionAtMs ?? 0);
@@ -481,6 +496,6 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     publishLiveRaceSignals(db, transaction, match.tickets.filter((_, seat) => !match!.deletedSeats?.[seat]), expiresAt);
   }
   if (previousMatchId !== ticket.matchId) transaction.update(ticketRef, {matchId: ticket.matchId, seenAtMs: nowMs});
-  if (input.action !== "poll" && !receipt?.exists) transaction.create(requestRef, {userId, binding, expiresAt});
+  if (input.action !== "poll" && !receipt?.exists) transaction.create(requestRef, {userId, binding, expiresAt, ...(guessProof ? {guessProof} : {})});
   return response;
 }

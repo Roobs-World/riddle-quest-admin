@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+DEFERRED_WARMUPS_BROWSER=chromium DEFERRED_WARMUPS_MODE=development DEFERRED_WARMUPS_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox DEFERRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-deferred-warmups-2026-10-08/chromium-development" node packages/portal/scripts/verify-host-deferred-warmups-browser.mjs > "artifacts/host-deferred-warmups-2026-10-08/chromium-development.log" 2>&1
+echo "chromium-development passed"
+DEFERRED_WARMUPS_BROWSER=chromium DEFERRED_WARMUPS_MODE=production DEFERRED_WARMUPS_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox DEFERRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-deferred-warmups-2026-10-08/chromium-production" node packages/portal/scripts/verify-host-deferred-warmups-browser.mjs > "artifacts/host-deferred-warmups-2026-10-08/chromium-production.log" 2>&1
+echo "chromium-production passed"
+DEFERRED_WARMUPS_BROWSER=firefox DEFERRED_WARMUPS_MODE=development DEFERRED_WARMUPS_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox DEFERRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-deferred-warmups-2026-10-08/firefox-development" node packages/portal/scripts/verify-host-deferred-warmups-browser.mjs > "artifacts/host-deferred-warmups-2026-10-08/firefox-development.log" 2>&1
+echo "firefox-development passed"
+DEFERRED_WARMUPS_BROWSER=firefox DEFERRED_WARMUPS_MODE=production DEFERRED_WARMUPS_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox DEFERRED_WARMUPS_REPORT_DIR="/home/craig-beswetherick/Documents/riddle-quest/artifacts/host-deferred-warmups-2026-10-08/firefox-production" node packages/portal/scripts/verify-host-deferred-warmups-browser.mjs > "artifacts/host-deferred-warmups-2026-10-08/firefox-production.log" 2>&1
+echo "firefox-production passed"

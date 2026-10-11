@@ -7,6 +7,9 @@ import type {AuthSnapshot, HostServices, WebGameMode} from "./types";
 import {preloadGameModals} from "./preloadGameModals";
 import {riddleLoadDeadline} from "./riddleLoadDeadline";
 
+/** Reports riddle failures through the fixed host diagnostic scope. */
+const reportRiddleFailure = (error: unknown) => captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
+
 /** Input required to own the host's complete single-player riddle lifecycle. */
 type HostRiddleLifecycleOptions = Readonly<{
   /** Current authenticated player identifier, when available. */
@@ -19,6 +22,8 @@ type HostRiddleLifecycleOptions = Readonly<{
   initialGameMode: WebGameMode;
   /** Exposes a rendered startup failure through the target’s loading overlay. */
   onStartupUnavailable?: () => void;
+  /** A retired game frame (failed bridge validation) must not start automatic riddle recovery. */
+  recoverySuspended?: boolean;
   /** Current game locale. */
   locale: string;
   /** Target-specific host operations. */
@@ -84,6 +89,7 @@ export function useHostRiddleLifecycle({
   profile,
   initialGameMode,
   onStartupUnavailable,
+  recoverySuspended = false,
   locale,
   services,
   canUsePreparedQuestions,
@@ -103,10 +109,14 @@ export function useHostRiddleLifecycle({
   const [startupUnavailable, setStartupUnavailable] = useState(false);
   /** Whether the current context already has a playable riddle. */
   const loadedRef = useRef(false);
+  /** Recovery timers read committed suspension so abandoned renders cannot change provider admission. */
+  const recoverySuspendedRef = useRef(recoverySuspended);
   /** Shared uncorrelated automatic load, when present. */
   const loadInFlightRef = useRef<Promise<boolean> | null>(null);
   /** Only the latest visible load may publish content or start failure recovery. */
   const deliveryRef = useRef<AbortController | null>(null);
+  /** Optional Skip previews never retire canonical delivery or own automatic recovery. */
+  const skipPreviewDeliveryRef = useRef<AbortController | null>(null);
   /** Generation that rejects stale async load results. */
   const contextVersionRef = useRef(0);
   /** Retires bounded content waits immediately when identity, locale, or host lifetime changes. */
@@ -161,6 +171,15 @@ export function useHostRiddleLifecycle({
       entry.scope === current &&
       deliveredScopeRef.current === entry.scope && deliveredRiddleRef.current?.sessionToken === entry.parentToken;
   };
+  /** Deferred content preparation retires independently of already admitted visible reads. */
+  const warmupAbortRef = useRef<AbortController | null>(null);
+  useLayoutEffect(() => {
+    /** Only a committed context may retain lazy warmup admission. */
+    const warmup = new AbortController();
+    warmupAbortRef.current = warmup;
+    if (recoverySuspended) warmup.abort();
+    return () => {warmup.abort();};
+  }, [contextScope, recoverySuspended]);
   /** Latest recovery scheduler used by failed load attempts. */
   const scheduleRecoveryRef = useRef<() => void>(() => undefined);
   /** Latest accepted mode used by recovery. */
@@ -222,38 +241,39 @@ export function useHostRiddleLifecycle({
       },
       requestId?: string,
     ): Promise<boolean> => {
+      if (requestId?.startsWith("skip-preview-")) {
+        /** Only a delivered Classic origin permits its optional next-question preview. */
+        const parent = deliveredRiddleRef.current;
+        /** Capture ownership before optional module loading can yield to a newer commit. */
+        const visible = deliveryRef.current;
+        /** Deferred code and delivery share the admitted account/provider signal. */
+        const contextSignal = contextAbortRef.current!.signal;
+        try {
+          /** Optional preview code stays outside the initial game resource budget. */
+          const {loadOptionalSkipPreview} = await import("./loadOptionalSkipPreview");
+          return await loadOptionalSkipPreview({input, parent, services, contextSignal, userId, locale,
+            deliveryRef: skipPreviewDeliveryRef,
+            owns: () => !recoverySuspendedRef.current && contextScopeRef.current === contextScope &&
+              deliveryRef.current === visible && deliveredRiddleRef.current === parent,
+            publish: riddle => postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}})});
+        } catch {
+          return false;
+        }
+      }
       if (input.prepareNext) {
         /** Current delivered content supplies the sole permitted preparation origin. */
         const parent = deliveredRiddleRef.current;
-        if (preparationScopeRef.current !== preparationScope || deliveredScopeRef.current !== preparationScope || !userId || input.gameMode !== "classic" || input.locale !== locale || input.authoritative ||
-          !parent || parent.gameMode !== "classic" || !Number.isSafeInteger(parent.index) || !Number.isSafeInteger(parent.index! + 1) ||
-          input.classicIndex !== parent.index! + 1 || input.sessionToken !== parent.sessionToken ||
-          input.riddleId !== parent.riddleId || contextAbortRef.current!.signal.aborted) return false;
-        /** Only the preparation installed by this invocation may be cleared on failure. */
-        let entry: NonNullable<typeof preparedRef.current> | null = null;
+        /** Preserve the admitting context across deferred optional module loading. */
+        const signal = contextAbortRef.current!.signal;
+        /** Generation belongs to admission, rather than a later account visit. */
+        const version = contextVersionRef.current;
         try {
-          if (canUsePreparedQuestions && !canUsePreparedQuestions()) return false;
-          /** Repeated presentation renders share one preparation for this exact predecessor. */
-          const previous = preparedRef.current;
-          if (previous && ownsPreparation(previous) && previous.index === input.classicIndex &&
-            (!previous.riddle || (Date.now() - previous.readyAt >= 0 && Date.now() - previous.readyAt < 15_000))) return true;
-          /** Publication requires both this slot and its original account context to remain owned. */
-          entry = {scope: preparationScope,
-            version: contextVersionRef.current, parentToken: parent.sessionToken, index: input.classicIndex,
-            readyAt: 0, riddle: null};
-          preparedRef.current = entry;
-          /** The existing adapter and its account gate issue the question; origin IDs never become resume IDs. */
-          const riddle = await riddleLoadDeadline(services.loadRiddle({gameMode: "classic", locale: input.locale,
-            classicIndex: input.classicIndex}), contextAbortRef.current!.signal);
-          if (preparedRef.current !== entry || !ownsPreparation(entry)) return false;
-          if (riddle.gameMode !== "classic" || riddle.index !== entry.index || riddle.sessionToken === parent.sessionToken) {
-            preparedRef.current = null; return false;
-          }
-          entry.riddle = riddle; entry.readyAt = Date.now();
-          return true;
+          /** Optional successor preparation does not consume the startup resource budget. */
+          const {prepareIssuedSuccessor} = await import("./prepareIssuedSuccessor");
+          return await prepareIssuedSuccessor({ref: preparedRef, scope: preparationScope, version,
+            parent, input, userId, locale,
+            services, signal, owns: ownsPreparation, canUse: canUsePreparedQuestions});
         } catch {
-          // Preparation is optional. A failed read never changes startup, notices or recovery cadence.
-          if (entry && preparedRef.current === entry) preparedRef.current = null;
           return false;
         }
       }
@@ -277,6 +297,14 @@ export function useHostRiddleLifecycle({
       /** Obsolete successes and failures cannot mutate the latest board's host state. */
       const ownsDelivery = () => contextScopeRef.current === contextScope && contextVersion === contextVersionRef.current &&
         deliveryRef.current === delivery && !delivery.signal.aborted;
+      /** Ordinary and Daily-fallback successes publish the same correlated authoritative snapshot. */
+      const acceptRiddle = (riddle: Awaited<ReturnType<HostServices["loadRiddle"]>>) => {
+        loadedRef.current = true;
+        deliveredRiddleRef.current = riddle;
+        deliveredScopeRef.current = preparationScope;
+        postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
+        postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+      };
       /** Complete pending load outcome. */
       const pending = (async () => {
         try {
@@ -298,18 +326,10 @@ export function useHostRiddleLifecycle({
             !input.authoritative && !input.sessionToken && !input.riddleId ? prepared.riddle : null;
           /** Prepared local content needs no further provider operation or lock acquisition. */
           const riddle = ready ?? (loadedRef.current && !input.authoritative
-            ? await riddleLoadDeadline(services.loadRiddle(input), delivery.signal)
-            : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input), delivery.signal)));
+            ? await riddleLoadDeadline(services.loadRiddle(input, delivery.signal), delivery.signal)
+            : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input, delivery.signal), delivery.signal)));
           if (!ownsDelivery()) return false;
-          loadedRef.current = true;
-          deliveredRiddleRef.current = riddle;
-          deliveredScopeRef.current = preparationScope;
-          postToGame({
-            type: "host:riddleLoaded",
-            requestId,
-            payload: {riddle, profile: profileRef.current},
-          });
-          postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+          acceptRiddle(riddle);
           trackEvent("level_start", {
             game_mode: riddle.gameMode,
             level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
@@ -321,13 +341,12 @@ export function useHostRiddleLifecycle({
           onPlayable?.();
           return true;
         } catch (error) {
-          // A speculative Skip load is optional; the accepted Skip response will load its successor.
-          if (!ownsDelivery() || requestId?.startsWith("skip-preview-")) return false;
+          if (!ownsDelivery()) return false;
           loadedRef.current = false;
           /** Server-confirmed completion is an expected routing outcome. */
           const dailyCompleted = input.gameMode === "challenge" && typeof error === "object" &&
             error !== null && "code" in error && error.code === "daily-completed";
-          if (!dailyCompleted) captureBrowserException(error, {component: "play_host", operation: "loadRiddle"});
+          if (!dailyCompleted) reportRiddleFailure(error);
           /** Safe player-facing failure notice. */
           const message = getHostErrorMessage(error);
           // Confirmed Daily completion routes both launch and Next Level requests to Classic.
@@ -339,13 +358,9 @@ export function useHostRiddleLifecycle({
               /** Canonical next question supplied by the current authority-owned content state. */
               const riddle = await withActivity(() => riddleLoadDeadline(services.loadRiddle({
                 gameMode: "classic", locale: input.locale, classicIndex: classicIndexRef.current,
-              }), delivery.signal));
+              }, delivery.signal), delivery.signal));
               if (!ownsDelivery()) return false;
-              loadedRef.current = true;
-              deliveredRiddleRef.current = riddle;
-              deliveredScopeRef.current = preparationScope;
-              postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
-              postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+              acceptRiddle(riddle);
               setStartupComplete(true);
               setStartupUnavailable(false);
               // Completion is an expected launch decision, not a failure notice.
@@ -357,7 +372,7 @@ export function useHostRiddleLifecycle({
               return true;
             } catch (fallbackError) {
               if (!ownsDelivery()) return false;
-              captureBrowserException(fallbackError, {component: "play_host", operation: "loadRiddle"});
+              reportRiddleFailure(fallbackError);
               /** Safe failure text returned through the original correlated load request. */
               const fallbackMessage = getHostErrorMessage(fallbackError);
               setNotice(fallbackMessage);
@@ -375,6 +390,7 @@ export function useHostRiddleLifecycle({
       })();
       loadInFlightRef.current = pending;
       return pending.finally(() => {
+        retireDelivery();
         contextSignal.removeEventListener("abort", retireDelivery);
         if (deliveryRef.current === delivery) deliveryRef.current = null;
         if (loadInFlightRef.current === pending) loadInFlightRef.current = null;
@@ -390,13 +406,15 @@ export function useHostRiddleLifecycle({
     gameModeRef.current = gameMode;
     loadRiddleRef.current = loadRiddle;
     onRecoveryAttemptRef.current = onRecoveryAttempt;
-  }, [profile, gameMode, loadRiddle, onRecoveryAttempt]);
+    recoverySuspendedRef.current = recoverySuspended;
+  }, [profile, gameMode, loadRiddle, onRecoveryAttempt, recoverySuspended]);
 
   useEffect(() => {
     /** Recovery work stays bound to the commit that installed these listeners. */
     const contextSignal = contextAbortRef.current!.signal;
     if (!userId) return;
-    services.preloadInitialRiddles?.(locale);
+    // A retired frame cannot consume newly issued Classic or Daily preparation.
+    if (!recoverySuspendedRef.current) services.preloadInitialRiddles?.(locale, warmupAbortRef.current!.signal);
     /** Whether this context generation has been disposed. */
     let cancelled = false;
     /** Active recovery timer. */
@@ -413,7 +431,7 @@ export function useHostRiddleLifecycle({
     };
     /** Resynchronizes the host and retries the current riddle context. */
     const recoverRiddle = async () => {
-      if (loadedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
+      if (loadedRef.current || recoverySuspendedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
       recovering = true;
       try {
         onRecoveryAttemptRef.current();
@@ -433,7 +451,7 @@ export function useHostRiddleLifecycle({
     scheduleRecoveryRef.current = retry;
     /** Recover immediately when the browser regains connectivity or returns to the game. */
     const resumeRecovery = () => {
-      if (cancelled || contextSignal.aborted || loadedRef.current || navigator.onLine === false) return;
+      if (cancelled || contextSignal.aborted || loadedRef.current || recoverySuspendedRef.current || navigator.onLine === false) return;
       failedAttempts = 0;
       if (!recovering) scheduleRecovery(0);
     };

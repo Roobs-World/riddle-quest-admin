@@ -1,0 +1,20 @@
+{
+  "buildRoot": "/tmp/live-guess-draft-receipt-recovery-builds-20261009a",
+  "facebookFixture": "/tmp/riddle-quest-facebook-browser-J3Csk5",
+  "externalFixture": "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/live-reconnect-input-Ol4Sbj",
+  "metadata": [
+    "artifacts/target-dependencies/custom/a9e136e6df9c8b87f803a0d2745dff787a4f4a45a89c03b746e603cf92105c6b/facebook.json",
+    "artifacts/target-dependencies/custom/104b6e1df63fbe92b282c90a9e9772411f438be035f80b2f8239c98bf51a5d5f/youtube.json",
+    "artifacts/target-dependencies/custom/3ddc20459d6228eb8574ba123464bd2ad38d8ccdc61088479163374aa9738317/yahoo.json",
+    "artifacts/target-dependencies/custom/8c8e2519c3d83b26c4d6d70acc5360a11c697e130c2408dfb1dcf1d0170f202a/jest.json",
+    "artifacts/target-dependencies/custom/3bca741cffbc077eedb7cc9bec4b9c81ed14f9af90283b9165dfb70cc3700da9/facebook.json",
+    "artifacts/target-dependencies/custom/7a7d5db214148e83290c7655f5d7ce3cc1740120cdf35c17bd25aee7cfd34c04/reddit.json",
+    "artifacts/target-dependencies/custom/af339170d10497ec46c5037673c5a26236433932434277bc74f23f45176359cb/netflix.json"
+  ],
+  "allAbsent": true,
+  "ownedFirefoxTabsClosed": [
+    2,
+    1
+  ],
+  "externalSessionExitCode": 0
+}

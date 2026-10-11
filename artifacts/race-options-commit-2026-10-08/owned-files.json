@@ -1,0 +1,17 @@
+[
+  {
+    "path": "packages/portal/src/play/race/hooks/useRaceSession.ts",
+    "afterSha256": "b61594557ad0bfc51b85a2d194648b439aaf1e28c77b900229c5096595ad8284",
+    "beforeSha256": "537124d2037d5ed13078120631a5e8af3d8ff0520a58e9fd07e3c1c2706c2bce"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "afterSha256": "25bc3d7f912f02a41fdd6a7dd831b029f30cf901733b0f4b08be6e5e1db86aa6",
+    "beforeSha256": "a818299ffe3fdc4dbb813d9de1c4e35480758ee187373c7ec51d74d98bbff4f5"
+  },
+  {
+    "path": "packages/portal/scripts/verify-race-options-commit-browser.mjs",
+    "afterSha256": "06c4a9cc9cb90c1b70c9e836ea376ae11760d21ea02268b9eebdf473fd2988bf",
+    "beforeSha256": null
+  }
+]

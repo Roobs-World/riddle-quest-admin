@@ -209,9 +209,9 @@ it("preserves an explicitly selected draft slot during pending recovery", () => 
 
 it("does not restore a pending draft cursor onto a locked hint", () => {
   /** Issued riddle fixture supplies authoritative recovery state. */
-  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {...riddle, revealedHints: [{index: 0, letter: "P"}]}});
   /** Observed resumed supplies the recovery assertion baseline. */
-  const resumed = gameSessionReducer(loaded, {type: "restoreQueuedGuesses", base: {...loaded, hintRevealedIndices: [0]},
+  const resumed = gameSessionReducer(loaded, {type: "restoreQueuedGuesses", base: loaded,
     guesses: [], draft: ["P", "I", "", "", ""], draftActiveSlotIndex: 0});
   expect(gameSessionReducer(resumed, {type: "typeLetter", letter: "A"}).currentLetters).toEqual(["P", "I", "A", "", ""]);
 });

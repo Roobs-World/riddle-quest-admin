@@ -97,6 +97,7 @@ it.each(["draft", "queued", "paid", "foreign-guess", "foreign-paid", "successor"
       sessionToken: "00000000-0000-4000-8000-000000000002"}, base: journal.base, draft: Array(5).fill("C")});
     /** Reconciliation never mutates the original journal or fabricates progression from a loss. */
     const before = structuredClone(journal);
-    expect(reconcileConfirmedPendingPlay(journal, issued)).toBe(["foreign-guess", "foreign-paid", "successor"].includes(boundary) ? journal : null);
+    if (boundary === "paid") expect(reconcileConfirmedPendingPlay(journal, issued)).toEqual({...journal, queue: []});
+    else expect(reconcileConfirmedPendingPlay(journal, issued)).toBe(["foreign-guess", "foreign-paid", "successor"].includes(boundary) ? journal : null);
     expect(journal).toEqual(before);
   });

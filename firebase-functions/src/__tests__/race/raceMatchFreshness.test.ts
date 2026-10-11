@@ -1,5 +1,5 @@
 import {DEFAULT_RACE_MATCH_POLICY, raceMatchPolicySnapshot} from "../../race/raceMatchPolicy";
-import {raceCandidateNeedsFreshness, selectRaceFreshCandidate} from "../../race/raceMatchFreshness";
+import {raceCandidateNeedsFreshness, raceFreshnessInspectionBatch, selectRaceFreshCandidate} from "../../race/raceMatchFreshness";
 
 /** Input is already canonically eligible and sorted by performance band and score. */
 const near = {id: "near", band: 0, repeats: 1, exposure: 0};
@@ -34,4 +34,18 @@ it("keeps broad eligibility widening independent of freshness and handles empty 
   const far = {...near, band: 2};
   expect(selectRaceFreshCandidate([far], DEFAULT_RACE_MATCH_POLICY.policy)).toBe(far);
   expect(selectRaceFreshCandidate([], DEFAULT_RACE_MATCH_POLICY.policy)).toBeUndefined();
+});
+
+it("batches repetitive checks within the same band and stops at the first potentially fresh winner", () => {
+  /** Ranked candidates retain identity and order across grouped canonical reads. */
+  const rows = [near, {...near, id: "second"}, {...near, id: "fresh", repeats: 0}, {...near, id: "later"}];
+  expect(raceFreshnessInspectionBatch(rows, DEFAULT_RACE_MATCH_POLICY.policy, 20, 100)).toEqual(rows.slice(0, 3));
+  expect(raceFreshnessInspectionBatch([near, wide], DEFAULT_RACE_MATCH_POLICY.policy, 20, 100)).toEqual([near]);
+});
+it("caps speculative work by checks, worst-case legacy reads and the four-record batch limit", () => {
+  /** Every row remains repetitive so only resource constraints terminate this group. */
+  const rows = Array.from({length: 8}, (_, index) => ({...near, id: String(index)}));
+  for (const [checks, reads, length] of [[20, 100, 4], [2, 100, 2], [20, 16, 2], [20, 7, 0], [0, 100, 0]]) {
+    expect(raceFreshnessInspectionBatch(rows, DEFAULT_RACE_MATCH_POLICY.policy, checks, reads)).toEqual(rows.slice(0, length));
+  }
 });

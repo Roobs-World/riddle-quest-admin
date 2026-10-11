@@ -1,0 +1,227 @@
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser && pnpm test:host-deferred-riddle:browser && pnpm test:race-options-commit:browser && pnpm test:live-safety-focus:browser && pnpm test:turkish-answer-input:browser && pnpm test:live-hint-keyboard:browser && pnpm test:turkish-authoritative-feedback:browser && pnpm test:turkish-virtual-keys:browser && pnpm test:hint-position-recovery:browser && pnpm test:hint-letter-recovery:browser && pnpm test:guess-result-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser && pnpm test:host-deferred-riddle:browser && pnpm test:race-options-commit:browser && pnpm test:live-safety-focus:browser && pnpm test:turkish-answer-input:browser && pnpm test:live-hint-keyboard:browser && pnpm test:turkish-authoritative-feedback:browser && pnpm test:turkish-virtual-keys:browser && pnpm test:hint-position-recovery:browser && pnpm test:hint-letter-recovery:browser && pnpm test:guess-result-recovery:browser && pnpm test:live-hint-cursor:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -230,7 +230,8 @@
+     "test:live-hint-keyboard:browser": "node scripts/verify-live-hint-keyboard-browser.mjs && LIVE_HINT_REACT_MODE=production node scripts/verify-live-hint-keyboard-browser.mjs",
+     "test:live-safety-focus:browser": "node scripts/verify-live-safety-focus-browser.mjs && SAFETY_FOCUS_REACT_MODE=production node scripts/verify-live-safety-focus-browser.mjs",
+     "test:turkish-answer-input:browser": "node scripts/verify-turkish-answer-input-browser.mjs && TURKISH_INPUT_REACT_MODE=production node scripts/verify-turkish-answer-input-browser.mjs",
+-    "test:guess-result-recovery:browser": "node scripts/verify-guess-result-recovery-browser.mjs && GUESS_RECOVERY_REACT_MODE=production node scripts/verify-guess-result-recovery-browser.mjs"
++    "test:guess-result-recovery:browser": "node scripts/verify-guess-result-recovery-browser.mjs && GUESS_RECOVERY_REACT_MODE=production node scripts/verify-guess-result-recovery-browser.mjs",
++    "test:live-hint-cursor:browser": "node scripts/verify-live-hint-cursor-browser.mjs && HINT_CURSOR_REACT_MODE=production node scripts/verify-live-hint-cursor-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- /dev/null
++++ b/packages/portal/scripts/verify-live-hint-cursor-browser.mjs
+@@ -0,0 +1,62 @@
++import assert from 'node:assert/strict';
++import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium,firefox} from '@playwright/test';
++const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.HINT_CURSOR_REACT_MODE??'development';
++assert.ok(['development','production'].includes(mode));
++const output=path.resolve(process.env.HINT_CURSOR_REPORT_DIR??path.join(root,'../../artifacts/live-hint-cursor-recovery-2026-10-08/permanent',mode+'-'+(process.env.HINT_CURSOR_ENGINE??'chromium')));
++await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
++const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-poll-scheduling-'));let browser,server;const observations=[];
++try{
++ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
++ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++ await writeFile(path.join(scratch,'main.tsx'),`
++import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';
++import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
++import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
++import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
++import ${JSON.stringify(path.join(root,'src/styles.css'))};import ${JSON.stringify(path.join(root,'src/styles.race-gameplay.css'))};import ${JSON.stringify(path.join(root,'src/styles.race-lobby.css'))};
++window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
++const scenario=new URL(location.href).searchParams.get('scenario')??'healthy';window.probe={requests:[],joins:[],ticks:[],tickDetails:[],timers:new Map(),triggered:false,errors:[],unhandled:[]};
++const nativeClear=window.clearTimeout.bind(window);window.clearTimeout=id=>{window.probe.timers.delete(id);return nativeClear(id);};
++window.pollTimeout=(owner,callback,delay)=>{const id=window.setTimeout(()=>{window.probe.timers.delete(id);window.probe.ticks.push(owner);window.probe.tickDetails.push({owner,at:performance.now(),delay});callback();},delay);window.probe.timers.set(id,{owner,delay});return id;};
++window.pendingPolls=owner=>[...window.probe.timers.values()].filter(x=>x.owner===owner).length;
++window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
++function view(seat){const now=Date.now();return LiveRaceViewSchema.parse({ticketId:seat.id,phase:seat.left?'cancelled':seat.terminal?'result':'racing',serverNowMs:now,searchEndsAtMs:seat.start+60000,startsAtMs:seat.start,player:{displayName:seat.owner,avatarUrl:null,bot:false,correctCount:seat.correct},opponent:{displayName:'Rival',avatarUrl:null,bot:false,correctCount:0},result:seat.terminal?'win':null,rewardCoins:seat.terminal?50:0,run:seat.left?null:{runId:seat.id,role:'creator',status:seat.terminal?'completed':'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:seat.correct,wallElapsedMs:now-seat.start,totalPenaltyMs:0,adjustedElapsedMs:now-seat.start,events:[],serverNowMs:now,startsAtMs:seat.start,currentRiddle:seat.terminal?null:{riddleId:'q'+seat.correct,text:'What has keys but cannot open doors?',answerLength:5,position:seat.correct,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:seat.revealed,confirmedGuesses:[]},opponent:{displayName:'Rival',avatarUrl:null,adjustedFinishMs:300000,events:[]}}});}
++function adapter(owner){const seat={owner,id:(owner==='Alice'?'a':'b').repeat(64),start:Date.now()-1000,correct:0,left:false,terminal:false,failed:false,revealed:scenario==='new'?[]:[{index:0,letter:'P'}]};window.finish=()=>{seat.terminal=true;seat.correct=10;};return {blockOpponent:async()=>{throw new Error('unexpected block')},reportOpponent:async()=>{throw new Error('unexpected report')},observe:(ticket,changed,connected)=>{window.signal=changed;window.connection=connected;connected(true);if(scenario==='subscription-throw')throw new Error('Fixture subscription failed after connected');return()=>{};},join:async input=>{window.probe.joins.push({owner,at:performance.now(),...input});return view(seat);},update:async input=>{window.probe.requests.push({owner,at:performance.now(),...input});if(input.action==='poll'&&owner==='Alice'&&window.armed&&scenario!=='stable'){window.armed=false;window.probe.triggered=true;flushSync(()=>scenario==='replace'?window.replace():window.retire());}if(input.action==='leave')seat.left=true;if(input.action==='hint')seat.revealed=[{index:Number(new URL(location.href).searchParams.get('hintIndex')??0),letter:Number(new URL(location.href).searchParams.get('hintIndex')??0)===2?'A':'P'}];if(input.action==='skip'){seat.correct++;seat.revealed=[];}if(input.action==='guess'){if(scenario==='backoff'&&!seat.failed){seat.failed=true;throw new Error('Fixture command transport failed');}if(input.guess.toLowerCase()!=='piano')throw new Error('Unexpected fixture guess');seat.correct++;if(scenario==='held')return new Promise(resolve=>{window.releaseGuess=()=>resolve(view(seat));});}return view(seat);}};}
++const bob=adapter('Bob'),alice=adapter('Alice');const adapters={Alice:alice,Bob:bob};
++function App(){const [mounted,setMounted]=React.useState(true),[owner,setOwner]=React.useState('Alice');window.retire=()=>setMounted(false);window.replace=()=>setOwner('Bob');return <div data-owner={owner}>{mounted?<LiveRaceGame key={owner} transport={adapters[owner]} locale='en' categoryId='mixed' coins={100} ownerId={owner} onClose={()=>setMounted(false)}/>:<p data-retired>Race removed</p>}<button data-arm onClick={()=>{window.armed=true;}}>Arm transport retirement</button></div>;}
++createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
++ `);
++ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:process.env.HINT_CURSOR_BASELINE_FILE?[{name:'original-focus-hook',enforce:'pre',load(id){if(id.endsWith('/liveRaceDraft.ts'))return readFile(process.env.HINT_CURSOR_BASELINE_FILE,'utf8');}}]:[],build:{outDir:'dist',minify:false,target:'esnext'}});
++ server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port;
++ if(process.env.LIVE_SCHEDULE_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
++ else{
++ browser=await (process.env.HINT_CURSOR_ENGINE==='firefox'?firefox:chromium).launch({headless:true,...(process.env.HINT_CURSOR_ENGINE==='firefox'?{...(process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH}:{})}:{})});
++ for(const width of [390,1280])for(const method of ['physical','virtual'])for(const hintIndex of [0,2]){
++ const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
++ await page.goto(url+'/?scenario=new&hintIndex='+hintIndex);await page.locator('.race-native-answer-input').waitFor();
++ if(method==='physical')await page.locator('.race-native-answer-input').fill(hintIndex===2?'pia':'pi');
++ else for(const letter of hintIndex===2?'PIA':'PI')await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter+'$')}).click();
++ await page.waitForFunction(prefix=>document.querySelector('.guess-row')?.textContent.toLowerCase()===prefix,hintIndex===2?'pia':'pi');
++ await page.locator('.guess-row').first().locator('.cell').nth(hintIndex).click();
++ await page.locator('.race-actions button').first().click();
++ await page.waitForFunction(index=>document.querySelectorAll('.guess-row .cell')[index]?.disabled,hintIndex);
++ const slot=await page.locator('.guess-row').first().locator('.cell[aria-current="true"]').evaluate(el=>[...el.parentNode.children].indexOf(el));
++ observations.push({width,method,hintIndex,name:'hint cursor skips populated cells',actual:slot,expected:hintIndex===2?3:2});assert.equal(slot,hintIndex===2?3:2);
++ await page.evaluate(()=>document.activeElement?.blur());
++ if(method==='physical')await page.keyboard.type(hintIndex===2?'no':'ano');
++ else for(const letter of hintIndex===2?'NO':'ANO')await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter+'$')}).click();
++ await page.waitForFunction(()=>document.querySelector('.guess-row')?.textContent.toLowerCase()==='piano');
++ observations.push({width,method,hintIndex,name:'remaining input preserves the composed prefix',actual:(await page.locator('.guess-row').first().textContent()).toLowerCase(),expected:'piano'});
++ await page.locator('.submit-action').click();await page.waitForFunction(()=>window.probe.requests.some(request=>request.action==='guess'));
++ const guesses=await page.evaluate(()=>window.probe.requests.filter(request=>request.action==='guess').map(request=>request.guess.toLowerCase()));
++ observations.push({width,method,hintIndex,name:'one complete word reaches the live transport',actual:guesses,expected:['piano']});assert.deepEqual(errors,[]);await context.close();
++ }
++
++ }
++}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});if(process.env.LIVE_SCHEDULE_SERVE_ONLY!=='1')await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2));}
++const failures=observations.filter(x=>!x.diagnostic&&JSON.stringify(x.actual)!==JSON.stringify(x.expected));console.log(JSON.stringify({mode,checks:observations.filter(x=>!x.diagnostic).length,samples:observations.filter(x=>x.diagnostic).length,failures},null,2));if(process.env.LIVE_SCHEDULE_MEASURE_ONLY!=='1')assert.equal(failures.length,0,'Live race confirmed hint keyboard feedback');
+--- a/packages/portal/src/play/race/RaceSessionAuthority.ts
++++ b/packages/portal/src/play/race/RaceSessionAuthority.ts
+@@ -241,7 +241,7 @@
+         for (const [index, letter] of revealed) currentLetters[index] = letter;
+         attempt = {...attempt, currentLetters,
+           activeSlotIndex: revealed.has(draft.activeSlotIndex)
+-            ? findFirstEditableRaceSlot(run.currentRiddle) : draft.activeSlotIndex};
++            ? findFirstEditableRaceSlot(run.currentRiddle, currentLetters) : draft.activeSlotIndex};
+       }
+       return {run, entryStatus: null, challenge: null, activeChallengeId: run.challengeId,
+         receivedAtMs: now, adjustedNow: run.adjustedElapsedMs, ...attempt};
+@@ -291,7 +291,7 @@
+       }
+       return {run: result.run, receivedAtMs: now,
+         ...(confirmation.resetAttempt ? raceAttemptState(result.run) : {currentLetters,
+-          activeSlotIndex: revealed.has(state.activeSlotIndex) ? findFirstEditableRaceSlot(result.run.currentRiddle) : state.activeSlotIndex}),
++          activeSlotIndex: revealed.has(state.activeSlotIndex) ? findFirstEditableRaceSlot(result.run.currentRiddle, currentLetters) : state.activeSlotIndex}),
+         ...(confirmation.guesses ? {raceGuesses: raceGuessHistory(result.run, original!, confirmation.guesses)} : {}),
+         feedback: result.isCorrect ? "correct" : "incorrect",
+         ...(result.autoSkipped ? {penaltyFlash: "RaceTo10.SKIP_PENALTY"} : {}),
+@@ -343,7 +343,7 @@
+       const activeSlotIndex = draft?.activeSlotIndex ?? state.activeSlotIndex;
+       for (const [index, letter] of revealed) currentLetters[index] = letter;
+       return {run: result.run, receivedAtMs: now, currentLetters,
+-        activeSlotIndex: revealed.has(activeSlotIndex) ? findFirstEditableRaceSlot(prompt) : activeSlotIndex,
++        activeSlotIndex: revealed.has(activeSlotIndex) ? findFirstEditableRaceSlot(prompt, currentLetters) : activeSlotIndex,
+         raceGuesses: raceHintHistory(result.run, original!, draft?.guesses ?? state.raceGuesses),
+         penaltyFlash: "RaceTo10.HINT_PENALTY"};
+     }
+--- a/packages/portal/src/play/race/__tests__/RaceSession.test.ts
++++ b/packages/portal/src/play/race/__tests__/RaceSession.test.ts
+@@ -904,7 +904,7 @@
+     h.session.retry(); h.reject("raceResume", "Still unavailable."); h.session.retry();
+     h.respond("raceResume", await authority.resumeRace(h.run.runId));
+     expect(h.session.getSnapshot()).toMatchObject({error: null, pending: null, currentLetters: [hinted ? "c" : "z", "l", "o", "", ""],
+-      activeSlotIndex: hinted ? 1 : 0, raceGuesses: [], run: {correctCount: 1, totalPenaltyMs: hinted ? 15000 : 0}});
++      activeSlotIndex: hinted ? 3 : 0, raceGuesses: [], run: {correctCount: 1, totalPenaltyMs: hinted ? 15000 : 0}});
+     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+     expect(h.effects.some(effect => effect.kind === "outcome")).toBe(false);
+   });
+@@ -1065,7 +1065,7 @@
+     confirmed.currentRiddle!.revealedLetters = [{index: 0, letter: question === "successor" ? "c" : "p"}, {index: 3, letter: question === "successor" ? "c" : "n"}];
+     h.respond("raceGuess", {run: confirmed, isCorrect: question === "successor", autoSkipped: false,
+       feedback: [...(question === "successor" ? "piano" : "zzzzz")].map(letter => ({letter, status: question === "successor" ? "green" : "red"}))});
+-    expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: [question === "successor" ? "c" : "p", "l", "o", question === "successor" ? "c" : "n", ""], activeSlotIndex: 1});
++    expect(h.session.getSnapshot()).toMatchObject({error: null, currentLetters: [question === "successor" ? "c" : "p", "l", "o", question === "successor" ? "c" : "n", ""], activeSlotIndex: 4});
+     expect(h.session.getSnapshot().raceGuesses).toHaveLength(question === "successor" ? 0 : 1);
+     expect(h.commands.filter(command => command.type === "game:submitRaceGuess")).toHaveLength(1);
+   });
+--- a/packages/portal/src/play/race/__tests__/RaceSessionDraftReload.test.ts
++++ b/packages/portal/src/play/race/__tests__/RaceSessionDraftReload.test.ts
+@@ -113,7 +113,11 @@
+       currentRiddle: {...run.currentRiddle!, revealedLetters: [{index: 0, letter: "p"}]},
+       events: [{sequence: 0, type: "hint" as const, riddlePosition: 0, wallElapsedMs: run.wallElapsedMs,
+         penaltyAddedMs: RACE_HINT_PENALTY_MS, totalPenaltyMs: RACE_HINT_PENALTY_MS, adjustedElapsedMs: run.wallElapsedMs + RACE_HINT_PENALTY_MS, correctCount: 0}]};
+-    expect(open(hinted, store).session.getSnapshot()).toMatchObject({currentLetters: ["p", "i", "", "", ""], activeSlotIndex: 1, run: hinted});
++    /** Recovered selection skips the already composed second letter. */
++    const restored = open(hinted, store).session;
++    expect(restored.getSnapshot()).toMatchObject({currentLetters: ["p", "i", "", "", ""], activeSlotIndex: 2, run: hinted});
++    restored.input("text", "ano");
++    expect(restored.getSnapshot().currentLetters.join("")).toBe("piano");
+   });
+   it.each([false, true])("does not repeat a submitted wrong word after reload: committed %s", async committed => {
+     /** A lost response may represent a committed or never-delivered wrong guess. */
+--- a/packages/portal/src/play/race/__tests__/liveRaceDraft.test.ts
++++ b/packages/portal/src/play/race/__tests__/liveRaceDraft.test.ts
+@@ -42,7 +42,7 @@
+   draft = editLiveRaceDraft(view.run!.currentRiddle!, draft, "slot", 0);
+   /** Paid host hint locks the selected cell. */
+   const next = structuredClone(view); next.run!.currentRiddle!.revealedLetters = [{index: 0, letter: "t"}];
+-  expect(reconcileLiveRaceDraft(draft, view, next)).toMatchObject({letters: ["t", "e", "", ""], activeSlotIndex: 1, revision: draft.revision});
++  expect(reconcileLiveRaceDraft(draft, view, next)).toMatchObject({letters: ["t", "e", "", ""], activeSlotIndex: 2, revision: draft.revision});
+ });
+ 
+ it.each(["untouched", "new-word", "emptied", "focus", "ignored"])("rejecting a live guess preserves the correct draft intent (%s)", edit => {
+@@ -69,3 +69,19 @@
+   expect(editLiveRaceDraft(prompt, draft, "text", " ")).toBe(draft);
+   expect(reconcileLiveRaceDraft(draft, view, {...view, serverNowMs: 2000})).toBe(draft);
+ });
++
++
++it.each([["te", 0, "t", "st", 2], ["tes", 2, "s", "t", 3]] as const)("continues after hint locking %s at %s", (prefix, index, letter, suffix, target) => {
++  /** Selecting an earlier filled letter must not discard the rest of the unsent word. */
++  const prompt = view.run!.currentRiddle!;
++  /** Existing prefix remains player-owned while a hint is in flight. */
++  const filled = editLiveRaceDraft(prompt, createLiveRaceDraft(prompt), "text", prefix);
++  /** Deliberate selection can point at a populated cell that the hint later locks. */
++  const selected = editLiveRaceDraft(prompt, filled, "slot", index);
++  /** A newly confirmed hint locks the selected cell while the next cell is already filled. */
++  const next = structuredClone(view); next.run!.currentRiddle!.revealedLetters = [{index, letter}];
++  /** Hint recovery must choose empty space before replacing existing input. */
++  const recovered = reconcileLiveRaceDraft(selected, view, next);
++  expect(recovered.activeSlotIndex).toBe(target);
++  expect(editLiveRaceDraft(next.run!.currentRiddle!, recovered, "text", suffix).letters.join("")).toBe("test");
++});
+--- a/packages/portal/src/play/race/logic/liveRaceDraft.ts
++++ b/packages/portal/src/play/race/logic/liveRaceDraft.ts
+@@ -24,7 +24,7 @@
+   const letters = draft.letters.map((letter, index) => riddle.revealedLetters.find(reveal => reveal.index === index)?.letter ?? letter);
+   /** Retain reference identity when a clock or opponent observation changes no local letters. */
+   const activeSlotIndex = riddle.revealedLetters.some(reveal => reveal.index === draft.activeSlotIndex)
+-    ? findFirstEditableRaceSlot(riddle) : draft.activeSlotIndex;
++    ? findFirstEditableRaceSlot(riddle, letters) : draft.activeSlotIndex;
+   return activeSlotIndex === draft.activeSlotIndex && letters.every((letter, index) => letter === draft.letters[index])
+     ? draft : {...draft, letters, activeSlotIndex};
+ }
+--- a/packages/portal/src/play/race/logic/raceDraftStorage.ts
++++ b/packages/portal/src/play/race/logic/raceDraftStorage.ts
+@@ -114,7 +114,7 @@
+       /** Server hints always replace their own draft positions. */
+       const currentLetters = [...record.letters];
+       for (const reveal of riddle.revealedLetters) currentLetters[reveal.index] = reveal.letter;
+-      return {currentLetters, activeSlotIndex: isRaceSlotEditable(riddle, record.activeSlotIndex) ? record.activeSlotIndex : findFirstEditableRaceSlot(riddle)};
++      return {currentLetters, activeSlotIndex: isRaceSlotEditable(riddle, record.activeSlotIndex) ? record.activeSlotIndex : findFirstEditableRaceSlot(riddle, currentLetters)};
+     } catch {return undefined;}
+   }
+   /** A later successful read may confirm only this live journey's exact attempted write. */
+--- a/packages/portal/src/play/race/logic/racePresentation.ts
++++ b/packages/portal/src/play/race/logic/racePresentation.ts
+@@ -19,15 +19,15 @@
+   return Array.from({length: riddle.answerLength}, (_, index) => revealed.get(index) ?? "");
+ };
+ 
+-/** Finds the first answer slot that has not been revealed by the server. */
+-export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null): number => {
++/** Selects an empty unlocked cell before allowing replacement of an existing draft letter. */
++export const findFirstEditableRaceSlot = (riddle: RaceRiddle | null, letters: readonly string[] = []): number => {
+   if (!riddle) return 0;
+   /** Answer positions already fixed by server-authoritative hints. */
+   const revealed = new Set(riddle.revealedLetters.map(({index}) => index));
+-  return (
+-    Array.from({length: riddle.answerLength}, (_, position) => position).find((position) => !revealed.has(position)) ??
+-    0
+-  );
++  /** Fixed answer positions bound selection independently of supplied draft length. */
++  const positions = Array.from({length: riddle.answerLength}, (_, position) => position);
++  return positions.find(position => !revealed.has(position) && !letters[position]) ??
++    positions.find(position => !revealed.has(position)) ?? 0;
+ };
+ 
+ /** Immediately advances to the already-downloaded next riddle while the server records the skip. */

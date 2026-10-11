@@ -1,0 +1,13 @@
+{
+  "trace": [
+    {
+      "kind": "show",
+      "at": 1791541887974,
+      "persisted": false
+    }
+  ],
+  "restoredFromCache": false,
+  "nextTickDelayMs": null,
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0",
+  "capture": "Archived inline Firefox MCP evaluation; next tick had not occurred when sampled."
+}

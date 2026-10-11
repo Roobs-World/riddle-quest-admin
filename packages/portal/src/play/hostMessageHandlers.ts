@@ -327,26 +327,17 @@ export const createPlayHostMessageHandlers = ({
     }
   },
   skipRiddle: async (message) => {
+    /** Payment and content delivery have distinct authoritative outcomes. */
+    const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
+    /** The committed receipt remains successful if subsequent delivery fails. */
+    let result: Awaited<ReturnType<typeof authority.gameplay.skipRiddle>>;
     try {
-      /** Provides {riddle id, game mode: skip game mode, session token} behavior. */
-      const {riddleId, gameMode: skipGameMode, sessionToken} = message.payload;
-      /** Provides result behavior. */
-      const result = await authority.gameplay.skipRiddle({
+      result = await authority.gameplay.skipRiddle({
         riddleId,
         gameMode: skipGameMode,
         sessionToken,
         requestId: message.requestId ?? createRequestId("skip"),
       });
-      postOperation(message.requestId, "skip", true, result);
-      trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
-      await loadAndPostRiddle(
-        {
-          gameMode: skipGameMode,
-          locale,
-          classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex,
-        },
-        message.requestId,
-      );
     } catch (error) {
       reportHostOperationError(error, "skip");
       postOperation(
@@ -357,6 +348,21 @@ export const createPlayHostMessageHandlers = ({
         getHostErrorMessage(error),
         coinActionErrorKind(error),
       );
+      return;
+    }
+    postOperation(message.requestId, "skip", true, result);
+    try {
+      trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
+    } catch (error) {
+      reportHostOperationError(error, "skip");
+    }
+    try {
+      await loadAndPostRiddle({gameMode: skipGameMode, locale,
+        classicIndex: result.newProgress?.classicIndex ?? authSnapshot.profile?.classicIndex}, message.requestId);
+    } catch (error) {
+      reportHostOperationError(error, "loadRiddle");
+      setNotice(getHostErrorMessage(error));
+      postOperation(message.requestId, "loadRiddle", false, undefined, getHostErrorMessage(error));
     }
   },
   requestPurchase: async (message) => {

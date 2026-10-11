@@ -1,0 +1,284 @@
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser && pnpm test:host-deferred-riddle:browser && pnpm test:race-options-commit:browser && pnpm test:live-safety-focus:browser && pnpm test:turkish-answer-input:browser && pnpm test:live-hint-keyboard:browser && pnpm test:turkish-authoritative-feedback:browser && pnpm test:turkish-virtual-keys:browser && pnpm test:hint-position-recovery:browser && pnpm test:hint-letter-recovery:browser && pnpm test:guess-result-recovery:browser && pnpm test:live-hint-cursor:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser && pnpm test:host-deferred-riddle:browser && pnpm test:race-options-commit:browser && pnpm test:live-safety-focus:browser && pnpm test:turkish-answer-input:browser && pnpm test:live-hint-keyboard:browser && pnpm test:turkish-authoritative-feedback:browser && pnpm test:turkish-virtual-keys:browser && pnpm test:hint-position-recovery:browser && pnpm test:hint-letter-recovery:browser && pnpm test:guess-result-recovery:browser && pnpm test:live-hint-cursor:browser && pnpm test:solo-hint-intent:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -231,7 +231,8 @@
+     "test:live-safety-focus:browser": "node scripts/verify-live-safety-focus-browser.mjs && SAFETY_FOCUS_REACT_MODE=production node scripts/verify-live-safety-focus-browser.mjs",
+     "test:turkish-answer-input:browser": "node scripts/verify-turkish-answer-input-browser.mjs && TURKISH_INPUT_REACT_MODE=production node scripts/verify-turkish-answer-input-browser.mjs",
+     "test:guess-result-recovery:browser": "node scripts/verify-guess-result-recovery-browser.mjs && GUESS_RECOVERY_REACT_MODE=production node scripts/verify-guess-result-recovery-browser.mjs",
+-    "test:live-hint-cursor:browser": "node scripts/verify-live-hint-cursor-browser.mjs && HINT_CURSOR_REACT_MODE=production node scripts/verify-live-hint-cursor-browser.mjs"
++    "test:live-hint-cursor:browser": "node scripts/verify-live-hint-cursor-browser.mjs && HINT_CURSOR_REACT_MODE=production node scripts/verify-live-hint-cursor-browser.mjs",
++    "test:solo-hint-intent:browser": "node scripts/verify-solo-hint-intent-browser.mjs && HINT_INTENT_REACT_MODE=production node scripts/verify-solo-hint-intent-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- /dev/null
++++ b/packages/portal/scripts/verify-solo-hint-intent-browser.mjs
+@@ -0,0 +1,77 @@
++import assert from 'node:assert/strict';
++import {mkdtemp, mkdir, readFile, writeFile, rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium,firefox} from '@playwright/test';
++
++// Supporting regression: real keyboard events through the whole solo game.
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const evidence = path.resolve(process.env.HINT_INTENT_REPORT_DIR??path.join(root,'../../artifacts/solo-hint-intent-recovery-2026-10-08/permanent',process.env.HINT_INTENT_REACT_MODE??'development'));
++await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
++await mkdir(evidence, {recursive: true});
++const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/solo-keyboard-input-'));
++await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOptions: {jsx: 'react-jsx'}}));
++await writeFile(path.join(scratch, 'index.html'), '<!doctype html><html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++await writeFile(path.join(scratch, 'main.tsx'), `
++import React from 'react'; import {createRoot} from 'react-dom/client';
++import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/play/GameFrameApp.tsx'))};
++import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/play/playerPreferences.ts'))};
++import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, 'src/play/guidance/guidanceConfig.ts'))};
++import {setLocaleAndWait} from ${JSON.stringify(path.join(root, 'src/play/i18n.ts'))};
++import ${JSON.stringify(path.join(root, 'src/styles.css'))};
++const owner='keyboard-owner'; let initialized=false;window.sentGuesses=[];window.addEventListener('riddle-quest:game-to-host',event=>{if(event.detail.type==='game:submitGuess')window.sentGuesses.push(event.detail);});
++applyPlayerPreferences({locale:'en',onboardingComplete:true,muted:true,reducedMotion:true});
++sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',owner),'seen');
++localStorage.setItem(createTooltipTourStorageKey('gameTour',owner),'seen');
++function host(message){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:message}));}
++window.saves=[];window.hintRequests=[];window.addEventListener('riddle-quest:game-to-host',event=>{if(event.detail.type==='game:requestHint'){window.hintRequests.push(event.detail);window.failHint=()=>{host({type:'host:operationResult',requestId:event.detail.requestId,payload:{operation:'hint',ok:false,errorKind:'rejected',error:'ErrorMessages.GENERIC_UNEXPECTED_ERROR'}});window.hintFailed=true;};window.hintPending=true;return;}if(event.detail.type!=='game:ready'||initialized)return;
++ initialized=true;setTimeout(async()=>{await setLocaleAndWait('en');
++ host({type:'host:init',payload:{protocolVersion:1,sessionId:'keyboard-fixture',locale:'en',gameMode:'classic',
++ user:{uid:owner,isAnonymous:false,accountGeneration:1},profile:{username:'Player',coins:570,level:2,xp:150,
++ winStreak:1,gamesPlayed:1,wins:1,achievements:[],classicIndex:1},products:[]}});
++ host({type:'host:riddleLoaded',payload:{riddle:{riddleId:'keyboard-riddle',sessionToken:'keyboard-session-0000000000001',
++ text:'What has keys but cannot open doors?',answerLength:5,gameMode:'classic',index:1,
++ attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false,evaluation:{answer:'piano',locale:'en'}}}});
++ },50);
++});
++createRoot(document.getElementById('root')).render(<GameFrameApp localBridge onSaveGame={game=>window.saves.push(game)}/>);
++`);
++let browser, server;const observations=[];
++try {
++   await build({root:scratch,configFile:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(process.env.HINT_INTENT_REACT_MODE??'development')},build:{outDir:'dist'}});
++  server = createServer(async (request, response) => {
++    try {
++      const pathname = new URL(request.url, 'http://localhost').pathname;
++      const file = path.join(scratch, 'dist', pathname === '/' ? 'index.html' : pathname);
++      response.setHeader('Content-Type', file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html');
++      response.end(await readFile(file));
++    } catch {response.writeHead(404).end();}
++  });
++  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
++  browser = await (process.env.HINT_INTENT_ENGINE==='firefox'?firefox:chromium).launch({headless:true,...(process.env.HINT_INTENT_ENGINE==='firefox'&&process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH}:{})});
++  for(const width of [390,1280])for(const method of ['physical','virtual'])for(const recovery of ['reject','save','emptied']){
++    const page=await browser.newPage({viewport:{width,height:844}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
++    await page.goto('http://127.0.0.1:'+server.address().port+'/');await page.getByRole('heading',{name:'What has keys but cannot open doors?',exact:true}).waitFor();
++    const type=async text=>{await page.evaluate(()=>document.activeElement?.blur());if(method==='physical')await page.keyboard.type(text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toUpperCase()+'$')}).click();};
++    await type('c');if(recovery==='emptied')await page.locator('.guess-row').first().locator('.cell').nth(3).click();await page.locator('.game-input-actions button[data-tooltip=gameHint]').first().click();await page.locator('.modal-hint .play-primary').click();
++    await page.waitForFunction(()=>window.hintPending&&document.querySelector('.guess-row')?.textContent==='P');await type('an');
++    await page.waitForFunction(()=>document.querySelector('.guess-row')?.textContent==='PAN');
++    await page.waitForFunction(()=>window.saves.some(game=>game?.currentLetters.join('')==='CAN'));
++    if(recovery==='emptied'){await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('Backspace');await page.keyboard.press('Backspace');await page.waitForFunction(()=>document.querySelector('.guess-row')?.textContent==='P');}
++    if(recovery==='save')assert.equal(await page.evaluate(()=>window.saves.findLast(game=>game?.currentLetters.join('')==='CAN').activeSlotIndex),3);
++    await page.evaluate(recovery=>{window.expectedDraft=recovery==='emptied'?'C':'CAN';window.failHint();},recovery);await page.waitForFunction(()=>document.querySelector('.guess-row')?.textContent===(window.expectedDraft??'CAN'));
++    const slot=await page.locator('.guess-row').first().locator('.cell[aria-current="true"]').evaluate(el=>[...el.parentNode.children].indexOf(el));assert.equal(slot,recovery==='emptied'?1:3);
++    await type(recovery==='emptied'?'anon':'on');await page.waitForFunction(()=>document.querySelector('.guess-row')?.textContent==='CANON');
++    await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('Enter');await page.waitForFunction(()=>window.sentGuesses.length===1);
++    const guess=await page.evaluate(()=>window.sentGuesses[0].payload.guess);assert.equal(guess.toLowerCase(),'canon');assert.equal(await page.evaluate(()=>window.hintRequests.length),1);assert.deepEqual(errors,[]);
++    observations.push({width,method,recovery,slot,draft:'CANON',guess,browserErrors:errors});await page.close();
++  }
++
++} finally {
++  await browser?.close();
++  if (server) await new Promise(resolve => server.close(resolve));
++  await rm(scratch, {recursive: true, force: true});
++  await writeFile(path.join(evidence,'observations.json'),JSON.stringify(observations,null,2)+'\n');
++}
+--- a/packages/portal/src/play/GameSessionCheckpoints.ts
++++ b/packages/portal/src/play/GameSessionCheckpoints.ts
+@@ -1,6 +1,7 @@
+ import type {ScoredGuess} from "@qwordly/core/game";
+ import type {SavedGame} from "../platform/types";
+ import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
++import {rejectHintPreview} from "./hintPreview";
+ 
+ /** Isolates adapter-owned checkpoint values from reducer-owned progress. */
+ const cloneGuesses = (guesses: ScoredGuess[]): ScoredGuess[] =>
+@@ -32,16 +33,7 @@
+     state.riddle?.sessionToken === state.pendingCoinSpend.sessionToken) {
+     state = {...state, ...state.pendingCoinSpend.continueState};
+   }
+-  if (state.pendingHintState) {
+-    /** Unconfirmed hint details restored before saving. */
+-    const {index, previousLetter, previousActiveSlotIndex} = state.pendingHintState;
+-    /** Current draft with any unconfirmed hint removed. */
+-    const currentLetters = [...state.currentLetters];
+-    currentLetters[index] = previousLetter;
+-    state = {...state, currentLetters, activeSlotIndex: previousActiveSlotIndex,
+-      hintRevealedIndices: state.hintRevealedIndices.filter((candidate) => candidate !== index),
+-      pendingHintState: null};
+-  }
++  if (state.pendingHintState) state = rejectHintPreview(state);
+   if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
+   return {
+     schemaVersion: 1,
+--- a/packages/portal/src/play/__tests__/gameSession.test.ts
++++ b/packages/portal/src/play/__tests__/gameSession.test.ts
+@@ -1023,3 +1023,46 @@
+   expect(restored.hintRevealedIndices).toEqual([0]);
+   expect(restored.letterStates.p).toBe("green");
+ });
++
++
++it.each(["reject", "save"])("preserves typing after an unconfirmed hint during %s", kind => {
++  /** The hint starts after one player-owned letter, with the cursor ready for the next one. */
++  let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
++  state = reduce(state, {type: "typeLetter", letter: "C"});
++  state = reduce(state, {type: "previewHint", index: 0, letter: "P"});
++  state = reduce(state, {type: "typeLetter", letter: "A"});
++  state = reduce(state, {type: "typeLetter", letter: "N"});
++  /** Projection rolls back only the unconfirmed hint, retaining subsequent player intent. */
++  const recovered = kind === "reject" ? reduce(state, {type: "rejectHint"}) : createSavedGame(state)!;
++  expect(recovered.currentLetters).toEqual(["C", "A", "N", "", ""]);
++  expect(recovered.activeSlotIndex).toBe(3);
++  expect(recovered.hintRevealedIndices).toEqual([]);
++  if (kind === "reject") {
++    state = recovered as GameSessionState;
++    state = reduce(state, {type: "typeLetter", letter: "O"});
++    state = reduce(state, {type: "typeLetter", letter: "N"});
++    expect(state.currentLetters.join("")).toBe("CANON");
++  }
++});
++
++
++it.each(["reject", "save"])("retains untouched and deliberate preview selection during %s", kind => {
++  for (const intent of ["unchanged", "focused", "ignored", "typed-emptied", "focused-same"] as const) {
++    /** Original selection differs from the automatic preview cursor. */
++    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
++    state = reduce(state, {type: "typeLetter", letter: "C"});
++    state = reduce(state, {type: "selectSlot", index: 3});
++    state = reduce(state, {type: "previewHint", index: 0, letter: "P"});
++    if (intent === "focused") state = reduce(state, {type: "selectSlot", index: 4});
++    if (intent === "ignored") state = reduce(state, {type: "typeLetter", letter: " "});
++    if (intent === "focused-same") state = reduce(state, {type: "selectSlot", index: 1});
++    if (intent === "typed-emptied") {
++      state = reduce(state, {type: "typeLetter", letter: "A"});
++      state = reduce(state, {type: "backspace"});
++    }
++    /** Ignored input leaves the original intent intact; explicit focus remains player-owned. */
++    const recovered = kind === "reject" ? reduce(state, {type: "rejectHint"}) : createSavedGame(state)!;
++    expect(recovered.activeSlotIndex).toBe(intent === "focused" ? 4 : intent === "focused-same" || intent === "typed-emptied" ? 1 : 3);
++    expect(recovered.currentLetters).toEqual(["C", "", "", "", ""]);
++  }
++});
+--- a/packages/portal/src/play/gameSession.ts
++++ b/packages/portal/src/play/gameSession.ts
+@@ -11,6 +11,7 @@
+ import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
+ import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
+ import {isSingleAnswerCell} from "./answerCell";
++import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
+ 
+ export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
+ 
+@@ -294,6 +295,7 @@
+         ...state,
+         canRestoreCheckpoint: false,
+         currentLetters,
++        pendingHintState: markHintPreviewIntent(state.pendingHintState),
+         activeSlotIndex: firstEditableSlot(
+           currentLetters,
+           state.hintRevealedIndices,
+@@ -315,7 +317,8 @@
+       /** Provides current letters behavior. */
+       const currentLetters = [...state.currentLetters];
+       currentLetters[target] = "";
+-      return {...state, canRestoreCheckpoint: false, currentLetters, activeSlotIndex: target, notice: null};
++      return {...state, canRestoreCheckpoint: false, currentLetters, activeSlotIndex: target,
++        pendingHintState: markHintPreviewIntent(state.pendingHintState), notice: null};
+     }
+     case "selectSlot":
+       if (
+@@ -327,7 +330,8 @@
+       ) {
+         return state;
+       }
+-      return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index};
++      return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index,
++        pendingHintState: markHintPreviewIntent(state.pendingHintState)};
+     case "guessRequested":
+       if (!state.riddle || (state.guessPending && !canDraftWhileConfirming(state)) ||
+         state.currentLetters.some((letter) => !letter)) return state;
+@@ -525,20 +529,15 @@
+       nextLetters[action.index] = action.letter.toLocaleUpperCase(state.riddle?.evaluation?.locale ?? state.locale);
+       /** Hint positions including the provisional reveal. */
+       const hintRevealedIndices = [...state.hintRevealedIndices, action.index].sort((a, b) => a - b);
++      /** Automatic hint selection does not count as a later player cursor choice. */
++      const activeSlotIndex = firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1);
+       return {...state, currentLetters: nextLetters, hintRevealedIndices,
+-        activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
+-        pendingHintState: {index: action.index, previousLetter, previousActiveSlotIndex: state.activeSlotIndex}};
++        activeSlotIndex,
++        pendingHintState: {index: action.index, previousLetter, previousActiveSlotIndex: state.activeSlotIndex,
++          hasPlayerIntent: false}};
+     }
+     case "rejectHint": {
+-      /** Locally shown state awaiting server confirmation. */
+-      const preview = state.pendingHintState;
+-      if (!preview) return state;
+-      /** Current draft with any unconfirmed hint removed. */
+-      const currentLetters = [...state.currentLetters];
+-      currentLetters[preview.index] = preview.previousLetter;
+-      return {...state, currentLetters,
+-        hintRevealedIndices: state.hintRevealedIndices.filter((index) => index !== preview.index),
+-        activeSlotIndex: preview.previousActiveSlotIndex, pendingHintState: null};
++      return rejectHintPreview(state);
+     }
+     case "applyHint": {
+       if (state.pendingHintState) state = gameSessionReducer(state, {type: "rejectHint"});
+--- a/packages/portal/src/play/gameSessionTypes.ts
++++ b/packages/portal/src/play/gameSessionTypes.ts
+@@ -64,6 +64,7 @@
+     /** Previewed answer position. */ index: number;
+     /** Letter replaced by the preview. */ previousLetter: string;
+     /** Keyboard position before the preview. */ previousActiveSlotIndex: number;
++    /** Admitted player edits or selections outrank the automatic preview cursor, including undone edits. */ hasPlayerIntent: boolean;
+   } | null;
+   /** Serializable snapshot of the deterministic game engine. */ engineSnapshot: GameEngineSnapshot | null;
+   /** Modal currently presented above the game. */ modal: GameModal;
+--- /dev/null
++++ b/packages/portal/src/play/hintPreview.ts
+@@ -0,0 +1,28 @@
++import type {GameSessionState} from "./gameSessionTypes";
++
++/** Records admitted player input independently of resulting letter or cursor equality. */
++export const markHintPreviewIntent = (preview: GameSessionState["pendingHintState"]): GameSessionState["pendingHintState"] =>
++  preview && !preview.hasPlayerIntent ? {...preview, hasPlayerIntent: true} : preview;
++
++/** Removes an unconfirmed hint while retaining typing and selection made after its preview. */
++export const rejectHintPreview = (state: GameSessionState): GameSessionState => {
++  /** Only the current preview owns a letter to roll back. */
++  const preview = state.pendingHintState;
++  if (!preview) return state;
++  /** Restore the replaced letter without discarding subsequent edits. */
++  const currentLetters = [...state.currentLetters];
++  currentLetters[preview.index] = preview.previousLetter;
++  /** Removing the provisional lock leaves every confirmed hint intact. */
++  const hintRevealedIndices = state.hintRevealedIndices.filter(index => index !== preview.index);
++  /** Untouched previews restore the original cursor; later player intent retains its current cursor. */
++  const selected = preview.hasPlayerIntent
++    ? state.activeSlotIndex : preview.previousActiveSlotIndex;
++  /** A restored cursor must never point at a remaining confirmed hint when an editable cell exists. */
++  const activeSlotIndex = hintRevealedIndices.includes(selected)
++    ? currentLetters.findIndex((letter, index) => !letter && !hintRevealedIndices.includes(index))
++    : selected;
++  return {...state, currentLetters, hintRevealedIndices,
++    activeSlotIndex: activeSlotIndex >= 0 ? activeSlotIndex :
++      Math.max(0, currentLetters.findIndex((_letter, index) => !hintRevealedIndices.includes(index))),
++    pendingHintState: null};
++};

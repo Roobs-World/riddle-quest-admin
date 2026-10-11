@@ -1,0 +1,5 @@
+{
+  "firebase-functions/scripts/run-isolated-emulators.js": "1fc28f5de4fa0b7b320849c3992f5144b819fb77eb7691b76e28c3e6d4fdb99c",
+  "firebase-functions/scripts/run-isolated-emulators.test.js": "188c7d09de0652b0063fad48f5548fd28ec2f4da163ed77f09e37bb599519602",
+  "firebase-functions/package.json": "017a7f82fd8e330e5959583e94f8b991d0ad03105b6885f78f9d6ddfd5466a41"
+}

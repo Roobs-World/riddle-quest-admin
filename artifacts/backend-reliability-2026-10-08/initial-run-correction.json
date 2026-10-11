@@ -1,0 +1,15 @@
+{
+  "initialProject": "demo-riddle-quest-current-audit",
+  "initialProjectLength": 31,
+  "acceptedProjectLengthMaximum": 30,
+  "failedSuite": "presenceVisibilityReconciliation.it.test.ts",
+  "failedTests": 1,
+  "passedTests": 1251,
+  "passedSuites": 86,
+  "totalSuites": 87,
+  "correctedProject": "demo-riddle-quest-audit",
+  "correctedProjectLength": 23,
+  "compiledCliModuleExistedInitially": true,
+  "productionCliChanged": false,
+  "correction": "The generated demo project exceeded the unchanged CLI scope limit; corrected run uses the valid project and an exact CLI copy against freshly compiled current backend code."
+}

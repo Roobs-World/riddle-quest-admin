@@ -1,0 +1,27 @@
+[
+  {
+    "name": "committed retry retains its committed adapter during abandoned render",
+    "actual": "speculative",
+    "expected": "original"
+  },
+  {
+    "name": "committed replacement receives subsequent retry",
+    "actual": "replacement",
+    "expected": "replacement"
+  }
+]
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Race callbacks must belong to the committed render
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-options-commit-browser.mjs:29:42 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

@@ -288,6 +288,19 @@ describe("single-player session transactions", () => {
     } finally { jest.useRealTimers(); }
   });
 
+  it("returns a usable Turkish dotted-I hint and replays it without charging twice", async () => {
+    mockDocuments.set(sessionPath(), baseSession({locale: "tr", answer: "izmir"}));
+    /** A blank attempt requests the first canonical letter without altering scoring semantics. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN,
+      requestId: "turkish-hint-0001", currentAttempt: ["", "", "", "", ""]};
+    /** Both the first response and exact receipt replay must retain the locale-aware glyph. */
+    const first = await purchaseAuthoritativeHint(USER_ID, request);
+    expect(first).toMatchObject({revealedLetter: "İ", index: 0, newCoins: 275});
+    expect(await purchaseAuthoritativeHint(USER_ID, request)).toEqual(first);
+    expect(mockDocuments.get(userPath)?.coins).toBe(275);
+    expect(mockDocuments.get(userPath)?.stats.totalHintsUsed).toBe(1);
+  });
+
   it("charges one hint once and semantically recovers a dropped response with a fresh request id", async () => {
     mockDocuments.set(sessionPath(), baseSession());
     /** Provides request behavior. */

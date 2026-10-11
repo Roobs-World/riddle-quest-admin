@@ -1,0 +1,11 @@
+# Candidate freshness batching, 9 October 2026
+
+Optional freshness checks now group up to four contiguous uninspected ranked recordings in one read-only transaction. Groups remain within one performance band, stop at the first projection that might supply a fresh winner, and charge every prefetched recording against that band's existing allowance. Already inspected records stop prefetch. A worst-case eight-document allowance per legacy recording preserves the 30-read fallback-commit reserve. Canonical privacy gates and final transactional offer validation remain in place.
+
+All 1761 backend unit tests in 140 suites passed under pinned Node 22.23.1 with `--experimental-vm-modules`. The initial run omitted this required flag and failed 12 unrelated Yahoo OAuth cases; its failure log is retained. Backend type checking and lint passed. Two new freshness tests cover stopping at a potentially fresh winner, band boundaries, additional-check limits, legacy-read reserves, and the four-record maximum.
+
+The six real Firestore emulator benchmark scenarios and four matched replay phases passed (50 lookups). The strengthened benchmark verified the seeded winner and exact replay response. Relative to the immediately preceding ungrouped fixture run, freshness median application document reads fell from 167 to 107 and transaction read batches from 69 to 24. All other scenario median read/batch counts remained unchanged. These are deterministic fixture work counts, not a production wall-clock speedup claim. An alternating latency experiment and broader SDK concurrency checks remain outstanding.
+
+Evidence is in `artifacts/freshness-batching-2026-10-09`, including the exact before-source matchmaking module, unit/static logs, terminal benchmark log/results, compiled file hashes and post-run current source hashes. The source inventory is post-run, not a pre-run freeze proof. All four allocated emulator ports were confirmed closed after terminal success, and the owned temporary compiled output was removed. No client artifact changed and nothing was deployed. This remains a candidate change pending the outstanding validation.
+
+Subsequent validation: [five alternating measurement pairs](freshness-alternating-2026-10-09.md) completed successfully. See that report for local timing evidence and its limits.

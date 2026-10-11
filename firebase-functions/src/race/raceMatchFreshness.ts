@@ -18,3 +18,19 @@ export function selectRaceFreshCandidate<T extends RaceFreshnessQuality>(eligibl
   // The broader, unconstrained performance band is never a freshness substitute.
   return eligible.find(candidate => candidate.band <= 1 && !raceCandidateNeedsFreshness(candidate, policy)) ?? baseline;
 }
+
+/** Bounds optional canonical work without reading beyond the first potentially fresh winner. */
+export function raceFreshnessInspectionBatch<T extends RaceFreshnessQuality>(
+  candidates: T[], policy: RaceMatchPolicy, remainingChecks: number, remainingReads: number,
+): T[] {
+  /** Each legacy recording needs at most eight documents before final offer revalidation. */
+  const limit = Math.min(4, remainingChecks, Math.floor(remainingReads / 8));
+  /** Contiguous rank order prevents a different performance band from consuming this allowance. */
+  const group: T[] = [];
+  for (const candidate of candidates) {
+    if (group.length >= limit || candidate.band !== candidates[0]?.band) break;
+    group.push(candidate);
+    if (!raceCandidateNeedsFreshness(candidate, policy)) break;
+  }
+  return group;
+}

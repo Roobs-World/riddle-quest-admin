@@ -1,0 +1,13 @@
+# Terminal recovery with an absent paid receipt — 2026-10-09
+
+The previous fix lets an exact still-owned paid receipt settle after terminal journal retirement. That addresses late replies, but not a missing reply.
+
+A diagnostic runs the actual pending recovery hook's captured layout/passive effects against the actual reducer and journal storage. Complete six-attempt host history first proves win or loss while an original Continue charge is pending. Terminal reconciliation then removes the durable journal, cancels delivery ownership and leaves pendingCoinSpend intact. The diagnostic checks that either an exact durable paid request remains recoverable or the local charge is no longer pending. Both held-charge cases fail. Equivalent terminal win/loss controls with no pending charge pass (two failures, two controls). Terminal outcome and engine assertions pass before the liveness assertion, so the failure is not an invalid terminal fixture.
+
+The GameFrameApp recovery Next callback explicitly refuses progress while pendingCoinSpend exists. Its close and decline callbacks have the same pending-charge guard. After delivery journal retirement, sendFirst has no message/lease owner to retry. A receipt that never arrives therefore has no remaining durable delivery route, while the local charge continues to block that recovery path. A cold reload may discard the local preview, but it does not preserve an exact retry of the paid request; reload is not a satisfactory recovery design.
+
+Next implementation should preserve the exact unresolved paid receipt and retry ownership while retiring redundant completed gameplay deliveries. Canonical terminal state must remain closed; only the balance receipt may settle or retry. Paid retry must not depend on a completion acknowledgement that itself cannot release the pending charge. Do not invent a success, grant or balance refund from terminal history alone. Cover win/loss, late success/rejection, unavailable replies, reload persistence, account revocation and existing successor/terminal journal behavior in focused tests and injected browsers before rebuilding all six targets.
+
+Evidence: `artifacts/solo-terminal-paid-liveness-audit-2026-10-09/`. The initial artifact runner had a TSX generic-arrow parse error; `runner-syntax.log` is retained, and corrected diagnostic execution has zero runtime-error suites. This is an effect/reducer/storage liveness reproduction, not a full rendered Next journey or backend transaction.
+
+No production changes in this audit. Current 2,549 selected source/configuration inputs still match the verified Continue rollback cohort. No deployment occurred. The broader goal remains active; held terminal payment recovery remains unresolved.

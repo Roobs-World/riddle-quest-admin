@@ -1,0 +1,10 @@
+{
+  "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts": {
+    "before": "d913fc99c087fd05044d09feec467a34fe15e41e923ad42657facd54cac13d0d",
+    "after": "df1408c030e977d9ed0fa40d90add131e72b761f4d18cf18e87beca82c85b437"
+  },
+  "packages/portal/src/play/pendingGuessJournal.ts": {
+    "before": "e87fe5f2e9553ea502b3b9dd8aeb533c3908a01484f2fb41899f4d7a18f69995",
+    "after": "eea628751d4aba439b3020f07fafd5408d988397c403fbcde7d6a365a66d5a4c"
+  }
+}

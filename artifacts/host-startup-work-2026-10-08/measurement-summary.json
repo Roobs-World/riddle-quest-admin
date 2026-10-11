@@ -1,0 +1,21 @@
+{
+  "baseline": {
+    "median": 576715,
+    "range": [
+      576715,
+      576715
+    ],
+    "runs": 5
+  },
+  "current": {
+    "median": 566836,
+    "range": [
+      566836,
+      566836
+    ],
+    "runs": 5
+  },
+  "savedBytes": 9879,
+  "savedPercent": 1.7129778139982486,
+  "wallClockSpeedupClaimed": false
+}

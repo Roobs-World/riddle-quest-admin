@@ -1,0 +1,17 @@
+{
+  "initialResourceBytes": 566836,
+  "budget": 576716.8,
+  "resources": [
+    "./assets/ReferralSharingCapability-B0Q-Bzjw.js",
+    "./assets/core-bridge-constants--aS0k-qf.js",
+    "./assets/core-game--jMNYXVl.js",
+    "./assets/i18n-CGEdpCJu.js",
+    "./assets/index-z16A5Yo1.js",
+    "./assets/jest-5XhavRTo.css",
+    "./assets/jest-C6gwT6PZ.js",
+    "./assets/predictCompletionAchievements-CTYIa9qo.js",
+    "./assets/preload-helper-ClC2XIXo.js",
+    "./assets/rolldown-runtime-BX80bFGj.js",
+    "./assets/vendor-react-CuZr8RiT.js"
+  ]
+}

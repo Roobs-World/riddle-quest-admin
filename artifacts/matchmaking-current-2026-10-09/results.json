@@ -1,0 +1,696 @@
+{
+  "schemaVersion": 1,
+  "measurementVersion": 2,
+  "environment": "loopback-firestore-emulator",
+  "projectId": "demo-riddle-quest-match",
+  "nodeVersion": "v22.23.1",
+  "passed": true,
+  "policyHash": "41b1ceb89aef0fb608fdf690a40a6f3a9b9c7a5800ec12760b6499cd4157ab47",
+  "policyRevision": 2,
+  "iterations": 5,
+  "limitations": [
+    "Synthetic warm process; no cloud cold starts, client transport or real network latency.",
+    "Application read attempts and query counts are not billed index scans. Emulator results do not establish production SLO compliance."
+  ],
+  "results": [
+    {
+      "scenario": "dense",
+      "phase": "new",
+      "fixtureRecordings": 220,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 1500,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 46.66043600000012,
+        "p95": 103.424034,
+        "max": 103.424034
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 112,
+        "p95": 112,
+        "max": 112
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 8,
+        "p95": 9,
+        "max": 9
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 20,
+        "p95": 20,
+        "max": 20
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 2,
+        "p95": 2,
+        "max": 2
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 6,
+        "p95": 6,
+        "max": 6
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "dense",
+      "phase": "replay",
+      "fixtureRecordings": 220,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 1500,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 9.669403999999986,
+        "p95": 12.026528000000098,
+        "max": 12.026528000000098
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 9,
+        "p95": 9,
+        "max": 9
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 3,
+        "p95": 3,
+        "max": 3
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "sparse",
+      "phase": "new",
+      "fixtureRecordings": 1,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 1500,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 20.253723000000036,
+        "p95": 22.642426999999998,
+        "max": 22.642426999999998
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 20,
+        "p95": 20,
+        "max": 20
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 2,
+        "p95": 2,
+        "max": 2
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 6,
+        "p95": 6,
+        "max": 6
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "sparse",
+      "phase": "replay",
+      "fixtureRecordings": 1,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 1500,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 8.617097999999942,
+        "p95": 9.053761000000122,
+        "max": 9.053761000000122
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 9,
+        "p95": 9,
+        "max": 9
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 3,
+        "p95": 3,
+        "max": 3
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "exclusions",
+      "phase": "new",
+      "fixtureRecordings": 101,
+      "blockedRecordings": 100,
+      "observations": 5,
+      "localP95LatencyTargetMs": 5000,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 77.89540499999998,
+        "p95": 90.46259399999985,
+        "max": 90.46259399999985
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 112,
+        "p95": 112,
+        "max": 112
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 9,
+        "p95": 9,
+        "max": 9
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 119,
+        "p95": 143,
+        "max": 143
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 10,
+        "p95": 12,
+        "max": 12
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 22,
+        "p95": 26,
+        "max": 26
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 221,
+        "p95": 277,
+        "max": 277
+      },
+      "rejectionCounts": {
+        "blocked": {
+          "count": 5,
+          "p50": 64,
+          "p95": 80,
+          "max": 80
+        }
+      }
+    },
+    {
+      "scenario": "exclusions",
+      "phase": "replay",
+      "fixtureRecordings": 101,
+      "blockedRecordings": 100,
+      "observations": 5,
+      "localP95LatencyTargetMs": 5000,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 7.687595999999985,
+        "p95": 9.201953000000003,
+        "max": 9.201953000000003
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 9,
+        "p95": 9,
+        "max": 9
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 3,
+        "p95": 3,
+        "max": 3
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "empty",
+      "phase": "new",
+      "fixtureRecordings": 0,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 1500,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 0,
+        "empty": 5,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 9.961250999999947,
+        "p95": 11.313859000000093,
+        "max": 11.313859000000093
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 7,
+        "p95": 7,
+        "max": 7
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "capped",
+      "phase": "new",
+      "fixtureRecordings": 220,
+      "blockedRecordings": 220,
+      "observations": 5,
+      "localP95LatencyTargetMs": 10000,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 0,
+        "empty": 0,
+        "failure": 5
+      },
+      "failures": {
+        "search-budget-exceeded": 5
+      },
+      "elapsedMs": {
+        "count": 5,
+        "p50": 182.81340799999998,
+        "p95": 190.96386600000005,
+        "max": 190.96386600000005
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 200,
+        "p95": 200,
+        "max": 200
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 13,
+        "p95": 13,
+        "max": 13
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 336,
+        "p95": 340,
+        "max": 340
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 36,
+        "p95": 37,
+        "max": 37
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 72,
+        "p95": 74,
+        "max": 74
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 608,
+        "p95": 616,
+        "max": 616
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "freshness",
+      "phase": "new",
+      "fixtureRecordings": 221,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 3000,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 140.54984400000012,
+        "p95": 150.11744399999998,
+        "max": 150.11744399999998
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 113,
+        "p95": 113,
+        "max": 113
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 10,
+        "p95": 10,
+        "max": 10
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 167,
+        "p95": 167,
+        "max": 167
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 23,
+        "p95": 23,
+        "max": 23
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 69,
+        "p95": 69,
+        "max": 69
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    },
+    {
+      "scenario": "freshness",
+      "phase": "replay",
+      "fixtureRecordings": 221,
+      "blockedRecordings": 0,
+      "observations": 5,
+      "localP95LatencyTargetMs": 3000,
+      "checks": {
+        "policyAttribution": true,
+        "oneTerminalEvent": true,
+        "expectedOutcome": true,
+        "canonicalReadBound": true,
+        "candidateReadBound": true,
+        "transactionBound": true,
+        "replayReadBound": true,
+        "localLatencyTarget": true
+      },
+      "statuses": {
+        "matched": 5,
+        "empty": 0,
+        "failure": 0
+      },
+      "failures": {},
+      "elapsedMs": {
+        "count": 5,
+        "p50": 6.475524999999834,
+        "p95": 7.234252000000197,
+        "max": 7.234252000000197
+      },
+      "candidateDocuments": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "candidateQueries": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "documentReadAttempts": {
+        "count": 5,
+        "p50": 9,
+        "p95": 9,
+        "max": 9
+      },
+      "transactionAttempts": {
+        "count": 5,
+        "p50": 1,
+        "p95": 1,
+        "max": 1
+      },
+      "transactionDocumentReadBatches": {
+        "count": 5,
+        "p50": 3,
+        "p95": 3,
+        "max": 3
+      },
+      "transactionDocumentCacheHits": {
+        "count": 5,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "rejectionCounts": {}
+    }
+  ]
+}

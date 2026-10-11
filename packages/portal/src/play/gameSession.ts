@@ -7,11 +7,13 @@ import {
   type ScoredGuess,
 } from "@qwordly/core/game";
 import type {BridgeRiddle, BridgeProfile} from "@qwordly/core/bridge";
-import type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
-import {predictCompletionAchievementIds} from "./achievements";
+import type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
+import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
 import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
+import {isSingleAnswerCell} from "./answerCell";
+import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
 
-export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
+export type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
 
 /** Player-owned utility pages remain open while an authoritative question changes underneath them. */
 const questionIndependentModals = new Set<GameModal>([
@@ -58,10 +60,10 @@ export const createInitialGameSession = (): GameSessionState => ({
 });
 
 /** Normalizes input letter. */
-const normalizeInputLetter = (letter: string): string | null => {
+const normalizeInputLetter = (letter: string, locale: string): string | null => {
   /** Provides graphemes behavior. */
   const graphemes = splitGraphemes(letter.trim());
-  return graphemes[0]?.toUpperCase() ?? null;
+  return graphemes[0]?.toLocaleUpperCase(locale) ?? null;
 };
 
 /** Runs profile coins. */
@@ -119,8 +121,82 @@ const sameGameAccount = (first: GameSessionState["user"], second: GameSessionSta
   first?.uid === second?.uid && first?.accountGeneration === second?.accountGeneration;
 
 /** Computes states. */
-const computeStates = (guesses: ScoredGuess[]): Record<string, Feedback> => {
-  return computeLetterStates(guesses);
+const computeStates = (guesses: ScoredGuess[], locale: string): Record<string, Feedback> => {
+  return computeLetterStates(guesses.map(row => ({...row, guess: row.guess.map(letter => letter.toLocaleLowerCase(locale))})));
+};
+
+/** Purchased hint symbols remain known when guess history or a recovery checkpoint changes. */
+const withConfirmedHintFeedback = (state: GameSessionState): GameSessionState => {
+  /** Copy only when confirmed knowledge is absent from the current keyboard projection. */
+  let letterStates = state.letterStates;
+  for (const index of state.hintRevealedIndices) {
+    if (index === state.pendingHintState?.index) continue;
+    /** A locked slot without a glyph cannot establish keyboard knowledge. */
+    const letter = state.currentLetters[index];
+    if (!letter) continue;
+    /** Immutable content locale owns the hinted symbol's keyboard identity. */
+    const key = letter.toLocaleLowerCase(state.riddle?.evaluation?.locale ?? state.locale);
+    if (letterStates[key] === "green") continue;
+    if (letterStates === state.letterStates) letterStates = {...letterStates};
+    letterStates[key] = "green";
+  }
+  return letterStates === state.letterStates ? state : {...state, letterStates};
+};
+
+/** Validates completion presentation before persisted metadata reaches UI effects or input gates. */
+const hasUsablePendingMetadata = (base: PendingGuessState, state: GameSessionState): boolean => {
+  /** Achievement lists are iterated by recovery capture and completion presentation. */
+  const ids = (value: unknown): boolean => Array.isArray(value) && value.every(id => typeof id === "string");
+  /** Economy presentation uses finite, nonnegative integer amounts and counters. */
+  const amount = (value: unknown): boolean => typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+  /** Utility pages and the known gameplay dialogs are the only restorable modal discriminators. */
+  const modal = base.modal === null || questionIndependentModals.has(base.modal) ||
+    ["hint", "skip", "reward"].includes(base.modal) ||
+    (base.modal === "victory" && base.lastOutcome?.kind === "win") ||
+    (base.modal === "continue" && base.engineSnapshot?.attemptsUsed === 5 &&
+      !base.engineSnapshot.gameOver && !base.engineSnapshot.hasUsedContinue);
+  /** A saved outcome must identify this issued question, never a foreign completion. */
+  const outcome = base.lastOutcome;
+  /** Rewards remain a presentation record; grant authority stays with the host. */
+  const rewards = base.lastRewards;
+  return modal && typeof base.completionAcknowledged === "boolean" && ids(base.optimisticAchievementIds) &&
+    (outcome === null ? !base.engineSnapshot?.gameOver : Boolean(outcome &&
+      base.engineSnapshot?.gameOver === true && outcome.attempts === base.engineSnapshot.attemptsUsed &&
+      typeof outcome.id === "string" && outcome.id.length > 0 &&
+      (outcome.kind === "win" || outcome.kind === "loss") && outcome.riddleId === state.riddle?.riddleId &&
+      outcome.sessionToken === state.riddle?.sessionToken && outcome.gameMode === state.riddle?.gameMode &&
+      Number.isSafeInteger(outcome.attempts) && outcome.attempts >= 1 && outcome.attempts <= 6 &&
+      outcome.isCorrect === (outcome.kind === "win"))) &&
+    (rewards === null || Boolean(rewards && amount(rewards.coinsEarned) && ids(rewards.newlyUnlockedAchievementIds) &&
+      [rewards.totalCoins, rewards.newXp, rewards.newLevel, rewards.newWinStreak].every(value => value === undefined || amount(value)) &&
+      (rewards.leveledUp === undefined || typeof rewards.leveledUp === "boolean")));
+};
+
+/** Checks persisted board data before any scored row reaches feedback computation or rendering. */
+const hasUsablePendingPresentation = (base: PendingGuessState, width: number, locale: string): boolean => {
+  /** Saved cells may be empty only in the current, unsubmitted row. */
+  const cells = (value: unknown, allowEmpty: boolean): boolean => Array.isArray(value) && value.length === width &&
+    value.every(letter => (allowEmpty && letter === "") || isSingleAnswerCell(letter, locale));
+  /** Feedback must remain aligned with each complete scored word. */
+  const rows = (value: unknown): boolean => Array.isArray(value) && value.length <= 6 && value.every(row =>
+    row && cells(row.guess, false) && Array.isArray(row.feedback) && row.feedback.length === width &&
+    row.feedback.every((status: unknown) => status === "green" || status === "yellow" || status === "red"));
+  return Boolean(base && cells(base.currentLetters, true) && rows(base.guesses) &&
+    Number.isInteger(base.activeSlotIndex) && base.activeSlotIndex >= 0 && base.activeSlotIndex < width &&
+    (base.engineSnapshot === null || (base.engineSnapshot && rows(base.engineSnapshot.guesses) &&
+      Number.isSafeInteger(base.engineSnapshot.attemptsUsed) && base.engineSnapshot.attemptsUsed >= 0 &&
+      base.engineSnapshot.attemptsUsed <= 6 && typeof base.engineSnapshot.hasUsedContinue === "boolean" &&
+      typeof base.engineSnapshot.gameOver === "boolean")));
+};
+
+/** Restores only checkpoint-owned presentation; serialized extras cannot replace host or lifecycle ownership. */
+const restorePendingPresentation = (state: GameSessionState, base: PendingGuessState): GameSessionState => {
+  /** Keyboard knowledge is derived from validated rows instead of trusting an independent persisted map. */
+  const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
+    completionAcknowledged, lastRewards, optimisticAchievementIds} = base;
+  return {...state, currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
+    completionAcknowledged, lastRewards, optimisticAchievementIds,
+    letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale)};
 };
 
 /** Restores the visible round while keeping the paid Continue round's existing row reset. */
@@ -234,7 +310,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       /** Grapheme cells preserve the issued answer shape and purchased hint locks. */
       const letters = Array.from({length: action.riddle.answerLength}, () => "");
       for (const hint of hints) letters[hint.index] = hint.letter;
-      return {
+      return withConfirmedHintFeedback({
         ...state,
         riddle: action.riddle,
         canRestoreCheckpoint: true,
@@ -256,15 +332,15 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         lastRewards: null,
         optimisticAchievementIds: [],
         auxiliaryFanfare: null,
-        letterStates: computeStates(snapshot.guesses),
-      };
+        letterStates: computeStates(snapshot.guesses, action.riddle.evaluation?.locale ?? state.locale),
+      });
     }
     case "typeLetter": {
       if (!canEditCurrentGuess(state)) {
         return state;
       }
       /** Provides letter behavior. */
-      const letter = normalizeInputLetter(action.letter);
+      const letter = normalizeInputLetter(action.letter, state.riddle?.evaluation?.locale ?? state.locale);
       if (!letter || state.hintRevealedIndices.includes(state.activeSlotIndex)) {
         return state;
       }
@@ -275,6 +351,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         ...state,
         canRestoreCheckpoint: false,
         currentLetters,
+        pendingHintState: markHintPreviewIntent(state.pendingHintState),
         activeSlotIndex: firstEditableSlot(
           currentLetters,
           state.hintRevealedIndices,
@@ -296,7 +373,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       /** Provides current letters behavior. */
       const currentLetters = [...state.currentLetters];
       currentLetters[target] = "";
-      return {...state, canRestoreCheckpoint: false, currentLetters, activeSlotIndex: target, notice: null};
+      return {...state, canRestoreCheckpoint: false, currentLetters, activeSlotIndex: target,
+        pendingHintState: markHintPreviewIntent(state.pendingHintState), notice: null};
     }
     case "selectSlot":
       if (
@@ -308,7 +386,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       ) {
         return state;
       }
-      return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index};
+      return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index,
+        pendingHintState: markHintPreviewIntent(state.pendingHintState)};
     case "guessRequested":
       if (!state.riddle || (state.guessPending && !canDraftWhileConfirming(state)) ||
         state.currentLetters.some((letter) => !letter)) return state;
@@ -355,19 +434,27 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "guessPreviewConfirmed":
       return {...state, guessPending: false, pendingGuessState: null};
     case "restoreQueuedGuesses": {
-      if (!state.riddle || action.base.currentLetters.length !== state.riddle.answerLength) return state;
+      if (!state.riddle) return state;
+      /** Corrupt presentation never retires the separately retained delivery receipts. */
+      const usableBase = hasUsablePendingPresentation(action.base, state.riddle.answerLength, state.locale) &&
+        hasUsablePendingMetadata(action.base, state) &&
+        (!state.riddle.hasUsedContinue || action.base.engineSnapshot?.hasUsedContinue === true);
       // Pending-play receipts may settle after the host has already supplied their terminal history.
       if (getConfirmedRiddleOutcome(state.riddle)) return state;
       /** Journal gameplay is recoverable; its older profile must not replace the current host profile. */
-      let restored: GameSessionState = {...state, ...action.base, profile: state.profile,
+      let restored: GameSessionState = {...(usableBase ? restorePendingPresentation(state, action.base) : state), profile: state.profile,
         guessPending: false, pendingGuessState: null, canRestoreCheckpoint: false};
-      for (const guess of action.guesses) {
+      for (const [index, guess] of action.guesses.entries()) {
+        /** The restored board already owns these attempt slots; delivery still retries the original receipt. */
+        if (action.guessAttempts?.[index] !== undefined &&
+          action.guessAttempts[index]! <= (restored.engineSnapshot?.attemptsUsed ?? 0)) continue;
         /** The letters used by the current operation. */
-        const letters = splitGraphemes(guess, state.riddle.evaluation?.locale).map((letter) => letter.toUpperCase());
+        const letters = splitGraphemes(guess, state.riddle.evaluation?.locale).map((letter) => letter.toLocaleUpperCase(state.riddle?.evaluation?.locale ?? state.locale));
         if (letters.length !== state.riddle.answerLength || restored.engineSnapshot?.gameOver) return state;
         restored = gameSessionReducer({...restored, currentLetters: letters}, {type: "guessRequested"});
       }
-      if (action.draft.length === state.riddle.answerLength && !restored.engineSnapshot?.gameOver) {
+      if (action.draft.length === state.riddle.answerLength &&
+        action.draft.every(letter => letter === "" || isSingleAnswerCell(letter, state.locale)) && !restored.engineSnapshot?.gameOver) {
         /** Legacy journals retain letters but omit the draft's selection. */
         const savedSlot = action.draftActiveSlotIndex;
         /** Editable selection is reconciled with authoritative purchased hint locks. */
@@ -385,7 +472,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           ? firstEditableSlot(currentLetters,state.hintRevealedIndices) : restored.activeSlotIndex};
       }
       // A saved gameplay checkpoint cannot dismiss a utility page opened since it was captured.
-      return questionIndependentModals.has(state.modal) ? {...restored, modal: state.modal} : restored;
+      return withConfirmedHintFeedback(questionIndependentModals.has(state.modal) ? {...restored, modal: state.modal} : restored);
     }
     case "restoreConfirmedRiddle": {
       // A rollback's older issued copy cannot reopen this already confirmed terminal round.
@@ -394,11 +481,17 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         state.riddle.gameMode === action.riddle.gameMode) return state;
       /** The loaded used by the current operation. */
       const loaded = gameSessionReducer(state, {type: "loadRiddle", riddle: action.riddle});
-      if (loaded.riddle && getConfirmedRiddleOutcome(loaded.riddle)) return loaded;
-      return {...loaded, ...action.base, profile: loaded.profile, guessPending: false, pendingGuessState: null,
+      if (loaded.riddle && (getConfirmedRiddleOutcome(loaded.riddle) ||
+        !hasUsablePendingPresentation(action.base, loaded.riddle.answerLength, loaded.locale) ||
+        !hasUsablePendingMetadata(action.base, loaded))) return loaded;
+      return withConfirmedHintFeedback({...restorePendingPresentation(loaded, action.base), profile: loaded.profile, guessPending: false, pendingGuessState: null,
         canRestoreCheckpoint: false,
+        currentLetters: action.base.currentLetters.map((letter, index) => loaded.hintRevealedIndices.includes(index)
+          ? loaded.currentLetters[index] : letter),
+        activeSlotIndex: loaded.hintRevealedIndices.includes(action.base.activeSlotIndex)
+          ? loaded.activeSlotIndex : action.base.activeSlotIndex,
         modal: questionIndependentModals.has(state.modal) ? state.modal : action.base.modal,
-        notice: null, lastRewards: null};
+        notice: null, lastRewards: null});
     }
     case "guessCheckpointAdvanced": {
       if (!state.pendingGuessState) return state;
@@ -460,7 +553,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         ? {...state.profile, achievements: [...new Set([...state.profile.achievements, ...optimisticAchievementIds])]}
         : state.profile;
 
-      return {
+      return withConfirmedHintFeedback({
         ...state,
         canRestoreCheckpoint: false,
         profile,
@@ -488,37 +581,34 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         lastRewards: optimisticAchievementIds.length > 0
           ? {coinsEarned: 0, newlyUnlockedAchievementIds: optimisticAchievementIds}
           : state.lastRewards,
-        letterStates: computeStates(guesses),
-      };
+        letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale),
+      });
     }
     case "previewHint": {
       if (!state.riddle || state.pendingHintState || state.hintRevealedIndices.includes(action.index) ||
-        action.index < 0 || action.index >= state.riddle.answerLength) return state;
+        !Number.isInteger(action.index) || action.index < 0 || action.index >= state.riddle.answerLength ||
+        !isSingleAnswerCell(action.letter, state.riddle.evaluation?.locale ?? state.locale)) return state;
       /** Draft containing the provisional hint letter. */
       const nextLetters = [...state.currentLetters];
       /** Draft letter replaced by the provisional hint. */
       const previousLetter = nextLetters[action.index] ?? "";
-      nextLetters[action.index] = action.letter.toUpperCase();
+      nextLetters[action.index] = action.letter.toLocaleUpperCase(state.riddle?.evaluation?.locale ?? state.locale);
       /** Hint positions including the provisional reveal. */
       const hintRevealedIndices = [...state.hintRevealedIndices, action.index].sort((a, b) => a - b);
+      /** Automatic hint selection does not count as a later player cursor choice. */
+      const activeSlotIndex = firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1);
       return {...state, currentLetters: nextLetters, hintRevealedIndices,
-        activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
-        pendingHintState: {index: action.index, previousLetter, previousActiveSlotIndex: state.activeSlotIndex}};
+        activeSlotIndex,
+        pendingHintState: {index: action.index, previousLetter, previousActiveSlotIndex: state.activeSlotIndex,
+          hasPlayerIntent: false}};
     }
     case "rejectHint": {
-      /** Locally shown state awaiting server confirmation. */
-      const preview = state.pendingHintState;
-      if (!preview) return state;
-      /** Current draft with any unconfirmed hint removed. */
-      const currentLetters = [...state.currentLetters];
-      currentLetters[preview.index] = preview.previousLetter;
-      return {...state, currentLetters,
-        hintRevealedIndices: state.hintRevealedIndices.filter((index) => index !== preview.index),
-        activeSlotIndex: preview.previousActiveSlotIndex, pendingHintState: null};
+      return rejectHintPreview(state);
     }
     case "applyHint": {
       if (state.pendingHintState) state = gameSessionReducer(state, {type: "rejectHint"});
-      if (!state.riddle || action.index >= state.riddle.answerLength) {
+      if (!state.riddle || !Number.isInteger(action.index) || action.index < 0 || action.index >= state.riddle.answerLength ||
+        !isSingleAnswerCell(action.letter, state.riddle.evaluation?.locale ?? state.locale)) {
         return state;
       }
       /** Provides next letters behavior. */
@@ -526,7 +616,10 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       while (nextLetters.length <= action.index) {
         nextLetters.push("");
       }
-      nextLetters[action.index] = action.letter.toUpperCase();
+      /** Immutable evaluation repairs old default-cased receipts without altering their grant or identity. */
+      const historicalDottedI = state.riddle.evaluation?.locale === "tr" && action.letter === "I" &&
+        splitGraphemes(state.riddle.evaluation.answer.trim(), "tr")[action.index]?.toLocaleLowerCase("tr") === "i";
+      nextLetters[action.index] = (historicalDottedI ? "İ" : action.letter).toLocaleUpperCase(state.riddle.evaluation?.locale ?? state.locale);
       /** Provides hint revealed indices behavior. */
       const hintRevealedIndices = [...new Set([...state.hintRevealedIndices, action.index])].sort(
         (left, right) => left - right,
@@ -536,7 +629,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         currentLetters: nextLetters.slice(0, state.riddle.answerLength),
         activeSlotIndex: firstEditableSlot(nextLetters, hintRevealedIndices, action.index + 1),
         hintRevealedIndices,
-        letterStates: {...state.letterStates, [action.letter.toLowerCase()]: "green"},
+        letterStates: {...state.letterStates,
+          [nextLetters[action.index].toLocaleLowerCase(state.riddle.evaluation?.locale ?? state.locale)]: "green"},
         profile: withProfileCoins(state.profile, action.newCoins),
         pendingHintState: null,
         notice: null,
@@ -566,24 +660,46 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         if (!continueState) return charged;
         /** Recovery grants the attempt before restoring letters typed during the interrupted charge. */
         const continued = gameSessionReducer(charged, {type: "continueGranted"});
-        if (!action.draft || action.draft.length !== state.riddle?.answerLength) return continued;
+        if (!action.draft || action.draft.length !== state.riddle?.answerLength ||
+          !action.draft.every(letter => letter === "" || isSingleAnswerCell(letter, state.riddle?.evaluation?.locale ?? state.locale))) return continued;
+        /** Paid hint positions remain authoritative when the interrupted Continue restores its draft. */
+        const currentLetters = action.draft.map((letter, index) => continued.hintRevealedIndices.includes(index)
+          ? continued.currentLetters[index] : letter);
         /** Previously selected editable slot in the continued-attempt draft. */
         const savedSlot = action.draftActiveSlotIndex;
         /** Valid restored selection, or the first slot that remains editable. */
         const activeSlotIndex = savedSlot !== undefined && Number.isInteger(savedSlot) &&
           savedSlot >= 0 && savedSlot < action.draft.length && !continued.hintRevealedIndices.includes(savedSlot)
-          ? savedSlot : firstEditableSlot(action.draft, continued.hintRevealedIndices);
-        return {...continued, currentLetters: [...action.draft], activeSlotIndex};
+          ? savedSlot : firstEditableSlot(currentLetters, continued.hintRevealedIndices);
+        return {...continued, currentLetters, activeSlotIndex};
       }
     case "confirmCoinSpend":
       if (state.pendingCoinSpend?.requestId !== action.requestId) return state;
       return {...state, profile: withProfileCoins(state.profile, action.newCoins), pendingCoinSpend: null};
     case "rejectCoinSpend":
       if (state.pendingCoinSpend?.requestId !== action.requestId) return state;
-      return {...state,
-        ...(state.pendingCoinSpend.continueState &&
-          state.riddle?.sessionToken === state.pendingCoinSpend.sessionToken ? state.pendingCoinSpend.continueState : {}),
-        profile: withProfileCoins(state.profile, state.pendingCoinSpend.previousCoins), pendingCoinSpend: null};
+      {
+        /** Only an unconfirmed Continue on the original round may restore its older gameplay checkpoint. */
+        const checkpoint = state.pendingCoinSpend.continueState;
+        /** New host grants, advanced history and terminal proofs outrank the rejected local preview. */
+        const canRollback = checkpoint && state.riddle &&
+          state.riddle.sessionToken === state.pendingCoinSpend.sessionToken && !state.riddle.hasUsedContinue &&
+          !getConfirmedRiddleOutcome(state.riddle) &&
+          state.riddle.attemptsUsed <= (checkpoint.engineSnapshot?.attemptsUsed ?? 0);
+        /** Balance rejection remains separate from the freshness of the displayed round. */
+        let restored = {...(canRollback ? restorePendingPresentation(state, checkpoint) : state),
+          profile: withProfileCoins(state.profile, state.pendingCoinSpend.previousCoins), pendingCoinSpend: null};
+        if (canRollback) {
+          /** Preserve purchased glyphs that arrived from the host after the checkpoint was captured. */
+          const currentLetters = [...restored.currentLetters];
+          for (const hint of state.riddle!.revealedHints ?? []) currentLetters[hint.index] = hint.letter;
+          restored = {...restored, currentLetters,
+            activeSlotIndex: restored.hintRevealedIndices.includes(restored.activeSlotIndex)
+              ? firstEditableSlot(currentLetters, restored.hintRevealedIndices) : restored.activeSlotIndex,
+            modal: questionIndependentModals.has(state.modal) ? state.modal : restored.modal};
+        }
+        return withConfirmedHintFeedback(restored);
+      }
     case "leaderboardRequested":
       return {
         ...state,
@@ -660,10 +776,20 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
             state.riddle.awaitingContinue && !state.riddle.hasUsedContinue ? outcome : null);
         /** Provides awaiting continue behavior. */
         const awaitingContinue = state.riddle.awaitingContinue && !pendingOutcome;
-        /** Provides current letters behavior. */
+        /** Accepted history proves whether a newer server attempt consumed the saved draft. */
+        const locale = state.riddle.evaluation?.locale ?? state.locale;
+        /** Latest canonical word owns the newly accepted attempt. */
+        const acceptedGuess = guesses.at(-1);
+        /** Older matching drafts must not become a second unsent copy of an accepted word. */
+        const consumedDraft = Boolean(state.riddle.acceptedGuesses?.length &&
+          action.engineSnapshot.attemptsUsed < state.riddle.attemptsUsed && acceptedGuess &&
+          lowerCaseGraphemes(action.currentLetters.join(""), locale).join("") ===
+          lowerCaseGraphemes(acceptedGuess.guess.join(""), locale).join(""));
+        /** Consumed drafts clear editable cells while preserving purchased letters. */
         const currentLetters = awaitingContinue
           ? Array.from({length: state.riddle.answerLength}, () => "")
-          : action.currentLetters;
+          : consumedDraft ? action.currentLetters.map((letter, index) =>
+            action.hintRevealedIndices.includes(index) ? letter : "") : action.currentLetters;
         /** Provider snapshots may predate a paid hint; issued locks always take precedence. */
         const restoredLetters = [...currentLetters];
         /** Unique paid hint positions combine provider and authoritative recovery. */
@@ -671,9 +797,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           ...(state.riddle.revealedHints ?? []).map(({index}) => index)])];
         for (const hint of state.riddle.revealedHints ?? []) restoredLetters[hint.index] = hint.letter;
         /** Editable selection is reconciled with authoritative purchased hint locks. */
-        const activeSlotIndex = hintIndices.includes(action.activeSlotIndex)
+        const activeSlotIndex = consumedDraft || hintIndices.includes(action.activeSlotIndex)
           ? firstEditableSlot(restoredLetters, hintIndices) : action.activeSlotIndex;
-        return {
+        return withConfirmedHintFeedback({
           ...state,
           canRestoreCheckpoint: false,
           currentLetters: restoredLetters,
@@ -691,8 +817,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
           modal: pendingOutcome ? pendingOutcome.kind === "win" ? "victory" : null : awaitingContinue ? "continue" : state.modal,
           lastOutcome: pendingOutcome,
           completionAcknowledged: false,
-          letterStates: computeStates(guesses),
-        };
+          letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale),
+        });
       }
     case "continueGranted": {
       if (!state.engineSnapshot) return state;
@@ -705,7 +831,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       };
       /** Provides next letters behavior. */
       const nextLetters = resetAttemptLetters(state);
-      return {
+      return withConfirmedHintFeedback({
         ...state,
         guesses: snapshot.guesses,
         guessPending: false,
@@ -716,7 +842,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         modal: null,
         notice: null,
         letterStates: {},
-      };
+      });
     }
     case "declineContinue":
       if (state.modal !== "continue" || !state.riddle || !state.engineSnapshot) {
@@ -772,5 +898,5 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
 
 /** Gets current guess value. */
 export const getCurrentGuessValue = (state: GameSessionState): string => {
-  return lowerCaseGraphemes(state.currentLetters.join("")).join("");
+  return lowerCaseGraphemes(state.currentLetters.join(""), state.riddle?.evaluation?.locale ?? state.locale).join("");
 };

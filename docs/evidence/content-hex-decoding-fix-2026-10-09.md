@@ -1,0 +1,15 @@
+# Protected content decoder optimization — 2026-10-09
+
+The measured byte-wise hexadecimal decoder is now implemented in `packages/core/src/contentProtection.ts`. It replaces the temporary array of two-character strings and per-pair integer parsing with direct writes into one byte array. The hexadecimal guard, protocol/key handling, authenticated decryption, UTF-8 validation, JSON parsing and legacy plaintext behavior remain unchanged. The helper still has no provider or network dependency.
+
+The [preceding benchmark assessment](content-hex-decoding-audit-2026-10-09.md) establishes the improvement with nine interleaved batches and separate fresh-page measurements. First-use protected locale decoding plus domain validation measured 9.2→6.6 ms for English and 12.4→7.1 ms for Hindi in Chromium, with improvements also observed in Firefox. These are local content-stage measurements; overall first playable question, SDK, network and deployed-player latency are not claimed. `candidate-equivalence.json` proves implemented source and the measured candidate differ only in documentation comments.
+
+Verification retained under `artifacts/content-hex-decoding-fix-2026-10-09`:
+
+- All 425 core tests, 3,131 client tests and 1,769 backend unit tests pass. New coverage verifies repeated immutable decoding of a larger multilingual pack and malformed hexadecimal rejection. Existing authenticated-tamper and plaintext compatibility cases pass. Client unit configuration skips 96 browser-gated cases; browser checks below ran separately.
+- Actual production decoder and content-domain validation preserve every one of 16 generated locale packs in both Chromium and Firefox 153. Both engines compare exact validated riddles, preserve ciphertext and reject authenticated tampering and invalid hexadecimal input for each locale. These are injected content-stage checks, not complete platform game journeys.
+- All six isolated client artifacts and Devvit build successfully; 1,299 built files and six target-dependency metadata documents are archived. Backend compilation passes under pinned Node 22.23.1, with 398 compiled files archived. Every prepared/installed core copy matches all 138 canonical compiled files and its package manifest.
+- TSDoc and file-size gates pass. The initial declaration audit identified three missing comments; those were repaired before preparing the final frozen cohort. All 2,546 selected source inputs agree before/at terminal/after archiving, and source delta is retained against the preceding Turkish request fix.
+- All owned jobs exited successfully. Temporary build and compilation outputs were removed after preserving bytes/hashes. Both browser harnesses release browsers, local servers and owned scratch directories in `finally`.
+
+No visible text changed, no provider capability was added, and no deployment, publication, push or commit occurred. No new complete Firebase SDK-suite claim is made for this decoder-only change. The broader reliability, performance, playability and latency goal remains active.

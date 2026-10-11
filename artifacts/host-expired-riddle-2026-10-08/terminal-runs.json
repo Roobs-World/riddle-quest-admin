@@ -1,0 +1,23 @@
+{
+  "builds": {
+    "session": 66677,
+    "exitCode": 0
+  },
+  "unitStatic": {
+    "session": 34572,
+    "exitCode": 0
+  },
+  "mainAdjacent": {
+    "session": 3555,
+    "exitCode": 0
+  },
+  "builtBrowser": {
+    "session": 31764,
+    "exitCode": 0
+  },
+  "baseline": {
+    "session": 5165,
+    "exitCode": 1,
+    "expectedRed": true
+  }
+}

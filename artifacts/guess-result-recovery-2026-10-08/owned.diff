@@ -1,0 +1,442 @@
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -52,7 +52,7 @@
+     "check:youtube-content:release": "pnpm --dir ../../firebase-functions youtube:content:audit",
+     "check:jest-console:release": "node scripts/validate-jest-console-manifest.mjs --release-ready",
+     "licenses:generate": "node scripts/generate-third-party-licenses.mjs --write",
+-    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser && pnpm test:host-deferred-riddle:browser && pnpm test:race-options-commit:browser && pnpm test:live-safety-focus:browser && pnpm test:turkish-answer-input:browser && pnpm test:live-hint-keyboard:browser && pnpm test:turkish-authoritative-feedback:browser && pnpm test:turkish-virtual-keys:browser && pnpm test:hint-position-recovery:browser && pnpm test:hint-letter-recovery:browser",
++    "test:game-browser:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/play/__tests__/hostedBrowser.jest-playwright.test.ts src/play/__tests__/profileTour.jest-playwright.test.ts src/play/__tests__/queuedCoinActions.jest-playwright.test.ts src/play/__tests__/musicStart.jest-playwright.test.ts src/play/__tests__/coinCollection.jest-playwright.test.ts src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts src/play/__tests__/viewportFit.jest-playwright.test.ts src/play/__tests__/routeSweep.jest-playwright.test.ts && pnpm test:online-status-commit:browser && pnpm test:offline-keyboard-boundary:browser && pnpm test:race-navigation-focus:browser && pnpm test:race-tab-order:browser && pnpm test:race-keyboard-boundary:browser && pnpm test:race:live:browser && pnpm test:live-confirmation-retirement:browser && pnpm test:live-wait-retirement:browser && pnpm test:live-retired-leave-recovery:browser && pnpm test:live-same-account-retirement:browser && pnpm test:live-provider-retirement:browser && pnpm test:live-poll-retirement:browser && pnpm test:live-signal-failures:browser && pnpm test:live-signal-watchdog:browser && pnpm test:live-choice-commit:browser && pnpm test:live-invite-commit:browser && pnpm test:live-panel-commit:browser && pnpm test:live-callback-lifetime:browser && pnpm test:live-reconnect-input:browser && pnpm test:live-question-input:browser && pnpm test:live-clock:browser && pnpm test:live-countdown-clock:browser && pnpm test:race-ime-dialog:browser && pnpm test:single-player:recovery:browser && pnpm test:gameplay-receipts:browser && pnpm test:reddit-delivery:browser && pnpm test:completion-effects:browser && pnpm test:completion-container-work:browser && pnpm test:completion-outcome-commit:browser && pnpm test:race:safety:browser && pnpm test:race:direct-invite:browser && pnpm test:race:native-invite:browser && pnpm test:race:inbox:browser && pnpm test:race:preview:browser && pnpm test:game-ready:browser && pnpm test:game-ready-commit:browser && pnpm test:resize-setup-retirement:browser && pnpm test:game-bridge-errors:browser && pnpm test:game-bridge-retirement:browser && pnpm test:host-bridge:browser && pnpm test:host-bridge-commit:browser && pnpm test:host-bridge-retirement:browser && pnpm test:bridge-dispatch:browser && pnpm test:bridge-recovery:browser && pnpm test:optional-surfaces:browser && pnpm test:solar-animation:browser && pnpm test:solar-resources:browser && pnpm test:live-decoration:browser && pnpm test:solar-initialization:browser && pnpm test:solar-layout:browser && pnpm test:live-render-work:browser && pnpm test:stable-request-initialization:browser && pnpm test:static-keyboard-work:browser && pnpm test:answer-keyboard-commit:browser && pnpm test:game-audio-commit:browser && pnpm test:keyboard-lifetime:browser && pnpm test:playable-ime-boundary:browser && pnpm test:playable-input-admission:browser && pnpm test:playable-text-capacity:browser && pnpm test:native-editor-callbacks:browser && pnpm test:native-navigation-tail:browser && pnpm test:native-composition-delivery:browser && pnpm test:native-composition-retirement:browser && pnpm test:bounded-grapheme-input:browser && pnpm test:race-action-focus:browser && pnpm test:playable-action-focus:browser && pnpm test:playable-unchanged-input:browser && pnpm test:native-cancelled-keys:browser && pnpm test:rapid-answer-edits:browser && pnpm test:live-immediate-submit:browser && pnpm test:checkpoint-commit:browser && pnpm test:checkpoint-work:browser && pnpm test:storage-queue:browser && pnpm test:jest-state-queue:browser && pnpm test:save-recovery:browser && pnpm test:provider-save-recovery:browser && pnpm test:reddit-guest-durability:browser && pnpm test:guidance-storage-recovery:browser && pnpm test:centered-tooltip-work:browser && pnpm test:guidance-locale-work:browser && pnpm test:avatar-preparation-ownership:browser && pnpm test:avatar-preparation-cancellation:browser && pnpm test:reddit-guest-rounds:browser && pnpm test:authority-terminal-recovery:browser && pnpm test:terminal-journal-recovery:browser && pnpm test:session-assembly-retention:browser && pnpm test:classic-question-preparation:browser && pnpm test:buffered-terminal-recovery:browser && pnpm test:buffered-rollback-recovery:browser && pnpm test:cold-draft-recovery:browser && pnpm test:authority-loss-recovery:browser && pnpm test:save-notice:browser && pnpm test:short-viewport:browser && pnpm test:viewport-fit-reflow:browser && pnpm test:solar-sizing:browser && pnpm test:deferred-restoration:browser && pnpm test:context-recovery:browser && pnpm test:profile-dismiss-focus:browser && pnpm test:profile-confirmation-keyboard:browser && pnpm test:modal-scroll-retention:browser && pnpm test:modal-editor-focus:browser && pnpm test:modal-outside-tab:browser && pnpm test:modal-keyboard-boundary:browser && pnpm test:modal-keyboard-admission:browser && pnpm test:modal-close-commit:browser && pnpm test:interactive-recovery:browser && pnpm test:question-load-ordering:browser && pnpm test:repeated-question-delivery:browser && pnpm test:race-profile-refresh-null:browser && pnpm test:live-poll-scheduling:browser && pnpm test:live-recovery-wakeups:browser && pnpm test:riddle-recovery-coalescing:browser && pnpm test:host-riddle-commit-retirement:browser && pnpm test:attempt-recovery-retirement:browser && pnpm test:checkpoint-writer-recovery:browser && pnpm test:pending-play-scope-retirement:browser && pnpm test:pending-play-lifetime:browser && pnpm test:live-history-provider:browser && pnpm test:live-destination-capability:browser && pnpm test:live-rematch-owner:browser && pnpm test:live-tournament-owner:browser && pnpm test:live-context-owner:browser && pnpm test:live-context-choice:browser && pnpm test:live-context-read-cancellation:browser && pnpm test:live-overlay-owner:browser && pnpm test:live-overlay-cancellation:browser && pnpm test:live-tournament-share:browser && pnpm test:live-tournament-projection:browser && pnpm test:live-tournament-lookup-deadline:browser && pnpm test:live-tournament-share-preparation:browser && pnpm test:live-tournament-share-retirement:browser && pnpm test:host-recovery-suspension:browser && pnpm test:host-retired-warmups:browser && pnpm test:host-deferred-warmups:browser && pnpm test:host-deferred-riddle:browser && pnpm test:race-options-commit:browser && pnpm test:live-safety-focus:browser && pnpm test:turkish-answer-input:browser && pnpm test:live-hint-keyboard:browser && pnpm test:turkish-authoritative-feedback:browser && pnpm test:turkish-virtual-keys:browser && pnpm test:hint-position-recovery:browser && pnpm test:hint-letter-recovery:browser && pnpm test:guess-result-recovery:browser",
+     "test:jest-notifications": "JEST_NOTIFICATION_REPORT_DIR=${JEST_NOTIFICATION_REPORT_DIR:-/tmp/riddle-quest-notifications} jest --config jest.config.cjs --runInBand src/jest/__tests__/notificationFundChecklist.test.ts src/jest/__tests__/notificationCopy.test.ts src/jest/__tests__/engagement.test.ts src/jest/__tests__/inlineNotificationAsset.test.ts src/jest/__tests__/useJestNotifications.test.ts src/jest/__tests__/notificationOperationGate.test.ts src/jest/__tests__/firebaseNotificationCopy.test.ts",
+     "test:jest-auth:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts",
+     "test:facebook:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+@@ -229,7 +229,8 @@
+     "test:turkish-authoritative-feedback:browser": "node scripts/verify-turkish-authoritative-feedback-browser.mjs && TURKISH_FEEDBACK_REACT_MODE=production node scripts/verify-turkish-authoritative-feedback-browser.mjs",
+     "test:live-hint-keyboard:browser": "node scripts/verify-live-hint-keyboard-browser.mjs && LIVE_HINT_REACT_MODE=production node scripts/verify-live-hint-keyboard-browser.mjs",
+     "test:live-safety-focus:browser": "node scripts/verify-live-safety-focus-browser.mjs && SAFETY_FOCUS_REACT_MODE=production node scripts/verify-live-safety-focus-browser.mjs",
+-    "test:turkish-answer-input:browser": "node scripts/verify-turkish-answer-input-browser.mjs && TURKISH_INPUT_REACT_MODE=production node scripts/verify-turkish-answer-input-browser.mjs"
++    "test:turkish-answer-input:browser": "node scripts/verify-turkish-answer-input-browser.mjs && TURKISH_INPUT_REACT_MODE=production node scripts/verify-turkish-answer-input-browser.mjs",
++    "test:guess-result-recovery:browser": "node scripts/verify-guess-result-recovery-browser.mjs && GUESS_RECOVERY_REACT_MODE=production node scripts/verify-guess-result-recovery-browser.mjs"
+   },
+   "dependencies": {
+     "@qwordly/core": "workspace:*",
+--- /dev/null
++++ b/packages/portal/scripts/verify-guess-result-recovery-browser.mjs
+@@ -0,0 +1,101 @@
++import assert from 'node:assert/strict';
++import {mkdtemp, mkdir, readFile, writeFile, rm} from 'node:fs/promises';
++import {createServer} from 'node:http';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {build} from 'vite';
++import {chromium,firefox} from '@playwright/test';
++
++// Supporting regression: real keyboard events through the whole solo game.
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
++const evidence = path.resolve(process.env.GUESS_RECOVERY_REPORT_DIR??path.join(root,'../../artifacts/guess-result-recovery-2026-10-08/permanent',process.env.GUESS_RECOVERY_REACT_MODE??'development'));
++await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
++await mkdir(evidence, {recursive: true});
++const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/solo-keyboard-input-'));
++await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOptions: {jsx: 'react-jsx'}}));
++await writeFile(path.join(scratch, 'index.html'), '<!doctype html><html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
++await writeFile(path.join(scratch, 'main.tsx'), `
++import React from 'react'; import {createRoot} from 'react-dom/client';
++import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/play/GameFrameApp.tsx'))};
++import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/play/playerPreferences.ts'))};
++import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, 'src/play/guidance/guidanceConfig.ts'))};
++import {setLocaleAndWait} from ${JSON.stringify(path.join(root, 'src/play/i18n.ts'))};
++import ${JSON.stringify(path.join(root, 'src/styles.css'))};
++const owner='keyboard-owner'; let initialized=false;window.sentGuesses=[];window.reloads=[];
++const feedback=[...'izmir'].map((letter,index)=>({letter,status:['yellow','yellow','green','red','red'][index]}));
++window.addEventListener('riddle-quest:game-to-host',event=>{
++ const message=event.detail;
++ if(message.type==='game:submitGuess'){
++  window.sentGuesses.push(message);setTimeout(()=>{
++   const kind=new URL(location.href).searchParams.get('kind');let broken=feedback.map(cell=>({...cell}));
++   if(kind==='short')broken=broken.slice(0,4);if(kind==='bad-cell')broken[2].letter='XX';
++   window.replyDelivered=true;
++   host({type:'host:operationResult',requestId:message.requestId,payload:{operation:'guess',ok:true,data:{
++    feedback:broken,attempts:kind==='bad-counter'?0.5:1,isCorrect:kind==='bad-flag'?'false':false,gameOver:false,canContinue:false}}});
++  },50);
++ }
++ if(message.type==='game:loadRiddle'&&window.replyDelivered){
++  window.reloads.push(message);setTimeout(()=>{
++   host({type:'host:riddleLoaded',requestId:message.requestId,payload:{riddle:{
++    riddleId:'keyboard-riddle',sessionToken:'keyboard-session-0000000000001',text:'Which city is on the Turkish Aegean coast?',
++    answerLength:5,gameMode:'classic',index:1,attemptsUsed:1,hasUsedContinue:false,awaitingContinue:false,
++    acceptedGuesses:[{attempt:1,feedback}]}}});window.reloadDelivered=true;
++  },50);
++ }
++});
++applyPlayerPreferences({locale:'tr',onboardingComplete:true,muted:true,reducedMotion:true});
++sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',owner),'seen');
++localStorage.setItem(createTooltipTourStorageKey('gameTour',owner),'seen');
++function host(message){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:message}));}
++window.addEventListener('riddle-quest:game-to-host',event=>{if(event.detail.type==='game:requestHint'){setTimeout(()=>{host({type:'host:operationResult',requestId:event.detail.requestId,payload:{operation:'hint',ok:true,data:{index:0,revealedLetter:'İ',newCoins:545}}});window.hintConfirmed=true;},100);return;}if(event.detail.type!=='game:ready'||initialized)return;
++ initialized=true;setTimeout(async()=>{await setLocaleAndWait('tr');
++ host({type:'host:init',payload:{protocolVersion:1,sessionId:'keyboard-fixture',locale:'tr',gameMode:'classic',
++ user:{uid:owner,isAnonymous:false,accountGeneration:1},profile:{username:'Player',coins:570,level:2,xp:150,
++ winStreak:1,gamesPlayed:1,wins:1,achievements:[],classicIndex:1},products:[]}});
++ host({type:'host:riddleLoaded',payload:{riddle:{riddleId:'keyboard-riddle',sessionToken:'keyboard-session-0000000000001',
++ text:'Which city is on the Turkish Aegean coast?',answerLength:5,gameMode:'classic',index:1,
++ attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false,...(new URL(location.href).searchParams.get('hint')==='true'?{revealedHints:[{index:0,letter:'İ'}]}:{})}}});
++ },50);
++});
++createRoot(document.getElementById('root')).render(<GameFrameApp localBridge/>);
++`);
++let browser, server;const observations=[];
++try {
++   await build({root:scratch,configFile:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(process.env.GUESS_RECOVERY_REACT_MODE??'development')},build:{outDir:'dist'}});
++  server = createServer(async (request, response) => {
++    try {
++      const pathname = new URL(request.url, 'http://localhost').pathname;
++      const file = path.join(scratch, 'dist', pathname === '/' ? 'index.html' : pathname);
++      response.setHeader('Content-Type', file.endsWith('.js') ? 'text/javascript' : file.endsWith('.css') ? 'text/css' : 'text/html');
++      response.end(await readFile(file));
++    } catch {response.writeHead(404).end();}
++  });
++  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
++  browser = await (process.env.GUESS_RECOVERY_ENGINE==='firefox'?firefox:chromium).launch({headless:true,...(process.env.GUESS_RECOVERY_ENGINE==='firefox'&&process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_FIREFOX_EXECUTABLE_PATH}:{})});
++  for(const width of [390,1280])for(const method of ['physical','virtual'])for(const hint of [false])for(const kind of ['short','bad-cell','bad-counter','bad-flag']){
++    const page=await browser.newPage({viewport:{width,height:844}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
++    await page.goto('http://127.0.0.1:'+server.address().port+'/?hint='+hint+'&kind='+kind);await page.getByRole('heading',{name:'Which city is on the Turkish Aegean coast?',exact:true}).waitFor();await page.evaluate(()=>document.activeElement?.blur());
++    const text='izmir';if(method==='physical')await page.keyboard.type(text);else if(method==='shifted-physical')await page.evaluate(text=>{for(const key of text.toLocaleUpperCase('tr'))window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));},text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toLocaleUpperCase('tr')+'$')}).click();
++    const draft=await page.locator('.guess-row').first().textContent();assert.equal(draft.replaceAll(/\s/g,''),'İZMİR');
++    await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press('Enter');
++    await page.waitForFunction(()=>window.replyDelivered);await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
++    const reloads=await page.evaluate(()=>window.reloads);assert.equal(reloads.length,1);
++    assert.equal(reloads[0].payload.sessionToken,'keyboard-session-0000000000001');assert.equal(reloads[0].payload.riddleId,'keyboard-riddle');
++    await page.waitForFunction(()=>window.reloadDelivered);await page.waitForFunction(()=>document.querySelector('.guess-row')?.querySelectorAll('.green').length===1);
++    const authoritativeRow=(await page.locator('.guess-row').first().textContent()).replaceAll(/\s/g,'');assert.equal(authoritativeRow.toLocaleLowerCase('tr'),'izmir');
++    const guess=await page.evaluate(()=>window.sentGuesses[0].payload.guess);assert.equal(guess.toLocaleLowerCase('tr'),'izmir');
++    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
++    await page.getByRole('button',{name:'Anladim',exact:true}).click();
++    await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('zombi');
++    await page.waitForFunction(()=>document.querySelectorAll('.guess-row')[1]?.textContent.replaceAll(/\s/g,'').toLocaleLowerCase('tr')==='zombi');
++    const nextDraft=(await page.locator('.guess-row').nth(1).textContent()).replaceAll(/\s/g,'');assert.equal(nextDraft.toLocaleLowerCase('tr'),'zombi');
++    assert.equal(await page.locator('.submit-action').isEnabled(),true);assert.equal(await page.evaluate(()=>window.sentGuesses.length),1);assert.deepEqual(errors,[]);
++    observations.push({width,method,kind,authoritativeRow,nextDraft,guess,reloads:reloads.length,browserErrors:errors});await page.close();
++  }
++
++} finally {
++  await browser?.close();
++  if (server) await new Promise(resolve => server.close(resolve));
++  await rm(scratch, {recursive: true, force: true});
++  await writeFile(path.join(evidence,'observations.json'),JSON.stringify(observations,null,2)+'\n');
++}
+--- a/packages/portal/src/play/__tests__/gameSession.test.ts
++++ b/packages/portal/src/play/__tests__/gameSession.test.ts
+@@ -969,3 +969,57 @@
+     expect(hinted.hintRevealedIndices).toEqual([0]);
+   }
+ });
++
++
++it.each([["en", "PIANO", "piano"], ["tr", "İZMİR", "izmir"]])(
++  "retires a saved %s draft newly committed as %s/%s", (locale, draft, accepted) => {
++    /** Current authority has accepted the word that an older local checkpoint still calls a draft. */
++    const issued = {...riddle, attemptsUsed: 1, evaluation: {answer: "zombi", locale},
++      acceptedGuesses: [{attempt: 1, feedback: [...accepted].map(letter => ({letter, status: "yellow" as const}))}]};
++    /** Same-session reload owns the newer history before restoring local intent. */
++    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued});
++    /** The retained checkpoint predates the authoritative attempt. */
++    const restored = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
++      currentLetters: [...draft], activeSlotIndex: 3, hintRevealedIndices: [], guesses: [],
++      engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
++      awaitingContinue: false, letterStates: {}});
++    expect(restored.currentLetters).toEqual(Array(5).fill(""));
++    expect(restored.activeSlotIndex).toBe(0);
++    expect(restored.guesses[0].guess.join("")).toBe(accepted);
++  },
++);
++
++it.each(["unrelated-draft", "same-counter", "missing-history"])("preserves checkpoint intent without consumption proof: %s", kind => {
++  /** Only an advanced authoritative matching row proves that a saved draft was already submitted. */
++  const issued = {...riddle, attemptsUsed: 1, ...(kind !== "missing-history" ? {
++    acceptedGuesses: [{attempt: 1, feedback: [..."piano"].map(letter => ({letter, status: "yellow" as const}))}],
++  } : {})};
++  /** Unrelated unsent letters or a current checkpoint must survive a reload. */
++  const currentLetters = kind === "unrelated-draft" ? ["C", "L", "", "", ""] : [..."PIANO"];
++  /** The fresh authority-issued question is eligible for provider reconciliation. */
++  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued});
++  /** Restoration carries its own acknowledged attempt count independently of draft contents. */
++  const restored = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
++    currentLetters, activeSlotIndex: 2, hintRevealedIndices: [], guesses: [],
++    engineSnapshot: {guesses: [], attemptsUsed: kind === "same-counter" ? 1 : 0, hasUsedContinue: false, gameOver: false},
++    awaitingContinue: false, letterStates: {}});
++  expect(restored.currentLetters).toEqual(currentLetters);
++  expect(restored.activeSlotIndex).toBe(2);
++});
++
++it("keeps purchased cells when retiring a newly accepted saved draft", () => {
++  /** Paid hint ownership survives clearing the other cells of an accepted word. */
++  const issued = {...riddle, attemptsUsed: 1, revealedHints: [{index: 0, letter: "P"}],
++    acceptedGuesses: [{attempt: 1, feedback: [..."piano"].map(letter => ({letter, status: "yellow" as const}))}]};
++  /** Current host hint locks outrank the old checkpoint. */
++  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: issued});
++  /** The consumed draft is cleared only outside confirmed hint cells. */
++  const restored = reduce(state, {type: "restoreSession", riddleId: riddle.riddleId, sessionToken: riddle.sessionToken,
++    currentLetters: [..."PIANO"], activeSlotIndex: 3, hintRevealedIndices: [0], guesses: [],
++    engineSnapshot: {guesses: [], attemptsUsed: 0, hasUsedContinue: false, gameOver: false},
++    awaitingContinue: false, letterStates: {}});
++  expect(restored.currentLetters).toEqual(["P", "", "", "", ""]);
++  expect(restored.activeSlotIndex).toBe(1);
++  expect(restored.hintRevealedIndices).toEqual([0]);
++  expect(restored.letterStates.p).toBe("green");
++});
+--- a/packages/portal/src/play/__tests__/useGameMessageRouter.test.ts
++++ b/packages/portal/src/play/__tests__/useGameMessageRouter.test.ts
+@@ -262,8 +262,8 @@
+ it.each([["tr", undefined, ["İ", "I"]], ["en", "tr", ["İ", "I"]], ["tr", "en", ["I", "I"]]] as const)(
+   "cases authoritative guess cells with host %s and immutable content %s", async (locale, contentLocale, expected) => {
+     /** The current question's immutable locale overrides the interface locale when present. */
+-    const state = {...createInitialGameSession(), locale, riddle: {...repeatedRiddle,
+-      evaluation: contentLocale ? {answer: "izmir", locale: contentLocale} : undefined}};
++    const state = {...createInitialGameSession(), locale, riddle: {...repeatedRiddle, answerLength: 2,
++      evaluation: contentLocale ? {answer: "iI", locale: contentLocale} : undefined}};
+     /** Observe the actual bridge-to-reducer translation without local guess prediction. */
+     const dispatch = jest.fn();
+     /** A retained direct response is interpreted under its current question context. */
+@@ -309,3 +309,54 @@
+   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+ });
++
++
++it.each(["short", "long", "bad-status", "multiple-symbol", "expanding", "zero", "fraction", "nan", "infinite", "over-limit", "is-correct-type", "game-over-type", "continue-type"])(
++  "rejects malformed guess result %s and reloads current authoritative progress", async kind => {
++    /** A five-cell current question owns the accepted response shape. */
++    const state = {...createInitialGameSession(), riddle: repeatedRiddle};
++    /** Capture recovery without interpreting partial server metadata as gameplay. */
++    const dispatch = jest.fn();
++    /** Reload reconciles an attempt that the server may already have committed. */
++    const requestRiddle = jest.fn();
++    /** Ordinary nonterminal feedback is otherwise valid. */
++    let feedback = [..."piano"].map(letter => ({letter, status: "yellow"}));
++    if (kind === "short") feedback = feedback.slice(0, 4);
++    if (kind === "long") feedback.push({letter: "x", status: "red"});
++    if (kind === "bad-status") feedback[2].status = "unknown";
++    if (kind === "multiple-symbol") feedback[2].letter = "XX";
++    if (kind === "expanding") feedback[2].letter = "ß";
++    /** Malformed counters must not advance client attempts or establish an outcome. */
++    const attempts = kind === "zero" ? 0 : kind === "fraction" ? 0.5 : kind === "nan" ? NaN :
++      kind === "infinite" ? Infinity : kind === "over-limit" ? 6 : 1;
++    /** The correlated result reaches the production operation handler. */
++    const router = useGameMessageRouter({dispatch, stateRef: {current: state},
++      postToHost: jest.fn(), requestRiddle});
++    await router({type: "host:operationResult", requestId: "malformed-guess", payload: {
++      operation: "guess", ok: true, data: {feedback, attempts,
++        isCorrect: kind === "is-correct-type" ? "true" : false,
++        gameOver: kind === "game-over-type" ? "false" : false,
++        ...(kind === "continue-type" ? {canContinue: "false"} : {})},
++    }});
++    expect(dispatch.mock.calls).toEqual([[{type: "guessFailed"}],
++      [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
++    expect(requestRiddle).toHaveBeenCalledTimes(1);
++  },
++);
++
++it("accepts the sixth authoritative attempt after a granted Continue", async () => {
++  /** Continue owns the supported sixth attempt for this same question. */
++  const state = {...createInitialGameSession(), riddle: {...repeatedRiddle, hasUsedContinue: true}};
++  /** Valid server data remains authoritative without requesting another read. */
++  const dispatch = jest.fn();
++  /** Reconciliation is reserved for malformed responses. */
++  const requestRiddle = jest.fn();
++  /** The ordinary router receives a complete terminal result. */
++  const router = useGameMessageRouter({dispatch, stateRef: {current: state}, postToHost: jest.fn(), requestRiddle});
++  await router({type: "host:operationResult", payload: {operation: "guess", ok: true, data: {
++    feedback: [..."piano"].map(letter => ({letter, status: "red"})), attempts: 6,
++    isCorrect: false, gameOver: true, canContinue: false,
++  }}});
++  expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "guessResolved", attempts: 6}));
++  expect(requestRiddle).not.toHaveBeenCalled();
++});
+--- /dev/null
++++ b/packages/portal/src/play/answerCell.ts
+@@ -0,0 +1,7 @@
++import {splitGraphemes} from "@qwordly/core/game";
++
++/** A bounded answer cell must occupy one grapheme before and after its displayed locale casing. */
++export const isSingleAnswerCell = (letter: unknown, locale: string): letter is string =>
++  typeof letter === "string" && letter.length > 0 && letter.length <= 32 && Boolean(letter.trim()) &&
++  splitGraphemes(letter, locale).length === 1 &&
++  splitGraphemes(letter.toLocaleUpperCase(locale), locale).length === 1;
+--- a/packages/portal/src/play/gameSession.ts
++++ b/packages/portal/src/play/gameSession.ts
+@@ -10,7 +10,7 @@
+ import type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
+ import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
+ import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
+-import {isSingleHintLetter} from "./hintLetter";
++import {isSingleAnswerCell} from "./answerCell";
+ 
+ export type {GameModal, GameSessionAction, GameSessionState} from "./gameSessionTypes";
+ 
+@@ -517,7 +517,7 @@
+     case "previewHint": {
+       if (!state.riddle || state.pendingHintState || state.hintRevealedIndices.includes(action.index) ||
+         !Number.isInteger(action.index) || action.index < 0 || action.index >= state.riddle.answerLength ||
+-        !isSingleHintLetter(action.letter, state.riddle.evaluation?.locale ?? state.locale)) return state;
++        !isSingleAnswerCell(action.letter, state.riddle.evaluation?.locale ?? state.locale)) return state;
+       /** Draft containing the provisional hint letter. */
+       const nextLetters = [...state.currentLetters];
+       /** Draft letter replaced by the provisional hint. */
+@@ -543,7 +543,7 @@
+     case "applyHint": {
+       if (state.pendingHintState) state = gameSessionReducer(state, {type: "rejectHint"});
+       if (!state.riddle || !Number.isInteger(action.index) || action.index < 0 || action.index >= state.riddle.answerLength ||
+-        !isSingleHintLetter(action.letter, state.riddle.evaluation?.locale ?? state.locale)) {
++        !isSingleAnswerCell(action.letter, state.riddle.evaluation?.locale ?? state.locale)) {
+         return state;
+       }
+       /** Provides next letters behavior. */
+@@ -689,10 +689,20 @@
+             state.riddle.awaitingContinue && !state.riddle.hasUsedContinue ? outcome : null);
+         /** Provides awaiting continue behavior. */
+         const awaitingContinue = state.riddle.awaitingContinue && !pendingOutcome;
+-        /** Provides current letters behavior. */
++        /** Accepted history proves whether a newer server attempt consumed the saved draft. */
++        const locale = state.riddle.evaluation?.locale ?? state.locale;
++        /** Latest canonical word owns the newly accepted attempt. */
++        const acceptedGuess = guesses.at(-1);
++        /** Older matching drafts must not become a second unsent copy of an accepted word. */
++        const consumedDraft = Boolean(state.riddle.acceptedGuesses?.length &&
++          action.engineSnapshot.attemptsUsed < state.riddle.attemptsUsed && acceptedGuess &&
++          lowerCaseGraphemes(action.currentLetters.join(""), locale).join("") ===
++          lowerCaseGraphemes(acceptedGuess.guess.join(""), locale).join(""));
++        /** Consumed drafts clear editable cells while preserving purchased letters. */
+         const currentLetters = awaitingContinue
+           ? Array.from({length: state.riddle.answerLength}, () => "")
+-          : action.currentLetters;
++          : consumedDraft ? action.currentLetters.map((letter, index) =>
++            action.hintRevealedIndices.includes(index) ? letter : "") : action.currentLetters;
+         /** Provider snapshots may predate a paid hint; issued locks always take precedence. */
+         const restoredLetters = [...currentLetters];
+         /** Unique paid hint positions combine provider and authoritative recovery. */
+@@ -700,7 +710,7 @@
+           ...(state.riddle.revealedHints ?? []).map(({index}) => index)])];
+         for (const hint of state.riddle.revealedHints ?? []) restoredLetters[hint.index] = hint.letter;
+         /** Editable selection is reconciled with authoritative purchased hint locks. */
+-        const activeSlotIndex = hintIndices.includes(action.activeSlotIndex)
++        const activeSlotIndex = consumedDraft || hintIndices.includes(action.activeSlotIndex)
+           ? firstEditableSlot(restoredLetters, hintIndices) : action.activeSlotIndex;
+         return withConfirmedHintFeedback({
+           ...state,
+--- a/packages/portal/src/play/hintLetter.ts
++++ /dev/null
+@@ -1,7 +0,0 @@
+-import {splitGraphemes} from "@qwordly/core/game";
+-
+-/** A bounded hint must occupy one grapheme before and after its displayed locale casing. */
+-export const isSingleHintLetter = (letter: unknown, locale: string): letter is string =>
+-  typeof letter === "string" && letter.length > 0 && letter.length <= 32 && Boolean(letter.trim()) &&
+-  splitGraphemes(letter, locale).length === 1 &&
+-  splitGraphemes(letter.toLocaleUpperCase(locale), locale).length === 1;
+--- a/packages/portal/src/play/useGameMessageRouter.ts
++++ b/packages/portal/src/play/useGameMessageRouter.ts
+@@ -4,7 +4,7 @@
+ import {createGameMessageRouter} from "./bridgeRouter";
+ import {gameSessionReducer, type GameSessionState} from "./gameSession";
+ import {tr} from "./i18n";
+-import {isSingleHintLetter} from "./hintLetter";
++import {isSingleAnswerCell} from "./answerCell";
+ 
+ /** Gets object. */
+ const getObject = (data: unknown): Record<string, unknown> =>
+@@ -16,29 +16,32 @@
+ /** Gets string array. */
+ const getStringArray = (value: unknown): string[] =>
+   Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+-/** Parses canonical guess feedback returned by the backend. */
+-const getGuessFeedback = (
+-  value: unknown,
+-  locale: string,
+-): Array<{
+-  /** Stores letter. */
+-  letter: string[];
+-  /** Stores feedback. */
++/** Parses a complete server-scored row atomically, without dropping malformed cells. */
++const getGuessFeedback = (value: unknown, locale: string, answerLength: number): {
++  /** Canonical displayed symbols, one per answer cell. */
++  guess: string[];
++  /** Positionally aligned server scoring colors. */
+   feedback: Array<"green" | "yellow" | "red">;
+-}> =>
+-  Array.isArray(value)
+-    ? value.flatMap((item) => {
+-        /** Provides entry behavior. */
+-        const entry = getObject(item);
+-        /** Provides letter behavior. */
+-        const letter = getString(entry.letter);
+-        /** Provides status behavior. */
+-        const status = entry.status;
+-        return letter && (status === "green" || status === "yellow" || status === "red")
+-          ? [{letter: [letter.toLocaleUpperCase(locale)], feedback: [status]}]
+-          : [];
+-      })
+-    : [];
++} | null => {
++  if (!Array.isArray(value) || answerLength < 1 || value.length !== answerLength) return null;
++  /** Every accepted symbol remains aligned with its own server color. */
++  const guess: string[] = [];
++  /** Partial rows are discarded rather than projected as accepted history. */
++  const feedback: Array<"green" | "yellow" | "red"> = [];
++  for (const item of value) {
++    /** Each operation cell is validated before it can enter the board. */
++    const entry = getObject(item);
++    /** Only bounded graphemes survive their displayed casing. */
++    const letter = getString(entry.letter);
++    /** Server scoring statuses have exactly three supported values. */
++    const status = entry.status;
++    if (!isSingleAnswerCell(letter, locale) ||
++      (status !== "green" && status !== "yellow" && status !== "red")) return null;
++    guess.push(letter.toLocaleUpperCase(locale));
++    feedback.push(status);
++  }
++  return {guess, feedback};
++};
+ 
+ /** Describes game dispatch. */
+ type GameDispatch = Dispatch<Parameters<typeof gameSessionReducer>[1]>;
+@@ -123,21 +126,25 @@
+           const data = getObject(message.payload.data);
+           if (message.payload.operation === "guess") {
+             /** Provides feedback items behavior. */
+-            const feedbackItems = getGuessFeedback(data.feedback,
+-              stateRef.current.riddle?.evaluation?.locale ?? stateRef.current.locale);
++            const feedback = getGuessFeedback(data.feedback,
++              stateRef.current.riddle?.evaluation?.locale ?? stateRef.current.locale,
++              stateRef.current.riddle?.answerLength ?? 0);
+             /** Provides attempts behavior. */
+             const attempts = getNumber(data.attempts);
+-            if (attempts === undefined || feedbackItems.length === 0) {
++            /** A granted Continue is the only source of a sixth accepted attempt. */
++            const maxAttempts = 5 + Number(stateRef.current.engineSnapshot?.hasUsedContinue ??
++              stateRef.current.riddle?.hasUsedContinue ?? false);
++            if (!feedback || attempts === undefined || !Number.isInteger(attempts) || attempts < 1 || attempts > maxAttempts ||
++              typeof data.isCorrect !== "boolean" || typeof data.gameOver !== "boolean" ||
++              (data.canContinue !== undefined && typeof data.canContinue !== "boolean")) {
+               dispatch({type: "guessFailed"});
+               dispatch({type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"});
++              requestRiddle();
+               return;
+             }
+             dispatch({
+               type: "guessResolved",
+-              feedback: {
+-                guess: feedbackItems.flatMap((item) => item.letter),
+-                feedback: feedbackItems.flatMap((item) => item.feedback),
+-              },
++              feedback,
+               attempts,
+               isCorrect: data.isCorrect === true,
+               gameOver: data.gameOver === true,
+@@ -159,7 +166,7 @@
+             const achievementIds = getStringArray(data.newlyUnlockedAchievementIds);
+             if (index !== undefined && Number.isInteger(index) && index >= 0 &&
+               index < (stateRef.current.riddle?.answerLength ?? 0) &&
+-              isSingleHintLetter(revealedLetter, stateRef.current.riddle?.evaluation?.locale ?? stateRef.current.locale)) {
++              isSingleAnswerCell(revealedLetter, stateRef.current.riddle?.evaluation?.locale ?? stateRef.current.locale)) {
+               dispatch({type: "applyHint", index, letter: revealedLetter, newCoins: getNumber(data.newCoins)});
+             } else {
+               dispatch({type: "rejectHint"});

@@ -1,0 +1,345 @@
+FAIL src/play/__tests__/useGameMessageRouter.test.ts
+  ● rejects a successful hint with invalid position -1
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": -1,
+    +       "letter": "P",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      291 |     operation: "hint", ok: true, data: {index, revealedLetter: "P"},
+      292 |   }});
+    > 293 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      294 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      295 | });
+      296 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:293:31
+
+  ● rejects a successful hint with invalid position 0.5
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": 0.5,
+    +       "letter": "P",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      291 |     operation: "hint", ok: true, data: {index, revealedLetter: "P"},
+      292 |   }});
+    > 293 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      294 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      295 | });
+      296 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:293:31
+
+  ● rejects a successful hint with invalid position NaN
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": NaN,
+    +       "letter": "P",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      291 |     operation: "hint", ok: true, data: {index, revealedLetter: "P"},
+      292 |   }});
+    > 293 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      294 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      295 | });
+      296 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:293:31
+
+  ● rejects a successful hint with invalid position Infinity
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": Infinity,
+    +       "letter": "P",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      291 |     operation: "hint", ok: true, data: {index, revealedLetter: "P"},
+      292 |   }});
+    > 293 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      294 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      295 | });
+      296 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:293:31
+
+  ● rejects a successful hint with invalid position 5
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 7
+    + Received  + 4
+
+      Array [
+        Array [
+          Object {
+    -       "type": "rejectHint",
+    -     },
+    -   ],
+    -   Array [
+    -     Object {
+    -       "notice": "ErrorMessages.GENERIC_UNEXPECTED_ERROR",
+    -       "type": "setNotice",
+    +       "index": 5,
+    +       "letter": "P",
+    +       "newCoins": undefined,
+    +       "type": "applyHint",
+          },
+        ],
+      ]
+
+      291 |     operation: "hint", ok: true, data: {index, revealedLetter: "P"},
+      292 |   }});
+    > 293 |   expect(dispatch.mock.calls).toEqual([[{type: "rejectHint"}],
+          |                               ^
+      294 |     [{type: "setNotice", notice: "ErrorMessages.GENERIC_UNEXPECTED_ERROR"}]]);
+      295 | });
+      296 |
+
+      at src/play/__tests__/useGameMessageRouter.test.ts:293:31
+
+FAIL src/play/__tests__/gameSession.test.ts
+  ● ignores invalid hint position -1 without phantom locks
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 2
+    + Received  + 6
+
+    @@ -17,20 +17,24 @@
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     -1,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+        "leaderboardLoading": false,
+        "leaderboardRequestId": null,
+        "leaderboardType": "xp",
+    -   "letterStates": Object {},
+    +   "letterStates": Object {
+    +     "p": "green",
+    +   },
+        "locale": "en",
+        "modal": null,
+        "muted": false,
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+
+      934 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+      935 |   expect(reduce(state, {type: "previewHint", index, letter: "P"})).toBe(state);
+    > 936 |   expect(reduce(state, {type: "applyHint", index, letter: "P"})).toBe(state);
+          |                                                                  ^
+      937 |   /** A failed confirmation retires only the provisional reveal, restoring its original selection. */
+      938 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+      939 |   /** The rejected positional metadata cannot disable ordinary subsequent typing. */
+
+      at src/play/__tests__/gameSession.test.ts:936:66
+
+  ● ignores invalid hint position 0.5 without phantom locks
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 3
+    + Received  + 9
+
+    @@ -1,7 +1,7 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": 1.5,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+          "",
+    @@ -17,11 +17,13 @@
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     0.5,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": 0.5,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      933 |   /** A valid editable question owns only its five integer cell positions. */
+      934 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 935 |   expect(reduce(state, {type: "previewHint", index, letter: "P"})).toBe(state);
+          |                                                                    ^
+      936 |   expect(reduce(state, {type: "applyHint", index, letter: "P"})).toBe(state);
+      937 |   /** A failed confirmation retires only the provisional reveal, restoring its original selection. */
+      938 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:935:68
+
+  ● ignores invalid hint position NaN without phantom locks
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 3
+    + Received  + 9
+
+    @@ -1,7 +1,7 @@
+      Object {
+    -   "activeSlotIndex": 0,
+    +   "activeSlotIndex": NaN,
+        "auxiliaryFanfare": null,
+        "canRestoreCheckpoint": true,
+        "completionAcknowledged": false,
+        "currentLetters": Array [
+          "",
+    @@ -17,11 +17,13 @@
+          "hasUsedContinue": false,
+        },
+        "gameMode": "classic",
+        "guessPending": false,
+        "guesses": Array [],
+    -   "hintRevealedIndices": Array [],
+    +   "hintRevealedIndices": Array [
+    +     NaN,
+    +   ],
+        "initialized": false,
+        "lastOutcome": null,
+        "lastRewards": null,
+        "leaderboard": Array [],
+        "leaderboardLoadError": false,
+    @@ -35,11 +37,15 @@
+        "notice": null,
+        "optimisticAchievementIds": Array [],
+        "paused": false,
+        "pendingCoinSpend": null,
+        "pendingGuessState": null,
+    -   "pendingHintState": null,
+    +   "pendingHintState": Object {
+    +     "index": NaN,
+    +     "previousActiveSlotIndex": 0,
+    +     "previousLetter": "",
+    +   },
+        "products": Array [],
+        "profile": null,
+        "riddle": Object {
+          "answerLength": 5,
+          "attemptsUsed": 0,
+
+      933 |   /** A valid editable question owns only its five integer cell positions. */
+      934 |   const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    > 935 |   expect(reduce(state, {type: "previewHint", index, letter: "P"})).toBe(state);
+          |                                                                    ^
+      936 |   expect(reduce(state, {type: "applyHint", index, letter: "P"})).toBe(state);
+      937 |   /** A failed confirmation retires only the provisional reveal, restoring its original selection. */
+      938 |   const preview = reduce(state, {type: "previewHint", index: 0, letter: "P"});
+
+      at src/play/__tests__/gameSession.test.ts:935:68
+
+Test Suites: 2 failed, 2 total
+Tests:       8 failed, 128 passed, 136 total
+Snapshots:   0 total
+Time:        0.375 s, estimated 1 s
+Ran all test suites matching src/play/__tests__/gameSession.test.ts|src/play/__tests__/useGameMessageRouter.test.ts.

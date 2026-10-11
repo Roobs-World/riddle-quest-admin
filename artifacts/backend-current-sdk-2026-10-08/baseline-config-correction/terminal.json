@@ -1,0 +1,12 @@
+[
+  {
+    "name": "baseline",
+    "exit": 1,
+    "expected": 1
+  },
+  {
+    "name": "current",
+    "exit": 0,
+    "expected": 0
+  }
+]

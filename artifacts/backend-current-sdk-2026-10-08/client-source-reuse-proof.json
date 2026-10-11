@@ -1,0 +1,9 @@
+{
+  "unchangedPriorInputs": 2500,
+  "extraAssessedInputs": [
+    "firebase-functions/src/__tests__/singlePlayerHintLocale.it.test.ts",
+    "firebase-functions/storage.rules"
+  ],
+  "priorEvidence": "artifacts/solo-hint-intent-recovery-2026-10-08/verification.json",
+  "clientOrBuildConfigurationChanged": false
+}

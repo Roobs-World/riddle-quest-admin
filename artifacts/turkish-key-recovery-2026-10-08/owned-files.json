@@ -1,0 +1,26 @@
+[
+  {
+    "path": "packages/portal/scripts/verify-turkish-answer-input-browser.mjs",
+    "before": "artifacts/turkish-key-recovery-2026-10-08/before/packages/portal/scripts/verify-turkish-answer-input-browser.mjs",
+    "beforeSha256": "fe4e0b72550fd463164f41efe5dd7c1419015b36bac28cda729034690bec1c2f",
+    "afterSha256": "08f4de2265429a37abce2a608e2f9d8212018aa522fd772e0049ba42c1539482"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/gameSession.test.ts",
+    "before": "artifacts/turkish-key-recovery-2026-10-08/gameSession.test.before.ts",
+    "beforeSha256": "e33dc05f41d5100ad894094618658ffd347024826a43b428a9d13ca630603a29",
+    "afterSha256": "e3f3385a85f950cb6f058885882d3e162c894968fc2623d0053f93a85bb6a0e9"
+  },
+  {
+    "path": "packages/portal/src/play/game/hooks/useAnswerKeyboard.ts",
+    "before": "artifacts/turkish-key-recovery-2026-10-08/before/packages/portal/src/play/game/hooks/useAnswerKeyboard.ts",
+    "beforeSha256": "e64562949d63c386e0304077fb3531ea8dd4474ad9ef2a13aa1bca891c6d0637",
+    "afterSha256": "6e354db0c8e6b85f8dcf5a0161fa7df948dd09c31c8c674eced3998e8b6b335a"
+  },
+  {
+    "path": "packages/portal/src/play/gameSession.ts",
+    "before": "artifacts/turkish-key-recovery-2026-10-08/before/packages/portal/src/play/gameSession.ts",
+    "beforeSha256": "ddd1544f657569e099ee194a1e65aea0a696bf1a207401c546c4bcd877fd99cc",
+    "afterSha256": "01719f6228c4c4d5f0c69943da73cf9ec591282cc80d0fa31c27aa5dcb5786a6"
+  }
+]

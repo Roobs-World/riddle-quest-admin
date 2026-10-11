@@ -1,0 +1,44 @@
+[
+  {
+    "path": "packages/portal/src/play/services.ts",
+    "before": "artifacts/host-deferred-warmups-2026-10-08/services-before.txt",
+    "beforeSha256": "159deff3d78448f33977dee96c38e0414978c481e3bac2017878a8f8dc235436",
+    "after": "artifacts/host-deferred-warmups-2026-10-08/owned-00-after.txt",
+    "afterSha256": "bca7cc67c5f049881985a1f7762576b3ceae548453b1eb7ce22fb9f556a26696"
+  },
+  {
+    "path": "packages/portal/src/play/useHostRiddleLifecycle.ts",
+    "before": "artifacts/host-deferred-warmups-2026-10-08/lifecycle-before.txt",
+    "beforeSha256": "8cc282d69bddf8ef0629032f3686c6f6e65b78d6b8a5029dea675938d2363c34",
+    "after": "artifacts/host-deferred-warmups-2026-10-08/owned-01-after.txt",
+    "afterSha256": "52347f4951b1ed26bd4fafbd45e6589adb4065f5cfc7d94a105577f490376e86"
+  },
+  {
+    "path": "packages/portal/src/play/types.ts",
+    "before": "artifacts/host-deferred-warmups-2026-10-08/types-before.txt",
+    "beforeSha256": "dbe7a707d84b86fdc1a42335b0c326891373b29dc0746087e850ee7ef199cb56",
+    "after": "artifacts/host-deferred-warmups-2026-10-08/owned-02-after.txt",
+    "afterSha256": "e759e86a3d36beef686b18994bd8f0fc3271c311ab0296457589675131af57f9"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts",
+    "before": "artifacts/host-deferred-warmups-2026-10-08/test-before.txt",
+    "beforeSha256": "361cd54dffd3bd705d1d39a2b07be84bc7b5f4eaf2f30b939c15c15a4d51aaad",
+    "after": "artifacts/host-deferred-warmups-2026-10-08/owned-03-after.txt",
+    "afterSha256": "5bfacca75ed2a6b9d931cc5e82f0fd122a96beb624c02ae762d265338b2a113d"
+  },
+  {
+    "path": "packages/portal/package.json",
+    "before": "artifacts/host-deferred-warmups-2026-10-08/package-before.txt",
+    "beforeSha256": "9e1ae61e264b9a7481ed3b5a32572d555ec929cd4a1f9474e1c789ee35b2de6b",
+    "after": "artifacts/host-deferred-warmups-2026-10-08/owned-04-after.txt",
+    "afterSha256": "5dbb82d899885bd9850376444a8c365b7a87ce7474cf89e164316405ef5aa19d"
+  },
+  {
+    "path": "packages/portal/scripts/verify-host-deferred-warmups-browser.mjs",
+    "before": null,
+    "beforeSha256": null,
+    "after": "artifacts/host-deferred-warmups-2026-10-08/owned-05-after.txt",
+    "afterSha256": "c1f406cac52ac3741b0502b490a44e11025abdb10fc7f23e59aa3feec3d36e8a"
+  }
+]

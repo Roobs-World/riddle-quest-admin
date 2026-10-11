@@ -1,0 +1,37 @@
+i  emulators: Starting emulators: firestore, database, storage
+i  emulators: Detected demo project ID "demo-presence-cli-audit", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 40629.
+i  database: Database Emulator logging to database-debug.log
+⚠  Unexpected rules runtime error: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/craig-beswetherick/.cache/firebase/emulators/cloud-storage-rules-runtime-v1.1.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+i  Running script: node scripts/run-with-functions-node.js /home/craig-beswetherick/Documents/riddle-quest/artifacts/backend-reliability-2026-10-08/focused/sdk-entry.cjs
+[Pinned Functions runtime v22.23.1] complete current integration selection
+Starting src/__tests__/presenceVisibilityReconciliation.it.test.ts
+PASS src/__tests__/presenceVisibilityReconciliation.it.test.ts
+  ✓ runs the actual CLI preview and hash-confirmed apply against production services in the private emulator (1201 ms)
+  ○ skipped preview inventories legacy bits without writing RTDB, source authority or operation leases
+  ○ skipped converts consenting facebook grants and revokes a preexisting legacy bit for a blocked rival
+  ○ skipped converts consenting jest grants and revokes a preexisting legacy bit for a blocked rival
+  ○ skipped cleans a stale edge only after the deleted viewer's earlier operations drain
+  ○ skipped cleans a stale edge only after the deleted target's earlier operations drain
+  ○ skipped returns the exact completed prefix when a later owner is busy, then resumes without touching that prefix
+  ○ skipped rejects invalid page scope and corrupt stored revisions before making a partial write
+
+Test Suites: 1 passed, 1 total
+Tests:       7 skipped, 1 passed, 8 total
+Snapshots:   0 total
+Time:        1.639 s
+Ran all test suites with tests matching "runs the actual CLI".
+Test results written to: ../artifacts/backend-reliability-2026-10-08/focused/integration-results.json
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  storage: Stopping Storage Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

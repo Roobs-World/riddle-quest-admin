@@ -72,7 +72,12 @@ const deferred = <T>() => {
   return {promise, resolve};
 };
 /** Creates one lifecycle around stable injected delivery callbacks. */
-const setup = (loadRiddle: HostServices["loadRiddle"]) => {
+const setup = (loadRiddle: HostServices["loadRiddle"], extra: {
+  /** Host has retired the game frame after a failed bridge validation. */
+  recoverySuspended?: boolean;
+  /** Optional target-owned Classic and Daily preparation. */
+  preloadInitialRiddles?: HostServices["preloadInitialRiddles"];
+} = {}) => {
   /** Records accepted riddle messages after authority work settles. */
   const postToGame = jest.fn<(message: HostToGameMessage) => void>();
   /** Records correlated operation acknowledgements. */
@@ -83,11 +88,11 @@ const setup = (loadRiddle: HostServices["loadRiddle"]) => {
   let activity = 0;
   /** Stable options for the context's mounted lifetime. */
   const options = {userId: "player", profile: {coins: 300}, initialGameMode: "classic" as const, locale: "en",
-    services: {loadRiddle}, withActivity: async <T>(operation: () => Promise<T>) => {
+    services: {loadRiddle, preloadInitialRiddles: extra.preloadInitialRiddles}, withActivity: async <T>(operation: () => Promise<T>) => {
       activity += 1;
       try {return await operation();} finally {activity -= 1;}
     },
-    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt};
+    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt, ...extra};
   /** Exposed lifecycle under the same fake browser signals as the recovery owner. */
   const lifecycle = useHostRiddleLifecycle(options);
   cleanup = effects[0]() || undefined;
@@ -119,6 +124,7 @@ it("releases a hanging content wait and accepts only its recovery response", asy
   const owner = setup(load);
   await jest.advanceTimersByTimeAsync(250 + RIDDLE_LOAD_DEADLINE_MS);
   expect(owner.activity).toBe(0);
+  expect(load.mock.calls[0][1]?.aborted).toBe(true);
   expect(owner.postOperation).toHaveBeenCalledWith(undefined, "loadRiddle", false, undefined, expect.any(String));
   await jest.advanceTimersByTimeAsync(1000);
   expect(owner.postToGame).toHaveBeenCalledTimes(1);
@@ -126,6 +132,29 @@ it("releases a hanging content wait and accepts only its recovery response", asy
   held.resolve(riddle);
   await jest.advanceTimersByTimeAsync(0);
   expect(owner.postToGame).toHaveBeenCalledTimes(1);
+});
+
+
+it("observes late provider rejection after a content deadline without changing recovered content", async () => {
+  /** Original provider remains admitted beyond the bounded delivery wait. */
+  let reject!: (error: Error) => void;
+  /** Its late rejection is still observed after local controls have recovered. */
+  const held = new Promise<BridgeRiddle>((_resolve, fail) => {reject = fail;});
+  /** Recovery admits its own read while the original provider is still pending. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockReturnValueOnce(held).mockResolvedValue(riddle);
+  /** Actual host lifecycle retains responsibility for both promise outcomes. */
+  const owner = setup(load);
+  await jest.advanceTimersByTimeAsync(250 + RIDDLE_LOAD_DEADLINE_MS);
+  expect(load.mock.calls[0][1]?.aborted).toBe(true);
+  await jest.advanceTimersByTimeAsync(1000);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postOperation).toHaveBeenCalledTimes(2);
+  reject(new Error("Expired provider failed late"));
+  await jest.advanceTimersByTimeAsync(1000);
+  expect(owner.postToGame).toHaveBeenCalledTimes(1);
+  expect(owner.postOperation).toHaveBeenCalledTimes(2);
+  expect(owner.onRecoveryAttempt).toHaveBeenCalledTimes(2);
+  expect(owner.options.setNotice).toHaveBeenLastCalledWith(null);
 });
 
 it("settles an unresolved content wait immediately when its host retires", async () => {
@@ -160,6 +189,7 @@ it("bounds a hanging Classic fallback after authoritative Daily completion", asy
   await jest.advanceTimersByTimeAsync(RIDDLE_LOAD_DEADLINE_MS);
   expect(await loading).toBe(false);
   expect(owner.activity).toBe(0);
+  expect(load.mock.calls[1][1]?.aborted).toBe(true);
   expect(owner.postOperation).toHaveBeenCalledWith("daily-next", "loadRiddle", false, undefined, expect.any(String));
   await jest.advanceTimersByTimeAsync(1000);
   expect(load.mock.calls.map(([input]) => input.gameMode)).toEqual(["challenge", "classic", "classic"]);
@@ -254,7 +284,7 @@ it("resets Classic recovery to the replacement account's confirmed position", as
   useHostRiddleLifecycle({...owner.options, userId: "replacement", profile: {coins: 100, classicIndex: 2}});
   cleanup = effects[0]() || undefined;
   await jest.advanceTimersByTimeAsync(250);
-  expect(load).toHaveBeenLastCalledWith({gameMode: "classic", locale: "en", classicIndex: 2});
+  expect(load).toHaveBeenLastCalledWith({gameMode: "classic", locale: "en", classicIndex: 2}, expect.any(AbortSignal));
 });
 
 it("keeps the newer question's draft when an older correlated load resolves last", async () => {
@@ -473,4 +503,117 @@ it("keeps an admitted load across recovery callback replacement", async () => {
   expect(await loading).toBe(true);
   expect(owner.postToGame).toHaveBeenCalledTimes(1);
   expect(owner.activity).toBe(0);
+});
+
+it("starts no automatic recovery read while the game frame is retired by a failed bridge", async () => {
+  /** Any authority read here would be the defect: the frame that could display it is gone. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockResolvedValue(riddle);
+  /** The host has already replaced the game with bridge startup recovery. */
+  const owner = setup(load, {recoverySuspended: true});
+  await jest.advanceTimersByTimeAsync(250);
+  window.dispatchEvent(new Event("online"));
+  await jest.advanceTimersByTimeAsync(30_000);
+  expect(load).not.toHaveBeenCalled();
+  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
+  expect(owner.postToGame).not.toHaveBeenCalled();
+});
+
+
+it("starts no content warmups for a retired game frame", () => {
+  /** Each invocation may issue Classic and Daily provider downloads. */
+  const preload = jest.fn();
+  setup(jest.fn(), {recoverySuspended: true, preloadInitialRiddles: preload});
+  expect(preload).not.toHaveBeenCalled();
+});
+
+it("keeps content warmups available for an active game frame", () => {
+  /** Active startup still benefits from target-owned preparation. */
+  const preload = jest.fn();
+  setup(jest.fn(), {preloadInitialRiddles: preload});
+  expect(preload).toHaveBeenCalledWith("en", expect.any(AbortSignal));
+  expect(preload).toHaveBeenCalledTimes(1);
+});
+
+it("does not warm a replacement account after bridge retirement", () => {
+  /** Original active startup has already warmed its own content. */
+  const preload = jest.fn();
+  /** Mounted recovery owner retains the original admitted preparation. */
+  const owner = setup(jest.fn(), {preloadInitialRiddles: preload});
+  expect(preload).toHaveBeenCalledTimes(1);
+  cleanup?.(); effects.length = 0; beginRender();
+  useHostRiddleLifecycle({...owner.options, userId: "replacement-player", recoverySuspended: true});
+  cleanup = effects[0]() || undefined;
+  expect(preload).toHaveBeenCalledTimes(1);
+});
+
+
+it("retires deferred warmup admission when the owner unmounts", () => {
+  /** Target facade receives a signal before its lazy adapter finishes loading. */
+  const preload = jest.fn();
+  setup(jest.fn(), {preloadInitialRiddles: preload});
+  /** Original signal owns only this content context. */
+  const signal = preload.mock.calls[0]![1] as AbortSignal;
+  expect(signal.aborted).toBe(false);
+  retire();
+  expect(signal.aborted).toBe(true);
+});
+
+it("retires deferred warmup admission when bridge suspension commits", () => {
+  /** No new context read or warmup is required to retire the old request. */
+  const preload = jest.fn();
+  /** Stable account and provider keep their original visible read ownership. */
+  const owner = setup(jest.fn(), {preloadInitialRiddles: preload});
+  /** Original facade admission is independently revocable. */
+  const signal = preload.mock.calls[0]![1] as AbortSignal;
+  beginRender(); useHostRiddleLifecycle({...owner.options, recoverySuspended: true});
+  expect(signal.aborted).toBe(true);
+  expect(preload).toHaveBeenCalledTimes(1);
+});
+
+it.each(['preview','paid'] as const)('preserves recovery target across a failed %s successor load',async kind=>{
+ /** Authority calls expose the actual automatic recovery index. */
+ const load=jest.fn<HostServices['loadRiddle']>().mockRejectedValueOnce(new Error('ordinary load unavailable')).mockRejectedValueOnce(new Error('successor load unavailable')).mockResolvedValue({...riddle,index:kind==='preview'?1:2});
+ /** Mounted lifecycle retains canonical recovery ownership. */
+ const owner=setup(load);
+ expect(await owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1},'ordinary-owned')).toBe(false);
+ expect(await owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2},kind==='preview'?'skip-preview-held':'skip-paid')).toBe(false);
+ await jest.advanceTimersByTimeAsync(250);
+ expect(load).toHaveBeenLastCalledWith({gameMode:'classic',locale:'en',classicIndex:kind==='preview'?1:2},expect.any(AbortSignal));
+});
+
+it('keeps held canonical delivery alive when an optional preview fails',async()=>{
+ /** Issued current question bounds its optional successor. */
+ const parent={...riddle,index:1,sessionToken:'00000000-0000-4000-8000-000000000001'};
+ /** Canonical wait stays admitted across the failed optional read. */
+ const held=deferred<BridgeRiddle>();
+ /** Original content, held canonical reload, and failed preview. */
+ const load=jest.fn<HostServices['loadRiddle']>().mockResolvedValueOnce(parent).mockReturnValueOnce(held.promise).mockRejectedValueOnce(new Error('Preview unavailable'));
+ /** Actual mounted host owns independent delivery waits. */
+ const owner=setup(load);
+ expect(await owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1},'initial')).toBe(true);
+ /** Held ordinary request may not be retired by speculative work. */
+ const canonical=owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1},'canonical');
+ expect(await owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2},'skip-preview-held')).toBe(false);
+ expect(load.mock.calls[1][1]?.aborted).toBe(false);
+ held.resolve(parent);expect(await canonical).toBe(true);
+ expect(owner.postToGame.mock.calls.some(call=>call[0].requestId==='skip-preview-held')).toBe(false);
+});
+it('rejects a late optional preview after newer canonical delivery starts',async()=>{
+ /** Current issued origin of the optional read. */
+ const parent={...riddle,index:1,sessionToken:'00000000-0000-4000-8000-000000000001'};
+ /** Optional authority result retained while a canonical request starts. */
+ const held=deferred<BridgeRiddle>();
+ /** New canonical question outranks the retained optional reply. */
+ const newer={...riddle,index:3,sessionToken:'00000000-0000-4000-8000-000000000003'};
+ /** Distinct provider waits expose their ownership ordering. */
+ const load=jest.fn<HostServices['loadRiddle']>().mockResolvedValueOnce(parent).mockReturnValueOnce(held.promise).mockResolvedValueOnce(newer);
+ /** Mounted context owns the latest visible content. */
+ const owner=setup(load);
+ await owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1},'initial');
+ /** Optional request is pending before canonical advancement. */
+ const preview=owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2},'skip-preview-held');
+ await jest.advanceTimersByTimeAsync(0);expect(load).toHaveBeenCalledTimes(2);
+ expect(await owner.lifecycle.loadRiddle({gameMode:'classic',locale:'en',classicIndex:3},'canonical-newer')).toBe(true);
+ held.resolve(riddle);expect(await preview).toBe(false);
+ expect(owner.postToGame.mock.calls.at(-1)?.[0]).toMatchObject({requestId:'canonical-newer',payload:{riddle:newer}});
 });

@@ -3,7 +3,7 @@ import {join} from "node:path";
 import {initializeTestEnvironment, assertFails, type RulesTestEnvironment} from "@firebase/rules-unit-testing";
 import {doc, getDoc, getDocs, collection, setDoc} from "firebase/firestore";
 import {getApps, initializeApp} from "firebase-admin/app";
-import {getFirestore, Timestamp} from "firebase-admin/firestore";
+import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {streamLiveRaceChanges} from "../../race/raceLiveStream";
 import {removeLiveRaceIdentitySnapshots} from "../../profile/accountDeletion/liveRaceAccountDeletion";
@@ -143,4 +143,80 @@ it("rejects unowned and deleted subscriptions and releases an active stream imme
   await db.doc(`jestAccountDeletionTombstones/${A}`).set({status: "deleting"});
   await stream;
   await expect(streamLiveRaceChanges(db, A, a.ticketId, {signal: controller.signal, sendChunk})).rejects.toThrow("account-deleted");
+});
+
+it.each(["missing", "malformed", "expired"])("rejects %s ticket retention before subscribing", async kind => {
+  /** Actual production matchmaking provides otherwise valid ownership and retention. */
+  const {a} = await pair(), ref = db.doc(`liveRaceTickets/${a.ticketId}`);
+  await ref.update({expiresAt: kind === "missing" ? FieldValue.delete() : kind === "malformed" ? {unexpected: true} : Timestamp.fromMillis(Date.now() - 1000)});
+  /** Rejection must not publish a stream or mutate the owned private record. */
+  const before = await ref.get(), sendChunk = jest.fn(async () => true), controller = new AbortController();
+  try {
+    await expect(streamLiveRaceChanges(db, A, a.ticketId, {signal: controller.signal, sendChunk}, 100)).rejects.toMatchObject({code: "not-found"});
+    expect(sendChunk).not.toHaveBeenCalled();
+    expect((await ref.get()).updateTime!.isEqual(before.updateTime!)).toBe(true);
+  } finally {controller.abort();}
+});
+
+it.each(["missing", "malformed", "scalar", "expired"])("falls back for %s signal retention and accepts a later healthy revision", async kind => {
+  /** A genuine owned ticket isolates the asynchronous signal projection boundary. */
+  const {a} = await pair(), ref = db.doc(`liveRaceSignals/${a.ticketId}`), controller = new AbortController();
+  await ref.update({expiresAt: kind === "missing" ? FieldValue.delete() : kind === "malformed" ? {unexpected: true} : kind === "scalar" ? 123 : Timestamp.fromMillis(Date.now() - 1000)});
+  /** Invalid notifications must remain read-only and preserve the original record. */
+  const before = await ref.get(), chunks: Array<{
+    /** Safe polling fallback or an opaque server wake-up token. */
+    revision: string | null;
+  }> = [];
+  /** Both initial fallback and subsequent healthy delivery release bounded stream assertions. */
+  let ready!: () => void, recovered!: () => void;
+  /** First snapshot should select the existing polling fallback. */
+  const initial = new Promise<void>(resolve => {ready = resolve;});
+  /** A later repaired server record must still wake the surviving listener. */
+  const healthy = new Promise<void>(resolve => {recovered = resolve;});
+  /** Normal abort owns all real SDK listeners even when an assertion fails. */
+  const stream = streamLiveRaceChanges(db, A, a.ticketId, {signal: controller.signal, sendChunk: async chunk => {
+    chunks.push(chunk); ready(); if (chunk.revision === "11111111-1111-1111-1111-111111111111") recovered(); return true;
+  }}, 5000);
+  try {
+    await initial;
+    expect(chunks).toEqual([{revision: null}]);
+    expect((await ref.get()).updateTime!.isEqual(before.updateTime!)).toBe(true);
+    await ref.update({revision: "11111111-1111-1111-1111-111111111111", expiresAt: Timestamp.fromMillis(Date.now() + 60000)});
+    await healthy;
+    expect(chunks.at(-1)).toEqual({revision: "11111111-1111-1111-1111-111111111111"});
+  } finally {controller.abort(); await stream;}
+});
+
+it("stops advertising a cached healthy revision once its deadline expires without another snapshot", async () => {
+  /** A live owned seat remains valid while only its notification deadline expires. */
+  const {a} = await pair(), ref = db.doc(`liveRaceSignals/${a.ticketId}`), controller = new AbortController();
+  await ref.update({revision: "22222222-2222-2222-2222-222222222222", expiresAt: Timestamp.fromMillis(Date.now() + 2000)});
+  /** The actual stream must first publish the valid revision, then select fallback on its heartbeat. */
+  const chunks: Array<{
+    /** Opaque server revision or safe polling fallback. */
+    revision: string | null;
+  }> = [];
+  /** Snapshot and post-expiry heartbeat release distinct assertions. */
+  let first!: () => void, expired!: () => void;
+  /** Valid initial delivery proves the test did not begin with already expired metadata. */
+  const initial = new Promise<void>(resolve => {first = resolve;});
+  /** No database write or second snapshot may be needed to detect expiration. */
+  const fallback = new Promise<void>(resolve => {expired = resolve;});
+  /** A bounded assertion makes the missing heartbeat fallback an ordinary test failure. */
+  let deadline: ReturnType<typeof setTimeout> | undefined;
+  /** Stream abort releases every actual SDK listener even when the deadline assertion fails. */
+  const stream = streamLiveRaceChanges(db, A, a.ticketId, {signal: controller.signal, sendChunk: async chunk => {
+    chunks.push(chunk); if (chunks.length === 1) first(); else if (chunk.revision === null) expired(); return true;
+  }}, 15000);
+  try {
+    await initial;
+    expect(chunks[0]).toEqual({revision: "22222222-2222-2222-2222-222222222222"});
+    /** Exact document timestamp proves fallback did not renew or rewrite the private signal. */
+    const before = await ref.get();
+    await Promise.race([fallback, new Promise<never>((_resolve, reject) => {
+      deadline = setTimeout(() => reject(new Error("Expired notification stayed healthy")), 12000);
+    })]);
+    expect(chunks.at(-1)).toEqual({revision: null});
+    expect((await ref.get()).updateTime!.isEqual(before.updateTime!)).toBe(true);
+  } finally {clearTimeout(deadline); controller.abort(); await stream;}
 });
