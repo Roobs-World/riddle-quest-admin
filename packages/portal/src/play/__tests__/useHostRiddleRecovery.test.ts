@@ -113,6 +113,19 @@ beforeEach(() => {
 });
 afterEach(() => {retire(); jest.useRealTimers();});
 
+it("starts no authority read while a retired game frame suspends recovery", async () => {
+  /** Any read here would be an unrequested authority request behind the recovery screen. */
+  const load = jest.fn<HostServices["loadRiddle"]>().mockResolvedValue(riddle);
+  /** Host whose bridge validation failed before the first recovery timer fired. */
+  const owner = setup(load, {recoverySuspended: true});
+  await jest.advanceTimersByTimeAsync(30_000);
+  window.dispatchEvent(new Event("online"));
+  document.dispatchEvent(new Event("visibilitychange"));
+  await jest.advanceTimersByTimeAsync(30_000);
+  expect(load).not.toHaveBeenCalled();
+  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
+});
+
 it("releases a hanging content wait and accepts only its recovery response", async () => {
   /** First request never settles before its delivery deadline. */
   const held = deferred<BridgeRiddle>();

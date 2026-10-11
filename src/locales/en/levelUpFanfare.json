@@ -5,10 +5,5 @@
     "LEVEL_PREFIX": "Level ",
     "TITLE": "Level Up!",
     "PROFILE_GUIDANCE": "Your new level and rank are waiting in Profile. Tap the profile icon after this celebration."
-  },
-  "RankUpFanfare": {
-    "CONTINUE_BUTTON": "Brilliant",
-    "SUBTITLE": "You reached a new rank.",
-    "TITLE": "New Rank!"
   }
 }

@@ -8,6 +8,7 @@ import {
   resolveJestConflictingSubscriptionSkus,
   resolveJestSignedPurchase,
   resolveJestSignedSubscriptions,
+  resolvePremiumCoinGrant,
   type VerifiedJestSubscription,
 } from "./jestProductCatalog";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
@@ -470,15 +471,10 @@ export const syncJestSubscriptions = onRequestWithSentry(
       const userRef = firestore.collection("users").doc(uid);
       /** Provides deletion ref behavior. */
       const deletionRef = getJestAccountDeletionRef(firestore, uid);
-      /** Updates s. */
-      const updates = {
-        hasActiveSubscription: activeSkus.length > 0,
-        jestSubscriptions: {
-          activeSkus,
-          verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        lastLogin: Date.now(),
-      };
+      /** Coins granted by this sync for an active Premium subscription. */
+      let premiumCoinsAwarded = 0;
+      /** Coin balance after this sync, when the user record is known. */
+      let newCoins = 0;
       await firestore.runTransaction(async (transaction) => {
         /** Provides [user snapshot, deletion snapshot] behavior. */
         const [userSnapshot, deletionSnapshot] = await Promise.all([
@@ -486,11 +482,30 @@ export const syncJestSubscriptions = onRequestWithSentry(
           transaction.get(deletionRef),
         ]);
         assertJestAccountActive(deletionSnapshot);
+        /** Existing or newly reserved user record. */
+        const user = userSnapshot.exists
+          ? userSnapshot.data()!
+          : createReservedJestUser(transaction, firestore, uid, playerId);
+        /** Server clock for this grant decision. */
+        const now = Date.now();
+        premiumCoinsAwarded = resolvePremiumCoinGrant(activeSkus.length > 0, user.premiumCoinsGrantedAt, now);
+        /** Current coin balance before any Premium grant. */
+        const currentCoins = typeof user.coins === "number" ? user.coins : 0;
+        newCoins = currentCoins + premiumCoinsAwarded;
+        /** Updates s. */
+        const updates = {
+          hasActiveSubscription: activeSkus.length > 0,
+          jestSubscriptions: {
+            activeSkus,
+            verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+          },
+          lastLogin: now,
+          ...(premiumCoinsAwarded > 0 ? {coins: newCoins, premiumCoinsGrantedAt: now} : {}),
+        };
         if (userSnapshot.exists) transaction.update(userRef, updates);
-        else
-          transaction.create(userRef, {...createReservedJestUser(transaction, firestore, uid, playerId), ...updates});
+        else transaction.create(userRef, {...user, ...updates});
       });
-      response.json({verified: true, activeSkus, blockedSkus});
+      response.json({verified: true, activeSkus, blockedSkus, premiumCoinsAwarded, newCoins});
     } catch (error) {
       if (respondToDeletedJestAccount(error, response)) return;
       captureException(error, {firebaseFunction: "syncJestSubscriptions"});

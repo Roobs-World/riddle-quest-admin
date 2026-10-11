@@ -204,8 +204,8 @@ describe("LocalSoloAuthority", () => {
       authority.setInput(["r", "o", "m", "e"], 3);
       /** Reward returned after the successful local Save. */
       const result = await authority.submitGuess();
-      // First perfect Classic/Daily wins grant 3/4 achievements, a level-up (50), and a Daily streak (20).
-      expect(result?.coinsEarned).toBe(expectedCoins + 75 + 50 + (mode === "daily" ? 45 : 0));
+      // First perfect Classic/Daily wins grant 3/4 achievements (10 each), a level-up (10), and a Daily streak (10).
+      expect(result?.coinsEarned).toBe(expectedCoins + 30 + 10 + (mode === "daily" ? 20 : 0));
       expect(authority.getSnapshot().save.progression.coins).toBe(300 + result!.coinsEarned);
       await expect(authority.submitGuess()).rejects.toBeDefined();
     });
@@ -225,11 +225,11 @@ describe("LocalSoloAuthority", () => {
     authority.setInput(["r", "o", "m", "e"], 3);
     /** Provides result behavior. */
     const result = await authority.submitGuess();
-    expect(result).toMatchObject({kind: "win", attempts: 1, coinsEarned: 150, xpEarned: 100});
+    expect(result).toMatchObject({kind: "win", attempts: 1, coinsEarned: 65, xpEarned: 100});
     /** Provides snapshot behavior. */
     const snapshot = authority.getSnapshot();
     expect(snapshot.save.activeGame).toBeNull();
-    expect(snapshot.save.progression).toMatchObject({coins: 450, xp: 100, level: 2, classicIndex: 1, totalWins: 1});
+    expect(snapshot.save.progression).toMatchObject({coins: 365, xp: 100, level: 2, classicIndex: 1, totalWins: 1});
     expect(snapshot.save.progression.unlockedAchievementIds).toEqual(
       expect.arrayContaining(["first_win", "perfect_guess", "classic_perfect"]),
     );
@@ -242,7 +242,7 @@ describe("LocalSoloAuthority", () => {
   it("evaluates coin achievements after base and level-up coins but before the achievement bonus", async () => {
     /** Loads ed. */
     const loaded = createEmptyYouTubeSave(content.contentVersion);
-    loaded.progression.coins = 930;
+    loaded.progression.coins = 970;
     loaded.progression.xp = 99;
     loaded.progression.level = 1;
     loaded.progression.unlockedAchievementIds = ["first_win", "perfect_guess", "classic_perfect"];
@@ -256,11 +256,11 @@ describe("LocalSoloAuthority", () => {
 
     expect(result).toMatchObject({
       kind: "win",
-      coinsEarned: 100,
+      coinsEarned: 45,
       newlyUnlockedAchievementIds: ["coin_hoarder"],
     });
     expect(authority.getSnapshot().save.progression).toMatchObject({
-      coins: 1_030,
+      coins: 1_015,
       xp: 199,
       level: 2,
     });

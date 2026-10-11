@@ -271,9 +271,7 @@ export function useGameMessageRouter({
                 newlyUnlockedAchievementIds: getStringArray(data.newlyUnlockedAchievementIds),
               },
             });
-            if (currentCompletion && reward && stateRef.current.profile) {
-              dispatch({type: "setNotice", notice: tr("GameMessages.COINS_EARNED") + reward});
-            }
+            // The victory result already presents the coin award; no extra notice is layered under it.
             if (completedOutcome?.kind === "loss") requestRiddle();
             return;
           }

@@ -1,4 +1,10 @@
-import {SOLO_COIN_COSTS, SOLO_WIN_COINS} from "@qwordly/core/game";
+import {
+  DAILY_STREAK_BONUS,
+  SOLO_BONUS_COINS,
+  SOLO_COIN_COSTS,
+  SOLO_WIN_COINS,
+  getDailyStreakBonusCoins,
+} from "@qwordly/core/game";
 
 /** Server game constants share the provider-independent solo economy with the client. */
 
@@ -23,36 +29,28 @@ export const MAX_ATTEMPTS_CHALLENGE = 5;
 export const COINS_REWARD_CLASSIC = SOLO_WIN_COINS.classic.easy;
 /** Coins earned for solving a Daily Challenge riddle. */
 export const COINS_REWARD_CHALLENGE = SOLO_WIN_COINS.challenge.easy;
-/** Number of consecutive daily wins required for each streak reward. */
-const STREAK_REWARD_INTERVAL_DAYS = 7;
 /** Daily streak bonus paid while a streak is active. */
-export const INITIAL_STREAK_REWARD_BONUS = 20;
+export const INITIAL_STREAK_REWARD_BONUS = DAILY_STREAK_BONUS.initial;
 /** Coin increase applied at each weekly daily-streak reward milestone. */
-export const STREAK_REWARD_BONUS_STEP = 20;
+export const STREAK_REWARD_BONUS_STEP = DAILY_STREAK_BONUS.weeklyStep;
 /** Maximum daily-streak reward bonus paid for a daily win. */
-export const MAX_STREAK_REWARD_BONUS = 300;
-/** Bonus coins awarded for the first active daily streak day. */
+export const MAX_STREAK_REWARD_BONUS = DAILY_STREAK_BONUS.max;
 /** Returns true when a daily streak has reached a weekly reward milestone. */
 export function isStreakRewardMilestone(streakValue: number): boolean {
   /** Normalizes d streak. */
   const normalizedStreak = Math.max(0, Math.floor(streakValue));
-  return normalizedStreak > 0 && normalizedStreak % STREAK_REWARD_INTERVAL_DAYS === 0;
+  return normalizedStreak > 0 && normalizedStreak % DAILY_STREAK_BONUS.intervalDays === 0;
 }
 /** Returns the daily-streak bonus for the active streak day. */
-export function getStreakRewardBonus(streakValue: number): number {
-  /** Normalizes d streak. */
-  const normalizedStreak = Math.max(0, Math.floor(streakValue));
-  if (normalizedStreak === 0) return 0;
-
-  /** Completes d milestones. */
-  const completedMilestones = Math.floor(normalizedStreak / STREAK_REWARD_INTERVAL_DAYS);
-  /** Provides bonus behavior. */
-  const bonus = INITIAL_STREAK_REWARD_BONUS + completedMilestones * STREAK_REWARD_BONUS_STEP;
-  return Math.min(bonus, MAX_STREAK_REWARD_BONUS);
-}
-/** Bonus coins awarded per level-up. */
-export const LEVEL_UP_COIN_BONUS = 50;
-/** Bonus coins awarded per newly unlocked achievement. */
+export const getStreakRewardBonus = getDailyStreakBonusCoins;
+/** Bonus coins awarded per level-up in solo play. */
+export const LEVEL_UP_COIN_BONUS = SOLO_BONUS_COINS.levelUp;
+/** Bonus coins awarded per newly unlocked solo (Classic/Daily) achievement. */
+export const SOLO_ACHIEVEMENT_COIN_REWARD = SOLO_BONUS_COINS.achievement;
+/**
+ * Bonus coins per newly unlocked race or purchase achievement. Kept separate from
+ * the solo rate because stored race settlements are validated against it.
+ */
 export const ACHIEVEMENT_UNLOCK_COIN_REWARD = 25;
 /** Base score for a Classic win. */
 export const BASE_SCORE_CLASSIC = 50;

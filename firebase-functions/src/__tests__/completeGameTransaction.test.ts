@@ -192,9 +192,9 @@ describe("atomic authoritative completion", () => {
     /** Provides first behavior. */
     /** First authoritative settlement including the difficulty reward. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
-    expect(first.rewardBreakdown).toMatchObject({baseWinCoins: expectedCoins, dailyStreakBonus: 20});
+    expect(first.rewardBreakdown).toMatchObject({baseWinCoins: expectedCoins, dailyStreakBonus: 10, levelUpBonus: 10});
     await expect(completeAuthoritativeGame(request, {uid: USER_ID})).resolves.toEqual(first);
-    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(300 + expectedCoins + 20 + 50);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(300 + expectedCoins + 10 + 10);
   });
 
   beforeEach(() => {
@@ -407,13 +407,39 @@ describe("atomic authoritative completion", () => {
     /** Completion receipt containing both milestone grants. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
     expect(first.newlyUnlockedAchievementIds).toEqual(["wins_10", "games_10"]);
-    expect(first.coinsEarned).toBe(75);
+    expect(first.coinsEarned).toBe(45);
     /** Fully committed player snapshot used to detect replay mutations. */
     const committed = structuredClone(mockDocuments.get(`users/${USER_ID}`));
-    expect(committed?.coins).toBe(375);
+    expect(committed?.coins).toBe(345);
     expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
     expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(committed);
     mockFindNewAchievements.mockImplementation(() => []);
+  });
+
+  it("keeps a bonus-heavy first Daily win close to an ordinary win and itemizes each bonus", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T12:00:00Z"));
+    mockFindNewAchievements.mockReturnValueOnce(
+      ["first_win", "daily_completed"].map((achievementId) => ({achievementId, unlockedAt: 1})),
+    );
+    mockFinalizeAuthoritativeSession.mockResolvedValue({
+      attempts: 3, lastGuess: "piano", answer: "piano", locale: "en",
+      completionKey: "challenge:2026-08-12", challengeDate: "2026-08-12", terminal: true, difficultyBand: "easy",
+    });
+    /** Canonical completion request whose receipt is replayed. */
+    const request = {riddleId: "daily-1", gameMode: "challenge" as const, sessionToken: TOKEN_A};
+    /** First authoritative settlement for the reported first-riddle case. */
+    const first = await completeAuthoritativeGame(request, {uid: USER_ID});
+    // Previously 75 + 20 + 50 + 2 * 25 = 195 coins against 25 for a plain Classic win.
+    expect(first).toMatchObject({
+      leveledUp: true,
+      newWinStreak: 1,
+      coinsEarned: 115,
+      rewardBreakdown: {
+        baseWinCoins: 75, dailyStreakBonus: 10, levelUpBonus: 10, achievementBonus: 20, totalAwarded: 115, newBalance: 415,
+      },
+    });
+    expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(415);
   });
 
   it("pays ordinary badges but not hint badges discovered during completion", async () => {
@@ -422,11 +448,11 @@ describe("atomic authoritative completion", () => {
     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
     /** First committed authority response whose grant behavior is compared with replay. */
     const first = await completeAuthoritativeGame(request, {uid: USER_ID});
-    expect(first.coinsEarned).toBe(50);
+    expect(first.coinsEarned).toBe(35);
     expect(first.newlyUnlockedAchievementIds).toEqual(["hint_user", "hints_10", "hints_25", "first_win"]);
-    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(350);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(335);
     expect(await completeAuthoritativeGame(request, {uid: USER_ID})).toEqual(first);
-    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(350);
+    expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(335);
   });
 
   it("adds the idempotent Facebook first-win referral to the returned authoritative balance", async () => {

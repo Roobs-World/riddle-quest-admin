@@ -72,6 +72,15 @@ export const DEFAULT_PRODUCT_PRICING: ProductPricing[] = [
   },
 ];
 
+/**
+ * Coins a Premium subscriber receives every 30 days: the Huge Pack, which is
+ * the coin pack priced closest to £10 / $9.99.
+ */
+export const PREMIUM_SUBSCRIPTION_MONTHLY_COINS = 3400;
+
+/** Minimum time between two Premium coin grants for the same player. */
+export const PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS = 30 * 24 * 60 * 60 * 1000;
+
 /** Provides clone product pricing catalog behavior. */
 export const cloneProductPricingCatalog = (products: ProductPricing[] = DEFAULT_PRODUCT_PRICING): ProductPricing[] => {
   return products.map((product) => ({

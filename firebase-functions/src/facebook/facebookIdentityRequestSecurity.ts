@@ -6,6 +6,12 @@ import {admin} from "../shared/firebaseAdmin";
 const RATE_LIMIT_COLLECTION = "facebookIdentityRateLimits";
 /** Defines the distributed rate-limit window. */
 const RATE_LIMIT_WINDOW_MS = 60_000;
+/**
+ * Every request from one source contends on one quota document, so a burst queues
+ * on its lock. The SDK default of five attempts surfaced as ABORTED errors under
+ * a 32-request burst; extra attempts keep the outcome an allow or deny.
+ */
+const RATE_LIMIT_TRANSACTION_ATTEMPTS = 12;
 /** Defines how long distributed rate-limit records are retained. */
 const RATE_LIMIT_RETENTION_MS = 24 * 60 * 60 * 1_000;
 /** Defines the maximum Firestore timestamp in milliseconds. */
@@ -158,7 +164,7 @@ export async function consumeFacebookRequestQuota(
       expiresAt: admin.firestore.Timestamp.fromMillis(resetAtMs + RATE_LIMIT_RETENTION_MS),
     });
     return true;
-  });
+  }, {maxAttempts: RATE_LIMIT_TRANSACTION_ATTEMPTS});
 }
 
 /** Returns a canonical HTTPS origin or rejects non-origin URL forms. */

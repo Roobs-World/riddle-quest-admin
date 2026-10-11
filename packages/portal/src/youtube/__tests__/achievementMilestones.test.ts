@@ -52,7 +52,7 @@ describe("solo milestone parity and durability", () => {
     await authority.start("classic");
     authority.setInput(["r", "o", "m", "e"], 3);
     await expect(authority.submitGuess()).resolves.toMatchObject({
-      kind: "win", newlyUnlockedAchievementIds: ["wins_10", "games_10"], coinsEarned: 125,
+      kind: "win", newlyUnlockedAchievementIds: ["wins_10", "games_10"], coinsEarned: 55,
     });
     /** Last committed save after the successful milestone completion. */
     const persisted = parseYouTubeSave(saveData.mock.calls.at(-1)![0], "test");
@@ -60,7 +60,7 @@ describe("solo milestone parity and durability", () => {
     if (persisted.kind !== "valid") throw new Error("milestone-save-invalid");
     /** Restored authority used to verify durable, nonduplicated unlocks. */
     const reloaded = await LocalSoloAuthority.restore(persisted.save, content, new YouTubeSaveGate({saveData}));
-    expect(reloaded.getSnapshot().save.progression.coins).toBe(425);
+    expect(reloaded.getSnapshot().save.progression.coins).toBe(355);
     expect(findNewYouTubeAchievements(reloaded.getSnapshot().save.progression, context)).toEqual([]);
   });
 });

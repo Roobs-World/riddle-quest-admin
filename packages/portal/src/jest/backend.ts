@@ -37,6 +37,10 @@ export interface JestBackendPort {
     activeSkus: string[];
     /** Stores blocked skus. */
     blockedSkus?: string[];
+    /** Premium coins granted by this sync, when a monthly grant was due. */
+    premiumCoinsAwarded?: number;
+    /** Coin balance after this sync. */
+    newCoins?: number;
   }>;
 }
 
@@ -255,6 +259,10 @@ export class JestBackendClient implements JestBackendPort {
       activeSkus: string[]; /** Stores blocked skus. */
       /** Stores blocked skus. */
       blockedSkus?: string[];
+      /** Premium coins granted by this sync, when a monthly grant was due. */
+      premiumCoinsAwarded?: number;
+      /** Coin balance after this sync. */
+      newCoins?: number;
     }>("syncJestSubscriptions", {subscriptionsSigned, playerId});
   }
 }

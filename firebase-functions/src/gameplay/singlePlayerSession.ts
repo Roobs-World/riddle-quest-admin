@@ -14,10 +14,10 @@ import type {z} from "zod";
 import type {Player, PlayerProgress} from "../validation/firestoreSchemas";
 import {admin} from "../shared/firebaseAdmin";
 import {
-  ACHIEVEMENT_UNLOCK_COIN_REWARD,
   CONTINUE_COST_COINS,
   HINT_COST_COINS,
   SKIP_COST_CLASSIC,
+  SOLO_ACHIEVEMENT_COIN_REWARD,
 } from "../shared/constants";
 import {findNewAchievements} from "./achievements";
 import {recordTerminalCompletionBinding, terminalCompletionBindingSettled} from "./singlePlayerCompletionBinding";
@@ -469,7 +469,7 @@ export async function purchaseAuthoritativeHint(
       {gameMode: request.gameMode, isCorrect: false, attempts: state.attempts, gameOver: false},
     );
     /** Provides achievement coins behavior. */
-    const achievementCoins = countCoinRewardAchievements(newAchievements.map((entry) => entry.achievementId)) * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+    const achievementCoins = countCoinRewardAchievements(newAchievements.map((entry) => entry.achievementId)) * SOLO_ACHIEVEMENT_COIN_REWARD;
     /** Provides new coins behavior. */
     const newCoins = coins - HINT_COST_COINS + achievementCoins;
     /** Provides result behavior. */

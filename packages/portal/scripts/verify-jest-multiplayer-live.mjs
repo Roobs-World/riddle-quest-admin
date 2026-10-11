@@ -116,10 +116,6 @@ const dismissRewardModals = async ({page, game}, evidenceFilename) => {
     await capture({page}, evidenceFilename);
   }
   for (let step = 0; step < 12 && await rewardModal.isVisible().catch(() => false); step += 1) {
-    const chest = rewardModal.getByRole("button", {name: /tap the chest/i});
-    if (await chest.isVisible().catch(() => false) && await chest.isEnabled().catch(() => false)) {
-      await chest.click();
-    }
     const advance = rewardModal.locator(".reward-continue");
     if (!await advance.isVisible().catch(() => false)) break;
     await advance.waitFor({state: "visible", timeout: 10_000});

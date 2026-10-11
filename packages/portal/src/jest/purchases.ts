@@ -152,6 +152,10 @@ export class JestPurchaseCoordinator {
       activeSku: string;
       /** Stores blocked skus. */
       blockedSkus: string[];
+      /** Premium coins granted when the subscription was verified. */
+      premiumCoinsAwarded: number;
+      /** Coin balance after verification, when the backend reported it. */
+      newCoins?: number;
     }>
   > {
     /** Starts ed. */
@@ -165,7 +169,15 @@ export class JestPurchaseCoordinator {
         /** Provides verified behavior. */
         const verified = await this.backend.syncSubscriptions(refreshed.value.subscriptionsSigned, playerId);
         return verified.activeSkus.includes(subscriptionSku)
-          ? {status: "success", value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []}}
+          ? {
+              status: "success",
+              value: {
+                activeSku: subscriptionSku,
+                blockedSkus: verified.blockedSkus ?? [],
+                premiumCoinsAwarded: verified.premiumCoinsAwarded ?? 0,
+                newCoins: verified.newCoins,
+              },
+            }
           : started;
       } catch (error) {
         captureBrowserException(error, {component: "jest_purchases", operation: "refresh_subscription"});
@@ -180,7 +192,12 @@ export class JestPurchaseCoordinator {
       }
       return {
         status: "success",
-        value: {activeSku: subscriptionSku, blockedSkus: verified.blockedSkus ?? []},
+        value: {
+          activeSku: subscriptionSku,
+          blockedSkus: verified.blockedSkus ?? [],
+          premiumCoinsAwarded: verified.premiumCoinsAwarded ?? 0,
+          newCoins: verified.newCoins,
+        },
       };
     } catch (error) {
       captureBrowserException(error, {component: "jest_purchases", operation: "subscribe"});

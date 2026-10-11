@@ -88,6 +88,27 @@
   place-items: center;
   overflow: hidden;
 }
+/* Chest reward fanfares scale to the viewport instead of scrolling. */
+.game-modal-backdrop:has(.modal-victory),
+.game-modal-backdrop:has(.modal-reward) {
+  place-items: center;
+  overflow: hidden;
+}
+.game-modal.modal-victory,
+.game-modal.modal-reward {
+  max-height: calc(100vh - 36px);
+  max-height: calc(100dvh - 36px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1.6dvh, 14px);
+  padding: clamp(12px, 3.2dvh, 28px) clamp(16px, 5vw, 28px);
+  overflow: hidden;
+}
+.game-modal.modal-victory > h2,
+.game-modal.modal-reward > h2 {
+  flex-shrink: 0;
+  font-size: clamp(20px, 4.4dvh, 28px);
+}
 .game-modal.modal-continue {
   --modal-border-width: 4px;
   width: min(460px, 100%);

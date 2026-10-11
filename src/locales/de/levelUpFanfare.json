@@ -5,10 +5,5 @@
     "LEVEL_PREFIX": "Ebene ",
     "TITLE": "Level aufsteigen!",
     "PROFILE_GUIDANCE": "Dein neues Level und dein Rang warten im Profil. Tippe nach dieser Feier auf das Profilsymbol."
-  },
-  "RankUpFanfare": {
-    "CONTINUE_BUTTON": "Weiter",
-    "SUBTITLE": "Du hast einen neuen Rang erreicht.",
-    "TITLE": "Neuer Rang!"
   }
 }

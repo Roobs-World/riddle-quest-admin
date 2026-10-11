@@ -5,7 +5,6 @@ import {
   createVictoryFanfareSteps,
   getActiveCoinAward,
   getActiveFanfareStep,
-  isCoinCollectionPending,
   isFanfareModal,
   type FanfareAwardState,
   type FanfareStep,
@@ -29,6 +28,12 @@ describe("fanfare sequence", () => {
     expect(
       createVictoryFanfareSteps({
         coinsEarned: 10,
+        newlyUnlockedAchievementIds: [],
+      }),
+    ).toEqual([{kind: "victory"}]);
+    expect(
+      createVictoryFanfareSteps({
+        coinsEarned: 10,
         newlyUnlockedAchievementIds: ["first_win"],
       }),
     ).toEqual([{kind: "victory"}, {kind: "achievement", achievementId: "first_win"}]);
@@ -39,15 +44,56 @@ describe("fanfare sequence", () => {
         newLevel: 2,
         newlyUnlockedAchievementIds: [],
       }),
-    ).toEqual([{kind: "victory"}, {kind: "level"}, {kind: "rank"}]);
+    ).toEqual([{kind: "victory"}, {kind: "level", achievementIds: []}]);
+  });
+
+  it("shows level-up only on an actual level-up", () => {
+    expect(
+      createVictoryFanfareSteps({
+        coinsEarned: 25,
+        leveledUp: false,
+        newLevel: 4,
+        newXp: 380,
+        newlyUnlockedAchievementIds: [],
+      }),
+    ).toEqual([{kind: "victory"}]);
+    expect(
+      createVictoryFanfareSteps({
+        coinsEarned: 25,
+        newLevel: 6,
+        newlyUnlockedAchievementIds: [],
+      }),
+    ).toEqual([{kind: "victory"}]);
+  });
+
+  it("limits a stage transition to the win result plus one celebration", () => {
+    /** Every follow-up candidate fires on the same completion. */
+    const crowdedReward = {
+      coinsEarned: 125,
+      leveledUp: true,
+      newLevel: 3,
+      newlyUnlockedAchievementIds: ["first_win", "perfect_guess", "classic_perfect"],
+    };
+    // Level-up takes the single slot and carries every unlock so none is silently dropped.
+    expect(createVictoryFanfareSteps(crowdedReward)).toEqual([
+      {kind: "victory"},
+      {kind: "level", achievementIds: ["first_win", "perfect_guess", "classic_perfect"]},
+    ]);
+    expect(createVictoryFanfareSteps({...crowdedReward, leveledUp: false})).toEqual([
+      {kind: "victory"},
+      {kind: "achievement", achievementId: "first_win"},
+    ]);
+  });
+
+  it("surfaces First Win inside the level-up the server reports for a first win", () => {
     expect(
       createVictoryFanfareSteps({
         coinsEarned: 10,
         leveledUp: true,
-        newLevel: 3,
-        newlyUnlockedAchievementIds: [],
+        newLevel: 2,
+        newlyUnlockedAchievementIds: ["first_win"],
       }),
-    ).toEqual([{kind: "victory"}, {kind: "level"}, {kind: "rank"}]);
+    ).toEqual([{kind: "victory"}, {kind: "level", achievementIds: ["first_win"]}]);
   });
 
   it("builds purchase and achievement reward steps", () => {
@@ -83,10 +129,10 @@ describe("fanfare sequence", () => {
 
   it("clamps active sequence indices", () => {
     /** Provides steps behavior. */
-    const steps: FanfareStep[] = [{kind: "victory"}, {kind: "level"}];
+    const steps: FanfareStep[] = [{kind: "victory"}, {kind: "level", achievementIds: []}];
     expect(getActiveFanfareStep([], 0)).toBeUndefined();
     expect(getActiveFanfareStep(steps, -4)).toEqual({kind: "victory"});
-    expect(getActiveFanfareStep(steps, 9)).toEqual({kind: "level"});
+    expect(getActiveFanfareStep(steps, 9)).toEqual({kind: "level", achievementIds: []});
   });
 
   it("resolves victory and auxiliary coin awards", () => {
@@ -174,13 +220,7 @@ describe("fanfare sequence", () => {
     expect(getActiveCoinAward(createAwardState({modal: "shop"}), {kind: "victory"}, {kind: "coins"})).toBeNull();
   });
 
-  it("tracks pending collections and fanfare modal kinds", () => {
-    /** Provides award behavior. */
-    const award = {id: "award-1", amount: 10, total: 20};
-    expect(isCoinCollectionPending(award, null)).toBe(true);
-    expect(isCoinCollectionPending(award, "award-1")).toBe(false);
-    expect(isCoinCollectionPending({...award, amount: 0}, null)).toBe(false);
-    expect(isCoinCollectionPending(null, null)).toBe(false);
+  it("identifies fanfare modal kinds", () => {
     expect(isFanfareModal("victory")).toBe(true);
     expect(isFanfareModal("reward")).toBe(true);
     expect(isFanfareModal("profile")).toBe(false);

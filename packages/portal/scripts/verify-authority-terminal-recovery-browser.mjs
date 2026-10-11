@@ -147,8 +147,7 @@ window.profile=()=>source.loadProfile(uid);window.probe.ready=true;
    /* Held completions are re-sent on the 1 s/2 s retry schedule, so only distinct rounds matter here; the authority-once check covers idempotency. */metric('completion uses the original issued round',await page.evaluate(()=>[...new Map(window.probe.completions.map(x=>[x.riddleId+'\u0000'+x.sessionToken,{riddleId:x.riddleId,sessionToken:x.sessionToken}])).values()]),[await page.evaluate(()=>{const r=window.probe.inbound.find(x=>x.type==='host:riddleLoaded').payload.riddle;return{riddleId:r.riddleId,sessionToken:r.sessionToken};})]);
    metric('completion advances the authority once',await page.evaluate(async()=>{const p=await window.profile(),b=window.probe.before;return[p.gamesPlayed-b.gamesPlayed,p.wins-b.wins];}),[1,1]);
    for(let step=0;step<10&&await page.locator('.modal-victory').count();step++){
-    const chest=page.locator('.coin-award[data-coin-collection="pending"] .reward-chest');
-    if(await chest.count()){await chest.click();await page.locator('.coin-award[data-coin-collection="complete"]').waitFor();}
+    if(await page.locator('.coin-award[data-coin-collection="pending"]').count())await page.locator('.coin-award[data-coin-collection="complete"]').waitFor();
     await page.locator('.modal-victory button').filter({hasText:/Next/i}).last().click();await page.waitForTimeout(100);
    }
    await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:riddleLoaded'&&x.payload.riddle.index===2));

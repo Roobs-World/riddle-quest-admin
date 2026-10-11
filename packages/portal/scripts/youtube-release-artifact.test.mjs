@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {access, appendFile, mkdir, mkdtemp, readFile, rm, truncate, utimes, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
+import {randomBytes} from "node:crypto";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import test from "node:test";
@@ -188,6 +189,15 @@ test("source identity fingerprints tracked and untracked dirty content", async (
   await writeFile(path.join(fixture.repositoryDirectory, "untracked-source.js"), "export {};\n");
   const untrackedDirty = await captureSourceIdentity(fixture.repositoryDirectory);
   assert.notEqual(untrackedDirty.snapshotSha256, trackedDirty.snapshotSha256);
+});
+
+test("source identity fingerprints a tracked diff larger than any output buffer", async (context) => {
+  const fixture = await createReleaseFixture(context);
+  const clean = await captureSourceIdentity(fixture.repositoryDirectory);
+  await writeFile(path.join(fixture.repositoryDirectory, "source.txt"), randomBytes(160 * 1024 * 1024));
+  const dirty = await captureSourceIdentity(fixture.repositoryDirectory);
+  assert.equal(dirty.state, "dirty");
+  assert.notEqual(dirty.snapshotSha256, clean.snapshotSha256);
 });
 
 test("packaging rejects reports stale for source, artifact, or content audit mutations", async (context) => {

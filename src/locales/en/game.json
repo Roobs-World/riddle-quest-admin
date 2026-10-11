@@ -1,6 +1,5 @@
 {
   "GameMessages": {
-    "COINS_EARNED": "Coins Earned: ",
     "FALLBACK_CLUE_SINGLE": "Solve this word.",
     "FALLBACK_CLUE_TEMPLATE": "Solve this {length}-letter word.",
     "GAME_LOST": "Game Lost: Correct Answer - ",

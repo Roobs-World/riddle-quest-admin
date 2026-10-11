@@ -360,3 +360,46 @@ it("accepts the sixth authoritative attempt after a granted Continue", async () 
   expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "guessResolved", attempts: 6}));
   expect(requestRiddle).not.toHaveBeenCalled();
 });
+
+it("records a win reward without layering a coin notice onto the victory result", async () => {
+  /** Provides dispatch behavior. */
+  const dispatch = jest.fn();
+  /** Provides request riddle behavior. */
+  const requestRiddle = jest.fn();
+  /** Provides router behavior. */
+  const router = useGameMessageRouter({
+    dispatch,
+    stateRef: {current: {profile: {coins: 100}, lastOutcome: {kind: "win"}} as unknown as GameSessionState},
+    postToHost: jest.fn(),
+    requestRiddle,
+    onCompletionResult: () => true,
+  });
+
+  await router({
+    type: "host:operationResult",
+    requestId: "complete-1",
+    payload: {
+      operation: "completeGame",
+      ok: true,
+      data: {
+        attempts: 2,
+        isCorrect: true,
+        coinsEarned: 25,
+        newlyUnlockedAchievementIds: [],
+        newXp: 140,
+        newLevel: 2,
+        leveledUp: false,
+        rewardBreakdown: {newBalance: 125},
+      },
+    },
+  });
+
+  expect(dispatch).toHaveBeenCalledWith(
+    expect.objectContaining({
+      type: "completionReward",
+      reward: expect.objectContaining({coinsEarned: 25, totalCoins: 125, leveledUp: false}),
+    }),
+  );
+  expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({type: "setNotice"}));
+  expect(requestRiddle).not.toHaveBeenCalled();
+});

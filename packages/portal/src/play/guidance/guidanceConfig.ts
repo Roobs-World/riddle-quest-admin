@@ -21,8 +21,12 @@ export type TooltipId =
   | "profileLeaderboard"
   | "profileTreasure";
 
-/** Ordered tooltips shown during the main game tour. */
-export const GAME_TOUR: readonly TooltipId[] = ["gameCoins", "gameHint", "submitAnswer", "gameSkip"];
+/**
+ * Ordered tooltips shown on a new player's first riddle.
+ * @remarks The coin shop is deliberately absent so new players go straight into
+ * play; it is introduced contextually at the start of a riddle after their first win.
+ */
+export const GAME_TOUR: readonly TooltipId[] = ["gameHint", "submitAnswer", "gameSkip"];
 
 /** Profile steps whose card must never overlap the control it explains. */
 const SEPARATED_PROFILE_TOOLTIPS = new Set<TooltipId>([
@@ -53,6 +57,12 @@ export const TOOLTIP_TOUR_VERSION = "v2";
 
 /** Profile-specific version so a new profile step does not replay the game tour. */
 export const PROFILE_TOOLTIP_TOUR_VERSION = "v3";
+
+/** Game-tour version without the coin shop step. */
+export const GAME_TOOLTIP_TOUR_VERSION = "v3";
+
+/** Superseded game tour version that still counts as seen and already showed the coin shop step. */
+const LEGACY_GAME_TOOLTIP_TOUR_VERSION = "v2";
 
 /** Translation keys for every tooltip title and body. */
 export const TOOLTIP_KEYS: Record<TooltipId, readonly [title: string, body: string]> = {
@@ -102,10 +112,34 @@ export function createGuidanceStorageKey(kind: string, userId?: string): string 
 }
 
 /** Builds the versioned persistence key for a completed tooltip tour. */
-export function createTooltipTourStorageKey(tourName: string, userId?: string): string {
-  /** Provides version behavior. */
-  const version = tourName === "profileTour" ? PROFILE_TOOLTIP_TOUR_VERSION : TOOLTIP_TOUR_VERSION;
-  return createGuidanceStorageKey(`tooltipSequenceSeen:${tourName}:${version}`, userId);
+export function createTooltipTourStorageKey(tourName: string, userId?: string, version?: string): string {
+  /** Provides resolved version behavior. */
+  const resolvedVersion = version ?? (tourName === "profileTour" ? PROFILE_TOOLTIP_TOUR_VERSION
+    : tourName === "gameTour" ? GAME_TOOLTIP_TOUR_VERSION : TOOLTIP_TOUR_VERSION);
+  return createGuidanceStorageKey(`tooltipSequenceSeen:${tourName}:${resolvedVersion}`, userId);
+}
+
+/** Checks persisted guidance markers in local storage. */
+export type GuidanceSeenReader = {
+  /** Returns whether a marker was completed. */
+  hasSeen(area: "local", key: string): boolean;
+};
+
+/** Returns whether the player completed the legacy game tour that opened with the coin shop step. */
+function hasSeenLegacyGameTour(markers: GuidanceSeenReader, userId?: string): boolean {
+  return markers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId, LEGACY_GAME_TOOLTIP_TOUR_VERSION));
+}
+
+/** Returns whether a tour was completed, accepting the legacy game tour for returning players. */
+export function hasSeenTooltipTour(markers: GuidanceSeenReader, tourName: string, userId?: string): boolean {
+  return markers.hasSeen("local", createTooltipTourStorageKey(tourName, userId)) ||
+    (tourName === "gameTour" && hasSeenLegacyGameTour(markers, userId));
+}
+
+/** Returns whether a contextual tooltip was dismissed or was already presented by the legacy game tour. */
+export function hasSeenContextualTooltip(markers: GuidanceSeenReader, id: TooltipId, userId?: string): boolean {
+  return markers.hasSeen("local", createGuidanceStorageKey(`tooltipSeen:${id}`, userId)) ||
+    (id === "gameCoins" && hasSeenLegacyGameTour(markers, userId));
 }
 
 /** Returns the onboarding step count for registered and guest players. */
@@ -127,7 +161,7 @@ export function getProfileTour(commerceAvailable = true): TooltipId[] {
 
 /** Returns contextual tooltip candidates in their display priority order. */
 export function getContextualTooltipCandidates(
-  state: Pick<GameSessionState, "gameMode" | "guesses" | "lastOutcome" | "lastRewards" | "profile">,
+  state: Pick<GameSessionState, "gameMode" | "guesses" | "lastOutcome" | "lastRewards" | "products" | "profile" | "riddle">,
   modal: GameModal,
   economyAvailable = true,
 ): Array<{
@@ -151,6 +185,14 @@ export function getContextualTooltipCandidates(
     {
       id: "classicFromDaily",
       when: modal === null && state.lastOutcome?.kind === "win" && state.gameMode === "challenge",
+    },
+    {
+      // The coin shop is introduced only after the player has won a level and earned coins, and never at
+      // the stage transition: it waits until a later riddle has loaded and before its first guess.
+      id: "gameCoins",
+      when: economyAvailable && modal === null && state.products.length > 0 && state.riddle !== null &&
+        !state.lastOutcome && state.guesses.length === 0 &&
+        (state.profile?.totalWins ?? state.profile?.wins ?? 0) > 0,
     },
     {
       id: "hintAfterWrongGuess",

@@ -26,8 +26,7 @@
   margin: 0;
 }
 
-.game-modal.jest-registration-dialog .play-primary,
-.game-modal.jest-registration-dialog .play-secondary {
+.game-modal.jest-registration-dialog .play-primary {
   min-height: 48px;
 }
 

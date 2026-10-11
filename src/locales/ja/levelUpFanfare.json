@@ -5,10 +5,5 @@
     "LEVEL_PREFIX": "レベル ",
     "TITLE": "レベルアップ!",
     "PROFILE_GUIDANCE": "新しいレベルとランクはプロフィールで確認できます。この演出の後、プロフィールアイコンをタップしてください。"
-  },
-  "RankUpFanfare": {
-    "CONTINUE_BUTTON": "続ける",
-    "SUBTITLE": "新しいランクに到達しました。",
-    "TITLE": "新ランク達成！"
   }
 }

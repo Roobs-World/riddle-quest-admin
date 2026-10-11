@@ -1,4 +1,4 @@
-import {SOLO_COIN_COSTS, SOLO_WIN_COINS} from "@qwordly/core/game";
+import {SOLO_BONUS_COINS, SOLO_COIN_COSTS, SOLO_WIN_COINS, getDailyStreakBonusCoins} from "@qwordly/core/game";
 import type {YouTubeGameMode} from "./types";
 /** Defines the youtube starting coins value. */
 export const YOUTUBE_STARTING_COINS = 300;
@@ -13,9 +13,9 @@ export const YOUTUBE_CLASSIC_WIN_COINS = SOLO_WIN_COINS.classic.easy;
 /** Defines the youtube daily win coins value. */
 export const YOUTUBE_DAILY_WIN_COINS = SOLO_WIN_COINS.challenge.easy;
 /** Defines the youtube level up coins value. */
-export const YOUTUBE_LEVEL_UP_COINS = 50;
+export const YOUTUBE_LEVEL_UP_COINS = SOLO_BONUS_COINS.levelUp;
 /** Defines the youtube achievement coins value. */
-export const YOUTUBE_ACHIEVEMENT_COINS = 25;
+export const YOUTUBE_ACHIEVEMENT_COINS = SOLO_BONUS_COINS.achievement;
 /** Defines the youtube base attempts value. */
 export const YOUTUBE_BASE_ATTEMPTS = 5;
 /** Defines the youtube continue attempts value. */
@@ -40,10 +40,7 @@ export function getYouTubeWinXp(mode: YouTubeGameMode, attempts: number): number
 }
 /** Gets you tube daily streak bonus. */
 export function getYouTubeDailyStreakBonus(streak: number): number {
-  /** Normalizes d. */
-  const normalized = Math.max(0, Math.floor(streak));
-  if (normalized === 0) return 0;
-  return Math.min(20 + Math.floor(normalized / 7) * 20, 300);
+  return getDailyStreakBonusCoins(streak);
 }
 /** Provides utc day behavior. */
 export function utcDay(date: Date): string {

@@ -1,4 +1,4 @@
-import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
+import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
 import {raceOperationAtMs, toRaceRunView, type RaceRunRecord} from "./raceEngine";
 import {liveFinishMs} from "./raceLiveScoring";
 import type {FacebookLiveContextBinding} from "./facebookLiveContextBinding";
@@ -118,7 +118,7 @@ export function liveView(ticketId: string, ticket: LiveTicket, match: LiveMatch 
   }
   return LiveRaceViewSchema.parse({ticketId, phase: ticket.cancelled ? "cancelled" : !match ? "searching" :
     terminal ? "result" : observedAtMs < match.startsAtMs ? "countdown" : "racing",
-    serverNowMs: observedAtMs, searchEndsAtMs: ticket.createdAtMs + (ticket.privateChallenge ? LIVE_RACE_INVITE_MS : 60_000), startsAtMs: match?.startsAtMs ?? null,
+    serverNowMs: observedAtMs, searchEndsAtMs: ticket.createdAtMs + (ticket.privateChallenge ? LIVE_RACE_INVITE_MS : LIVE_RACE_WAIT_MS), startsAtMs: match?.startsAtMs ?? null,
     player: {...ticket.player, correctCount: own?.correctCount ?? 0},
     opponent: match ? {...match.players[1 - seat], correctCount: rival?.correctCount ?? 0} : null,
     ...(own ? {actionAvailableAtMs: own.startedAtMs} : {}),

@@ -1,4 +1,4 @@
-import {execFile} from "node:child_process";
+import {execFile, spawn} from "node:child_process";
 import {createHash} from "node:crypto";
 import {lstat, mkdir, readFile, readlink, rename, unlink, writeFile} from "node:fs/promises";
 import {promisify} from "node:util";
@@ -240,6 +240,24 @@ async function runGit(repositoryDirectory, args) {
   }
 }
 
+/** Streams a Git command's output into SHA-256 so diffs of any size can be fingerprinted. */
+async function hashGitOutput(repositoryDirectory, args) {
+  try {
+    return await new Promise((resolve, reject) => {
+      const child = spawn("git", ["-C", repositoryDirectory, ...args], {stdio: ["ignore", "pipe", "ignore"]});
+      const hash = createHash("sha256");
+      child.stdout.on("data", (chunk) => hash.update(chunk));
+      child.once("error", reject);
+      child.once("close", (code, signal) => {
+        if (code === 0 && signal === null) resolve(hash.digest("hex"));
+        else reject(new Error(`git ${args[0]} failed (exit ${code ?? "none"}, signal ${signal ?? "none"})`));
+      });
+    });
+  } catch (error) {
+    throw new Error("YouTube release evidence requires a readable Git worktree", {cause: error});
+  }
+}
+
 export async function captureSourceIdentity(repositoryDirectory = defaultRepositoryDirectory) {
   const repository = path.resolve(repositoryDirectory);
   const topLevel = (await runGit(repository, ["rev-parse", "--show-toplevel"])).toString("utf8").trim();
@@ -248,9 +266,9 @@ export async function captureSourceIdentity(repositoryDirectory = defaultReposit
   }
   const gitCommit = (await runGit(repository, ["rev-parse", "HEAD"])).toString("utf8").trim();
   if (!gitCommitPattern.test(gitCommit)) throw new Error("YouTube release source commit is malformed");
-  const [status, trackedDiff, untrackedRaw] = await Promise.all([
+  const [status, trackedDiffSha256, untrackedRaw] = await Promise.all([
     runGit(repository, ["status", "--porcelain=v1", "-z", "--untracked-files=all"]),
-    runGit(repository, ["diff", "--binary", "--no-ext-diff", "HEAD", "--", "."]),
+    hashGitOutput(repository, ["diff", "--binary", "--no-ext-diff", "HEAD", "--", "."]),
     runGit(repository, ["ls-files", "--others", "--exclude-standard", "-z"]),
   ]);
   const untrackedPaths = untrackedRaw.toString("utf8").split("\0").filter(Boolean).sort((left, right) =>
@@ -278,7 +296,7 @@ export async function captureSourceIdentity(repositoryDirectory = defaultReposit
   }
   const dirtyPayload = {
     statusSha256: sha256(status),
-    trackedDiffSha256: sha256(trackedDiff),
+    trackedDiffSha256,
     untrackedFilesSha256: sha256(stableJson(untracked)),
     untrackedFileCount: untracked.length,
   };
