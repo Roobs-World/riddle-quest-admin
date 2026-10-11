@@ -123,13 +123,13 @@ describe("Yahoo OAuth ID token verification", () => {
     ["expiration", {exp: 1}, "ERR_JWT_EXPIRED"],
     ["nonce", {nonce: "different-nonce"}, undefined],
     ["subject", {sub: undefined}, undefined],
-  ])("rejects an invalid %s without issuing credentials", async (_name, override, code) => {
+  ])("rejects an invalid %s without issuing credentials", async (_name, override) => {
     /** Starts with otherwise valid claims. */
     const {request, claims} = await startFlow();
     /** Exercises real JOSE validation and the callback's nonce/subject checks. */
-    const result = callback(request, await sign({...claims, ...override}));
-    if (code) await expect(result).rejects.toMatchObject({code});
-    else await expect(result).rejects.toThrow("invalid-yahoo-id-token");
+    const response = await callback(request, await sign({...claims, ...override}));
+    expect(response.status).toHaveBeenCalledWith(502);
+    expect(response.send).toHaveBeenCalledWith(expect.stringContaining("Try Yahoo sign-in again"));
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
   });
 
@@ -138,8 +138,8 @@ describe("Yahoo OAuth ID token verification", () => {
     const attacker = await jose.generateKeyPair("ES256");
     /** Creates an otherwise valid authorization response. */
     const {request, claims} = await startFlow();
-    await expect(callback(request, await sign(claims, "ES256", attacker.privateKey)))
-      .rejects.toMatchObject({code: "ERR_JWS_SIGNATURE_VERIFICATION_FAILED"});
+    const response = await callback(request, await sign(claims, "ES256", attacker.privateKey));
+    expect(response.status).toHaveBeenCalledWith(502);
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
   });
 
@@ -150,7 +150,8 @@ describe("Yahoo OAuth ID token verification", () => {
     const token = algorithm === "none" ? new jose.UnsecuredJWT(claims).encode() :
       algorithm === "HS256" ? await new jose.SignJWT(claims).setProtectedHeader({alg: algorithm})
         .sign(new TextEncoder().encode("test-only-symmetric-signing-secret")) : await sign(claims, algorithm);
-    await expect(callback(request, token)).rejects.toMatchObject({code: "ERR_JOSE_ALG_NOT_ALLOWED"});
+    const response = await callback(request, token);
+    expect(response.status).toHaveBeenCalledWith(502);
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
   });
 
@@ -163,5 +164,59 @@ describe("Yahoo OAuth ID token verification", () => {
     expect(response.status).toHaveBeenCalledWith(400);
     expect(fetchMock).not.toHaveBeenCalled();
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
+  });
+});
+
+
+describe("Yahoo OAuth failure recovery", () => {
+  it("aborts a stalled exchange using an eight-second deadline and offers a fresh flow", async () => {
+    const {request} = await startFlow();
+    const controller = new AbortController();
+    const timeout = jest.spyOn(AbortSignal, "timeout").mockReturnValue(controller.signal);
+    fetchMock.mockImplementationOnce(async (_url, init) => new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(new Error("test-only-private-error")), {once: true});
+    }));
+    const response = makeResponse();
+    try {
+      const pending = yahooOAuthCallback(request as never, response as never);
+      expect(timeout).toHaveBeenCalledWith(8_000);
+      controller.abort();
+      await pending;
+      expect(response.status).toHaveBeenCalledWith(502);
+      expect(response.send).toHaveBeenCalledWith(expect.stringContaining("Try Yahoo sign-in again"));
+      expect(response.send.mock.calls[0][0]).not.toContain("test-only-private-error");
+      expect(mockCreateCustomToken).not.toHaveBeenCalled();
+    } finally {
+      timeout.mockRestore();
+    }
+  });
+
+  it.each(["network", "non-json", "missing-token", "body-failure"])("recovers from %s without exposing provider data", async (failure) => {
+    const {request} = await startFlow();
+    if (failure === "network") fetchMock.mockRejectedValueOnce(new Error("private-provider-details"));
+    else if (failure === "non-json") fetchMock.mockResolvedValueOnce(new Response("private-provider-details", {status: 503}));
+    else if (failure === "body-failure") fetchMock.mockResolvedValueOnce({ok: true, json: async () => {throw new Error("private-provider-details");}} as unknown as Response);
+    else fetchMock.mockResolvedValueOnce(new Response("{}"));
+    const response = makeResponse();
+    await yahooOAuthCallback(request as never, response as never);
+    expect(response.status).toHaveBeenCalledWith(502);
+    expect(response.send.mock.calls[0][0]).toContain("Try Yahoo sign-in again");
+    expect(response.send.mock.calls[0][0]).not.toContain("private-provider-details");
+    expect(mockCreateCustomToken).not.toHaveBeenCalled();
+  });
+
+  it("recovers from expired signed state before contacting Yahoo", async () => {
+    const {request} = await startFlow();
+    const now = jest.spyOn(Date, "now").mockReturnValue(Date.now() + 11 * 60_000);
+    const response = makeResponse();
+    try {
+      await yahooOAuthCallback(request as never, response as never);
+      expect(response.status).toHaveBeenCalledWith(502);
+      expect(response.send).toHaveBeenCalledWith(expect.stringContaining("Try Yahoo sign-in again"));
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(mockCreateCustomToken).not.toHaveBeenCalled();
+    } finally {
+      now.mockRestore();
+    }
   });
 });

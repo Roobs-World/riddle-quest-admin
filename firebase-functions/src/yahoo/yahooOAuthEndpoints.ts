@@ -125,42 +125,50 @@ export const yahooOAuthCallback = onRequestWithSentry("yahooOAuthCallback", opti
       !stateMatchesCookie(signedState, cookieState)) {
     response.status(400).send("Invalid Yahoo authorization response"); return;
   }
-  /** Provides state behavior. */
-  const state = verifyState(signedState, yahooSecret.value());
-  /** Provides body behavior. */
-  const body = new URLSearchParams({grant_type: "authorization_code", redirect_uri: callbackUrl, code});
-  /** Provides token response behavior. */
-  const tokenResponse = await fetch(tokenUrl, {
-    method: "POST",
-    headers: {
-      authorization: `Basic ${Buffer.from(`${clientId}:${yahooSecret.value()}`).toString("base64")}`,
-      "content-type": "application/x-www-form-urlencoded",
-    },
-    body,
-  });
-  /** Provides tokens behavior. */
-  const tokens: unknown = await tokenResponse.json();
-  /** Provides id token behavior. */
-  const idToken = tokens && typeof tokens === "object" && typeof (tokens as {/** Stores id token. */
-  /** Stores id token. */
-  id_token?: unknown}).id_token === "string"
-    ? (tokens as {/** Stores id token. */
+  try {
+    /** Provides state behavior. */
+    const state = verifyState(signedState, yahooSecret.value());
+    /** Provides body behavior. */
+    const body = new URLSearchParams({grant_type: "authorization_code", redirect_uri: callbackUrl, code});
+    /** Provides token response behavior. */
+    const tokenResponse = await fetch(tokenUrl, {
+      method: "POST",
+      headers: {
+        authorization: `Basic ${Buffer.from(`${clientId}:${yahooSecret.value()}`).toString("base64")}`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body,
+      signal: AbortSignal.timeout(8_000),
+    });
+    /** Provides tokens behavior. */
+    if (!tokenResponse.ok) throw new Error("yahoo-token-exchange-failed");
+    const tokens: unknown = await tokenResponse.json();
+    /** Provides id token behavior. */
+    const idToken = tokens && typeof tokens === "object" && typeof (tokens as {/** Stores id token. */
     /** Stores id token. */
-    id_token: string}).id_token : "";
-  if (!tokenResponse.ok || !idToken) throw new Error("yahoo-token-exchange-failed");
-  /** Provides verified behavior. */
-  const verified = await jwtVerify(idToken, yahooKeys, {
-    issuer: "https://api.login.yahoo.com",
-    audience: clientId,
-    // https://api.login.yahoo.com/.well-known/openid-configuration advertises both.
-    algorithms: ["ES256", "RS256"],
-  });
-  if (verified.payload.nonce !== state.nonce || typeof verified.payload.sub !== "string") {
-    throw new Error("invalid-yahoo-id-token");
+    id_token?: unknown}).id_token === "string"
+      ? (tokens as {/** Stores id token. */
+      /** Stores id token. */
+      id_token: string}).id_token : "";
+    if (!tokenResponse.ok || !idToken) throw new Error("yahoo-token-exchange-failed");
+    /** Provides verified behavior. */
+    const verified = await jwtVerify(idToken, yahooKeys, {
+      issuer: "https://api.login.yahoo.com",
+      audience: clientId,
+      // https://api.login.yahoo.com/.well-known/openid-configuration advertises both.
+      algorithms: ["ES256", "RS256"],
+    });
+    if (verified.payload.nonce !== state.nonce || typeof verified.payload.sub !== "string") {
+      throw new Error("invalid-yahoo-id-token");
+    }
+    /** Provides uid behavior. */
+    const uid = `yahoo:${verified.payload.sub}`;
+    /** Provides custom token behavior. */
+    const customToken = await getAuth().createCustomToken(uid, {provider: "yahoo"});
+    response.redirect(302, `${gameUrl}#yahoo_token=${encodeURIComponent(customToken)}`);
+  } catch {
+    response.status(502).send(
+      '<!doctype html><html lang="en"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Yahoo sign-in unavailable</title><h1>Yahoo sign-in could not be completed</h1><p>Your sign-in may have expired or Yahoo may be unavailable. Please start again.</p><a href="https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/yahooOAuthStart">Try Yahoo sign-in again</a></html>',
+    );
   }
-  /** Provides uid behavior. */
-  const uid = `yahoo:${verified.payload.sub}`;
-  /** Provides custom token behavior. */
-  const customToken = await getAuth().createCustomToken(uid, {provider: "yahoo"});
-  response.redirect(302, `${gameUrl}#yahoo_token=${encodeURIComponent(customToken)}`);
 });
