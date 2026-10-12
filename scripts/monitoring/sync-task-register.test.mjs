@@ -1,0 +1,73 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp, mkdir, writeFile, readFile, rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {developmentSourceDigest} from '../release/development-source-digest.mjs';
+
+test('sync includes declared Hive tasks, preserves stale-evidence checks and writes data inside authored content', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'task-register-sync-'));
+  const riddle = path.join(root, 'riddle'), hive = path.join(root, 'hive'), output = path.join(root, 'dashboard');
+  try {
+    for (const directory of [path.join(riddle, 'docs/development-tasks'), path.join(riddle, 'artifacts/development-progress'), path.join(hive, 'docs/development-tasks'), path.join(output, 'src')]) await mkdir(directory, {recursive: true});
+    for (const repository of [riddle, hive]) {
+      execFileSync('git', ['init', '--quiet', repository]);
+      execFileSync('git', ['-C', repository, '-c', 'user.name=Test', '-c', 'user.email=test@example.com', 'commit', '--quiet', '--allow-empty', '-m', 'Fixture']);
+    }
+    const json = (file, value) => writeFile(file, JSON.stringify(value));
+    await json(path.join(output, 'src/data.json'), {id: '7677b77a-0b56-4194-a2e7-937aff8f27f7', queries: {development_progress: {rows: [{taskId: 'test-history', work: 'Verify current source', target: 'jest', completedAt: '2026-10-10T00:00:00Z', checks: 'check: prior passing evidence', revision: 'old', sourceDigest: 'old'}]}}});
+    await json(path.join(riddle, 'docs/development-tasks/test-history.json'), {taskId: 'test-history', work: 'Verify current source', targets: ['jest'], checks: [{id: 'check', executable: 'node', args: ['test.mjs']}], remainingGates: [], nextAction: 'Verify source'});
+    await json(path.join(output, 'src/task-register.json'), {obsolete: true});
+    await writeFile(path.join(hive, 'docs/CONTENT-QA.md'), '');
+    await writeFile(path.join(hive, 'source.js'), 'verified');
+    await json(path.join(hive, 'docs/development-tasks/creative-hive-areas.json'), {id: 'beehive:creative-hive-areas', project: 'beehive', title: 'Creative Hive areas', description: 'Group bees by creative area', status: 'Verification pending', nextAction: 'Verify source'});
+    await json(path.join(hive, 'docs/task-resolutions.json'), {schemaVersion: 1, resolutions: [{taskId: 'beehive:creative-hive-areas', status: 'Complete', description: 'Grouping verified', nextAction: 'Monitor', verifiedAt: '2026-10-10T00:00:00Z', evidence: {checks: ['Grouping passed'], files: [{file: 'source.js', sha256: createHash('sha256').update('verified').digest('hex')}]}}]});
+    await json(path.join(root, 'issues.json'), []);
+    await json(path.join(root, 'health.json'), {ok: true, storage: 'supabase', ai: false});
+    const script = fileURLToPath(new URL('./sync-task-register.mjs', import.meta.url));
+    const args = [script, '--riddle-root', riddle, '--hive-root', hive, '--output', output, '--riddle-issues', path.join(root, 'issues.json'), '--hive-issues', path.join(root, 'issues.json'), '--hive-health', path.join(root, 'health.json')];
+    execFileSync(process.execPath, args);
+    const registerPath = path.join(output, 'src/content/task-register.json');
+    const register = JSON.parse(await readFile(registerPath, 'utf8'));
+    assert.equal(register.tasks.find(task => task.id === 'beehive:creative-hive-areas').status, 'Complete');
+    assert.equal(register.tasks.find(task => task.id === 'riddle-quest:test-history').status, 'Verification pending');
+    assert.equal(register.generatedAt, JSON.parse(await readFile(path.join(output, 'src/data.json'), 'utf8')).generatedAt);
+    await assert.rejects(readFile(path.join(output, 'src/task-register.json')), {code: 'ENOENT'});
+    const historical = register.tasks.find(task => task.id === 'riddle-quest:test-history');
+    assert.equal(historical.historicallyVerified, true);
+    assert.ok(historical.evidence.length > 0);
+    const revision = execFileSync('git', ['-C', riddle, 'rev-parse', 'HEAD'], {encoding: 'utf8'}).trim();
+    const sourceDigest = await developmentSourceDigest(riddle);
+    const log = 'artifacts/development-checks/passed.log';
+    await mkdir(path.join(riddle, 'artifacts/development-checks'), {recursive: true});
+    await writeFile(path.join(riddle, log), 'passed\n');
+    await json(path.join(riddle, 'artifacts/development-checks/current.json'), {revision, sourceDigest, checks: [{ids: ['check'], executable: 'node', args: ['test.mjs'], status: 'passed', log, sha256: createHash('sha256').update('passed\n').digest('hex'), artifacts: {}}]});
+    execFileSync(process.execPath, args);
+    let task = JSON.parse(await readFile(registerPath, 'utf8')).tasks.find(task => task.id === 'riddle-quest:test-history');
+    assert.equal(task.status, 'Verification pending');
+    assert.equal(task.verificationGap, 'No complete current-source work receipt');
+    assert.equal(task.historicallyVerified, true);
+    const dataPath = path.join(output, 'src/data.json');
+    const data = JSON.parse(await readFile(dataPath, 'utf8'));
+    data.queries.development_progress.rows.push({taskId: 'test-history', work: 'Verify current source', target: 'jest', completedAt: '2026-10-12T00:00:00Z', checks: 'check: passing evidence', revision, sourceDigest});
+    await json(dataPath, data);
+    execFileSync(process.execPath, args);
+    task = JSON.parse(await readFile(registerPath, 'utf8')).tasks.find(task => task.id === 'riddle-quest:test-history');
+    assert.equal(task.status, 'Development verified');
+    assert.equal(task.verificationGap, null);
+    assert.equal(task.historicallyVerified, true);
+    await writeFile(path.join(riddle, 'source.mjs'), 'export const changed = true;');
+    execFileSync(process.execPath, args);
+    task = JSON.parse(await readFile(registerPath, 'utf8')).tasks.find(task => task.id === 'riddle-quest:test-history');
+    assert.equal(task.status, 'Verification pending');
+    assert.equal(task.historicallyVerified, true);
+    await writeFile(path.join(hive, 'source.js'), 'changed');
+    execFileSync(process.execPath, args);
+    const refreshed = JSON.parse(await readFile(registerPath, 'utf8'));
+    assert.equal(refreshed.tasks.find(task => task.id === 'beehive:creative-hive-areas').status, 'Verification pending');
+    assert.equal(refreshed.tasks.filter(task => task.id === 'beehive:creative-hive-areas').length, 1);
+  } finally { await rm(root, {recursive: true, force: true}); }
+});
