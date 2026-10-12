@@ -25,10 +25,10 @@ export const TRANSIENT_REPORT_THRESHOLD = 3;
 export function isTransientProviderError(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
   /** HTTP status reported by the provider SDK, when present. */
-  const status = (error as {/** Provider HTTP status. */ status?: unknown}).status;
+  const status: unknown = Reflect.get(error, "status");
   if (typeof status === "number") return status === 408 || status === 409 || status === 429 || status >= 500;
   /** SDK and runtime error class names for network-level failures. */
-  const name = (error as {/** Error class name. */ name?: unknown}).name;
+  const name: unknown = Reflect.get(error, "name");
   return name === "APIConnectionError" || name === "APIConnectionTimeoutError" ||
     name === "AbortError" || name === "TimeoutError";
 }

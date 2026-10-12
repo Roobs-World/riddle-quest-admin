@@ -71,6 +71,17 @@ describe("race presentation helpers", () => {
     expect(findFirstEditableRaceSlot(null)).toBe(0);
   });
 
+  it("prefers an empty unlocked cell and replaces draft letters only when every unlocked cell is filled", () => {
+    /** Answer whose first cell is fixed by a server hint. */
+    const hinted = riddle([{index: 0, letter: "T"}]);
+    expect(findFirstEditableRaceSlot(hinted, ["T", "E", "", ""])).toBe(2);
+    expect(findFirstEditableRaceSlot(hinted, ["T", "E", "S", "T"])).toBe(1);
+  });
+
+  it("ignores blank server reveals when projecting keyboard feedback", () => {
+    expect(getRaceLetterStates([], "en", [{index: 0, letter: ""}, {index: 1, letter: "E"}])).toEqual({e: "green"});
+  });
+
   it("advances active clocks and clamps only a challenger to the race limit", () => {
     /** Provides run behavior. */
     const run = {
