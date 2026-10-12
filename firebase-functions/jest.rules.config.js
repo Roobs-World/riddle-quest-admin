@@ -3,6 +3,11 @@ const base = require("./jest.config.js");
 module.exports = {
   ...base,
   testMatch: [
+    "**/__tests__/race/raceInvitationCreatorRecovery.it.test.ts",
+    "**/__tests__/race/raceLiveGuessReceipt.it.test.ts",
+    "**/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts",
+    "**/__tests__/redditLiveGuessReceiptGateway.it.test.ts",
+    "**/__tests__/singlePlayerHintLocale.it.test.ts",
     "**/__tests__/classicBufferIssuedState.it.test.ts",
     "**/__tests__/classicSupplyPayload.it.test.ts",
     "**/__tests__/classicSupplyTransactionPayload.it.test.ts",

@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={ACCOUNT_DELETION:`Eliminazione account`,DATA_EXPORT:`Esportazione dati`,SUPPORT:`Supporto`,THIRD_PARTY_LICENSES:`Licenze di terze parti`,TITLE:`Informazioni/Note legali`},n={AboutLegal:t}})))()}r();export{n as default};

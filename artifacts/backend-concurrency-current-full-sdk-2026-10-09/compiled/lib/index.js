@@ -1,0 +1,140 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setPresenceConsent = exports.aggregatePresenceStatus = exports.reportRival = exports.blockRival = exports.listFacebookTournament = exports.recordFacebookTournament = exports.facebookDataDeletionStatus = exports.facebookDataDeletionCallback = exports.exchangeFacebookIdentity = exports.issueFacebookIdentityNonce = exports.verifyJestReferrals = exports.syncJestSubscriptions = exports.retryJestAccountDeletion = exports.grantJestPurchase = exports.exchangeJestIdentity = exports.recordRaceAnalytics = exports.getRaceOutcome = exports.findRaceMatch = exports.getRaceAccess = exports.getRaceChallenge = exports.cancelRaceInvite = exports.getRaceEntry = exports.reserveRaceInvite = exports.publishRaceChallenge = exports.abandonRaceRun = exports.resumeRaceRun = exports.skipRaceRiddle = exports.requestRaceHint = exports.submitRaceGuess = exports.readyRaceRun = exports.startRaceRun = exports.listRaceInbox = exports.listRaceCategories = exports.getLeaderboard = exports.redditProfileRetentionScheduler = exports.facebookContextRetentionScheduler = exports.dailyChallengeScheduler = exports.submitSinglePlayerGuess = exports.completeGame = exports.deleteAccount = exports.syncJestAvatar = exports.updateAvatar = exports.updateUsername = exports.getClassicRiddleBuffer = exports.getCurrentClassicRiddle = exports.getCurrentDailyChallenge = exports.getHint = exports.skipRiddle = exports.grantFacebookRewardedContinue = exports.spendCoins = void 0;
+exports.deliverLiveRaceChallengePush = exports.setLiveRacePushSubscription = exports.listLiveRaceHistory = exports.listLiveRaceChallenges = exports.sendLiveRaceChallenge = exports.getLiveRaceChallenge = exports.confirmLiveGuessReceipt = exports.updateLiveRace = exports.retireLiveRaceJoin = exports.joinLiveRace = exports.replenishClassicSupply = exports.monitorRaceRecoveryHealth = exports.reconcileRaceMatchProjections = exports.settleRaceDeadlines = exports.deliverRacePerformanceEvent = exports.deliverRaceSettlementEvent = exports.yahooStripeWebhook = exports.confirmYahooStripeCheckout = exports.createYahooStripeCheckout = exports.yahooOAuthCallback = exports.yahooOAuthStart = exports.redditGameplay = exports.redditStorage = exports.deleteRedditAccount = exports.exchangeRedditIdentity = exports.acceptFacebookNotificationPermissionPrompt = exports.claimFacebookNotificationPermissionPrompt = exports.getFacebookClientConfiguration = exports.recordFacebookContextRun = exports.listFacebookContextBoard = exports.leaveFacebookContext = exports.joinFacebookContext = exports.syncBlockedRivalPresenceVisibility = exports.syncKnownRivalPresenceVisibility = exports.bindFacebookReferral = exports.createFacebookReferral = void 0;
+/**
+ * @fileoverview
+ * Firebase Functions entrypoint for Riddle Quest.
+ *
+ * This module initializes the Firebase Admin SDK once and re-exports the
+ * minimal Jest trust boundary plus authoritative gameplay functions
+ * submodules. Each submodule owns its own request/response validation and
+ * environment variable access; this file is intentionally kept small and
+ * declarative.
+ */
+const app_1 = require("firebase-admin/app");
+// Initialize the Firebase Admin SDK once for all functions in this project.
+if ((0, app_1.getApps)().length === 0)
+    (0, app_1.initializeApp)();
+const gameLogic_1 = require("./gameplay/gameLogic");
+Object.defineProperty(exports, "getHint", { enumerable: true, get: function () { return gameLogic_1.getHint; } });
+Object.defineProperty(exports, "spendCoins", { enumerable: true, get: function () { return gameLogic_1.spendCoins; } });
+Object.defineProperty(exports, "skipRiddle", { enumerable: true, get: function () { return gameLogic_1.skipRiddle; } });
+const facebookRewardedContinueCallable_1 = require("./facebook/facebookRewardedContinueCallable");
+Object.defineProperty(exports, "grantFacebookRewardedContinue", { enumerable: true, get: function () { return facebookRewardedContinueCallable_1.grantFacebookRewardedContinue; } });
+const dailyChallenge_1 = require("./daily/dailyChallenge");
+Object.defineProperty(exports, "getCurrentDailyChallenge", { enumerable: true, get: function () { return dailyChallenge_1.getCurrentDailyChallenge; } });
+Object.defineProperty(exports, "getCurrentClassicRiddle", { enumerable: true, get: function () { return dailyChallenge_1.getCurrentClassicRiddle; } });
+const classicRiddleBuffer_1 = require("./daily/classicRiddleBuffer");
+Object.defineProperty(exports, "getClassicRiddleBuffer", { enumerable: true, get: function () { return classicRiddleBuffer_1.getClassicRiddleBuffer; } });
+const profile_1 = require("./profile");
+Object.defineProperty(exports, "deleteAccount", { enumerable: true, get: function () { return profile_1.deleteAccount; } });
+Object.defineProperty(exports, "syncJestAvatar", { enumerable: true, get: function () { return profile_1.syncJestAvatar; } });
+Object.defineProperty(exports, "updateAvatar", { enumerable: true, get: function () { return profile_1.updateAvatar; } });
+Object.defineProperty(exports, "updateUsername", { enumerable: true, get: function () { return profile_1.updateUsername; } });
+const completeGameCallable_1 = require("./gameplay/completeGameCallable");
+Object.defineProperty(exports, "completeGame", { enumerable: true, get: function () { return completeGameCallable_1.completeGame; } });
+const submitSinglePlayerGuessCallable_1 = require("./gameplay/submitSinglePlayerGuessCallable");
+Object.defineProperty(exports, "submitSinglePlayerGuess", { enumerable: true, get: function () { return submitSinglePlayerGuessCallable_1.submitSinglePlayerGuess; } });
+const dailyScheduler_1 = require("./daily/dailyScheduler");
+Object.defineProperty(exports, "dailyChallengeScheduler", { enumerable: true, get: function () { return dailyScheduler_1.dailyChallengeScheduler; } });
+const leaderboard_1 = require("./gameplay/leaderboard");
+Object.defineProperty(exports, "getLeaderboard", { enumerable: true, get: function () { return leaderboard_1.getLeaderboard; } });
+const raceCallables_1 = require("./race/raceCallables");
+Object.defineProperty(exports, "abandonRaceRun", { enumerable: true, get: function () { return raceCallables_1.abandonRaceRun; } });
+Object.defineProperty(exports, "getRaceChallenge", { enumerable: true, get: function () { return raceCallables_1.getRaceChallenge; } });
+Object.defineProperty(exports, "getRaceAccess", { enumerable: true, get: function () { return raceCallables_1.getRaceAccess; } });
+Object.defineProperty(exports, "findRaceMatch", { enumerable: true, get: function () { return raceCallables_1.findRaceMatch; } });
+Object.defineProperty(exports, "getRaceOutcome", { enumerable: true, get: function () { return raceCallables_1.getRaceOutcome; } });
+Object.defineProperty(exports, "listRaceCategories", { enumerable: true, get: function () { return raceCallables_1.listRaceCategories; } });
+Object.defineProperty(exports, "listRaceInbox", { enumerable: true, get: function () { return raceCallables_1.listRaceInbox; } });
+Object.defineProperty(exports, "publishRaceChallenge", { enumerable: true, get: function () { return raceCallables_1.publishRaceChallenge; } });
+Object.defineProperty(exports, "reserveRaceInvite", { enumerable: true, get: function () { return raceCallables_1.reserveRaceInvite; } });
+Object.defineProperty(exports, "getRaceEntry", { enumerable: true, get: function () { return raceCallables_1.getRaceEntry; } });
+Object.defineProperty(exports, "cancelRaceInvite", { enumerable: true, get: function () { return raceCallables_1.cancelRaceInvite; } });
+Object.defineProperty(exports, "recordRaceAnalytics", { enumerable: true, get: function () { return raceCallables_1.recordRaceAnalytics; } });
+Object.defineProperty(exports, "requestRaceHint", { enumerable: true, get: function () { return raceCallables_1.requestRaceHint; } });
+Object.defineProperty(exports, "resumeRaceRun", { enumerable: true, get: function () { return raceCallables_1.resumeRaceRun; } });
+Object.defineProperty(exports, "skipRaceRiddle", { enumerable: true, get: function () { return raceCallables_1.skipRaceRiddle; } });
+Object.defineProperty(exports, "startRaceRun", { enumerable: true, get: function () { return raceCallables_1.startRaceRun; } });
+Object.defineProperty(exports, "readyRaceRun", { enumerable: true, get: function () { return raceCallables_1.readyRaceRun; } });
+Object.defineProperty(exports, "submitRaceGuess", { enumerable: true, get: function () { return raceCallables_1.submitRaceGuess; } });
+const jestEndpoints_1 = require("./jest/jestEndpoints");
+Object.defineProperty(exports, "exchangeJestIdentity", { enumerable: true, get: function () { return jestEndpoints_1.exchangeJestIdentity; } });
+Object.defineProperty(exports, "grantJestPurchase", { enumerable: true, get: function () { return jestEndpoints_1.grantJestPurchase; } });
+Object.defineProperty(exports, "retryJestAccountDeletion", { enumerable: true, get: function () { return jestEndpoints_1.retryJestAccountDeletion; } });
+Object.defineProperty(exports, "syncJestSubscriptions", { enumerable: true, get: function () { return jestEndpoints_1.syncJestSubscriptions; } });
+Object.defineProperty(exports, "verifyJestReferrals", { enumerable: true, get: function () { return jestEndpoints_1.verifyJestReferrals; } });
+const facebookEndpoints_1 = require("./facebook/facebookEndpoints");
+Object.defineProperty(exports, "exchangeFacebookIdentity", { enumerable: true, get: function () { return facebookEndpoints_1.exchangeFacebookIdentity; } });
+Object.defineProperty(exports, "issueFacebookIdentityNonce", { enumerable: true, get: function () { return facebookEndpoints_1.issueFacebookIdentityNonce; } });
+const facebookDataDeletionEndpoints_1 = require("./facebook/facebookDataDeletionEndpoints");
+Object.defineProperty(exports, "facebookDataDeletionCallback", { enumerable: true, get: function () { return facebookDataDeletionEndpoints_1.facebookDataDeletionCallback; } });
+Object.defineProperty(exports, "facebookDataDeletionStatus", { enumerable: true, get: function () { return facebookDataDeletionEndpoints_1.facebookDataDeletionStatus; } });
+const facebookTournamentCallable_1 = require("./race/facebookTournamentCallable");
+Object.defineProperty(exports, "listFacebookTournament", { enumerable: true, get: function () { return facebookTournamentCallable_1.listFacebookTournament; } });
+Object.defineProperty(exports, "recordFacebookTournament", { enumerable: true, get: function () { return facebookTournamentCallable_1.recordFacebookTournament; } });
+const socialSafetyCallables_1 = require("./social/socialSafetyCallables");
+Object.defineProperty(exports, "blockRival", { enumerable: true, get: function () { return socialSafetyCallables_1.blockRival; } });
+Object.defineProperty(exports, "reportRival", { enumerable: true, get: function () { return socialSafetyCallables_1.reportRival; } });
+const presenceAggregation_1 = require("./presence/presenceAggregation");
+Object.defineProperty(exports, "aggregatePresenceStatus", { enumerable: true, get: function () { return presenceAggregation_1.aggregatePresenceStatus; } });
+const presenceConsentCallable_1 = require("./presence/presenceConsentCallable");
+Object.defineProperty(exports, "setPresenceConsent", { enumerable: true, get: function () { return presenceConsentCallable_1.setPresenceConsent; } });
+const facebookReferralCallables_1 = require("./facebook/facebookReferralCallables");
+Object.defineProperty(exports, "bindFacebookReferral", { enumerable: true, get: function () { return facebookReferralCallables_1.bindFacebookReferral; } });
+Object.defineProperty(exports, "createFacebookReferral", { enumerable: true, get: function () { return facebookReferralCallables_1.createFacebookReferral; } });
+const presenceVisibility_1 = require("./presence/presenceVisibility");
+Object.defineProperty(exports, "syncBlockedRivalPresenceVisibility", { enumerable: true, get: function () { return presenceVisibility_1.syncBlockedRivalPresenceVisibility; } });
+Object.defineProperty(exports, "syncKnownRivalPresenceVisibility", { enumerable: true, get: function () { return presenceVisibility_1.syncKnownRivalPresenceVisibility; } });
+const facebookContextCallables_1 = require("./race/facebookContextCallables");
+Object.defineProperty(exports, "joinFacebookContext", { enumerable: true, get: function () { return facebookContextCallables_1.joinFacebookContext; } });
+Object.defineProperty(exports, "leaveFacebookContext", { enumerable: true, get: function () { return facebookContextCallables_1.leaveFacebookContext; } });
+Object.defineProperty(exports, "listFacebookContextBoard", { enumerable: true, get: function () { return facebookContextCallables_1.listFacebookContextBoard; } });
+Object.defineProperty(exports, "recordFacebookContextRun", { enumerable: true, get: function () { return facebookContextCallables_1.recordFacebookContextRun; } });
+const facebookContextRetentionScheduler_1 = require("./race/facebookContextRetentionScheduler");
+Object.defineProperty(exports, "facebookContextRetentionScheduler", { enumerable: true, get: function () { return facebookContextRetentionScheduler_1.facebookContextRetentionScheduler; } });
+const facebookClientConfigurationCallable_1 = require("./facebook/facebookClientConfigurationCallable");
+Object.defineProperty(exports, "getFacebookClientConfiguration", { enumerable: true, get: function () { return facebookClientConfigurationCallable_1.getFacebookClientConfiguration; } });
+const facebookNotificationPromptCallables_1 = require("./facebook/facebookNotificationPromptCallables");
+Object.defineProperty(exports, "acceptFacebookNotificationPermissionPrompt", { enumerable: true, get: function () { return facebookNotificationPromptCallables_1.acceptFacebookNotificationPermissionPrompt; } });
+Object.defineProperty(exports, "claimFacebookNotificationPermissionPrompt", { enumerable: true, get: function () { return facebookNotificationPromptCallables_1.claimFacebookNotificationPermissionPrompt; } });
+const redditEndpoints_1 = require("./reddit/redditEndpoints");
+Object.defineProperty(exports, "deleteRedditAccount", { enumerable: true, get: function () { return redditEndpoints_1.deleteRedditAccount; } });
+Object.defineProperty(exports, "exchangeRedditIdentity", { enumerable: true, get: function () { return redditEndpoints_1.exchangeRedditIdentity; } });
+const redditStorageEndpoint_1 = require("./reddit/redditStorageEndpoint");
+Object.defineProperty(exports, "redditStorage", { enumerable: true, get: function () { return redditStorageEndpoint_1.redditStorage; } });
+const redditGameplayEndpoint_1 = require("./reddit/redditGameplayEndpoint");
+Object.defineProperty(exports, "redditGameplay", { enumerable: true, get: function () { return redditGameplayEndpoint_1.redditGameplay; } });
+const redditProfileRetentionScheduler_1 = require("./reddit/redditProfileRetentionScheduler");
+Object.defineProperty(exports, "redditProfileRetentionScheduler", { enumerable: true, get: function () { return redditProfileRetentionScheduler_1.redditProfileRetentionScheduler; } });
+const yahooOAuthEndpoints_1 = require("./yahoo/yahooOAuthEndpoints");
+Object.defineProperty(exports, "yahooOAuthCallback", { enumerable: true, get: function () { return yahooOAuthEndpoints_1.yahooOAuthCallback; } });
+Object.defineProperty(exports, "yahooOAuthStart", { enumerable: true, get: function () { return yahooOAuthEndpoints_1.yahooOAuthStart; } });
+const yahooStripeEndpoints_1 = require("./yahoo/yahooStripeEndpoints");
+Object.defineProperty(exports, "confirmYahooStripeCheckout", { enumerable: true, get: function () { return yahooStripeEndpoints_1.confirmYahooStripeCheckout; } });
+Object.defineProperty(exports, "createYahooStripeCheckout", { enumerable: true, get: function () { return yahooStripeEndpoints_1.createYahooStripeCheckout; } });
+Object.defineProperty(exports, "yahooStripeWebhook", { enumerable: true, get: function () { return yahooStripeEndpoints_1.yahooStripeWebhook; } });
+var raceSettlementJobs_1 = require("./race/raceSettlementJobs");
+Object.defineProperty(exports, "deliverRaceSettlementEvent", { enumerable: true, get: function () { return raceSettlementJobs_1.deliverRaceSettlementEvent; } });
+Object.defineProperty(exports, "deliverRacePerformanceEvent", { enumerable: true, get: function () { return raceSettlementJobs_1.deliverRacePerformanceEvent; } });
+Object.defineProperty(exports, "settleRaceDeadlines", { enumerable: true, get: function () { return raceSettlementJobs_1.settleRaceDeadlines; } });
+var raceProjectionReconciliation_1 = require("./race/raceProjectionReconciliation");
+Object.defineProperty(exports, "reconcileRaceMatchProjections", { enumerable: true, get: function () { return raceProjectionReconciliation_1.reconcileRaceMatchProjections; } });
+var raceRecoveryHealth_1 = require("./race/raceRecoveryHealth");
+Object.defineProperty(exports, "monitorRaceRecoveryHealth", { enumerable: true, get: function () { return raceRecoveryHealth_1.monitorRaceRecoveryHealth; } });
+var classicSupplyWorker_1 = require("./riddles/classicSupplyWorker");
+Object.defineProperty(exports, "replenishClassicSupply", { enumerable: true, get: function () { return classicSupplyWorker_1.replenishClassicSupply; } });
+var raceLiveCallables_1 = require("./race/raceLiveCallables");
+Object.defineProperty(exports, "joinLiveRace", { enumerable: true, get: function () { return raceLiveCallables_1.joinLiveRace; } });
+Object.defineProperty(exports, "retireLiveRaceJoin", { enumerable: true, get: function () { return raceLiveCallables_1.retireLiveRaceJoin; } });
+Object.defineProperty(exports, "updateLiveRace", { enumerable: true, get: function () { return raceLiveCallables_1.updateLiveRace; } });
+Object.defineProperty(exports, "confirmLiveGuessReceipt", { enumerable: true, get: function () { return raceLiveCallables_1.confirmLiveGuessReceipt; } });
+Object.defineProperty(exports, "getLiveRaceChallenge", { enumerable: true, get: function () { return raceLiveCallables_1.getLiveRaceChallenge; } });
+Object.defineProperty(exports, "sendLiveRaceChallenge", { enumerable: true, get: function () { return raceLiveCallables_1.sendLiveRaceChallenge; } });
+Object.defineProperty(exports, "listLiveRaceChallenges", { enumerable: true, get: function () { return raceLiveCallables_1.listLiveRaceChallenges; } });
+Object.defineProperty(exports, "listLiveRaceHistory", { enumerable: true, get: function () { return raceLiveCallables_1.listLiveRaceHistory; } });
+var raceLivePushJobs_1 = require("./race/raceLivePushJobs");
+Object.defineProperty(exports, "setLiveRacePushSubscription", { enumerable: true, get: function () { return raceLivePushJobs_1.setLiveRacePushSubscription; } });
+Object.defineProperty(exports, "deliverLiveRaceChallengePush", { enumerable: true, get: function () { return raceLivePushJobs_1.deliverLiveRaceChallengePush; } });
+//# sourceMappingURL=index.js.map

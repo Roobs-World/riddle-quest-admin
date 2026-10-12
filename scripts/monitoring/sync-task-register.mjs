@@ -1,9 +1,11 @@
-import {readFile, writeFile, readdir, stat, mkdir} from 'node:fs/promises';
+import {readFile, writeFile, readdir, stat, mkdir, rm} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {applyTaskResolutions} from './task-resolutions.mjs';
+import {developmentSourceDigest} from '../release/development-source-digest.mjs';
+import {reuseDevelopmentChecks} from '../release/development-check-reuse.mjs';
 
 const options = Object.fromEntries(process.argv.slice(2).reduce((pairs, value, index, args) => {
   if (value.startsWith('--')) pairs.push([value.slice(2), args[index + 1]]);
@@ -54,6 +56,13 @@ for (const file of await files(path.join(riddle, 'artifacts/development-progress
       receipts.push({...c, target, status: 'Development verified', checks: c.checks.map(x => `${x.id}: ${x.evidence}`).join('; '), remainingGates: c.remainingGates.join('; '), artifacts: c.artifacts?.filter(x => x.target === target).map(x => `${x.file}: ${x.sha256}`).join('; ') || 'No artifact claim'});
   }
 }
+let currentCheckReport;
+try { currentCheckReport = await json(path.join(riddle, 'artifacts/development-checks/current.json')); }
+catch (error) { if (error.code !== 'ENOENT') throw error; }
+const currentSource = currentCheckReport ? {
+  revision: execFileSync('git', ['rev-parse', 'HEAD'], {cwd: riddle, encoding: 'utf8'}).trim(),
+  sourceDigest: await developmentSourceDigest(riddle),
+} : null;
 for (const file of await files(path.join(riddle, 'docs/development-tasks'), '.json')) {
   const manifest = await json(file), id = `riddle-quest:${manifest.taskId}`;
   if (!manifest.taskId || !manifest.work || !Array.isArray(manifest.checks)) throw new Error(`Invalid task manifest: ${file}`);
@@ -62,15 +71,27 @@ for (const file of await files(path.join(riddle, 'docs/development-tasks'), '.js
     manifest.checks.every(check => typeof x.checks === 'string' ? x.checks.includes(`${check.id}:`) : x.checks?.some(c => c.id === check.id && c.status === 'passed')));
   const verifiedTargets = new Set(matches.map(x => x.target));
   const verified = manifest.targets.every(target => verifiedTargets.has(target));
+  let currentVerified = false;
+  let verificationGap = 'No current-source check report';
+  if (currentSource) {
+    try {
+      await reuseDevelopmentChecks(riddle, manifest, currentCheckReport, currentSource);
+      const currentTargets = new Set(matches.filter(receipt => receipt.revision === currentSource.revision && receipt.sourceDigest === currentSource.sourceDigest).map(receipt => receipt.target));
+      if (!manifest.targets.every(target => currentTargets.has(target))) throw new Error('No complete current-source work receipt');
+      currentVerified = true;
+      verificationGap = null;
+    } catch (error) { verificationGap = error.message; }
+  }
+
   const reqs = [
     ...manifest.checks.map(c => requirement('riddle-quest', 'verification', c.id, origin, id, {command: safeCommand(`${c.executable} ${c.args.join(' ')}`)})),
     ...(manifest.remainingGates ?? []).map(g => requirement('riddle-quest', 'gate', g, origin, id)),
   ];
   tasks.push({id, project: 'riddle-quest', kind: 'development', title: shorten(manifest.work), description: manifest.work,
-    status: verified ? 'Development verified' : 'Verification pending', targets: manifest.targets, nextAction: manifest.nextAction,
+    status: currentVerified ? 'Development verified' : 'Verification pending', historicallyVerified: verified, verificationGap, targets: manifest.targets, nextAction: manifest.nextAction,
     requirementIds: reqs, remainingGates: manifest.remainingGates ?? [], sources: [origin],
     evidence: matches.map(x => ({target: x.target, completedAt: x.completedAt, revision: x.revision, sourceDigest: x.sourceDigest})),
-    evidenceNote: verified ? 'Recorded checks match this manifest. This is historical development evidence; current-source and provider verification remain separate.' : 'No complete matching verification receipt. Source changes and focused checks do not establish completion.'});
+    evidenceNote: currentVerified ? 'Current-source work receipts, required checks and artifact hashes match. Provider and client acceptance remain separate.' : verified ? 'Historical work receipts match this manifest, but current-source verification is incomplete. Historical evidence is retained separately.' : 'No complete matching verification receipt. Source changes and focused checks do not establish completion.'});
 }
 for (const queryId of ['manual_action_checklist', 'promotion_outreach']) {
   for (const row of snapshot.queries[queryId]?.rows ?? []) {
@@ -150,6 +171,18 @@ for (const [key, title, status, description, nextAction, file] of hiveRows) {
   tasks.push({id, project: 'beehive', kind: 'project', title, status, description, nextAction, sources: [origin],
     requirementIds: [requirement('beehive', 'acceptance', description, origin, id)], evidenceNote: 'Source-backed project status. Implementation does not establish client acceptance.'});
 }
+let hiveManifests = [];
+try { hiveManifests = await files(path.join(hive, 'docs/development-tasks'), '.json'); }
+catch (error) { if (error.code !== 'ENOENT') throw error; }
+for (const file of hiveManifests) {
+  const declaration = await json(file);
+  if (!declaration.id?.startsWith('beehive:') || declaration.project !== 'beehive' || !declaration.title || !declaration.status || !declaration.description || !declaration.nextAction || tasks.some(task => task.id === declaration.id)) throw new Error(`Invalid or duplicate BeeHive task declaration: ${file}`);
+  const origin = source('beehive', path.relative(hive, file));
+  tasks.push({...declaration, kind: 'development', sources: [origin, ...(declaration.sources ?? []).map(entry => ({...entry, project: 'beehive'}))],
+    requirementIds: [requirement('beehive', 'acceptance', declaration.description, origin, declaration.id)],
+    evidenceNote: 'Status retained from its task declaration. Source-bound resolutions are checked separately; client and provider acceptance remain open.'});
+}
+coverage.push({project: 'beehive', source: 'development task declarations', records: hiveManifests.length, retrievedAt: now, status: 'Read'});
 const qa = await readFile(path.join(hive, 'docs/CONTENT-QA.md'), 'utf8');
 for (const match of qa.matchAll(/^\| (\d+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/gm)) {
   const id = `beehive:content-qa:${match[1]}`;
@@ -182,11 +215,12 @@ const projects = [
 const register = {schemaVersion: '1.0', dashboardId: snapshot.id, generatedAt: now, projects, coverage, tasks, requirements, documents,
   caveats: ['Snapshot updated by dashboard:sync; this API is read-only and does not watch local workspaces.', 'Historical development receipts, source-reported completion, provider approval and publication are distinct.', 'Concurrent source edits may require a new sync. Repository paths and line numbers refer to the captured sources.', 'Coverage includes both primary repositories, task manifests, source Markdown checklists, reviewed release/outreach actions, GitHub issues and explicitly reviewed supplemental follow-ups. Other projects have only the stated supplemental coverage; other chats are outside this register.']};
 register.digest = hash(JSON.stringify(register));
-await mkdir(path.join(output, 'src'), {recursive: true});
-await writeFile(path.join(output, 'src/task-register.json'), JSON.stringify(register, null, 2) + '\n');
+await mkdir(path.join(output, 'src/content'), {recursive: true});
+await writeFile(path.join(output, 'src/content/task-register.json'), JSON.stringify(register, null, 2) + '\n');
+await rm(path.join(output, 'src/task-register.json'), {force: true});
 const reviewed = (rows, label, componentIds) => ({rows, source: {label, retrievedAt: now, executedAt: now,
   tables: ['docs/development-tasks/*.json', 'artifacts/development-progress/*.json', 'repository Markdown checklists', 'GitHub issues', 'BeeHive/docs'],
-  filters: register.caveats, metricDefinitions: [{label: 'Task state', definition: 'Exact source state. Development verified requires matching work and all checks/targets in recorded receipts; reported complete is source-reported only.', componentIds}]}});
+  filters: register.caveats, metricDefinitions: [{label: 'Task state', definition: 'Exact source state. Development verified requires current-source work receipts, passing required checks with verified logs, and matching artifact hashes for all targets; reported complete is source-reported only.', componentIds}]}});
 snapshot.generatedAt = now;
 snapshot.queries.task_register = reviewed(tasks.map(({description, ...row}) => ({...row, description, requirements: row.requirementIds.length, sourceReference: row.sources.map(s => s.file ? `${s.project}/${s.file}${s.line ? `:${s.line}` : ''}` : s.url).join('; ')})), 'Consolidated project task register', ['task-register']);
 snapshot.queries.requirements_register = reviewed(requirements.map(row => ({...row, linkedTasks: row.taskIds.length, sourceReference: row.sources.map(s => `${s.project}/${s.file}${s.line ? `:${s.line}` : ''}`).join('; ')})), 'Requirements, acceptance gates and verification checks', ['requirements-register']);

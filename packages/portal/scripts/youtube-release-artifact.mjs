@@ -6,6 +6,7 @@ import {deflateRawSync} from "node:zlib";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {auditYouTubeArtifact} from "./audit-youtube-artifact.mjs";
+import {developmentSourcePathspecs} from "../../../scripts/release/development-source-digest.mjs";
 
 const execFileAsync = promisify(execFile);
 const defaultRepositoryDirectory = fileURLToPath(new URL("../../..", import.meta.url));
@@ -267,9 +268,9 @@ export async function captureSourceIdentity(repositoryDirectory = defaultReposit
   const gitCommit = (await runGit(repository, ["rev-parse", "HEAD"])).toString("utf8").trim();
   if (!gitCommitPattern.test(gitCommit)) throw new Error("YouTube release source commit is malformed");
   const [status, trackedDiffSha256, untrackedRaw] = await Promise.all([
-    runGit(repository, ["status", "--porcelain=v1", "-z", "--untracked-files=all"]),
-    hashGitOutput(repository, ["diff", "--binary", "--no-ext-diff", "HEAD", "--", "."]),
-    runGit(repository, ["ls-files", "--others", "--exclude-standard", "-z"]),
+    runGit(repository, ["status", "--porcelain=v1", "-z", "--untracked-files=all", "--", ...developmentSourcePathspecs]),
+    hashGitOutput(repository, ["diff", "--binary", "--no-ext-diff", "HEAD", "--", ...developmentSourcePathspecs]),
+    runGit(repository, ["ls-files", "--others", "--exclude-standard", "-z", "--", ...developmentSourcePathspecs]),
   ]);
   const untrackedPaths = untrackedRaw.toString("utf8").split("\0").filter(Boolean).sort((left, right) =>
     left.localeCompare(right, "en")
@@ -469,6 +470,7 @@ export async function writeYouTubeVerificationReport({
   contentAuditPath,
   reportPath,
   tests,
+  expectedSource,
   capturedAt = new Date().toISOString(),
 } = {}) {
   const repository = path.resolve(repositoryDirectory);
@@ -493,6 +495,9 @@ export async function writeYouTubeVerificationReport({
   }
   validateContentAudit(contentAudit, audit.contentManifest);
   const source = await captureSourceIdentity(repository);
+  if (expectedSource !== undefined && (!validateSourceIdentity(expectedSource) || !sameValue(source, expectedSource))) {
+    throw new Error("YouTube source tree changed during release verification");
+  }
   const report = createYouTubeVerificationReport({
     capturedAt,
     source,

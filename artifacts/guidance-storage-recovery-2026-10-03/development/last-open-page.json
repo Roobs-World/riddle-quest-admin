@@ -1,5 +1,5 @@
 {
-  "body": "Guest play\nLog in to save progress\nClassic\n0\nWhat has keys but cannot open doors?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip",
+  "body": "Guest play\nLog in to save progress\nClassic\n0\nWhat has keys but cannot open doors?\nP\nP\nP\nP\nP\nQ\nQ\nQ\nQ\nQ\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nSUBMIT",
   "probe": {
     "fault": "none",
     "messages": [
@@ -23,7 +23,7 @@
     },
     "playerData": {
       "schemaVersion": 1,
-      "updatedAt": 1791047316477,
+      "updatedAt": 1791751141841,
       "profile": {
         "username": "Guest Solver",
         "coins": 0,
@@ -37,7 +37,7 @@
       },
       "activeGame": {
         "schemaVersion": 1,
-        "savedAt": 1791047313022,
+        "savedAt": 1791751141841,
         "riddleId": "reddit-guest-1",
         "sessionToken": "00000000-0000-4000-8000-000000000001",
         "gameMode": "classic",
@@ -131,5 +131,5 @@
       }
     }
   },
-  "draft": ""
+  "draft": "ppppp"
 }

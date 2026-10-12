@@ -1,3 +1,4 @@
+/** Exercises the retained recorded-race controller/view; the public entry uses live PvP. */
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -13,7 +14,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {flushSync} from 'react-dom';import {RACE_RECOVERY_KEY} from '@qwordly/core/race';import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from '@qwordly/core/race';
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {tr} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 window.readRecovery=()=>localStorage.getItem(RACE_RECOVERY_KEY);window.retiredLeaks=[];window.armed=false;window.revocations=0;window.commands=[];window.finds=[];window.label=tr('RaceTo10.MATCH_PLAYER');
 function reply(message,operation,data){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation,ok:true,data}}}));}

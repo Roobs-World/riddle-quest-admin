@@ -60,6 +60,8 @@ The expected outputs are:
 
 The manifest records the exact Git commit, clean/dirty state, a content-sensitive dirty-tree fingerprint, every artifact file hash, all locale/model hashes, the `canonicalAuthoring` generator/critic and append-receipt binding, and an embedded copy plus hash of the exact test report. Packaging must be reproducible: rerunning it from unchanged inputs and the same report produces the same ZIP and manifest. Never edit source, the expanded artifact, content audit, test report, or ZIP after evidence capture; any such drift requires rerunning the full preflight.
 
+Source identity uses the development verifier’s tracked and untracked source path scope. Generated root artifacts, `.codex` state and generated readiness data are excluded; the expanded playable and content/model audit have their own SHA-256 identities. The runner captures source before the first suite, checks it after every suite, and rejects a mismatch before writing a passing report.
+
 The release build intentionally remains blocked until all 16 credentialed translation bundles are present and audited. The English fixture build is suitable for repository verification, but neither it nor synthetic package tests can create upload evidence.
 
 ## Save and Daily operating assumptions

@@ -1,0 +1,34 @@
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+✔ accepts an acyclic runtime graph and ignores erased type-only edges (10.268806ms)
+✔ rejects a barrel-induced runtime cycle with deterministic module evidence (3.137184ms)
+✔ excludes test modules from the production graph (4.253569ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 141.5104
+Production module cycle audit passed (198 modules, 1136 runtime references).
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+$ pnpm prepare:functions && pnpm --filter @qwordly/core check:types && pnpm --filter @qwordly/portal check:types && pnpm --dir firebase-functions check:types && pnpm --filter @qwordly/reddit-app check:types
+$ pnpm --dir firebase-functions prepare:deploy
+$ node scripts/prepare-deploy.js
+$ tsc -p tsconfig.build.json
+$ tsc -p tsconfig.json --noEmit
+$ tsc -p tsconfig.json --noEmit
+$ node scripts/prepare-deploy.js && pnpm check:module-cycles
+$ tsc -p tsconfig.build.json
+$ node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs
+$ tsc -p tsconfig.json --noEmit
+$ tsc6 -p tsconfig.json --noEmit

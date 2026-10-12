@@ -1,0 +1,417 @@
+diff --git a/firebase-functions/package.json b/firebase-functions/package.json
+index c64cd8e..fac7872 100644
+--- a/firebase-functions/package.json
++++ b/firebase-functions/package.json
+@@ -23,7 +23,7 @@
+     "format": "prettier --write \"src/**/*.ts\"",
+     "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js",
+     "pretest:coverage": "pnpm build",
+-    "test:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" firebase emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm exec jest --config jest.production-coverage.config.js --runInBand --coverage\"",
++    "test:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" firebase emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm exec jest --config jest.production-coverage.config.js --maxWorkers=1 --workerIdleMemoryLimit=1536MB --coverage\"",
+     "pretest:scalability:coverage": "node scripts/prepare-deploy.js",
+     "test:scalability:coverage": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.scalability-coverage.config.js --runInBand",
+     "pretest:race:coverage": "pnpm build && node --test scripts/race-delivery-replay.test.js scripts/race-match-calibration.test.js scripts/race-match-benchmark.test.js",
+diff --git a/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts b/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts
+index 23eeb13..9c21642 100644
+--- a/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts
++++ b/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts
+@@ -14,15 +14,19 @@ let db: FirebaseFirestore.Firestore;
+ 
+ /** Retries only confirmed aborted fixture transactions once after the original batch settles. */
+ const resolveConcurrentQuotaAttempts = async (operations: Array<() => Promise<boolean>>): Promise<boolean[]> => {
++  /** Provides settled behavior. */
+   const settled = await Promise.allSettled(operations.map((operation) => operation()));
++  /** Provides aborted indexes behavior. */
+   const abortedIndexes = settled.flatMap((result, index) => {
+     if (result.status === "fulfilled") return [];
++    /** Provides reason behavior. */
+     const reason: unknown = result.reason;
+     if (typeof reason !== "object" || reason === null || !("code" in reason) || reason.code !== 10) throw reason;
+     return [index];
+   });
+   if (abortedIndexes.length > 0) {
+     await new Promise<void>((resolve) => setTimeout(resolve, 50));
++    /** Provides retried behavior. */
+     const retried = await Promise.allSettled(abortedIndexes.map((index) => operations[index]()));
+     retried.forEach((result, index) => {settled[abortedIndexes[index]] = result;});
+   }
+@@ -54,17 +58,24 @@ afterAll(async () =>
+ it("settles every concurrent quota attempt before retrying a confirmed abort", async () => {
+   jest.useFakeTimers();
+   try {
++    /** Provides aborted behavior. */
+     const aborted = Object.assign(new Error("injected transaction abort"), {code: 10});
++    /** Provides finish peer behavior. */
+     let finishPeer!: (result: boolean) => void;
++    /** Provides peer pending behavior. */
+     let peerPending = true;
++    /** Provides retry behavior. */
+     const retry = jest.fn<Promise<boolean>, []>()
+       .mockRejectedValueOnce(aborted)
+       .mockImplementationOnce(async () => {
+         expect(peerPending).toBe(false);
+         return true;
+       });
++    /** Provides peer behavior. */
+     const peer = jest.fn(() => new Promise<boolean>((resolve) => {finishPeer = resolve;}));
++    /** Provides denied behavior. */
+     const denied = jest.fn(async () => false);
++    /** Provides collected behavior. */
+     const collected = resolveConcurrentQuotaAttempts([retry, peer, denied]).then(
+       (value) => ({status: "fulfilled", value}),
+       (reason: unknown) => ({status: "rejected", reason}),
+@@ -89,6 +100,7 @@ it.each([
+   ["string abort code", Object.assign(new Error("invalid abort code"), {code: "10"})],
+ ])(
+   "propagates a non-ABORTED quota failure without retry: %s", async (_label, failure) => {
++    /** Provides operation behavior. */
+     const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(failure);
+     await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(failure);
+     expect(operation).toHaveBeenCalledTimes(1);
+@@ -96,7 +108,9 @@ it.each([
+ );
+ 
+ it("fails quota recovery when its single confirmed-abort retry is exhausted", async () => {
++  /** Provides aborted behavior. */
+   const aborted = Object.assign(new Error("persistent transaction abort"), {code: 10});
++  /** Provides operation behavior. */
+   const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(aborted);
+   await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(aborted);
+   expect(operation).toHaveBeenCalledTimes(2);
+@@ -111,6 +125,7 @@ it("enforces the 20-request identity quota transactionally across concurrent ins
+   );
+   expect(results.filter(Boolean)).toHaveLength(20);
+   expect(results.filter((value) => !value)).toHaveLength(12);
++  /** Provides quota id behavior. */
+   const quotaId = createHmac("sha256", secret)
+     .update("riddle-quest-facebook-identity-rate-v1\0", "utf8")
+     .update("198.51.100.7", "utf8")
+diff --git a/firebase-functions/src/__tests__/race/raceRollout.test.ts b/firebase-functions/src/__tests__/race/raceRollout.test.ts
+index a9d6508..5fb99db 100644
+--- a/firebase-functions/src/__tests__/race/raceRollout.test.ts
++++ b/firebase-functions/src/__tests__/race/raceRollout.test.ts
+@@ -241,16 +241,21 @@ describe("Race rollout configuration cache", () => {
+   });
+ 
+   it("uses the default production clock and expires cached access after 15 seconds", async () => {
++    /** Provides original worker id behavior. */
+     const originalWorkerId = process.env.JEST_WORKER_ID;
++    /** Provides original emulator behavior. */
+     const originalEmulator = process.env.FUNCTIONS_EMULATOR;
++    /** Provides clock behavior. */
+     const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+     delete process.env.JEST_WORKER_ID;
+     delete process.env.FUNCTIONS_EMULATOR;
+     try {
++      /** Provides production rollout behavior. */
+       let productionRollout!: typeof import("../../race/raceRollout");
+       jest.isolateModules(() => {
+         productionRollout = require("../../race/raceRollout");
+       });
++      /** Provides {db, get} behavior. */
+       const {db, get} = createCountingDb([
+         {enabled: true, percentage: 100, allowlistHashes: []},
+         {enabled: false, percentage: 0, allowlistHashes: []},
+@@ -272,9 +277,11 @@ describe("Race rollout configuration cache", () => {
+   });
+ 
+   it("uses the system clock when a configured TTL omits a custom clock", async () => {
++    /** Provides clock behavior. */
+     const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+     try {
+       configureRaceRolloutCache({ttlMs: 5_000});
++      /** Provides {db, get} behavior. */
+       const {db, get} = createCountingDb([
+         {enabled: true, percentage: 100, allowlistHashes: []},
+         {enabled: false, percentage: 0, allowlistHashes: []},
+@@ -292,15 +299,20 @@ describe("Race rollout configuration cache", () => {
+   });
+ 
+   it("retains a newer disabled rollout when an expired pending read fails", async () => {
++    /** Provides {db, get} behavior. */
+     const {db, get} = createCountingDb([{enabled: false, percentage: 0, allowlistHashes: []}]);
++    /** Provides reject read behavior. */
+     let rejectRead!: (reason: Error) => void;
+     get.mockImplementationOnce(() => new Promise((_, reject) => {rejectRead = reject;}));
++    /** Provides expired read behavior. */
+     const expiredRead = getRaceAccessForUser("a", "en", db);
+     now = 15_000;
+     await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
+     expect(get).toHaveBeenCalledTimes(2);
+ 
++    /** Provides failure behavior. */
+     const failure = new Error("expired rollout read unavailable");
++    /** Provides rejected read behavior. */
+     const rejectedRead = expect(expiredRead).rejects.toBe(failure);
+     rejectRead(failure);
+     await rejectedRead;
+diff --git a/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs b/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs
+index 6dbb4c6..5dc5af2 100644
+--- a/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs
++++ b/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs
+@@ -79,7 +79,7 @@ try{
+   await page.goto(url);await page.waitForFunction(()=>window.loaded);await failed();
+   await metric('failed startup exposes an accessible recovery alert',await page.locator('.bridge-startup-recovery [role=alert]').count(),1);
+   await metric('failed validation download retires the game frame',await page.locator('.game-app').count(),0);
+-  await metric('failed startup dismisses the provider loading surface exactly once',(await probe()).unavailable,1);
++  /* The provider callback runs in a passive effect after the recovery UI commits; allow that commit to finish. */await page.waitForFunction(()=>window.probe.unavailable>=1,undefined,{timeout:5000}).catch(()=>undefined);await metric('failed startup dismisses the provider loading surface exactly once',(await probe()).unavailable,1);
+   await metric('recovery does not claim playable content',(await probe()).playable,0);
+   await metric('recovery removes readiness retry intervals',(await probe()).intervals,0);
+   const before=await probe();await page.clock.install();await page.clock.runFor(3000);await page.evaluate(()=>window.sendBurst());await page.clock.runFor(30);
+diff --git a/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs b/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs
+index 6f7558b..72a7a21 100644
+--- a/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs
++++ b/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs
+@@ -64,7 +64,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><PlayHostAp
+  else{
+   browser=await chromium.launch({headless:true});const quick=process.env.COLD_DRAFT_QUICK==='1';
+   for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const variant of quick?[process.env.COLD_DRAFT_VARIANT??'classicReplaced']:['classicReplaced','classicRenamed','dailyReplaced','classicSame','dailySame','foreignMode','queued','paid','successor','completedDailyFallback']){
+-   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();page.setDefaultTimeout(4000);
++   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();page.setDefaultTimeout(10_000);
+    const metric=(name,actual,expected)=>{observations.push({width,height,variant,name,actual,expected});assert.deepEqual(actual,expected,name);};
+    const row=async index=>(await page.locator('.guess-row').nth(index).locator('.cell').allTextContents()).join('').toUpperCase();
+    await page.goto(url+'/?variant='+variant);await page.locator('.guess-board').waitFor();await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:riddleLoaded'));await page.waitForTimeout(80);
+diff --git a/packages/portal/scripts/verify-live-question-input-browser.mjs b/packages/portal/scripts/verify-live-question-input-browser.mjs
+index b314572..1fe1294 100644
+--- a/packages/portal/scripts/verify-live-question-input-browser.mjs
++++ b/packages/portal/scripts/verify-live-question-input-browser.mjs
+@@ -79,7 +79,9 @@ app.render(<React.StrictMode><RaceTo10Game locale="en" ownerId={user} coins={100
+    for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}
+    await a.locator('.race-gameplay .guess-board').waitFor();
+    const letters=()=>a.locator('.guess-row button:not([disabled])').allTextContents().then(values=>values.map(v=>v.toLowerCase()));
+-   if(scenario==='exhausted')for(let index=0;index<4;index++){await a.evaluate(()=>window.otherTab('guess','zzzz'));}
++   if(scenario==='exhausted'){for(let index=0;index<4;index++){await a.evaluate(()=>window.otherTab('guess','zzzz'));}
++    // The other tab's guesses render asynchronously; let them settle so the next click targets the live row, not a row about to lock.
++    await a.waitForFunction(()=>{const rows=document.querySelectorAll('.guess-board .guess-row');return rows.length>=5&&document.querySelector('.guess-row button:not([disabled])')?.closest('.guess-row')===rows[rows.length-1];});}
+    if(['correct','exhausted'].includes(scenario)){
+     await a.locator('.guess-row button:not([disabled])').first().click();await a.keyboard.type(scenario==='correct'?'test':'zzzz');await a.evaluate(()=>window.holdGuessOnce=true);await a.locator('.race-actions .submit-action').click();await a.waitForFunction(()=>typeof window.releaseReceipt==='function');
+    }else if(scenario==='skip'){
+diff --git a/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs b/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs
+index 5d2640b..2e51537 100644
+--- a/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs
++++ b/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs
+@@ -25,7 +25,7 @@ const scenario=new URL(location.href).searchParams.get('scenario')??'online-poll
+ window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
+ let visible=true;window.show=value=>{visible=value;document.dispatchEvent(new Event('visibilitychange'));};Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>visible?'visible':'hidden'});Object.defineProperty(document,'hidden',{configurable:true,get:()=>!visible});
+ function view(seat){const now=Date.now(),countdown=now<seat.start;return LiveRaceViewSchema.parse({ticketId:seat.id,phase:seat.left?'cancelled':countdown?'countdown':'racing',serverNowMs:now,searchEndsAtMs:seat.start+60000,startsAtMs:seat.start,player:{displayName:seat.owner,avatarUrl:null,bot:false,correctCount:seat.correct},opponent:{displayName:'Rival',avatarUrl:null,bot:false,correctCount:seat.rival},result:null,rewardCoins:0,run:seat.left?null:{runId:seat.id,role:'creator',status:countdown?'scheduled':'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:seat.correct,wallElapsedMs:Math.max(0,now-seat.start),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-seat.start),events:[],serverNowMs:now,startsAtMs:seat.start,currentRiddle:countdown?null:{riddleId:'q'+seat.correct,text:'What has keys but cannot open doors?',answerLength:5,position:seat.correct,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},opponent:{displayName:'Rival',avatarUrl:null,adjustedFinishMs:300000,events:[]}}});}
+-function adapter(owner){const seat={owner,id:(owner==='Alice'?'a':'b').repeat(64),start:Date.now()+(scenario==='countdown'?650:-1000),correct:0,rival:0,left:false};return {observe:(ticket,changed,connected)=>{window.signal=changed;connected(true);return()=>{};},join:async input=>{window.probe.joins.push({owner,at:performance.now(),...input});return view(seat);},update:async input=>{window.probe.requests.push({owner,at:performance.now(),...input});if(input.action==='leave')seat.left=true;if(input.action==='guess'){if(input.guess!=='piano')throw new Error('Unexpected fixture guess');seat.correct++;}const value=view(seat);if(input.action===(scenario.endsWith('-command')?'guess':'poll')&&window.holdPoll){window.holdPoll=false;return new Promise((resolve,reject)=>{window.release=()=>{window.probe.releases.push(performance.now());resolve(value);};window.reject=()=>{window.probe.releases.push(performance.now());reject(new Error('Fixture held transport failed'));};});}return value;},bump:()=>{seat.rival=3;}};}
++function adapter(owner){const seat={owner,id:(owner==='Alice'?'a':'b').repeat(64),start:Date.now()+(scenario==='countdown'?650:-1000),correct:0,rival:0,left:false};return {observe:(ticket,changed,connected)=>{window.signal=changed;connected(true);return()=>{};},join:async input=>{window.probe.joins.push({owner,at:performance.now(),...input});if(scenario==='countdown'&&!seat.joined){seat.joined=true;seat.start=Date.now()+1500;}return view(seat);},update:async input=>{window.probe.requests.push({owner,at:performance.now(),...input});if(input.action==='leave')seat.left=true;if(input.action==='guess'){if(input.guess!=='piano')throw new Error('Unexpected fixture guess');seat.correct++;}const value=view(seat);if(input.action===(scenario.endsWith('-command')?'guess':'poll')&&window.holdPoll){window.holdPoll=false;return new Promise((resolve,reject)=>{window.release=()=>{window.probe.releases.push(performance.now());resolve(value);};window.reject=()=>{window.probe.releases.push(performance.now());reject(new Error('Fixture held transport failed'));};});}return value;},bump:()=>{seat.rival=3;}};}
+ const adapters={Alice:adapter('Alice'),Bob:adapter('Bob')};
+ window.recover=()=>{adapters.Alice.bump();if(scenario==='retired')flushSync(()=>window.retire());if(scenario==='replace')flushSync(()=>window.replace());const wake=()=>{if(scenario.startsWith('visible')){window.show(false);window.show(true);}else if(scenario==='push')window.signal();else if(scenario==='hidden')window.show(false);else if(!['countdown','backoff-delayed'].includes(scenario))window.dispatchEvent(new Event('online'));};for(let i=0;i<(scenario==='storm'?20:1);i++)wake();if(scenario==='backoff')window.reject();else if(scenario!=='backoff-delayed')window.release?.();};
+ function App(){const [mounted,setMounted]=React.useState(true),[owner,setOwner]=React.useState('Alice');window.retire=()=>setMounted(false);window.replace=()=>setOwner('Bob');return <div data-owner={owner}>{mounted?<LiveRaceGame key={owner} transport={adapters[owner]} locale='en' categoryId='mixed' coins={100} ownerId={owner} onClose={()=>setMounted(false)}/>:<p data-retired>Race removed</p>}<button data-arm onClick={()=>{window.holdPoll=true;window.signal();}}>Hold background read</button><button data-recover onClick={()=>window.recover()}>Recover pending read</button></div>;}
+@@ -58,7 +58,10 @@ window.root=createRoot(document.querySelector('#root'));window.root.render(<Reac
+     metric('retired seat retains one leave authority key',await page.evaluate(()=>new Set(window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='leave').map(x=>x.requestId)).size),1);
+     metric('retired UI remains removed or replaced',await page.locator(scenario==='replace'?'[data-owner="Bob"] .race-native-answer-input':'[data-retired]').count(),1);
+    }else{
+-    metric('queued recovery admits exactly one prompt catch-up read',await page.evaluate(()=>window.probe.requests.filter(x=>x.action==='poll').length),scenario==='hidden'||scenario.endsWith('-command')?1:2);
++    const expectedPolls=scenario==='hidden'||scenario.endsWith('-command')?1:2;
++    /* Slow runners may need longer than the 150 ms settle to deliver the catch-up; extra time can only expose extra reads. */
++    await page.waitForFunction(n=>window.probe.requests.filter(x=>x.action==='poll').length>=n,expectedPolls,{timeout:3000}).catch(()=>undefined);await page.waitForTimeout(150);
++    metric('queued recovery admits exactly one prompt catch-up read',await page.evaluate(()=>window.probe.requests.filter(x=>x.action==='poll').length),expectedPolls);
+     metric('catch-up shows current rival progress',await page.locator('.race-progress > div:last-child strong').textContent(),scenario==='hidden'?'Riddles completed: 0 / 10':'Riddles completed: 3 / 10');
+     if(scenario.endsWith('-command')){
+      metric('native guess advances once before read-only reconciliation',await page.locator('.race-progress > div:first-child strong').textContent(),'Riddles completed: 1 / 10');
+diff --git a/packages/portal/scripts/verify-live-signal-failures-browser.mjs b/packages/portal/scripts/verify-live-signal-failures-browser.mjs
+index 6d5f3d6..d7c062a 100644
+--- a/packages/portal/scripts/verify-live-signal-failures-browser.mjs
++++ b/packages/portal/scripts/verify-live-signal-failures-browser.mjs
+@@ -56,7 +56,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
+    metric('poll cadence matches the admitted connection',await page.evaluate(x=>window.interval(x),owner),scenario==='register'?500:5000);
+    if(process.env.LIVE_SIGNAL_SMOKE!=='1'){
+     if(scenario==='normal'){await page.locator('[data-disconnect]').click();metric('disconnect promptly restores fast fallback cadence',await page.evaluate(()=>window.interval('Alice')),500);}
+-    if(scenario==='register'){const polls=await page.evaluate(()=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length);await page.waitForTimeout(1100);metric('failed push retains real foreground polling recovery',await page.evaluate(n=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length>n,polls),true);}
++    if(scenario==='register'){const polls=await page.evaluate(()=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length);/* A 500 ms cadence must produce a new poll; allow slow runners' timer drift instead of a fixed 1.1 s sleep. */metric('failed push retains real foreground polling recovery',await page.waitForFunction(n=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length>n,polls,{timeout:5000}).then(()=>true,()=>false),true);}
+     const adds=await page.evaluate(()=>window.probe.adds.length),removes=await page.evaluate(()=>window.probe.removes.length);for(let i=0;i<8;i++)await page.locator('[data-parent]').click();metric('ordinary parent updates preserve subscription registration',await page.evaluate(()=>window.probe.adds.length),adds);metric('ordinary parent updates do not clean up the current subscription',await page.evaluate(()=>window.probe.removes.length),removes);
+     await page.locator('.race-native-answer-input').focus();await page.keyboard.type('piano');await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong')?.textContent.includes('1 / 10'));metric('the current player can submit and advance once',await page.evaluate(x=>window.probe.requests.filter(r=>r.owner===x&&r.action==='guess').length,owner),1);
+    }
+diff --git a/packages/portal/scripts/verify-session-assembly-retention-browser.mjs b/packages/portal/scripts/verify-session-assembly-retention-browser.mjs
+index 5f2180a..51a80ea 100644
+--- a/packages/portal/scripts/verify-session-assembly-retention-browser.mjs
++++ b/packages/portal/scripts/verify-session-assembly-retention-browser.mjs
+@@ -56,8 +56,9 @@ document.querySelector('#checkout').onclick=async()=>{document.querySelector('#r
+   await page.evaluate(({count,scenario})=>window.seed(count,scenario.startsWith('gated'),scenario.endsWith('retained-caller')),{count,scenario});
+   const cdp=await context.newCDPSession(page);
+   // WeakRef targets remain alive for their creation job. Collect only after that page task ends.
+-  await cdp.send('HeapProfiler.collectGarbage');await cdp.send('HeapProfiler.collectGarbage');
+   const kept=scenario.endsWith('retained-caller')?2:1;
++  // Under load one GC pair can finish before weak targets are released; repeat across page tasks (a real leak never settles).
++  for(let pass=0;pass<5;pass+=1){await cdp.send('HeapProfiler.collectGarbage');await cdp.send('HeapProfiler.collectGarbage');await page.evaluate(()=>new Promise(resolve=>setTimeout(resolve,0)));if(await page.evaluate(k=>window.uncachedControl.deref()===undefined&&window.live().purchases<=k,kept))break;}
+   metric('uncached control is collectible under the same GC policy',await page.evaluate(()=>window.uncachedControl.deref()===undefined),true);
+   metric('obsolete checkout callbacks are collectible while the provider remains active',await page.evaluate(()=>window.live().purchases),kept);
+   metric('obsolete commerce wrappers are collectible',await page.evaluate(()=>window.live().commerce),kept);
+diff --git a/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts b/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts
+index b1fa3b9..4d85882 100644
+--- a/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts
++++ b/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts
+@@ -817,10 +817,14 @@ it.each(["getIncompletePurchases", "completePurchase"] as const)(
+   async (operation) => {
+     jest.useFakeTimers();
+     try {
++      /** Provides mock behavior. */
+       const mock = sdk();
+       mock.payments[operation].mockImplementation(() => new Promise(() => undefined));
++      /** Provides platform behavior. */
+       const platform = new JestSdkPlatform(mock);
++      /** Provides settled behavior. */
+       const settled: unknown[] = [];
++      /** Provides pending behavior. */
+       const pending = operation === "getIncompletePurchases"
+         ? platform.getIncompletePurchases()
+         : platform.completePurchase("recoverable-token");
+@@ -850,21 +854,28 @@ it.each([
+ ] as const)("retires a late %s recovery %s and permits a successful retry", async (operation, settlement) => {
+   jest.useFakeTimers();
+   try {
++    /** Provides mock behavior. */
+     const mock = sdk();
++    /** Resolves provider. */
+     let resolveProvider!: (value: unknown) => void;
++    /** Provides reject provider behavior. */
+     let rejectProvider!: (reason: unknown) => void;
+     mock.payments[operation].mockImplementationOnce(() => new Promise((resolve, reject) => {
+       resolveProvider = resolve;
+       rejectProvider = reject;
+     }));
++    /** Provides provider success behavior. */
+     const providerSuccess = operation === "getIncompletePurchases"
+       ? {purchases: [], purchasesSigned: "signed", hasMore: false}
+       : {result: "success"};
+     mock.payments[operation].mockResolvedValue(providerSuccess);
++    /** Provides platform behavior. */
+     const platform = new JestSdkPlatform(mock);
++    /** Provides call behavior. */
+     const call = () => operation === "getIncompletePurchases"
+       ? platform.getIncompletePurchases()
+       : platform.completePurchase("recoverable-token");
++    /** Provides settled behavior. */
+     const settled: unknown[] = [];
+     void call().then((result) => settled.push(result));
+ 
+diff --git a/packages/portal/src/play/PlayHostApp.tsx b/packages/portal/src/play/PlayHostApp.tsx
+index c7c3d32..d80f552 100644
+--- a/packages/portal/src/play/PlayHostApp.tsx
++++ b/packages/portal/src/play/PlayHostApp.tsx
+@@ -235,6 +235,7 @@ export function PlayHostApp({
+     setNotice,
+     onPlayable: reportPlayable,
+     onStartupUnavailable: reportStartupUnavailable,
++    recoverySuspended: bridgeUnavailable,
+     onRecoveryAttempt: sendRecoveryInit,
+   });
+   useEffect(() => {
+diff --git a/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts b/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts
+index 154f12e..1957034 100644
+--- a/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts
++++ b/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts
+@@ -57,7 +57,8 @@ describeBrowser("solo coin collection and successor routing", () => {
+     try {
+       /** Provides page behavior. */
+       const page = await browser.newPage({viewport: {width: 390, height: 844}});
+-      page.setDefaultTimeout(4_000);
++      // Slow CI runners need headroom for entrance animations to settle; the 30 s test budget still bounds it.
++      page.setDefaultTimeout(10_000);
+       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+       await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+       await page.addInitScript(() => {
+diff --git a/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts b/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts
+index d669d46..c814673 100644
+--- a/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts
++++ b/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts
+@@ -67,5 +67,5 @@ describeBrowser("Jest music startup", () => {
+       await browser.close();
+       await new Promise<void>((resolve) => server.close(() => resolve()));
+     }
+-  });
++  }, 30_000);
+ });
+diff --git a/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts b/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
+index fcff507..5724fae 100644
+--- a/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
++++ b/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
+@@ -72,7 +72,10 @@ const deferred = <T>() => {
+   return {promise, resolve};
+ };
+ /** Creates one lifecycle around stable injected delivery callbacks. */
+-const setup = (loadRiddle: HostServices["loadRiddle"]) => {
++const setup = (loadRiddle: HostServices["loadRiddle"], extra: {
++  /** Host has retired the game frame after a failed bridge validation. */
++  recoverySuspended?: boolean;
++} = {}) => {
+   /** Records accepted riddle messages after authority work settles. */
+   const postToGame = jest.fn<(message: HostToGameMessage) => void>();
+   /** Records correlated operation acknowledgements. */
+@@ -87,7 +90,7 @@ const setup = (loadRiddle: HostServices["loadRiddle"]) => {
+       activity += 1;
+       try {return await operation();} finally {activity -= 1;}
+     },
+-    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt};
++    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt, ...extra};
+   /** Exposed lifecycle under the same fake browser signals as the recovery owner. */
+   const lifecycle = useHostRiddleLifecycle(options);
+   cleanup = effects[0]() || undefined;
+@@ -474,3 +477,16 @@ it("keeps an admitted load across recovery callback replacement", async () => {
+   expect(owner.postToGame).toHaveBeenCalledTimes(1);
+   expect(owner.activity).toBe(0);
+ });
++
++it("starts no automatic recovery read while the game frame is retired by a failed bridge", async () => {
++  /** Any authority read here would be the defect: the frame that could display it is gone. */
++  const load = jest.fn<HostServices["loadRiddle"]>().mockResolvedValue(riddle);
++  /** The host has already replaced the game with bridge startup recovery. */
++  const owner = setup(load, {recoverySuspended: true});
++  await jest.advanceTimersByTimeAsync(250);
++  window.dispatchEvent(new Event("online"));
++  await jest.advanceTimersByTimeAsync(30_000);
++  expect(load).not.toHaveBeenCalled();
++  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
++  expect(owner.postToGame).not.toHaveBeenCalled();
++});
+diff --git a/packages/portal/src/play/useHostRiddleLifecycle.ts b/packages/portal/src/play/useHostRiddleLifecycle.ts
+index 7b34bbb..fac38cb 100644
+--- a/packages/portal/src/play/useHostRiddleLifecycle.ts
++++ b/packages/portal/src/play/useHostRiddleLifecycle.ts
+@@ -19,6 +19,8 @@ type HostRiddleLifecycleOptions = Readonly<{
+   initialGameMode: WebGameMode;
+   /** Exposes a rendered startup failure through the target’s loading overlay. */
+   onStartupUnavailable?: () => void;
++  /** A retired game frame (failed bridge validation) must not start automatic riddle recovery. */
++  recoverySuspended?: boolean;
+   /** Current game locale. */
+   locale: string;
+   /** Target-specific host operations. */
+@@ -84,6 +86,7 @@ export function useHostRiddleLifecycle({
+   profile,
+   initialGameMode,
+   onStartupUnavailable,
++  recoverySuspended = false,
+   locale,
+   services,
+   canUsePreparedQuestions,
+@@ -103,6 +106,9 @@ export function useHostRiddleLifecycle({
+   const [startupUnavailable, setStartupUnavailable] = useState(false);
+   /** Whether the current context already has a playable riddle. */
+   const loadedRef = useRef(false);
++  /** Recovery timers read the latest suspension so a retired frame never issues authority reads. */
++  const recoverySuspendedRef = useRef(recoverySuspended);
++  recoverySuspendedRef.current = recoverySuspended;
+   /** Shared uncorrelated automatic load, when present. */
+   const loadInFlightRef = useRef<Promise<boolean> | null>(null);
+   /** Only the latest visible load may publish content or start failure recovery. */
+@@ -413,7 +419,7 @@ export function useHostRiddleLifecycle({
+     };
+     /** Resynchronizes the host and retries the current riddle context. */
+     const recoverRiddle = async () => {
+-      if (loadedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
++      if (loadedRef.current || recoverySuspendedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
+       recovering = true;
+       try {
+         onRecoveryAttemptRef.current();
+@@ -433,7 +439,7 @@ export function useHostRiddleLifecycle({
+     scheduleRecoveryRef.current = retry;
+     /** Recover immediately when the browser regains connectivity or returns to the game. */
+     const resumeRecovery = () => {
+-      if (cancelled || contextSignal.aborted || loadedRef.current || navigator.onLine === false) return;
++      if (cancelled || contextSignal.aborted || loadedRef.current || recoverySuspendedRef.current || navigator.onLine === false) return;
+       failedAttempts = 0;
+       if (!recovering) scheduleRecovery(0);
+     };

@@ -1340,6 +1340,15 @@
     "height": 568,
     "target": "race",
     "scenario": "remount",
+    "name": "unsent race draft persists before remount",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
     "name": "remounted identities are initialized",
     "actual": [
       "live-join",
@@ -1358,6 +1367,15 @@
     "name": "remount uses distinct identities",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
+    "name": "remount restores unsent race draft",
+    "actual": "pian",
+    "expected": "pian"
   },
   {
     "width": 390,
@@ -3573,6 +3591,15 @@
     "height": 844,
     "target": "race",
     "scenario": "remount",
+    "name": "unsent race draft persists before remount",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "remount",
     "name": "remounted identities are initialized",
     "actual": [
       "live-join",
@@ -3591,6 +3618,15 @@
     "name": "remount uses distinct identities",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "remount",
+    "name": "remount restores unsent race draft",
+    "actual": "pian",
+    "expected": "pian"
   },
   {
     "width": 390,
@@ -5806,6 +5842,15 @@
     "height": 844,
     "target": "race",
     "scenario": "remount",
+    "name": "unsent race draft persists before remount",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "remount",
     "name": "remounted identities are initialized",
     "actual": [
       "live-join",
@@ -5824,6 +5869,15 @@
     "name": "remount uses distinct identities",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "remount",
+    "name": "remount restores unsent race draft",
+    "actual": "pian",
+    "expected": "pian"
   },
   {
     "width": 1280,

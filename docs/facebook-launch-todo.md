@@ -20,7 +20,7 @@ The last recorded setup is:
 | Products | Seven products already registered | Payout account and signed purchase/refund implementation |
 | Ads | Placements already exist; last recorded status Requesting ads | Fill, frequency and device acceptance |
 | Notifications | Bot prompt exists locally; scheduling contract unresolved | Backend rollout, provider contract and actual delivery |
-| Translations | 90 drafts, 89 accepted critiques; zero complete bundles | Fix source constraints and finish 2,880 translations |
+| Translations | 90 drafts, 89 accepted critiques; zero complete bundles | Remove overlong-answer questions and finish the supported-language corpus |
 | Source | Contains concurrent, uncommitted work | Reviewed clean release state |
 
 Sources: [approval walkthrough](facebook-approval-walkthrough.md), [testing upload](evidence/facebook-testing-upload-2026-09-27.md), [1 October operations](facebook-instant-games-operations.md), and [translation evidence](evidence/facebook-translation-generation-2026-10-01.md). The tracker and later evidence sometimes disagree. Treat that as a task to reconcile, not a reason to redo an already finished setup.
@@ -516,16 +516,16 @@ pnpm --dir firebase-functions facebook:contexts:retention --project riddle-quest
 
 **Done when:** Support has an accountable operator and the promised closure/retention process exists and is verified.
 
-## P4-02 — [ ] Resolve answer-length conflicts and finish 2,880 translations
+## P4-02 — [ ] Remove overlong-answer questions and finish the supported-language corpus
 
 **Who:** Owner/content reviewer and developer.
 
-1. Read [translation evidence](evidence/facebook-translation-generation-2026-10-01.md). The source is 180 English riddles; 16 non-English bundles require 2,880 translated records.
+1. Read [translation evidence](evidence/facebook-translation-generation-2026-10-01.md). The source now contains 177 English riddles after the user-approved exclusions. There are 15 non-English locales. Every bundle must match the final ready English source; the current candidate would require 2,655 translated records. Geography currently has only nine easy questions and is not ready.
 2. Open the separate canonical revision proposal under `artifacts/facebook-translations-review-2026-10-01/`. It is a proposal, not an approved source.
 3. Review the demonstrated conflicts: German Brazil/Germany answers and Spanish castle exceed the seven-grapheme limit.
-4. Choose owner-approved replacement concepts or another reviewed content plan that preserves the game constraints. Do not shorten an answer into a different meaning.
+4. The user approved removing questions whose faithful answers exceed seven letters. Remove each affected canonical question from every locale. Do not shorten an answer into a different meaning.
 5. Review all 180 concepts for native spelling, length, uniqueness, factual accuracy and difficulty; the three known conflicts may not be the only ones.
-6. Have the developer update the authoritative source only after content approval, using new canonical IDs where concepts changed and preserving six categories × 30 items.
+6. Have the developer update the authoritative source following the approved removal rule, preserving six categories and at least 10 easy plus 5 medium questions per category.
 7. Invalidate/rebuild affected hash-bound checkpoints through the reviewed generator workflow. Do not relabel old critique as applying to changed source.
 8. Provision the translation API key privately through the approved environment. Keep it out of source and command arguments.
 9. Use distinct models supported by your account; recorded generation used these names:
@@ -536,10 +536,10 @@ pnpm --dir firebase-functions race:translations:generate --translator-model gpt-
 
 10. This command makes paid model calls; record the generation scope/budget before running it. It resumes validated checkpoints but does not fix canonical conflicts automatically.
 11. Review each stopped/rejected item and repair it through fresh translation and independent critique. Never set a rejection flag to success by hand.
-12. Continue until each expected locale file has 180 accepted items and every category has 30.
+12. Continue until each expected locale file matches the final source exactly and every category can supply the unchanged 10-easy/5-medium race deck.
 13. Complete P4-03 before treating any bundle as importable.
 
-**Done when:** All 16 translated bundles exist, each preserves the approved English concept and satisfies count/length constraints.
+**Done when:** All 15 translated bundles exist, each preserves the approved English concept and satisfies count/length constraints.
 
 ## P4-03 — [ ] Audit meaning, Unicode, duplicates and the complete corpus
 
@@ -556,7 +556,7 @@ pnpm --dir firebase-functions race:translations:generate --translator-model gpt-
 pnpm --dir firebase-functions race:translations:audit
 ```
 
-7. Confirm the manifest says valid and exactly 2,880 translated riddles, with 16 bundles and source/bundle SHA-256 values.
+7. Confirm the manifest says valid and exactly 15 times the final source question count, with 15 bundles and source/bundle SHA-256 values.
 8. If using alternate approved paths, pass `--source` and `--input-dir` to the existing audit; record the actual paths and source hash.
 9. Save structural manifest, independent-critique results, reviewer notes and all remaining rejections.
 10. A matrix audit verifies structural contracts; combine it with semantic critique rather than treating one as a substitute for the other.
@@ -1045,7 +1045,7 @@ The statuses below are the tracker snapshot at this review, with later-evidence 
 | P3-05 | In Progress | Unassigned | Verify provider-rendered names/photos and overlay disposal | Existing tracker; no new acceptance claimed |
 | P3-06 | In Progress | Unassigned | Prove opt-in presence with two tabs and two devices | Existing tracker; no new acceptance claimed |
 | P3-07 | In Progress | Unassigned | Prove strangers, blocked rivals and deleted players cannot view presence | Existing tracker; no new acceptance claimed |
-| P4-02 | In Progress | Unassigned | Resolve answer-length conflicts and finish 2,880 translations | Existing tracker; no new acceptance claimed |
+| P4-02 | In Progress | Unassigned | Remove overlong-answer questions and finish the supported-language corpus | Existing tracker; no new acceptance claimed |
 | P4-03 | In Progress | Unassigned | Audit meaning, Unicode, duplicates and the complete corpus | Existing tracker; no new acceptance claimed |
 | P4-04 | In Progress | Unassigned | Import complete bundles with honest machine provenance | Existing tracker; no new acceptance claimed |
 | P4-05 | In Progress | Unassigned | Test physical keyboards, scripts and accessibility | Existing tracker; no new acceptance claimed |

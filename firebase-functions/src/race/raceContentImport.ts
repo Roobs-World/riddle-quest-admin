@@ -7,7 +7,7 @@ import {
 } from "@qwordly/core/race";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
-import {RACE_POOL_SIZE, validateRacePool, type RacePoolIssue} from "./raceContentValidation";
+import {RACE_MIN_POOL_SIZE, RACE_POOL_SIZE, validateRacePool, type RacePoolIssue} from "./raceContentValidation";
 
 /** Validates the reviewed quality version data shape. */
 const ReviewedQualityVersionSchema = z
@@ -35,7 +35,7 @@ export const RaceContentImportItemSchema = z
 export const RaceContentImportFileSchema = z
   .object({
     locale: z.literal("en"),
-    riddles: z.array(RaceContentImportItemSchema).length(RACE_CATEGORY_IDS.length * RACE_POOL_SIZE),
+    riddles: z.array(RaceContentImportItemSchema).min(RACE_CATEGORY_IDS.length * RACE_MIN_POOL_SIZE).max(RACE_CATEGORY_IDS.length * RACE_POOL_SIZE),
   })
   .strict();
 
@@ -110,7 +110,7 @@ export function createRaceContentImportPlan(input: unknown): RaceContentImportPl
   ) as Record<RaceCategoryId, number>;
   /** Provides issues behavior. */
   const issues = RACE_CATEGORY_IDS.flatMap(
-    (categoryId) => validateRacePool(records, {locale: "en", categoryId, poolSize: RACE_POOL_SIZE}).issues,
+    (categoryId) => validateRacePool(records, {locale: "en", categoryId}).issues,
   );
   issues.push(
     ...duplicateIssues(records, "canonicalRiddleId", "duplicate_canonical"),

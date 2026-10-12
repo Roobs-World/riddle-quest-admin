@@ -1,0 +1,1416 @@
+diff --git a/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts b/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts
+index 23eeb13da..f8bd32a1a 100644
+--- a/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts
++++ b/firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts
+@@ -14,15 +14,19 @@ let db: FirebaseFirestore.Firestore;
+ 
+ /** Retries only confirmed aborted fixture transactions once after the original batch settles. */
+ const resolveConcurrentQuotaAttempts = async (operations: Array<() => Promise<boolean>>): Promise<boolean[]> => {
++  /** Retains all original outcomes before any caller retry begins. */
+   const settled = await Promise.allSettled(operations.map((operation) => operation()));
++  /** Selects only confirmed numeric ABORTED failures for one retry. */
+   const abortedIndexes = settled.flatMap((result, index) => {
+     if (result.status === "fulfilled") return [];
++    /** Preserves the provider failure for strict classification and propagation. */
+     const reason: unknown = result.reason;
+     if (typeof reason !== "object" || reason === null || !("code" in reason) || reason.code !== 10) throw reason;
+     return [index];
+   });
+   if (abortedIndexes.length > 0) {
+     await new Promise<void>((resolve) => setTimeout(resolve, 50));
++    /** Collects the single retry outcome for each aborted operation. */
+     const retried = await Promise.allSettled(abortedIndexes.map((index) => operations[index]()));
+     retried.forEach((result, index) => {settled[abortedIndexes[index]] = result;});
+   }
+@@ -54,17 +58,24 @@ afterAll(async () =>
+ it("settles every concurrent quota attempt before retrying a confirmed abort", async () => {
+   jest.useFakeTimers();
+   try {
++    /** Models a retryable Firestore transaction abort. */
+     const aborted = Object.assign(new Error("injected transaction abort"), {code: 10});
++    /** Releases the pending peer only when the test permits retry. */
+     let finishPeer!: (result: boolean) => void;
++    /** Detects retry before the concurrent peer has settled. */
+     let peerPending = true;
++    /** Aborts once and verifies that retry waits for the peer. */
+     const retry = jest.fn<Promise<boolean>, []>()
+       .mockRejectedValueOnce(aborted)
+       .mockImplementationOnce(async () => {
+         expect(peerPending).toBe(false);
+         return true;
+       });
++    /** Keeps an original attempt pending while the abort is observed. */
+     const peer = jest.fn(() => new Promise<boolean>((resolve) => {finishPeer = resolve;}));
++    /** Represents a valid quota denial that must not be retried. */
+     const denied = jest.fn(async () => false);
++    /** Observes either outcome immediately without an unhandled rejection. */
+     const collected = resolveConcurrentQuotaAttempts([retry, peer, denied]).then(
+       (value) => ({status: "fulfilled", value}),
+       (reason: unknown) => ({status: "rejected", reason}),
+@@ -89,6 +100,7 @@ it.each([
+   ["string abort code", Object.assign(new Error("invalid abort code"), {code: "10"})],
+ ])(
+   "propagates a non-ABORTED quota failure without retry: %s", async (_label, failure) => {
++    /** Proves a non-ABORTED provider failure is propagated without retry. */
+     const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(failure);
+     await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(failure);
+     expect(operation).toHaveBeenCalledTimes(1);
+@@ -96,7 +108,9 @@ it.each([
+ );
+ 
+ it("fails quota recovery when its single confirmed-abort retry is exhausted", async () => {
++  /** Models repeated aborts that exhaust the bounded caller retry. */
+   const aborted = Object.assign(new Error("persistent transaction abort"), {code: 10});
++  /** Always aborts so the second failure must propagate. */
+   const operation = jest.fn<Promise<boolean>, []>().mockRejectedValue(aborted);
+   await expect(resolveConcurrentQuotaAttempts([operation])).rejects.toBe(aborted);
+   expect(operation).toHaveBeenCalledTimes(2);
+@@ -111,6 +125,7 @@ it("enforces the 20-request identity quota transactionally across concurrent ins
+   );
+   expect(results.filter(Boolean)).toHaveLength(20);
+   expect(results.filter((value) => !value)).toHaveLength(12);
++  /** Identifies the authoritative quota row for the persisted-count assertion. */
+   const quotaId = createHmac("sha256", secret)
+     .update("riddle-quest-facebook-identity-rate-v1\0", "utf8")
+     .update("198.51.100.7", "utf8")
+diff --git a/firebase-functions/src/__tests__/race/raceRollout.test.ts b/firebase-functions/src/__tests__/race/raceRollout.test.ts
+index a9d650889..187c133f3 100644
+--- a/firebase-functions/src/__tests__/race/raceRollout.test.ts
++++ b/firebase-functions/src/__tests__/race/raceRollout.test.ts
+@@ -241,16 +241,21 @@ describe("Race rollout configuration cache", () => {
+   });
+ 
+   it("uses the default production clock and expires cached access after 15 seconds", async () => {
++    /** Worker marker restored after exercising the production cache default. */
+     const originalWorkerId = process.env.JEST_WORKER_ID;
++    /** Emulator marker restored after exercising the production cache default. */
+     const originalEmulator = process.env.FUNCTIONS_EMULATOR;
++    /** System clock controlled at the cache expiry boundary. */
+     const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+     delete process.env.JEST_WORKER_ID;
+     delete process.env.FUNCTIONS_EMULATOR;
+     try {
++      /** Fresh rollout module initialized without test or emulator markers. */
+       let productionRollout!: typeof import("../../race/raceRollout");
+       jest.isolateModules(() => {
+         productionRollout = require("../../race/raceRollout");
+       });
++      /** Rollout reads switch from enabled to disabled after the cache expires. */
+       const {db, get} = createCountingDb([
+         {enabled: true, percentage: 100, allowlistHashes: []},
+         {enabled: false, percentage: 0, allowlistHashes: []},
+@@ -272,9 +277,11 @@ describe("Race rollout configuration cache", () => {
+   });
+ 
+   it("uses the system clock when a configured TTL omits a custom clock", async () => {
++    /** System clock controlled at the cache expiry boundary. */
+     const clock = jest.spyOn(Date, "now").mockImplementation(() => now);
+     try {
+       configureRaceRolloutCache({ttlMs: 5_000});
++      /** Rollout reads switch from enabled to disabled after the cache expires. */
+       const {db, get} = createCountingDb([
+         {enabled: true, percentage: 100, allowlistHashes: []},
+         {enabled: false, percentage: 0, allowlistHashes: []},
+@@ -292,15 +299,20 @@ describe("Race rollout configuration cache", () => {
+   });
+ 
+   it("retains a newer disabled rollout when an expired pending read fails", async () => {
++    /** Newer rollout read disables access while an older read remains pending. */
+     const {db, get} = createCountingDb([{enabled: false, percentage: 0, allowlistHashes: []}]);
++    /** Rejects the superseded pending read after the newer value is cached. */
+     let rejectRead!: (reason: Error) => void;
+     get.mockImplementationOnce(() => new Promise((_, reject) => {rejectRead = reject;}));
++    /** Initial rollout read retained past its cache window. */
+     const expiredRead = getRaceAccessForUser("a", "en", db);
+     now = 15_000;
+     await expect(getRaceAccessForUser("a", "en", db)).resolves.toMatchObject({enabled: false});
+     expect(get).toHaveBeenCalledTimes(2);
+ 
++    /** Transient failure delivered only to the superseded read. */
+     const failure = new Error("expired rollout read unavailable");
++    /** Rejection assertion attached before rejecting the pending provider read. */
+     const rejectedRead = expect(expiredRead).rejects.toBe(failure);
+     rejectRead(failure);
+     await rejectedRead;
+diff --git a/packages/portal/package.json b/packages/portal/package.json
+index a5dd8fa25..4c44d1711 100644
+--- a/packages/portal/package.json
++++ b/packages/portal/package.json
+@@ -34,7 +34,7 @@
+     "release:facebook": "pnpm preflight:facebook-upload && pnpm facebook:draft begin",
+     "release:jest": "node scripts/release-jest-timestamped.mjs",
+     "release:jest:timestamped": "node scripts/release-jest-timestamped.mjs",
+-    "test:release-scripts": "node --test --test-isolation=none scripts/jest-console-manifest.test.mjs scripts/jest-upload-artifact.test.mjs scripts/validate-w3c.test.mjs scripts/facebook-release-artifact.test.mjs scripts/facebook-release-state.test.mjs scripts/locale-audit-rules.test.mjs scripts/platform-artifact-audits.test.mjs scripts/playable-content-plugin.test.mjs scripts/content-protection.test.mjs scripts/youtube-release-artifact.test.mjs ../../scripts/release/platform-releases.test.mjs",
++    "test:release-scripts": "node --test --test-isolation=none scripts/jest-console-manifest.test.mjs scripts/jest-upload-artifact.test.mjs scripts/jest-payment-live-acceptance.test.mjs scripts/validate-w3c.test.mjs scripts/facebook-release-artifact.test.mjs scripts/facebook-release-state.test.mjs scripts/locale-audit-rules.test.mjs scripts/platform-artifact-audits.test.mjs scripts/playable-content-plugin.test.mjs scripts/content-protection.test.mjs scripts/youtube-release-artifact.test.mjs ../../scripts/release/platform-releases.test.mjs",
+     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs",
+     "audit:facebook-artifact": "node scripts/audit-facebook-artifact.mjs",
+     "audit:reddit-artifact": "node scripts/audit-reddit-artifact.mjs",
+diff --git a/packages/portal/scripts/jest-payment-live-acceptance.mjs b/packages/portal/scripts/jest-payment-live-acceptance.mjs
+new file mode 100644
+index 000000000..b7f8b53a9
+--- /dev/null
++++ b/packages/portal/scripts/jest-payment-live-acceptance.mjs
+@@ -0,0 +1,291 @@
++import {createHash} from "node:crypto";
++import {assertExactDeployedJestBuildUrl} from "../src/jest/__tests__/deployedJestBuildIdentity.ts";
++
++/** Pinned server-configured bonus for the one first-purchase achievement this endpoint can unlock. */
++export const confirmedJestFirstPurchaseBonus = 25;
++
++/** Pins the supported zero-charge checkout to the server's configured coin award. */
++export function confirmedJestSandboxCoins(sku) {
++  if (sku !== "com.roobsworld.riddlequest.coinpack1") {
++    throw new Error("The payment probe supports only the configured 250-coin coinpack1 SKU.");
++  }
++  return 250;
++}
++
++/** Rejects checkout receipts that cannot establish a signed zero-dollar sandbox purchase. */
++export function assertSandboxJestCheckout(purchase, sku) {
++  confirmedJestSandboxCoins(sku);
++  if (purchase?.result !== "success" || purchase.purchase?.productSku !== sku ||
++      purchase.purchase?.sandbox !== true || purchase.purchase?.price !== 0 ||
++      typeof purchase.purchase?.purchaseToken !== "string" || !purchase.purchase.purchaseToken.trim() ||
++      typeof purchase.purchaseSigned !== "string" || !purchase.purchaseSigned.trim()) {
++    throw new Error("Jest checkout did not return a signed zero-dollar sandbox purchase for the confirmed SKU.");
++  }
++}
++
++/** Reads the live signed catalogs/recovery queue within 15 seconds; serialized directly into the game frame. */
++export async function readJestPaymentCatalog({expectedProductSku, expectedSubscriptionSku}) {
++  let timeout;
++  try {
++    const deadline = new Promise((_, reject) => {
++      timeout = setTimeout(() => reject(new Error("The catalog deadline elapsed.")), 15_000);
++    });
++    const [products, subscriptions, incomplete] = await Promise.race([
++      Promise.all([
++        globalThis.JestSDK.payments.getProducts(),
++        globalThis.JestSDK.payments.getSubscriptions(),
++        globalThis.JestSDK.payments.getIncompletePurchases(),
++      ]), deadline,
++    ]);
++    return {
++      product: products.find(({sku}) => sku === expectedProductSku),
++      subscription: subscriptions.subscriptions.find(({sku}) => sku === expectedSubscriptionSku),
++      incomplete: {
++        hasMore: incomplete.hasMore,
++        count: Array.isArray(incomplete.purchases) ? incomplete.purchases.length : null,
++        signed: typeof incomplete.purchasesSigned === "string" && !!incomplete.purchasesSigned.trim(),
++      },
++    };
++  } catch {
++    throw new Error("The Jest payment catalog could not be confirmed within its 15-second bound.");
++  } finally {clearTimeout(timeout);}
++}
++
++/** Waits at most 60 seconds after the visible zero-dollar confirmation; never retries or acknowledges checkout. */
++export async function readJestSandboxCheckout() {
++  let timeout;
++  try {
++    return await Promise.race([
++      globalThis.__RIDDLE_QUEST_PAYMENT_TEST__,
++      new Promise((_, reject) => {
++        timeout = setTimeout(() => reject(new Error("The checkout deadline elapsed.")), 60_000);
++      }),
++    ]);
++  } catch {
++    throw new Error("The zero-dollar sandbox checkout did not resolve within its 60-second bound.");
++  } finally {clearTimeout(timeout);}
++}
++
++/**
++ * Grants, verifies replay, then acknowledges one sandbox receipt. A failed/unknown grant stays recoverable.
++ * Playwright serializes this callback into the game frame, so all browser-side dependencies stay inside it.
++ */
++export async function settleSandboxJestPurchase({baseUrl, signed, token, expectedCoins, initialCoins, expectedAchievementBonus}) {
++  let durableGrantConfirmed = false;
++  let purchaseCompleted = false;
++  let idempotentReplay = false;
++  let stage = "inputs";
++  try {
++    if (expectedCoins !== 250 || expectedAchievementBonus !== 25 || typeof signed !== "string" || !signed.trim() ||
++        typeof token !== "string" || !token.trim() || !Number.isSafeInteger(initialCoins) || initialCoins < 0 ||
++        !Number.isSafeInteger(initialCoins + expectedCoins)) {
++      throw new Error("The sandbox settlement inputs are incomplete or do not match the confirmed coin award.");
++    }
++    let playerId;
++    try {playerId = globalThis.JestSDK.getPlayer().playerId;} catch {
++      throw new Error("Jest did not provide the current sandbox player identity.");
++    }
++    if (typeof playerId !== "string" || !playerId.trim()) {
++      throw new Error("Jest did not provide the current sandbox player identity.");
++    }
++    const grant = async () => {
++      const controller = new AbortController();
++      const timeout = setTimeout(() => controller.abort(), 15_000);
++      try {
++        const response = await fetch(baseUrl + "/grantJestPurchase", {
++          method: "POST",
++          headers: {"content-type": "application/json"},
++          body: JSON.stringify({purchaseSigned: signed, playerId, purchaseToken: token}),
++          signal: controller.signal,
++        });
++        return {ok: response.ok, body: await response.json()};
++      } catch {
++        throw new Error(controller.signal.aborted
++          ? "The authoritative grant exceeded 15 seconds; leaving the purchase incomplete."
++          : "The authoritative grant could not be confirmed; leaving the purchase incomplete.");
++      } finally {
++        clearTimeout(timeout);
++      }
++    };
++    stage = "grant";
++    durableGrantConfirmed = null;
++    const first = await grant();
++    const achievements = first.body?.newlyUnlockedAchievementIds;
++    const validAchievements = Array.isArray(achievements) &&
++      (achievements.length === 0 || achievements.length === 1 && achievements[0] === "first_purchase");
++    const achievementBonus = validAchievements ? achievements.length * expectedAchievementBonus : null;
++    if (!first.ok || first.body?.granted !== true || first.body?.alreadyProcessed !== false ||
++        first.body?.purchaseToken !== token || first.body?.coinsAwarded !== expectedCoins ||
++        !validAchievements || !Number.isSafeInteger(first.body?.newCoins) ||
++        first.body.newCoins !== initialCoins + expectedCoins + achievementBonus) {
++      throw new Error("The backend did not confirm a durable matching-token grant; leaving the purchase incomplete.");
++    }
++    durableGrantConfirmed = true;
++    stage = "replay";
++    const replay = await grant();
++    if (!replay.ok || replay.body?.granted !== true || replay.body?.alreadyProcessed !== true ||
++        replay.body?.purchaseToken !== token || replay.body?.coinsAwarded !== expectedCoins ||
++        replay.body?.newCoins !== first.body.newCoins || !Array.isArray(replay.body?.newlyUnlockedAchievementIds) ||
++        replay.body.newlyUnlockedAchievementIds.length !== 0) {
++      throw new Error("The backend did not confirm an idempotent replay; leaving the purchase incomplete.");
++    }
++    idempotentReplay = true;
++    const boundedSdkCall = async call => {
++      let timeout;
++      try {
++        return await Promise.race([
++          Promise.resolve().then(call),
++          new Promise((_, reject) => {
++            timeout = setTimeout(() => reject(new Error("The SDK deadline elapsed.")), 15_000);
++          }),
++        ]);
++      } finally {clearTimeout(timeout);}
++    };
++    stage = "acknowledgment";
++    purchaseCompleted = null;
++    let completed;
++    try {completed = await boundedSdkCall(() => globalThis.JestSDK.payments.completePurchase({purchaseToken: token}));} catch {
++      throw new Error("Jest did not confirm acknowledgment within its 15-second bound; completion state is unknown.");
++    }
++    if (completed?.result !== "success") throw new Error("Jest did not confirm acknowledgment of the granted purchase.");
++    purchaseCompleted = true;
++    stage = "recovery";
++    let remaining;
++    try {remaining = await boundedSdkCall(() => globalThis.JestSDK.payments.getIncompletePurchases());} catch {
++      throw new Error("Jest purchase recovery could not be inspected within its 15-second bound after acknowledgment.");
++    }
++    if (!Array.isArray(remaining?.purchases) || remaining.hasMore !== false ||
++        typeof remaining.purchasesSigned !== "string" || !remaining.purchasesSigned.trim() ||
++        remaining.purchases.some(purchase => typeof purchase?.purchaseToken !== "string" ||
++          !purchase.purchaseToken.trim() || purchase.purchaseToken === token)) {
++      throw new Error("Jest did not prove removal of the granted purchase from its complete signed recovery queue.");
++    }
++    return {passed: true, durableGrantConfirmed, purchaseCompleted, coinsAwarded: expectedCoins,
++      achievementBonus, newCoins: first.body.newCoins, idempotentReplay, completed: true};
++  } catch (error) {
++    return {passed: false, durableGrantConfirmed, purchaseCompleted, idempotentReplay, stage, message: error.message};
++  }
++}
++
++/** Validates the redacted browser result while keeping settlement checkpoints available on failure. */
++export function assertCompletedJestPaymentSettlement(verification) {
++  if (verification?.passed !== true || verification.durableGrantConfirmed !== true ||
++      verification.purchaseCompleted !== true || verification.idempotentReplay !== true || verification.completed !== true) {
++    throw new Error(verification?.passed === false && typeof verification.message === "string"
++      ? verification.message : "Jest payment settlement did not return confirmed grant and acknowledgment evidence.");
++  }
++}
++
++/** Reads the actual initial wallet as an integer and verifies its locale-format round trip in the browser. */
++export function readJestPaymentWalletBalance() {
++  const text = document.querySelector(".game-header .coin-pill strong")?.textContent?.trim();
++  const digits = Array.from({length: 10}, (_, digit) => digit.toLocaleString());
++  const normalized = Array.from(text ?? "").filter(character => digits.includes(character))
++    .map(character => digits.indexOf(character)).join("");
++  const balance = Number(normalized);
++  if (!normalized || !Number.isSafeInteger(balance) || balance.toLocaleString() !== text) {
++    throw new Error("The initial game wallet did not contain a valid locale-formatted coin balance.");
++  }
++  return balance;
++}
++
++/** Compares the actual wallet's locale-formatted DOM balance; it runs in the game frame. */
++export function hasConfirmedJestWalletBalance(expected) {
++  const badge = document.querySelector(".game-header .coin-pill strong");
++  return Number.isSafeInteger(expected) && badge?.textContent?.trim() === expected.toLocaleString();
++}
++
++/** Loads a real hosted frame, verifies exact build identity, and waits for playable server-hydrated startup. */
++export async function loadExactJestPaymentGame(page, {gameUrl, gameId, expectedBuildVersion}) {
++  await page.goto(gameUrl, {waitUntil: "domcontentloaded", timeout: 30_000});
++  await page.waitForFunction((expectedGameId) => [...document.querySelectorAll("iframe")].some((iframe) => {
++    try {return new URL(iframe.src).hostname === expectedGameId + ".builds.jest.com";} catch {return false;}
++  }), gameId, {timeout: 30_000});
++  let game;
++  const deadline = Date.now() + 30_000;
++  while (Date.now() < deadline) {
++    game = page.frames().find((frame) => {
++      try {return new URL(frame.url()).hostname === gameId + ".builds.jest.com";} catch {return false;}
++    });
++    if (game && !game.isDetached()) {
++      await page.waitForTimeout(750);
++      if (!game.isDetached() && page.frames().includes(game)) break;
++    }
++    game = undefined;
++    await page.waitForTimeout(100);
++  }
++  if (!game) throw new Error("The exact deployed Jest game iframe was not found.");
++  assertExactDeployedJestBuildUrl({buildVersion: expectedBuildVersion, gameId, url: game.url()});
++  const playable = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
++  const startupError = game.locator(".route-missing");
++  await playable.or(startupError).first().waitFor({timeout: 30_000});
++  if (await startupError.isVisible()) throw new Error("The exact deployed Jest game did not finish startup.");
++  const letsPlay = game.getByRole("button", {name: /let's play/i});
++  if (await letsPlay.isVisible()) {
++    await letsPlay.click();
++    const gotIt = game.getByRole("button", {name: /got it/i});
++    if (await gotIt.isVisible()) await gotIt.click();
++  }
++  await game.locator(".riddle-card h1").waitFor({timeout: 30_000});
++  return game;
++}
++
++/** Verifies that a fresh app load displays the durable backend balance, including achievement bonuses. */
++export async function verifyReloadedJestPaymentWallet(page, input) {
++  const game = await loadExactJestPaymentGame(page, input);
++  await game.waitForFunction(hasConfirmedJestWalletBalance, input.confirmedBalance, {timeout: 15_000});
++  return {game, formattedBalance: await game.locator(".game-header .coin-pill strong").innerText()};
++}
++
++/** Captures uncaught errors only inside this game's frame; no host error messages or receipt data are retained. */
++export function captureJestPaymentGameErrors({gameId}) {
++  if (location.origin !== "https://" + gameId.toLowerCase() + ".builds.jest.com") return;
++  const errors = globalThis.__RIDDLE_QUEST_PAYMENT_ERRORS__ = [];
++  const category = text => /app.?check|recaptcha/i.test(text) ? "app-check" :
++    /requestStorageAccess/i.test(text) ? "storage-access" : /jest|sdk/i.test(text) ? "sdk" : "browser";
++  addEventListener("error", event => errors.push({kind: "uncaught-error", category: category(event.message)}));
++  addEventListener("unhandledrejection", event => {
++    const reason = event.reason;
++    const message = typeof reason?.message === "string" ? reason.message : typeof reason === "string" ? reason : "unknown";
++    errors.push({kind: "unhandled-rejection", category: category(message)});
++  });
++}
++
++/** Reads only sanitized diagnostic fields from the instrumented game frame. */
++export function readJestPaymentGameErrors() {
++  const errors = globalThis.__RIDDLE_QUEST_PAYMENT_ERRORS__;
++  if (!Array.isArray(errors)) throw new Error("The exact game frame was not instrumented for payment QA errors.");
++  return errors.map(({kind, category}) => ({kind, category}));
++}
++
++/** Rejects game errors and game/backend network failures while retaining unrelated host diagnostics as evidence. */
++export function assertNoRelevantJestPaymentErrors(diagnostics) {
++  if (diagnostics.gameErrors.length || diagnostics.consoleErrors.some(error => error.relevant) ||
++      diagnostics.failedRequests.some(request => request.relevant) || diagnostics.httpErrors.some(response => response.relevant)) {
++    throw new Error("The game or authoritative backend reported relevant browser errors during payment acceptance.");
++  }
++}
++
++/** Records useful error categories and fingerprints without raw messages, receipts, query strings, or tokens. */
++export function collectRedactedJestPaymentDiagnostics(page, {gameId, functionsBaseUrl}) {
++  const diagnostics = {gameErrors: [], consoleErrors: [], pageErrors: [], failedRequests: [], httpErrors: []};
++  const fingerprint = text => createHash("sha256").update(String(text)).digest("hex").slice(0, 12);
++  const category = text => /app.?check|recaptcha/i.test(text) ? "app-check" :
++    /requestStorageAccess/i.test(text) ? "storage-access" : /jest|sdk/i.test(text) ? "sdk" : "browser";
++  const origin = value => {try {return new URL(value).origin;} catch {return "unknown";}};
++  const gameOrigin = "https://" + gameId.toLowerCase() + ".builds.jest.com";
++  const backendOrigin = new URL(functionsBaseUrl).origin;
++  const relevantNetwork = url => [gameOrigin, backendOrigin].includes(origin(url));
++  page.on("console", message => {
++    if (message.type() === "error") diagnostics.consoleErrors.push({category: category(message.text()),
++      fingerprint: fingerprint(message.text()), relevant: origin(message.location().url) === gameOrigin});
++  });
++  page.on("pageerror", error => diagnostics.pageErrors.push({category: category(error.message), fingerprint: fingerprint(error.message)}));
++  page.on("requestfailed", request => diagnostics.failedRequests.push({origin: origin(request.url()), method: request.method(),
++    fingerprint: fingerprint(request.failure()?.errorText || "unknown"), relevant: relevantNetwork(request.url())}));
++  page.on("response", response => {
++    if (response.status() >= 400) diagnostics.httpErrors.push({origin: origin(response.url()), status: response.status(),
++      relevant: relevantNetwork(response.url())});
++  });
++  return {diagnostics, failure: error => ({category: category(error?.message ?? "unknown"), fingerprint: fingerprint(error?.message ?? "unknown")})};
++}
+diff --git a/packages/portal/scripts/jest-payment-live-acceptance.test.mjs b/packages/portal/scripts/jest-payment-live-acceptance.test.mjs
+new file mode 100644
+index 000000000..005011db1
+--- /dev/null
++++ b/packages/portal/scripts/jest-payment-live-acceptance.test.mjs
+@@ -0,0 +1,485 @@
++import assert from "node:assert/strict";
++import {EventEmitter} from "node:events";
++import {Script} from "node:vm";
++import test from "node:test";
++import {JEST_COIN_PRODUCTS} from "../../../firebase-functions/src/jest/jestProductCatalog.ts";
++import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../firebase-functions/src/shared/constants.ts";
++import {
++  assertCompletedJestPaymentSettlement, assertNoRelevantJestPaymentErrors, assertSandboxJestCheckout,
++  captureJestPaymentGameErrors,
++  collectRedactedJestPaymentDiagnostics, confirmedJestFirstPurchaseBonus, confirmedJestSandboxCoins,
++  hasConfirmedJestWalletBalance,
++  readJestPaymentCatalog, readJestPaymentGameErrors, readJestPaymentWalletBalance, readJestSandboxCheckout,
++  settleSandboxJestPurchase, verifyReloadedJestPaymentWallet,
++} from "./jest-payment-live-acceptance.mjs";
++
++const sku = "com.roobsworld.riddlequest.coinpack1";
++const token = "test-purchase-token";
++const successGrant = {granted: true, alreadyProcessed: false, purchaseToken: token, coinsAwarded: 250,
++  newCoins: 450, newlyUnlockedAchievementIds: []};
++const successReplay = {...successGrant, alreadyProcessed: true};
++
++/** Runs the actual exported callback as Playwright does, with isolated backend/SDK globals and no network. */
++async function settlement(options = {}) {
++  const calls = [];
++  const timers = [];
++  let incomplete = true;
++  let grantCount = 0;
++  let acknowledged = 0;
++  let lateCompletion;
++  const globals = {
++    AbortController,
++    setTimeout: (callback, delay) => {
++      assert.equal(delay, 15_000, "grant, body, and SDK reads must use the real 15-second bound");
++      const timer = {cleared: false};
++      timers.push(timer);
++      if (options.stall?.grant === grantCount + 1 ||
++          options.sdkStall === "complete" && timers.length === 3 ||
++          options.sdkStall === "recovery" && timers.length === 4) {
++        queueMicrotask(() => {if (!timer.cleared) callback();});
++      }
++      return timer;
++    },
++    clearTimeout: timer => {timer.cleared = true;},
++    fetch: async (url, request) => {
++      grantCount += 1;
++      calls.push("grant-" + grantCount);
++      assert.equal(url, "https://test.invalid/grantJestPurchase");
++      assert.deepEqual(JSON.parse(request.body), {purchaseSigned: "test-signed-receipt", playerId: "test-player", purchaseToken: token});
++      const abort = () => new Promise((_, reject) => {
++        if (request.signal.aborted) reject(new Error("test abort"));
++        else request.signal.addEventListener("abort", () => reject(new Error("test abort")), {once: true});
++      });
++      if (options.stall?.grant === grantCount && options.stall.where === "fetch") return abort();
++      if (options.transport === grantCount) throw new Error("test transport failure with private receipt");
++      const response = grantCount === 1 ? options.first ?? {ok: true, body: successGrant} : options.replay ?? {ok: true, body: successReplay};
++      return {ok: response.ok, json: async () => {
++        if (options.stall?.grant === grantCount && options.stall.where === "body") return abort();
++        if (options.badJson === grantCount) throw new Error("test malformed private receipt");
++        return structuredClone(response.body);
++      }};
++    },
++    JestSDK: {
++      getPlayer: () => ({playerId: Object.hasOwn(options, "playerId") ? options.playerId : "test-player"}),
++      payments: {
++        completePurchase: async input => {
++          assert.equal(input.purchaseToken, token);
++          acknowledged += 1;
++          calls.push("complete");
++          if (options.sdkStall === "complete") return new Promise(resolve => {
++            lateCompletion = () => {incomplete = false; resolve({result: "success"});};
++          });
++          if (options.completeThrows) throw new Error("test private SDK error");
++          const result = Object.hasOwn(options, "completion") ? options.completion : {result: "success"};
++          if (result?.result === "success" && !options.keepIncomplete) incomplete = false;
++          return result;
++        },
++        getIncompletePurchases: async () => {
++          calls.push("recovery-read");
++          if (options.sdkStall === "recovery") return new Promise(() => {});
++          if (options.recoveryThrows) throw new Error("test private queue error");
++          return Object.hasOwn(options, "recovery") ? options.recovery : {
++            purchases: incomplete ? [{purchaseToken: token}] : [], hasMore: false, purchasesSigned: "test-signed-queue",
++          };
++        },
++      },
++    },
++  };
++  const callback = new Script("(" + settleSandboxJestPurchase.toString() + ")").runInNewContext(globals);
++  let result;
++  let error;
++  let verification;
++  try {
++    verification = await callback({baseUrl: "https://test.invalid", signed: "test-signed-receipt", token,
++      expectedCoins: 250, initialCoins: 200, expectedAchievementBonus: confirmedJestFirstPurchaseBonus, ...options.input});
++    assertCompletedJestPaymentSettlement(verification);
++    result = verification;
++  }
++  catch (caught) {error = caught;}
++  assert.ok(timers.every(timer => timer.cleared), "every deadline timer must be cleared on success or rejection");
++  return {result, error, verification, calls, timers, incomplete, acknowledged, lateCompletion};
++}
++
++test("the confirmed sandbox SKU matches the authoritative 250-coin catalog", () => {
++  assert.equal(confirmedJestSandboxCoins(sku), JEST_COIN_PRODUCTS[sku]);
++  assert.equal(confirmedJestSandboxCoins(sku), 250);
++  assert.equal(confirmedJestFirstPurchaseBonus, ACHIEVEMENT_UNLOCK_COIN_REWARD);
++  assert.throws(() => confirmedJestSandboxCoins("another-product"));
++});
++
++test("checkout must be zero-dollar sandbox, signed, and bound to the confirmed SKU/token", () => {
++  const valid = {result: "success", purchase: {productSku: sku, purchaseToken: token, sandbox: true, price: 0}, purchaseSigned: "test-receipt"};
++  assert.doesNotThrow(() => assertSandboxJestCheckout(valid, sku));
++  for (const changed of [{result: "cancelled"}, {purchaseSigned: ""}, {purchaseSigned: undefined},
++    {purchase: {...valid.purchase, sandbox: false}}, {purchase: {...valid.purchase, price: 0.99}},
++    {purchase: {...valid.purchase, productSku: "another-product"}}, {purchase: {...valid.purchase, purchaseToken: " "}}]) {
++    assert.throws(() => assertSandboxJestCheckout({...valid, ...changed}, sku));
++  }
++});
++
++/** Drives an exported browser callback with an advancing fake deadline and no browser, network, or wall-clock delay. */
++async function boundedRead(callback, globals, input, {delay, expires = false}) {
++  const timers = [];
++  const browserCallback = new Script("(" + callback.toString() + ")").runInNewContext({
++    ...globals, setTimeout: (callback, milliseconds) => {
++      assert.equal(milliseconds, delay);
++      const timer = {cleared: false};
++      timers.push(timer);
++      if (expires) queueMicrotask(() => {if (!timer.cleared) callback();});
++      return timer;
++    }, clearTimeout: timer => {timer.cleared = true;},
++  });
++  let result;
++  let error;
++  try {result = await browserCallback(input);} catch (caught) {error = caught;}
++  assert.equal(timers.length, 1);
++  assert.ok(timers.every(timer => timer.cleared));
++  return {result, error};
++}
++
++function catalogSdk({stall, rejects, malformed = false} = {}) {
++  const calls = [];
++  const subscriptions = {subscriptions: [{sku: "monthly", price: 4.99, billingPeriod: "monthly", currency: "USD"}]};
++  const values = {getProducts: [{sku, price: 0.99, currency: "USD"}], getSubscriptions: subscriptions,
++    getIncompletePurchases: {purchases: [], hasMore: false, purchasesSigned: "private-signed-queue"}};
++  const payments = Object.fromEntries(Object.keys(values).map(name => [name, () => {
++    calls.push(name);
++    if (stall === name) return new Promise(() => {});
++    if (rejects === name) return Promise.reject(new Error("fake-sensitive-signature"));
++    return Promise.resolve(malformed && name === "getProducts" ? null : values[name]);
++  }]));
++  return {calls, globals: {JestSDK: {payments}}};
++}
++const catalogInput = {expectedProductSku: sku, expectedSubscriptionSku: "monthly"};
++test("bounded catalog uses all actual SDK reads and returns only the selected products and redacted signed queue shape", async () => {
++  const sdk = catalogSdk();
++  const {result, error} = await boundedRead(readJestPaymentCatalog, sdk.globals, catalogInput, {delay: 15_000});
++  assert.equal(error, undefined);
++  assert.equal(result.product.sku, sku);
++  assert.equal(result.subscription.sku, "monthly");
++  assert.deepEqual(JSON.parse(JSON.stringify(result.incomplete)), {count: 0, hasMore: false, signed: true});
++  assert.doesNotMatch(JSON.stringify(result), /private-signed-queue/);
++  assert.deepEqual(sdk.calls, ["getProducts", "getSubscriptions", "getIncompletePurchases"]);
++});
++for (const method of ["getProducts", "getSubscriptions", "getIncompletePurchases"]) {
++  test(method + " cannot hang the catalog or restart any SDK read", async () => {
++    const sdk = catalogSdk({stall: method});
++    const {error, result} = await boundedRead(readJestPaymentCatalog, sdk.globals, catalogInput, {delay: 15_000, expires: true});
++    assert.match(error.message, /15-second bound/);
++    assert.equal(result, undefined);
++    assert.deepEqual(sdk.calls, ["getProducts", "getSubscriptions", "getIncompletePurchases"]);
++  });
++  test(method + " rejection cannot expose private SDK errors", async () => {
++    const sdk = catalogSdk({rejects: method});
++    const {error} = await boundedRead(readJestPaymentCatalog, sdk.globals, catalogInput, {delay: 15_000});
++    assert.match(error.message, /payment catalog could not be confirmed/);
++    assert.doesNotMatch(error.message, /fake-sensitive-signature/);
++  });
++}
++test("malformed catalogs fail within the bound and clear the timer", async () => {
++  const sdk = catalogSdk({malformed: true});
++  const {error} = await boundedRead(readJestPaymentCatalog, sdk.globals, catalogInput, {delay: 15_000});
++  assert.match(error.message, /payment catalog could not be confirmed/);
++});
++test("successful checkout returns its existing receipt without restarting or acknowledging it", async () => {
++  const receipt = {result: "success", purchase: {purchaseToken: token}};
++  const {result, error} = await boundedRead(readJestSandboxCheckout,
++    {__RIDDLE_QUEST_PAYMENT_TEST__: Promise.resolve(receipt)}, undefined, {delay: 60_000});
++  assert.equal(error, undefined);
++  assert.equal(result, receipt);
++});
++test("stalled checkout times out after its post-confirmation 60-second bound without any SDK calls", async () => {
++  const {result, error} = await boundedRead(readJestSandboxCheckout,
++    {__RIDDLE_QUEST_PAYMENT_TEST__: new Promise(() => {})}, undefined, {delay: 60_000, expires: true});
++  assert.equal(result, undefined);
++  assert.match(error.message, /60-second bound/);
++});
++test("checkout rejection exposes no raw receipt or SDK error and clears the deadline", async () => {
++  const {error} = await boundedRead(readJestSandboxCheckout,
++    {__RIDDLE_QUEST_PAYMENT_TEST__: Promise.reject(new Error("fake-sensitive-signature"))}, undefined, {delay: 60_000});
++  assert.match(error.message, /60-second bound/);
++  assert.doesNotMatch(error.message, /fake-sensitive-signature/);
++});
++
++const invalidGrants = [
++  ["rejected first grant", {first: {ok: false, body: {error: "unavailable"}}}],
++  ["unknown first grant", {first: {ok: true, body: null}}],
++  ["missing durable grant flag", {first: {ok: true, body: {...successGrant, granted: undefined}}}],
++  ["wrong 250-coin award", {first: {ok: true, body: {...successGrant, coinsAwarded: 500}}}],
++  ["mismatched first token", {first: {ok: true, body: {...successGrant, purchaseToken: "another-token"}}}],
++  ["unexpected first replay", {first: {ok: true, body: successReplay}}],
++  ["malformed authoritative balance", {first: {ok: true, body: {...successGrant, newCoins: "450"}}}],
++  ["unsafe authoritative balance", {first: {ok: true, body: {...successGrant, newCoins: Number.MAX_SAFE_INTEGER + 1}}}],
++  ["balance below awarded coins", {first: {ok: true, body: {...successGrant, newCoins: 200}}}],
++  ["unchanged existing wallet balance", {input: {initialCoins: 1000}, first: {ok: true, body: {...successGrant, newCoins: 1000}}}],
++  ["decreased existing wallet balance", {input: {initialCoins: 1000}, first: {ok: true, body: {...successGrant, newCoins: 900}}}],
++  ["unexpected extra coins", {first: {ok: true, body: {...successGrant, newCoins: 476}}}],
++  ["bonus without achievement", {first: {ok: true, body: {...successGrant, newCoins: 475}}}],
++  ["missing achievement shape", {first: {ok: true, body: {...successGrant, newlyUnlockedAchievementIds: undefined}}}],
++  ["wrong achievement", {first: {ok: true, body: {...successGrant, newlyUnlockedAchievementIds: ["unrelated"]}}}],
++  ["duplicate first purchase bonus", {first: {ok: true, body: {...successGrant, newCoins: 500, newlyUnlockedAchievementIds: ["first_purchase", "first_purchase"]}}}],
++  ["replay achievement bonus", {replay: {ok: true, body: {...successReplay, newlyUnlockedAchievementIds: ["first_purchase"]}}}],
++  ["rejected replay", {replay: {ok: false, body: {error: "unavailable"}}}],
++  ["unknown replay", {replay: {ok: true, body: []}}],
++  ["missing replay grant flag", {replay: {ok: true, body: {...successReplay, granted: false}}}],
++  ["missing idempotent replay", {replay: {ok: true, body: {...successReplay, alreadyProcessed: false}}}],
++  ["mismatched replay token", {replay: {ok: true, body: {...successReplay, purchaseToken: "another-token"}}}],
++  ["changed replay award", {replay: {ok: true, body: {...successReplay, coinsAwarded: 500}}}],
++  ["changed replay balance", {replay: {ok: true, body: {...successReplay, newCoins: 700}}}],
++  ["first transport failure", {transport: 1}], ["replay transport failure", {transport: 2}],
++  ["first JSON failure", {badJson: 1}], ["replay JSON failure", {badJson: 2}],
++];
++for (const [name, input] of invalidGrants) {
++  test(name + " leaves its purchase incomplete and never acknowledges it", async () => {
++    const result = await settlement(input);
++    assert.equal(result.acknowledged, 0, "failed grant must not acknowledge a purchase");
++    assert.equal(result.incomplete, true, "failed grant must retain the recovery token");
++    assert.ok(result.error);
++    assert.ok(result.timers.every(timer => timer.cleared));
++    assert.doesNotMatch(result.error.message, /test-purchase-token|test-signed-receipt|private receipt/);
++  });
++}
++
++for (const grant of [1, 2]) for (const where of ["fetch", "body"]) {
++  test("grant " + grant + " " + where + " timeout aborts without acknowledgment", async () => {
++    const result = await settlement({stall: {grant, where}});
++    assert.match(result.error.message, /exceeded 15 seconds/);
++    assert.equal(result.acknowledged, 0);
++    assert.equal(result.incomplete, true);
++    assert.ok(result.timers.every(timer => timer.cleared));
++  });
++}
++
++test("missing receipt/token/player identity or wrong expected award cannot call the backend", async () => {
++  for (const input of [{input: {signed: " "}}, {input: {token: ""}}, {input: {expectedCoins: 500}},
++    {input: {initialCoins: -1}}, {input: {initialCoins: "200"}}, {input: {initialCoins: Number.MAX_SAFE_INTEGER}},
++    {input: {expectedAchievementBonus: 50}},
++    {playerId: " "}, {playerId: null}]) {
++    const result = await settlement(input);
++    assert.ok(result.error);
++    assert.deepEqual(result.calls, []);
++    assert.equal(result.incomplete, true);
++  }
++});
++
++test("durable grant and idempotent replay precede one completion and exhaustive signed recovery inspection", async () => {
++  const result = await settlement();
++  assert.equal(result.error, undefined);
++  assert.deepEqual(result.calls, ["grant-1", "grant-2", "complete", "recovery-read"]);
++  assert.deepEqual(JSON.parse(JSON.stringify(result.result)), {passed: true, durableGrantConfirmed: true,
++    purchaseCompleted: true, coinsAwarded: 250, achievementBonus: 0, newCoins: 450, idempotentReplay: true, completed: true});
++  assert.equal(result.incomplete, false);
++  assert.equal(result.acknowledged, 1);
++  assert.equal(result.timers.length, 4);
++  assert.ok(result.timers.every(timer => timer.cleared));
++});
++
++for (const completion of [{result: "error"}, {result: "cancelled"}, {}, undefined]) {
++  test("unconfirmed SDK completion remains recoverable: " + (completion?.result ?? "missing"), async () => {
++    const result = await settlement({completion});
++    assert.match(result.error.message, /did not confirm acknowledgment/);
++    assert.equal(result.incomplete, true);
++    assert.equal(result.acknowledged, 1);
++    assert.equal(result.calls.includes("recovery-read"), false);
++  });
++}
++test("throwing SDK completion cannot claim success", async () => {
++  const result = await settlement({completeThrows: true});
++  assert.match(result.error.message, /did not confirm acknowledgment/);
++  assert.equal(result.incomplete, true);
++  assert.equal(result.verification.durableGrantConfirmed, true);
++  assert.equal(result.verification.purchaseCompleted, null);
++  assert.doesNotMatch(result.error.message, /private SDK/);
++});
++
++test("an acknowledgment deadline reports unknown state and never starts another acknowledgment or recovery read", async () => {
++  const result = await settlement({sdkStall: "complete"});
++  assert.match(result.error.message, /15-second bound; completion state is unknown/);
++  assert.equal(result.result, undefined);
++  assert.deepEqual(result.calls, ["grant-1", "grant-2", "complete"]);
++  assert.equal(result.acknowledged, 1);
++  assert.equal(result.incomplete, true);
++  result.lateCompletion();
++  await new Promise(resolve => setImmediate(resolve));
++  assert.deepEqual(result.calls, ["grant-1", "grant-2", "complete"], "late success must not resume timed-out acceptance");
++});
++
++test("a recovery deadline after confirmed acknowledgment cannot claim removal or start another SDK call", async () => {
++  const result = await settlement({sdkStall: "recovery"});
++  assert.match(result.error.message, /could not be inspected within its 15-second bound/);
++  assert.equal(result.result, undefined);
++  assert.equal(result.incomplete, false);
++  assert.equal(result.verification.durableGrantConfirmed, true);
++  assert.equal(result.verification.purchaseCompleted, true);
++  assert.deepEqual(result.calls, ["grant-1", "grant-2", "complete", "recovery-read"]);
++  assert.equal(result.acknowledged, 1);
++});
++
++for (const recovery of [null, {}, {purchases: "invalid", hasMore: false, purchasesSigned: "signed"},
++  {purchases: [], hasMore: true, purchasesSigned: "signed"}, {purchases: [], hasMore: false},
++  {purchases: [], hasMore: false, purchasesSigned: ""}, {purchases: [null], hasMore: false, purchasesSigned: "signed"}]) {
++  test("malformed/unsigned/paginated recovery cannot prove removal " + JSON.stringify(recovery), async () => {
++    const result = await settlement({recovery});
++    assert.match(result.error.message, /complete signed recovery queue/);
++    assert.equal(result.result, undefined);
++  });
++}
++test("a still-incomplete granted token or failed recovery read cannot be reported complete", async () => {
++  const retained = await settlement({keepIncomplete: true});
++  assert.match(retained.error.message, /complete signed recovery queue/);
++  const unavailable = await settlement({recoveryThrows: true});
++  assert.match(unavailable.error.message, /could not be inspected/);
++  assert.doesNotMatch(unavailable.error.message, /private queue/);
++  assert.equal(unavailable.verification.durableGrantConfirmed, true);
++  assert.equal(unavailable.verification.purchaseCompleted, true);
++});
++
++test("grant/replay/ack failures retain truthful redacted settlement checkpoints", async () => {
++  const unknown = await settlement({transport: 1});
++  assert.equal(unknown.verification.durableGrantConfirmed, null);
++  assert.equal(unknown.verification.purchaseCompleted, false);
++  const replay = await settlement({transport: 2});
++  assert.equal(replay.verification.durableGrantConfirmed, true);
++  assert.equal(replay.verification.purchaseCompleted, false);
++  assert.equal(replay.verification.stage, "replay");
++  const ack = await settlement({completeThrows: true});
++  assert.equal(ack.verification.durableGrantConfirmed, true);
++  assert.equal(ack.verification.purchaseCompleted, null);
++  assert.doesNotMatch(JSON.stringify([unknown.verification, replay.verification, ack.verification]), /test-signed-receipt|test-purchase-token|private/);
++});
++
++test("the balance increase accepts an authoritative first-purchase achievement bonus", async () => {
++  const grant = {...successGrant, newCoins: 475, newlyUnlockedAchievementIds: ["first_purchase"]};
++  const result = await settlement({first: {ok: true, body: grant}, replay: {ok: true, body: {...grant, alreadyProcessed: true, newlyUnlockedAchievementIds: []}}});
++  assert.equal(result.error, undefined);
++  assert.equal(result.result.newCoins, 475);
++  assert.equal(result.result.achievementBonus, 25);
++});
++
++const gameId = "019faa68-f3ec-755d-9ab5-c887fb426801";
++const buildVersion = "1.0.0-test";
++function walletPage({balance = 1234, older = false, failedStartup = false} = {}) {
++  const navigations = [];
++  const locator = selector => {
++    const result = {first: () => result, or: () => result, waitFor: async () => {},
++      isVisible: async () => selector === ".route-missing" && failedStartup,
++      innerText: async () => balance.toLocaleString(), click: async () => {}};
++    return result;
++  };
++  const game = {
++    url: () => "https://" + gameId + ".builds.jest.com/" + gameId + "/" + (older ? "older-build" : buildVersion) + "/index.html",
++    isDetached: () => false, locator, getByRole: () => locator("role"),
++    waitForFunction: async (callback, expected, options) => {
++      assert.equal(options.timeout, 15_000);
++      const predicate = new Script("(" + callback.toString() + ")").runInNewContext({
++        document: {querySelector: selector => {
++          assert.equal(selector, ".game-header .coin-pill strong");
++          return {textContent: balance.toLocaleString()};
++        }},
++      });
++      if (!predicate(expected)) throw new Error("Wallet badge did not match the confirmed backend balance");
++    },
++  };
++  return {navigations, page: {goto: async url => {navigations.push(url);}, waitForFunction: async () => {},
++    frames: () => [game], waitForTimeout: async () => {}}};
++}
++const walletInput = {gameId, expectedBuildVersion: buildVersion, gameUrl: "https://jest.com/g/riddle-q?versionId=test", confirmedBalance: 1234};
++test("wallet acceptance reloads the exact app and compares its locale-formatted authoritative balance", async () => {
++  const loaded = walletPage();
++  const result = await verifyReloadedJestPaymentWallet(loaded.page, walletInput);
++  assert.deepEqual(loaded.navigations, [walletInput.gameUrl]);
++  assert.equal(result.formattedBalance, (1234).toLocaleString());
++});
++for (const [name, options] of [["stale wallet", {balance: 984}], ["older build", {older: true}], ["failed startup", {failedStartup: true}]]) {
++  test(name + " fails reloaded wallet acceptance", async () => {
++    await assert.rejects(verifyReloadedJestPaymentWallet(walletPage(options).page, walletInput));
++  });
++}
++test("the actual wallet predicate rejects stale locale formatting and missing badges", () => {
++  const predicate = textContent => new Script("(" + hasConfirmedJestWalletBalance.toString() + ")").runInNewContext({document: {querySelector: () => textContent == null ? null : {textContent}}});
++  assert.equal(predicate((1234).toLocaleString())(1234), true);
++  assert.equal(predicate((1234).toLocaleString("de-DE"))(1234), (1234).toLocaleString("de-DE") === (1234).toLocaleString());
++  assert.equal(predicate(null)(1234), false);
++  assert.equal(predicate("1234")("1234"), false);
++});
++
++test("the initial wallet parser validates locale formatting and rejects missing/negative/malformed balances", () => {
++  const read = textContent => new Script("(" + readJestPaymentWalletBalance.toString() + ")()").runInNewContext({
++    document: {querySelector: () => textContent == null ? null : {textContent}},
++  });
++  assert.equal(read((1234).toLocaleString()), 1234);
++  assert.equal(read((0).toLocaleString()), 0);
++  for (const locale of ["ar-EG", "de-DE", "hi-IN"]) {
++    const textContent = (1234567).toLocaleString(locale);
++    const script = "Number.prototype.toLocaleString = function() {return new Intl.NumberFormat(" + JSON.stringify(locale) + ").format(Number(this));}; (" + readJestPaymentWalletBalance.toString() + ")()";
++    assert.equal(new Script(script).runInNewContext({document: {querySelector: () => ({textContent})}}), 1234567);
++  }
++  for (const invalid of [null, "-1", "not a wallet 1234", "1x234", "", "9007199254740992"]) assert.throws(() => read(invalid));
++});
++
++test("diagnostics preserve useful categories/statuses without raw errors, receipts, credentials, or query codes", () => {
++  const page = new EventEmitter();
++  const {diagnostics, failure} = collectRedactedJestPaymentDiagnostics(page, {gameId, functionsBaseUrl: "https://backend.invalid"});
++  const secret = "fake-sensitive-signature";
++  page.emit("console", {type: () => "error", text: () => "Jest SDK purchaseSigned=" + secret, location: () => ({url: "https://jest.com"})});
++  page.emit("pageerror", new Error("App Check " + secret));
++  page.emit("requestfailed", {url: () => "https://user:" + secret + "@jest.com/private?l=Ab12Cd34", method: () => "POST", failure: () => ({errorText: secret})});
++  page.emit("response", {url: () => "https://jest.com/private?token=" + secret, status: () => 500});
++  const serialized = JSON.stringify({diagnostics, failure: failure(new Error(secret))});
++  assert.doesNotMatch(serialized, /fake-sensitive-signature|Ab12Cd34|purchaseSigned|\/private/);
++  assert.equal(diagnostics.consoleErrors[0].category, "sdk");
++  assert.equal(diagnostics.pageErrors[0].category, "app-check");
++  assert.deepEqual(diagnostics.httpErrors, [{origin: "https://jest.com", status: 500, relevant: false}]);
++  assert.doesNotThrow(() => assertNoRelevantJestPaymentErrors(diagnostics));
++});
++
++function instrumentedFrame(origin) {
++  const listeners = {};
++  const globals = {location: {origin}, addEventListener: (event, callback) => {listeners[event] = callback;}};
++  const capture = new Script("(" + captureJestPaymentGameErrors.toString() + ")").runInNewContext(globals);
++  capture({gameId});
++  return {listeners, read: () => new Script("(" + readJestPaymentGameErrors.toString() + ")()").runInNewContext(globals)};
++}
++
++test("exact game-frame instrumentation records redacted uncaught errors/rejections and excludes host/ad frames", () => {
++  const game = instrumentedFrame("https://" + gameId + ".builds.jest.com");
++  game.listeners.error({message: "Jest SDK fake-sensitive-signature"});
++  game.listeners.unhandledrejection({reason: new Error("App Check fake-sensitive-signature")});
++  assert.deepEqual(JSON.parse(JSON.stringify(game.read())), [
++    {kind: "uncaught-error", category: "sdk"}, {kind: "unhandled-rejection", category: "app-check"},
++  ]);
++  for (const origin of ["https://jest.com", "https://ads.invalid", "https://" + gameId + ".builds.jest.com.attacker.invalid"]) {
++    const other = instrumentedFrame(origin);
++    assert.deepEqual(other.listeners, {});
++    assert.throws(other.read, /not instrumented/);
++  }
++});
++
++test("uncaught game errors, game console errors, and game/backend network failures block acceptance", () => {
++  const gameOrigin = "https://" + gameId + ".builds.jest.com";
++  for (const event of ["game-error", "game-console", "backend-response", "game-response", "backend-request", "game-request"]) {
++    const page = new EventEmitter();
++    const {diagnostics} = collectRedactedJestPaymentDiagnostics(page, {gameId, functionsBaseUrl: "https://backend.invalid"});
++    if (event === "game-error") diagnostics.gameErrors.push({kind: "uncaught-error", category: "browser"});
++    if (event === "game-console") page.emit("console", {type: () => "error", text: () => "fake-sensitive-signature", location: () => ({url: gameOrigin + "/script.js"})});
++    const origin = event.startsWith("backend") ? "https://backend.invalid" : gameOrigin;
++    if (event.endsWith("response")) page.emit("response", {url: () => origin + "/private?receipt=fake-sensitive-signature", status: () => 500});
++    if (event.endsWith("request")) page.emit("requestfailed", {url: () => origin + "/private?receipt=fake-sensitive-signature", method: () => "POST", failure: () => ({errorText: "fake-sensitive-signature"})});
++    assert.throws(() => assertNoRelevantJestPaymentErrors(diagnostics), /relevant browser errors/, event);
++    assert.doesNotMatch(JSON.stringify(diagnostics), /fake-sensitive-signature|\/private/);
++  }
++});
++
++test("unrelated host/ad errors remain recorded and do not block confirmed payment acceptance", () => {
++  const page = new EventEmitter();
++  const {diagnostics} = collectRedactedJestPaymentDiagnostics(page, {gameId, functionsBaseUrl: "https://backend.invalid"});
++  page.emit("pageerror", new Error("unrelated ad iframe exception"));
++  page.emit("console", {type: () => "error", text: () => "unrelated ad SDK error", location: () => ({url: "https://ads.invalid/ad.js"})});
++  page.emit("requestfailed", {url: () => "https://ads.invalid/fail", method: () => "GET", failure: () => ({errorText: "host ad failed"})});
++  page.emit("response", {url: () => "https://ads.invalid/fail", status: () => 500});
++  assert.equal(diagnostics.pageErrors.length, 1);
++  assert.equal(diagnostics.consoleErrors.length, 1);
++  assert.equal(diagnostics.failedRequests.length, 1);
++  assert.equal(diagnostics.httpErrors.length, 1);
++  assert.doesNotThrow(() => assertNoRelevantJestPaymentErrors(diagnostics));
++});
+diff --git a/packages/portal/scripts/package-gamesnacks.mjs b/packages/portal/scripts/package-gamesnacks.mjs
+index 5afb38bb1..4d97b2f7b 100644
+--- a/packages/portal/scripts/package-gamesnacks.mjs
++++ b/packages/portal/scripts/package-gamesnacks.mjs
+@@ -5,6 +5,7 @@ import {copyFile, mkdir, readFile, readdir, stat, unlink, writeFile} from "node:
+ import {promisify} from "node:util";
+ import {fileURLToPath} from "node:url";
+ import path from "node:path";
++import {targetDependencyEvidencePath} from "../webTargetDependencies.ts";
+ 
+ const execute = promisify(execFile);
+ const portal = fileURLToPath(new URL("..", import.meta.url));
+@@ -73,7 +74,7 @@ const manifest = {
+ await writeFile(path.join(output, "game.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+ // Provider metadata and marketing are added after Vite; bind them to the same
+ // inventory while proving every previously audited runtime byte is unchanged.
+-const inventoryPath = path.join(repository, "artifacts/target-dependencies/gamesnacks.json");
++const inventoryPath = targetDependencyEvidencePath("gamesnacks", output);
+ const inventory = JSON.parse(await readFile(inventoryPath, "utf8"));
+ for (const row of inventory.files) {
+   const hash = createHash("sha256").update(await readFile(path.join(output, row.file))).digest("hex");
+diff --git a/packages/portal/scripts/verify-jest-payments-live.mjs b/packages/portal/scripts/verify-jest-payments-live.mjs
+index db3b4d809..099279dca 100644
+--- a/packages/portal/scripts/verify-jest-payments-live.mjs
++++ b/packages/portal/scripts/verify-jest-payments-live.mjs
+@@ -1,8 +1,21 @@
+-import {existsSync, lstatSync} from "node:fs";
++import {existsSync, lstatSync, mkdirSync, writeFileSync} from "node:fs";
++import path from "node:path";
++import {fileURLToPath} from "node:url";
+ import {chromium} from "@playwright/test";
++import {
++  assertCompletedJestPaymentSettlement, assertNoRelevantJestPaymentErrors, assertSandboxJestCheckout,
++  captureJestPaymentGameErrors,
++  collectRedactedJestPaymentDiagnostics, confirmedJestFirstPurchaseBonus, confirmedJestSandboxCoins,
++  loadExactJestPaymentGame,
++  readJestPaymentCatalog, readJestPaymentGameErrors, readJestPaymentWalletBalance, readJestSandboxCheckout,
++  settleSandboxJestPurchase, verifyReloadedJestPaymentWallet,
++} from "./jest-payment-live-acceptance.mjs";
+ 
+ const gameId = process.env.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801";
+ const gameUrl = process.env.JEST_DEPLOYED_GAME_URL || "https://jest.com/g/riddle-q";
++const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION;
++const evidenceDirectory = process.env.JEST_PAYMENT_EVIDENCE_DIR ||
++  fileURLToPath(new URL("../.jest-upload-receipts/payment-qa/", import.meta.url));
+ const productSku = process.env.JEST_SANDBOX_PAYMENT_SKU ||
+   "com.roobsworld.riddlequest.coinpack1";
+ const subscriptionSku = process.env.JEST_SANDBOX_SUBSCRIPTION_SKU ||
+@@ -11,10 +24,10 @@ const statePath = process.env.JEST_SANDBOX_STORAGE_STATE ||
+   "/tmp/riddle-quest-jest-sandbox-state.json";
+ const functionsBaseUrl = process.env.JEST_FUNCTIONS_BASE_URL ||
+   "https://us-central1-riddle-quest-ec2b2.cloudfunctions.net";
++const expectedCoins = confirmedJestSandboxCoins(productSku);
+ 
+-if (!existsSync(statePath)) {
+-  throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
+-}
++if (!expectedBuildVersion) throw new Error("JEST_EXPECTED_BUILD_VERSION is required for exact-build verification.");
++if (!existsSync(statePath)) throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
+ const stateMetadata = lstatSync(statePath);
+ if (!stateMetadata.isFile() || stateMetadata.isSymbolicLink() || (stateMetadata.mode & 0o777) !== 0o600) {
+   throw new Error(`Jest sandbox browser state must be a regular owner-only 0600 file: ${statePath}`);
+@@ -28,171 +41,116 @@ if (process.env.JEST_SANDBOX_PAYMENT_CONFIRM !== productSku) {
+ 
+ const browser = await chromium.launch({headless: process.env.JEST_DEPLOYED_HEADED !== "1"});
+ const context = await browser.newContext({storageState: statePath, viewport: {width: 390, height: 844}});
++await context.addInitScript(captureJestPaymentGameErrors, {gameId});
+ if (process.env.FIREBASE_APPCHECK_DEBUG_TOKEN) {
+   await context.addInitScript((token) => {
+     globalThis.FIREBASE_APPCHECK_DEBUG_TOKEN = token;
+   }, process.env.FIREBASE_APPCHECK_DEBUG_TOKEN);
+ }
+ const page = await context.newPage();
++const {diagnostics, failure} = collectRedactedJestPaymentDiagnostics(page, {gameId, functionsBaseUrl});
++let stage = "startup";
++let verification;
++let game;
++let gameErrorsRecorded = 0;
++const collectGameErrors = async () => {
++  const errors = await game.evaluate(readJestPaymentGameErrors);
++  diagnostics.gameErrors.push(...errors.slice(gameErrorsRecorded));
++  gameErrorsRecorded = errors.length;
++};
++const recordEvidence = (summary) => {
++  mkdirSync(evidenceDirectory, {recursive: true, mode: 0o700});
++  const output = path.join(evidenceDirectory, "EVIDENCE-" + Date.now() + ".json");
++  writeFileSync(output, JSON.stringify({...summary, diagnostics}, null, 2) + "\n", {flag: "wx", mode: 0o600});
++};
+ 
+ try {
+-  await page.goto(gameUrl, {waitUntil: "domcontentloaded"});
+-  await page.waitForFunction(
+-    (expectedGameId) => [...document.querySelectorAll("iframe")].some((iframe) => {
+-      try {
+-        return new URL(iframe.src).hostname === `${expectedGameId}.builds.jest.com`;
+-      } catch {
+-        return false;
+-      }
+-    }),
+-    gameId,
+-    {timeout: 30_000},
+-  );
+-  await page.waitForTimeout(1_000);
+-
+-  const game = page.frames().find((frame) => {
+-    try {
+-      return new URL(frame.url()).hostname === `${gameId}.builds.jest.com`;
+-    } catch {
+-      return false;
+-    }
+-  });
+-  if (!game) throw new Error("The deployed Jest game frame was not found.");
++  game = await loadExactJestPaymentGame(page, {gameUrl, gameId, expectedBuildVersion});
+   await game.waitForFunction(() => {
+-    try {
+-      return typeof globalThis.JestSDK?.getPlayer().playerId === "string";
+-    } catch {
+-      return false;
+-    }
++    try {return typeof globalThis.JestSDK?.getPlayer().playerId === "string";} catch {return false;}
+   }, undefined, {timeout: 30_000});
+ 
+-  const playableContent = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
+-  const startupError = game.locator(".route-missing");
+-  await playableContent.or(startupError).first().waitFor({timeout: 30_000});
+-  if (await startupError.isVisible()) {
+-    const message = (await startupError.innerText()).replace(/\s+/g, " ").trim();
+-    throw new Error(`The deployed Jest game did not finish startup: ${message}`);
+-  }
+-
+-  const letsPlay = game.getByRole("button", {name: /let's play/i});
+-  if (await letsPlay.isVisible()) {
+-    await letsPlay.click();
+-    const onboardingContinue = game.getByRole("button", {name: /got it/i});
+-    if (await onboardingContinue.isVisible()) await onboardingContinue.click();
+-  }
+-  await game.locator(".riddle-card h1").waitFor({timeout: 30_000});
+-
+-  const catalog = await game.evaluate(async ({expectedProductSku, expectedSubscriptionSku}) => {
+-    const [products, subscriptions, incomplete] = await Promise.all([
+-      globalThis.JestSDK.payments.getProducts(),
+-      globalThis.JestSDK.payments.getSubscriptions(),
+-      globalThis.JestSDK.payments.getIncompletePurchases(),
+-    ]);
+-    return {
+-      product: products.find(({sku}) => sku === expectedProductSku),
+-      subscription: subscriptions.subscriptions.find(({sku}) => sku === expectedSubscriptionSku),
+-      incomplete: {
+-        hasMore: incomplete.hasMore,
+-        count: incomplete.purchases.length,
+-        signed: typeof incomplete.purchasesSigned === "string",
+-      },
+-    };
+-  }, {expectedProductSku: productSku, expectedSubscriptionSku: subscriptionSku});
++  const catalog = await game.evaluate(readJestPaymentCatalog,
++    {expectedProductSku: productSku, expectedSubscriptionSku: subscriptionSku});
+ 
+   if (!catalog.product || !Number.isFinite(catalog.product.price) || catalog.product.currency !== "USD") {
+     throw new Error(`Jest product ${productSku} is missing a valid USD price.`);
+   }
+-  if (
+-    !catalog.subscription ||
+-    !Number.isFinite(catalog.subscription.price) ||
+-    catalog.subscription.currency !== "USD" ||
+-    catalog.subscription.billingPeriod !== "monthly"
+-  ) {
++  if (!catalog.subscription || !Number.isFinite(catalog.subscription.price) ||
++      catalog.subscription.currency !== "USD" || catalog.subscription.billingPeriod !== "monthly") {
+     throw new Error(`Jest subscription ${subscriptionSku} is missing valid monthly USD billing.`);
+   }
+   if (!catalog.incomplete.signed) throw new Error("Jest returned an unsigned purchase recovery queue.");
+-  if (catalog.incomplete.hasMore || catalog.incomplete.count !== 0) {
++  if (catalog.incomplete.hasMore !== false || catalog.incomplete.count !== 0) {
+     throw new Error("The application did not drain the Jest purchase recovery queue before becoming playable.");
+   }
++  await collectGameErrors();
++  assertNoRelevantJestPaymentErrors(diagnostics);
++  const initialCoins = await game.evaluate(readJestPaymentWalletBalance);
+ 
++  stage = "sandbox checkout";
+   await game.evaluate((sku) => {
+     globalThis.__RIDDLE_QUEST_PAYMENT_TEST__ = globalThis.JestSDK.payments.beginPurchase({productSku: sku});
+   }, productSku);
++  await page.getByText(/Sandbox mode\. You won't be charged for this purchase\./i)
++    .waitFor({state: "visible", timeout: 15_000});
++  await page.getByRole("button", {name: /get with jest (?:balance|wallet)/i}).click({timeout: 5_000});
++  const purchase = await game.evaluate(readJestSandboxCheckout);
++  assertSandboxJestCheckout(purchase, productSku);
+ 
+-  const sandboxNotice = page.getByText(/Sandbox mode\. You won't be charged for this purchase\./i);
+-  await sandboxNotice.waitFor({state: "visible", timeout: 15_000});
+-  const checkoutAction = page.getByRole("button", {name: /get with jest (?:balance|wallet)/i});
+-  try {
+-    await checkoutAction.click({timeout: 5_000});
+-  } catch (error) {
+-    const visibleButtons = await page.getByRole("button").allInnerTexts();
+-    throw new Error(
+-      `Jest sandbox checkout action was not found. Visible buttons: ${JSON.stringify(visibleButtons)}`,
+-      {cause: error},
+-    );
+-  }
+-
+-  const purchase = await game.evaluate(async () => await globalThis.__RIDDLE_QUEST_PAYMENT_TEST__);
+-  if (
+-    purchase?.result !== "success" ||
+-    purchase.purchase?.productSku !== productSku ||
+-    typeof purchase.purchase.purchaseToken !== "string" ||
+-    typeof purchase.purchaseSigned !== "string"
+-  ) {
+-    throw new Error(`Jest sandbox checkout did not return a valid signed purchase (${purchase?.result ?? "unknown"}).`);
+-  }
+-
+-  const verification = await game.evaluate(async ({baseUrl, signed, token}) => {
+-    const playerId = globalThis.JestSDK.getPlayer().playerId;
+-    const grant = async () => {
+-      const response = await fetch(`${baseUrl}/grantJestPurchase`, {
+-        method: "POST",
+-        headers: {"content-type": "application/json"},
+-        body: JSON.stringify({purchaseSigned: signed, playerId, purchaseToken: token}),
+-      });
+-      return {ok: response.ok, body: await response.json()};
+-    };
+-    const first = await grant();
+-    const replay = await grant();
+-    const completed = await globalThis.JestSDK.payments.completePurchase({purchaseToken: token});
+-    const remaining = await globalThis.JestSDK.payments.getIncompletePurchases();
+-    return {
+-      first,
+-      replay,
+-      completed,
+-      stillIncomplete: remaining.purchases.some(({purchaseToken}) => purchaseToken === token),
+-    };
+-  }, {
++  stage = "authoritative grant and replay";
++  verification = await game.evaluate(settleSandboxJestPurchase, {
+     baseUrl: functionsBaseUrl.replace(/\/$/, ""),
+     signed: purchase.purchaseSigned,
+     token: purchase.purchase.purchaseToken,
++    expectedCoins,
++    initialCoins,
++    expectedAchievementBonus: confirmedJestFirstPurchaseBonus,
+   });
++  assertCompletedJestPaymentSettlement(verification);
++  await collectGameErrors();
++  assertNoRelevantJestPaymentErrors(diagnostics);
+ 
+-  if (!verification.first.ok || verification.first.body.alreadyProcessed !== false) {
+-    throw new Error("The authoritative backend did not grant the new Jest purchase exactly once.");
+-  }
+-  if (
+-    !verification.replay.ok ||
+-    verification.replay.body.alreadyProcessed !== true ||
+-    verification.replay.body.newCoins !== verification.first.body.newCoins
+-  ) {
+-    throw new Error("The authoritative backend did not reject the replay idempotently.");
+-  }
+-  if (verification.completed?.result !== "success" || verification.stillIncomplete) {
+-    throw new Error("Jest did not complete and remove the granted purchase from recovery.");
+-  }
+-
+-  console.log(JSON.stringify({
++  stage = "reloaded app wallet";
++  const restoredBalance = await verifyReloadedJestPaymentWallet(page, {
++    gameUrl, gameId, expectedBuildVersion, confirmedBalance: verification.newCoins,
++  });
++  game = restoredBalance.game;
++  gameErrorsRecorded = 0;
++  await collectGameErrors();
++  assertNoRelevantJestPaymentErrors(diagnostics);
++  mkdirSync(evidenceDirectory, {recursive: true, mode: 0o700});
++  const screenshot = path.join(evidenceDirectory, "payment-balance-" + Date.now() + ".png");
++  writeFileSync(screenshot, "", {flag: "wx", mode: 0o600});
++  await restoredBalance.game.locator(".game-header").screenshot({path: screenshot});
++  const summary = {
++    passed: true,
++    build: expectedBuildVersion,
++    coinsExpected: expectedCoins,
++    initialCoins,
++    newCoins: verification.newCoins,
++    reloadedCoinBadgeVerified: true,
++    formattedBalance: restoredBalance.formattedBalance,
+     checkout: "sandbox-zero-dollar",
+     productSku,
+     productPrice: catalog.product.price,
+     productCurrency: catalog.product.currency,
+     subscriptionSku,
+     subscriptionPrice: catalog.subscription.price,
+-    coinsAwarded: verification.first.body.coinsAwarded,
+-    idempotentReplay: true,
+-    completed: true,
+-  }, null, 2));
++    ...verification,
++  };
++  recordEvidence(summary);
++  console.log(JSON.stringify({...summary, diagnostics}, null, 2));
++} catch (error) {
++  if (game && !game.isDetached()) {
++    await collectGameErrors().catch(() => {});
++  }
++  recordEvidence({passed: false, stage, ...failure(error),
++    durableGrantConfirmed: verification?.durableGrantConfirmed ?? null,
++    purchaseCompleted: verification?.purchaseCompleted ?? null,
++    settlementStage: verification?.stage ?? null});
++  console.error("Sandbox payment QA failed during " + stage + "; only redacted evidence was saved.");
++  process.exitCode = 1;
+ } finally {
+   await context.close();
+   await browser.close();
+diff --git a/packages/portal/scripts/web-target-dependencies.test.mjs b/packages/portal/scripts/web-target-dependencies.test.mjs
+index ce03b2baf..57f094481 100644
+--- a/packages/portal/scripts/web-target-dependencies.test.mjs
++++ b/packages/portal/scripts/web-target-dependencies.test.mjs
+@@ -174,7 +174,7 @@ test('published inventory reflects final chunk bytes after private map cleanup',
+ 
+  test('frozen license inventory preserves exact notices and fails closed without requerying the package store', async t => {
+   const {execFileSync} = await import('node:child_process');
+-  const {mkdtemp,writeFile,rm} = await import('node:fs/promises');
++  const {mkdtemp,writeFile,rm,readFile} = await import('node:fs/promises');
+   const {tmpdir} = await import('node:os');
+   const path = await import('node:path');
+   const {fileURLToPath} = await import('node:url');
+@@ -191,7 +191,9 @@ test('published inventory reflects final chunk bytes after private map cleanup',
+   });
+   delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+   const expected = createNotice(new Set(['react']));
+-  const inventory = execFileSync('pnpm',['--filter','@qwordly/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024});
++  const metadata = JSON.parse(await readFile(path.join(repository,'node_modules/.modules.yaml'),'utf8'));
++  const storeDirectory = process.env.RIDDLE_QUEST_LICENSE_STORE_DIR ?? metadata.storeDir;
++  const inventory = execFileSync('pnpm',['--filter','@qwordly/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024,env:{...process.env,pnpm_config_store_dir:storeDirectory}});
+   const file = path.join(directory,'inventory.json');
+   await writeFile(file,inventory,{mode:0o400});
+   process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = file;
+@@ -203,3 +205,100 @@ test('published inventory reflects final chunk bytes after private map cleanup',
+   process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = 'relative.json';
+   assert.throws(() => createNotice(new Set(['react'])),/must be absolute/u);
+ });
++
++
++test('GameSnacks packaging uses relocated audited evidence and rejects changed or untracked runtime files', async t => {
++  const {copyFile, mkdir, mkdtemp, readFile, rm, writeFile} = await import('node:fs/promises');
++  const {createHash} = await import('node:crypto');
++  const {spawnSync} = await import('node:child_process');
++  const {tmpdir} = await import('node:os');
++  const path = await import('node:path');
++  const {fileURLToPath} = await import('node:url');
++  const repository = fileURLToPath(new URL('../../..', import.meta.url));
++  const root = await mkdtemp(path.join(tmpdir(), 'gamesnacks-packaging-evidence-'));
++  t.after(() => rm(root, {recursive: true, force: true}));
++  // Copy the production packager and resolver dependencies into a tiny repository;
++  // the subprocess exercises real packaging without touching canonical artifacts.
++  for (const relative of [
++    'packages/portal/scripts/package-gamesnacks.mjs',
++    'packages/portal/webTargetDependencies.ts',
++    'packages/portal/scripts/generate-third-party-licenses.mjs',
++    'scripts/release/release-registry.mjs',
++    'scripts/release/release-targets.json',
++  ]) {
++    const destination = path.join(root, relative);
++    await mkdir(path.dirname(destination), {recursive: true});
++    await copyFile(path.join(repository, relative), destination);
++  }
++  for (const relative of [
++    'docs/facebook-assets/icon-1024.png',
++    'docs/jest-assets/riddle-quest-hero.png',
++    'docs/visual-parity/current/05-game.png',
++    'node_modules/.modules.yaml',
++  ]) {
++    const destination = path.join(root, relative);
++    await mkdir(path.dirname(destination), {recursive: true});
++    await writeFile(destination, relative.endsWith('.yaml')
++      ? JSON.stringify({storeDir: path.join(root, 'package-store')})
++      : 'fixture marketing asset');
++  }
++  const output = path.join(root, 'builds/gamesnacks');
++  await mkdir(path.join(output, 'assets'), {recursive: true});
++  const runtime = 'globalThis.GameSnacks;';
++  const content = new Map([
++    ['index.html', '<script src="assets/runtime.js"></script>'],
++    ['assets/runtime.js', runtime],
++  ]);
++  for (const [file, bytes] of content) await writeFile(path.join(output, file), bytes);
++  const inventory = {schemaVersion: 1, target: 'gamesnacks', outputDirectory: output,
++    packages: [], modules: [], chunks: [],
++    files: [...content].map(([file, bytes]) => ({file,
++      sha256: createHash('sha256').update(bytes).digest('hex')}))};
++  const defaultInventory = path.join(root, 'artifacts/target-dependencies/gamesnacks.json');
++  const evidenceDirectory = path.join(root, 'release-evidence');
++  const relocatedInventory = path.join(evidenceDirectory, 'gamesnacks.json');
++  await mkdir(path.dirname(defaultInventory), {recursive: true});
++  await mkdir(evidenceDirectory);
++  const staleInventory = JSON.stringify({...inventory,
++    files: inventory.files.map(row => ({...row, sha256: '0'.repeat(64)}))});
++  await writeFile(defaultInventory, staleInventory);
++  await writeFile(relocatedInventory, JSON.stringify(inventory));
++  /** Runs the real packager with explicit evidence and a bounded child lifetime. */
++  const runPackager = (evidence = evidenceDirectory) => spawnSync(process.execPath,
++    [path.join(root, 'packages/portal/scripts/package-gamesnacks.mjs')], {
++      cwd: root, encoding: 'utf8', timeout: 10_000,
++      env: {...process.env, RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: evidence},
++    });
++  const success = runPackager();
++  assert.equal(success.status, 0, success.stderr || success.error?.message);
++  const packagedInventory = JSON.parse(await readFile(relocatedInventory, 'utf8'));
++  assert.deepEqual(packagedInventory.files.map(row => row.file).sort(), [
++    ...content.keys(), 'game.json', 'marketing/icon.png',
++    'marketing/horizontal.png', 'marketing/vertical.png',
++  ].sort());
++  for (const row of packagedInventory.files) {
++    assert.equal(row.sha256, createHash('sha256')
++      .update(await readFile(path.join(output, row.file))).digest('hex'));
++  }
++  const archive = await readFile(path.join(root, 'build-gamesnacks.zip'));
++  const archiveManifest = JSON.parse(await readFile(path.join(root, 'build-gamesnacks.zip.manifest.json'), 'utf8'));
++  assert.equal(archiveManifest.sha256, createHash('sha256').update(archive).digest('hex'));
++  assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
++  await writeFile(relocatedInventory, JSON.stringify(inventory));
++  await writeFile(path.join(output, 'assets/runtime.js'), `${runtime}/* changed */`);
++  const changed = runPackager();
++  assert.notEqual(changed.status, 0);
++  assert.match(changed.stderr, /Changed audited GameSnacks runtime: assets\/runtime\.js/u);
++  assert.deepEqual(JSON.parse(await readFile(relocatedInventory, 'utf8')), inventory);
++  await writeFile(path.join(output, 'assets/runtime.js'), runtime);
++  await writeFile(path.join(output, 'untracked.txt'), 'unexpected runtime file');
++  const untracked = runPackager();
++  assert.notEqual(untracked.status, 0);
++  assert.match(untracked.stderr, /Untracked GameSnacks package file: untracked\.txt/u);
++  assert.deepEqual(JSON.parse(await readFile(relocatedInventory, 'utf8')), inventory);
++  await rm(path.join(output, 'untracked.txt'));
++  const relative = runPackager('relative-evidence');
++  assert.notEqual(relative.status, 0);
++  assert.match(relative.stderr, /Dependency evidence directory must be absolute/u);
++  assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
++});
+diff --git a/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts b/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts
+index b1fa3b97d..9a3f5da30 100644
+--- a/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts
++++ b/packages/portal/src/jest/__tests__/JestSdkPlatform.test.ts
+@@ -817,10 +817,14 @@ it.each(["getIncompletePurchases", "completePurchase"] as const)(
+   async (operation) => {
+     jest.useFakeTimers();
+     try {
++      /** Provides the SDK fixture whose recovery call never settles. */
+       const mock = sdk();
+       mock.payments[operation].mockImplementation(() => new Promise(() => undefined));
++      /** Runs the selected recovery call with bounded provider waits. */
+       const platform = new JestSdkPlatform(mock);
++      /** Records recovery outcomes to verify the deadline. */
+       const settled: unknown[] = [];
++      /** Tracks the selected recovery operation through its timeout. */
+       const pending = operation === "getIncompletePurchases"
+         ? platform.getIncompletePurchases()
+         : platform.completePurchase("recoverable-token");
+@@ -850,21 +854,28 @@ it.each([
+ ] as const)("retires a late %s recovery %s and permits a successful retry", async (operation, settlement) => {
+   jest.useFakeTimers();
+   try {
++    /** Provides the SDK fixture for delayed settlement and a subsequent retry. */
+     const mock = sdk();
++    /** Resolves the original provider call after its deadline. */
+     let resolveProvider!: (value: unknown) => void;
++    /** Rejects the original provider call after its deadline. */
+     let rejectProvider!: (reason: unknown) => void;
+     mock.payments[operation].mockImplementationOnce(() => new Promise((resolve, reject) => {
+       resolveProvider = resolve;
+       rejectProvider = reject;
+     }));
++    /** Provides the operation-specific successful response for the retry. */
+     const providerSuccess = operation === "getIncompletePurchases"
+       ? {purchases: [], purchasesSigned: "signed", hasMore: false}
+       : {result: "success"};
+     mock.payments[operation].mockResolvedValue(providerSuccess);
++    /** Applies recovery deadlines to the delayed SDK fixture. */
+     const platform = new JestSdkPlatform(mock);
++    /** Repeats the same recovery operation and receipt token. */
+     const call = () => operation === "getIncompletePurchases"
+       ? platform.getIncompletePurchases()
+       : platform.completePurchase("recoverable-token");
++    /** Captures the timeout outcome so late provider settlement cannot replace it. */
+     const settled: unknown[] = [];
+     void call().then((result) => settled.push(result));
+ 

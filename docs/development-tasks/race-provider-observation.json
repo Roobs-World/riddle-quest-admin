@@ -651,7 +651,7 @@
         "jest.config.cjs",
         "--runInBand",
         "src/jest/__tests__/authentication.jest-playwright.test.ts",
-        "--testNamePattern=reopens a completed recipient|opens a public creator|consumes an unavailable challenge|refreshes subscription changes|starts a guest through signed"
+        "--testNamePattern=opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed"
       ]
     },
     {
@@ -730,36 +730,61 @@
       "args": [
         "packages/portal/scripts/verify-race-provider-observation-browser.mjs"
       ]
+    },
+    {
+      "id": "retained-authentication-entry-paths",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "exec",
+        "jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+        "--testNamePattern=renders typed invitation waiting|recovers a waiting invitation|consumes an unavailable challenge|reopens a completed recipient|opens a public creator entry|retains public recipient acceptance|suspends typed invitation polling"
+      ]
     }
   ],
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "facebook",
-      "file": "artifacts/target-dependencies/facebook.json"
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "reddit",
-      "file": "artifacts/target-dependencies/reddit.json"
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "youtube",
-      "file": "artifacts/target-dependencies/youtube.json"
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "netflix",
-      "file": "artifacts/target-dependencies/netflix.json"
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "yahoo",
-      "file": "artifacts/target-dependencies/yahoo.json"
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "gamesnacks",
-      "file": "artifacts/target-dependencies/gamesnacks.json"
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-platform-builds"
     }
   ],
   "remainingGates": [

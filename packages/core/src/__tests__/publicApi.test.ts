@@ -4,6 +4,15 @@ import * as pricing from "../pricing";
 import * as validation from "../validation";
 
 describe("public package barrels", () => {
+  it("filters hosted keyboard input through the public game API", () => {
+    for (const letter of ["i", "I", "İ", "ı"]) {
+      expect(game.isSinglePlayerKeyboardLetter(letter)).toBe(true);
+    }
+    for (const input of ["Enter", "Backspace", "ii", "", null]) {
+      expect(game.isSinglePlayerKeyboardLetter(input)).toBe(false);
+    }
+  });
+
   it("exposes the supported Core APIs", () => {
     expect(core.GameEngine).toBe(game.GameEngine);
     expect(core.parseProductPricing).toBe(pricing.parseProductPricing);

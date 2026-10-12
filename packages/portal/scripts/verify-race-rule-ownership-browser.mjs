@@ -1,3 +1,4 @@
+/** Exercises the retained recorded-race controller/view; the public entry uses live PvP. */
 import assert from "node:assert/strict";
 import {mkdtemp, mkdir, readFile, writeFile, rm} from "node:fs/promises";
 import {createServer} from "node:http";
@@ -19,7 +20,7 @@ import {createRoot} from 'react-dom/client';
 import {flushSync} from 'react-dom';
 import {RACE_RULES, RaceRunViewSchema} from '@qwordly/core/race';
 import {RaceSession} from ${JSON.stringify(path.join(root, "src/play/race/RaceSession.ts"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
 const catalog=createFakeRaceServices();
 for(const method of ['getItem','setItem','removeItem']) Storage.prototype[method]=()=>{throw new DOMException('Storage denied','SecurityError');};

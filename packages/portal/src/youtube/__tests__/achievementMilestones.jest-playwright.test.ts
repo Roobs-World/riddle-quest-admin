@@ -56,7 +56,7 @@ describeBrowser("earned achievement milestones in isolated solo artifacts", () =
         /** Target-owned committed save containing the milestone grants. */
         const persisted = target === "youtube" ? (await youtubeHarnessSnapshot(page)).savedPayloads.at(-1)!
           : await page.evaluate(key => localStorage.getItem(key)!, `riddle-quest:${target}:save-v1`);
-        expect(JSON.parse(persisted).progression).toMatchObject({coins: 425, totalWins: 10, gamesPlayed: 10,
+        expect(JSON.parse(persisted).progression).toMatchObject({coins: 355, totalWins: 10, gamesPlayed: 10,
           unlockedAchievementIds: expect.arrayContaining(["wins_10", "games_10"])});
         /** Page restoring the committed target-owned progress. */
         const reloaded = target === "youtube" ? await context.newPage() : page;

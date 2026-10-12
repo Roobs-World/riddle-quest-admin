@@ -1036,9 +1036,9 @@
     "name": "key height remains at least 32 pixels",
     "actual": true,
     "expected": true,
-    "minimumKeyHeight": 40,
+    "minimumKeyHeight": 32.99864196777344,
     "viewportScales": [
-      "1.0000"
+      "0.6130"
     ]
   },
   {
@@ -5005,9 +5005,9 @@
     "name": "key height remains at least 32 pixels",
     "actual": true,
     "expected": true,
-    "minimumKeyHeight": 40,
+    "minimumKeyHeight": 32.99864196777344,
     "viewportScales": [
-      "1.0000"
+      "0.6130"
     ]
   },
   {
@@ -6622,9 +6622,9 @@
     "name": "key height remains at least 32 pixels",
     "actual": true,
     "expected": true,
-    "minimumKeyHeight": 32.99864196777344,
+    "minimumKeyHeight": 40,
     "viewportScales": [
-      "0.6130"
+      "1.0000"
     ]
   },
   {
@@ -8386,9 +8386,9 @@
     "name": "key height remains at least 32 pixels",
     "actual": true,
     "expected": true,
-    "minimumKeyHeight": 32.99864196777344,
+    "minimumKeyHeight": 40,
     "viewportScales": [
-      "0.6130"
+      "1.0000"
     ]
   },
   {

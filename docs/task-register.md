@@ -4,7 +4,7 @@ The shared dashboard is https://riddle-quest-release-dashboard.vercel.app. Its T
 
 The register includes all Riddle Quest development manifests, repository Markdown checklists, progress reports since 2 October, recorded release and outreach actions, GitHub issues for both projects, explicit documented requirements and BeeHive handoff/content follow-ups. It records source paths, line numbers, captured revisions, health and collection timestamps. Other repositories and chat-only requests require importing before they are represented.
 
-Status comes from evidence. Development verified means recorded work and required checks match the manifest across its targets. It describes historical verification, not a fresh full-source test run. Reported complete comes from checked source checklists or closed issues. Tasks without matching receipts remain Verification pending. Provider submission, review, approval, activation and publication retain their own states.
+Status comes from evidence. Development verified requires work receipts for the current revision and source digest, passing required checks with verified logs, and matching artifact hashes across every manifest target. Historical receipts remain available as evidence but do not establish current verification. Reported complete comes from checked source checklists or closed issues. Tasks without matching receipts remain Verification pending. Provider submission, review, approval, activation and publication retain their own states.
 
 ## AI access
 

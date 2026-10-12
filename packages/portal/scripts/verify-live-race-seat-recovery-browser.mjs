@@ -95,7 +95,18 @@ try {
   assert.equal((await fixtureDb.collection('liveRaceMatches').get()).size,1);assert.equal((await fixtureDb.collection('liveRaceTickets').get()).size,2);
   for(let count=2;count<=10;count++){await solve(a);if(count<10)await a.waitForFunction(count=>document.querySelector('.race-progress > div:first-child strong').textContent.includes(count+' / 10'),count);}
   await a.locator('.live-race-victory').waitFor();await b.locator('.live-race-victory').waitFor({timeout:10000});
-  assert.equal(await a.locator('.live-race-reward').innerText(),'+50 coins');assert.deepEqual(await authority.balances(),[150,100]);
+  assert.equal(await a.locator('.live-race-reward').innerText(),'+50 coins');assert.deepEqual(await authority.balances(),[225,125]);
+  const match=(await fixtureDb.collection('liveRaceMatches').get()).docs[0].data();
+  assert.equal(match.rewardCoins,50);assert.equal(match.newCoins,225);
+  const users=['Alice','Bob'].map((_,i)=>fixtureDb.doc('users/jest_'+(i?'b':'a').repeat(40)));
+  const profiles=(await fixtureDb.getAll(...users)).map(doc=>doc.data());
+  assert.deepEqual(profiles.map(profile=>(profile.unlockedAchievements??[]).map(badge=>badge.achievementId).sort()),
+    [['race_clean_run','race_debut','race_first_win'],['race_debut']]);
+  assert.deepEqual(profiles.map(profile=>[profile.stats.multiplayerGamesPlayed,profile.stats.multiplayerWins]),[[1,1],[1,0]]);
+  const results=await Promise.all([0,1,2,3].map(index=>authority.call('update',{user:index%2?'Bob':'Alice',
+    ticketId:match.tickets[index%2],action:'poll',requestId:'recovery-settlement-replay-'+index})));
+  assert.deepEqual(results.map(result=>result.rewardCoins),[50,0,50,0]);
+  assert.deepEqual((await fixtureDb.getAll(...users)).map(doc=>doc.data()),profiles);
   assert.equal(await a.evaluate(()=>window.completed),1);assert.equal(await b.evaluate(()=>window.completed),1);assert.deepEqual(errors,[]);
   await a.screenshot({path:path.join(output,'recovered-win-'+viewport.width+'.png'),fullPage:true});
   console.log('Real Firestore PvP recovered both players after catalog removal and settled one 50-coin win at '+viewport.width+'px.');await context.close();

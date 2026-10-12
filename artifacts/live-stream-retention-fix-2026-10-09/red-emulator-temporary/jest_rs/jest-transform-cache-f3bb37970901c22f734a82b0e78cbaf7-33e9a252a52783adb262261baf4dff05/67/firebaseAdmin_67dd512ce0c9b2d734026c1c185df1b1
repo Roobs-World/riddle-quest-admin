@@ -1,0 +1,58 @@
+03fecb489e509b2baf54b06ed3c34ce0
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.admin = void 0;
+const app = __importStar(require("firebase-admin"));
+const auth_1 = require("firebase-admin/auth");
+const firestore_1 = require("firebase-admin/firestore");
+const storage_1 = require("firebase-admin/storage");
+const database_1 = require("firebase-admin/database");
+/** Provides legacy behavior. */
+const legacy = app;
+/** Provides firestore behavior. */
+const firestore = legacy.firestore ?? firestore_1.getFirestore;
+firestore.FieldPath ??= firestore_1.FieldPath;
+firestore.FieldValue ??= firestore_1.FieldValue;
+firestore.Timestamp ??= firestore_1.Timestamp;
+/** Provides admin behavior. */
+exports.admin = {
+    ...app,
+    auth: legacy.auth ?? auth_1.getAuth,
+    firestore,
+    storage: legacy.storage ?? storage_1.getStorage,
+    database: legacy.database ?? database_1.getDatabase,
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiL2hvbWUvY3JhaWctYmVzd2V0aGVyaWNrL0RvY3VtZW50cy9yaWRkbGUtcXVlc3QvZmlyZWJhc2UtZnVuY3Rpb25zL3NyYy9zaGFyZWQvZmlyZWJhc2VBZG1pbi50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBQSxvREFBc0M7QUFDdEMsOENBQTRDO0FBQzVDLHdEQUF3RjtBQUN4RixvREFBa0Q7QUFDbEQsc0RBQW9EO0FBd0JwRCxnQ0FBZ0M7QUFDaEMsTUFBTSxNQUFNLEdBQUcsR0FBa0IsQ0FBQztBQUNsQyxtQ0FBbUM7QUFDbkMsTUFBTSxTQUFTLEdBQUcsTUFBTSxDQUFDLFNBQVMsSUFBSyx3QkFBaUMsQ0FBQztBQUV6RSxTQUFTLENBQUMsU0FBUyxLQUFLLHFCQUFTLENBQUM7QUFDbEMsU0FBUyxDQUFDLFVBQVUsS0FBSyxzQkFBVSxDQUFDO0FBQ3BDLFNBQVMsQ0FBQyxTQUFTLEtBQUsscUJBQVMsQ0FBQztBQUVsQywrQkFBK0I7QUFDbEIsUUFBQSxLQUFLLEdBQUc7SUFDbkIsR0FBRyxHQUFHO0lBQ04sSUFBSSxFQUFFLE1BQU0sQ0FBQyxJQUFJLElBQUksY0FBTztJQUM1QixTQUFTO0lBQ1QsT0FBTyxFQUFFLE1BQU0sQ0FBQyxPQUFPLElBQUksb0JBQVU7SUFDckMsUUFBUSxFQUFFLE1BQU0sQ0FBQyxRQUFRLElBQUksc0JBQVc7Q0FDekMsQ0FBQyIsIm5hbWVzIjpbXSwic291cmNlcyI6WyIvaG9tZS9jcmFpZy1iZXN3ZXRoZXJpY2svRG9jdW1lbnRzL3JpZGRsZS1xdWVzdC9maXJlYmFzZS1mdW5jdGlvbnMvc3JjL3NoYXJlZC9maXJlYmFzZUFkbWluLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCAqIGFzIGFwcCBmcm9tIFwiZmlyZWJhc2UtYWRtaW5cIjtcbmltcG9ydCB7Z2V0QXV0aH0gZnJvbSBcImZpcmViYXNlLWFkbWluL2F1dGhcIjtcbmltcG9ydCB7RmllbGRQYXRoLCBGaWVsZFZhbHVlLCBnZXRGaXJlc3RvcmUsIFRpbWVzdGFtcH0gZnJvbSBcImZpcmViYXNlLWFkbWluL2ZpcmVzdG9yZVwiO1xuaW1wb3J0IHtnZXRTdG9yYWdlfSBmcm9tIFwiZmlyZWJhc2UtYWRtaW4vc3RvcmFnZVwiO1xuaW1wb3J0IHtnZXREYXRhYmFzZX0gZnJvbSBcImZpcmViYXNlLWFkbWluL2RhdGFiYXNlXCI7XG5cbi8qKiBEZXNjcmliZXMgZmlyZXN0b3JlIGZhY3RvcnkuICovXG50eXBlIEZpcmVzdG9yZUZhY3RvcnkgPSB0eXBlb2YgZ2V0RmlyZXN0b3JlICYge1xuICAvKiogU3RvcmVzIGZpZWxkIHBhdGguICovXG4gIEZpZWxkUGF0aDogdHlwZW9mIEZpZWxkUGF0aDtcbiAgLyoqIFN0b3JlcyBmaWVsZCB2YWx1ZS4gKi9cbiAgRmllbGRWYWx1ZTogdHlwZW9mIEZpZWxkVmFsdWU7XG4gIC8qKiBTdG9yZXMgdGltZXN0YW1wLiAqL1xuICBUaW1lc3RhbXA6IHR5cGVvZiBUaW1lc3RhbXA7XG59O1xuXG4vKiogRGVzY3JpYmVzIGxlZ2FjeSBhZG1pbi4gKi9cbnR5cGUgTGVnYWN5QWRtaW4gPSB0eXBlb2YgYXBwICYge1xuICAvKiogU3RvcmVzIGF1dGguICovXG4gIGF1dGg/OiB0eXBlb2YgZ2V0QXV0aDtcbiAgLyoqIFN0b3JlcyBmaXJlc3RvcmUuICovXG4gIGZpcmVzdG9yZT86IEZpcmVzdG9yZUZhY3Rvcnk7XG4gIC8qKiBTdG9yZXMgc3RvcmFnZS4gKi9cbiAgc3RvcmFnZT86IHR5cGVvZiBnZXRTdG9yYWdlO1xuICAvKiogU3RvcmVzIGRhdGFiYXNlLiAqL1xuICBkYXRhYmFzZT86IHR5cGVvZiBnZXREYXRhYmFzZTtcbn07XG5cbi8qKiBQcm92aWRlcyBsZWdhY3kgYmVoYXZpb3IuICovXG5jb25zdCBsZWdhY3kgPSBhcHAgYXMgTGVnYWN5QWRtaW47XG4vKiogUHJvdmlkZXMgZmlyZXN0b3JlIGJlaGF2aW9yLiAqL1xuY29uc3QgZmlyZXN0b3JlID0gbGVnYWN5LmZpcmVzdG9yZSA/PyAoZ2V0RmlyZXN0b3JlIGFzIEZpcmVzdG9yZUZhY3RvcnkpO1xuXG5maXJlc3RvcmUuRmllbGRQYXRoID8/PSBGaWVsZFBhdGg7XG5maXJlc3RvcmUuRmllbGRWYWx1ZSA/Pz0gRmllbGRWYWx1ZTtcbmZpcmVzdG9yZS5UaW1lc3RhbXAgPz89IFRpbWVzdGFtcDtcblxuLyoqIFByb3ZpZGVzIGFkbWluIGJlaGF2aW9yLiAqL1xuZXhwb3J0IGNvbnN0IGFkbWluID0ge1xuICAuLi5hcHAsXG4gIGF1dGg6IGxlZ2FjeS5hdXRoID8/IGdldEF1dGgsXG4gIGZpcmVzdG9yZSxcbiAgc3RvcmFnZTogbGVnYWN5LnN0b3JhZ2UgPz8gZ2V0U3RvcmFnZSxcbiAgZGF0YWJhc2U6IGxlZ2FjeS5kYXRhYmFzZSA/PyBnZXREYXRhYmFzZSxcbn07XG4iXSwidmVyc2lvbiI6M30=

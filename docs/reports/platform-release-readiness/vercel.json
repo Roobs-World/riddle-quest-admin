@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {"api/index.mjs": {"includeFiles": "src/task-register.json"}},
+  "functions": {"api/index.mjs": {"includeFiles": "src/content/task-register.json"}},
   "rewrites": [{"source": "/api", "destination": "/api/index"}, {"source": "/api/:path*", "destination": "/api/index"}]
 }

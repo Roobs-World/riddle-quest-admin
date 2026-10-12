@@ -18,12 +18,13 @@ const validFile = () => ({
 });
 
 describe("English Race content import planning", () => {
-  it("accepts the new easier English pool", () => {
+  it("holds the filtered English source when geography lacks its tenth easy question", () => {
     /** Provides plan behavior. */
     const plan = createRaceContentImportPlan(easierEnglish);
-    expect(plan.valid).toBe(true);
-    expect(plan.totalRiddles).toBe(180);
-    expect(plan.records.filter((record) => record.data.qualityVersion === "reviewed_v2")).toHaveLength(60);
+    expect(plan.valid).toBe(false);
+    expect(plan.totalRiddles).toBe(177);
+    expect(plan.issues).toEqual([expect.objectContaining({code: "difficulty_imbalance"})]);
+    expect(plan.records.filter((record) => record.data.qualityVersion === "reviewed_v2")).toHaveLength(58);
   });
 
   it("accepts exactly 30 reviewed riddles in each of the six categories", () => {

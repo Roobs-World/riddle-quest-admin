@@ -47,18 +47,9 @@
     },
     {
       "id": "injected-start-recovery",
-      "executable": "env",
+      "executable": "node",
       "args": [
-        "PORTAL_BROWSER_TESTS=1",
-        "PORTAL_USE_EXISTING_BUILD=1",
-        "pnpm",
-        "--filter",
-        "@qwordly/portal",
-        "test",
-        "--runInBand",
-        "--runTestsByPath",
-        "src/jest/__tests__/authentication.jest-playwright.test.ts",
-        "--testNamePattern=recovers rejected race preparation|recovers lost quit confirmations|acknowledges close during a delayed start|recovers lost publication confirmations"
+        "packages/portal/scripts/verify-retained-start-quit-publication-browser.mjs"
       ]
     },
     {
@@ -72,31 +63,38 @@
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "facebook",
-      "file": "artifacts/target-dependencies/facebook.json"
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "reddit",
-      "file": "artifacts/target-dependencies/reddit.json"
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "youtube",
-      "file": "artifacts/target-dependencies/youtube.json"
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "netflix",
-      "file": "artifacts/target-dependencies/netflix.json"
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "yahoo",
-      "file": "artifacts/target-dependencies/yahoo.json"
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "gamesnacks",
-      "file": "artifacts/target-dependencies/gamesnacks.json"
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-target-builds"
     }
   ]
 }

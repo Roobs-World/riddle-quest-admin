@@ -1,6 +1,14 @@
 {
   "taskId": "multiplayer:race-quit-recovery",
-  "targets": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"],
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
   "work": "Recover failed or malformed abandonment confirmations with the original owned mutation receipt, preserve preparation close intent and defer deadline outcomes while quit recovery is unresolved.",
   "remainingGates": [
     "Remaining multiplayer architecture requirements have independent development checks.",
@@ -8,20 +16,107 @@
   ],
   "nextAction": "Continue the remaining multiplayer requirements and accepted-revision release verification.",
   "checks": [
-    {"id": "race-transitions", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "test", "--runInBand", "--testPathPatterns=src/play/race/__tests__"]},
-    {"id": "portal-types", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "check:types"]},
-    {"id": "matchmaking-failure-adapter", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/play/__tests__/firebaseRaceMatchmaking.test.ts"]},
-    {"id": "isolated-target-builds", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "build:all-targets"]},
-    {"id": "injected-quit-recovery", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/jest/__tests__/authentication.jest-playwright.test.ts", "--testNamePattern=recovers lost quit confirmations|confirms quitting an active race|acknowledges close during a delayed start|recovers lost publication confirmations|recovers a guess rejected after the ghost deadline"]},
-    {"id": "artifact-dependency-evidence", "executable": "node", "args": ["scripts/release/verify-target-dependency-evidence.mjs"]}
+    {
+      "id": "race-transitions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/play/race/__tests__"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "matchmaking-failure-adapter",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/play/__tests__/firebaseRaceMatchmaking.test.ts"
+      ]
+    },
+    {
+      "id": "isolated-target-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ]
+    },
+    {
+      "id": "injected-quit-recovery",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+        "--testNamePattern=recovers lost quit confirmations|confirms quitting an active race|acknowledges close during a delayed start|recovers lost publication confirmations|recovers a guess rejected after the ghost deadline"
+      ]
+    },
+    {
+      "id": "artifact-dependency-evidence",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    }
   ],
   "artifacts": [
-    {"target": "jest", "file": "artifacts/target-dependencies/jest.json"},
-    {"target": "facebook", "file": "artifacts/target-dependencies/facebook.json"},
-    {"target": "reddit", "file": "artifacts/target-dependencies/reddit.json"},
-    {"target": "youtube", "file": "artifacts/target-dependencies/youtube.json"},
-    {"target": "netflix", "file": "artifacts/target-dependencies/netflix.json"},
-    {"target": "yahoo", "file": "artifacts/target-dependencies/yahoo.json"},
-    {"target": "gamesnacks", "file": "artifacts/target-dependencies/gamesnacks.json"}
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-target-builds"
+    }
   ]
 }

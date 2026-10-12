@@ -936,7 +936,7 @@
   ],
   "chunks": [
     {
-      "file": "assets/game-Dn12khl5.js",
+      "file": "assets/game-CJEwjp96.js",
       "entry": true,
       "dynamicEntry": false,
       "imports": [
@@ -945,7 +945,7 @@
         "assets/redditPlatform-NO0DIMgp.js",
         "assets/i18n-D_0OOzfJ.js",
         "assets/preload-helper-C57RQWSg.js",
-        "assets/validation-C1zcMWsL.js",
+        "assets/validation-eSTcAGRZ.js",
         "assets/core-bridge-constants-Bsju_PPr.js",
         "assets/useAnswerKeyboard-d7K9-MHZ.js",
         "assets/core-game-lsl76b3n.js",
@@ -954,10 +954,10 @@
         "assets/layoutReady-B86Ech8U.js",
         "assets/browserErrorReporter-D2A67UQO.js",
         "assets/riddleLoadDeadline-XiblEDXP.js",
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/requestSchemas-BMJL0CnL.js",
-        "assets/race-CU4MG0cF.js",
-        "assets/bridge-C4kHqXnA.js",
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/requestSchemas-DryiLzYO.js",
+        "assets/race-Dh0gec0F.js",
+        "assets/bridge-CeWv17xf.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [
@@ -976,19 +976,19 @@
         "assets/redditPlatform-3JKFJnCC.js",
         "assets/redditPlatform-DhIbnMlf.js",
         "assets/redditPlatform-JMhQe933.js",
-        "assets/bridge-Cfgj1BAA.js",
+        "assets/bridge-CA_xE8fT.js",
         "assets/journalWriter-D6dKsV4t.js",
         "assets/readPendingGuessJournal-DSufXvBr.js",
         "assets/paidSettlement-BDyM501C.js",
-        "assets/GameModalView-D8Pj-GVH.js",
-        "assets/RaceTo10Game-BUkjuYTw.js",
+        "assets/GameModalView-ImZpbmwJ.js",
+        "assets/RaceTo10Game-NWcoXzVu.js",
         "assets/SolarSystem-DFRZDV5a.js",
         "assets/loadOptionalSkipPreview-CdwU7NzA.js",
         "assets/prepareIssuedSuccessor-DlET9azY.js",
-        "assets/race-CncQxcqt.js",
-        "assets/RedditRaceEntry-CXtLZ-M9.js"
+        "assets/race-LdZhaPZR.js",
+        "assets/RedditRaceEntry-DxGHGPhq.js"
       ],
-      "sha256": "e7ed0c130f70b2178a45cec8566d7b462a6449604a595987a9a7f1a6fbcfc6c8"
+      "sha256": "83a559a49e3bf2485f091e868d7b954da4fa712ae8773750082ac59193fba467"
     },
     {
       "file": "assets/splash-DsRiCP-f.js",
@@ -1021,21 +1021,21 @@
       "sha256": "1eee9195be28cdb5e5a3cf2620646b0a293ee82604630fb95193105f35733898"
     },
     {
-      "file": "assets/GameModalView-D8Pj-GVH.js",
+      "file": "assets/GameModalView-ImZpbmwJ.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
         "assets/i18n-D_0OOzfJ.js",
-        "assets/validation-C1zcMWsL.js",
+        "assets/validation-eSTcAGRZ.js",
         "assets/core-game-lsl76b3n.js",
         "assets/ReferralSharingCapability-C73UvdiM.js",
-        "assets/requestSchemas-BMJL0CnL.js",
+        "assets/requestSchemas-DryiLzYO.js",
         "assets/LiveRacePushConsent-Bc2nNaTt.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "51364dfb2d4309f335a9c7b3716fe3bd42403b8079d78f8e189d1da2e7c1725b"
+      "sha256": "bcbfb04837171f6b65480e17e70d44f219a94d71437d60dad4429d18cbba8698"
     },
     {
       "file": "assets/LiveRacePushConsent-Bc2nNaTt.js",
@@ -1051,18 +1051,7 @@
       "sha256": "37e4a20279afa5d9378f3c4599b29dfc4eae14e075a63518c4adb4f1ee863f55"
     },
     {
-      "file": "assets/RaceTo10Game-BUkjuYTw.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/vendor-react-BaMjfHjM.js",
-        "assets/RaceTo10Game-CA_3Ecf8.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "9dea3866c8b9e1914104d90f674b3bfaa6634dd8250cb5e84893906d5b541d47"
-    },
-    {
-      "file": "assets/RaceTo10Game-CA_3Ecf8.js",
+      "file": "assets/RaceTo10Game-DedTsPZV.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -1073,31 +1062,42 @@
         "assets/ReferralSharingCapability-C73UvdiM.js",
         "assets/browserStorage-CV-PZCxe.js",
         "assets/browserErrorReporter-D2A67UQO.js",
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/race-CU4MG0cF.js",
-        "assets/bridge-C4kHqXnA.js",
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/race-Dh0gec0F.js",
+        "assets/bridge-CeWv17xf.js",
         "assets/LiveRacePushConsent-Bc2nNaTt.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "80c876b4b0a184129e84c2d14d95229f896ddc55b161002f7561b8cf9cf2307e"
+      "sha256": "3388d686c3c36596e5cdbfa7665f36ec64faa02b16dfa8e440baac97b2090b9b"
     },
     {
-      "file": "assets/RedditRaceEntry-CXtLZ-M9.js",
+      "file": "assets/RaceTo10Game-NWcoXzVu.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/vendor-react-BaMjfHjM.js",
+        "assets/RaceTo10Game-DedTsPZV.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "b0b20fa0377e36da514cab130a01d376b815e2e5e8f75f1e726e41de0554a9cf"
+    },
+    {
+      "file": "assets/RedditRaceEntry-DxGHGPhq.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/vendor-react-BaMjfHjM.js",
         "assets/i18n-D_0OOzfJ.js",
         "assets/browserErrorReporter-D2A67UQO.js",
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/race-CU4MG0cF.js",
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/race-Dh0gec0F.js",
         "assets/LiveRacePushConsent-Bc2nNaTt.js",
-        "assets/RaceTo10Game-CA_3Ecf8.js",
+        "assets/RaceTo10Game-DedTsPZV.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "d6588fbdc3453fc2206f29a970bb56bae8da5fcf49c81ad2ddb8b789ef859c9d"
+      "sha256": "11eefd7390543aeef057ea3bd8a3512398a843513f45e38d190ce2e6bb8acfd2"
     },
     {
       "file": "assets/ReferralSharingCapability-C73UvdiM.js",
@@ -1733,29 +1733,29 @@
       "sha256": "9c679665a16300f61a26a97b90ffa8de33ff2991f578f375d55b8919cc8fd7c2"
     },
     {
-      "file": "assets/bridge-C4kHqXnA.js",
-      "entry": false,
-      "dynamicEntry": false,
-      "imports": [
-        "assets/core-bridge-constants-Bsju_PPr.js",
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/requestSchemas-BMJL0CnL.js",
-        "assets/race-CU4MG0cF.js",
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "a4c239a577aa938747e413a1f96aee2872d65fb356496ff18d7ff04303b4fb91"
-    },
-    {
-      "file": "assets/bridge-Cfgj1BAA.js",
+      "file": "assets/bridge-CA_xE8fT.js",
       "entry": false,
       "dynamicEntry": true,
       "imports": [
         "assets/core-bridge-constants-Bsju_PPr.js",
-        "assets/bridge-C4kHqXnA.js"
+        "assets/bridge-CeWv17xf.js"
       ],
       "dynamicImports": [],
-      "sha256": "2c61d02eb09661051fa7b027b84c327448e6093b95abd1a9da409fd89406e5db"
+      "sha256": "e2310596000deb595498e628e9eef11ca44c345fcbe2b05dce0120ec7912c442"
+    },
+    {
+      "file": "assets/bridge-CeWv17xf.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/core-bridge-constants-Bsju_PPr.js",
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/requestSchemas-DryiLzYO.js",
+        "assets/race-Dh0gec0F.js",
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "e6f95d690a80305bae30b54ca7ca6a1f9e9ce492436313db5a32e7b2d9dc7635"
     },
     {
       "file": "assets/browserErrorReporter-D2A67UQO.js",
@@ -3956,28 +3956,6 @@
       "sha256": "a85ed68e02388e5af47b696beb93a9917a55bc4f3cfdf54b767a212f51c105f8"
     },
     {
-      "file": "assets/race-CU4MG0cF.js",
-      "entry": false,
-      "dynamicEntry": false,
-      "imports": [
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/rolldown-runtime-Czjbc987.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "f577053ab119569985f1db422fbffb023b55d182fc98abe7224b92e22a066337"
-    },
-    {
-      "file": "assets/race-CncQxcqt.js",
-      "entry": false,
-      "dynamicEntry": true,
-      "imports": [
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/race-CU4MG0cF.js"
-      ],
-      "dynamicImports": [],
-      "sha256": "af94dd2d2dd7d91e9417f578242b0c63cfdea52d9baec66ab8034d54af2435ed"
-    },
-    {
       "file": "assets/race-D7fPBpNU.js",
       "entry": false,
       "dynamicEntry": true,
@@ -3998,6 +3976,17 @@
       "sha256": "1471a0fa3f71be0f15e3095f661ca929107a01cffd67050c5bd63b6ed3194b27"
     },
     {
+      "file": "assets/race-Dh0gec0F.js",
+      "entry": false,
+      "dynamicEntry": false,
+      "imports": [
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/rolldown-runtime-Czjbc987.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "29f9cc6af011711e21443d118e9b22ff1c097c8e9a7bd08c482757e4b67507b6"
+    },
+    {
       "file": "assets/race-Dh_Kf-s4.js",
       "entry": false,
       "dynamicEntry": true,
@@ -4016,6 +4005,17 @@
       ],
       "dynamicImports": [],
       "sha256": "a2ef53df23752a4a14775d2bbabec5d6c87184db0b90af7819fee85845a4608f"
+    },
+    {
+      "file": "assets/race-LdZhaPZR.js",
+      "entry": false,
+      "dynamicEntry": true,
+      "imports": [
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/race-Dh0gec0F.js"
+      ],
+      "dynamicImports": [],
+      "sha256": "a743f0285cb7f89e0782b5226f949d3da5a8fb1fa8d53f36628cae0dda7a4348"
     },
     {
       "file": "assets/race-Mv_F-YOC.js",
@@ -4048,7 +4048,7 @@
       "sha256": "586861c41bf007efe8fe4b04dab4cceac670d84b3a497f86ef221f523b154b08"
     },
     {
-      "file": "assets/raceSchemas---2NlYsu.js",
+      "file": "assets/raceSchemas-Dobk8Ku9.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -4056,7 +4056,7 @@
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "2d4dab2dcba66a2fbdb4a73116f3ebffad1ae95b273f2a49d520202e6ad1dcef"
+      "sha256": "e11aea08fe4ffd39517f2da8c4eb382bbdccc05319e2dd2c281c2fde8c2a022e"
     },
     {
       "file": "assets/readPendingGuessJournal-DSufXvBr.js",
@@ -4240,16 +4240,16 @@
       "sha256": "e3d06850435abed0d5f87f0f10f2ba6f45cb2eb342d6e80a80defe2b08c6e80d"
     },
     {
-      "file": "assets/requestSchemas-BMJL0CnL.js",
+      "file": "assets/requestSchemas-DryiLzYO.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
         "assets/core-game-lsl76b3n.js",
-        "assets/raceSchemas---2NlYsu.js",
+        "assets/raceSchemas-Dobk8Ku9.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "1e56e55ac6291bc7262c06d295dd772cff1159451b0d0f9375e731e122f61dc8"
+      "sha256": "e4825e9d7a6378f8985b5fefdf39996fa4f7c18fbef7237778477a444e08c002"
     },
     {
       "file": "assets/riddleLoadDeadline-XiblEDXP.js",
@@ -5035,7 +5035,7 @@
       "sha256": "28bf04637e64bfa5fe5a9657fdbc72060bd802abe021359518f5d4ec14c01aa7"
     },
     {
-      "file": "assets/validation-C1zcMWsL.js",
+      "file": "assets/validation-eSTcAGRZ.js",
       "entry": false,
       "dynamicEntry": false,
       "imports": [
@@ -5043,12 +5043,12 @@
         "assets/i18n-D_0OOzfJ.js",
         "assets/core-game-lsl76b3n.js",
         "assets/browserStorage-CV-PZCxe.js",
-        "assets/raceSchemas---2NlYsu.js",
-        "assets/requestSchemas-BMJL0CnL.js",
+        "assets/raceSchemas-Dobk8Ku9.js",
+        "assets/requestSchemas-DryiLzYO.js",
         "assets/rolldown-runtime-Czjbc987.js"
       ],
       "dynamicImports": [],
-      "sha256": "0e3f0718283fc1de0f0401c0e572af47759c9c18d7a0dcc4225588d11dff4bda"
+      "sha256": "f0c087a612160b4d8d754f9c6a451cae77e4932214cffec9076288c782f4db4e"
     },
     {
       "file": "assets/vendor-react-BaMjfHjM.js",
@@ -5395,12 +5395,12 @@
   ],
   "files": [
     {
-      "file": "assets/GameModalView-D8Pj-GVH.js",
-      "sha256": "51364dfb2d4309f335a9c7b3716fe3bd42403b8079d78f8e189d1da2e7c1725b"
-    },
-    {
       "file": "assets/GameModalView-DmP5O-gN.css",
       "sha256": "26a7fc0e46e98f67e6af2b727f0b249eb555a324ca01d50ef31381cfa4beed46"
+    },
+    {
+      "file": "assets/GameModalView-ImZpbmwJ.js",
+      "sha256": "bcbfb04837171f6b65480e17e70d44f219a94d71437d60dad4429d18cbba8698"
     },
     {
       "file": "assets/LiveRacePushConsent-BStyCzQK.css",
@@ -5427,20 +5427,20 @@
       "sha256": "cb35688673341b84ed9c51cff84abf796c2c6c91dc1e5747efb4ee9d6fde7140"
     },
     {
-      "file": "assets/RaceTo10Game-BUkjuYTw.js",
-      "sha256": "9dea3866c8b9e1914104d90f674b3bfaa6634dd8250cb5e84893906d5b541d47"
+      "file": "assets/RaceTo10Game-DedTsPZV.js",
+      "sha256": "3388d686c3c36596e5cdbfa7665f36ec64faa02b16dfa8e440baac97b2090b9b"
     },
     {
-      "file": "assets/RaceTo10Game-CA_3Ecf8.js",
-      "sha256": "80c876b4b0a184129e84c2d14d95229f896ddc55b161002f7561b8cf9cf2307e"
+      "file": "assets/RaceTo10Game-NWcoXzVu.js",
+      "sha256": "b0b20fa0377e36da514cab130a01d376b815e2e5e8f75f1e726e41de0554a9cf"
     },
     {
       "file": "assets/RaceTo10Game-o_06kpvy.css",
       "sha256": "a2cdbaee25784987c9c6f21ab5c770f089b1f1fd411bae1df52c042e338b6701"
     },
     {
-      "file": "assets/RedditRaceEntry-CXtLZ-M9.js",
-      "sha256": "d6588fbdc3453fc2206f29a970bb56bae8da5fcf49c81ad2ddb8b789ef859c9d"
+      "file": "assets/RedditRaceEntry-DxGHGPhq.js",
+      "sha256": "11eefd7390543aeef057ea3bd8a3512398a843513f45e38d190ce2e6bb8acfd2"
     },
     {
       "file": "assets/ReferralSharingCapability-C73UvdiM.js",
@@ -5691,12 +5691,12 @@
       "sha256": "9c679665a16300f61a26a97b90ffa8de33ff2991f578f375d55b8919cc8fd7c2"
     },
     {
-      "file": "assets/bridge-C4kHqXnA.js",
-      "sha256": "a4c239a577aa938747e413a1f96aee2872d65fb356496ff18d7ff04303b4fb91"
+      "file": "assets/bridge-CA_xE8fT.js",
+      "sha256": "e2310596000deb595498e628e9eef11ca44c345fcbe2b05dce0120ec7912c442"
     },
     {
-      "file": "assets/bridge-Cfgj1BAA.js",
-      "sha256": "2c61d02eb09661051fa7b027b84c327448e6093b95abd1a9da409fd89406e5db"
+      "file": "assets/bridge-CeWv17xf.js",
+      "sha256": "e6f95d690a80305bae30b54ca7ca6a1f9e9ce492436313db5a32e7b2d9dc7635"
     },
     {
       "file": "assets/browserErrorReporter-D2A67UQO.js",
@@ -5987,6 +5987,10 @@
       "sha256": "244eef35a1da167b35a3d752b20b55f73a627249f957f76d243c2dc3149cfd9b"
     },
     {
+      "file": "assets/game-CJEwjp96.js",
+      "sha256": "83a559a49e3bf2485f091e868d7b954da4fa712ae8773750082ac59193fba467"
+    },
+    {
       "file": "assets/game-CKVZ4Ckv.js",
       "sha256": "206d42848226f87ae569dddfe68d15a456330939a67f7cfa2287fdb587934755"
     },
@@ -6017,10 +6021,6 @@
     {
       "file": "assets/game-DlUIo5A5.js",
       "sha256": "762471a8ddc270b8004ce89b07eb5263630dececddd4ad0347f34a26ce0cbc42"
-    },
-    {
-      "file": "assets/game-Dn12khl5.js",
-      "sha256": "e7ed0c130f70b2178a45cec8566d7b462a6449604a595987a9a7f1a6fbcfc6c8"
     },
     {
       "file": "assets/game-DtPG1eel.js",
@@ -6471,14 +6471,6 @@
       "sha256": "a85ed68e02388e5af47b696beb93a9917a55bc4f3cfdf54b767a212f51c105f8"
     },
     {
-      "file": "assets/race-CU4MG0cF.js",
-      "sha256": "f577053ab119569985f1db422fbffb023b55d182fc98abe7224b92e22a066337"
-    },
-    {
-      "file": "assets/race-CncQxcqt.js",
-      "sha256": "af94dd2d2dd7d91e9417f578242b0c63cfdea52d9baec66ab8034d54af2435ed"
-    },
-    {
       "file": "assets/race-D7fPBpNU.js",
       "sha256": "7b0bfca5ecf51cb8c8a63bec419b534fcd53223e958b84f7c5328cd6ece31742"
     },
@@ -6487,12 +6479,20 @@
       "sha256": "1471a0fa3f71be0f15e3095f661ca929107a01cffd67050c5bd63b6ed3194b27"
     },
     {
+      "file": "assets/race-Dh0gec0F.js",
+      "sha256": "29f9cc6af011711e21443d118e9b22ff1c097c8e9a7bd08c482757e4b67507b6"
+    },
+    {
       "file": "assets/race-Dh_Kf-s4.js",
       "sha256": "7125c621829c558e732803c1bc5d9f4128f7927e40d358fe8236437ec08ad936"
     },
     {
       "file": "assets/race-IPqHQRRj.js",
       "sha256": "a2ef53df23752a4a14775d2bbabec5d6c87184db0b90af7819fee85845a4608f"
+    },
+    {
+      "file": "assets/race-LdZhaPZR.js",
+      "sha256": "a743f0285cb7f89e0782b5226f949d3da5a8fb1fa8d53f36628cae0dda7a4348"
     },
     {
       "file": "assets/race-Mv_F-YOC.js",
@@ -6507,8 +6507,8 @@
       "sha256": "586861c41bf007efe8fe4b04dab4cceac670d84b3a497f86ef221f523b154b08"
     },
     {
-      "file": "assets/raceSchemas---2NlYsu.js",
-      "sha256": "2d4dab2dcba66a2fbdb4a73116f3ebffad1ae95b273f2a49d520202e6ad1dcef"
+      "file": "assets/raceSchemas-Dobk8Ku9.js",
+      "sha256": "e11aea08fe4ffd39517f2da8c4eb382bbdccc05319e2dd2c281c2fde8c2a022e"
     },
     {
       "file": "assets/readPendingGuessJournal-DSufXvBr.js",
@@ -6583,8 +6583,8 @@
       "sha256": "e3d06850435abed0d5f87f0f10f2ba6f45cb2eb342d6e80a80defe2b08c6e80d"
     },
     {
-      "file": "assets/requestSchemas-BMJL0CnL.js",
-      "sha256": "1e56e55ac6291bc7262c06d295dd772cff1159451b0d0f9375e731e122f61dc8"
+      "file": "assets/requestSchemas-DryiLzYO.js",
+      "sha256": "e4825e9d7a6378f8985b5fefdf39996fa4f7c18fbef7237778477a444e08c002"
     },
     {
       "file": "assets/riddleLoadDeadline-XiblEDXP.js",
@@ -6975,8 +6975,8 @@
       "sha256": "28bf04637e64bfa5fe5a9657fdbc72060bd802abe021359518f5d4ec14c01aa7"
     },
     {
-      "file": "assets/validation-C1zcMWsL.js",
-      "sha256": "0e3f0718283fc1de0f0401c0e572af47759c9c18d7a0dcc4225588d11dff4bda"
+      "file": "assets/validation-eSTcAGRZ.js",
+      "sha256": "f0c087a612160b4d8d754f9c6a451cae77e4932214cffec9076288c782f4db4e"
     },
     {
       "file": "assets/vendor-react-BaMjfHjM.js",
@@ -7096,7 +7096,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "88baf59561ab5847ce1909651d33d481466a731b75d0e56f9b779e61099d3b9c"
+      "sha256": "fb5f864a2ed68a27fdb18131fd31953f5f7eefefd7cbfb20e02fcdcca1037ab0"
     },
     {
       "file": "reddit-inline.html",

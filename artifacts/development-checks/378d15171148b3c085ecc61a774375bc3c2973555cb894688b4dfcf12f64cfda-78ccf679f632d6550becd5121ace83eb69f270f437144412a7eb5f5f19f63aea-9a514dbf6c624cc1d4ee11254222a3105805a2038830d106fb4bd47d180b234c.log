@@ -1,0 +1,13 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+  console.info
+    Reddit: feedback 6.4ms; next draft survives confirmation
+
+      at verifyImmediateSoloFeedback (src/play/__tests__/instantFeedback.jest-playwright.support.ts:46:11)
+
+
+$ jest --config jest.config.cjs --runInBand --runTestsByPath src/reddit/__tests__/redditBrowser.jest-playwright.test.ts
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        17.808 s, estimated 19 s
+Ran all test suites within paths "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts".

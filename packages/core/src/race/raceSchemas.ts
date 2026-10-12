@@ -448,8 +448,10 @@ export const RaceEntryResponseSchema = z.discriminatedUnion("status", [
   z.object({status: z.literal("waiting"), invitation: RaceInvitationViewSchema, serverNowMs: MillisecondsSchema}).strict(),
   z.object({status: z.literal("expired"), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
   z.object({status: z.literal("cancelled"), invitation: RaceInvitationViewSchema.optional(), serverNowMs: MillisecondsSchema}).strict(),
-  z.object({status: z.literal("unavailable"), reason: z.enum(["missing", "claimed", "blocked", "deleted", "locale", "inactive", "invalid"]), invitation: RaceInvitationViewSchema.extend({role: z.literal("creator")}).optional(), serverNowMs: MillisecondsSchema}).strict().superRefine((entry, context) => {
-    if (entry.invitation && entry.reason !== "invalid") context.addIssue({code: "custom", path: ["invitation"], message: "Creator recovery facts require invalid recording readiness."});
+  z.object({status: z.literal("unavailable"), reason: z.enum(["missing", "claimed", "blocked", "deleted", "locale", "inactive", "invalid"]), invitation: RaceInvitationViewSchema.extend({role: z.literal("creator")}).optional(), serverNowMs: MillisecondsSchema}).strict().check((context) => {
+    /** Unavailable entry whose optional creator recovery facts require invalid readiness. */
+    const entry = context.value;
+    if (entry.invitation && entry.reason !== "invalid") context.issues.push({code: "custom", input: entry, path: ["invitation"], message: "Creator recovery facts require invalid recording readiness."});
   }),
 ]);
 /** Idempotent creator cancellation affects a reserved invitation, never a reusable public share. */

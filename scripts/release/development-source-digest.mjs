@@ -6,10 +6,17 @@ import {promisify} from 'node:util';
 
 const execute = promisify(execFile);
 
+export const developmentSourcePathspecs = Object.freeze([
+  '.',
+  ':(exclude).codex/**',
+  ':(exclude)artifacts/**',
+  ':(exclude)docs/reports/platform-release-readiness/src/data.json',
+  ':(exclude)docs/reports/platform-release-readiness/src/content/task-register.json',
+]);
+
 /** Hash repository source files and link identities without reading external link targets. */
 export async function developmentSourceDigest(repository) {
-  const {stdout} = await execute('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', '.',
-    ':(exclude).codex/**', ':(exclude)artifacts/**', ':(exclude)docs/reports/platform-release-readiness/src/data.json'],
+  const {stdout} = await execute('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', ...developmentSourcePathspecs],
   {cwd: repository, maxBuffer: 32 * 1024 * 1024});
   const files = stdout.split('\0').filter(Boolean).sort();
   const hash = createHash('sha256');

@@ -133,37 +133,47 @@
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "facebook",
-      "file": "artifacts/target-dependencies/facebook.json"
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "reddit",
-      "file": "artifacts/target-dependencies/reddit.json"
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "youtube",
-      "file": "artifacts/target-dependencies/youtube.json"
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "netflix",
-      "file": "artifacts/target-dependencies/netflix.json"
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "yahoo",
-      "file": "artifacts/target-dependencies/yahoo.json"
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "gamesnacks",
-      "file": "artifacts/target-dependencies/gamesnacks.json"
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-platform-builds"
     }
   ],
   "remainingGates": [
     "The comprehensive multiplayer reliability goal remains active, including event history, transaction, receipt identity and platform lifecycle audits.",
     "Provider submission, approval, publication and production deployment require separate evidence.",
-    "Jest builds remain inactive drafts; live activation requires a new explicit user instruction."
+    "Use the current activation/publication contract recorded in jest-build-activation-publication-hold and retain separate hosted build/deployment receipts. Publication, review submission and listing visibility remain held."
   ],
-  "nextAction": "Continue the multiplayer reliability audit across lifecycle races, durable delivery and platform recovery. Use Jest drafts and hold live activation."
+  "nextAction": "Continue the multiplayer reliability audit across lifecycle races, durable delivery and platform recovery. Use Jest drafts and hold live activation.",
+  "historicalRemainingGates": [
+    "Jest builds remain inactive drafts; live activation requires a new explicit user instruction."
+  ]
 }

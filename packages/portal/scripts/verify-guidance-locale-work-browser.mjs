@@ -23,6 +23,7 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import {getCurrentLocale,setLocaleAndWait,tr,useLocale} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 import {applyPlayerPreferences,completePlayerOnboarding} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
+window.guidanceKeys={anchored:createTooltipTourStorageKey('gameTour'),centered:createGuidanceStorageKey('tooltipSeen:leaderboardFifthCorrectAnswer')};
 const params=new URL(location.href).searchParams,anchored=params.get('scenario')==='anchored';
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});await setLocaleAndWait(params.get('initial')??'en');
 completePlayerOnboarding(createGuidanceStorageKey('onboarding'));sessionStorage.setItem(createGuidanceStorageKey('welcomeSession'),'seen');
@@ -73,7 +74,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
   await page.screenshot({path:path.join(output,[scenario,locale,width,height].join('-')+'.png')});
   await page.locator('.tooltip-card button').click();await page.locator('.tooltip-card').waitFor({state:'detached'});await settle();before=await updates();await signal();await settle();
   metric('dismissed guidance performs no target work',await updates(),before);
-  metric('completion persists the existing seen marker',await page.evaluate(scenario=>localStorage.getItem(scenario==='anchored'?'riddleQuest:tooltipSequenceSeen:gameTour:v2:anonymous':'riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:anonymous'),scenario),'seen');
+  metric('completion persists the existing seen marker',await page.evaluate(scenario=>localStorage.getItem(window.guidanceKeys[scenario]),scenario),'seen');
   metric('browser errors',await page.evaluate(()=>probe.errors),[]);metric('unhandled rejections',await page.evaluate(()=>probe.unhandled),[]);
   await context.close();
  }

@@ -1,3 +1,4 @@
+/** Exercises the retained recorded-race controller/view; the public entry uses live PvP. */
 import assert from "node:assert/strict";
 import {mkdtemp, mkdir, readFile, writeFile, rm} from "node:fs/promises";
 import {createServer} from "node:http";
@@ -17,7 +18,7 @@ import React,{useState,useEffect} from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from '@qwordly/core/race';
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/play/race/RaceTo10Game.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/play/race/logic/racePresentation.ts"))};
 const now=Date.now(),view={runId:'unconfirmed-run',role:'challenger',status:'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,
  challengeId:'recorded-challenge',correctCount:0,wallElapsedMs:1000,totalPenaltyMs:0,adjustedElapsedMs:1000,
@@ -42,7 +43,7 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
-    if (process.env.RACE_PROVIDER_OUTCOME_BASELINE === "1" && id.endsWith("/play/race/RaceTo10Game.tsx"))
+    if (process.env.RACE_PROVIDER_OUTCOME_BASELINE === "1" && id.endsWith("/scripts/fixtures/RetainedRaceHarness.tsx"))
       return readFile(path.join(output,"prior-race-game.tsx"),"utf8").then(code=>({code,map:null}));
     if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));

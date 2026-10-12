@@ -1,0 +1,108 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.raceProviderScope = raceProviderScope;
+exports.raceChallengeEligibility = raceChallengeEligibility;
+exports.inspectRaceChallengeEligibility = inspectRaceChallengeEligibility;
+exports.readRaceEligibilityDocuments = readRaceEligibilityDocuments;
+exports.assertRaceChallengeEligible = assertRaceChallengeEligible;
+const raceDeckCompatibility_1 = require("./raceDeckCompatibility");
+const raceInvitationRecord_1 = require("./raceInvitationRecord");
+const https_1 = require("firebase-functions/v2/https");
+const jestAccountDeletion_1 = require("../jest/jestAccountDeletion");
+const raceDeckSnapshot_1 = require("./raceDeckSnapshot");
+const raceSetupService_1 = require("./raceSetupService");
+/** Identifies a validated provider namespace without trusting client-supplied scope. */
+function raceProviderScope(userId) {
+    /** Provides match behavior. */
+    const match = /^(jest|facebook|reddit)_[a-f0-9]{40}$/.exec(userId);
+    return match?.[1];
+}
+/**
+ * Reads discovery and acceptance eligibility through the same transaction seam.
+ * Caller must first read the canonical challenge in this transaction. All checks
+ * are side-effect-free; accepting callers retain their own attempt-creation write.
+ */
+async function raceChallengeEligibility(transaction, db, userId, challenge, locale, nowMs, acceptedRunId) {
+    return (await inspectRaceChallengeEligibility(transaction, db, userId, challenge, locale, nowMs, acceptedRunId)).reason;
+}
+/** Returns the authorized canonical archive from the same transaction as its eligibility checks. */
+async function inspectRaceChallengeEligibility(transaction, db, userId, challenge, locale, nowMs, acceptedRunId) {
+    if (challenge.creatorId === userId)
+        return { reason: "self" };
+    /** Provides provider behavior. */
+    const provider = raceProviderScope(userId);
+    if (provider !== raceProviderScope(challenge.creatorId))
+        return { reason: "provider" };
+    if (challenge.locale !== locale)
+        return { reason: "locale" };
+    if (challenge.status !== "active" || challenge.createdAtMs > nowMs || challenge.expiresAtMs <= nowMs)
+        return { reason: "inactive" };
+    /** Privacy gates reject candidates before reading attempts, invitations or legacy archives. */
+    const [creatorDeletion, playerDeletion, outgoingBlock, incomingBlock] = await readRaceEligibilityDocuments(transaction, [
+        (0, jestAccountDeletion_1.getJestAccountDeletionRef)(db, challenge.creatorId), (0, jestAccountDeletion_1.getJestAccountDeletionRef)(db, userId),
+        db.doc(`users/${userId}/blockedRivals/${challenge.creatorId}`), db.doc(`users/${challenge.creatorId}/blockedRivals/${userId}`),
+    ]);
+    if (creatorDeletion.exists || playerDeletion.exists)
+        return { reason: "deleted" };
+    if (outgoingBlock.exists || incomingBlock.exists)
+        return { reason: "blocked" };
+    /** Independent attempt and invitation checks share one storage request. */
+    const [attempt, invitation] = await readRaceEligibilityDocuments(transaction, [
+        db.doc(`raceAttempts/${(0, raceSetupService_1.requestDocumentId)(challenge.challengeId, userId)}`), db.doc(`raceInviteLobbies/${challenge.challengeId}`),
+    ]);
+    if (attempt.exists && (!acceptedRunId || attempt.data()?.runId !== acceptedRunId))
+        return { reason: "attempted" };
+    if ((challenge.scope === "invitation" || challenge.challengeId.startsWith("jest-invite-")) && !invitation.exists)
+        return { reason: "invitation" };
+    if (invitation.exists) {
+        /** Independent facts preserve authorization regardless of claim/publication ordering. */
+        try {
+            /** Normalized legacy/new reservation; malformed records fail closed. */
+            const lobby = (0, raceInvitationRecord_1.parseRaceInvitation)(invitation.data(), true, invitation.id);
+            if (lobby.challengeId !== challenge.challengeId || lobby.creatorId !== challenge.creatorId ||
+                lobby.recipientId !== userId || lobby.locale !== locale || lobby.expiresAtMs <= nowMs ||
+                lobby.cancelledAtMs !== undefined || lobby.claimState !== "claimed" || lobby.publicationState !== "published")
+                return { reason: "invitation" };
+        }
+        catch (error) {
+            if (error instanceof https_1.HttpsError)
+                return { reason: "invitation" };
+            throw error;
+        }
+    }
+    /** Legacy archive hydration occurs only after authorization and prior-attempt checks succeed. */
+    const creatorRun = challenge.riddles ? null : await transaction.get(db.doc(`raceRuns/${challenge.creatorRunId}`));
+    try {
+        /** Provides original behavior. */
+        const original = creatorRun?.data();
+        if (!challenge.riddles && (!creatorRun?.exists || original?.userId !== challenge.creatorId || original?.locale !== locale))
+            return { reason: "content" };
+        if (!challenge.riddles)
+            (0, raceDeckSnapshot_1.assertRaceCreatorArchiveLink)((0, raceSetupService_1.parseRunRecord)(original, challenge.creatorRunId), challenge);
+        /** Ordered canonical deck validated against retained recording identifiers and content version. */
+        const riddles = (0, raceDeckSnapshot_1.validateRaceDeckSnapshot)(challenge.riddles ?? original?.riddles, challenge.canonicalRiddleIds, challenge.snapshotVersion === 1 ? challenge.contentVersion : undefined);
+        (0, raceDeckCompatibility_1.assertRaceDeckCompatible)(riddles, locale);
+        return { reason: null, riddles };
+    }
+    catch (error) {
+        if (error instanceof https_1.HttpsError)
+            return { reason: "content" };
+        throw error;
+    }
+}
+/** Batches independent document reads while retaining compatibility with narrow injected readers. */
+function readRaceEligibilityDocuments(transaction, references) {
+    return typeof transaction.getAll === "function" ? transaction.getAll(...references) : Promise.all(references.map(reference => transaction.get(reference)));
+}
+/** Converts expected eligibility failures into stable authoritative start errors. */
+function assertRaceChallengeEligible(reason) {
+    if (!reason)
+        return;
+    if (reason === "deleted")
+        throw new jestAccountDeletion_1.JestAccountDeletedError();
+    /** Provides code behavior. */
+    const code = reason === "attempted" ? "already-exists" :
+        ["blocked", "invitation", "provider", "deleted"].includes(reason) ? "permission-denied" : "failed-precondition";
+    throw new https_1.HttpsError(code, reason === "locale" ? "RaceTo10.ERROR_LOCALE_MISMATCH" : `Race challenge is unavailable: ${reason}.`);
+}
+//# sourceMappingURL=raceEligibility.js.map

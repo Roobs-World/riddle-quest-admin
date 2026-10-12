@@ -1385,9 +1385,17 @@
     "width": 390,
     "height": 568,
     "scenario": "tab-away",
+    "name": "retired Activity does not admit standings after native membership settles",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "scenario": "tab-away",
     "name": "current context acknowledgement starts only its owned authority queries",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2869,9 +2877,17 @@
     "width": 390,
     "height": 844,
     "scenario": "tab-away",
+    "name": "retired Activity does not admit standings after native membership settles",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "tab-away",
     "name": "current context acknowledgement starts only its owned authority queries",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -4353,9 +4369,17 @@
     "width": 1280,
     "height": 844,
     "scenario": "tab-away",
+    "name": "retired Activity does not admit standings after native membership settles",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "tab-away",
     "name": "current context acknowledgement starts only its owned authority queries",
-    "actual": 2,
-    "expected": 2
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,

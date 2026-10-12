@@ -17,7 +17,7 @@ export function TaskRegister() {
       <div className="integration-metrics">
         <MetricCard id="metric-register-tasks" queryId="task_register" sourceRows={rows} title="Tasks in view" value={String(rows.length)} />
         <MetricCard id="metric-register-verification" queryId="task_register" sourceRows={rows} title="Verification pending" value={String(rows.filter(r => r.status === 'Verification pending').length)} />
-        <MetricCard id="metric-register-recorded" queryId="task_register" sourceRows={rows} title="Recorded development verification" value={String(rows.filter(r => r.status === 'Development verified').length)} description="Historical receipts matching the recorded manifest. Current-source and provider verification remain separate." />
+        <MetricCard id="metric-register-recorded" queryId="task_register" sourceRows={rows} title="Current-source development verification" value={String(rows.filter(r => r.status === 'Development verified').length)} description="Current-source work receipts, required checks and artifact hashes match. Provider acceptance remains separate." />
       </div>
       <DataComponent id="task-register" queryId="task_register" title="All recorded project tasks" kind="table" variant="card" {...props} displayRows={rows} sourceRows={rows}>
         <div data-reviewed-rows><DataTable rows={rows} rowKey="id" selectedRowKey={selectedId} onRowSelect={row => setSelectedId(row.id)} rowActionLabel={row => `Read requirements for ${row.title}`} label="Project task register" searchable columns={[

@@ -31,3 +31,15 @@ test('unknown IDs, duplicate claims and traversal are rejected', async () => fix
   await save([entry]);
   await assert.rejects(applyTaskResolutions(tasks, root), /Invalid resolution file/);
 }));
+
+test('local verification remains local and becomes pending when its source changes', async () => fixture(async ({root, entry, save, tasks}) => {
+  entry.status = 'Locally verified';
+  entry.nextAction = 'Complete physical Safari and client LMS acceptance';
+  await save([entry]);
+  assert.deepEqual(await applyTaskResolutions(tasks, root), {records: 1, stale: 0});
+  assert.equal(tasks[0].status, 'Locally verified');
+  assert.equal(tasks[0].nextAction, 'Complete physical Safari and client LMS acceptance');
+  await writeFile(path.join(root, 'source.js'), 'changed');
+  assert.deepEqual(await applyTaskResolutions(tasks, root), {records: 1, stale: 1});
+  assert.equal(tasks[0].status, 'Verification pending');
+}));

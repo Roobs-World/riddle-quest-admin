@@ -1,0 +1,271 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-scheduled-draft",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Retain first-puzzle input after a server-scheduled countdown starts, before any guess response. Determine eligibility from the private canonical server schedule and monotonic receipt anchor, independent of visible status, countdown state and wall-clock skew. Retain bounded reload, denied-storage and newer-tab protection, provider delivery deadlines and capability recovery.",
+    "revision": "d6db0d78a9b3d9126c60274b81735cfd6447538c",
+    "sourceDigest": "d5ab7beaecc23f4ca4268c38e1e02b57ba05f12ecf77a1a028f30688f3fcecd7",
+    "completedAt": "2026-10-11T19:18:58.712Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "node22-backend-build-and-operator-safeguards",
+      "node22-isolated-backend-race-coverage",
+      "backend-types",
+      "client-race-recovery",
+      "backend-lint",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations",
+      "full-core-tests",
+      "portal-types",
+      "injected-event-aggregate-browser",
+      "client-firebase-target-routing",
+      "retained-rule-ownership-browser",
+      "retained-checkpoint-isolation-browser",
+      "injected-timeout-reload-browser",
+      "injected-first-resume-browser",
+      "injected-private-outcome-browser",
+      "injected-private-command-ownership-browser",
+      "injected-pending-answer-recovery-browser",
+      "injected-known-answer-feedback-browser",
+      "injected-known-answer-reveals-browser",
+      "injected-answer-free-checkpoints-browser",
+      "injected-paid-draft-checkpoints-browser",
+      "timeout-receipt-and-calibration-contracts",
+      "injected-provider-record-recovery-browser",
+      "injected-provider-record-deadline-browser",
+      "injected-responsive-hub-navigation-browser",
+      "injected-provider-capability-recovery-browser",
+      "race-draft-reload-browser",
+      "browser-player-state-deletion",
+      "complete-client-suite"
+    ],
+    "checks": [
+      {
+        "id": "node22-backend-build-and-operator-safeguards",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage; current-source check at 2026-10-11T19:05:40.036Z; output artifacts/development-checks/711f1d9b87b8f5adfcfd30038350575729cc567dd0dd1ad639d6cb3622700c9e.log SHA-256 92ba93a7afb6d1f6fe23878150f9017b6c8c77b54eceb63b52b0a9476602a3b5"
+      },
+      {
+        "id": "node22-isolated-backend-race-coverage",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore,database --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand; current-source check at 2026-10-11T19:14:26.186Z; output artifacts/development-checks/0b5f3e1d09aed466e8de62d42d3621ecd771049ff065c7cffd462a0aafcc4120.log SHA-256 8d39d4375ec01e3a0364a7c334a615a135a9c4f394c5a0458f4a44d5b6a9192f"
+      },
+      {
+        "id": "backend-types",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types; current-source check at 2026-10-11T19:14:28.367Z; output artifacts/development-checks/cbdfa15a368370ec03cc5360d0784a9add8c1dfd4946562002feec0b0f69bdf8.log SHA-256 00e0d5c6ab1eb17f03768f6092e19af9f4da1d4c912d305ee46036e17a1d4138"
+      },
+      {
+        "id": "client-race-recovery",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; current-source check at 2026-10-11T19:14:33.660Z; output artifacts/development-checks/fc75e68dd7fcdd2619b6035c4bcd7f2ff19703f5208a41c4a6a06af3290fb299.log SHA-256 f01f61ec998219fde4a4f9317c386d2adb272b8e4b292d8f3675937288981d5e"
+      },
+      {
+        "id": "backend-lint",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint; current-source check at 2026-10-11T19:14:38.669Z; output artifacts/development-checks/25b2389645c3e7db05fe1ecfbf00fd9b416b26b47a759fddf865f74ad6966279.log SHA-256 802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-11T19:05:16.048Z; output artifacts/development-checks/77fc6d0d4155a51e64ba88bb5d343ea75b3584f81714a046a2d59de390234033.log SHA-256 c95f0d45ce0e8f5daca48a52780913ecba08b67f9228c037b8472795fd3c01ff"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-11T19:05:28.270Z; output artifacts/development-checks/cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146.log SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; current-source check at 2026-10-11T19:05:35.119Z; output artifacts/development-checks/bb2a1e5b36d7ff65f4344366547708258b1b43b62b5d7319df4393f38c8f912c.log SHA-256 208d7e88b15cacb125dd52cad2a583469b3aa273a241631035525e57d3940335"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; current-source check at 2026-10-11T19:05:35.556Z; output artifacts/development-checks/fb61e916e20dc77e5240e797df07e4e4bc1a506a78dd17b9c2ed0975a94e8bef.log SHA-256 7d93d799c833d74edb2e0bc69196363f29bedff607d1ffdcc59df176bb9d9491"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-11T19:05:36.085Z; output artifacts/development-checks/626eddf19032e8a705e4e0e06aead9f637e9c2cc093e34abdc13c73a4343bc84.log SHA-256 3e400bc67eaf4820805f1ff4c35fe5eb941c7f8c55a3f5fc95a50935561c05dd"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-11T19:05:37.287Z; output artifacts/development-checks/0b11dae300a3f6b2ea9b1c98f6cd255d3e46cca56b94f997111188782470602b.log SHA-256 b17e9ace1716dfe2ec4083d3839c9e64fc6297bbe0f8646dc85655ceb2ce77bf"
+      },
+      {
+        "id": "full-core-tests",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/core test --runInBand; current-source check at 2026-10-11T19:14:40.460Z; output artifacts/development-checks/b0fb822af63a65df6a3ec86b278fbe9ce136798b3452e422a4ae06bf5e0a2c5d.log SHA-256 4ff19268076ce39467772b91cf5b84433b2def38b815fcf986994b5d37ac7053"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-11T19:05:27.965Z; output artifacts/development-checks/74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "injected-event-aggregate-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-event-aggregate-browser.mjs; current-source check at 2026-10-11T19:14:45.160Z; output artifacts/development-checks/e18aac7af328d2292201281804e546660af35b00ff7b32385956d00185888ad6.log SHA-256 260328d50efec5157ce993f774afefaa2e9dd81595e4dbf14c63cb5c154fb08c"
+      },
+      {
+        "id": "client-firebase-target-routing",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts; current-source check at 2026-10-11T19:14:46.020Z; output artifacts/development-checks/b96238bd0801ef80d278447fcd5efd71d9f554d675b288d0a01cac35b08a9967.log SHA-256 9540529e57ba2be0014e173b8f484ab023b59ec421ceff049c4b5c0e8820b92f"
+      },
+      {
+        "id": "retained-rule-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rule-ownership-browser.mjs; current-source check at 2026-10-11T19:14:50.903Z; output artifacts/development-checks/9f0b82975cc6c18ef7f2880d17f1e92509964705160d7ff96185832b8cb1a680.log SHA-256 844ad9e90c441a844fef3b4edd928740302ffb60f865229e1f54887edc77baae"
+      },
+      {
+        "id": "retained-checkpoint-isolation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs; current-source check at 2026-10-11T19:15:05.591Z; output artifacts/development-checks/a81e63463de9fc2169588c544782c5b566264bef0bf029526b2f9834b7df5732.log SHA-256 76165e8a3bcca1b2c2326541fc600b7025cf319f99c99ea5bd18b3a5a6f42df2"
+      },
+      {
+        "id": "injected-timeout-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-timeout-recovery-browser.mjs; current-source check at 2026-10-11T19:15:07.913Z; output artifacts/development-checks/0e1d21d088b70e34b72a2a7b03f78fb56d92c0ecc71042614a27ebe57ed74dc5.log SHA-256 012b8463c8252d509c794db680501ade4c63eaba29c02f6080393d2d6afa37db"
+      },
+      {
+        "id": "injected-first-resume-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-startup-recovery-browser.mjs; current-source check at 2026-10-11T19:15:11.548Z; output artifacts/development-checks/45fff251b41ac20043294cbc828bf75578f41c29d580afb6733054712a5d75eb.log SHA-256 2f3df26f9b0c359d81ff75e9577c1163fa5d981c6c3b47160fe8dde74600eabf"
+      },
+      {
+        "id": "injected-private-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-outcome-isolation-browser.mjs; current-source check at 2026-10-11T19:15:13.865Z; output artifacts/development-checks/7c722d942b5e1e24d4bc195118026eca25977e0a413821e1cbbe48b01c13b682.log SHA-256 60451136d43bd9571d995a8564182e6f95656ac8bba476df95d7ef5050635bff"
+      },
+      {
+        "id": "injected-private-command-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-command-ownership-browser.mjs; current-source check at 2026-10-11T19:15:18.638Z; output artifacts/development-checks/bf35c24620a6532d9a7895ef37282103eb76a988fc66f70a1ecffcdfd2e665b6.log SHA-256 8809066444b29a2e09dcc1a9e18089bb5794c09557ccfeb2b258a1d631bdd2a1"
+      },
+      {
+        "id": "injected-pending-answer-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-pending-input-browser.mjs; current-source check at 2026-10-11T19:15:22.006Z; output artifacts/development-checks/076df74fcdf79a4567a731ef44c1eb630935333b51c4f8e50d7c918e1bcb9c89.log SHA-256 882f4a4a2e0d2a0b67ba99e02692375a44864900ed1485b1b82a098a06768633"
+      },
+      {
+        "id": "injected-known-answer-feedback-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs; current-source check at 2026-10-11T19:15:28.288Z; output artifacts/development-checks/97bbec952382967051acac657fb397fa562e536d72454a9d39b8d2ba15815e0b.log SHA-256 8586984b3c17071caa99a67b58ddfbf7da824903e802fd7fd24c20f4eb8a407d"
+      },
+      {
+        "id": "injected-known-answer-reveals-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs; current-source check at 2026-10-11T19:15:33.386Z; output artifacts/development-checks/11baabc069b74959b8332df7cda049f7be16bd52620c3201fb0608de547847fd.log SHA-256 a60fda705d76c57c4ac4893340baf08ff178227b60b70a740b1773448d46b36b"
+      },
+      {
+        "id": "injected-answer-free-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs; current-source check at 2026-10-11T19:15:40.429Z; output artifacts/development-checks/3e3c05752b9c6dc02c69631a16d143c0c39d048cb4cd937f638370ab5f53a7dc.log SHA-256 cb4c57fbf83e37baec24a060ecd2fab002f8ff5dabd7a93e5fd57d39edaaa72a"
+      },
+      {
+        "id": "injected-paid-draft-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs; current-source check at 2026-10-11T19:15:54.786Z; output artifacts/development-checks/17d0478fc39530a16b024c98f7104840b96059fe1d8d76de7c46bcfcc9c94a47.log SHA-256 343ab2199381cdc7958293787edcf60cb0a5130f103ac7f5a79085bfca1522a8"
+      },
+      {
+        "id": "timeout-receipt-and-calibration-contracts",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts; current-source check at 2026-10-11T19:15:55.896Z; output artifacts/development-checks/57f534ddb71456ec0a9790a04877d8564aaa813954bd5310b8bf8c240ff7d244.log SHA-256 1dcbd0d1ef187e0adb14c281d20ddd74786836b491383bfa2d03c5426499c9ed"
+      },
+      {
+        "id": "injected-provider-record-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs; current-source check at 2026-10-11T19:15:57.994Z; output artifacts/development-checks/f5bfa864dd35beaa808a4ef8235799ad924e1871421dfd0b7469bca7c9aebedb.log SHA-256 2ac4794c74f0bd9083ee04bc1301ad6a73d51764b37fadf0aec8bda1d19478df"
+      },
+      {
+        "id": "injected-provider-record-deadline-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs; current-source check at 2026-10-11T19:16:01.363Z; output artifacts/development-checks/a43d1dd6790c8f42a0f301b11897764dedbf62ee55d4a74e50fdfac5dff26e40.log SHA-256 6592dc0838317e2d2fdf18f157bbaefafa54ea2f371083918e8964444a55558c"
+      },
+      {
+        "id": "injected-responsive-hub-navigation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hub-navigation-browser.mjs; current-source check at 2026-10-11T19:16:03.598Z; output artifacts/development-checks/30af30c1774a7ad8e90c4d042375bcc1bb7cb87959576b6273332c679fd57f18.log SHA-256 319cb0f3c9b86673dc9c0ba28a097a482a4ac0e1a10946ddba606776edfa3cb1"
+      },
+      {
+        "id": "injected-provider-capability-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-capability-browser.mjs; current-source check at 2026-10-11T19:16:06.637Z; output artifacts/development-checks/d540608232ef91823781bbeb67457f310d12f38ae042b70a9e2942fba871590b.log SHA-256 23791604ba062b66dd921d99ec296933b56d8367dbee3c508417485a47b8314d"
+      },
+      {
+        "id": "race-draft-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-reload-browser.mjs; current-source check at 2026-10-11T19:17:06.367Z; output artifacts/development-checks/d498062180733baa0c31a4150a8b573955dd3a96ad380fc7b26b4f07e145b618.log SHA-256 25f12e8a9dc7b8aaecfe6814056d0ab77584230427d11751efc1c543ba9a31ab"
+      },
+      {
+        "id": "browser-player-state-deletion",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=playerPreferences.test.ts; current-source check at 2026-10-11T19:17:07.228Z; output artifacts/development-checks/41f0c5904c4cefeee54dd804fdebb4e6f087f682786df02eb8d5c175292ff193.log SHA-256 981b6003f76cab55553db7693749978e269e00b118a71403312c0614832a74a4"
+      },
+      {
+        "id": "complete-client-suite",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand; current-source check at 2026-10-11T19:17:17.918Z; output artifacts/development-checks/5704da0c2c5243ff53cf1d842b513b8d79205137599357d66cf9bbb7fb5c07c4.log SHA-256 13bf8e7e8139e1b0b5d2ff6e7c570892d659e1937f5d43faf487cc97793ef557"
+      }
+    ],
+    "remainingGates": [
+      "The ongoing multiplayer edge-case and reliability audit remains active.",
+      "Jest build activation is authorized; game publication, review submission and listing visibility remain on hold. Firebase Functions deployment is authorized but this verification does not deploy."
+    ],
+    "nextAction": "Continue the multiplayer reliability audit; preserve Jest game publication hold and deployment verification requirements.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "sha256": "f71ef30786b162bfea5b4c5af9f8068d45778de282739f7e4629cc39dc032544"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "sha256": "7046407c9af8fbc89d006c3cc7fb9910ca6bfb73138b0cbb7ac04dc8cf568acd"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "sha256": "6a46d6cdf509afd382327c482b71dfcc80d7fb28705d165fd8b253cdeffe25e2"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "sha256": "722502d52af82e6d0bd4f5e2fc2c86d5398062a1c65efcf8cc22553df1ce2832"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "sha256": "d3ee9096c22f34fb2f1513f31c1cf13045a54bb7bf2ac58c3f8bd0cec1b53c75"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "sha256": "1e3aa2d6b42f36cb3e81936befefdc76579081a80260f4c106f34e9aad8c3cbb"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "sha256": "fef4a5e3982f2d0abb048f414dbeca41f5a0cbbdcf62adefafd0d097fcb18f17"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

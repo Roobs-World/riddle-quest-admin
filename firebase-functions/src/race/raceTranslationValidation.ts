@@ -10,8 +10,8 @@ import {
 import {graphemeLength} from "@qwordly/core/game";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
-import {RaceContentImportFileSchema, type RaceContentImportFile} from "./raceContentImport";
-import {RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
+import {RaceContentImportFileSchema, createRaceContentImportPlan, type RaceContentImportFile} from "./raceContentImport";
+import {RACE_MIN_POOL_SIZE, RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
 
 /** Defines the automated translation quality version value. */
 export const AUTOMATED_TRANSLATION_QUALITY_VERSION = "automated_translation_v1" as const;
@@ -52,7 +52,7 @@ export const RaceTranslationBundleSchema = z
     provenance: z.literal(AUTOMATED_TRANSLATION_QUALITY_VERSION),
     translatorModel: z.string().trim().min(1).max(160),
     criticModel: z.string().trim().min(1).max(160),
-    riddles: z.array(TranslationItemSchema).length(RACE_CATEGORY_IDS.length * RACE_POOL_SIZE),
+    riddles: z.array(TranslationItemSchema).min(RACE_CATEGORY_IDS.length * RACE_MIN_POOL_SIZE).max(RACE_CATEGORY_IDS.length * RACE_POOL_SIZE),
   })
   .strict()
   .refine((bundle) => bundle.translatorModel !== bundle.criticModel, {
@@ -179,7 +179,9 @@ export function createRaceTranslationPlan(input: unknown, sourceInput: unknown):
   /** Provides answer owner behavior. */
   const answerOwner = new Map<string, string>();
   /** Provides issues behavior. */
-  const issues: RaceTranslationIssue[] = [];
+  const issues: RaceTranslationIssue[] = createRaceContentImportPlan(source).issues.map((issue) => ({
+    code: "pool_invalid", message: `English source: ${issue.code}: ${issue.message}`,
+  }));
   /** Records s. */
   const records = bundle.riddles.map((riddle): ExistingRaceContentRecord => {
     /** Provides canonical behavior. */
@@ -314,7 +316,7 @@ export function createRaceTranslationPlan(input: unknown, sourceInput: unknown):
   return {valid: issues.length === 0, locale: bundle.locale, records, categoryCounts, issues};
 }
 
-/** Proves the generated corpus contains one valid 180-riddle bundle for every non-English locale. */
+/** Proves the generated corpus contains one valid source-matched bundle for every non-English locale. */
 export function createRaceTranslationMatrixPlan(inputs: unknown[], sourceInput: unknown): RaceTranslationMatrixPlan {
   /** Provides expected locales behavior. */
   const expectedLocales = RACE_SUPPORTED_LOCALES.filter(
@@ -359,7 +361,7 @@ export function createRaceTranslationMatrixPlan(inputs: unknown[], sourceInput: 
   /** Provides total riddles behavior. */
   const totalRiddles = plans.reduce((total, plan) => total + plan.records.length, 0);
   /** Provides expected total behavior. */
-  const expectedTotal = expectedLocales.length * RACE_CATEGORY_IDS.length * RACE_POOL_SIZE;
+  const expectedTotal = expectedLocales.length * RaceContentImportFileSchema.parse(sourceInput).riddles.length;
   if (totalRiddles !== expectedTotal) issues.push(`corpus-count:${totalRiddles}:expected-${expectedTotal}`);
   return {
     valid: issues.length === 0,

@@ -138,6 +138,7 @@ describe("Yahoo OAuth ID token verification", () => {
     const attacker = await jose.generateKeyPair("ES256");
     /** Creates an otherwise valid authorization response. */
     const {request, claims} = await startFlow();
+    /** Captures the controlled response to an untrusted signing key. */
     const response = await callback(request, await sign(claims, "ES256", attacker.privateKey));
     expect(response.status).toHaveBeenCalledWith(502);
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
@@ -150,6 +151,7 @@ describe("Yahoo OAuth ID token verification", () => {
     const token = algorithm === "none" ? new jose.UnsecuredJWT(claims).encode() :
       algorithm === "HS256" ? await new jose.SignJWT(claims).setProtectedHeader({alg: algorithm})
         .sign(new TextEncoder().encode("test-only-symmetric-signing-secret")) : await sign(claims, algorithm);
+    /** Captures the rejected algorithm response before token issuance. */
     const response = await callback(request, token);
     expect(response.status).toHaveBeenCalledWith(502);
     expect(mockCreateCustomToken).not.toHaveBeenCalled();
@@ -170,14 +172,19 @@ describe("Yahoo OAuth ID token verification", () => {
 
 describe("Yahoo OAuth failure recovery", () => {
   it("aborts a stalled exchange using an eight-second deadline and offers a fresh flow", async () => {
+    /** Starts a valid signed flow before injecting the recovery failure. */
     const {request} = await startFlow();
+    /** Explicit abort keeps the deadline test deterministic and immediate. */
     const controller = new AbortController();
+    /** Observes the production deadline while replacing its real clock. */
     const timeout = jest.spyOn(AbortSignal, "timeout").mockReturnValue(controller.signal);
     fetchMock.mockImplementationOnce(async (_url, init) => new Promise((_resolve, reject) => {
       init?.signal?.addEventListener("abort", () => reject(new Error("test-only-private-error")), {once: true});
     }));
+    /** Captures status and fixed recovery copy without exposing provider data. */
     const response = makeResponse();
     try {
+      /** Pending exchange must settle when its deadline signal aborts. */
       const pending = yahooOAuthCallback(request as never, response as never);
       expect(timeout).toHaveBeenCalledWith(8_000);
       controller.abort();
@@ -192,11 +199,13 @@ describe("Yahoo OAuth failure recovery", () => {
   });
 
   it.each(["network", "non-json", "missing-token", "body-failure"])("recovers from %s without exposing provider data", async (failure) => {
+    /** Starts a valid signed flow before injecting the recovery failure. */
     const {request} = await startFlow();
     if (failure === "network") fetchMock.mockRejectedValueOnce(new Error("private-provider-details"));
     else if (failure === "non-json") fetchMock.mockResolvedValueOnce(new Response("private-provider-details", {status: 503}));
     else if (failure === "body-failure") fetchMock.mockResolvedValueOnce({ok: true, json: async () => {throw new Error("private-provider-details");}} as unknown as Response);
     else fetchMock.mockResolvedValueOnce(new Response("{}"));
+    /** Captures status and fixed recovery copy without exposing provider data. */
     const response = makeResponse();
     await yahooOAuthCallback(request as never, response as never);
     expect(response.status).toHaveBeenCalledWith(502);
@@ -206,8 +215,11 @@ describe("Yahoo OAuth failure recovery", () => {
   });
 
   it("recovers from expired signed state before contacting Yahoo", async () => {
+    /** Starts a valid signed flow before injecting the recovery failure. */
     const {request} = await startFlow();
+    /** Advances state validation beyond the signed flow lifetime. */
     const now = jest.spyOn(Date, "now").mockReturnValue(Date.now() + 11 * 60_000);
+    /** Captures status and fixed recovery copy without exposing provider data. */
     const response = makeResponse();
     try {
       await yahooOAuthCallback(request as never, response as never);

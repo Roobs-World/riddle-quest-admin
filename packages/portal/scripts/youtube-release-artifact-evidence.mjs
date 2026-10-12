@@ -3,6 +3,7 @@ import {spawn} from "node:child_process";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {
+  captureSourceIdentity,
   writeYouTubeVerificationReport,
   youtubeReleaseVerificationSuites,
 } from "./youtube-release-artifact.mjs";
@@ -78,6 +79,7 @@ export async function runYouTubeReleaseVerification({
   commandRunner = runVerificationCommand,
   capturedAt = new Date().toISOString(),
 } = {}) {
+  const expectedSource = await captureSourceIdentity(repository);
   const tests = [];
   for (let index = 0; index < youtubeReleaseVerificationSuites.length; index += 1) {
     const suite = youtubeReleaseVerificationSuites[index];
@@ -88,6 +90,9 @@ export async function runYouTubeReleaseVerification({
       !/^[0-9a-f]{64}$/u.test(output.stdoutSha256 ?? "") ||
       !/^[0-9a-f]{64}$/u.test(output.stderrSha256 ?? "")
     ) throw new Error(`YouTube release verification runner returned invalid evidence for ${suite.id}`);
+    if (JSON.stringify(await captureSourceIdentity(repository)) !== JSON.stringify(expectedSource)) {
+      throw new Error(`YouTube source tree changed during release verification (${suite.id})`);
+    }
     tests.push({
       id: suite.id,
       command: suite.command,
@@ -103,6 +108,7 @@ export async function runYouTubeReleaseVerification({
     contentAuditPath,
     reportPath,
     tests,
+    expectedSource,
     capturedAt,
   });
 }

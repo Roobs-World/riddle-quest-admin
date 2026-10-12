@@ -142,6 +142,7 @@ export const yahooOAuthCallback = onRequestWithSentry("yahooOAuthCallback", opti
     });
     /** Provides tokens behavior. */
     if (!tokenResponse.ok) throw new Error("yahoo-token-exchange-failed");
+    /** Untrusted token body remains unknown until its ID token is validated. */
     const tokens: unknown = await tokenResponse.json();
     /** Provides id token behavior. */
     const idToken = tokens && typeof tokens === "object" && typeof (tokens as {/** Stores id token. */

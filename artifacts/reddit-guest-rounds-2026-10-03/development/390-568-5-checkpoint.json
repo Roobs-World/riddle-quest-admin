@@ -7,7 +7,7 @@
   },
   "playerData": {
     "schemaVersion": 1,
-    "updatedAt": 1791159263091,
+    "updatedAt": 1791805733891,
     "profile": {
       "username": "Guest Solver",
       "coins": 0,
@@ -25,7 +25,7 @@
     },
     "activeGame": {
       "schemaVersion": 1,
-      "savedAt": 1791159263091,
+      "savedAt": 1791805733891,
       "riddleId": "reddit-guest-1",
       "sessionToken": "00000000-0000-4000-8000-000000000001",
       "gameMode": "classic",

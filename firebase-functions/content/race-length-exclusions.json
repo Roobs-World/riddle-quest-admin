@@ -1,0 +1,33 @@
+{
+  "decision": "Remove questions whose faithful answer exceeds seven letters in any supported locale.",
+  "sourcePath": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/content/race-en-reviewed-v2.json",
+  "sourceSha256": "e4ed372c49ed6a6d7f98f583549f86f192b6b5eec9890fe92b721b59cdfe4ef1",
+  "filteredSha256": "615abbb81c87d2544e1b7b8cca5219195130e3e7ec58d4fb22edf2181c91821c",
+  "originalCount": 180,
+  "remainingCount": 177,
+  "exclusions": [
+    {
+      "canonicalRiddleId": "race:geography:07",
+      "locale": "de",
+      "faithfulAnswer": "Brasilien",
+      "letterCount": 9
+    },
+    {
+      "canonicalRiddleId": "race:geography:v2:17",
+      "locale": "de",
+      "faithfulAnswer": "Deutschland",
+      "letterCount": 11
+    },
+    {
+      "canonicalRiddleId": "race:history:v2:20",
+      "locale": "es",
+      "faithfulAnswer": "castillo",
+      "letterCount": 8
+    }
+  ],
+  "evidencePath": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/facebook-translations-review-2026-10-01/canonical-revision-proposal.json",
+  "status": "Three confirmed conflicts removed from authoritative English source; full native-answer screening and geography readiness remain incomplete.",
+  "liveContentChanged": false,
+  "authoritativeSourceChanged": true,
+  "cloudImportPerformed": false
+}

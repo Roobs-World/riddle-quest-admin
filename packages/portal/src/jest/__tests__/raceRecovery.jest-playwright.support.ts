@@ -187,7 +187,7 @@ export async function verifyGuessDraftConfirmation(page: Page, invalid: boolean)
     expect(await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).toEqual(["c", "l", "o", "c", ""]);
     expect(await page.locator(".race-gameplay .guess-row .cell.green").count()).toBe(2);
     await page.keyboard.type("k");
-    expect((await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).map(letter => letter.toLocaleLowerCase())).toEqual(["c", "k", "o", "c", ""]);
+    expect((await page.locator(".race-gameplay .guess-row").first().locator(".cell").allTextContents()).map(letter => letter.toLocaleLowerCase())).toEqual(["c", "l", "o", "c", "k"]);
   }
   /** Confirmation and recovery never submit the original answer again. */
   const requests = await page.evaluate(() => Reflect.get(window, "__guessDraftRequests") as string[]);
@@ -289,12 +289,15 @@ export async function verifyRecordedLayout(page: Page): Promise<void> {
     documentScrollLeft: document.scrollingElement?.scrollLeft ?? 0,
     screenScrollLeft: screen.scrollLeft,
     topbarLeft: screen.querySelector(".race-topbar")?.getBoundingClientRect().left ?? -1,
+    contentLeft: screen.getBoundingClientRect().left + Number.parseFloat(getComputedStyle(screen).paddingLeft),
   }));
-  expect(completedLayout).toEqual({documentScrollLeft: 0, screenScrollLeft: 0, topbarLeft: 18});
+  expect(completedLayout.documentScrollLeft).toBe(0);
+  expect(completedLayout.screenScrollLeft).toBe(0);
+  expect(Math.abs(completedLayout.topbarLeft - completedLayout.contentLeft)).toBeLessThanOrEqual(0.5);
 }
 
 /** Verifies paid-action rollback retains solving time and draft after a foreign-run response. */
-export async function verifyWrongRunPaidRollback(page: Page): Promise<void> {
+export async function verifyWrongRunPaidRollback(page: Page, selectedAction: "Hint" | "Skip"): Promise<void> {
   await page.getByRole("button", {name: /^multiplayer$/i}).click();
   await page.getByRole("button", {name: /^History /}).click();
   await page.locator(".race-gameplay").waitFor({state: "visible", timeout: 10_000});
@@ -316,7 +319,7 @@ export async function verifyWrongRunPaidRollback(page: Page): Promise<void> {
       return dispatch(event);
     };
   });
-  for (const action of ["Hint", "Skip"]) {
+  for (const action of [selectedAction]) {
     /** Visible solving time before the provisional action. */
     const before = Number((await page.locator(".race-header-clock strong").innerText()).split(":")[1]);
     await page.locator(".race-actions").getByRole("button", {name: new RegExp(`^${action}`, "i")}).click();

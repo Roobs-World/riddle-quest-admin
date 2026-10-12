@@ -7,6 +7,8 @@ import {releaseRepository} from './html5-handoff-preparation.mjs';
 import {recordDevelopmentCompletion, publishDevelopmentCompletion} from './development-progress.mjs';
 import {googleClient, snapshotStore} from '../../tooling/deployment-monitor/google.mjs';
 import {developmentSourceDigest} from './development-source-digest.mjs';
+import {executeDevelopmentCheck} from './development-check-output.mjs';
+import {reuseDevelopmentChecks} from './development-check-reuse.mjs';
 const execute = promisify(execFile);
 const git = args => execFileSync('git', args, {cwd: releaseRepository, encoding: 'utf8'}).trim();
 const revision = git(['rev-parse', 'HEAD']);
@@ -26,14 +28,16 @@ if (process.argv[2] === '--ci') {
   const receipt = JSON.parse(await readFile(process.argv[3], 'utf8'));
   completion = receipt.completion;
 } else {
-  if (!process.argv[2]) throw new Error('Usage: complete-development-task.mjs task.json | --ci | --retry receipt.json [--publish]');
+  if (!process.argv[2]) throw new Error('Usage: complete-development-task.mjs task.json [--checks-report report.json] | --ci | --retry receipt.json [--publish]');
   const task = JSON.parse(await readFile(process.argv[2], 'utf8'));
   if (!Array.isArray(task.checks) || !task.checks.length) throw new Error('Task must declare required checks');
   const sourceDigest = await developmentSourceDigest(releaseRepository);
-  const checks = [];
-  for (const check of task.checks) {
+  const reportOption = process.argv.indexOf('--checks-report');
+  const report = reportOption >= 0 ? JSON.parse(await readFile(process.argv[reportOption + 1], 'utf8')) : null;
+  const checks = report ? await reuseDevelopmentChecks(releaseRepository, task, report, {revision, sourceDigest}) : [];
+  for (const check of report ? [] : task.checks) {
     if (!check.id || !check.executable || !Array.isArray(check.args)) throw new Error('Invalid check command');
-    const result = await execute(check.executable, check.args, {cwd: releaseRepository, maxBuffer: 32 * 1024 * 1024});
+    const result = await executeDevelopmentCheck(check, execute, {cwd: releaseRepository, maxBuffer: 32 * 1024 * 1024});
     checks.push({id: check.id, status: 'passed', evidence: `${check.executable} ${check.args.join(' ')}; output SHA-256 ${createHash('sha256').update(result.stdout).update(result.stderr).digest('hex')}`});
   }
   if (git(['rev-parse', 'HEAD']) !== revision || await developmentSourceDigest(releaseRepository) !== sourceDigest) throw new Error('Revision changed during verification');

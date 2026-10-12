@@ -57,7 +57,8 @@
         "test",
         "--runInBand",
         "--runTestsByPath",
-        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
         "--testNamePattern=rejects inconsistent hint confirmations|preserves the player.s draft through projected|preserves solving time when hint and skip|recovers lost hint and skip confirmations"
       ]
     },
@@ -79,31 +80,38 @@
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "facebook",
-      "file": "artifacts/target-dependencies/facebook.json"
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "reddit",
-      "file": "artifacts/target-dependencies/reddit.json"
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "youtube",
-      "file": "artifacts/target-dependencies/youtube.json"
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "netflix",
-      "file": "artifacts/target-dependencies/netflix.json"
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "yahoo",
-      "file": "artifacts/target-dependencies/yahoo.json"
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-target-builds"
     },
     {
       "target": "gamesnacks",
-      "file": "artifacts/target-dependencies/gamesnacks.json"
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-target-builds"
     }
   ]
 }

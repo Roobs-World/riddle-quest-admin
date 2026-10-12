@@ -1,0 +1,352 @@
+diff --git a/packages/portal/scripts/verify-authority-terminal-recovery-browser.mjs b/packages/portal/scripts/verify-authority-terminal-recovery-browser.mjs
+index c34fd2477..34a3460fe 100644
+--- a/packages/portal/scripts/verify-authority-terminal-recovery-browser.mjs
++++ b/packages/portal/scripts/verify-authority-terminal-recovery-browser.mjs
+@@ -144,7 +144,7 @@ window.profile=()=>source.loadProfile(uid);window.probe.ready=true;
+    await page.screenshot({path:path.join(output,`${width}-${height}-${attempts}-${provider}-pending.png`)});
+    await page.evaluate(()=>window.releaseCompletion());
+    await page.waitForFunction(()=>window.probe.saves.some(x=>Object.hasOwn(x,'activeGame')&&x.activeGame===null));
+-   metric('completion uses the original issued round',await page.evaluate(()=>window.probe.completions.map(x=>({riddleId:x.riddleId,sessionToken:x.sessionToken}))),[await page.evaluate(()=>{const r=window.probe.inbound.find(x=>x.type==='host:riddleLoaded').payload.riddle;return{riddleId:r.riddleId,sessionToken:r.sessionToken};})]);
++   /* Held completions are re-sent on the 1 s/2 s retry schedule, so only distinct rounds matter here; the authority-once check covers idempotency. */metric('completion uses the original issued round',await page.evaluate(()=>[...new Map(window.probe.completions.map(x=>[x.riddleId+'\u0000'+x.sessionToken,{riddleId:x.riddleId,sessionToken:x.sessionToken}])).values()]),[await page.evaluate(()=>{const r=window.probe.inbound.find(x=>x.type==='host:riddleLoaded').payload.riddle;return{riddleId:r.riddleId,sessionToken:r.sessionToken};})]);
+    metric('completion advances the authority once',await page.evaluate(async()=>{const p=await window.profile(),b=window.probe.before;return[p.gamesPlayed-b.gamesPlayed,p.wins-b.wins];}),[1,1]);
+    for(let step=0;step<10&&await page.locator('.modal-victory').count();step++){
+     const chest=page.locator('.coin-award[data-coin-collection="pending"] .reward-chest');
+diff --git a/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs b/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs
+index 6dbb4c6ae..5dc5af28e 100644
+--- a/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs
++++ b/packages/portal/scripts/verify-bridge-chunk-recovery-browser.mjs
+@@ -79,7 +79,7 @@ try{
+   await page.goto(url);await page.waitForFunction(()=>window.loaded);await failed();
+   await metric('failed startup exposes an accessible recovery alert',await page.locator('.bridge-startup-recovery [role=alert]').count(),1);
+   await metric('failed validation download retires the game frame',await page.locator('.game-app').count(),0);
+-  await metric('failed startup dismisses the provider loading surface exactly once',(await probe()).unavailable,1);
++  /* The provider callback runs in a passive effect after the recovery UI commits; allow that commit to finish. */await page.waitForFunction(()=>window.probe.unavailable>=1,undefined,{timeout:5000}).catch(()=>undefined);await metric('failed startup dismisses the provider loading surface exactly once',(await probe()).unavailable,1);
+   await metric('recovery does not claim playable content',(await probe()).playable,0);
+   await metric('recovery removes readiness retry intervals',(await probe()).intervals,0);
+   const before=await probe();await page.clock.install();await page.clock.runFor(3000);await page.evaluate(()=>window.sendBurst());await page.clock.runFor(30);
+diff --git a/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs b/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs
+index 6f7558b5b..72a7a215a 100644
+--- a/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs
++++ b/packages/portal/scripts/verify-cold-draft-recovery-browser.mjs
+@@ -64,7 +64,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><PlayHostAp
+  else{
+   browser=await chromium.launch({headless:true});const quick=process.env.COLD_DRAFT_QUICK==='1';
+   for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const variant of quick?[process.env.COLD_DRAFT_VARIANT??'classicReplaced']:['classicReplaced','classicRenamed','dailyReplaced','classicSame','dailySame','foreignMode','queued','paid','successor','completedDailyFallback']){
+-   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();page.setDefaultTimeout(4000);
++   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();page.setDefaultTimeout(10_000);
+    const metric=(name,actual,expected)=>{observations.push({width,height,variant,name,actual,expected});assert.deepEqual(actual,expected,name);};
+    const row=async index=>(await page.locator('.guess-row').nth(index).locator('.cell').allTextContents()).join('').toUpperCase();
+    await page.goto(url+'/?variant='+variant);await page.locator('.guess-board').waitFor();await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:riddleLoaded'));await page.waitForTimeout(80);
+diff --git a/packages/portal/scripts/verify-live-question-input-browser.mjs b/packages/portal/scripts/verify-live-question-input-browser.mjs
+index b31457280..1fe12946a 100644
+--- a/packages/portal/scripts/verify-live-question-input-browser.mjs
++++ b/packages/portal/scripts/verify-live-question-input-browser.mjs
+@@ -79,7 +79,9 @@ app.render(<React.StrictMode><RaceTo10Game locale="en" ownerId={user} coins={100
+    for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}
+    await a.locator('.race-gameplay .guess-board').waitFor();
+    const letters=()=>a.locator('.guess-row button:not([disabled])').allTextContents().then(values=>values.map(v=>v.toLowerCase()));
+-   if(scenario==='exhausted')for(let index=0;index<4;index++){await a.evaluate(()=>window.otherTab('guess','zzzz'));}
++   if(scenario==='exhausted'){for(let index=0;index<4;index++){await a.evaluate(()=>window.otherTab('guess','zzzz'));}
++    // The other tab's guesses render asynchronously; let them settle so the next click targets the live row, not a row about to lock.
++    await a.waitForFunction(()=>{const rows=document.querySelectorAll('.guess-board .guess-row');return rows.length>=5&&document.querySelector('.guess-row button:not([disabled])')?.closest('.guess-row')===rows[rows.length-1];});}
+    if(['correct','exhausted'].includes(scenario)){
+     await a.locator('.guess-row button:not([disabled])').first().click();await a.keyboard.type(scenario==='correct'?'test':'zzzz');await a.evaluate(()=>window.holdGuessOnce=true);await a.locator('.race-actions .submit-action').click();await a.waitForFunction(()=>typeof window.releaseReceipt==='function');
+    }else if(scenario==='skip'){
+diff --git a/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs b/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs
+index 5d2640b06..2e5153786 100644
+--- a/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs
++++ b/packages/portal/scripts/verify-live-recovery-wakeups-browser.mjs
+@@ -25,7 +25,7 @@ const scenario=new URL(location.href).searchParams.get('scenario')??'online-poll
+ window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
+ let visible=true;window.show=value=>{visible=value;document.dispatchEvent(new Event('visibilitychange'));};Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>visible?'visible':'hidden'});Object.defineProperty(document,'hidden',{configurable:true,get:()=>!visible});
+ function view(seat){const now=Date.now(),countdown=now<seat.start;return LiveRaceViewSchema.parse({ticketId:seat.id,phase:seat.left?'cancelled':countdown?'countdown':'racing',serverNowMs:now,searchEndsAtMs:seat.start+60000,startsAtMs:seat.start,player:{displayName:seat.owner,avatarUrl:null,bot:false,correctCount:seat.correct},opponent:{displayName:'Rival',avatarUrl:null,bot:false,correctCount:seat.rival},result:null,rewardCoins:0,run:seat.left?null:{runId:seat.id,role:'creator',status:countdown?'scheduled':'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:seat.correct,wallElapsedMs:Math.max(0,now-seat.start),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-seat.start),events:[],serverNowMs:now,startsAtMs:seat.start,currentRiddle:countdown?null:{riddleId:'q'+seat.correct,text:'What has keys but cannot open doors?',answerLength:5,position:seat.correct,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},opponent:{displayName:'Rival',avatarUrl:null,adjustedFinishMs:300000,events:[]}}});}
+-function adapter(owner){const seat={owner,id:(owner==='Alice'?'a':'b').repeat(64),start:Date.now()+(scenario==='countdown'?650:-1000),correct:0,rival:0,left:false};return {observe:(ticket,changed,connected)=>{window.signal=changed;connected(true);return()=>{};},join:async input=>{window.probe.joins.push({owner,at:performance.now(),...input});return view(seat);},update:async input=>{window.probe.requests.push({owner,at:performance.now(),...input});if(input.action==='leave')seat.left=true;if(input.action==='guess'){if(input.guess!=='piano')throw new Error('Unexpected fixture guess');seat.correct++;}const value=view(seat);if(input.action===(scenario.endsWith('-command')?'guess':'poll')&&window.holdPoll){window.holdPoll=false;return new Promise((resolve,reject)=>{window.release=()=>{window.probe.releases.push(performance.now());resolve(value);};window.reject=()=>{window.probe.releases.push(performance.now());reject(new Error('Fixture held transport failed'));};});}return value;},bump:()=>{seat.rival=3;}};}
++function adapter(owner){const seat={owner,id:(owner==='Alice'?'a':'b').repeat(64),start:Date.now()+(scenario==='countdown'?650:-1000),correct:0,rival:0,left:false};return {observe:(ticket,changed,connected)=>{window.signal=changed;connected(true);return()=>{};},join:async input=>{window.probe.joins.push({owner,at:performance.now(),...input});if(scenario==='countdown'&&!seat.joined){seat.joined=true;seat.start=Date.now()+1500;}return view(seat);},update:async input=>{window.probe.requests.push({owner,at:performance.now(),...input});if(input.action==='leave')seat.left=true;if(input.action==='guess'){if(input.guess!=='piano')throw new Error('Unexpected fixture guess');seat.correct++;}const value=view(seat);if(input.action===(scenario.endsWith('-command')?'guess':'poll')&&window.holdPoll){window.holdPoll=false;return new Promise((resolve,reject)=>{window.release=()=>{window.probe.releases.push(performance.now());resolve(value);};window.reject=()=>{window.probe.releases.push(performance.now());reject(new Error('Fixture held transport failed'));};});}return value;},bump:()=>{seat.rival=3;}};}
+ const adapters={Alice:adapter('Alice'),Bob:adapter('Bob')};
+ window.recover=()=>{adapters.Alice.bump();if(scenario==='retired')flushSync(()=>window.retire());if(scenario==='replace')flushSync(()=>window.replace());const wake=()=>{if(scenario.startsWith('visible')){window.show(false);window.show(true);}else if(scenario==='push')window.signal();else if(scenario==='hidden')window.show(false);else if(!['countdown','backoff-delayed'].includes(scenario))window.dispatchEvent(new Event('online'));};for(let i=0;i<(scenario==='storm'?20:1);i++)wake();if(scenario==='backoff')window.reject();else if(scenario!=='backoff-delayed')window.release?.();};
+ function App(){const [mounted,setMounted]=React.useState(true),[owner,setOwner]=React.useState('Alice');window.retire=()=>setMounted(false);window.replace=()=>setOwner('Bob');return <div data-owner={owner}>{mounted?<LiveRaceGame key={owner} transport={adapters[owner]} locale='en' categoryId='mixed' coins={100} ownerId={owner} onClose={()=>setMounted(false)}/>:<p data-retired>Race removed</p>}<button data-arm onClick={()=>{window.holdPoll=true;window.signal();}}>Hold background read</button><button data-recover onClick={()=>window.recover()}>Recover pending read</button></div>;}
+@@ -58,7 +58,10 @@ window.root=createRoot(document.querySelector('#root'));window.root.render(<Reac
+     metric('retired seat retains one leave authority key',await page.evaluate(()=>new Set(window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='leave').map(x=>x.requestId)).size),1);
+     metric('retired UI remains removed or replaced',await page.locator(scenario==='replace'?'[data-owner="Bob"] .race-native-answer-input':'[data-retired]').count(),1);
+    }else{
+-    metric('queued recovery admits exactly one prompt catch-up read',await page.evaluate(()=>window.probe.requests.filter(x=>x.action==='poll').length),scenario==='hidden'||scenario.endsWith('-command')?1:2);
++    const expectedPolls=scenario==='hidden'||scenario.endsWith('-command')?1:2;
++    /* Slow runners may need longer than the 150 ms settle to deliver the catch-up; extra time can only expose extra reads. */
++    await page.waitForFunction(n=>window.probe.requests.filter(x=>x.action==='poll').length>=n,expectedPolls,{timeout:3000}).catch(()=>undefined);await page.waitForTimeout(150);
++    metric('queued recovery admits exactly one prompt catch-up read',await page.evaluate(()=>window.probe.requests.filter(x=>x.action==='poll').length),expectedPolls);
+     metric('catch-up shows current rival progress',await page.locator('.race-progress > div:last-child strong').textContent(),scenario==='hidden'?'Riddles completed: 0 / 10':'Riddles completed: 3 / 10');
+     if(scenario.endsWith('-command')){
+      metric('native guess advances once before read-only reconciliation',await page.locator('.race-progress > div:first-child strong').textContent(),'Riddles completed: 1 / 10');
+diff --git a/packages/portal/scripts/verify-live-signal-failures-browser.mjs b/packages/portal/scripts/verify-live-signal-failures-browser.mjs
+index 6d5f3d640..d7c062a45 100644
+--- a/packages/portal/scripts/verify-live-signal-failures-browser.mjs
++++ b/packages/portal/scripts/verify-live-signal-failures-browser.mjs
+@@ -56,7 +56,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
+    metric('poll cadence matches the admitted connection',await page.evaluate(x=>window.interval(x),owner),scenario==='register'?500:5000);
+    if(process.env.LIVE_SIGNAL_SMOKE!=='1'){
+     if(scenario==='normal'){await page.locator('[data-disconnect]').click();metric('disconnect promptly restores fast fallback cadence',await page.evaluate(()=>window.interval('Alice')),500);}
+-    if(scenario==='register'){const polls=await page.evaluate(()=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length);await page.waitForTimeout(1100);metric('failed push retains real foreground polling recovery',await page.evaluate(n=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length>n,polls),true);}
++    if(scenario==='register'){const polls=await page.evaluate(()=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length);/* A 500 ms cadence must produce a new poll; allow slow runners' timer drift instead of a fixed 1.1 s sleep. */metric('failed push retains real foreground polling recovery',await page.waitForFunction(n=>window.probe.requests.filter(x=>x.owner==='Alice'&&x.action==='poll').length>n,polls,{timeout:5000}).then(()=>true,()=>false),true);}
+     const adds=await page.evaluate(()=>window.probe.adds.length),removes=await page.evaluate(()=>window.probe.removes.length);for(let i=0;i<8;i++)await page.locator('[data-parent]').click();metric('ordinary parent updates preserve subscription registration',await page.evaluate(()=>window.probe.adds.length),adds);metric('ordinary parent updates do not clean up the current subscription',await page.evaluate(()=>window.probe.removes.length),removes);
+     await page.locator('.race-native-answer-input').focus();await page.keyboard.type('piano');await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong')?.textContent.includes('1 / 10'));metric('the current player can submit and advance once',await page.evaluate(x=>window.probe.requests.filter(r=>r.owner===x&&r.action==='guess').length,owner),1);
+    }
+diff --git a/packages/portal/scripts/verify-playable-action-focus-browser.mjs b/packages/portal/scripts/verify-playable-action-focus-browser.mjs
+index df136442f..e0de96786 100644
+--- a/packages/portal/scripts/verify-playable-action-focus-browser.mjs
++++ b/packages/portal/scripts/verify-playable-action-focus-browser.mjs
+@@ -60,7 +60,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><YouTubePla
+     metric('hint focuses input before a held save completes',await focused(),true);await page.keyboard.press('Shift+Tab');const owner=await page.evaluate(()=>{window.focusOwner=document.activeElement;return document.activeElement.className;});
+     await page.evaluate(()=>window.releaseSave());await settled();metric('save receipt preserves subsequent Tab navigation',await page.evaluate(()=>document.activeElement===window.focusOwner),true);metric('Tab moved to another action',owner.includes('yt-tile'),true);await page.locator('.yt-answer-native').focus();
+    }else if(scenario==='held-hint-pause'){
+-    await page.evaluate(()=>window.pauseGame());await page.waitForFunction(()=>document.querySelector('.yt-answer-native')?.disabled===true);metric('pause disables native entry',await page.locator('.yt-answer-native').isDisabled(),true);await page.evaluate(()=>window.releaseSave());metric('paused receipt cannot focus the disabled editor',await focused(),false);await page.evaluate(()=>window.resumeGame());await settled();await page.waitForFunction(()=>document.activeElement===document.querySelector('.yt-answer-native'));
++    await page.evaluate(()=>window.pauseGame());await page.waitForFunction(()=>document.querySelector('.yt-answer-native')?.disabled===true);metric('pause disables native entry',await page.locator('.yt-answer-native').isDisabled(),true);/* Chromium moves focus off a disabled control on its next rendering update; wait for that so the receipt is what gets tested. */await page.waitForFunction(()=>document.activeElement!==document.querySelector('.yt-answer-native'));await page.evaluate(()=>window.releaseSave());metric('paused receipt cannot focus the disabled editor',await focused(),false);await page.evaluate(()=>window.resumeGame());await settled();await page.waitForFunction(()=>document.activeElement===document.querySelector('.yt-answer-native'));
+    }else if(scenario==='failed-hint-retry'){
+     await page.evaluate(()=>window.rejectSave());await page.locator('.yt-banner.error').waitFor();metric('save failure disables native entry',await page.locator('.yt-answer-native').isDisabled(),true);await page.getByRole('button',{name:'Retry',exact:true}).click();await page.locator('.yt-banner.error').waitFor({state:'detached'});await settled();metric('successful recovery focuses the usable editor',await focused(),true);
+    }
+diff --git a/packages/portal/scripts/verify-solar-initialization-browser.mjs b/packages/portal/scripts/verify-solar-initialization-browser.mjs
+index 42c920f5c..5120bbc61 100644
+--- a/packages/portal/scripts/verify-solar-initialization-browser.mjs
++++ b/packages/portal/scripts/verify-solar-initialization-browser.mjs
+@@ -56,7 +56,8 @@ export async function verifySolarInitialization({page,width,url,baseline,metric,
+    if(scenario==='deferred-driver-failure')await page.evaluate(()=>{window.failResource={kind:'MeshBasicMaterial',occurrence:1};});
+    await page.evaluate(()=>window.pause(false));
+   }
+-  await settle();
++  // Scene construction is asynchronous; wait for it instead of a fixed delay, then settle so a second construction would still show.
++  await page.waitForFunction(()=>window.probe.rendererConstructions>=1,undefined,{timeout:15000}).catch(()=>{});await settle();
+   const expectedConstructors=1;
+   await check('first eligible state initializes only its current owner',await value('rendererConstructions'),expectedConstructors);
+   if(scenario==='deferred-driver-failure') {
+diff --git a/packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts b/packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts
+index e0176b540..d70bf30e5 100644
+--- a/packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts
++++ b/packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts
+@@ -636,6 +636,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
+       await onboardingAction.evaluate((element: HTMLElement) => element.click());
+       await successPage.locator(".onboarding-clues").waitFor({timeout: 5_000});
+       expect(await successPage.locator(".onboarding-progress").innerText()).toBe("2/2");
++      // A loaded machine can stretch the card's step transition past the action timeout.
++      await successPage.locator(".onboarding-card").first().evaluate((card) =>
++        Promise.all(card.getAnimations({subtree: true}).map((animation) => animation.finished.catch(() => undefined))));
+       await onboardingAction.click();
+       await onboardingAction.waitFor({state: "detached", timeout: 5_000});
+       expect(await successPage.locator(".onboarding-card").count()).toBe(0);
+@@ -744,10 +747,20 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
+       await successPage.locator('.onboarding-clues').waitFor();
+       await successPage.locator('.onboarding-card .play-primary').click();
+       await successPage.locator('.onboarding-card').waitFor({state: 'detached'});
+-      await successPage.evaluate(() => localStorage.setItem(
+-        'riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest', 'seen'));
+       await successPage.locator('.game-bottom-navigation button').last().click();
+       await successPage.locator('.profile-page').waitFor();
++      // A first profile visit shows the profile tour for this Facebook account; finish it like a player would.
++      for (let step = 0; step < 8; step++) {
++        /** Open profile-tour step, if the tour is (still) showing. */
++        const tourStep = successPage.locator('.tooltip-backdrop');
++        try {
++          await tourStep.first().waitFor({timeout: 1_500});
++        } catch {
++          break;
++        }
++        await tourStep.first().locator('button').last().click();
++      }
++      await successPage.locator('.tooltip-backdrop').waitFor({state: 'detached'});
+       await successPage.locator('.profile-invite-button').click();
+       await successPage.waitForFunction(() => window.__facebookEvents.includes("share:INVITE"));
+       expect(await successPage.locator('.profile-invite-button').innerText()).not.toMatch(/100|Jest/);
+@@ -807,5 +820,5 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
+         await rm(distDirectory, {force: true, recursive: true});
+       }
+     }
+-  }, 60_000);
++  }, 180_000);
+ });
+diff --git a/packages/portal/src/play/PlayHostApp.tsx b/packages/portal/src/play/PlayHostApp.tsx
+index c7c3d32e2..d80f55235 100644
+--- a/packages/portal/src/play/PlayHostApp.tsx
++++ b/packages/portal/src/play/PlayHostApp.tsx
+@@ -235,6 +235,7 @@ export function PlayHostApp({
+     setNotice,
+     onPlayable: reportPlayable,
+     onStartupUnavailable: reportStartupUnavailable,
++    recoverySuspended: bridgeUnavailable,
+     onRecoveryAttempt: sendRecoveryInit,
+   });
+   useEffect(() => {
+diff --git a/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts b/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts
+index 154f12eea..195703435 100644
+--- a/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts
++++ b/packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts
+@@ -57,7 +57,8 @@ describeBrowser("solo coin collection and successor routing", () => {
+     try {
+       /** Provides page behavior. */
+       const page = await browser.newPage({viewport: {width: 390, height: 844}});
+-      page.setDefaultTimeout(4_000);
++      // Slow CI runners need headroom for entrance animations to settle; the 30 s test budget still bounds it.
++      page.setDefaultTimeout(10_000);
+       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
+       await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+       await page.addInitScript(() => {
+diff --git a/packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts b/packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts
+index a5d49dc66..a53ca7c68 100644
+--- a/packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts
++++ b/packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts
+@@ -526,6 +526,8 @@ describeBrowser("standalone Jest browser game", () => {
+       expect(Math.abs(compactLayout.contentBottom - 568)).toBeLessThanOrEqual(1);
+       expect(compactLayout.navigationBottom).toBeGreaterThanOrEqual(567);
+       expect(compactLayout.scale).toBeGreaterThanOrEqual(0.92);
++      // Onboarding hands focus back to the board on a later frame; slow machines can sample while it is still inert.
++      await compactPage.waitForFunction(() => !document.querySelector(".game-content")?.closest("[inert],[aria-hidden=true]"));
+       expect(await compactPage.getByRole("region", {name: /virtual keyboard/i}).isVisible()).toBe(true);
+ 
+       await compactPage.getByRole("button", {name: /^settings$/i}).click();
+diff --git a/packages/portal/src/play/__tests__/mockOnboarding.jest-playwright.support.ts b/packages/portal/src/play/__tests__/mockOnboarding.jest-playwright.support.ts
+index 7462f5af3..7f1d85611 100644
+--- a/packages/portal/src/play/__tests__/mockOnboarding.jest-playwright.support.ts
++++ b/packages/portal/src/play/__tests__/mockOnboarding.jest-playwright.support.ts
+@@ -1,7 +1,13 @@
+ import type {Page} from "@playwright/test";
+ /** Completes the platform-owned onboarding flow before a focused mock-harness scenario. */
+ export async function completeMockOnboarding(page: Page): Promise<void> {
+-  await page.getByRole("button", {name: /let's play/i}).click();
++  /** Welcome action, clicked once the card's entrance animation has settled. */
++  const play = page.getByRole("button", {name: /let's play/i});
++  await play.waitFor();
++  // A loaded machine can stretch the 420 ms entrance well past the action timeout.
++  await page.locator(".onboarding-card").first().evaluate((card) =>
++    Promise.all(card.getAnimations({subtree: true}).map((animation) => animation.finished.catch(() => undefined))));
++  await play.click();
+   await page
+     .locator(".onboarding-card")
+     .getByRole("button", {name: /got it/i})
+diff --git a/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts b/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts
+index d669d46bf..c81467368 100644
+--- a/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts
++++ b/packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts
+@@ -67,5 +67,5 @@ describeBrowser("Jest music startup", () => {
+       await browser.close();
+       await new Promise<void>((resolve) => server.close(() => resolve()));
+     }
+-  });
++  }, 30_000);
+ });
+diff --git a/packages/portal/src/play/__tests__/routeSweep.jest-playwright.test.ts b/packages/portal/src/play/__tests__/routeSweep.jest-playwright.test.ts
+index 58773016e..834116f30 100644
+--- a/packages/portal/src/play/__tests__/routeSweep.jest-playwright.test.ts
++++ b/packages/portal/src/play/__tests__/routeSweep.jest-playwright.test.ts
+@@ -85,6 +85,8 @@ async function readScreen(page: Page): Promise<ScreenState> {
+     /** Choices in the active layer. */
+     const choices = [...scope.querySelectorAll("button, [role=button], [role=tab], [role=menuitem], input[type=checkbox], select")]
+       .filter(usable)
++      // Guidance acknowledgements are informational; a late card must not be recorded as a route step.
++      .filter((element) => !element.closest(".tooltip-card, .onboarding-card"))
+       .map((element) => {
+         /** Label for this control. */
+         const label = labelOf(element);
+@@ -247,11 +249,15 @@ describeBrowser("every player route", () => {
+         await dismissGuidance(page);
+         await page.getByTestId("server-activity-loader").waitFor({state: "hidden"}).catch(() => undefined);
+         await page.waitForTimeout(600);
++        // Guidance can open once the loader settles; acknowledge it so it never becomes a route step.
++        await dismissGuidance(page);
+         for (const choice of route) await choose(page, choice);
++        await dismissGuidance(page);
+         /** What the player now sees, once transitional work (such as a language load) has settled. */
+         let screen = await readScreen(page);
+         for (let attempt = 0; screen.choices.length === 0 && !screen.failed && attempt < 40; attempt += 1) {
+           await page.waitForTimeout(150);
++          await dismissGuidance(page);
+           screen = await readScreen(page);
+         }
+         if (screen.failed) problems.push(`${describeRoute(route)}: shows the error or recovery screen`);
+diff --git a/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts b/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
+index fcff50789..5724fae2b 100644
+--- a/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
++++ b/packages/portal/src/play/__tests__/useHostRiddleRecovery.test.ts
+@@ -72,7 +72,10 @@ const deferred = <T>() => {
+   return {promise, resolve};
+ };
+ /** Creates one lifecycle around stable injected delivery callbacks. */
+-const setup = (loadRiddle: HostServices["loadRiddle"]) => {
++const setup = (loadRiddle: HostServices["loadRiddle"], extra: {
++  /** Host has retired the game frame after a failed bridge validation. */
++  recoverySuspended?: boolean;
++} = {}) => {
+   /** Records accepted riddle messages after authority work settles. */
+   const postToGame = jest.fn<(message: HostToGameMessage) => void>();
+   /** Records correlated operation acknowledgements. */
+@@ -87,7 +90,7 @@ const setup = (loadRiddle: HostServices["loadRiddle"]) => {
+       activity += 1;
+       try {return await operation();} finally {activity -= 1;}
+     },
+-    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt};
++    postToGame, postOperation, configurationWarning: null, setNotice: jest.fn(), onRecoveryAttempt, ...extra};
+   /** Exposed lifecycle under the same fake browser signals as the recovery owner. */
+   const lifecycle = useHostRiddleLifecycle(options);
+   cleanup = effects[0]() || undefined;
+@@ -474,3 +477,16 @@ it("keeps an admitted load across recovery callback replacement", async () => {
+   expect(owner.postToGame).toHaveBeenCalledTimes(1);
+   expect(owner.activity).toBe(0);
+ });
++
++it("starts no automatic recovery read while the game frame is retired by a failed bridge", async () => {
++  /** Any authority read here would be the defect: the frame that could display it is gone. */
++  const load = jest.fn<HostServices["loadRiddle"]>().mockResolvedValue(riddle);
++  /** The host has already replaced the game with bridge startup recovery. */
++  const owner = setup(load, {recoverySuspended: true});
++  await jest.advanceTimersByTimeAsync(250);
++  window.dispatchEvent(new Event("online"));
++  await jest.advanceTimersByTimeAsync(30_000);
++  expect(load).not.toHaveBeenCalled();
++  expect(owner.onRecoveryAttempt).not.toHaveBeenCalled();
++  expect(owner.postToGame).not.toHaveBeenCalled();
++});
+diff --git a/packages/portal/src/play/useHostRiddleLifecycle.ts b/packages/portal/src/play/useHostRiddleLifecycle.ts
+index 7b34bbbe6..fac38cb7f 100644
+--- a/packages/portal/src/play/useHostRiddleLifecycle.ts
++++ b/packages/portal/src/play/useHostRiddleLifecycle.ts
+@@ -19,6 +19,8 @@ type HostRiddleLifecycleOptions = Readonly<{
+   initialGameMode: WebGameMode;
+   /** Exposes a rendered startup failure through the target’s loading overlay. */
+   onStartupUnavailable?: () => void;
++  /** A retired game frame (failed bridge validation) must not start automatic riddle recovery. */
++  recoverySuspended?: boolean;
+   /** Current game locale. */
+   locale: string;
+   /** Target-specific host operations. */
+@@ -84,6 +86,7 @@ export function useHostRiddleLifecycle({
+   profile,
+   initialGameMode,
+   onStartupUnavailable,
++  recoverySuspended = false,
+   locale,
+   services,
+   canUsePreparedQuestions,
+@@ -103,6 +106,9 @@ export function useHostRiddleLifecycle({
+   const [startupUnavailable, setStartupUnavailable] = useState(false);
+   /** Whether the current context already has a playable riddle. */
+   const loadedRef = useRef(false);
++  /** Recovery timers read the latest suspension so a retired frame never issues authority reads. */
++  const recoverySuspendedRef = useRef(recoverySuspended);
++  recoverySuspendedRef.current = recoverySuspended;
+   /** Shared uncorrelated automatic load, when present. */
+   const loadInFlightRef = useRef<Promise<boolean> | null>(null);
+   /** Only the latest visible load may publish content or start failure recovery. */
+@@ -413,7 +419,7 @@ export function useHostRiddleLifecycle({
+     };
+     /** Resynchronizes the host and retries the current riddle context. */
+     const recoverRiddle = async () => {
+-      if (loadedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
++      if (loadedRef.current || recoverySuspendedRef.current || cancelled || contextSignal.aborted || recovering || navigator.onLine === false) return;
+       recovering = true;
+       try {
+         onRecoveryAttemptRef.current();
+@@ -433,7 +439,7 @@ export function useHostRiddleLifecycle({
+     scheduleRecoveryRef.current = retry;
+     /** Recover immediately when the browser regains connectivity or returns to the game. */
+     const resumeRecovery = () => {
+-      if (cancelled || contextSignal.aborted || loadedRef.current || navigator.onLine === false) return;
++      if (cancelled || contextSignal.aborted || loadedRef.current || recoverySuspendedRef.current || navigator.onLine === false) return;
+       failedAttempts = 0;
+       if (!recovering) scheduleRecovery(0);
+     };

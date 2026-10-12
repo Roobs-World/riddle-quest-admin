@@ -1,0 +1,25 @@
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: ENOENT: no such file or directory, mkdtemp '/home/craig-beswetherick/Documents/portfolio/output/release-temporary/profile-refresh/playwright-artifacts-fWrVOT'
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-profile-refresh-browser.mjs:45:26 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.17.0
+
+Command failed: env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-profile-refresh-browser.mjs
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: ENOENT: no such file or directory, mkdtemp '/home/craig-beswetherick/Documents/portfolio/output/release-temporary/profile-refresh/playwright-artifacts-fWrVOT'
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-race-profile-refresh-browser.mjs:45:26 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.17.0

@@ -239,9 +239,13 @@ describeBrowser("every player route", () => {
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
       });
+      /** Boundary being exercised, so startup failures are not attributed to an unplayed route. */
+      let phase = "load app";
       try {
         await page.goto(`${origin}/${query}`);
+        phase = "welcome screen before route replay";
         await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 20_000});
+        phase = "onboarding before route replay";
         await completeMockOnboarding(page);
         /** Optional guest choice shown by some starts. */
         const guest = page.getByRole("button", {name: /play as guest/i});
@@ -251,7 +255,8 @@ describeBrowser("every player route", () => {
         await page.waitForTimeout(600);
         // Guidance can open once the loader settles; acknowledge it so it never becomes a route step.
         await dismissGuidance(page);
-        for (const choice of route) await choose(page, choice);
+        for (const choice of route) {phase = `route choice ${choice.label}`; await choose(page, choice);}
+        phase = "inspect destination";
         await dismissGuidance(page);
         /** What the player now sees, once transitional work (such as a language load) has settled. */
         let screen = await readScreen(page);
@@ -275,7 +280,7 @@ describeBrowser("every player route", () => {
           }
         }
       } catch (error) {
-        problems.push(`${describeRoute(route)}: ${(error as Error).message.split("\n")[0]}`);
+        problems.push(`${describeRoute(route)}: ${phase}: ${(error as Error).message.split("\n")[0]}${errors.length ? `; ${errors.join(" | ")}` : ""}`);
       } finally {
         await context.close();
       }

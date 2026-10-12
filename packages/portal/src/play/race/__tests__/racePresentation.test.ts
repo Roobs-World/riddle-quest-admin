@@ -257,6 +257,13 @@ describe("race presentation helpers", () => {
       wallElapsedMs: 2000, adjustedElapsedMs: 47000, opponent: {displayName: "Ava", adjustedFinishMs: 40000, events: []}});
     expect(projectRaceOutcome(terminal, 47000)).toMatchObject({result: "ghost_win", correctCount: 10, adjustedFinishMs: 47000, rematchEligible: true});
   });
+  it("marks revealed hints green using the keyboard locale and ignores empty hints", () => {
+    expect(getRaceLetterStates(
+      [{guess: ["İ", "K"], feedback: ["red", "yellow"]}],
+      "tr",
+      [{index: 0, letter: "İ"}, {index: 1, letter: ""}],
+    )).toEqual({i: "green", k: "yellow"});
+  });
   it("retains green keyboard feedback and ignores empty scoring cells", () => {
     expect(
       getRaceLetterStates([

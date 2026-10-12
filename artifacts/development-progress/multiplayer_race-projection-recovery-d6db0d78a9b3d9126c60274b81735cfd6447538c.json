@@ -1,0 +1,110 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-projection-recovery",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Preserve solving time through hint/skip projection and rollback; reject confirmations for another run; invalidate stale receipts on teardown and category navigation; align injected quit behaviour with prepared/scheduled runs; replay cumulative opponent progress including skips; load matchmaking response validation on demand to keep startup within the artifact budget; normalize backend/provider errors to translated recoverable messages.",
+    "revision": "d6db0d78a9b3d9126c60274b81735cfd6447538c",
+    "sourceDigest": "378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda",
+    "completedAt": "2026-10-11T21:55:58.713Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "race-transitions",
+      "matchmaking-validation",
+      "portal-types",
+      "isolated-target-builds",
+      "injected-race-flows",
+      "artifact-dependency-evidence"
+    ],
+    "checks": [
+      {
+        "id": "race-transitions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; current-source check at 2026-10-11T21:15:28.350Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fc75e68dd7fcdd2619b6035c4bcd7f2ff19703f5208a41c4a6a06af3290fb299-c10e5cb80dfbf01c5880784e21d35d997d1a47bac3a54877c1d64676570a1ece.log SHA-256 c10e5cb80dfbf01c5880784e21d35d997d1a47bac3a54877c1d64676570a1ece"
+      },
+      {
+        "id": "matchmaking-validation",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/play/__tests__/firebaseRaceMatchmaking.test.ts; current-source check at 2026-10-11T21:37:21.364Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-9ec9422f0532fc9dffaa88a04ca5b10da8034fd2bcd3c2e8b8c23d9d96cfceb7-c06dbe8cf3a7f19f489a0839e978e6ee8d3806e021d0db04c56f5ad82c18dbf8.log SHA-256 c06dbe8cf3a7f19f489a0839e978e6ee8d3806e021d0db04c56f5ad82c18dbf8"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-11T21:06:18.725Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-11T21:55:05.012Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-77fc6d0d4155a51e64ba88bb5d343ea75b3584f81714a046a2d59de390234033-86eaa1d3f3fc228c733338f9be103b79619f7c53f8823327d5a66436d8d04ca6.log SHA-256 86eaa1d3f3fc228c733338f9be103b79619f7c53f8823327d5a66436d8d04ca6"
+      },
+      {
+        "id": "injected-race-flows",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=renders the preloaded next riddle|shows an opponent win immediately|shows a completed creator result|recovers a guess rejected|keeps the immediate result visible|acknowledges close during|confirms quitting an active race|preserves solving time when hint|replays an opponent skip milestone; current-source check at 2026-10-11T21:38:38.096Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-ded9e8d3a104ee98d5d9b129a8e2e80a34b0aab749340ccd2a79f3f752e54e71-24167633dbe6b1c88b06a68fb74d44f8f9e1e225e8ce80026d1ce32dc9a653bc.log SHA-256 24167633dbe6b1c88b06a68fb74d44f8f9e1e225e8ce80026d1ce32dc9a653bc"
+      },
+      {
+        "id": "artifact-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-11T21:06:19.143Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146-e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe.log SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe"
+      }
+    ],
+    "remainingGates": [
+      "Remaining multiplayer architecture requirements have independent development checks.",
+      "Provider submission, approval and deployment require their own receipts."
+    ],
+    "nextAction": "Review the projection recovery changes and continue the remaining multiplayer architecture work.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "f71ef30786b162bfea5b4c5af9f8068d45778de282739f7e4629cc39dc032544"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "7046407c9af8fbc89d006c3cc7fb9910ca6bfb73138b0cbb7ac04dc8cf568acd"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "6a46d6cdf509afd382327c482b71dfcc80d7fb28705d165fd8b253cdeffe25e2"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "2de16e6b26a1c5ac97b300793b3d495d6d367117d50a51548ed3fca899b90e0e"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "973d077c0b355ec121f61e5cdfb17890f20e3073c857945b07a7ddaa529579b3"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "eb74fe7b37a1787618abfe4e4059aec7eb908848679312df04d34418d6b6cd9f"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "16278f4c78a1d0896c6a6263412082837ab3e388c03d1c2e997059aff4914fd2"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

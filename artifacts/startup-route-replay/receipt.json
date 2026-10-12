@@ -1,0 +1,156 @@
+{
+  "verifiedAt": "2026-10-11T19:14:26.787Z",
+  "scope": "Thirty isolated Daily startup and account deletion route replays; does not replace full route sweep",
+  "results": [
+    {
+      "iteration": 0,
+      "status": "passed",
+      "elapsedMs": 4786
+    },
+    {
+      "iteration": 1,
+      "status": "passed",
+      "elapsedMs": 4736
+    },
+    {
+      "iteration": 2,
+      "status": "passed",
+      "elapsedMs": 4769
+    },
+    {
+      "iteration": 3,
+      "status": "passed",
+      "elapsedMs": 4704
+    },
+    {
+      "iteration": 4,
+      "status": "passed",
+      "elapsedMs": 4736
+    },
+    {
+      "iteration": 5,
+      "status": "passed",
+      "elapsedMs": 4770
+    },
+    {
+      "iteration": 6,
+      "status": "passed",
+      "elapsedMs": 4735
+    },
+    {
+      "iteration": 7,
+      "status": "passed",
+      "elapsedMs": 4722
+    },
+    {
+      "iteration": 8,
+      "status": "passed",
+      "elapsedMs": 4752
+    },
+    {
+      "iteration": 9,
+      "status": "passed",
+      "elapsedMs": 4751
+    },
+    {
+      "iteration": 10,
+      "status": "passed",
+      "elapsedMs": 4721
+    },
+    {
+      "iteration": 11,
+      "status": "passed",
+      "elapsedMs": 4787
+    },
+    {
+      "iteration": 12,
+      "status": "passed",
+      "elapsedMs": 4751
+    },
+    {
+      "iteration": 13,
+      "status": "passed",
+      "elapsedMs": 4717
+    },
+    {
+      "iteration": 14,
+      "status": "passed",
+      "elapsedMs": 4706
+    },
+    {
+      "iteration": 15,
+      "status": "passed",
+      "elapsedMs": 4754
+    },
+    {
+      "iteration": 16,
+      "status": "passed",
+      "elapsedMs": 4702
+    },
+    {
+      "iteration": 17,
+      "status": "passed",
+      "elapsedMs": 4721
+    },
+    {
+      "iteration": 18,
+      "status": "passed",
+      "elapsedMs": 4671
+    },
+    {
+      "iteration": 19,
+      "status": "passed",
+      "elapsedMs": 4719
+    },
+    {
+      "iteration": 20,
+      "status": "passed",
+      "elapsedMs": 4736
+    },
+    {
+      "iteration": 21,
+      "status": "passed",
+      "elapsedMs": 4769
+    },
+    {
+      "iteration": 22,
+      "status": "passed",
+      "elapsedMs": 4805
+    },
+    {
+      "iteration": 23,
+      "status": "passed",
+      "elapsedMs": 4797
+    },
+    {
+      "iteration": 24,
+      "status": "passed",
+      "elapsedMs": 4853
+    },
+    {
+      "iteration": 25,
+      "status": "passed",
+      "elapsedMs": 4772
+    },
+    {
+      "iteration": 26,
+      "status": "passed",
+      "elapsedMs": 4745
+    },
+    {
+      "iteration": 27,
+      "status": "passed",
+      "elapsedMs": 4776
+    },
+    {
+      "iteration": 28,
+      "status": "passed",
+      "elapsedMs": 4918
+    },
+    {
+      "iteration": 29,
+      "status": "passed",
+      "elapsedMs": 4987
+    }
+  ]
+}

@@ -103,22 +103,6 @@
     "width": 390,
     "height": 568,
     "scenario": "ready",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "ready",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "ready",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 0,
     "expected": 0
@@ -252,22 +236,6 @@
     "height": 568,
     "scenario": "guidance",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "guidance",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "guidance",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -455,22 +423,6 @@
     "width": 390,
     "height": 568,
     "scenario": "stable",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "stable",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "stable",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 0,
     "expected": 0
@@ -604,22 +556,6 @@
     "height": 568,
     "scenario": "pending",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "pending",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "pending",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -791,22 +727,6 @@
     "width": 390,
     "height": 568,
     "scenario": "failed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "failed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "failed",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 1,
     "expected": 1
@@ -940,22 +860,6 @@
     "height": 568,
     "scenario": "wrong",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "wrong",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "wrong",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -1119,22 +1023,6 @@
     "width": 390,
     "height": 568,
     "scenario": "expired",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "expired",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "expired",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 1,
     "expected": 1
@@ -1268,22 +1156,6 @@
     "height": 568,
     "scenario": "closed",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "closed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 568,
-    "scenario": "closed",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -1703,22 +1575,6 @@
     "width": 390,
     "height": 844,
     "scenario": "ready",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "ready",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "ready",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 0,
     "expected": 0
@@ -1852,22 +1708,6 @@
     "height": 844,
     "scenario": "guidance",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "guidance",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "guidance",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -2055,22 +1895,6 @@
     "width": 390,
     "height": 844,
     "scenario": "stable",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "stable",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "stable",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 0,
     "expected": 0
@@ -2204,22 +2028,6 @@
     "height": 844,
     "scenario": "pending",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "pending",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "pending",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -2391,22 +2199,6 @@
     "width": 390,
     "height": 844,
     "scenario": "failed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "failed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "failed",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 1,
     "expected": 1
@@ -2540,22 +2332,6 @@
     "height": 844,
     "scenario": "wrong",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "wrong",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "wrong",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -2719,22 +2495,6 @@
     "width": 390,
     "height": 844,
     "scenario": "expired",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "expired",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "expired",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 1,
     "expected": 1
@@ -2868,22 +2628,6 @@
     "height": 844,
     "scenario": "closed",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "closed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 390,
-    "height": 844,
-    "scenario": "closed",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -3303,22 +3047,6 @@
     "width": 1280,
     "height": 844,
     "scenario": "ready",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "ready",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "ready",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 0,
     "expected": 0
@@ -3452,22 +3180,6 @@
     "height": 844,
     "scenario": "guidance",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "guidance",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "guidance",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -3655,22 +3367,6 @@
     "width": 1280,
     "height": 844,
     "scenario": "stable",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "stable",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "stable",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 0,
     "expected": 0
@@ -3804,22 +3500,6 @@
     "height": 844,
     "scenario": "pending",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "pending",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "pending",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -3991,22 +3671,6 @@
     "width": 1280,
     "height": 844,
     "scenario": "failed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "failed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "failed",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 1,
     "expected": 1
@@ -4140,22 +3804,6 @@
     "height": 844,
     "scenario": "wrong",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "wrong",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "wrong",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },
@@ -4319,22 +3967,6 @@
     "width": 1280,
     "height": 844,
     "scenario": "expired",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "expired",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "expired",
     "name": "Next reads through authority only when preparation is unavailable",
     "actual": 1,
     "expected": 1
@@ -4468,22 +4100,6 @@
     "height": 844,
     "scenario": "closed",
     "name": "optional failures do not show a host alert",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "closed",
-    "name": "unconfirmed victory cannot grant a reward chest",
-    "actual": 0,
-    "expected": 0
-  },
-  {
-    "width": 1280,
-    "height": 844,
-    "scenario": "closed",
-    "name": "unconfirmed victory cannot grant a reward chest",
     "actual": 0,
     "expected": 0
   },

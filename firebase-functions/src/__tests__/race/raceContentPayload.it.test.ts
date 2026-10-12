@@ -83,6 +83,19 @@ it("preserves the exact deterministic deck and content version from the unprojec
   expect(expected.riddles.filter(riddle => riddle.difficultyBand === "medium")).toHaveLength(5);
 });
 
+it("keeps a reduced playable category available after removing a hard question", async () => {
+  await db.doc(path("history", 29)).delete();
+  /** Eligible history records after removing one hard question. */
+  const records = await loadEligibleContent(db, "en", "history");
+  expect(records).toHaveLength(29);
+  /** Deterministic deck from the reduced Firestore pool. */
+  const deck = buildDeterministicRaceDeck(records, {locale: "en", categoryId: "history", seed: "reduced-pool"});
+  expect(deck.riddles).toHaveLength(15);
+  expect(deck.riddles.filter(riddle => riddle.difficultyBand === "easy")).toHaveLength(10);
+  expect(deck.riddles.filter(riddle => riddle.difficultyBand === "medium")).toHaveLength(5);
+  expect((await listRaceCategoriesForLocale("en", db)).categories.map(category => category.categoryId)).toEqual(["history", "music"]);
+});
+
 it("preserves category availability and locale boundaries", async () => {
   expect((await listRaceCategoriesForLocale("en", db)).categories.map(category => category.categoryId)).toEqual(["history", "music"]);
   expect((await listRaceCategoriesForLocale("fr", db)).categories).toEqual([]);
@@ -96,7 +109,12 @@ it.each(["missing-quality", "duplicate-clue", "duplicate-answer", "duplicate-can
   if (kind === "duplicate-canonical") await db.doc(path("history", 1)).update({canonicalRiddleId: data("history", 0).canonicalRiddleId});
   if (kind === "clue-leak") await db.doc(path("history", 0)).update({text: "The literal answer is a000000 here"});
   if (kind === "long-answer") await db.doc(path("history", 0)).update({answer: "longanswer"});
-  if (kind === "undersized") await db.doc(path("history", 29)).delete();
+  if (kind === "undersized") {
+    /** Batch removing enough history documents to make the category undersized. */
+    const batch = db.batch();
+    for (let index = 14; index < 30; index++) batch.delete(db.doc(path("history", index)));
+    await batch.commit();
+  }
   if (kind === "oversized") await db.doc(path("history", 30)).set(data("history", 30));
   if (kind === "difficulty") {
     /** All-hard metadata remains authored but cannot yield the required easier deck. */

@@ -1,3 +1,4 @@
+/** Exercises the retained recorded-race controller/view; the public entry uses live PvP. */
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -13,7 +14,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RACE_RULES,RACE_RECOVERY_KEY} from '@qwordly/core/race';
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {tr} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 const originalRead=Storage.prototype.getItem,originalWrite=Storage.prototype.setItem;window.deniedRead='none';window.journalReads=0;
 Storage.prototype.getItem=function(key){if(key===RACE_RECOVERY_KEY){window.journalReads++;if(window.deniedRead==='first'||window.deniedRead==='second'&&window.journalReads>=2)throw new Error('read denied');}const snapshot=originalRead.call(this,key);if(key===RACE_RECOVERY_KEY&&window.pendingRevision){originalWrite.call(this,key,window.pendingRevision);window.pendingRevision=null;}return snapshot;};

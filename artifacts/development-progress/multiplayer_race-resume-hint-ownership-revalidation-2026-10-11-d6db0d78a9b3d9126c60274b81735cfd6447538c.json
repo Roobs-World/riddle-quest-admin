@@ -1,0 +1,97 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-resume-hint-ownership-revalidation-2026-10-11",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Bind resume-hint cleanup to both account and expected run identity so terminal receipts and failed startup recovery cannot erase a newer same-account hint saved by another tab.",
+    "revision": "d6db0d78a9b3d9126c60274b81735cfd6447538c",
+    "sourceDigest": "c0017968b21ce8994be5bbdad9475b3cdf93a4244ad7b8a4ce083063301cc800",
+    "completedAt": "2026-10-11T18:41:26.206Z",
+    "trigger": "local rebuilt artifact verification",
+    "requiredChecks": [
+      "race-transitions",
+      "portal-types",
+      "isolated-target-builds",
+      "injected-storage-flows",
+      "artifact-dependency-evidence"
+    ],
+    "checks": [
+      {
+        "id": "race-transitions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; output SHA-256 5aaf951eb38674a829cc8e177ac1a604865451cb3af411798c9562475fdb8b7a; log artifacts/development-checks/fc75e68dd7fcdd2619b6035c4bcd7f2ff19703f5208a41c4a6a06af3290fb299.log"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; output SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c; log artifacts/development-checks/74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850.log"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; output SHA-256 518853cf3140bad7078697462957bcc2c190b051281b7f5acca5485ed2132196; log artifacts/development-checks/77fc6d0d4155a51e64ba88bb5d343ea75b3584f81714a046a2d59de390234033.log"
+      },
+      {
+        "id": "injected-storage-flows",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-hint-ownership-browser.mjs; output SHA-256 b2491864d2858813c4b6fbfec5e95753f8e99bb5a6df64e2bdcb55d93d33cb93; log artifacts/development-checks/5fc386b555504ff58c334e69db9905f09dc44f7b955eefe6e71880914b66e039.log"
+      },
+      {
+        "id": "artifact-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; output SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe; log artifacts/development-checks/cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146.log"
+      }
+    ],
+    "remainingGates": [
+      "Remaining multiplayer architecture requirements have independent development checks.",
+      "Provider submission, approval and deployment require their own receipts."
+    ],
+    "nextAction": "Continue the remaining multiplayer architecture requirements and accepted-revision release verification.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "sha256": "f71ef30786b162bfea5b4c5af9f8068d45778de282739f7e4629cc39dc032544"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "sha256": "7046407c9af8fbc89d006c3cc7fb9910ca6bfb73138b0cbb7ac04dc8cf568acd"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "sha256": "6a46d6cdf509afd382327c482b71dfcc80d7fb28705d165fd8b253cdeffe25e2"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "sha256": "c5d87dd600de46feb9d12776508b976e60aa4cffd885f227972af0dfbc4fbc6f"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "sha256": "7c8da029c913f11600b45c94afa8aaa87917a7495b3733cae4ed9f6cb46ab51c"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "sha256": "e99367e1ef8b83ba0badf464f535768a679ce58303235da48a4dcd04213fef4b"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "sha256": "e2895e0345a38414e3888c4fbef49a349603cedf9ec95beceb2310d4adac22bd"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

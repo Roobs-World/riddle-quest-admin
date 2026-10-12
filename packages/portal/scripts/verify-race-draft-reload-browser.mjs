@@ -1,3 +1,4 @@
+/** Exercises the retained recorded-race controller/view; the public entry uses live PvP. */
 import assert from "node:assert/strict";
 import {mkdtemp, mkdir, readFile, writeFile, rm} from "node:fs/promises";
 import {createServer} from "node:http";
@@ -17,7 +18,7 @@ import React from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from '@qwordly/core/race';
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 const params=new URLSearchParams(location.search),role=params.get('role')||'creator',mode=params.get('mode')||'normal';
 const now=Date.now(),deck=Array.from({length:RACE_RULES.deckSize},(_,position)=>({riddleId:'question-'+position,text:'Question '+(position+1),answerLength:5,position,evaluation:{answer:position===0?'piano':'clock',locale:'en'}}));
 const saved=localStorage.getItem('fixture:serverRun');

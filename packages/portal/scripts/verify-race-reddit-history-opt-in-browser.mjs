@@ -1,3 +1,4 @@
+/** Exercises the retained recorded-race controller/view; the public entry uses live PvP. */
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -12,7 +13,7 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {createRedditHostServices} from ${JSON.stringify(path.join(root,'src/reddit/RedditHostServices.ts'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
 const mode=new URLSearchParams(location.search).get('mode'),authority=createFakeRaceServices();window.commands=[];window.requests=[];window.fetch=async(input,init)=>{window.requests.push({url:String(input),body:JSON.parse(init.body),credentials:init.credentials});if(String(input)!=='/api/game/race.resume')throw Error('Unexpected target route');return new Response(JSON.stringify({ok:true,result:{run:window.canonical}}),{status:200,headers:{'content-type':'application/json'}});};const services=createRedditHostServices();
@@ -41,7 +42,7 @@ try{
  for(const visit of ['cold','reload']){
   assert.equal(await page.evaluate(()=>window.testRaceSession.getSnapshot().run.runId),runId);
   assert.equal(await page.evaluate(()=>window.testRaceSession.getSnapshot().run.currentRiddle.guessesUsed),3);
-  assert.deepEqual(await page.evaluate(()=>window.requests.map(request=>({url:request.url,body:request.body}))),[{url:'/api/game/race.resume',body:{runId,includeEvaluation:true,includeGuessHistory:true}}]);
+  assert.deepEqual(await page.evaluate(()=>window.requests.map(request=>({url:request.url,body:request.body}))),[{url:'/api/game/race.resume',body:{runId,includeEvaluation:true,includeGuessHistory:true,contentProtection:1}}]);
   assert.equal(await page.evaluate(()=>window.testRaceSession.getSnapshot().raceGuesses.filter(row=>row.guess.some(Boolean)).length),mode==='history'?3:0);
   assert.equal(await page.locator('.guess-row').count(),5);
   assert.equal(await page.locator('.guess-row').nth(3).locator('[aria-current="true"]').count(),1);

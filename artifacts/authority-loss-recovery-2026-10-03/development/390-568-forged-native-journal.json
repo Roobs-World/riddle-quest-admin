@@ -61,13 +61,13 @@
       {
         "message": {
           "type": "game:submitGuess",
-          "requestId": "guess-ba98602b-066d-472e-8bf6-4d9ebd9d8b49",
+          "requestId": "guess-4955443c-fb4f-4cb3-b889-03b495e3ced7",
           "payload": {
             "riddleId": "classic-fake-1",
             "gameMode": "classic",
             "sessionToken": "00000000-0000-4000-8000-000000000001",
             "guess": "VVVVV",
-            "requestId": "guess-ba98602b-066d-472e-8bf6-4d9ebd9d8b49"
+            "requestId": "guess-4955443c-fb4f-4cb3-b889-03b495e3ced7"
           }
         },
         "attempts": 6,

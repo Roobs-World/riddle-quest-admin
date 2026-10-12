@@ -59,3 +59,22 @@ test('large excluded archive inventories cannot exhaust Git source output', asyn
   for (let index = 0; index < 6000; index++) await writeFile(path.join(archives, `${index}-${'a'.repeat(180)}`), 'derived');
   assert.equal(await developmentSourceDigest(repository), original);
 }));
+
+test('dashboard synchronization leaves game evidence stable while API and authored code changes invalidate it', async () => fixture(async repository => {
+  const report = path.join(repository, 'docs/reports/platform-release-readiness');
+  await mkdir(path.join(report, 'src/content'), {recursive: true});
+  await mkdir(path.join(report, 'api'));
+  await writeFile(path.join(report, 'api/index.mjs'), 'export default handler;');
+  const baseline = await developmentSourceDigest(repository);
+  const register = path.join(report, 'src/content/task-register.json');
+  await writeFile(register, JSON.stringify({generatedAt: 'first', tasks: []}));
+  execFileSync('git', ['add', 'docs/reports/platform-release-readiness/src/content/task-register.json'], {cwd: repository});
+  await writeFile(register, JSON.stringify({generatedAt: 'second', tasks: [{status: 'Verification pending'}]}));
+  await writeFile(path.join(report, 'src/data.json'), JSON.stringify({generatedAt: 'second'}));
+  assert.equal(await developmentSourceDigest(repository), baseline);
+  await writeFile(path.join(report, 'api/index.mjs'), 'export default changedHandler;');
+  const apiChanged = await developmentSourceDigest(repository);
+  assert.notEqual(apiChanged, baseline);
+  await writeFile(path.join(report, 'src/content/helper.js'), 'export const value = 1;');
+  assert.notEqual(await developmentSourceDigest(repository), apiChanged);
+}));

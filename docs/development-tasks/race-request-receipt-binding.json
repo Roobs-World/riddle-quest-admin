@@ -124,31 +124,38 @@
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "facebook",
-      "file": "artifacts/target-dependencies/facebook.json"
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "reddit",
-      "file": "artifacts/target-dependencies/reddit.json"
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "youtube",
-      "file": "artifacts/target-dependencies/youtube.json"
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "netflix",
-      "file": "artifacts/target-dependencies/netflix.json"
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "yahoo",
-      "file": "artifacts/target-dependencies/yahoo.json"
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "gamesnacks",
-      "file": "artifacts/target-dependencies/gamesnacks.json"
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-platform-builds"
     }
   ],
   "remainingGates": [

@@ -481,3 +481,55 @@ test("artifact audit permits only the exact SDK entry and emitted React literals
   await appendFile(vendorPath, "const unapproved='https://react.dev/errors/404';\n");
   await assert.rejects(auditYouTubeArtifact(distDirectory), /unapproved external URL/u);
 });
+
+
+test("verification refuses source edits between release suites", async context => {
+  const fixture = await createReleaseFixture(context);
+  let calls = 0;
+  await assert.rejects(runYouTubeReleaseVerification({
+    repository: fixture.repositoryDirectory,
+    distDirectory: fixture.distDirectory,
+    contentAuditPath: fixture.contentAuditPath,
+    reportPath: fixture.reportPath,
+    commandRunner: async ({id}) => {
+      if (++calls === 2) {
+        await appendFile(path.join(fixture.repositoryDirectory, "source.txt"), "changed after content tests\n");
+      }
+      return {stdoutSha256: sha256(Buffer.from(id)), stderrSha256: sha256(Buffer.alloc(0))};
+    },
+  }), /source.*changed|changed.*source/iu);
+  assert.equal(calls, 2);
+  await assert.rejects(access(fixture.reportPath));
+});
+
+test("report writer refuses a source identity changed after suite verification", async context => {
+  const fixture = await createReleaseFixture(context);
+  const expectedSource = await captureSourceIdentity(fixture.repositoryDirectory);
+  await appendFile(path.join(fixture.repositoryDirectory, "source.txt"), "edit before report write\n");
+  await assert.rejects(fixture.writeReport({expectedSource}), /source tree changed/iu);
+  await assert.rejects(access(fixture.reportPath));
+});
+
+
+test("generated verification outputs do not alter release source identity", async context => {
+  const fixture = await createReleaseFixture(context);
+  const original = await captureSourceIdentity(fixture.repositoryDirectory);
+  const generated = ["artifacts/progress.json", ".codex/run.json", "docs/reports/platform-release-readiness/src/data.json"];
+  for (const file of generated) {
+    await mkdir(path.dirname(path.join(fixture.repositoryDirectory, file)), {recursive: true});
+    await writeFile(path.join(fixture.repositoryDirectory, file), "generated output\n");
+  }
+  git(fixture.repositoryDirectory, ["add", ...generated]);
+  assert.deepEqual(await captureSourceIdentity(fixture.repositoryDirectory), original);
+  for (const file of generated) await appendFile(path.join(fixture.repositoryDirectory, file), "new output\n");
+  assert.deepEqual(await captureSourceIdentity(fixture.repositoryDirectory), original);
+});
+
+test("source files in nested artifact-named folders remain source inputs", async context => {
+  const fixture = await createReleaseFixture(context);
+  const original = await captureSourceIdentity(fixture.repositoryDirectory);
+  const file = path.join(fixture.repositoryDirectory, "packages/portal/src/artifacts/model.ts");
+  await mkdir(path.dirname(file), {recursive: true});
+  await writeFile(file, "export const value = 1;\n");
+  assert.notEqual((await captureSourceIdentity(fixture.repositoryDirectory)).snapshotSha256, original.snapshotSha256);
+});

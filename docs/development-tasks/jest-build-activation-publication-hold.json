@@ -62,7 +62,8 @@
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-platform-builds"
     }
   ],
   "remainingGates": [

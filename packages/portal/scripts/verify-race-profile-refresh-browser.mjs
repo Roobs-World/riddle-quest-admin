@@ -18,7 +18,7 @@ await writeFile(path.join(scratch, "main.tsx"), `
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {useHostRaceCoordination} from ${JSON.stringify(path.join(root, "src/play/useHostRaceCoordination.ts"))};
-import {useHostAuthSession} from '/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/play/useHostAuthSession.ts';
+import {useHostAuthSession} from ${JSON.stringify(path.join(root, "src/play/useHostAuthSession.ts"))};
 const users={'owner-1':{uid:'owner-1',isAnonymous:false},'owner-2':{uid:'owner-2',isAnonymous:false}};
 window.calls=[];window.loads=[];window.providerCalls=[];
 const loadProfile=uid=>new Promise(resolve=>window.loads.push({uid,resolve}));

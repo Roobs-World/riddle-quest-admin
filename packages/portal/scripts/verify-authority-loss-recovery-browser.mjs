@@ -31,12 +31,23 @@ import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
 const params=new URL(location.href).searchParams,attempts=6,provider=params.get('provider')??'missing',negative=params.has('negative'),prepare=params.has('prepare');
-const source=attempts===6?createFakeHostServices():createRedditGuestHostServices();
+const rawSource=attempts===6?createFakeHostServices():createRedditGuestHostServices();
+const paidReceipts=new Map();
+const source={...rawSource,spendCoins:input=>{
+ if(!input.requestId)throw Error('Paid fixture requires an explicit request identity');
+ const fingerprint=JSON.stringify([input.riddleId,input.gameMode,input.sessionToken,input.reason,input.amount??50]);
+ const prior=paidReceipts.get(input.requestId);
+ if(prior){if(prior.fingerprint!==fingerprint)throw Error('Paid request identity was reused with different input');return prior.receipt;}
+ window.probe.paidDebits++;
+ const receipt=rawSource.spendCoins(input);
+ paidReceipts.set(input.requestId,{fingerprint,receipt});
+ return receipt;
+}};
 const uid=attempts===6?'jest-guest':'reddit-guest';
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');
-window.probe={outbound:[],inbound:[],errors:[],unhandled:[],saves:[],completions:[],spends:[],seedSpends:0};
+window.probe={outbound:[],inbound:[],errors:[],unhandled:[],saves:[],completions:[],spends:[],seedSpends:0,paidDebits:0};
 window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));
 window.addEventListener('riddle-quest:host-to-game',e=>window.probe.inbound.push(e.detail));
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
@@ -65,7 +76,7 @@ if(params.has('journal')&&!params.has('native')&&!negative&&!prepare){
  completionAcknowledged:oldState.completionAcknowledged,letterStates:oldState.letterStates,profile:window.probe.before,
  lastRewards:oldState.lastRewards,optimisticAchievementIds:oldState.optimisticAchievementIds};
  writePendingGuessJournal({version:1,scope,riddle:first,confirmedClassicIndex:1,base,successors:[],draft:Array(5).fill(''),
- ...(params.has('paid')?{coinAction:{type:'game:spendCoins',requestId:'seed-continue',payload:{riddleId:first.riddleId,gameMode:'classic',sessionToken:first.sessionToken,reason:'continue',requestId:'seed-continue'}}}:{}),
+ ...(params.has('paid')?{coinAction:{type:'game:spendCoins',requestId:'seed-continue',payload:{riddleId:first.riddleId,gameMode:'classic',sessionToken:first.sessionToken,reason:'continue'}}}:{}),
  queue:accepted.map(row=>({message:{type:'game:submitGuess',requestId:'accepted-'+row.attempt,
  payload:{riddleId:first.riddleId,gameMode:'classic',sessionToken:first.sessionToken,guess:row.feedback.map(c=>c.letter).join(''),requestId:'accepted-'+row.attempt}},
  attempts:row.attempt,isCorrect:false,gameOver:row.attempt===attempts,
@@ -82,10 +93,12 @@ const services={...source,
   return result;
  },
  loadRiddle:async input=>{if(completed){const retry=await retrySource.loadRiddle(input);return {...retry,sessionToken:'00000000-0000-4000-8000-000000000099'};}const riddle=await source.loadRiddle(input);return riddle.sessionToken===first.sessionToken&&!negative?{...riddle,acceptedGuesses:accepted}:riddle;},
- spendCoins:async input=>{window.probe.spends.push(input);return source.spendCoins(input);},
+ spendCoins:async input=>{window.probe.spends.push(input);
+ if(params.has('paid'))await new Promise(resolve=>window.releasePaidReceipt=resolve);
+ return source.spendCoins(input);},
  completeGame:input=>{
   window.probe.completions.push(input);
-  // The paid-attempt fixture reuses the existing fake authority with its explicit idempotent receipt contract.
+  // The fixture wraps the fake authority with an explicit request-keyed paid receipt contract.
   // Guest fixtures retain their actual service's once-per-round completion behavior.
   if(!completion)completion=(async()=>{if(window.holdCompletion)await new Promise(resolve=>window.releaseCompletion=()=>{window.holdCompletion=false;resolve();});const receipt=await source.completeGame(input);completed=true;return receipt;})();
   return completion;
@@ -132,7 +145,16 @@ window.profile=()=>source.loadProfile(uid);window.probe.ready=true;
    metric('native typing cannot reopen exhausted round',await page.locator('.guess-row').nth(1).innerText(),'');
    metric('sixth accepted row retains host feedback',(await page.locator('.guess-row').first().locator('.cell').allTextContents()).join('').toUpperCase(),'VVVVV');
    metric('recovery does not submit a seventh guess',await page.evaluate(()=>window.probe.outbound.filter(x=>x.type==='game:submitGuess').length),0);
-   metric('recovery does not charge Continue again',await page.evaluate(()=>window.probe.spends),[]);
+   metric('recovery does not charge Continue again',await page.evaluate(()=>window.probe.paidDebits-window.probe.seedSpends),0);
+   if(journal==='paid'){
+    await page.waitForFunction(()=>typeof window.releasePaidReceipt==='function');
+    metric('paid recovery replays only the original request',await page.evaluate(()=>window.probe.spends.map(x=>[x.requestId,x.riddleId,x.sessionToken,x.gameMode,x.reason])),[await page.evaluate(()=>{const r=window.probe.inbound.find(x=>x.type==='host:riddleLoaded').payload.riddle;return ['seed-continue',r.riddleId,r.sessionToken,r.gameMode,'continue'];})]);
+    metric('terminal proof retains the unresolved original paid receipt',await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith('riddleQuest:pendingPlay:v1:')).map(k=>{const j=JSON.parse(localStorage.getItem(k));return {queue:j.queue.length,successors:j.successors.length,requestId:j.coinAction?.requestId};})),[{queue:0,successors:0,requestId:'seed-continue'}]);
+    await page.evaluate(()=>window.releasePaidReceipt());
+    await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:operationResult'&&x.requestId==='seed-continue'&&x.payload.operation==='spendCoins'&&x.payload.ok));
+    await page.waitForFunction(()=>!Object.keys(localStorage).some(k=>k.startsWith('riddleQuest:pendingPlay:v1:')));
+    metric('paid receipt replay preserves the original debit count',await page.evaluate(()=>window.probe.paidDebits),1);
+   }else metric('recovery does not replay a paid request without a journal',await page.evaluate(()=>window.probe.spends),[]);
    if(journal!=='none')metric('owned terminal journal retires before completion',await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith('riddleQuest:pendingPlay:v1:')).length),0);
    await page.waitForFunction(()=>typeof window.releaseCompletion==='function');
    await page.waitForFunction(()=>window.probe.saves.some(x=>x.activeGame?.pendingOutcome?.kind==='loss'));

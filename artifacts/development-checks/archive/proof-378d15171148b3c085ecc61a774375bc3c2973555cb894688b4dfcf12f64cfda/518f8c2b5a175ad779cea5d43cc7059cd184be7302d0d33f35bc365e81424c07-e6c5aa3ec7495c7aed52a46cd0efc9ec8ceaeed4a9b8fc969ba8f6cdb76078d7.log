@@ -1,0 +1,7 @@
+Offline submit delivery recovery passed at 1280px: immediate rollback, retained input, canonical read, no repeated mutation.
+Offline hint delivery recovery passed at 1280px: immediate rollback, retained input, canonical read, no repeated mutation.
+Offline skip delivery recovery passed at 1280px: immediate rollback, retained input, canonical read, no repeated mutation.
+Offline submit delivery recovery passed at 390px: immediate rollback, retained input, canonical read, no repeated mutation.
+Offline hint delivery recovery passed at 390px: immediate rollback, retained input, canonical read, no repeated mutation.
+Offline skip delivery recovery passed at 390px: immediate rollback, retained input, canonical read, no repeated mutation.
+

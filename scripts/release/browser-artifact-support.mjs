@@ -60,7 +60,7 @@ export async function verifySoloArtifact(browser, url, {gamesnacks = false, offl
     await page.getByRole("heading", {name: /Which ancient city/}).waitFor();
     await page.getByRole("textbox", {name: "Type your answer"}).fill("ROME");
     await page.getByRole("button", {name: /submit/i}).click();
-    await page.waitForFunction(() => document.querySelector(".yt-status")?.textContent.includes("450"));
+    await page.waitForFunction(() => document.querySelector(".yt-status")?.textContent.includes("365"));
     if (gamesnacks) {
       const events = await page.evaluate(() => window.__gameSnacksEvents);
       assert.ok(events.indexOf("firstFrameReady") < events.indexOf("ready"));
@@ -74,7 +74,7 @@ export async function verifySoloArtifact(browser, url, {gamesnacks = false, offl
     if (screenshot) await page.screenshot({path: screenshot});
     await page.reload({waitUntil: "domcontentloaded"});
     await page.getByRole("button", {name: /Classic.*2\s*\/\s*180/}).waitFor();
-    assert.match(await page.locator(".yt-status").innerText(), /450/);
+    assert.match(await page.locator(".yt-status").innerText(), /365/);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false);
     if (offline) {
       const cdp = await context.newCDPSession(page);
@@ -88,11 +88,11 @@ export async function verifySoloArtifact(browser, url, {gamesnacks = false, offl
       await context.setOffline(true);
       await page.reload({waitUntil: "domcontentloaded"});
       await page.getByRole("button", {name: /Classic.*2\s*\/\s*180/}).waitFor();
-      assert.match(await page.locator(".yt-status").innerText(), /450/);
+      assert.match(await page.locator(".yt-status").innerText(), /365/);
     }
     assert.deepEqual(errors, [], "Browser errors");
     assert.deepEqual(external, [], "Unexpected external requests");
     assert.deepEqual(failed, [], "Failed asset requests");
-    return {startupMs, solve: "ROME", coins: 450, persistedClassicLevel: 2, externalRequests: 0, offlineReload: offline, installabilityChecked: offline};
+    return {startupMs, solve: "ROME", coins: 365, persistedClassicLevel: 2, externalRequests: 0, offlineReload: offline, installabilityChecked: offline};
   } finally { await context.close(); }
 }

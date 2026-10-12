@@ -21,7 +21,7 @@ import {assertRaceStoredRecord} from "./raceStoredRecords";
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {type RaceRiddleSnapshot, type RaceRunRecord} from "./raceEngine";
-import {RACE_DECK_DIFFICULTY_COUNTS, RACE_POOL_SIZE, validateRacePool} from "./raceContentValidation";
+import {RACE_DECK_DIFFICULTY_COUNTS, validateRacePool} from "./raceContentValidation";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./raceAchievements";
 
@@ -383,7 +383,6 @@ export function buildDeterministicRaceDeck(
   const validation = validateRacePool(records, {
     locale: options.locale,
     categoryId: options.categoryId,
-    poolSize: RACE_POOL_SIZE,
   });
   if (!validation.valid) {
     throw new HttpsError(

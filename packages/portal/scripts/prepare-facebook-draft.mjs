@@ -19,7 +19,7 @@ const receiptPath = path.join(receiptDirectory, "gated-artifact.json");
 mkdirSync(receiptDirectory, {recursive: true, mode: 0o700});
 
 const run = (command, args, options = {}) => {
-  const result = spawnSync(command, args, {cwd: options.cwd ?? repositoryDirectory, encoding: "utf8", stdio: options.capture ? "pipe" : "inherit"});
+  const result = spawnSync(command, args, {cwd: options.cwd ?? repositoryDirectory, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, stdio: options.capture ? "pipe" : "inherit"});
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${command} ${args.join(" ")} failed`);
   return result.stdout?.trim() ?? "";

@@ -135,6 +135,7 @@ const readGit = (args) => {
     cwd: repositoryDirectory,
     encoding: "utf8",
     env: gitEnvironment,
+    maxBuffer: 64 * 1024 * 1024,
   });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error("Unable to resolve source provenance for the Jest artifact");

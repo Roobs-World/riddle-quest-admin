@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-10-11T22:45:41.734Z",
+  "scope": "Actual packaged gameplay; provider publication is not implied",
+  "results": [
+    {
+      "target": "slowden",
+      "artifact": "build-slowden-review.zip",
+      "sha256": "bab74e11358935ab37fca3fb781f1045fce9bccc8d622c8d92e88e9e04f88038",
+      "status": "passed",
+      "startupMs": 63,
+      "solve": "ROME",
+      "coins": 365,
+      "persistedClassicLevel": 2,
+      "externalRequests": 0,
+      "offlineReload": false,
+      "installabilityChecked": false
+    }
+  ]
+}

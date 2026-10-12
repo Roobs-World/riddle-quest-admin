@@ -66,7 +66,7 @@
     "test:playable-content:browser": "node scripts/verify-playable-content-loading.mjs",
     "test:youtube:build-boundary": "node --test --test-isolation=none scripts/platform-artifact-audits.test.mjs scripts/playable-content-plugin.test.mjs scripts/content-protection.test.mjs scripts/youtube-release-artifact.test.mjs",
     "verify:all-targets": "pnpm build:all-targets && pnpm test:youtube:unit && pnpm test:release-scripts && PORTAL_USE_EXISTING_BUILD=1 pnpm test:jest-local:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:facebook:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:reddit:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:youtube:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:standalone:playwright",
-    "test:jest-local:playwright": "pnpm test:game-browser:playwright && pnpm test:jest-auth:playwright && pnpm test:jest-purchase-recovery:browser",
+    "test:jest-local:playwright": "pnpm test:game-browser:playwright && pnpm test:jest-auth:playwright && pnpm test:jest-purchase-recovery:browser && pnpm test:retained-race:playwright",
     "test:jest-deployed:playwright": "PORTAL_DEPLOYED_TESTS=1 jest --config jest.config.cjs --runInBand src/jest/__tests__/deployedJest.jest-playwright.test.ts",
     "test:race:live:invitations:browser": "node scripts/verify-live-race-invitations-browser.mjs",
     "test:challenge-notifications:browser": "node scripts/verify-challenge-notification-toggle-browser.mjs",
@@ -234,7 +234,8 @@
     "test:turkish-answer-input:browser": "node scripts/verify-turkish-answer-input-browser.mjs && TURKISH_INPUT_REACT_MODE=production node scripts/verify-turkish-answer-input-browser.mjs",
     "test:guess-result-recovery:browser": "node scripts/verify-guess-result-recovery-browser.mjs && GUESS_RECOVERY_REACT_MODE=production node scripts/verify-guess-result-recovery-browser.mjs",
     "test:live-hint-cursor:browser": "node scripts/verify-live-hint-cursor-browser.mjs && HINT_CURSOR_REACT_MODE=production node scripts/verify-live-hint-cursor-browser.mjs",
-    "test:solo-hint-intent:browser": "node scripts/verify-solo-hint-intent-browser.mjs && HINT_INTENT_REACT_MODE=production node scripts/verify-solo-hint-intent-browser.mjs"
+    "test:solo-hint-intent:browser": "node scripts/verify-solo-hint-intent-browser.mjs && HINT_INTENT_REACT_MODE=production node scripts/verify-solo-hint-intent-browser.mjs",
+    "test:retained-race:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand --runTestsByPath src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts"
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",

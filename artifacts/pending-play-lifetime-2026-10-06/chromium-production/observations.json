@@ -20,8 +20,8 @@
     "height": 844,
     "scenario": "receipt:account:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-e3921c7b-c097-4250-8927-8d1616756869",
-    "expected": "hint-e3921c7b-c097-4250-8927-8d1616756869"
+    "actual": "hint-32883ea0-565f-43fc-86c4-2b091e90a071",
+    "expected": "hint-32883ea0-565f-43fc-86c4-2b091e90a071"
   },
   {
     "width": 390,
@@ -92,8 +92,8 @@
     "height": 844,
     "scenario": "receipt:account:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-550f802e-ac27-415e-b244-eb11cca468c0",
-    "expected": "hint-550f802e-ac27-415e-b244-eb11cca468c0"
+    "actual": "hint-45697578-9d50-4326-ab15-9ac2c3507bdb",
+    "expected": "hint-45697578-9d50-4326-ab15-9ac2c3507bdb"
   },
   {
     "width": 390,
@@ -164,8 +164,8 @@
     "height": 844,
     "scenario": "receipt:account:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-fe34642a-178c-4f94-bf3b-a68b8da5a430",
-    "expected": "hint-fe34642a-178c-4f94-bf3b-a68b8da5a430"
+    "actual": "hint-b12261a7-6446-4600-ae14-becb0000a9f8",
+    "expected": "hint-b12261a7-6446-4600-ae14-becb0000a9f8"
   },
   {
     "width": 390,
@@ -236,8 +236,8 @@
     "height": 844,
     "scenario": "receipt:account:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-cf281a54-a1a2-4933-ad22-77fdf282c9dd",
-    "expected": "continue-cf281a54-a1a2-4933-ad22-77fdf282c9dd"
+    "actual": "continue-75cc887a-00f7-4c63-aa3f-960d1003f72b",
+    "expected": "continue-75cc887a-00f7-4c63-aa3f-960d1003f72b"
   },
   {
     "width": 390,
@@ -308,8 +308,8 @@
     "height": 844,
     "scenario": "receipt:account:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-7228a4cd-b677-42d4-90eb-b83a4e9998cd",
-    "expected": "continue-7228a4cd-b677-42d4-90eb-b83a4e9998cd"
+    "actual": "continue-780e0b19-9874-4083-a83d-169bc4f0ade5",
+    "expected": "continue-780e0b19-9874-4083-a83d-169bc4f0ade5"
   },
   {
     "width": 390,
@@ -380,8 +380,8 @@
     "height": 844,
     "scenario": "receipt:account:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-73ae0772-7c88-43cb-b526-fe3ef8573e1f",
-    "expected": "continue-73ae0772-7c88-43cb-b526-fe3ef8573e1f"
+    "actual": "continue-be3a3b9f-d62e-4919-ad5f-4db902d3d72f",
+    "expected": "continue-be3a3b9f-d62e-4919-ad5f-4db902d3d72f"
   },
   {
     "width": 390,
@@ -452,8 +452,8 @@
     "height": 844,
     "scenario": "receipt:account:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-4aadfaa4-1fd8-463d-9d16-b7c891182939",
-    "expected": "skip-4aadfaa4-1fd8-463d-9d16-b7c891182939"
+    "actual": "skip-4a2ac17f-7e4e-4bbd-a2d8-cc4859d0638b",
+    "expected": "skip-4a2ac17f-7e4e-4bbd-a2d8-cc4859d0638b"
   },
   {
     "width": 390,
@@ -524,8 +524,8 @@
     "height": 844,
     "scenario": "receipt:account:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-de447442-e882-4147-89b5-4d72ac80a573",
-    "expected": "skip-de447442-e882-4147-89b5-4d72ac80a573"
+    "actual": "skip-e01a574d-931e-4f1f-ada4-5bad1d7955cc",
+    "expected": "skip-e01a574d-931e-4f1f-ada4-5bad1d7955cc"
   },
   {
     "width": 390,
@@ -596,8 +596,8 @@
     "height": 844,
     "scenario": "receipt:account:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-dcdd438b-b9c0-43a7-8cbc-6d491c5e649c",
-    "expected": "skip-dcdd438b-b9c0-43a7-8cbc-6d491c5e649c"
+    "actual": "skip-b6bb5f68-d741-4628-913a-153b5261bfe3",
+    "expected": "skip-b6bb5f68-d741-4628-913a-153b5261bfe3"
   },
   {
     "width": 390,
@@ -668,8 +668,8 @@
     "height": 844,
     "scenario": "receipt:generation:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-5d242467-b1c6-4ad2-88b2-57af9b638f3f",
-    "expected": "hint-5d242467-b1c6-4ad2-88b2-57af9b638f3f"
+    "actual": "hint-88eb997a-2107-4e51-b274-b439893be730",
+    "expected": "hint-88eb997a-2107-4e51-b274-b439893be730"
   },
   {
     "width": 390,
@@ -740,8 +740,8 @@
     "height": 844,
     "scenario": "receipt:generation:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-9fb0a432-3096-41ee-af26-cad5e3db0a4e",
-    "expected": "hint-9fb0a432-3096-41ee-af26-cad5e3db0a4e"
+    "actual": "hint-4736780c-e922-41a8-beb3-1c3bf3bd6e54",
+    "expected": "hint-4736780c-e922-41a8-beb3-1c3bf3bd6e54"
   },
   {
     "width": 390,
@@ -812,8 +812,8 @@
     "height": 844,
     "scenario": "receipt:generation:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-a7fdd3aa-770f-4580-a053-c7489862b665",
-    "expected": "hint-a7fdd3aa-770f-4580-a053-c7489862b665"
+    "actual": "hint-7bec99cb-b4c6-4728-81d5-a33b1d87a150",
+    "expected": "hint-7bec99cb-b4c6-4728-81d5-a33b1d87a150"
   },
   {
     "width": 390,
@@ -884,8 +884,8 @@
     "height": 844,
     "scenario": "receipt:generation:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-d020b989-5ce6-47b0-984a-ad0b8638c4ed",
-    "expected": "continue-d020b989-5ce6-47b0-984a-ad0b8638c4ed"
+    "actual": "continue-9d2ce3da-c0a8-454a-9c1a-2c4e094ae55b",
+    "expected": "continue-9d2ce3da-c0a8-454a-9c1a-2c4e094ae55b"
   },
   {
     "width": 390,
@@ -956,8 +956,8 @@
     "height": 844,
     "scenario": "receipt:generation:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-78f16925-ebcf-42c1-b005-655a5967f0e0",
-    "expected": "continue-78f16925-ebcf-42c1-b005-655a5967f0e0"
+    "actual": "continue-ec47945d-176e-4455-aa30-c3f6ac0a4116",
+    "expected": "continue-ec47945d-176e-4455-aa30-c3f6ac0a4116"
   },
   {
     "width": 390,
@@ -1028,8 +1028,8 @@
     "height": 844,
     "scenario": "receipt:generation:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-ddbd76bb-634d-4c32-a12b-4173122b7d1b",
-    "expected": "continue-ddbd76bb-634d-4c32-a12b-4173122b7d1b"
+    "actual": "continue-105e8321-32e5-4a74-b572-5ed131c6c84e",
+    "expected": "continue-105e8321-32e5-4a74-b572-5ed131c6c84e"
   },
   {
     "width": 390,
@@ -1100,8 +1100,8 @@
     "height": 844,
     "scenario": "receipt:generation:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-383f041e-31f6-421e-84cb-c45276946514",
-    "expected": "skip-383f041e-31f6-421e-84cb-c45276946514"
+    "actual": "skip-037cb966-c180-425d-a3df-da823dbcc259",
+    "expected": "skip-037cb966-c180-425d-a3df-da823dbcc259"
   },
   {
     "width": 390,
@@ -1172,8 +1172,8 @@
     "height": 844,
     "scenario": "receipt:generation:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-f98cd10e-b983-47bc-9fa6-d5bda57d188e",
-    "expected": "skip-f98cd10e-b983-47bc-9fa6-d5bda57d188e"
+    "actual": "skip-965fc0c3-fd04-4b64-b2d5-ee2b1cfcd742",
+    "expected": "skip-965fc0c3-fd04-4b64-b2d5-ee2b1cfcd742"
   },
   {
     "width": 390,
@@ -1244,8 +1244,8 @@
     "height": 844,
     "scenario": "receipt:generation:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-a7d0c3af-39b1-4f6e-aa09-3ebe87ce1fa6",
-    "expected": "skip-a7d0c3af-39b1-4f6e-aa09-3ebe87ce1fa6"
+    "actual": "skip-fe8f2e3e-5af4-4e09-bcb0-073d04c577d8",
+    "expected": "skip-fe8f2e3e-5af4-4e09-bcb0-073d04c577d8"
   },
   {
     "width": 390,
@@ -1316,8 +1316,8 @@
     "height": 844,
     "scenario": "receipt:locale:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-208d6182-9fda-4d00-9086-43113e18d189",
-    "expected": "hint-208d6182-9fda-4d00-9086-43113e18d189"
+    "actual": "hint-e5dff161-09a5-4088-b029-8b8fb6e79479",
+    "expected": "hint-e5dff161-09a5-4088-b029-8b8fb6e79479"
   },
   {
     "width": 390,
@@ -1380,8 +1380,8 @@
     "height": 844,
     "scenario": "receipt:locale:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-f2222e82-fde1-49c7-8b20-9fd32e485ab4",
-    "expected": "hint-f2222e82-fde1-49c7-8b20-9fd32e485ab4"
+    "actual": "hint-f6e29a84-6126-4002-b729-4dd1acda14c3",
+    "expected": "hint-f6e29a84-6126-4002-b729-4dd1acda14c3"
   },
   {
     "width": 390,
@@ -1444,8 +1444,8 @@
     "height": 844,
     "scenario": "receipt:locale:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-5ee56ae0-9233-44e5-ba78-5b4354088ecc",
-    "expected": "hint-5ee56ae0-9233-44e5-ba78-5b4354088ecc"
+    "actual": "hint-60b8d186-b3ea-45a4-9ab5-c12af4eb7660",
+    "expected": "hint-60b8d186-b3ea-45a4-9ab5-c12af4eb7660"
   },
   {
     "width": 390,
@@ -1508,8 +1508,8 @@
     "height": 844,
     "scenario": "receipt:locale:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-0f575b62-7bc7-48bc-a905-8c5168a6c600",
-    "expected": "continue-0f575b62-7bc7-48bc-a905-8c5168a6c600"
+    "actual": "continue-4f61ef2d-8f83-43e7-8789-99c10eb9a8de",
+    "expected": "continue-4f61ef2d-8f83-43e7-8789-99c10eb9a8de"
   },
   {
     "width": 390,
@@ -1572,8 +1572,8 @@
     "height": 844,
     "scenario": "receipt:locale:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-660a1284-5c35-42f3-9c94-40bdc77a75d3",
-    "expected": "continue-660a1284-5c35-42f3-9c94-40bdc77a75d3"
+    "actual": "continue-defef290-2b20-420e-b8b1-37b553fb4e5b",
+    "expected": "continue-defef290-2b20-420e-b8b1-37b553fb4e5b"
   },
   {
     "width": 390,
@@ -1636,8 +1636,8 @@
     "height": 844,
     "scenario": "receipt:locale:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-890c99c6-fbff-40e6-b91a-6af5fef8ac41",
-    "expected": "continue-890c99c6-fbff-40e6-b91a-6af5fef8ac41"
+    "actual": "continue-1342b239-18aa-4be8-8f3d-6157a99163c3",
+    "expected": "continue-1342b239-18aa-4be8-8f3d-6157a99163c3"
   },
   {
     "width": 390,
@@ -1700,8 +1700,8 @@
     "height": 844,
     "scenario": "receipt:locale:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-227eee4e-1fd4-4db3-9348-afaa37e14163",
-    "expected": "skip-227eee4e-1fd4-4db3-9348-afaa37e14163"
+    "actual": "skip-aabc4a2d-c93c-47d4-b028-e09838cd61f3",
+    "expected": "skip-aabc4a2d-c93c-47d4-b028-e09838cd61f3"
   },
   {
     "width": 390,
@@ -1764,8 +1764,8 @@
     "height": 844,
     "scenario": "receipt:locale:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-8a270be6-ec1f-4dfd-91af-a61b90556bbb",
-    "expected": "skip-8a270be6-ec1f-4dfd-91af-a61b90556bbb"
+    "actual": "skip-563dfbc4-c817-4ea7-97a2-04b26434aa0c",
+    "expected": "skip-563dfbc4-c817-4ea7-97a2-04b26434aa0c"
   },
   {
     "width": 390,
@@ -1828,8 +1828,8 @@
     "height": 844,
     "scenario": "receipt:locale:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-e0f0169e-8581-4203-ae90-dfc0237dc5ce",
-    "expected": "skip-e0f0169e-8581-4203-ae90-dfc0237dc5ce"
+    "actual": "skip-1765f0f0-03fa-4100-96d6-9d17ca0dcaa3",
+    "expected": "skip-1765f0f0-03fa-4100-96d6-9d17ca0dcaa3"
   },
   {
     "width": 390,
@@ -1892,8 +1892,8 @@
     "height": 844,
     "scenario": "receipt:logout:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-e642a140-432c-46be-97a7-992cf5126501",
-    "expected": "hint-e642a140-432c-46be-97a7-992cf5126501"
+    "actual": "hint-91fa814c-8cdf-43bd-a4df-2cf28fb6e86a",
+    "expected": "hint-91fa814c-8cdf-43bd-a4df-2cf28fb6e86a"
   },
   {
     "width": 390,
@@ -1956,8 +1956,8 @@
     "height": 844,
     "scenario": "receipt:logout:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-c5a1d05a-953e-4fd8-98f3-f12bea5de913",
-    "expected": "hint-c5a1d05a-953e-4fd8-98f3-f12bea5de913"
+    "actual": "hint-042a0057-f64e-4a47-b395-96432f8e3b8a",
+    "expected": "hint-042a0057-f64e-4a47-b395-96432f8e3b8a"
   },
   {
     "width": 390,
@@ -2020,8 +2020,8 @@
     "height": 844,
     "scenario": "receipt:logout:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-1e81461a-9e0a-4b08-bd41-087fbccccdac",
-    "expected": "hint-1e81461a-9e0a-4b08-bd41-087fbccccdac"
+    "actual": "hint-efeccfaa-1246-4153-b6d0-58ae2d71d350",
+    "expected": "hint-efeccfaa-1246-4153-b6d0-58ae2d71d350"
   },
   {
     "width": 390,
@@ -2084,8 +2084,8 @@
     "height": 844,
     "scenario": "receipt:logout:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-cb34db42-c957-4eca-93cc-b34a70940750",
-    "expected": "continue-cb34db42-c957-4eca-93cc-b34a70940750"
+    "actual": "continue-e119c793-9ec8-4872-9c54-1c8ab4eb605c",
+    "expected": "continue-e119c793-9ec8-4872-9c54-1c8ab4eb605c"
   },
   {
     "width": 390,
@@ -2148,8 +2148,8 @@
     "height": 844,
     "scenario": "receipt:logout:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-afae575f-db81-4415-882a-bcc8c4da1ab4",
-    "expected": "continue-afae575f-db81-4415-882a-bcc8c4da1ab4"
+    "actual": "continue-331337e9-0e48-4b86-a6f8-a365aafb61a1",
+    "expected": "continue-331337e9-0e48-4b86-a6f8-a365aafb61a1"
   },
   {
     "width": 390,
@@ -2212,8 +2212,8 @@
     "height": 844,
     "scenario": "receipt:logout:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-e6da8ea5-37bb-41c8-987c-8aea88e24d38",
-    "expected": "continue-e6da8ea5-37bb-41c8-987c-8aea88e24d38"
+    "actual": "continue-ae0f53a3-f1ec-46b2-8214-968e7e09460b",
+    "expected": "continue-ae0f53a3-f1ec-46b2-8214-968e7e09460b"
   },
   {
     "width": 390,
@@ -2276,8 +2276,8 @@
     "height": 844,
     "scenario": "receipt:logout:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-87a02e62-1eb8-4313-9f3c-ea8584d8fdf8",
-    "expected": "skip-87a02e62-1eb8-4313-9f3c-ea8584d8fdf8"
+    "actual": "skip-7dfa4707-3a1e-4ee1-811b-e578bc6ee223",
+    "expected": "skip-7dfa4707-3a1e-4ee1-811b-e578bc6ee223"
   },
   {
     "width": 390,
@@ -2340,8 +2340,8 @@
     "height": 844,
     "scenario": "receipt:logout:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-6779205a-8466-4863-bc42-56ed75e06ea4",
-    "expected": "skip-6779205a-8466-4863-bc42-56ed75e06ea4"
+    "actual": "skip-5d31bad7-6425-497b-8bc4-a193840dc02c",
+    "expected": "skip-5d31bad7-6425-497b-8bc4-a193840dc02c"
   },
   {
     "width": 390,
@@ -2404,8 +2404,8 @@
     "height": 844,
     "scenario": "receipt:logout:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-06db48e3-a5ef-4f6b-88cf-744afcf068d5",
-    "expected": "skip-06db48e3-a5ef-4f6b-88cf-744afcf068d5"
+    "actual": "skip-68bdc51e-47f2-4673-b764-4560cf54379c",
+    "expected": "skip-68bdc51e-47f2-4673-b764-4560cf54379c"
   },
   {
     "width": 390,
@@ -2476,8 +2476,8 @@
     "height": 844,
     "scenario": "timer:unmount:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-d794ccb5-3909-4266-af3a-992d29c321bc",
-    "expected": "skip-d794ccb5-3909-4266-af3a-992d29c321bc"
+    "actual": "skip-0a7ba5d9-633b-4cab-9611-e3a5737f853e",
+    "expected": "skip-0a7ba5d9-633b-4cab-9611-e3a5737f853e"
   },
   {
     "width": 390,
@@ -2524,8 +2524,8 @@
     "height": 844,
     "scenario": "timer:account:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-7fb82c1f-254b-40d4-8477-d61df0d7057c",
-    "expected": "skip-7fb82c1f-254b-40d4-8477-d61df0d7057c"
+    "actual": "skip-116a21b1-2a1a-40db-9534-030104843e96",
+    "expected": "skip-116a21b1-2a1a-40db-9534-030104843e96"
   },
   {
     "width": 390,
@@ -2572,8 +2572,8 @@
     "height": 844,
     "scenario": "timer:generation:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-95dcc7cf-d0bf-4484-9675-8dc6c64296be",
-    "expected": "skip-95dcc7cf-d0bf-4484-9675-8dc6c64296be"
+    "actual": "skip-bb976f9a-1827-452e-bdc0-f7c8309d94be",
+    "expected": "skip-bb976f9a-1827-452e-bdc0-f7c8309d94be"
   },
   {
     "width": 390,
@@ -2620,8 +2620,8 @@
     "height": 844,
     "scenario": "timer:locale:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-b04917fa-5749-4ceb-8427-a046c8fa06db",
-    "expected": "skip-b04917fa-5749-4ceb-8427-a046c8fa06db"
+    "actual": "skip-7ce71c65-50e9-4ca3-962f-6c7a574c3579",
+    "expected": "skip-7ce71c65-50e9-4ca3-962f-6c7a574c3579"
   },
   {
     "width": 390,
@@ -2668,8 +2668,8 @@
     "height": 844,
     "scenario": "timer:logout:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-a0633aaf-9445-4ddd-a7cc-17f4a58bfd15",
-    "expected": "skip-a0633aaf-9445-4ddd-a7cc-17f4a58bfd15"
+    "actual": "skip-ea7f42fb-9f39-4dba-a1d3-73378e26c884",
+    "expected": "skip-ea7f42fb-9f39-4dba-a1d3-73378e26c884"
   },
   {
     "width": 390,
@@ -2716,8 +2716,8 @@
     "height": 844,
     "scenario": "timer:aba:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-f6b510af-efeb-46c4-ab3e-9843a1158987",
-    "expected": "skip-f6b510af-efeb-46c4-ab3e-9843a1158987"
+    "actual": "skip-fed16029-ff26-464b-a77c-6e6ba38f7c44",
+    "expected": "skip-fed16029-ff26-464b-a77c-6e6ba38f7c44"
   },
   {
     "width": 390,
@@ -2764,8 +2764,8 @@
     "height": 844,
     "scenario": "timer:profile:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-aa10ad9c-2503-4c64-83f8-3dcf374f47ac",
-    "expected": "skip-aa10ad9c-2503-4c64-83f8-3dcf374f47ac"
+    "actual": "skip-be1c9b49-cf38-4552-94d7-5ef315ea54d4",
+    "expected": "skip-be1c9b49-cf38-4552-94d7-5ef315ea54d4"
   },
   {
     "width": 390,
@@ -2812,8 +2812,8 @@
     "height": 844,
     "scenario": "timer:question:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-78b1b762-153f-4f8e-8f44-bca9cf265729",
-    "expected": "skip-78b1b762-153f-4f8e-8f44-bca9cf265729"
+    "actual": "skip-3ad03f22-df6d-40c1-a7bb-1a4ce8bd8f84",
+    "expected": "skip-3ad03f22-df6d-40c1-a7bb-1a4ce8bd8f84"
   },
   {
     "width": 390,
@@ -2860,8 +2860,8 @@
     "height": 844,
     "scenario": "timer:none:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-e17ca23e-b849-4402-ab68-1310eea62225",
-    "expected": "skip-e17ca23e-b849-4402-ab68-1310eea62225"
+    "actual": "skip-177e496c-4bde-41ff-a607-270cd4f0c0cb",
+    "expected": "skip-177e496c-4bde-41ff-a607-270cd4f0c0cb"
   },
   {
     "width": 390,
@@ -2916,8 +2916,8 @@
     "height": 844,
     "scenario": "timer:unmount:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-d4734fa0-3afa-4e82-98d3-30ca2a78bafb",
-    "expected": "guess-d4734fa0-3afa-4e82-98d3-30ca2a78bafb"
+    "actual": "guess-ca3724fc-412e-41a8-bd70-5018269b7fd1",
+    "expected": "guess-ca3724fc-412e-41a8-bd70-5018269b7fd1"
   },
   {
     "width": 390,
@@ -2964,8 +2964,8 @@
     "height": 844,
     "scenario": "timer:account:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-09f8d34e-19e5-437c-8a20-ed39650abc7a",
-    "expected": "guess-09f8d34e-19e5-437c-8a20-ed39650abc7a"
+    "actual": "guess-30a19952-583b-4891-abc5-8df78a14bb49",
+    "expected": "guess-30a19952-583b-4891-abc5-8df78a14bb49"
   },
   {
     "width": 390,
@@ -3012,8 +3012,8 @@
     "height": 844,
     "scenario": "timer:generation:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-d1976986-4161-4cbd-948c-9a6564a63844",
-    "expected": "guess-d1976986-4161-4cbd-948c-9a6564a63844"
+    "actual": "guess-77afc404-3ccd-4a8b-81c2-c02e77806a0e",
+    "expected": "guess-77afc404-3ccd-4a8b-81c2-c02e77806a0e"
   },
   {
     "width": 390,
@@ -3060,8 +3060,8 @@
     "height": 844,
     "scenario": "timer:locale:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-c1e743d1-ca79-4c06-bc91-58062fad10c3",
-    "expected": "guess-c1e743d1-ca79-4c06-bc91-58062fad10c3"
+    "actual": "guess-914a4697-93d7-4392-bad7-431d0cd2d131",
+    "expected": "guess-914a4697-93d7-4392-bad7-431d0cd2d131"
   },
   {
     "width": 390,
@@ -3108,8 +3108,8 @@
     "height": 844,
     "scenario": "timer:logout:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-952b6560-3f42-4cf5-b81f-17b1855f3876",
-    "expected": "guess-952b6560-3f42-4cf5-b81f-17b1855f3876"
+    "actual": "guess-3c43d809-c069-4c8f-ba92-7fce0282f054",
+    "expected": "guess-3c43d809-c069-4c8f-ba92-7fce0282f054"
   },
   {
     "width": 390,
@@ -3156,8 +3156,8 @@
     "height": 844,
     "scenario": "timer:aba:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-4f45843e-a0ea-42dd-adc0-630db64c43cf",
-    "expected": "guess-4f45843e-a0ea-42dd-adc0-630db64c43cf"
+    "actual": "guess-ff60dd4f-0a43-4c6e-84c3-644b2e22f4b4",
+    "expected": "guess-ff60dd4f-0a43-4c6e-84c3-644b2e22f4b4"
   },
   {
     "width": 390,
@@ -3204,8 +3204,8 @@
     "height": 844,
     "scenario": "timer:profile:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-6ed62afd-1f3e-4615-9d57-98675455e90f",
-    "expected": "guess-6ed62afd-1f3e-4615-9d57-98675455e90f"
+    "actual": "guess-32936e35-fd1b-4ad0-839b-000d6c3e78bb",
+    "expected": "guess-32936e35-fd1b-4ad0-839b-000d6c3e78bb"
   },
   {
     "width": 390,
@@ -3252,8 +3252,8 @@
     "height": 844,
     "scenario": "timer:question:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-82f778d7-5c3f-414e-98ce-9c2153adfca9",
-    "expected": "guess-82f778d7-5c3f-414e-98ce-9c2153adfca9"
+    "actual": "guess-e5df192a-6f74-4d2b-afad-b0446f0892a3",
+    "expected": "guess-e5df192a-6f74-4d2b-afad-b0446f0892a3"
   },
   {
     "width": 390,
@@ -3300,8 +3300,8 @@
     "height": 844,
     "scenario": "timer:none:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-36bbd567-c519-4f6e-8920-1edf1c27ea99",
-    "expected": "guess-36bbd567-c519-4f6e-8920-1edf1c27ea99"
+    "actual": "guess-45007527-253f-402e-aaad-c25efd17efb8",
+    "expected": "guess-45007527-253f-402e-aaad-c25efd17efb8"
   },
   {
     "width": 390,
@@ -3356,8 +3356,8 @@
     "height": 844,
     "scenario": "timer:replaced:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-1d3eaa4c-003b-47cc-85ac-aae9a2966146",
-    "expected": "guess-1d3eaa4c-003b-47cc-85ac-aae9a2966146"
+    "actual": "guess-44515c7c-aaa6-4c4a-b9c7-37c77a94948e",
+    "expected": "guess-44515c7c-aaa6-4c4a-b9c7-37c77a94948e"
   },
   {
     "width": 390,
@@ -3387,6 +3387,14 @@
     "width": 390,
     "height": 844,
     "scenario": "cold:none:skip:restore",
+    "name": "cold unmount retires the original interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
     "name": "Strict Mode installs a live replacement interval",
     "actual": false,
     "expected": false
@@ -3396,24 +3404,24 @@
     "height": 844,
     "scenario": "cold:none:skip:restore",
     "name": "only the live registered callback owns delivery",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
     "height": 844,
     "scenario": "cold:none:skip:restore",
     "name": "only the live registered callback owns lease acquisition",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 390,
     "height": 844,
     "scenario": "cold:none:skip:restore",
     "name": "restored active interval retransmits original request",
-    "actual": 0,
-    "expected": 0
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -3468,8 +3476,8 @@
     "height": 844,
     "scenario": "receipt:account:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-964bd241-a77c-4df5-a064-bf5a2718d9b6",
-    "expected": "hint-964bd241-a77c-4df5-a064-bf5a2718d9b6"
+    "actual": "hint-7aef4f11-6167-402d-8cf6-a9c5725100ca",
+    "expected": "hint-7aef4f11-6167-402d-8cf6-a9c5725100ca"
   },
   {
     "width": 1280,
@@ -3540,8 +3548,8 @@
     "height": 844,
     "scenario": "receipt:account:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-e00ebd3c-e53d-412d-9fee-eca2acb037ca",
-    "expected": "hint-e00ebd3c-e53d-412d-9fee-eca2acb037ca"
+    "actual": "hint-2ae76e82-bea9-443f-a515-cd524fb29c26",
+    "expected": "hint-2ae76e82-bea9-443f-a515-cd524fb29c26"
   },
   {
     "width": 1280,
@@ -3612,8 +3620,8 @@
     "height": 844,
     "scenario": "receipt:account:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-798ba4f4-ddd0-4d44-80aa-f8c4773b1672",
-    "expected": "hint-798ba4f4-ddd0-4d44-80aa-f8c4773b1672"
+    "actual": "hint-7e726bf6-eea5-4b85-b469-62824eb4b718",
+    "expected": "hint-7e726bf6-eea5-4b85-b469-62824eb4b718"
   },
   {
     "width": 1280,
@@ -3684,8 +3692,8 @@
     "height": 844,
     "scenario": "receipt:account:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-2eed38cd-d22a-4ea7-8d7d-1205994c49dd",
-    "expected": "continue-2eed38cd-d22a-4ea7-8d7d-1205994c49dd"
+    "actual": "continue-6c6624a3-e41e-493d-987d-407e9f12dad5",
+    "expected": "continue-6c6624a3-e41e-493d-987d-407e9f12dad5"
   },
   {
     "width": 1280,
@@ -3756,8 +3764,8 @@
     "height": 844,
     "scenario": "receipt:account:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-017a1169-0f6e-44d0-a23b-24c614a774cb",
-    "expected": "continue-017a1169-0f6e-44d0-a23b-24c614a774cb"
+    "actual": "continue-ba54337c-636f-43ab-ac24-f68c29fc96a6",
+    "expected": "continue-ba54337c-636f-43ab-ac24-f68c29fc96a6"
   },
   {
     "width": 1280,
@@ -3828,8 +3836,8 @@
     "height": 844,
     "scenario": "receipt:account:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-9e73ea62-620d-41d9-9038-f8280371e21e",
-    "expected": "continue-9e73ea62-620d-41d9-9038-f8280371e21e"
+    "actual": "continue-7d5204d3-26ea-4c4e-80a4-b3230af0d90c",
+    "expected": "continue-7d5204d3-26ea-4c4e-80a4-b3230af0d90c"
   },
   {
     "width": 1280,
@@ -3900,8 +3908,8 @@
     "height": 844,
     "scenario": "receipt:account:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-0bfe7856-63ef-4891-af48-bc75db75c3fd",
-    "expected": "skip-0bfe7856-63ef-4891-af48-bc75db75c3fd"
+    "actual": "skip-1a1877b7-e80b-4893-8c0e-19c48362f4d5",
+    "expected": "skip-1a1877b7-e80b-4893-8c0e-19c48362f4d5"
   },
   {
     "width": 1280,
@@ -3972,8 +3980,8 @@
     "height": 844,
     "scenario": "receipt:account:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-3fae91c2-ba96-4fb0-ad56-850c7a888ba1",
-    "expected": "skip-3fae91c2-ba96-4fb0-ad56-850c7a888ba1"
+    "actual": "skip-8b10adf9-4b66-4bb0-84c7-e443ab3010ad",
+    "expected": "skip-8b10adf9-4b66-4bb0-84c7-e443ab3010ad"
   },
   {
     "width": 1280,
@@ -4044,8 +4052,8 @@
     "height": 844,
     "scenario": "receipt:account:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-082f9bd9-af41-40ff-8c76-ef1a75fe7a03",
-    "expected": "skip-082f9bd9-af41-40ff-8c76-ef1a75fe7a03"
+    "actual": "skip-5db01b2b-1799-4618-bb65-e68511614f1e",
+    "expected": "skip-5db01b2b-1799-4618-bb65-e68511614f1e"
   },
   {
     "width": 1280,
@@ -4116,8 +4124,8 @@
     "height": 844,
     "scenario": "receipt:generation:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-2b9a4244-db1a-4ccd-a1b9-2505cb8da0d9",
-    "expected": "hint-2b9a4244-db1a-4ccd-a1b9-2505cb8da0d9"
+    "actual": "hint-782dff23-a494-4eb7-93c1-4b044d8beb70",
+    "expected": "hint-782dff23-a494-4eb7-93c1-4b044d8beb70"
   },
   {
     "width": 1280,
@@ -4188,8 +4196,8 @@
     "height": 844,
     "scenario": "receipt:generation:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-863e722b-3512-466e-adb1-f780eb09208f",
-    "expected": "hint-863e722b-3512-466e-adb1-f780eb09208f"
+    "actual": "hint-c7497749-b9bc-4200-9808-71b4682f1a7d",
+    "expected": "hint-c7497749-b9bc-4200-9808-71b4682f1a7d"
   },
   {
     "width": 1280,
@@ -4260,8 +4268,8 @@
     "height": 844,
     "scenario": "receipt:generation:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-7fb9686c-3590-4ee7-8a84-e481b6982fce",
-    "expected": "hint-7fb9686c-3590-4ee7-8a84-e481b6982fce"
+    "actual": "hint-fb03e39e-639f-4aff-a377-75d6ef598f5d",
+    "expected": "hint-fb03e39e-639f-4aff-a377-75d6ef598f5d"
   },
   {
     "width": 1280,
@@ -4332,8 +4340,8 @@
     "height": 844,
     "scenario": "receipt:generation:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-8d870a3d-804e-49a7-bc00-ec490b17604c",
-    "expected": "continue-8d870a3d-804e-49a7-bc00-ec490b17604c"
+    "actual": "continue-d9282029-7f18-4cc7-b116-1a6ed63b0e50",
+    "expected": "continue-d9282029-7f18-4cc7-b116-1a6ed63b0e50"
   },
   {
     "width": 1280,
@@ -4404,8 +4412,8 @@
     "height": 844,
     "scenario": "receipt:generation:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-6bb67f43-fdc0-49e6-9b77-a99e0b3249bf",
-    "expected": "continue-6bb67f43-fdc0-49e6-9b77-a99e0b3249bf"
+    "actual": "continue-8257df43-34bf-4f60-b78c-c5f6cb6546f2",
+    "expected": "continue-8257df43-34bf-4f60-b78c-c5f6cb6546f2"
   },
   {
     "width": 1280,
@@ -4476,8 +4484,8 @@
     "height": 844,
     "scenario": "receipt:generation:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-6a7be9b4-1a53-4b46-91af-542e067aa727",
-    "expected": "continue-6a7be9b4-1a53-4b46-91af-542e067aa727"
+    "actual": "continue-0a1e05b1-142e-4299-bdaf-e7c0dbcb457c",
+    "expected": "continue-0a1e05b1-142e-4299-bdaf-e7c0dbcb457c"
   },
   {
     "width": 1280,
@@ -4548,8 +4556,8 @@
     "height": 844,
     "scenario": "receipt:generation:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-9f9a6d2d-a478-45a9-af78-4fa22cd0d04b",
-    "expected": "skip-9f9a6d2d-a478-45a9-af78-4fa22cd0d04b"
+    "actual": "skip-8a94769a-df28-4850-ad30-31673fd35884",
+    "expected": "skip-8a94769a-df28-4850-ad30-31673fd35884"
   },
   {
     "width": 1280,
@@ -4620,8 +4628,8 @@
     "height": 844,
     "scenario": "receipt:generation:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-f6531e07-94d4-4864-a6fe-67f3456fb792",
-    "expected": "skip-f6531e07-94d4-4864-a6fe-67f3456fb792"
+    "actual": "skip-d5162981-751f-4c4e-b4a6-869042c0d310",
+    "expected": "skip-d5162981-751f-4c4e-b4a6-869042c0d310"
   },
   {
     "width": 1280,
@@ -4692,8 +4700,8 @@
     "height": 844,
     "scenario": "receipt:generation:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-3e9e7b86-ae02-4ac0-970a-9383169a1ece",
-    "expected": "skip-3e9e7b86-ae02-4ac0-970a-9383169a1ece"
+    "actual": "skip-e4f1625a-74da-4a19-ab1d-062226ef3e56",
+    "expected": "skip-e4f1625a-74da-4a19-ab1d-062226ef3e56"
   },
   {
     "width": 1280,
@@ -4764,8 +4772,8 @@
     "height": 844,
     "scenario": "receipt:locale:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-faa0a8a9-e4ac-4e97-b88b-4a4d0bd24284",
-    "expected": "hint-faa0a8a9-e4ac-4e97-b88b-4a4d0bd24284"
+    "actual": "hint-0facc840-0f7f-4bba-ac5f-26b320ed1d19",
+    "expected": "hint-0facc840-0f7f-4bba-ac5f-26b320ed1d19"
   },
   {
     "width": 1280,
@@ -4828,8 +4836,8 @@
     "height": 844,
     "scenario": "receipt:locale:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-6f148c73-4f9e-42ca-b6bf-cf292b19b457",
-    "expected": "hint-6f148c73-4f9e-42ca-b6bf-cf292b19b457"
+    "actual": "hint-48ddd751-24e3-403b-be7b-5e3710f37f9f",
+    "expected": "hint-48ddd751-24e3-403b-be7b-5e3710f37f9f"
   },
   {
     "width": 1280,
@@ -4892,8 +4900,8 @@
     "height": 844,
     "scenario": "receipt:locale:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-41ad535b-714b-46fc-9410-11b723541f87",
-    "expected": "hint-41ad535b-714b-46fc-9410-11b723541f87"
+    "actual": "hint-ca65c776-7fb9-4c82-b392-12887908850e",
+    "expected": "hint-ca65c776-7fb9-4c82-b392-12887908850e"
   },
   {
     "width": 1280,
@@ -4956,8 +4964,8 @@
     "height": 844,
     "scenario": "receipt:locale:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-6e5c2289-86f2-4a59-a5e8-c65c29ad9efc",
-    "expected": "continue-6e5c2289-86f2-4a59-a5e8-c65c29ad9efc"
+    "actual": "continue-0549959f-0638-4b07-8d73-3d2cdad1c1d9",
+    "expected": "continue-0549959f-0638-4b07-8d73-3d2cdad1c1d9"
   },
   {
     "width": 1280,
@@ -5020,8 +5028,8 @@
     "height": 844,
     "scenario": "receipt:locale:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-59598307-fbb3-4e9b-919e-bef49882b31d",
-    "expected": "continue-59598307-fbb3-4e9b-919e-bef49882b31d"
+    "actual": "continue-7ebc66e9-b00d-4c4e-a516-91fa617e8c16",
+    "expected": "continue-7ebc66e9-b00d-4c4e-a516-91fa617e8c16"
   },
   {
     "width": 1280,
@@ -5084,8 +5092,8 @@
     "height": 844,
     "scenario": "receipt:locale:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-85afbf9a-ce3e-4a64-b916-c467911075cf",
-    "expected": "continue-85afbf9a-ce3e-4a64-b916-c467911075cf"
+    "actual": "continue-74a9906b-2937-4604-a081-4d3bcf20951e",
+    "expected": "continue-74a9906b-2937-4604-a081-4d3bcf20951e"
   },
   {
     "width": 1280,
@@ -5148,8 +5156,8 @@
     "height": 844,
     "scenario": "receipt:locale:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-e4be74e6-2e26-447f-86af-3b476cc5ce1b",
-    "expected": "skip-e4be74e6-2e26-447f-86af-3b476cc5ce1b"
+    "actual": "skip-94d9eb5a-c430-438b-bdb1-cda9d717441c",
+    "expected": "skip-94d9eb5a-c430-438b-bdb1-cda9d717441c"
   },
   {
     "width": 1280,
@@ -5212,8 +5220,8 @@
     "height": 844,
     "scenario": "receipt:locale:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-faabf291-ed72-48fd-981e-cd92192779b7",
-    "expected": "skip-faabf291-ed72-48fd-981e-cd92192779b7"
+    "actual": "skip-5882def1-f8e3-4293-99a8-0aca71f44e46",
+    "expected": "skip-5882def1-f8e3-4293-99a8-0aca71f44e46"
   },
   {
     "width": 1280,
@@ -5276,8 +5284,8 @@
     "height": 844,
     "scenario": "receipt:locale:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-8280daab-0a02-40a2-9173-946267285b72",
-    "expected": "skip-8280daab-0a02-40a2-9173-946267285b72"
+    "actual": "skip-58b668d1-71d3-47ee-a0c0-0dfbd365f210",
+    "expected": "skip-58b668d1-71d3-47ee-a0c0-0dfbd365f210"
   },
   {
     "width": 1280,
@@ -5340,8 +5348,8 @@
     "height": 844,
     "scenario": "receipt:logout:hint:success",
     "name": "old action remains durable in original scope",
-    "actual": "hint-dee216b6-3ac0-40f7-b08e-f58b3357b5f1",
-    "expected": "hint-dee216b6-3ac0-40f7-b08e-f58b3357b5f1"
+    "actual": "hint-f269fa4d-6b8c-4ca9-94da-862d4e895067",
+    "expected": "hint-f269fa4d-6b8c-4ca9-94da-862d4e895067"
   },
   {
     "width": 1280,
@@ -5404,8 +5412,8 @@
     "height": 844,
     "scenario": "receipt:logout:hint:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "hint-41781a8c-0d5d-4f8b-bdaf-8dde6d750fd6",
-    "expected": "hint-41781a8c-0d5d-4f8b-bdaf-8dde6d750fd6"
+    "actual": "hint-f4fd6c9b-2d9d-411c-833b-251758b5d313",
+    "expected": "hint-f4fd6c9b-2d9d-411c-833b-251758b5d313"
   },
   {
     "width": 1280,
@@ -5468,8 +5476,8 @@
     "height": 844,
     "scenario": "receipt:logout:hint:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "hint-2f642f4d-d62b-489c-8956-1de66e596562",
-    "expected": "hint-2f642f4d-d62b-489c-8956-1de66e596562"
+    "actual": "hint-328073e1-ed84-4b78-84c5-3407cda2a037",
+    "expected": "hint-328073e1-ed84-4b78-84c5-3407cda2a037"
   },
   {
     "width": 1280,
@@ -5532,8 +5540,8 @@
     "height": 844,
     "scenario": "receipt:logout:continue:success",
     "name": "old action remains durable in original scope",
-    "actual": "continue-a73c2f90-d146-4c7b-92bb-3fadb478ed5d",
-    "expected": "continue-a73c2f90-d146-4c7b-92bb-3fadb478ed5d"
+    "actual": "continue-bb6d89a4-143a-4032-b4e8-305e58d33689",
+    "expected": "continue-bb6d89a4-143a-4032-b4e8-305e58d33689"
   },
   {
     "width": 1280,
@@ -5596,8 +5604,8 @@
     "height": 844,
     "scenario": "receipt:logout:continue:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "continue-7f5a6b6e-3d37-409e-a79f-dbe4c9c81f24",
-    "expected": "continue-7f5a6b6e-3d37-409e-a79f-dbe4c9c81f24"
+    "actual": "continue-71e98d4a-2bbb-4a12-8b22-0ac85319f7be",
+    "expected": "continue-71e98d4a-2bbb-4a12-8b22-0ac85319f7be"
   },
   {
     "width": 1280,
@@ -5660,8 +5668,8 @@
     "height": 844,
     "scenario": "receipt:logout:continue:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "continue-ad4ace9d-309d-4bf4-9bf2-b13827a500f9",
-    "expected": "continue-ad4ace9d-309d-4bf4-9bf2-b13827a500f9"
+    "actual": "continue-d7dab015-15c4-42f4-acb7-9a929b92f337",
+    "expected": "continue-d7dab015-15c4-42f4-acb7-9a929b92f337"
   },
   {
     "width": 1280,
@@ -5724,8 +5732,8 @@
     "height": 844,
     "scenario": "receipt:logout:skip:success",
     "name": "old action remains durable in original scope",
-    "actual": "skip-7b4acf77-8530-4360-b5bc-bc7d1b1ed6c8",
-    "expected": "skip-7b4acf77-8530-4360-b5bc-bc7d1b1ed6c8"
+    "actual": "skip-fc737c4a-825d-4f67-93b5-9aa1a8e4a578",
+    "expected": "skip-fc737c4a-825d-4f67-93b5-9aa1a8e4a578"
   },
   {
     "width": 1280,
@@ -5788,8 +5796,8 @@
     "height": 844,
     "scenario": "receipt:logout:skip:rejected",
     "name": "old action remains durable in original scope",
-    "actual": "skip-82c9d0a7-0a32-4c3c-bf2e-502fa1f5152e",
-    "expected": "skip-82c9d0a7-0a32-4c3c-bf2e-502fa1f5152e"
+    "actual": "skip-5417a3e3-79be-4450-b416-5578066d78af",
+    "expected": "skip-5417a3e3-79be-4450-b416-5578066d78af"
   },
   {
     "width": 1280,
@@ -5852,8 +5860,8 @@
     "height": 844,
     "scenario": "receipt:logout:skip:retryable",
     "name": "old action remains durable in original scope",
-    "actual": "skip-e8bf8da5-45b0-4ace-98c4-03b236ca7b3a",
-    "expected": "skip-e8bf8da5-45b0-4ace-98c4-03b236ca7b3a"
+    "actual": "skip-e86c8453-54ac-4afb-afc0-51e7b079cc0a",
+    "expected": "skip-e86c8453-54ac-4afb-afc0-51e7b079cc0a"
   },
   {
     "width": 1280,
@@ -5924,8 +5932,8 @@
     "height": 844,
     "scenario": "timer:unmount:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-aa0992ec-f8e4-4487-9d0c-2787e53fcc8a",
-    "expected": "skip-aa0992ec-f8e4-4487-9d0c-2787e53fcc8a"
+    "actual": "skip-9ef4ab0f-3b80-4bca-b6b4-065943ce5ad0",
+    "expected": "skip-9ef4ab0f-3b80-4bca-b6b4-065943ce5ad0"
   },
   {
     "width": 1280,
@@ -5972,8 +5980,8 @@
     "height": 844,
     "scenario": "timer:account:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-8357d6ad-a951-498c-8607-81e5ee2a135c",
-    "expected": "skip-8357d6ad-a951-498c-8607-81e5ee2a135c"
+    "actual": "skip-f8127120-5a3c-4aa1-a873-6c3b24a7cf4e",
+    "expected": "skip-f8127120-5a3c-4aa1-a873-6c3b24a7cf4e"
   },
   {
     "width": 1280,
@@ -6020,8 +6028,8 @@
     "height": 844,
     "scenario": "timer:generation:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-cdb3dca8-4c78-4b0f-8f92-f34781277963",
-    "expected": "skip-cdb3dca8-4c78-4b0f-8f92-f34781277963"
+    "actual": "skip-fd2a8a28-c5b8-4e12-af2e-f8e8ed2fba6d",
+    "expected": "skip-fd2a8a28-c5b8-4e12-af2e-f8e8ed2fba6d"
   },
   {
     "width": 1280,
@@ -6068,8 +6076,8 @@
     "height": 844,
     "scenario": "timer:locale:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-3c8ace53-0a15-42a8-ad8d-81f54430224a",
-    "expected": "skip-3c8ace53-0a15-42a8-ad8d-81f54430224a"
+    "actual": "skip-cf3d5853-1025-4195-9049-8a1a6b10600f",
+    "expected": "skip-cf3d5853-1025-4195-9049-8a1a6b10600f"
   },
   {
     "width": 1280,
@@ -6116,8 +6124,8 @@
     "height": 844,
     "scenario": "timer:logout:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-7bf52801-c54c-421d-8f4b-1ca69045805f",
-    "expected": "skip-7bf52801-c54c-421d-8f4b-1ca69045805f"
+    "actual": "skip-bf6c4730-75e9-4de0-8228-d6f3e158efd6",
+    "expected": "skip-bf6c4730-75e9-4de0-8228-d6f3e158efd6"
   },
   {
     "width": 1280,
@@ -6164,8 +6172,8 @@
     "height": 844,
     "scenario": "timer:aba:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-758122cd-314f-4eca-8b91-f49cf75a5e3d",
-    "expected": "skip-758122cd-314f-4eca-8b91-f49cf75a5e3d"
+    "actual": "skip-dc7c0324-b980-4f50-bfbc-485fb9c698c4",
+    "expected": "skip-dc7c0324-b980-4f50-bfbc-485fb9c698c4"
   },
   {
     "width": 1280,
@@ -6212,8 +6220,8 @@
     "height": 844,
     "scenario": "timer:profile:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-e84d3a23-59d0-40b8-92be-12b0426487e8",
-    "expected": "skip-e84d3a23-59d0-40b8-92be-12b0426487e8"
+    "actual": "skip-9a7a75d0-4ade-435e-a970-06dd5348188c",
+    "expected": "skip-9a7a75d0-4ade-435e-a970-06dd5348188c"
   },
   {
     "width": 1280,
@@ -6260,8 +6268,8 @@
     "height": 844,
     "scenario": "timer:question:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-04d973a9-9b20-4589-8fa9-75ff87a9b300",
-    "expected": "skip-04d973a9-9b20-4589-8fa9-75ff87a9b300"
+    "actual": "skip-916ba424-fe2d-4d2f-a721-c8b3a9dbfb65",
+    "expected": "skip-916ba424-fe2d-4d2f-a721-c8b3a9dbfb65"
   },
   {
     "width": 1280,
@@ -6308,8 +6316,8 @@
     "height": 844,
     "scenario": "timer:none:skip:interval",
     "name": "journal survives timer retirement",
-    "actual": "skip-008bb1ba-7095-47c7-b6cc-f60ad7089b73",
-    "expected": "skip-008bb1ba-7095-47c7-b6cc-f60ad7089b73"
+    "actual": "skip-dfda72b7-4d0f-41be-88e9-1e1a2f5bccff",
+    "expected": "skip-dfda72b7-4d0f-41be-88e9-1e1a2f5bccff"
   },
   {
     "width": 1280,
@@ -6364,8 +6372,8 @@
     "height": 844,
     "scenario": "timer:unmount:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-a46080f9-54f7-4e5e-ac6a-0fd8d3c29251",
-    "expected": "guess-a46080f9-54f7-4e5e-ac6a-0fd8d3c29251"
+    "actual": "guess-1c79dbcd-c24d-4a29-8832-d9c06520dc0a",
+    "expected": "guess-1c79dbcd-c24d-4a29-8832-d9c06520dc0a"
   },
   {
     "width": 1280,
@@ -6412,8 +6420,8 @@
     "height": 844,
     "scenario": "timer:account:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-c73d0516-596a-42ba-b02a-52537f4e84f3",
-    "expected": "guess-c73d0516-596a-42ba-b02a-52537f4e84f3"
+    "actual": "guess-3d8fc620-5ca8-4f0b-82a0-d3673b458b17",
+    "expected": "guess-3d8fc620-5ca8-4f0b-82a0-d3673b458b17"
   },
   {
     "width": 1280,
@@ -6460,8 +6468,8 @@
     "height": 844,
     "scenario": "timer:generation:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-7ab4d0a9-2fbe-4496-9404-c5a92c7c4000",
-    "expected": "guess-7ab4d0a9-2fbe-4496-9404-c5a92c7c4000"
+    "actual": "guess-761bdb0d-4354-4af6-b8db-ef2c25612ee3",
+    "expected": "guess-761bdb0d-4354-4af6-b8db-ef2c25612ee3"
   },
   {
     "width": 1280,
@@ -6508,8 +6516,8 @@
     "height": 844,
     "scenario": "timer:locale:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-290ee46e-7d9f-4cb1-9aca-0bd6416f87bd",
-    "expected": "guess-290ee46e-7d9f-4cb1-9aca-0bd6416f87bd"
+    "actual": "guess-646daa56-8e3e-4d44-ab54-e5089c4846a2",
+    "expected": "guess-646daa56-8e3e-4d44-ab54-e5089c4846a2"
   },
   {
     "width": 1280,
@@ -6556,8 +6564,8 @@
     "height": 844,
     "scenario": "timer:logout:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-59f9f0b8-2672-45d9-9c1d-e8929e2565d0",
-    "expected": "guess-59f9f0b8-2672-45d9-9c1d-e8929e2565d0"
+    "actual": "guess-829c7495-4a26-45cc-896d-d4094bea368a",
+    "expected": "guess-829c7495-4a26-45cc-896d-d4094bea368a"
   },
   {
     "width": 1280,
@@ -6604,8 +6612,8 @@
     "height": 844,
     "scenario": "timer:aba:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-8db1f2b3-cccc-4e6d-b7bf-2c378c784fef",
-    "expected": "guess-8db1f2b3-cccc-4e6d-b7bf-2c378c784fef"
+    "actual": "guess-9ada3099-b60f-4fe9-9a1b-802b8f9a304a",
+    "expected": "guess-9ada3099-b60f-4fe9-9a1b-802b8f9a304a"
   },
   {
     "width": 1280,
@@ -6652,8 +6660,8 @@
     "height": 844,
     "scenario": "timer:profile:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-34f91fa4-ea26-4f37-99b1-15565dcd84e0",
-    "expected": "guess-34f91fa4-ea26-4f37-99b1-15565dcd84e0"
+    "actual": "guess-da24529e-7302-4a3a-9725-9f3ead0d150f",
+    "expected": "guess-da24529e-7302-4a3a-9725-9f3ead0d150f"
   },
   {
     "width": 1280,
@@ -6700,8 +6708,8 @@
     "height": 844,
     "scenario": "timer:question:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-9c28dc0d-ac5d-44fb-a998-63f1a8e28843",
-    "expected": "guess-9c28dc0d-ac5d-44fb-a998-63f1a8e28843"
+    "actual": "guess-67cfb6bd-efa2-41d7-bb40-d91d4f458abd",
+    "expected": "guess-67cfb6bd-efa2-41d7-bb40-d91d4f458abd"
   },
   {
     "width": 1280,
@@ -6748,8 +6756,8 @@
     "height": 844,
     "scenario": "timer:none:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-ab0eaa41-11ba-4707-90d2-d92c4946d266",
-    "expected": "guess-ab0eaa41-11ba-4707-90d2-d92c4946d266"
+    "actual": "guess-e16667c5-fcdc-4599-a61c-31b00c1f471c",
+    "expected": "guess-e16667c5-fcdc-4599-a61c-31b00c1f471c"
   },
   {
     "width": 1280,
@@ -6804,8 +6812,8 @@
     "height": 844,
     "scenario": "timer:replaced:guess:retry",
     "name": "journal survives timer retirement",
-    "actual": "guess-de2bb57b-3103-4fa1-a810-f07580e4ebdb",
-    "expected": "guess-de2bb57b-3103-4fa1-a810-f07580e4ebdb"
+    "actual": "guess-09d53d07-45d7-43b7-82f8-aaecef7937f0",
+    "expected": "guess-09d53d07-45d7-43b7-82f8-aaecef7937f0"
   },
   {
     "width": 1280,
@@ -6835,6 +6843,14 @@
     "width": 1280,
     "height": 844,
     "scenario": "cold:none:skip:restore",
+    "name": "cold unmount retires the original interval",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "cold:none:skip:restore",
     "name": "Strict Mode installs a live replacement interval",
     "actual": false,
     "expected": false
@@ -6844,24 +6860,24 @@
     "height": 844,
     "scenario": "cold:none:skip:restore",
     "name": "only the live registered callback owns delivery",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,
     "height": 844,
     "scenario": "cold:none:skip:restore",
     "name": "only the live registered callback owns lease acquisition",
-    "actual": 1,
-    "expected": 1
+    "actual": 0,
+    "expected": 0
   },
   {
     "width": 1280,
     "height": 844,
     "scenario": "cold:none:skip:restore",
     "name": "restored active interval retransmits original request",
-    "actual": 0,
-    "expected": 0
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,

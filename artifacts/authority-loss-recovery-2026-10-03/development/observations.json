@@ -68,6 +68,15 @@
     "provider": "missing",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -332,6 +341,15 @@
     "provider": "missing",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -587,8 +605,63 @@
     "provider": "missing",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -842,6 +915,15 @@
     "provider": "stale",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "stale",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -1106,6 +1188,15 @@
     "provider": "stale",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "stale",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -1361,8 +1452,63 @@
     "provider": "stale",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -1616,6 +1762,15 @@
     "provider": "foreign",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "foreign",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -1880,6 +2035,15 @@
     "provider": "foreign",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "foreign",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -2135,8 +2299,63 @@
     "provider": "foreign",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -2390,6 +2609,15 @@
     "provider": "forged",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "forged",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -2654,6 +2882,15 @@
     "provider": "forged",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "forged",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -2909,8 +3146,63 @@
     "provider": "forged",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -3164,6 +3456,15 @@
     "provider": "missing",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "missing",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -3428,6 +3729,15 @@
     "provider": "missing",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "missing",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -3683,8 +3993,63 @@
     "provider": "missing",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -3938,6 +4303,15 @@
     "provider": "stale",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "stale",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -4202,6 +4576,15 @@
     "provider": "stale",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "stale",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -4457,8 +4840,63 @@
     "provider": "stale",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -4712,6 +5150,15 @@
     "provider": "foreign",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -4976,6 +5423,15 @@
     "provider": "foreign",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -5231,8 +5687,63 @@
     "provider": "foreign",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -5486,6 +5997,15 @@
     "provider": "forged",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "forged",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -5750,6 +6270,15 @@
     "provider": "forged",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "forged",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -6005,8 +6534,63 @@
     "provider": "forged",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 390,
@@ -6260,6 +6844,15 @@
     "provider": "missing",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "missing",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -6524,6 +7117,15 @@
     "provider": "missing",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "missing",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -6779,8 +7381,63 @@
     "provider": "missing",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "missing",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -7034,6 +7691,15 @@
     "provider": "stale",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "stale",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -7298,6 +7964,15 @@
     "provider": "stale",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "stale",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -7553,8 +8228,63 @@
     "provider": "stale",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "stale",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -7808,6 +8538,15 @@
     "provider": "foreign",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -8072,6 +8811,15 @@
     "provider": "foreign",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -8327,8 +9075,63 @@
     "provider": "foreign",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "foreign",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,
@@ -8582,6 +9385,15 @@
     "provider": "forged",
     "journal": "none",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "forged",
+    "journal": "none",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -8846,6 +9658,15 @@
     "provider": "forged",
     "journal": "queued",
     "name": "recovery does not charge Continue again",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "forged",
+    "journal": "queued",
+    "name": "recovery does not replay a paid request without a journal",
     "actual": [],
     "expected": []
   },
@@ -9101,8 +9922,63 @@
     "provider": "forged",
     "journal": "paid",
     "name": "recovery does not charge Continue again",
-    "actual": [],
-    "expected": []
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "paid recovery replays only the original request",
+    "actual": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ],
+    "expected": [
+      [
+        "seed-continue",
+        "classic-fake-1",
+        "00000000-0000-4000-8000-000000000001",
+        "classic",
+        "continue"
+      ]
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "terminal proof retains the unresolved original paid receipt",
+    "actual": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ],
+    "expected": [
+      {
+        "queue": 0,
+        "successors": 0,
+        "requestId": "seed-continue"
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "provider": "forged",
+    "journal": "paid",
+    "name": "paid receipt replay preserves the original debit count",
+    "actual": 1,
+    "expected": 1
   },
   {
     "width": 1280,

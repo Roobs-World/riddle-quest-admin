@@ -95,7 +95,10 @@ describe("machine-only race translation validation", () => {
     /** Provides short behavior. */
     const short = createBundle();
     short.riddles.pop();
-    expect(() => createRaceTranslationPlan(short, reviewedEnglish)).toThrow();
+    /** Translation plan missing one canonical question. */
+    const incomplete = createRaceTranslationPlan(short, reviewedEnglish);
+    expect(incomplete.valid).toBe(false);
+    expect(incomplete.issues.some((issue) => issue.code === "canonical_set")).toBe(true);
   });
 
   it("rejects untranslated source copies and clues without the locale's required script", () => {
@@ -209,6 +212,27 @@ describe("machine-only race translation validation", () => {
     expect(duplicate.issues).toEqual(
       expect.arrayContaining([`${bundles[0].locale}:duplicate-bundle:2`, "corpus-count:2880:expected-2700"]),
     );
+  });
+
+  it("requires every locale to match the smaller canonical question set", () => {
+    /** Medium history question removed from the canonical fixture. */
+    const removed = reviewedEnglish.riddles.find((riddle) => riddle.categoryId === "history" && riddle.difficultyBand === "medium");
+    if (!removed) throw new Error("Missing medium history fixture");
+    /** Canonical source containing the smaller reviewed question set. */
+    const source = {...reviewedEnglish, riddles: reviewedEnglish.riddles.filter((riddle) => riddle.canonicalRiddleId !== removed.canonicalRiddleId)};
+    /** Locale bundle reduced to the same canonical set. */
+    const bundle = createBundle();
+    bundle.riddles = bundle.riddles.filter((riddle) => riddle.canonicalRiddleId !== removed.canonicalRiddleId);
+    expect(createRaceTranslationPlan(bundle, source).valid).toBe(true);
+    /** Whole-corpus plan for the reduced source and one locale bundle. */
+    const matrix = createRaceTranslationMatrixPlan([bundle], source);
+    /** Number of non-English locales required in the matrix. */
+    const localeCount = RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en").length;
+    expect(matrix.issues).toContain(`corpus-count:179:expected-${179 * localeCount}`);
+    /** Unchanged locale bundle checked against the reduced canonical source. */
+    const stale = createRaceTranslationPlan(createBundle(), source);
+    expect(stale.valid).toBe(false);
+    expect(stale.issues.some((issue) => issue.code === "canonical_set")).toBe(true);
   });
 
   it("propagates per-locale quality failures into the whole-corpus audit", () => {

@@ -1,0 +1,74 @@
+✔ each target rejects every other provider module, including resolved aliases and dynamic imports (0.868866ms)
+✔ transitive SDK packages and tooling fail closed on every artifact (0.24273ms)
+✔ real bundler rejects aliased and lazy provider imports plus SDK packages before minification (5834.571204ms)
+✔ concurrent custom outputs retain separate complete inventories and preserve canonical release evidence (806.077622ms)
+✔ later generation/write failures and generate-only builds cannot leave successful evidence (3169.01287ms)
+✔ published inventory reflects final chunk bytes after private map cleanup (439.036176ms)
+✔ release evidence root is shared by builds and verification without changing canonical source inventories (0.399827ms)
+✔ frozen license inventory preserves exact notices and fails closed without requerying the package store (806.587838ms)
+✔ GameSnacks packaging uses relocated audited evidence and rejects changed or untracked runtime files (163.067241ms)
+✔ release refresh preserves newer measurements and removes mismatched game analytics (25.054184ms)
+✔ a concurrent collection causes a fresh read rather than overwriting its measurements (0.38538ms)
+✔ rejects all-skipped named scenarios despite a successful process exit (0.701259ms)
+✔ requires a named test summary even when unrelated build output says passed (0.092515ms)
+✔ accepts real named assertions with optional skipped tests and ANSI color (1.470786ms)
+✔ supports the split Jest pattern option and preserves non-pattern commands (0.118314ms)
+✔ rejects a surviving assertion when another named scenario disappeared (0.130677ms)
+✔ accepts every explicit alternative without splitting regex groups or escaped pipes (0.134185ms)
+✔ summary-only receipts cannot prove named assertion coverage (0.07345ms)
+✔ captures structured passed assertions and removes its temporary report (10.800762ms)
+✔ reuses exact successful current-source checks with unchanged artifact bytes (9.173188ms)
+✔ rejects a stale source or revision (3.597155ms)
+✔ rejects missing, failed, different and duplicate commands (2.401198ms)
+✔ rejects a modified log or path outside the check evidence directory (1.517524ms)
+✔ rejects missing or modified artifact snapshots (1.209642ms)
+✔ revalidates every named scenario from the hashed structured assertion log (1.897745ms)
+✔ binds a regenerated artifact to its declared producer rather than an earlier type check (2.035386ms)
+✔ rejects a producer binding that is outside the required task checks (0.673496ms)
+✔ requires all check snapshots when an artifact has no explicit producer (1.040551ms)
+✔ a selected command retains artifact evidence for tasks using another alias (131.982934ms)
+✔ verified Facebook/itch completion creates reviewed rows and preserves external status (1.460727ms)
+✔ stale, incomplete, failed and duplicate verification cannot claim completion (0.180341ms)
+✔ publication replays safely and retries conflicts against current accepted head (0.311871ms)
+✔ refresh failure remains durable, visible and retryable without losing local evidence (15.399293ms)
+✔ binds tracked, untracked and deleted source while excluding derived evidence (33.578933ms)
+✔ hashes link identity, tolerates missing targets and never follows external directories (11.654368ms)
+✔ large excluded archive inventories cannot exhaust Git source output (251.22538ms)
+Prepared itch HTML5 handoff build-itch.zip (193ad90bf8f63f225eeae90736ea3f8ac1a45a13c3a7f3c94eb01891cfb75862).
+Prepared newgrounds HTML5 handoff build-newgrounds.zip (193ad90bf8f63f225eeae90736ea3f8ac1a45a13c3a7f3c94eb01891cfb75862).
+✔ one preparation creates many verified handoffs and supports a newly registered destination (24.628457ms)
+Prepared itch HTML5 handoff build-itch.zip (193ad90bf8f63f225eeae90736ea3f8ac1a45a13c3a7f3c94eb01891cfb75862).
+Prepared itch HTML5 handoff build-itch.zip (193ad90bf8f63f225eeae90736ea3f8ac1a45a13c3a7f3c94eb01891cfb75862).
+✔ single destination prepares fresh and changed source cannot be reused (9.529924ms)
+✔ failed preparation removes stale evidence and never writes a destination receipt (1.164316ms)
+✔ distribution targets have distinct immutable artifact names and honest release boundaries (1.627143ms)
+✔ the public interface exposes one isolated canonical command per release target (1.205804ms)
+✔ the root package exposes target releases and one combined release command (6.702327ms)
+✔ target plans preserve distinct external effects (0.343681ms)
+✔ standalone web and PWA destinations cannot dispatch a build through either release interface (0.854569ms)
+✔ the combined release verifies once before running every adapter (5.235758ms)
+✔ the Facebook adapter performs only the local preflight and immutable handoff (0.743839ms)
+✔ dry runs describe a target without invoking its adapter (0.317712ms)
+✔ execution delegates once, plays the produced artifact, then reports the platform handoff (0.420267ms)
+✔ a failed artifact gameplay gate never reports a handoff as ready (0.243211ms)
+✔ the canonical Jest adapter refuses ambient overrides of its fixed activation policy (0.172918ms)
+✔ the CLI rejects extra stages and supports a read-only plan (43.273408ms)
+✔ formatted plans always disclose command, effect, handoff, and runbook (0.115018ms)
+✔ the process adapter forwards termination and awaits child teardown (70.269091ms)
+✔ production verification uses the canonical release E2E gate without downgrading content to a fixture (0.517931ms)
+✔ backend production coverage retains the unit thresholds and includes the emulator paths (8.575856ms)
+✔ only matching successful browser evidence verifies current archive (0.456064ms)
+✔ a mismatched archive or manifest cannot claim readiness (0.239735ms)
+✔ verified live receipt updates status, links and action queue (0.980307ms)
+✔ live and submitted outcomes require a server receipt and live requires a listing (0.255304ms)
+✔ refreshing a historical live PWA receipt preserves evidence without reopening build or submission work (0.723891ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11296.082305
+
+$ node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs scripts/monitoring/publish-release-status.test.mjs

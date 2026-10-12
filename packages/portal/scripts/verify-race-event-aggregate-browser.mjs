@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 
-// Verify real multiplayer paid-action rejection and resume recovery after event progress beyond its containing run.
+// Verify retained recorded-race paid-action rejection and resume recovery using the current controller and view.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/race-event-aggregate-"));
@@ -19,7 +19,7 @@ import {createRoot} from 'react-dom/client';
 import {flushSync} from 'react-dom';
 import {RACE_RULES, RaceRunViewSchema} from '@qwordly/core/race';
 import {RaceSession} from ${JSON.stringify(path.join(root, "src/play/race/RaceSession.ts"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
 const catalog=createFakeRaceServices();
 for(const method of ['getItem','setItem','removeItem']) Storage.prototype[method]=()=>{throw new DOMException('Storage denied','SecurityError');};
@@ -96,7 +96,7 @@ try {
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>command.type==='game:resumeRace').length),1);
     assert.deepEqual(errors,[]);
     await page.screenshot({path:path.join(output,`${operation}-${corruption}-${viewport.width}.png`),fullPage:true});
-    console.log(`Event aggregate UI passed: ${viewport.width}px ${operation} ${corruption}; contradictory event progress rolls back, one resume recovers without resending the paid action.`);
+    console.log(`Retained event aggregate UI passed: ${viewport.width}px ${operation} ${corruption}; contradictory event progress rolls back, one resume recovers without resending the paid action.`);
     await context.close();
   }
 } finally {

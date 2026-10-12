@@ -17,6 +17,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 import {RACE_RULES} from '@qwordly/core/race';
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root,'src/play/race/logic/racePresentation.ts'))};
+import {RetainedRaceHarness} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {GameFrameApp} from ${JSON.stringify(path.join(root,'src/play/GameFrameApp.tsx'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
@@ -36,7 +37,7 @@ window.addEventListener('riddle-quest:game-to-host',event=>{const message=event.
  if(message.type==='game:getRaceOutcome')host({type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceOutcome',ok:true,data:outcome}});
  if(message.type==='game:getRaceEntry')host({type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceEntry',ok:true,data:{status:'ready',serverNowMs:Date.now(),challenge:{challengeId:'challenge-1',categoryId:'mixed',locale:'en',rulesVersion:'race10_v1',targetCorrect:10,adjustedTimeToBeatMs:60000,creator:{displayName:'Nova'},status:'active',expiresAtMs:Date.now()+60000}}}});
 });
-createRoot(document.getElementById('root')).render(<GameFrameApp localBridge raceFeatureEnabled raceOwnerId={owner} initialRaceChallengeId={mode==='onboarding'?'challenge-1':undefined} initialRaceLobby={mode==='reward'}/>);
+createRoot(document.getElementById('root')).render(<GameFrameApp raceSurface={RetainedRaceHarness} localBridge raceFeatureEnabled raceOwnerId={owner} initialRaceChallengeId={mode==='onboarding'?'challenge-1':undefined} initialRaceLobby={mode==='reward'}/>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
 await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOptions: {jsx: "react-jsx"}}));

@@ -5,11 +5,14 @@ import {clueContainsLiteralAnswer} from "../riddles/riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 
-/** Required number of eligible riddles in each locale and race category pool. */
+/** Maximum number of eligible riddles in each locale and race category pool. */
 export const RACE_POOL_SIZE = 30;
 
 /** Number of riddles selected from each difficulty band for a race deck. */
 export const RACE_DECK_DIFFICULTY_COUNTS = {easy: 10, medium: 5, hard: 0} as const;
+
+/** Minimum pool size needed to supply the unchanged race deck. */
+export const RACE_MIN_POOL_SIZE = Object.values(RACE_DECK_DIFFICULTY_COUNTS).reduce<number>((total, count) => total + count, 0);
 
 /** Stable machine-readable reason for a race content validation failure. */
 export type RacePoolIssueCode =
@@ -81,7 +84,9 @@ export function validateRacePool(
   },
 ): RacePoolValidation {
   /** Provides pool size behavior. */
-  const poolSize = options.poolSize ?? RACE_POOL_SIZE;
+  const maximumPoolSize = options.poolSize ?? RACE_POOL_SIZE;
+  /** Minimum accepted pool size, or the explicit fixed-size override. */
+  const minimumPoolSize = options.poolSize ?? RACE_MIN_POOL_SIZE;
   /** Provides locale records behavior. */
   const localeRecords = records.filter(
     (record) =>
@@ -195,17 +200,17 @@ export function validateRacePool(
       });
     }
   }
-  if (localeRecords.length < poolSize) {
+  if (localeRecords.length < minimumPoolSize) {
     issues.push({
       code: "insufficient_pool",
-      message: `Pool has ${localeRecords.length} eligible riddles; exactly ${poolSize} required`,
+      message: `Pool has ${localeRecords.length} eligible riddles; at least ${minimumPoolSize} required`,
       documentPaths: localeRecords.map((record) => record.documentPath),
     });
   }
-  if (localeRecords.length > poolSize) {
+  if (localeRecords.length > maximumPoolSize) {
     issues.push({
       code: "oversized_pool",
-      message: `Pool has ${localeRecords.length} eligible riddles; exactly ${poolSize} required`,
+      message: `Pool has ${localeRecords.length} eligible riddles; at most ${maximumPoolSize} allowed`,
       documentPaths: localeRecords.map((record) => record.documentPath),
     });
   }
@@ -227,7 +232,7 @@ export function validateRacePool(
   for (const [difficulty, count] of Object.entries(difficultyCounts) as Array<[RaceDifficultyBand, number]>) {
     /** Required minimum riddles for this difficulty band. */
     const minimum = RACE_DECK_DIFFICULTY_COUNTS[difficulty];
-    if (localeRecords.length === poolSize && count < minimum) {
+    if (localeRecords.length >= minimumPoolSize && localeRecords.length <= maximumPoolSize && count < minimum) {
       issues.push({
         code: "difficulty_imbalance",
         message: `${difficulty} has ${count} riddles; at least ${minimum} required`,

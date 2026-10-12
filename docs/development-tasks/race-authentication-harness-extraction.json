@@ -651,7 +651,7 @@
         "jest.config.cjs",
         "--runInBand",
         "src/jest/__tests__/authentication.jest-playwright.test.ts",
-        "--testNamePattern=reopens a completed recipient|opens a public creator|consumes an unavailable challenge|refreshes subscription changes|starts a guest through signed"
+        "--testNamePattern=opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed"
       ]
     },
     {
@@ -1124,45 +1124,73 @@
         "test",
         "--runInBand",
         "src/jest/__tests__/authentication.jest-playwright.test.ts",
-        "--testNamePattern=starts a guest through signed identity|renders typed invitation waiting|recovers a waiting invitation|reopens a completed recipient|opens a public creator entry|consumes an unavailable challenge"
+        "--testNamePattern=starts a guest through signed identity|opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge"
+      ]
+    },
+    {
+      "id": "retained-authentication-entry-paths",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "exec",
+        "jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+        "--testNamePattern=renders typed invitation waiting|recovers a waiting invitation|consumes an unavailable challenge|reopens a completed recipient|opens a public creator entry|retains public recipient acceptance|suspends typed invitation polling"
       ]
     }
   ],
   "artifacts": [
     {
       "target": "jest",
-      "file": "artifacts/target-dependencies/jest.json"
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "facebook",
-      "file": "artifacts/target-dependencies/facebook.json"
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "reddit",
-      "file": "artifacts/target-dependencies/reddit.json"
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "youtube",
-      "file": "artifacts/target-dependencies/youtube.json"
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "netflix",
-      "file": "artifacts/target-dependencies/netflix.json"
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "yahoo",
-      "file": "artifacts/target-dependencies/yahoo.json"
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-platform-builds"
     },
     {
       "target": "gamesnacks",
-      "file": "artifacts/target-dependencies/gamesnacks.json"
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-platform-builds"
     }
   ],
   "remainingGates": [
     "The ongoing multiplayer edge-case and reliability audit remains active.",
     "Shared documentation must pass and the shared workspace must remain stable for the complete guarded dashboard verification.",
     "Jest activation is authorized; publication, review submission and listing visibility remain on hold. Firebase deployment is authorized but this batch does not deploy.",
-    "The unavailable-Daily authentication browser scenario fails identically with the original and extracted harness; diagnose before claiming full browser completion."
+    "Verify the unavailable-Daily authentication browser scenario on the release source using the repair recorded in race-authentication-daily-gate. Retained passing evidence is historical; current-source browser completion still requires fresh evidence."
   ],
-  "nextAction": "Let the concurrent full-pathway audit finish, then resolve shared documentation and file-size gates and execute complete guarded verification against stable sources before recording the automatic dashboard receipt."
+  "nextAction": "Let the concurrent full-pathway audit finish, then resolve shared documentation and file-size gates and execute complete guarded verification against stable sources before recording the automatic dashboard receipt.",
+  "historicalRemainingGates": [
+    "The unavailable-Daily authentication browser scenario fails identically with the original and extracted harness; diagnose before claiming full browser completion."
+  ]
 }

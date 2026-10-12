@@ -5,7 +5,7 @@
         "component": "game_frame",
         "operation": "render_interactive_surface",
         "surface": "modal",
-        "componentStack": "\n    at GameModalView (http://127.0.0.1:34613/assets/GameModalView-DC0IDOsa.js:3:8)\n    at Suspense (<anonymous>)\n    at GameSurfaceBoundary (http://127.0.0.1:34613/assets/index-57sV8RaP.js:18998:27)\n    at div (<anonymous>)\n    at main (<anonymous>)\n    at GameFrameApp (http://127.0.0.1:34613/assets/index-57sV8RaP.js:19119:56)\n    at div (<anonymous>)\n    at ReferralSharingProvider (http://127.0.0.1:34613/assets/index-57sV8RaP.js:19987:36)\n    at PlayHostApp (http://127.0.0.1:34613/assets/index-57sV8RaP.js:20808:33)\n    at FatalErrorBoundary (http://127.0.0.1:34613/assets/index-57sV8RaP.js:46656:26)",
+        "componentStack": "\n    at GameModalView (http://127.0.0.1:36893/assets/GameModalView-DC0IDOsa.js:3:8)\n    at Suspense (<anonymous>)\n    at GameSurfaceBoundary (http://127.0.0.1:36893/assets/index-r27T1MFG.js:18898:27)\n    at div (<anonymous>)\n    at main (<anonymous>)\n    at GameFrameApp (http://127.0.0.1:36893/assets/index-r27T1MFG.js:19019:56)\n    at div (<anonymous>)\n    at ReferralSharingProvider (http://127.0.0.1:36893/assets/index-r27T1MFG.js:19905:36)\n    at PlayHostApp (http://127.0.0.1:36893/assets/index-r27T1MFG.js:20927:33)\n    at FatalErrorBoundary (http://127.0.0.1:36893/assets/index-r27T1MFG.js:46883:26)",
         "error": "Error: modal surface render failed"
       }
     ],
@@ -31,7 +31,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734612,
+          "savedAt": 1791807561656,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -58,7 +58,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734618,
+          "savedAt": 1791807561657,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -85,7 +85,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734621,
+          "savedAt": 1791807561658,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -112,7 +112,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734622,
+          "savedAt": 1791807561658,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -139,7 +139,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734624,
+          "savedAt": 1791807561659,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -166,7 +166,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734666,
+          "savedAt": 1791807561699,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -229,7 +229,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734668,
+          "savedAt": 1791807561716,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -292,7 +292,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734670,
+          "savedAt": 1791807561717,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -355,7 +355,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734673,
+          "savedAt": 1791807561717,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -418,7 +418,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734675,
+          "savedAt": 1791807561718,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -481,7 +481,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734676,
+          "savedAt": 1791807561718,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -544,7 +544,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734729,
+          "savedAt": 1791807561766,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -640,7 +640,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734747,
+          "savedAt": 1791807561782,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -736,7 +736,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734748,
+          "savedAt": 1791807561783,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -832,7 +832,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734749,
+          "savedAt": 1791807561784,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -928,7 +928,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734750,
+          "savedAt": 1791807561784,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1024,7 +1024,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734751,
+          "savedAt": 1791807561785,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1120,7 +1120,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734796,
+          "savedAt": 1791807561832,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1249,7 +1249,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734813,
+          "savedAt": 1791807561849,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1378,7 +1378,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734814,
+          "savedAt": 1791807561850,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1507,7 +1507,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734815,
+          "savedAt": 1791807561850,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1636,7 +1636,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734819,
+          "savedAt": 1791807561851,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1765,7 +1765,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734820,
+          "savedAt": 1791807561851,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -1894,7 +1894,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734865,
+          "savedAt": 1791807561899,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -2056,7 +2056,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734880,
+          "savedAt": 1791807561916,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -2218,7 +2218,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734882,
+          "savedAt": 1791807561917,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -2380,7 +2380,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734884,
+          "savedAt": 1791807561917,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -2542,7 +2542,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734886,
+          "savedAt": 1791807561918,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -2704,7 +2704,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734888,
+          "savedAt": 1791807561918,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -2866,7 +2866,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734928,
+          "savedAt": 1791807561966,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -3061,7 +3061,7 @@
       {
         "activeGame": {
           "schemaVersion": 1,
-          "savedAt": 1791160734981,
+          "savedAt": 1791807562017,
           "riddleId": "classic-fake-1",
           "gameMode": "classic",
           "sessionToken": "00000000-0000-4000-8000-000000000001",
@@ -3281,7 +3281,7 @@
   "text": "Classic\n300\nWhat has keys but cannot open doors?\nA\nA\nA\nA\nA\nB\nB\nB\nB\nB\nC\nC\nC\nC\nC\nD\nD\nD\nD\nD\nE\nE\nE\nE\nE\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip",
   "journal": {
     "riddleQuest:tooltipSeen:achievementEarned:jest-guest": "seen",
-    "riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest": "seen",
+    "riddleQuest:tooltipSequenceSeen:gameTour:v3:jest-guest": "seen",
     "riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:jest-guest": "seen",
     "riddleQuest:reducedMotion": "false",
     "riddleQuest:tooltipSeen:gameCoins:jest-guest": "seen",

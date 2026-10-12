@@ -1,0 +1,801 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-history-progression",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Reject all-green confirmed history attached to the same still-editable riddle, independently of optional answer evaluation. Require solved guesses to advance or terminate as the server engine does. Validate impossible restored or newly observed concurrent history before a pending paid checkpoint is consumed, preserving original counts, input and charges for recovery. Keep valid wrong history and all prior authority, isolation, artifact, source-digest and dashboard gates.",
+    "revision": "d6db0d78a9b3d9126c60274b81735cfd6447538c",
+    "sourceDigest": "378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda",
+    "completedAt": "2026-10-11T21:55:45.712Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "node22-backend-build-and-operator-safeguards",
+      "node22-isolated-backend-race-coverage",
+      "backend-types",
+      "client-race-recovery",
+      "backend-lint",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations",
+      "full-core-tests",
+      "portal-types",
+      "injected-event-aggregate-browser",
+      "client-firebase-target-routing",
+      "retained-rule-ownership-browser",
+      "retained-checkpoint-isolation-browser",
+      "injected-timeout-reload-browser",
+      "injected-first-resume-browser",
+      "injected-private-outcome-browser",
+      "injected-private-command-ownership-browser",
+      "injected-pending-answer-recovery-browser",
+      "injected-known-answer-feedback-browser",
+      "injected-known-answer-reveals-browser",
+      "injected-answer-free-checkpoints-browser",
+      "injected-paid-draft-checkpoints-browser",
+      "timeout-receipt-and-calibration-contracts",
+      "injected-provider-record-recovery-browser",
+      "injected-provider-record-deadline-browser",
+      "injected-responsive-hub-navigation-browser",
+      "injected-provider-capability-recovery-browser",
+      "race-draft-reload-browser",
+      "browser-player-state-deletion",
+      "complete-client-suite",
+      "abandoned-race-entry-browser",
+      "provider-confirmed-outcome-browser",
+      "race-keyboard-activation-browser",
+      "race-draft-cleanup-browser",
+      "race-overlay-ownership-browser",
+      "race-dialog-keyboard-ownership-browser",
+      "race-quit-focus-recovery-browser",
+      "race-quit-focus-containment-browser",
+      "race-resume-selection-browser",
+      "race-resume-read-observation-browser",
+      "race-search-journal-observation-browser",
+      "race-analytics-delivery-browser",
+      "race-offline-delivery-browser",
+      "race-profile-refresh-browser",
+      "race-prefetch-ownership-browser",
+      "race-rendered-entry-ownership-browser",
+      "race-provider-rendered-cache-browser",
+      "race-dialog-adapter-ownership-browser",
+      "race-prefetch-development-strict-browser",
+      "race-profile-refresh-development-strict-browser",
+      "race-dialog-adapter-development-strict-browser",
+      "race-session-browser-resource-ownership",
+      "race-matchmaking-removal-browser",
+      "race-discovery-provider-ownership-browser",
+      "race-discovery-storage-ownership-browser",
+      "race-discovery-callback-ownership-browser",
+      "race-discovery-prompt-cancellation-browser",
+      "race-retired-search-recovery-browser",
+      "race-retirement-shared-journal-browser",
+      "race-visibility-retirement-browser",
+      "race-visibility-retirement-development-strict-browser",
+      "invitation-callable-recovery-contracts",
+      "race-existing-attempt-authority-browser",
+      "race-private-entry-selection-browser",
+      "race-existing-opponent-authority-browser",
+      "race-private-creator-acceptance-browser",
+      "race-entry-effect-ownership-browser",
+      "race-waiting-selection-browser",
+      "race-cancellation-receipt-browser",
+      "race-start-selection-authority-browser",
+      "race-provider-start-selection-browser",
+      "race-start-category-authority-browser",
+      "race-entry-run-handoff-browser",
+      "race-start-origin-context-browser",
+      "race-start-opponent-presence-browser",
+      "authentication-harness-retained-paths",
+      "race-creator-opponent-authority-browser",
+      "race-hint-reveal-evidence-browser",
+      "race-safety-selection-browser",
+      "race-countdown-clock-ownership-browser",
+      "race-discovery-retry-policy-browser",
+      "race-resolver-failure-browser",
+      "race-cold-search-retirement-browser",
+      "race-cold-search-catalog-browser",
+      "race-catalog-retry-browser",
+      "race-resolver-reentry-browser",
+      "race-provider-observation-browser",
+      "race-authority-observation-browser",
+      "race-timer-ownership-browser",
+      "race-loader-tail-ownership-browser",
+      "race-delivery-expiry-ownership-browser",
+      "race-start-receipt-ownership-browser",
+      "race-recovery-clock-ownership-browser",
+      "race-reset-clock-ownership-browser",
+      "race-authority-clock-ownership-browser",
+      "race-restored-attempt-rows-browser",
+      "race-projected-attempt-rows-browser",
+      "race-history-integration-browser",
+      "race-reddit-history-opt-in-browser",
+      "race-keyboard-feedback-strength-browser",
+      "race-time-rollover-browser",
+      "race-harness-feedback-parity-browser",
+      "race-harness-delayed-receipts-browser",
+      "race-history-continuity-browser",
+      "race-confirmed-history-ledger-unit",
+      "race-confirmed-history-ledger-bounds",
+      "race-history-integration-prototype-browser",
+      "race-owned-authority-session-regressions",
+      "race-history-prototype-retained-browser",
+      "race-history-checkpoint-runtime-unit",
+      "race-hint-concurrent-history-browser",
+      "race-guess-concurrent-history-browser",
+      "race-confirmed-guess-retention-browser",
+      "race-sparse-history-refresh-browser",
+      "race-history-normalization-browser",
+      "race-history-progression-browser",
+      "retained-authentication-entry-paths"
+    ],
+    "checks": [
+      {
+        "id": "node22-backend-build-and-operator-safeguards",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage; current-source check at 2026-10-11T21:06:31.214Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-711f1d9b87b8f5adfcfd30038350575729cc567dd0dd1ad639d6cb3622700c9e-b7f42d00c99cff668dfdd243a537081efe2543a72d4563148a33863f418e482e.log SHA-256 b7f42d00c99cff668dfdd243a537081efe2543a72d4563148a33863f418e482e"
+      },
+      {
+        "id": "node22-isolated-backend-race-coverage",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore,database --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand; current-source check at 2026-10-11T21:15:20.767Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-0b5f3e1d09aed466e8de62d42d3621ecd771049ff065c7cffd462a0aafcc4120-1371b4114a07f1d17d1c4752e9c482a4d2e57b2767899dfc3e10282ac90e8399.log SHA-256 1371b4114a07f1d17d1c4752e9c482a4d2e57b2767899dfc3e10282ac90e8399"
+      },
+      {
+        "id": "backend-types",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types; current-source check at 2026-10-11T21:15:22.998Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-cbdfa15a368370ec03cc5360d0784a9add8c1dfd4946562002feec0b0f69bdf8-6031085be711eb914a705d41ce97cbb4b6f48e4ceda3b5e5f4ca6a5853774ff4.log SHA-256 6031085be711eb914a705d41ce97cbb4b6f48e4ceda3b5e5f4ca6a5853774ff4"
+      },
+      {
+        "id": "client-race-recovery",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; current-source check at 2026-10-11T21:15:28.350Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fc75e68dd7fcdd2619b6035c4bcd7f2ff19703f5208a41c4a6a06af3290fb299-c10e5cb80dfbf01c5880784e21d35d997d1a47bac3a54877c1d64676570a1ece.log SHA-256 c10e5cb80dfbf01c5880784e21d35d997d1a47bac3a54877c1d64676570a1ece"
+      },
+      {
+        "id": "backend-lint",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint; current-source check at 2026-10-11T21:15:33.160Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-25b2389645c3e7db05fe1ecfbf00fd9b416b26b47a759fddf865f74ad6966279-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log SHA-256 802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-11T21:55:05.012Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-77fc6d0d4155a51e64ba88bb5d343ea75b3584f81714a046a2d59de390234033-86eaa1d3f3fc228c733338f9be103b79619f7c53f8823327d5a66436d8d04ca6.log SHA-256 86eaa1d3f3fc228c733338f9be103b79619f7c53f8823327d5a66436d8d04ca6"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-11T21:06:19.143Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146-e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe.log SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; current-source check at 2026-10-11T21:06:26.143Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-bb2a1e5b36d7ff65f4344366547708258b1b43b62b5d7319df4393f38c8f912c-3e8a85cb20f1e70d308264122beaa7002f7862f6ba4d0b21de1d41dfdf055971.log SHA-256 3e8a85cb20f1e70d308264122beaa7002f7862f6ba4d0b21de1d41dfdf055971"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; current-source check at 2026-10-11T21:06:26.572Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fb61e916e20dc77e5240e797df07e4e4bc1a506a78dd17b9c2ed0975a94e8bef-7d93d799c833d74edb2e0bc69196363f29bedff607d1ffdcc59df176bb9d9491.log SHA-256 7d93d799c833d74edb2e0bc69196363f29bedff607d1ffdcc59df176bb9d9491"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-11T21:06:27.133Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-626eddf19032e8a705e4e0e06aead9f637e9c2cc093e34abdc13c73a4343bc84-b39c2878343f7acbfde20709e1f199332c121bcab12dc2b41eb87ca72476277d.log SHA-256 b39c2878343f7acbfde20709e1f199332c121bcab12dc2b41eb87ca72476277d"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-11T21:06:28.376Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-0b11dae300a3f6b2ea9b1c98f6cd255d3e46cca56b94f997111188782470602b-d9a626be0690a99495889eae29385cb62e4d1143983a1450f133e7517f8d3187.log SHA-256 d9a626be0690a99495889eae29385cb62e4d1143983a1450f133e7517f8d3187"
+      },
+      {
+        "id": "full-core-tests",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/core test --runInBand; current-source check at 2026-10-11T21:15:34.927Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-b0fb822af63a65df6a3ec86b278fbe9ce136798b3452e422a4ae06bf5e0a2c5d-b522da2df61bdd2ffcddd8196273c1a920c4591dfcead2f9ca9ce1944902a1dc.log SHA-256 b522da2df61bdd2ffcddd8196273c1a920c4591dfcead2f9ca9ce1944902a1dc"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-11T21:06:18.725Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "injected-event-aggregate-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-event-aggregate-browser.mjs; current-source check at 2026-10-11T21:15:39.735Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-e18aac7af328d2292201281804e546660af35b00ff7b32385956d00185888ad6-260328d50efec5157ce993f774afefaa2e9dd81595e4dbf14c63cb5c154fb08c.log SHA-256 260328d50efec5157ce993f774afefaa2e9dd81595e4dbf14c63cb5c154fb08c"
+      },
+      {
+        "id": "client-firebase-target-routing",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts; current-source check at 2026-10-11T21:15:40.559Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-b96238bd0801ef80d278447fcd5efd71d9f554d675b288d0a01cac35b08a9967-42a66c2fe67578c7c67715d31bc0d71787a3fff395fb42649ea0b98deadc8935.log SHA-256 42a66c2fe67578c7c67715d31bc0d71787a3fff395fb42649ea0b98deadc8935"
+      },
+      {
+        "id": "retained-rule-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rule-ownership-browser.mjs; current-source check at 2026-10-11T21:15:45.329Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-9f0b82975cc6c18ef7f2880d17f1e92509964705160d7ff96185832b8cb1a680-844ad9e90c441a844fef3b4edd928740302ffb60f865229e1f54887edc77baae.log SHA-256 844ad9e90c441a844fef3b4edd928740302ffb60f865229e1f54887edc77baae"
+      },
+      {
+        "id": "retained-checkpoint-isolation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs; current-source check at 2026-10-11T21:15:59.482Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-a81e63463de9fc2169588c544782c5b566264bef0bf029526b2f9834b7df5732-76165e8a3bcca1b2c2326541fc600b7025cf319f99c99ea5bd18b3a5a6f42df2.log SHA-256 76165e8a3bcca1b2c2326541fc600b7025cf319f99c99ea5bd18b3a5a6f42df2"
+      },
+      {
+        "id": "injected-timeout-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-timeout-recovery-browser.mjs; current-source check at 2026-10-11T21:16:01.594Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-0e1d21d088b70e34b72a2a7b03f78fb56d92c0ecc71042614a27ebe57ed74dc5-012b8463c8252d509c794db680501ade4c63eaba29c02f6080393d2d6afa37db.log SHA-256 012b8463c8252d509c794db680501ade4c63eaba29c02f6080393d2d6afa37db"
+      },
+      {
+        "id": "injected-first-resume-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-startup-recovery-browser.mjs; current-source check at 2026-10-11T21:16:04.723Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-45fff251b41ac20043294cbc828bf75578f41c29d580afb6733054712a5d75eb-2f3df26f9b0c359d81ff75e9577c1163fa5d981c6c3b47160fe8dde74600eabf.log SHA-256 2f3df26f9b0c359d81ff75e9577c1163fa5d981c6c3b47160fe8dde74600eabf"
+      },
+      {
+        "id": "injected-private-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-outcome-isolation-browser.mjs; current-source check at 2026-10-11T21:16:06.875Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-7c722d942b5e1e24d4bc195118026eca25977e0a413821e1cbbe48b01c13b682-60451136d43bd9571d995a8564182e6f95656ac8bba476df95d7ef5050635bff.log SHA-256 60451136d43bd9571d995a8564182e6f95656ac8bba476df95d7ef5050635bff"
+      },
+      {
+        "id": "injected-private-command-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-command-ownership-browser.mjs; current-source check at 2026-10-11T21:16:11.289Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-bf35c24620a6532d9a7895ef37282103eb76a988fc66f70a1ecffcdfd2e665b6-8809066444b29a2e09dcc1a9e18089bb5794c09557ccfeb2b258a1d631bdd2a1.log SHA-256 8809066444b29a2e09dcc1a9e18089bb5794c09557ccfeb2b258a1d631bdd2a1"
+      },
+      {
+        "id": "injected-pending-answer-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-pending-input-browser.mjs; current-source check at 2026-10-11T21:16:14.346Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-076df74fcdf79a4567a731ef44c1eb630935333b51c4f8e50d7c918e1bcb9c89-882f4a4a2e0d2a0b67ba99e02692375a44864900ed1485b1b82a098a06768633.log SHA-256 882f4a4a2e0d2a0b67ba99e02692375a44864900ed1485b1b82a098a06768633"
+      },
+      {
+        "id": "injected-known-answer-feedback-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs; current-source check at 2026-10-11T21:16:20.039Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-97bbec952382967051acac657fb397fa562e536d72454a9d39b8d2ba15815e0b-8586984b3c17071caa99a67b58ddfbf7da824903e802fd7fd24c20f4eb8a407d.log SHA-256 8586984b3c17071caa99a67b58ddfbf7da824903e802fd7fd24c20f4eb8a407d"
+      },
+      {
+        "id": "injected-known-answer-reveals-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs; current-source check at 2026-10-11T21:16:24.369Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-11baabc069b74959b8332df7cda049f7be16bd52620c3201fb0608de547847fd-a60fda705d76c57c4ac4893340baf08ff178227b60b70a740b1773448d46b36b.log SHA-256 a60fda705d76c57c4ac4893340baf08ff178227b60b70a740b1773448d46b36b"
+      },
+      {
+        "id": "injected-answer-free-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs; current-source check at 2026-10-11T21:16:30.346Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-3e3c05752b9c6dc02c69631a16d143c0c39d048cb4cd937f638370ab5f53a7dc-cb4c57fbf83e37baec24a060ecd2fab002f8ff5dabd7a93e5fd57d39edaaa72a.log SHA-256 cb4c57fbf83e37baec24a060ecd2fab002f8ff5dabd7a93e5fd57d39edaaa72a"
+      },
+      {
+        "id": "injected-paid-draft-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs; current-source check at 2026-10-11T21:16:43.395Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-17d0478fc39530a16b024c98f7104840b96059fe1d8d76de7c46bcfcc9c94a47-343ab2199381cdc7958293787edcf60cb0a5130f103ac7f5a79085bfca1522a8.log SHA-256 343ab2199381cdc7958293787edcf60cb0a5130f103ac7f5a79085bfca1522a8"
+      },
+      {
+        "id": "timeout-receipt-and-calibration-contracts",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts; current-source check at 2026-10-11T21:16:44.326Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-57f534ddb71456ec0a9790a04877d8564aaa813954bd5310b8bf8c240ff7d244-875020de0175d34b6198136e3d8428ab3b04c1b39bfcecef044c7b19ff73c74e.log SHA-256 875020de0175d34b6198136e3d8428ab3b04c1b39bfcecef044c7b19ff73c74e"
+      },
+      {
+        "id": "injected-provider-record-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs; current-source check at 2026-10-11T21:16:45.994Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-f5bfa864dd35beaa808a4ef8235799ad924e1871421dfd0b7469bca7c9aebedb-2ac4794c74f0bd9083ee04bc1301ad6a73d51764b37fadf0aec8bda1d19478df.log SHA-256 2ac4794c74f0bd9083ee04bc1301ad6a73d51764b37fadf0aec8bda1d19478df"
+      },
+      {
+        "id": "injected-provider-record-deadline-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs; current-source check at 2026-10-11T21:16:49.231Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-a43d1dd6790c8f42a0f301b11897764dedbf62ee55d4a74e50fdfac5dff26e40-6592dc0838317e2d2fdf18f157bbaefafa54ea2f371083918e8964444a55558c.log SHA-256 6592dc0838317e2d2fdf18f157bbaefafa54ea2f371083918e8964444a55558c"
+      },
+      {
+        "id": "injected-responsive-hub-navigation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hub-navigation-browser.mjs; current-source check at 2026-10-11T21:16:51.471Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-30af30c1774a7ad8e90c4d042375bcc1bb7cb87959576b6273332c679fd57f18-319cb0f3c9b86673dc9c0ba28a097a482a4ac0e1a10946ddba606776edfa3cb1.log SHA-256 319cb0f3c9b86673dc9c0ba28a097a482a4ac0e1a10946ddba606776edfa3cb1"
+      },
+      {
+        "id": "injected-provider-capability-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-capability-browser.mjs; current-source check at 2026-10-11T21:16:54.462Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-d540608232ef91823781bbeb67457f310d12f38ae042b70a9e2942fba871590b-23791604ba062b66dd921d99ec296933b56d8367dbee3c508417485a47b8314d.log SHA-256 23791604ba062b66dd921d99ec296933b56d8367dbee3c508417485a47b8314d"
+      },
+      {
+        "id": "race-draft-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-reload-browser.mjs; current-source check at 2026-10-11T21:17:54.059Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-d498062180733baa0c31a4150a8b573955dd3a96ad380fc7b26b4f07e145b618-25f12e8a9dc7b8aaecfe6814056d0ab77584230427d11751efc1c543ba9a31ab.log SHA-256 25f12e8a9dc7b8aaecfe6814056d0ab77584230427d11751efc1c543ba9a31ab"
+      },
+      {
+        "id": "browser-player-state-deletion",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=playerPreferences.test.ts; current-source check at 2026-10-11T21:17:54.848Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-41f0c5904c4cefeee54dd804fdebb4e6f087f682786df02eb8d5c175292ff193-0f8ba3b37b21e1775ebd9ac174e3a4271bbec4cfb886de466af6dc6a272647d9.log SHA-256 0f8ba3b37b21e1775ebd9ac174e3a4271bbec4cfb886de466af6dc6a272647d9"
+      },
+      {
+        "id": "complete-client-suite",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand; current-source check at 2026-10-11T21:18:05.841Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-5704da0c2c5243ff53cf1d842b513b8d79205137599357d66cf9bbb7fb5c07c4-afe12e27a76db5f0a793bf7611a4e6959287d9c33f9e158f3f0bd907db38e46e.log SHA-256 afe12e27a76db5f0a793bf7611a4e6959287d9c33f9e158f3f0bd907db38e46e"
+      },
+      {
+        "id": "abandoned-race-entry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-abandoned-entry-browser.mjs; current-source check at 2026-10-11T21:18:21.448Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fad5b1dc492b14778aeaec6ee243b84b36ab3c084382db096872907213087388-4e103fa42e8cb00aff9663b8ef6733cb620c8d71fd873139ddc6948d949b3014.log SHA-256 4e103fa42e8cb00aff9663b8ef6733cb620c8d71fd873139ddc6948d949b3014"
+      },
+      {
+        "id": "provider-confirmed-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs; current-source check at 2026-10-11T21:18:23.016Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-38a468dcc42d83263c28c32a45628c4fdcfb56c7f9f91adeeb517736e2465b32-f2fddc09cb1339ace45be9b02d9e8b7dff652642adf1eb75ae4b299b5df3cba4.log SHA-256 f2fddc09cb1339ace45be9b02d9e8b7dff652642adf1eb75ae4b299b5df3cba4"
+      },
+      {
+        "id": "race-keyboard-activation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-keyboard-activation-browser.mjs; current-source check at 2026-10-11T21:18:26.235Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-efeb6d7ed02b2e6a3e469d4309dff02a4d501f079fea170539f5bd285c24c446-a12a96e2f3d1ad3fa80616dd5e590325ce1ae2709d1689255ae66a28d017ba2f.log SHA-256 a12a96e2f3d1ad3fa80616dd5e590325ce1ae2709d1689255ae66a28d017ba2f"
+      },
+      {
+        "id": "race-draft-cleanup-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-cleanup-browser.mjs; current-source check at 2026-10-11T21:18:41.756Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-11d85761b08a46a24715753d10bb006b703f7d740706d8b95470ead52d27e54b-c8fdad818f2978bfb299a8a87b510bc5f078fe9f1061a46d67540c0a17bb2afa.log SHA-256 c8fdad818f2978bfb299a8a87b510bc5f078fe9f1061a46d67540c0a17bb2afa"
+      },
+      {
+        "id": "race-overlay-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-overlay-ownership-browser.mjs; current-source check at 2026-10-11T21:18:44.141Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-4af03a2c4c2ce5588402d87ccde1144a9ad2250ea923d7c586ca390f0fedf063-5354552be7bed714c807c2c14676266d41e58a438051b38492b4a518eff46354.log SHA-256 5354552be7bed714c807c2c14676266d41e58a438051b38492b4a518eff46354"
+      },
+      {
+        "id": "race-dialog-keyboard-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs; current-source check at 2026-10-11T21:18:46.922Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-26b61813696a79a7cf8415052314a713efc83e7ebba7b6d2e28ded6f4d54b1c3-9deda62777bd2285bd1113389beb81ac3d5eba0757721a6e0800745ff7c0c7d9.log SHA-256 9deda62777bd2285bd1113389beb81ac3d5eba0757721a6e0800745ff7c0c7d9"
+      },
+      {
+        "id": "race-quit-focus-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs; current-source check at 2026-10-11T21:18:49.141Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-9b82e38adfc939e02f0e1d7cd1d1c474674c3e003f014984ceade34ff9dea116-e3772615a1e3e2ef697ebe76ea46c2513410df52b5c1d813ebab4d58d4be54d0.log SHA-256 e3772615a1e3e2ef697ebe76ea46c2513410df52b5c1d813ebab4d58d4be54d0"
+      },
+      {
+        "id": "race-quit-focus-containment-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs; current-source check at 2026-10-11T21:18:51.194Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-2e274e2c8d1e166de35b2b551ee60e4743657e5a064fad0e4be99f6a16a48619-3e39aa8c75aa500b0618f87927e9e4c946b4c6d6bc0f18cf87e865079bb2fad7.log SHA-256 3e39aa8c75aa500b0618f87927e9e4c946b4c6d6bc0f18cf87e865079bb2fad7"
+      },
+      {
+        "id": "race-resume-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-selection-browser.mjs; current-source check at 2026-10-11T21:18:52.205Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-c1cc69bba5cc9552a371b8a2cc0ecaf6bd9cf4d3cc7eb9669f954c713569f57f-6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6.log SHA-256 6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6"
+      },
+      {
+        "id": "race-resume-read-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-read-observation-browser.mjs; current-source check at 2026-10-11T21:18:53.301Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-977fd64fbe3c8343f182f2b06bc4129d5575e0aa85f73943bbb41b41dcfdac3c-6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6.log SHA-256 6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6"
+      },
+      {
+        "id": "race-search-journal-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-search-journal-observation-browser.mjs; current-source check at 2026-10-11T21:18:54.328Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-a4824de7ee80967b0d280c2dfc45478020e816e5fbdf0edf054c54843c6bbaba-15b81b00018ef1f9de4098f3d275c90d25b7a273790ee2c1c934ba7e332d42b2.log SHA-256 15b81b00018ef1f9de4098f3d275c90d25b7a273790ee2c1c934ba7e332d42b2"
+      },
+      {
+        "id": "race-analytics-delivery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-analytics-delivery-browser.mjs; current-source check at 2026-10-11T21:18:57.062Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-f7fcdf20bcab26adf8df80329e884d9b1b36f0e3f3eb02e176ad11c59b2dc8ae-245751c078089b4fb91d44b009790ea14dc5bb96ac5af01ed03c210233e13185.log SHA-256 245751c078089b4fb91d44b009790ea14dc5bb96ac5af01ed03c210233e13185"
+      },
+      {
+        "id": "race-offline-delivery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-offline-delivery-browser.mjs; current-source check at 2026-10-11T21:18:59.255Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-518f8c2b5a175ad779cea5d43cc7059cd184be7302d0d33f35bc365e81424c07-e6c5aa3ec7495c7aed52a46cd0efc9ec8ceaeed4a9b8fc969ba8f6cdb76078d7.log SHA-256 e6c5aa3ec7495c7aed52a46cd0efc9ec8ceaeed4a9b8fc969ba8f6cdb76078d7"
+      },
+      {
+        "id": "race-profile-refresh-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-profile-refresh-browser.mjs; current-source check at 2026-10-11T21:19:01.276Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-34007d6417530a0fe25691222da4f4f200e1c442ebae1047d36a69899155ad8f-4fa98292b5c48f45c874ee4660d8c4acd18cbbb4b8e062a95ade63b3380f7137.log SHA-256 4fa98292b5c48f45c874ee4660d8c4acd18cbbb4b8e062a95ade63b3380f7137"
+      },
+      {
+        "id": "race-prefetch-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-prefetch-browser.mjs; current-source check at 2026-10-11T21:19:07.045Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-916a3730a24501980b61bf6814c62f4eba530e2633531b44f167d1a59d421afc-37cc0a8b17a60affe32070a7dedd211036bff370bab928ec153569cf78290194.log SHA-256 37cc0a8b17a60affe32070a7dedd211036bff370bab928ec153569cf78290194"
+      },
+      {
+        "id": "race-rendered-entry-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rendered-entry-browser.mjs; current-source check at 2026-10-11T21:19:11.374Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-ea31fd3d33dfe2d260776de3321c8db8713a873e597b27ac15eb13e88b75d4c1-54e6c2a3e7fa897d759744de9ad8848e0a37965815d29eabf3cb1a1cd62c84bc.log SHA-256 54e6c2a3e7fa897d759744de9ad8848e0a37965815d29eabf3cb1a1cd62c84bc"
+      },
+      {
+        "id": "race-provider-rendered-cache-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs; current-source check at 2026-10-11T21:19:16.958Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-2059f202f85fa1d9d0828dd283566b51d9896855b93ad9112c5808ad259dfff4-85a5571ffd203d43dfc2bd726baa0a64deacf129926cbee6568fa0e0edf28270.log SHA-256 85a5571ffd203d43dfc2bd726baa0a64deacf129926cbee6568fa0e0edf28270"
+      },
+      {
+        "id": "race-dialog-adapter-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs; current-source check at 2026-10-11T21:19:27.312Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-c35e17cb7fdbd29e723a4fb929ea62514c9341aa2494460bd258f00bed093d6b-2dc8fc7be1c71871f921b64f8fa0e92795c77e1df85528f26b1ce6970be7b1ad.log SHA-256 2dc8fc7be1c71871f921b64f8fa0e92795c77e1df85528f26b1ce6970be7b1ad"
+      },
+      {
+        "id": "race-prefetch-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-prefetch-browser.mjs; current-source check at 2026-10-11T21:19:34.254Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-006bf10f71b1ba6d411c9cfb89ab5e98a51dfe5fddf7cd888bea26f6319749cc-f8b390bb18bf1e61dda3ecff1f13f60546bc59be38621800ae66963cde161e92.log SHA-256 f8b390bb18bf1e61dda3ecff1f13f60546bc59be38621800ae66963cde161e92"
+      },
+      {
+        "id": "race-profile-refresh-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-profile-refresh-browser.mjs; current-source check at 2026-10-11T21:19:36.567Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-79ad746c0d0d5258ef111567d290b66efe56690ac272cd44d6ee53d1adcbb1fb-e4a124efe83a69fcd4c7cb15c0a78c95d2339afea83280b75aa0c1610075391d.log SHA-256 e4a124efe83a69fcd4c7cb15c0a78c95d2339afea83280b75aa0c1610075391d"
+      },
+      {
+        "id": "race-dialog-adapter-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs; current-source check at 2026-10-11T21:19:47.834Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-da2a5da237f2418cf2eda449a19b21ae07c2b5e2a7ebaca96aa8b36842627d00-025bd1592b1b548d04b246afc0a0728080806e8d515dbc6f3bb8dd9d7428f39d.log SHA-256 025bd1592b1b548d04b246afc0a0728080806e8d515dbc6f3bb8dd9d7428f39d"
+      },
+      {
+        "id": "race-session-browser-resource-ownership",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-session-resources-browser.mjs; current-source check at 2026-10-11T21:19:53.950Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-e5ba1e7ce847e33668d761d3e63ecc1eba576f354d1826332e59e4f6eb6f72ac-01796502405fb21b0fcf89c8830580c5555a13fd95dd317620f97774f01a4774.log SHA-256 01796502405fb21b0fcf89c8830580c5555a13fd95dd317620f97774f01a4774"
+      },
+      {
+        "id": "race-matchmaking-removal-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs; current-source check at 2026-10-11T21:19:58.505Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-52472c307c8ff2ba094e692327e3008b0a98146ae3b2f48b4e4f81367757712c-858c2081fba3bba56ff9624a2d3ef04a739912e0bcb6e0e74d54305e6762128a.log SHA-256 858c2081fba3bba56ff9624a2d3ef04a739912e0bcb6e0e74d54305e6762128a"
+      },
+      {
+        "id": "race-discovery-provider-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-provider-browser.mjs; current-source check at 2026-10-11T21:20:03.492Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-5d9c250914f04d3dbc561a373eb237d63f37d6217192e1a99580af546b8ac918-ff4a29e784969f1e48fb42de88a052c2654fbbacaf395fa08722f961641c9286.log SHA-256 ff4a29e784969f1e48fb42de88a052c2654fbbacaf395fa08722f961641c9286"
+      },
+      {
+        "id": "race-discovery-storage-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-browser.mjs; current-source check at 2026-10-11T21:20:04.752Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-40f29b56e7e2ec5129cafbff1a0b630d19c3531f9a4e9f62ca2c798233e9883f-8fbcd9e375c4a78d74234b6d8bccf85e401d9eba102c1902744b095d35c191a6.log SHA-256 8fbcd9e375c4a78d74234b6d8bccf85e401d9eba102c1902744b095d35c191a6"
+      },
+      {
+        "id": "race-discovery-callback-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-callback-browser.mjs; current-source check at 2026-10-11T21:20:07.987Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-ff9feb6c89ccb9fa82c1e19c03e2c5dc901504358db02bac434264b31e3a4d6b-cd6510174b47f6e7511ee5be2b6ce1269a4e11e6d1569d63037d0919fe37c2c1.log SHA-256 cd6510174b47f6e7511ee5be2b6ce1269a4e11e6d1569d63037d0919fe37c2c1"
+      },
+      {
+        "id": "race-discovery-prompt-cancellation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs; current-source check at 2026-10-11T21:20:10.838Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-5c52afcdee2149714f36500dcf742dd012fa26fe542258f6bda78e34ff2fe893-2e0e72f296cc30490fbbeaba6b1d5600240bfe53a5b25875b533f0fe7e3b572a.log SHA-256 2e0e72f296cc30490fbbeaba6b1d5600240bfe53a5b25875b533f0fe7e3b572a"
+      },
+      {
+        "id": "race-retired-search-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-retired-search-browser.mjs; current-source check at 2026-10-11T21:20:13.153Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-5f67a37c9f592dec4b0203e4987f69cca87c9ce806370f9f8f0b1df55d4537cb-8f78c79aa04de8fee503129c308fb5e1527e79676dd3bc4d3062d9af0291c484.log SHA-256 8f78c79aa04de8fee503129c308fb5e1527e79676dd3bc4d3062d9af0291c484"
+      },
+      {
+        "id": "race-retirement-shared-journal-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-retirement-journal-browser.mjs; current-source check at 2026-10-11T21:20:28.187Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-b14f427a4e9294b7745e60f9aedf010a81bb428e0ed24ce5cad53e609abb8196-6656f840ecb74755da11a878b150d3384c499e65d2ee2bb1e37854bd76d3f20a.log SHA-256 6656f840ecb74755da11a878b150d3384c499e65d2ee2bb1e37854bd76d3f20a"
+      },
+      {
+        "id": "race-visibility-retirement-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs; current-source check at 2026-10-11T21:20:33.720Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-7e663ebf8e03b1aa2c7e158fee0b8062c588be10b3d807a11bd730b453abad51-117bda075a3b2572a48e703fc7fa2c3a843a440fe566d514d3d28e0ab9dd7a75.log SHA-256 117bda075a3b2572a48e703fc7fa2c3a843a440fe566d514d3d28e0ab9dd7a75"
+      },
+      {
+        "id": "race-visibility-retirement-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs; current-source check at 2026-10-11T21:20:39.455Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-ad293c46ff0393d1aec8a129519ffadf7fd7ebfad8572f83abbbdb6d149771be-cbb12726397b159184db9215603f4f0c99900c71e60c65ab96a670170ac9ae92.log SHA-256 cbb12726397b159184db9215603f4f0c99900c71e60c65ab96a670170ac9ae92"
+      },
+      {
+        "id": "invitation-callable-recovery-contracts",
+        "status": "passed",
+        "evidence": "env GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIRESTORE_EMULATOR_HOST=127.0.0.1:18199 PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceCallables.test.ts; current-source check at 2026-10-11T21:20:40.579Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-c3c71a06d518a467aa97f732196ff830730836a290ae8329dc46cbd1b897fd58-85c05f0389e50978684306ea0b02832bf89ec3c5d12123d93f2b6dde9d428d3d.log SHA-256 85c05f0389e50978684306ea0b02832bf89ec3c5d12123d93f2b6dde9d428d3d"
+      },
+      {
+        "id": "race-existing-attempt-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-existing-attempt-browser.mjs; current-source check at 2026-10-11T21:20:42.345Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-02f4c4517633d31dbd7054bf951ad7f440d839dc85d7fac39e198b05c12881d1-2dd3b5d018891b38943667492ce66137b8291fdb5962b13ea1b2c3ae2204ad11.log SHA-256 2dd3b5d018891b38943667492ce66137b8291fdb5962b13ea1b2c3ae2204ad11"
+      },
+      {
+        "id": "race-private-entry-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-private-entry-browser.mjs; current-source check at 2026-10-11T21:20:44.067Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-9ab8c2912cc1d3bcebc37d69b4f37e3617754fecdedb150ec118ac3aa2ae1494-d7833b9dcb0c835b482a1c47859c60e250d45e90c47c68ee12ab6cc432487bd0.log SHA-256 d7833b9dcb0c835b482a1c47859c60e250d45e90c47c68ee12ab6cc432487bd0"
+      },
+      {
+        "id": "race-existing-opponent-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-existing-opponent-browser.mjs; current-source check at 2026-10-11T21:20:45.980Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-8894aa2f71e3f2c17989466e4ec7c844b71ca1ba4e804fd28459590b0bc3b119-93d0acb1fdd8bfa51aa33a9d7cee8ef214cb49d4ab54e8c3b45b16ab8a30610e.log SHA-256 93d0acb1fdd8bfa51aa33a9d7cee8ef214cb49d4ab54e8c3b45b16ab8a30610e"
+      },
+      {
+        "id": "race-private-creator-acceptance-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-private-creator-browser.mjs; current-source check at 2026-10-11T21:20:47.923Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-10805bc95565e2bc9fc44429377e535d5d1721a964e5dfb891ed58fccd2c4d5e-bd4d770214db2402f4dbe8da4441569b281eb9b0bf150f9b55925ce8ab781ae8.log SHA-256 bd4d770214db2402f4dbe8da4441569b281eb9b0bf150f9b55925ce8ab781ae8"
+      },
+      {
+        "id": "race-entry-effect-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-entry-effect-browser.mjs; current-source check at 2026-10-11T21:20:49.361Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-1f79d08cb05c976f6266357a430951532a2d3b2e33dced114e3c98a84ebf7398-e2d3e4504cc3d420542a68f940d8ee78f17ca5bef75462df12f8ee75b9324454.log SHA-256 e2d3e4504cc3d420542a68f940d8ee78f17ca5bef75462df12f8ee75b9324454"
+      },
+      {
+        "id": "race-waiting-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-waiting-selection-browser.mjs; current-source check at 2026-10-11T21:20:51.802Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-badd5470e474d3b71a7c1d8e546029bc9e7a17602496fc0d9dddd814d105f6b6-e795b4413abf8f0732c3d17807443bbc9de61568439551968a02d6e7a1267947.log SHA-256 e795b4413abf8f0732c3d17807443bbc9de61568439551968a02d6e7a1267947"
+      },
+      {
+        "id": "race-cancellation-receipt-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs; current-source check at 2026-10-11T21:20:54.762Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-07cbba64eca0c6defec140d386f4ab7adab5a180251fa5d0e498db2f61c17711-e373b8c929534fef21fb4e74d5ed3c682fba7797ba0a70ad742d297855917527.log SHA-256 e373b8c929534fef21fb4e74d5ed3c682fba7797ba0a70ad742d297855917527"
+      },
+      {
+        "id": "race-start-selection-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-selection-browser.mjs; current-source check at 2026-10-11T21:20:56.751Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-98e12c0571702f398a91eb493ff614e14afb3dcc103d47d171fe6ecd7b66a40b-796cd9db59a55aaebdd9e084ffdd2836a99892224ef13d3c25f37e77c360de6d.log SHA-256 796cd9db59a55aaebdd9e084ffdd2836a99892224ef13d3c25f37e77c360de6d"
+      },
+      {
+        "id": "race-provider-start-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-start-browser.mjs; current-source check at 2026-10-11T21:20:58.796Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-355832907977c645ca0ecaf90c46213e58590b2a9a91f088af30245da4d93984-78654e1748b39667a1c687376613d805484675d9ea2666ad14cc4e1e7675451e.log SHA-256 78654e1748b39667a1c687376613d805484675d9ea2666ad14cc4e1e7675451e"
+      },
+      {
+        "id": "race-start-category-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-category-browser.mjs; current-source check at 2026-10-11T21:21:01.084Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-08a523cd62edfe8d7b1cf9eb5be7ba85e83f8f933b26fbef78962b2844a02dce-e1b84608f22590dd122b258aab2ccb6dfe5369bab03e0ce0d05a87f44061d305.log SHA-256 e1b84608f22590dd122b258aab2ccb6dfe5369bab03e0ce0d05a87f44061d305"
+      },
+      {
+        "id": "race-entry-run-handoff-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs; current-source check at 2026-10-11T21:21:02.666Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-692e86fe7e46d2acaa30c714fdb9d30622d22732273317f207c9ee77eb0fff51-e936c0bdc5e07d89affc9da23250533cf9a6ca771e6848f13404e891af9245e6.log SHA-256 e936c0bdc5e07d89affc9da23250533cf9a6ca771e6848f13404e891af9245e6"
+      },
+      {
+        "id": "race-start-origin-context-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-origin-browser.mjs; current-source check at 2026-10-11T21:21:04.886Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-6749e610e40fa68cf5205e4f3d121f74e15159e8c22f8e0efaaa4448b8cfbd86-50833a839d0aa4fe6e4e06c871bc57f1854cd6e1efcd83994c5f962392c89a22.log SHA-256 50833a839d0aa4fe6e4e06c871bc57f1854cd6e1efcd83994c5f962392c89a22"
+      },
+      {
+        "id": "race-start-opponent-presence-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-opponent-browser.mjs; current-source check at 2026-10-11T21:21:06.433Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fcc546e007395fb3827b4ffa3c982047367d0dd62b70954dcd6a185242c6ef09-8b32bc7e38f9b1ac4d092a3806ea2ee94723e75a197156f64a21a3c36faa6816.log SHA-256 8b32bc7e38f9b1ac4d092a3806ea2ee94723e75a197156f64a21a3c36faa6816"
+      },
+      {
+        "id": "authentication-harness-retained-paths",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed; current-source check at 2026-10-11T21:21:33.152Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-3503f6ab79e05a156a9fa6e2428a113cf9a834f13051eddb2aeb8d6d442845e3-7556ed040e7243d995c0bc5c3a82fdd0bf147ffabd8de913360da160d83b5de6.log SHA-256 7556ed040e7243d995c0bc5c3a82fdd0bf147ffabd8de913360da160d83b5de6"
+      },
+      {
+        "id": "race-creator-opponent-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-creator-opponent-browser.mjs; current-source check at 2026-10-11T21:21:35.176Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-4c72cf30a7c348e429e1663924c592a598683c04b337fa4142916a0a0bb80c8b-f8a572e1c8eacc2cc86203d3aa967849d6112e6e5501ba885843952cf5494a67.log SHA-256 f8a572e1c8eacc2cc86203d3aa967849d6112e6e5501ba885843952cf5494a67"
+      },
+      {
+        "id": "race-hint-reveal-evidence-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs; current-source check at 2026-10-11T21:21:47.129Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-9843994ccda079fe8102d4d38e0f84a23c141ad4662ac5843bfbb18bb8feb644-6e89ddc6b62c37a0ab582b499388e0e31a46a3993bc9c7005ec152335df50a62.log SHA-256 6e89ddc6b62c37a0ab582b499388e0e31a46a3993bc9c7005ec152335df50a62"
+      },
+      {
+        "id": "race-safety-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-safety-selection-browser.mjs; current-source check at 2026-10-11T21:21:49.883Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fbdcf3a48968c1cc8079b8c1f94a10ca4c7e8e5a9c33bcd6219b6bfbb8c6911d-f04f8b603312d1c9dee7169a4ce66e7cb4a3b6c4ec6e20e000624ae6431baa2e.log SHA-256 f04f8b603312d1c9dee7169a4ce66e7cb4a3b6c4ec6e20e000624ae6431baa2e"
+      },
+      {
+        "id": "race-countdown-clock-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-countdown-clock-browser.mjs; current-source check at 2026-10-11T21:22:32.793Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-45f5671e08669f6bf078d06e503bc0b53840f9eb84c3ae7b6668624b8e0620ef-ae8c3a0be304124d0e697eab464ccc0472b86129d93f93697c1e7cd650f3f914.log SHA-256 ae8c3a0be304124d0e697eab464ccc0472b86129d93f93697c1e7cd650f3f914"
+      },
+      {
+        "id": "race-discovery-retry-policy-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs; current-source check at 2026-10-11T21:22:38.046Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-77d419e7f2c22bcea0cfb5515f579500d383cb2a803398de2dde469b5139f633-9fab451fc76dd6858892374bbad83c2bfc5b75d63758d872f6e9e2cfaded39f0.log SHA-256 9fab451fc76dd6858892374bbad83c2bfc5b75d63758d872f6e9e2cfaded39f0"
+      },
+      {
+        "id": "race-resolver-failure-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resolver-failure-browser.mjs; current-source check at 2026-10-11T21:22:39.507Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-579dde65c2378dfc0968f40b372fca2a5b9a3f83943b67e40c5883d4c6d3511a-1a5e4d530b81b556a30918928d75f8cde1691a2dc6355e0faa1bf816b80bfcc0.log SHA-256 1a5e4d530b81b556a30918928d75f8cde1691a2dc6355e0faa1bf816b80bfcc0"
+      },
+      {
+        "id": "race-cold-search-retirement-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs; current-source check at 2026-10-11T21:22:40.987Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-6eb900282a4169fef12cd0b31e8109a5c67d05b039fb367a29c352fe14804e81-278a5de1410009e246c5e2d00a98b2dd95577c2e03fd992b11da4508ffbe1b67.log SHA-256 278a5de1410009e246c5e2d00a98b2dd95577c2e03fd992b11da4508ffbe1b67"
+      },
+      {
+        "id": "race-cold-search-catalog-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs; current-source check at 2026-10-11T21:22:42.778Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-10b00f0ebc96801a653ddc2de165934ef4aa066dba8a0d758d2827f08be6cb97-748d3f38e911d02f9d3173ef75985945fff02be4b59e601d4d8afb3ad827ebc5.log SHA-256 748d3f38e911d02f9d3173ef75985945fff02be4b59e601d4d8afb3ad827ebc5"
+      },
+      {
+        "id": "race-catalog-retry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-catalog-retry-browser.mjs; current-source check at 2026-10-11T21:22:44.340Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-29f58b2cb84f6d5d773de8c643170954b745748db61669e450a598e7866e8f5b-1ec72f57c495561c2abd92282783b2f8fe1de9dc6df975805f0a39f4a5f54691.log SHA-256 1ec72f57c495561c2abd92282783b2f8fe1de9dc6df975805f0a39f4a5f54691"
+      },
+      {
+        "id": "race-resolver-reentry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resolver-reentry-browser.mjs; current-source check at 2026-10-11T21:22:46.097Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-0481d4b35640b5a17cde439bd129f24bf06f1ad46fcb86a28646d571c8cc8075-cec1b3a6a9b089b815476f5776f381297cc754f94951759eb82f7569cda16008.log SHA-256 cec1b3a6a9b089b815476f5776f381297cc754f94951759eb82f7569cda16008"
+      },
+      {
+        "id": "race-provider-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-observation-browser.mjs; current-source check at 2026-10-11T21:22:48.946Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-10062856f53bcc6d07736dad7a04648f65d526451a0bb31859d55137b84fb8a9-dbe3cc82977d44115004984eccaed9ea30130e97acaeb60e61b92f637d065be3.log SHA-256 dbe3cc82977d44115004984eccaed9ea30130e97acaeb60e61b92f637d065be3"
+      },
+      {
+        "id": "race-authority-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-authority-observation-browser.mjs; current-source check at 2026-10-11T21:22:53.542Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-6c568ef385bb9ed579c2afa45be993244159990564097d968c9592c5103a9f9c-10f93a5815f89132358b546c314430784372c3124d13cc0edf412f8e1dbb01c1.log SHA-256 10f93a5815f89132358b546c314430784372c3124d13cc0edf412f8e1dbb01c1"
+      },
+      {
+        "id": "race-timer-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-timer-ownership-browser.mjs; current-source check at 2026-10-11T21:22:55.293Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-d6d39316ddd8214d403348c681ce525f8939970326c4acb2533697055849bfdb-72f282287774f33f08e0879f0bb50efa368d0f8e3efed80d3cdff81a46a78864.log SHA-256 72f282287774f33f08e0879f0bb50efa368d0f8e3efed80d3cdff81a46a78864"
+      },
+      {
+        "id": "race-loader-tail-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs; current-source check at 2026-10-11T21:23:01.244Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-36c517f230a1e9656844e22782e4786554e8779650b496df33012e71504725ed-eb6cde7f1af5b7370ba5c56dc348fb94168474abb521c027d656f5bfe82e09cc.log SHA-256 eb6cde7f1af5b7370ba5c56dc348fb94168474abb521c027d656f5bfe82e09cc"
+      },
+      {
+        "id": "race-delivery-expiry-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs; current-source check at 2026-10-11T21:23:02.599Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-b1f80d946b8965b431aa86b10c36ab7e04914452665be727cf2edc776afc1fcf-9d8d7cb7ac10fd0bca9a13740ea6c84befa788cccc4929ba80734b1069cafdde.log SHA-256 9d8d7cb7ac10fd0bca9a13740ea6c84befa788cccc4929ba80734b1069cafdde"
+      },
+      {
+        "id": "race-start-receipt-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs; current-source check at 2026-10-11T21:23:04.140Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-26ee2c5c811369ee13a13f41a8db01a459bd74c80d123cc493cce5dc272ad681-c3bae0fd67a489bbe9ed2f73e165183a8ff33a93c3131f0a4eb9ae30317f946f.log SHA-256 c3bae0fd67a489bbe9ed2f73e165183a8ff33a93c3131f0a4eb9ae30317f946f"
+      },
+      {
+        "id": "race-recovery-clock-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs; current-source check at 2026-10-11T21:23:06.129Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-550f52f47f951a94f4d7f7cfc273187d41661d03edeee0634a2fc771eb756826-1c81780d7f174d3bca36fd8ba0a6601b9304edeae3f251b83f55647da6b73836.log SHA-256 1c81780d7f174d3bca36fd8ba0a6601b9304edeae3f251b83f55647da6b73836"
+      },
+      {
+        "id": "race-reset-clock-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs; current-source check at 2026-10-11T21:23:07.430Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-f77346c07e2fd145580ec3feaad82e1017acfb070265bf83207818c217c11241-ca77129760ab020b3fe096e38be7af798ae30480bb428b2ea04efce0b1004e75.log SHA-256 ca77129760ab020b3fe096e38be7af798ae30480bb428b2ea04efce0b1004e75"
+      },
+      {
+        "id": "race-authority-clock-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs; current-source check at 2026-10-11T21:23:08.768Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-fad6026b69ec96b91dcfaa1d871007ed753425c02dbdfbaa2e500fb955fcfac0-cb2c3174e7e8a5da4d516514f2006ad23126b43606dab921c11189f0efe6de19.log SHA-256 cb2c3174e7e8a5da4d516514f2006ad23126b43606dab921c11189f0efe6de19"
+      },
+      {
+        "id": "race-restored-attempt-rows-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs; current-source check at 2026-10-11T21:23:09.797Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-800551752305c34103f55cb703165d5b63d1d84ded66bf7e2693c5416e1c2923-8d387644d28167bfdd74cf2985829e7dcb9a18e0fc6ba89e958aa6f1fd9fa951.log SHA-256 8d387644d28167bfdd74cf2985829e7dcb9a18e0fc6ba89e958aa6f1fd9fa951"
+      },
+      {
+        "id": "race-projected-attempt-rows-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs; current-source check at 2026-10-11T21:23:10.992Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-10f31d36b380d633ae04d136f51ba779d4c9451e1fee0d5a01be2715030d8e53-aa26c138411ab740eb946e8ea69f3b5e91c46f0703497cd35a717827901db70f.log SHA-256 aa26c138411ab740eb946e8ea69f3b5e91c46f0703497cd35a717827901db70f"
+      },
+      {
+        "id": "race-history-integration-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-history-integration-browser.mjs; current-source check at 2026-10-11T21:23:12.444Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-8704bcbb3e3b9a9d6cf72af99a24b293c4287e0b3c366ba6b7c56c728102f561-b743fcaba455d72c9f07ae1c88c48a34eec95d04a53e246014df94e022368279.log SHA-256 b743fcaba455d72c9f07ae1c88c48a34eec95d04a53e246014df94e022368279"
+      },
+      {
+        "id": "race-reddit-history-opt-in-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs; current-source check at 2026-10-11T21:23:13.898Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-388775a766a66bd39237f872f8c86f3320e9d7521c6b53a7ef9ea58683e03c13-70ebb6ad11f8d0c325add73fa5d54eeba4128d4b3c787ad172b34ecbbf0ed277.log SHA-256 70ebb6ad11f8d0c325add73fa5d54eeba4128d4b3c787ad172b34ecbbf0ed277"
+      },
+      {
+        "id": "race-keyboard-feedback-strength-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs; current-source check at 2026-10-11T21:23:15.310Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-dd7a2a71e7d413f11dfaded7ad1d76cb708aef4e5b11bf2580a132f51bb0e908-ae91807e8e871df2ade8cf107fcc2822856a0109cb1ef30e5d4b9c50914b0b1b.log SHA-256 ae91807e8e871df2ade8cf107fcc2822856a0109cb1ef30e5d4b9c50914b0b1b"
+      },
+      {
+        "id": "race-time-rollover-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-time-rollover-browser.mjs; current-source check at 2026-10-11T21:23:16.741Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-84ffc42a26396579e5766ee44315b833b48b61dfc31984e9e35954e58f98e69b-0e2375697b0c85718ed27a018da7e576489d878966a918092f250cdb7b1e93ae.log SHA-256 0e2375697b0c85718ed27a018da7e576489d878966a918092f250cdb7b1e93ae"
+      },
+      {
+        "id": "race-harness-feedback-parity-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs; current-source check at 2026-10-11T21:23:18.198Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-2862144ab56cb564adbc588cfc9343e167cdc86bb861ed01ba708aa11d32afc7-99d072a3a8b56d69eec361200a09d3f49a2abbcb9477a134ed058321b2448a23.log SHA-256 99d072a3a8b56d69eec361200a09d3f49a2abbcb9477a134ed058321b2448a23"
+      },
+      {
+        "id": "race-harness-delayed-receipts-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs; current-source check at 2026-10-11T21:23:20.172Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-40682daadb59b45d34c48c167bc1eda8e1afb425ed0034b5df8233832f94e1eb-a561e15fb1421204ae5e7c591e70e3bd0258f925401bc09f69a1244c6849d555.log SHA-256 a561e15fb1421204ae5e7c591e70e3bd0258f925401bc09f69a1244c6849d555"
+      },
+      {
+        "id": "race-history-continuity-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/audit-race-history-continuity-browser.mjs; current-source check at 2026-10-11T21:23:22.084Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-76f02741413c24d6f58509243b92b2bd6e86e21721b426f12f0404232314fabc-d9a1138946a0cacaeeaa82e5fc9aaa21fba6f174fc12bca5de743652f6089df7.log SHA-256 d9a1138946a0cacaeeaa82e5fc9aaa21fba6f174fc12bca5de743652f6089df7"
+      },
+      {
+        "id": "race-confirmed-history-ledger-unit",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=raceConfirmedHistory; current-source check at 2026-10-11T21:23:22.991Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-7860a707da97053cfc0fb66392de4e3f3854567a87bc3a2247d95bd5a792d17d-6ab27edc7bf563fd75b8607c443bd86f6bc91f03de921377fa6c51a70ce5c30a.log SHA-256 6ab27edc7bf563fd75b8607c443bd86f6bc91f03de921377fa6c51a70ce5c30a"
+      },
+      {
+        "id": "race-confirmed-history-ledger-bounds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=raceConfirmedHistory --testNamePattern=equivalent confirmed rows|invalid attempt count; current-source check at 2026-10-11T21:23:23.893Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-3bcc22bf479664056856451f5ff4d141e501c8f5994b21e9434e97b357bef0f0-30b8b83ab75bd913a9896e973acbf9b31396489499fe3826ea2b81d9b0c1d8a1.log SHA-256 30b8b83ab75bd913a9896e973acbf9b31396489499fe3826ea2b81d9b0c1d8a1"
+      },
+      {
+        "id": "race-history-integration-prototype-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs; current-source check at 2026-10-11T21:23:25.813Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-19edf0b0f76d311c4bc409e8de174f50bce49990efcc983aad988d80b9c717cc-d9a1138946a0cacaeeaa82e5fc9aaa21fba6f174fc12bca5de743652f6089df7.log SHA-256 d9a1138946a0cacaeeaa82e5fc9aaa21fba6f174fc12bca5de743652f6089df7"
+      },
+      {
+        "id": "race-owned-authority-session-regressions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=RaceSession|raceAuthority|raceReset|raceRecoveryClock|raceStartReceipt; current-source check at 2026-10-11T21:23:30.039Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-5974dec4382ae55210675c124a058db78a485c318d07ec98beee23093de30a31-e75233273278cdbfadd142761b5475b16a4dbdfc3ac69dc4a761832761b15134.log SHA-256 e75233273278cdbfadd142761b5475b16a4dbdfc3ac69dc4a761832761b15134"
+      },
+      {
+        "id": "race-history-prototype-retained-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs; current-source check at 2026-10-11T21:23:51.183Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-033657163369f8f2ca4f7641305c3f5713f804b953d2d492014bb96e846803e6-c559615abe3b4c9a0ce973e89220657817584bc45da3a6828df81d91fa0bf522.log SHA-256 c559615abe3b4c9a0ce973e89220657817584bc45da3a6828df81d91fa0bf522"
+      },
+      {
+        "id": "race-history-checkpoint-runtime-unit",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=RaceSessionHistoryCheckpoints; current-source check at 2026-10-11T21:23:52.154Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-a7e22b125a62699f14e4544256feecc213a3332d615ff882c91113655cdb724c-ea5382d55a32db78ed6e4e1122f5fc00eaa38eb6fd2546940841f51a34daca29.log SHA-256 ea5382d55a32db78ed6e4e1122f5fc00eaa38eb6fd2546940841f51a34daca29"
+      },
+      {
+        "id": "race-hint-concurrent-history-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs; current-source check at 2026-10-11T21:23:53.458Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-9127a19ee0888deefb494fdd0b834a71167472c8631c653c4b7d515c6fcc55de-79c6c3bb3167d047ae07157176239c611088780075aef00b095cd072081ebe26.log SHA-256 79c6c3bb3167d047ae07157176239c611088780075aef00b095cd072081ebe26"
+      },
+      {
+        "id": "race-guess-concurrent-history-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs; current-source check at 2026-10-11T21:23:55.018Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-a3021e30668cfc0502175aacf40495447909f03143e2c730b95a2fe9caaf9fb5-349c85b03cd90d60547fb45742df75953ac88b7bd96d5ba9cb50a101617ab6be.log SHA-256 349c85b03cd90d60547fb45742df75953ac88b7bd96d5ba9cb50a101617ab6be"
+      },
+      {
+        "id": "race-confirmed-guess-retention-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs; current-source check at 2026-10-11T21:23:56.693Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-71fa9b3622fb1d19da72662d1dcdb761ba1e75bbc912bdae30a80507284e8d71-5e5b8c8cecca7e2917ed5bbaae6a6d0ce8a9179b6706ef25b2ea23db0d261f05.log SHA-256 5e5b8c8cecca7e2917ed5bbaae6a6d0ce8a9179b6706ef25b2ea23db0d261f05"
+      },
+      {
+        "id": "race-sparse-history-refresh-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs; current-source check at 2026-10-11T21:23:58.346Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-8dc23b806f3941e3eeb470ae5c45a2a0be5a656b191fd8008774989bf21ccc8e-da9356d9f4f7af2567f51d604083fb63eb5154ad11251cfe1d514d8aff902b9d.log SHA-256 da9356d9f4f7af2567f51d604083fb63eb5154ad11251cfe1d514d8aff902b9d"
+      },
+      {
+        "id": "race-history-normalization-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-history-normalization-browser.mjs; current-source check at 2026-10-11T21:23:59.766Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-d149e316de57132bc231083b20f831f8febb3248d85b6fb056e730532aa7cca1-d53152aeb9c757d08c5fc9fec64b2dda4d5941b8bb16f89ccf95c2e71372f009.log SHA-256 d53152aeb9c757d08c5fc9fec64b2dda4d5941b8bb16f89ccf95c2e71372f009"
+      },
+      {
+        "id": "race-history-progression-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-history-progression-browser.mjs; current-source check at 2026-10-11T21:24:02.220Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-8d89e1a668f913cedd8250be5f3ccace5fb2afdb4a67cee6d2d74aff303b9cf8-330855825ad5c3d996be95995586021cdd0fb34c7996e6fe480e00e762c76498.log SHA-256 330855825ad5c3d996be95995586021cdd0fb34c7996e6fe480e00e762c76498"
+      },
+      {
+        "id": "retained-authentication-entry-paths",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs --runInBand src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts --testNamePattern=renders typed invitation waiting|recovers a waiting invitation|consumes an unavailable challenge|reopens a completed recipient|opens a public creator entry|retains public recipient acceptance|suspends typed invitation polling; current-source check at 2026-10-11T21:28:11.702Z; output artifacts/development-checks/378d15171148b3c085ecc61a774375bc3c2973555cb894688b4dfcf12f64cfda-6e1d9f7485164721ec9a6f2c6fa3cf57675ed3c4972e76f4f5c62e4756f99844-f62081c4e7b3910df783b1ab7536cd97ee26789dc68694766df487067bbcd59e.log SHA-256 f62081c4e7b3910df783b1ab7536cd97ee26789dc68694766df487067bbcd59e"
+      }
+    ],
+    "remainingGates": [
+      "The ongoing multiplayer edge-case and reliability audit remains active.",
+      "Shared documentation must pass and the shared workspace must remain stable for the complete guarded dashboard verification.",
+      "Jest activation is authorized; publication, review submission and listing visibility remain on hold. Firebase deployment is authorized but this batch does not deploy."
+    ],
+    "nextAction": "Audit exhausted-attempt progression and further concurrent authority recovery; complete guarded dashboard verification after the concurrent full-pathway audit finishes and shared documentation and file-size checks pass.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "f71ef30786b162bfea5b4c5af9f8068d45778de282739f7e4629cc39dc032544"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "7046407c9af8fbc89d006c3cc7fb9910ca6bfb73138b0cbb7ac04dc8cf568acd"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "6a46d6cdf509afd382327c482b71dfcc80d7fb28705d165fd8b253cdeffe25e2"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "2de16e6b26a1c5ac97b300793b3d495d6d367117d50a51548ed3fca899b90e0e"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "973d077c0b355ec121f61e5cdfb17890f20e3073c857945b07a7ddaa529579b3"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "eb74fe7b37a1787618abfe4e4059aec7eb908848679312df04d34418d6b6cd9f"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "16278f4c78a1d0896c6a6263412082837ab3e388c03d1c2e997059aff4914fd2"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

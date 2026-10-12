@@ -14,6 +14,8 @@ const scratch=await mkdtemp(path.join(root,'node_modules/.cache/guidance-storage
 let browser,server;const observations=[];
 try {
  const source=`
+import {createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
+window.guidanceKeys={game:createTooltipTourStorageKey('gameTour','reddit-guest'),profile:createTooltipTourStorageKey('profileTour','reddit-guest')};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 const local=window.localStorage,session=window.sessionStorage,nativeSet=Storage.prototype.setItem,nativeGet=Storage.prototype.getItem,key='riddleQuestRedditGuestV1';
 const params=new URL(location.href).searchParams;
@@ -58,7 +60,7 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
   await page.waitForTimeout(500);
   metric('completed introductory guidance releases the game',await page.locator('.onboarding-card,.tooltip-card').count(),0);
   if(baseline){await context.close();continue;}
-  metric('failed game-tour marker has no durability acknowledgement',await page.evaluate(()=>window.marker('local','riddleQuest:tooltipSequenceSeen:gameTour:v2:reddit-guest')),null);
+  metric('failed game-tour marker has no durability acknowledgement',await page.evaluate(()=>window.marker('local',window.guidanceKeys.game)),null);
   // Guess journals need durable storage. Keep rejecting only presentation markers for the following real gameplay.
   await page.evaluate(()=>window.setFault('markers'));
   await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('ppppp');await page.keyboard.press('Enter');
@@ -73,7 +75,7 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
   for(let step=0;step<8;step++){await page.locator('.tooltip-card .play-primary').click();await page.waitForTimeout(80);}
   await page.waitForTimeout(600);
   metric('completed profile guidance releases its page',await page.locator('.tooltip-card').count(),0);
-  metric('failed profile marker has no durability acknowledgement',await page.evaluate(()=>window.marker('local','riddleQuest:tooltipSequenceSeen:profileTour:v3:reddit-guest')),null);
+  metric('failed profile marker has no durability acknowledgement',await page.evaluate(()=>window.marker('local',window.guidanceKeys.profile)),null);
   await page.locator('.game-modal .modal-x').scrollIntoViewIfNeeded();
   metric('profile Close is visible and reachable below the guest banner',await page.locator('.game-modal .modal-x').evaluate(button=>{const r=button.getBoundingClientRect();return r.width>=44&&r.height>=44&&r.top>=0&&r.bottom<=innerHeight&&button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2));}),true);
   await page.locator('.game-modal .modal-x').click();await page.locator('.profile-page').waitFor({state:'hidden'});
@@ -95,7 +97,7 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
   await page.locator('.tooltip-card .play-primary').click();
   await page.waitForTimeout(300);
   metric('replacement view can complete its genuinely unsaved tour',await page.locator('.tooltip-card').count(),0);
-  metric('healthy replacement completion saves the browser marker',await page.evaluate(()=>window.marker('local','riddleQuest:tooltipSequenceSeen:gameTour:v2:reddit-guest')),'seen');
+  metric('healthy replacement completion saves the browser marker',await page.evaluate(()=>window.marker('local',window.guidanceKeys.game)),'seen');
   metric('replacement retains the acknowledged gameplay history',await page.evaluate(()=>window.durable().playerData.activeGame.guesses.length),2);
   metric('replacement displays both restored guesses with truthful feedback',await page.evaluate(()=>[...document.querySelectorAll('.guess-row')].slice(0,2).map(row=>({guess:[...row.querySelectorAll('.cell')].map(cell=>cell.textContent).join(''),feedback:[...row.querySelectorAll('.cell')].map(cell=>['green','yellow','red'].find(status=>cell.classList.contains(status)))}))),[{guess:'ppppp',feedback:['green','red','red','red','red']},{guess:'qqqqq',feedback:['red','red','red','red','red']}]);
   await context.close();

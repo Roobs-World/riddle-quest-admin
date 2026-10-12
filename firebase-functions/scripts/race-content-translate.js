@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports -- This CLI uses the Functions CommonJS runtime. */
 "use strict";
 
 const OpenAI = require("openai").default;
@@ -75,7 +76,7 @@ else if (option("--translator-model") && option("--translator-model") !== transl
           existing.locale !== locale || existing.translatorModel !== translatorModel ||
           existing.criticModel !== criticModel
         ) throw new Error(`existing-output-contract-mismatch:${locale}`);
-        process.stdout.write(`${locale}: verified existing 180-riddle bundle; skipped\n`);
+        process.stdout.write(`${locale}: verified existing ${source.riddles.length}-riddle bundle; skipped\n`);
         continue;
       } catch (error) {
         if (error?.code !== "ENOENT") throw error;
@@ -136,7 +137,7 @@ else if (option("--translator-model") && option("--translator-model") !== transl
             }
             for (const item of response.output_parsed.items) checkpoint.translations[item.canonicalRiddleId] = item;
             await atomicJson(checkpointPath, checkpoint);
-            process.stdout.write(`${locale}: translated ${Object.keys(checkpoint.translations).length}/180\n`);
+            process.stdout.write(`${locale}: translated ${Object.keys(checkpoint.translations).length}/${source.riddles.length}\n`);
           }
           return batch.map(({canonicalRiddleId}) => checkpoint.translations[canonicalRiddleId]);
         },
@@ -168,7 +169,7 @@ else if (option("--translator-model") && option("--translator-model") !== transl
               );
             }
             await atomicJson(checkpointPath, checkpoint);
-            process.stdout.write(`${locale}: critiqued ${Object.keys(checkpoint.critiques).length}/180\n`);
+            process.stdout.write(`${locale}: critiqued ${Object.keys(checkpoint.critiques).length}/${source.riddles.length}\n`);
           }
           return batch.map(({canonicalRiddleId}) => checkpoint.critiques[canonicalRiddleId]);
         },

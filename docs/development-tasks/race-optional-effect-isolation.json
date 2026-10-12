@@ -1,24 +1,117 @@
 {
   "taskId": "multiplayer:race-optional-effect-isolation",
-  "targets": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"],
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks"
+  ],
   "work": "Preserve accepted multiplayer authority when optional callbacks fail, isolate provider recordings per adapter and account lifetime, and keep sharing available after analytics failure.",
-  "remainingGates": ["The full multiplayer reliability audit and repository-wide TSDoc findings remain open.", "Provider approval and deployment require separate evidence."],
+  "remainingGates": [
+    "The full multiplayer reliability audit and repository-wide TSDoc findings remain open.",
+    "Provider approval and deployment require separate evidence."
+  ],
   "nextAction": "Continue semantic run validation, provider dialog ownership and complete multiplayer integration verification.",
   "checks": [
-    {"id": "race-transitions", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "test", "--runInBand", "--testPathPatterns=src/play/race/__tests__"]},
-    {"id": "portal-types", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "check:types"]},
-    {"id": "isolated-target-builds", "executable": "pnpm", "args": ["--filter", "@qwordly/portal", "build:all-targets"]},
-    {"id": "injected-optional-effect-failures", "executable": "env", "args": ["PORTAL_BROWSER_TESTS=1", "PORTAL_USE_EXISTING_BUILD=1", "pnpm", "--filter", "@qwordly/portal", "test", "--runInBand", "--runTestsByPath", "src/jest/__tests__/authentication.jest-playwright.test.ts", "--testNamePattern=confirms the result when a hint penalty or final skip|publishes a completed score before reusable Jest invites"]},
-    {"id": "artifact-dependency-evidence", "executable": "node", "args": ["scripts/release/verify-target-dependency-evidence.mjs"]},
-    {"id": "maintainable-file-sizes", "executable": "pnpm", "args": ["check:file-sizes"]}
+    {
+      "id": "race-transitions",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--testPathPatterns=src/play/race/__tests__"
+      ]
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ]
+    },
+    {
+      "id": "isolated-target-builds",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ]
+    },
+    {
+      "id": "injected-optional-effect-failures",
+      "executable": "env",
+      "args": [
+        "PORTAL_BROWSER_TESTS=1",
+        "PORTAL_USE_EXISTING_BUILD=1",
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+        "--testNamePattern=confirms the result when a hint penalty or final skip|publishes a completed score before reusable Jest invites"
+      ]
+    },
+    {
+      "id": "artifact-dependency-evidence",
+      "executable": "node",
+      "args": [
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ]
+    },
+    {
+      "id": "maintainable-file-sizes",
+      "executable": "pnpm",
+      "args": [
+        "check:file-sizes"
+      ]
+    }
   ],
   "artifacts": [
-    {"target": "jest", "file": "artifacts/target-dependencies/jest.json"},
-    {"target": "facebook", "file": "artifacts/target-dependencies/facebook.json"},
-    {"target": "reddit", "file": "artifacts/target-dependencies/reddit.json"},
-    {"target": "youtube", "file": "artifacts/target-dependencies/youtube.json"},
-    {"target": "netflix", "file": "artifacts/target-dependencies/netflix.json"},
-    {"target": "yahoo", "file": "artifacts/target-dependencies/yahoo.json"},
-    {"target": "gamesnacks", "file": "artifacts/target-dependencies/gamesnacks.json"}
+    {
+      "target": "jest",
+      "file": "artifacts/target-dependencies/jest.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "facebook",
+      "file": "artifacts/target-dependencies/facebook.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "reddit",
+      "file": "artifacts/target-dependencies/reddit.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "youtube",
+      "file": "artifacts/target-dependencies/youtube.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "netflix",
+      "file": "artifacts/target-dependencies/netflix.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "yahoo",
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "checkId": "isolated-target-builds"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "checkId": "isolated-target-builds"
+    }
   ]
 }

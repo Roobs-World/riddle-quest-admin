@@ -1147,6 +1147,15 @@
     "height": 568,
     "target": "race",
     "scenario": "remount",
+    "name": "remount restores the accepted race draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "target": "race",
+    "scenario": "remount",
     "name": "edited draft is preserved",
     "actual": "pian",
     "expected": "pian"
@@ -3007,6 +3016,15 @@
     "height": 844,
     "target": "race",
     "scenario": "remount",
+    "name": "remount restores the accepted race draft",
+    "actual": "pian",
+    "expected": "pian"
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "target": "race",
+    "scenario": "remount",
     "name": "edited draft is preserved",
     "actual": "pian",
     "expected": "pian"
@@ -4861,6 +4879,15 @@
     "name": "remount uses distinct identities",
     "actual": false,
     "expected": false
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "target": "race",
+    "scenario": "remount",
+    "name": "remount restores the accepted race draft",
+    "actual": "pian",
+    "expected": "pian"
   },
   {
     "width": 1280,

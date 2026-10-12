@@ -1088,8 +1088,8 @@
     "height": 844,
     "scenario": "headers",
     "name": "retirement cancels queued health callbacks",
-    "actual": 11,
-    "expected": 11
+    "actual": 12,
+    "expected": 12
   },
   {
     "width": 390,
@@ -2068,8 +2068,8 @@
     "height": 844,
     "scenario": "chunks",
     "name": "retirement cancels queued health callbacks",
-    "actual": 13,
-    "expected": 13
+    "actual": 12,
+    "expected": 12
   },
   {
     "width": 1280,
