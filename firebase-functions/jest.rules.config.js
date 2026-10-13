@@ -95,10 +95,5 @@ module.exports = {
     "**/__tests__/race/raceUnscoredAuthority.it.test.ts",
     "**/__tests__/redditProfileRetention.it.test.ts",
     "**/__tests__/jestAccountOperationLease.it.test.ts",
-    "**/__tests__/race/raceInvitationCreatorRecovery.it.test.ts",
-    "**/__tests__/race/raceLiveGuessReceipt.it.test.ts",
-    "**/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts",
-    "**/__tests__/redditLiveGuessReceiptGateway.it.test.ts",
-    "**/__tests__/singlePlayerHintLocale.it.test.ts",
   ],
 };

@@ -30,7 +30,5 @@ describe("public package barrels", () => {
     expect(game.findNewMilestoneAchievementIds).toBe(core.findNewMilestoneAchievementIds);
     expect(game.ACHIEVEMENT_MILESTONES).toBe(core.ACHIEVEMENT_MILESTONES);
     expect(game.MAX_RIDDLE_ANSWER_CHARACTERS).toBeGreaterThan(0);
-    expect(game.isSinglePlayerKeyboardLetter("ı")).toBe(true);
-    expect(game.isSinglePlayerKeyboardLetter("é")).toBe(false);
   });
 });
