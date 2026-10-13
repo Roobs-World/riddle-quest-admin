@@ -12,7 +12,7 @@ export function dailyActivity(result, now = new Date()) {
     seen.add(date);
     const active = data.dau[index];
     const registered = data.registeredDau?.[index] ?? null;
-    if (!Number.isSafeInteger(active) || active < 0 || (registered !== null && (!Number.isSafeInteger(registered) || registered < 0 || registered > active))) throw new Error("Invalid Jest player count");
+    if (!Number.isSafeInteger(active) || active < 0 || (registered !== null && (!Number.isSafeInteger(registered) || registered < 0))) throw new Error("Invalid Jest player count");
     return {date, platform: "Jest", dailyActiveUsers: active, registeredDailyActiveUsers: registered};
   }).filter(({date}) => date < now.toISOString().slice(0, 10)).sort((a, b) => a.date.localeCompare(b.date));
 }

@@ -22,9 +22,22 @@ function provider() {
 test("daily activity excludes unfinished days, keeps measured zero and rejects malformed counts", () => {
   assert.deepEqual(dailyActivity(report, now), [{date: "2026-09-19", platform: "Jest", dailyActiveUsers: 0, registeredDailyActiveUsers: 0}]);
   for (const data of [{date: ["2026-02-30"], dau: [0]}, {date: ["2026-09-19"], dau: [-1]},
-    {date: ["2026-09-19"], dau: []}, {date: ["2026-09-19"], dau: [1], registeredDau: [2]}]) {
+    {date: ["2026-09-19"], dau: []}, {date: ["2026-09-19"], dau: [1], registeredDau: [-1]},
+    {date: ["2026-09-19"], dau: [1], registeredDau: [1.5]}]) {
     assert.throws(() => dailyActivity({chart: "dau_summary", data}, now));
   }
+});
+
+test("daily activity preserves the separate counters returned by the live provider", () => {
+  const observed = {chart: "dau_summary", data: {
+    date: ["2026-10-02", "2026-10-03", "2026-10-10", "2026-10-13"],
+    dau: [2, 1, 0, 0], registeredDau: [3, 2, 1, 0],
+  }};
+  assert.deepEqual(dailyActivity(observed, new Date("2026-10-13T06:00:00Z")), [
+    {date: "2026-10-02", platform: "Jest", dailyActiveUsers: 2, registeredDailyActiveUsers: 3},
+    {date: "2026-10-03", platform: "Jest", dailyActiveUsers: 1, registeredDailyActiveUsers: 2},
+    {date: "2026-10-10", platform: "Jest", dailyActiveUsers: 0, registeredDailyActiveUsers: 1},
+  ]);
 });
 
 test("authenticated MCP initialization retains the session and only calls the chosen read tool", async () => {
