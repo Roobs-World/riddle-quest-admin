@@ -82,15 +82,19 @@ try {
   await context.route("https://live-race.invalid/**",route=>route.fulfill({contentType:"image/svg+xml",body:'<svg xmlns="http://www.w3.org/2000/svg"/>'}));
   for(const page of [a,b])page.on('pageerror',error=>errors.push(error.message));
   async function enter(page,user,reload=false){if(reload)await page.reload();else await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}
-  async function solve(page){await page.locator('.guess-row .cell:not([disabled])').first().click();await page.keyboard.type(await authority.answer('Alice'));await page.locator('.race-actions .submit-action').click();}
+  async function solve(page,user='Alice'){await page.locator('.guess-row .cell:not([disabled])').first().click();await page.keyboard.type(await authority.answer(user));await page.locator('.race-actions .submit-action').click();}
   await enter(a,'Alice');await a.locator('.live-race-self strong').waitFor();await enter(b,'Bob');
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});await solve(a);
   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
+  await b.locator('.race-gameplay .guess-board').waitFor();await solve(b,'Bob');
+  await b.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
   await fixtureDb.recursiveDelete(fixtureDb.collection('localizedRiddles/en/riddles'));
   assert.equal((await fixtureDb.collection('localizedRiddles/en/riddles').get()).size,0);
   await enter(a,'Alice',true);await a.locator('.race-gameplay .guess-board').waitFor({timeout:10000});
   await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
   await enter(b,'Bob',true);await b.locator('.race-gameplay .guess-board').waitFor({timeout:10000});
+  await a.waitForFunction(()=>document.querySelector('.race-progress > div:nth-child(2) strong').textContent.includes('1 / 10'));
+  await b.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong').textContent.includes('1 / 10'));
   await b.waitForFunction(()=>document.querySelector('.race-progress > div:nth-child(2) strong').textContent.includes('1 / 10'));
   assert.equal((await fixtureDb.collection('liveRaceMatches').get()).size,1);assert.equal((await fixtureDb.collection('liveRaceTickets').get()).size,2);
   for(let count=2;count<=10;count++){await solve(a);if(count<10)await a.waitForFunction(count=>document.querySelector('.race-progress > div:first-child strong').textContent.includes(count+' / 10'),count);}
