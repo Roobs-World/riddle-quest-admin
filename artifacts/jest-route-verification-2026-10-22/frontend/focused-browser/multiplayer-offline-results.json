@@ -1,0 +1,14 @@
+{
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+  "cases": [
+    {
+      "name": "offline return preserves multiplayer and draft",
+      "passed": true,
+      "draftBefore": "PI",
+      "draftAfterReturn": "PIA",
+      "protectedCommandsWhileOffline": 0,
+      "expectedOfflineResourceErrors": 0
+    }
+  ],
+  "failures": []
+}

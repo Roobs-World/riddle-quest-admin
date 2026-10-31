@@ -1,0 +1,86 @@
+{
+  "body": "Classic\n250\nWhat has keys but cannot open doors?\nP\nI\nA\nN\nO\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip\nMultiplayer",
+  "commands": [
+    {
+      "type": "game:resize",
+      "payload": {
+        "width": 402,
+        "height": 682
+      }
+    },
+    {
+      "type": "game:ready",
+      "payload": {
+        "protocolVersion": 1,
+        "surface": "html5"
+      }
+    },
+    {
+      "type": "game:submitGuess",
+      "payload": {
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "guess": "AAAAA",
+        "requestId": "guess-09e2b789-6e09-40a4-b670-03b0441e4566"
+      }
+    },
+    {
+      "type": "game:submitGuess",
+      "payload": {
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "guess": "BBBBB",
+        "requestId": "guess-84156252-e95e-48fb-8de1-ebf38a31649c"
+      }
+    },
+    {
+      "type": "game:submitGuess",
+      "payload": {
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "guess": "CCCCC",
+        "requestId": "guess-818a0442-3f99-4560-bd97-7be4eb08675f"
+      }
+    },
+    {
+      "type": "game:submitGuess",
+      "payload": {
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "guess": "DDDDD",
+        "requestId": "guess-3e793d98-11c5-4512-9c6c-f718882f4071"
+      }
+    },
+    {
+      "type": "game:submitGuess",
+      "payload": {
+        "riddleId": "classic-fake-1",
+        "gameMode": "classic",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "guess": "EEEEE",
+        "requestId": "guess-c89bbeff-ea98-44c8-91ad-42eccbcf7119"
+      }
+    },
+    {
+      "type": "game:requestPurchase",
+      "payload": {
+        "productId": "com.roobsworld.riddlequest.coinpack1"
+      }
+    },
+    {
+      "type": "game:spendCoins",
+      "payload": {
+        "reason": "continue",
+        "gameMode": "classic",
+        "riddleId": "classic-fake-1",
+        "sessionToken": "00000000-0000-4000-8000-000000000001",
+        "amount": 50
+      }
+    }
+  ],
+  "errors": []
+}

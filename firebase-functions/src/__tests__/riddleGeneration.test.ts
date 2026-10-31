@@ -450,6 +450,20 @@ describe("riddleGeneration", () => {
   });
 
   describe("generateAndAppendRiddles", () => {
+    test("requires medium difficulty for every third new Classic index across retries", async () => {
+      mockGenerateUniqueRiddle
+        .mockResolvedValueOnce(["What is blue?", "sky", "easy"])
+        .mockResolvedValueOnce(["What is red?", "fire", "easy"])
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(["What moves leaves without hands?", "wind", "medium"]);
+
+      await riddleGeneration.generateAndAppendRiddles(3);
+
+      expect(mockGenerateUniqueRiddle.mock.calls.map(call => call[2].difficulty)).toEqual([undefined, undefined, "medium", "medium"]);
+      expect(mockSet).toHaveBeenCalledTimes(3);
+      expect(mockSet.mock.calls[2][1]).toMatchObject({classicIndex: 3, difficultyBand: "medium"});
+    });
+
     test("should successfully generate and store unique riddles", async () => {
       (mockGenerateUniqueRiddle as any)
         .mockResolvedValueOnce(["What is blue?", "sky", "easy"])
@@ -562,6 +576,7 @@ describe("riddleGeneration", () => {
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], expect.objectContaining({mode: "daily", difficulty: "medium"}));
       expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
           riddleId: "current",

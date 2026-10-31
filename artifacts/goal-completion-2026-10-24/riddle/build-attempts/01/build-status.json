@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-10-24T00:58:45.877274+00:00",
+  "complete": true,
+  "sourceMapUpload": false,
+  "results": [
+    {
+      "name": "all-target-builds",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 8.126,
+      "log": "all-target-builds.log"
+    }
+  ],
+  "completedAt": "2026-10-24T00:58:54.003391+00:00"
+}

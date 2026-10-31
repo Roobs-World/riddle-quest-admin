@@ -5,6 +5,7 @@ import {createGameMessageRouter} from "./bridgeRouter";
 import {gameSessionReducer, type GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
 import {isSingleAnswerCell} from "./answerCell";
+import {parseCompletionRewardBreakdown} from "./completionRewardBreakdown";
 
 /** Gets object. */
 const getObject = (data: unknown): Record<string, unknown> =>
@@ -259,6 +260,9 @@ export function useGameMessageRouter({
               type: "completionReward",
               reward: {
                 coinsEarned: reward ?? 0,
+                rewardBreakdown: data.isCorrect === true
+                  ? parseCompletionRewardBreakdown(data.rewardBreakdown, reward)
+                  : undefined,
                 totalCoins: getNumber(
                   data.rewardBreakdown && typeof data.rewardBreakdown === "object"
                     ? (data.rewardBreakdown as Record<string, unknown>).newBalance

@@ -1,0 +1,39 @@
+Start 6 at 2026-10-24T02:02:45.409Z: node --test packages/portal/scripts/jest-upload-artifact.test.mjs scripts/release/platform-releases.test.mjs
+passed 6 at 2026-10-24T02:02:45.924Z; source matches true
+Start 14 at 2026-10-24T02:02:46.553Z: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types
+passed 14 at 2026-10-24T02:02:50.944Z; source matches true
+Start 15 at 2026-10-24T02:03:01.264Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__
+passed 15 at 2026-10-24T02:03:08.274Z; source matches true
+Start 16 at 2026-10-24T02:03:09.051Z: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint
+passed 16 at 2026-10-24T02:03:15.555Z; source matches true
+Start 17 at 2026-10-24T02:03:16.180Z: pnpm --filter @qwordly/core test --runInBand
+passed 17 at 2026-10-24T02:03:18.594Z; source matches true
+Start 19 at 2026-10-24T02:03:19.762Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts
+passed 19 at 2026-10-24T02:03:20.952Z; source matches true
+Start 37 at 2026-10-24T02:03:21.929Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=playerPreferences.test.ts
+passed 37 at 2026-10-24T02:03:23.096Z; source matches true
+Start 38 at 2026-10-24T02:03:24.513Z: pnpm --filter @qwordly/portal test --runInBand
+passed 38 at 2026-10-24T02:03:40.065Z; source matches true
+Start 113 at 2026-10-24T02:03:41.307Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=raceConfirmedHistory
+passed 113 at 2026-10-24T02:03:42.798Z; source matches true
+Start 114 at 2026-10-24T02:03:45.399Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=raceConfirmedHistory --testNamePattern=equivalent confirmed rows|invalid attempt count
+passed 114 at 2026-10-24T02:03:47.715Z; source matches true
+Start 116 at 2026-10-24T02:03:49.903Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=RaceSession|raceAuthority|raceReset|raceRecoveryClock|raceStartReceipt
+passed 116 at 2026-10-24T02:03:56.491Z; source matches true
+Start 118 at 2026-10-24T02:03:58.998Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=RaceSessionHistoryCheckpoints
+passed 118 at 2026-10-24T02:04:00.335Z; source matches true
+Start 155 at 2026-10-24T02:04:01.477Z: node --test scripts/release/platform-releases.test.mjs scripts/release/package-html5-platform.test.mjs scripts/release/html5-handoff-preparation.test.mjs scripts/release/development-progress.test.mjs scripts/release/record-release-automation.test.mjs scripts/release/refresh-submission-dashboard.test.mjs
+passed 155 at 2026-10-24T02:04:02.540Z; source matches true
+Start 156 at 2026-10-24T02:04:03.638Z: node --test docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs
+passed 156 at 2026-10-24T02:04:04.441Z; source matches true
+Start 161 at 2026-10-24T02:04:05.228Z: pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/observability/__tests__
+passed 161 at 2026-10-24T02:04:06.547Z; source matches true
+Start 167 at 2026-10-24T02:04:07.704Z: pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/play/__tests__/firebaseRaceMatchmaking.test.ts
+passed 167 at 2026-10-24T02:04:08.900Z; source matches true
+Start 176 at 2026-10-24T02:04:09.632Z: pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/facebook/__tests__/contexts.test.ts
+passed 176 at 2026-10-24T02:04:11.023Z; source matches true
+Start 177 at 2026-10-24T02:04:12.394Z: node --test scripts/release/development-source-digest.test.mjs
+passed 177 at 2026-10-24T02:04:13.639Z; source matches true
+Start 179 at 2026-10-24T02:04:14.579Z: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint
+passed 179 at 2026-10-24T02:04:20.916Z; source matches true
+{"selected":19,"recorded":19,"failed":[],"report":"artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e.json","sourceStillMatches":true}

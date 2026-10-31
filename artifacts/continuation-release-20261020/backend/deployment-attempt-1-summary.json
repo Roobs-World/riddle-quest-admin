@@ -1,0 +1,8 @@
+{
+  "attempt": 1,
+  "cliExitCode": 0,
+  "deployCompleteReported": false,
+  "functionUpdateReported": false,
+  "localDiscoveryError": true,
+  "resolution": "Mirror parent workspace node_modules symlink in private staging directory."
+}

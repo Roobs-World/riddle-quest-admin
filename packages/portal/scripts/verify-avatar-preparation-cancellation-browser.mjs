@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.AVATAR_CANCEL_REACT_MODE??'development',baseline=process.env.AVATAR_CANCEL_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.AVATAR_CANCEL_REPORT_DIR??path.join(root,'../../artifacts/avatar-preparation-cancellation-2026-10-05',mode));
+const output=path.resolve(process.env.AVATAR_CANCEL_REPORT_DIR??path.join(root,'../../builds/test-evidence/avatar-preparation-cancellation-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/avatar-cancel-'));
 let browser,server;const observations=[];

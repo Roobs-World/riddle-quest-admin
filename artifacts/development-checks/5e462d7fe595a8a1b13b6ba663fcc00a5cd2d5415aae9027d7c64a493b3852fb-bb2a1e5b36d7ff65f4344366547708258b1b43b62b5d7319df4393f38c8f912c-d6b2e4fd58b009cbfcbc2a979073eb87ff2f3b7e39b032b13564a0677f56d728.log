@@ -1,0 +1,34 @@
+✔ deep brace and parenthesis input fails with a controlled depth error (17.077648ms)
+✔ 100 levels remain valid, 101 are rejected, and callers cannot relax the cap (18.068756ms)
+✔ caller-supplied ASTs cannot bypass depth protection (14.401429ms)
+✔ cyclic AST parent chains terminate (14.167305ms)
+✔ ordinary glob compilation, ranges and escaping retain their behavior (14.857913ms)
+✔ the audit exception is bound to the installed backport and required gate (0.444482ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.38383
+✔ committed workflows satisfy the CI security contract (1.344937ms)
+✔ rejects mutable actions, privileged triggers, and persisted checkout credentials (0.144754ms)
+✔ rejects workflows without least privilege, timeouts, or lockfile enforcement (0.092164ms)
+✔ rejects additional workflow permissions and a timeout missing from any job (0.068049ms)
+✔ requires manual, branch-scoped, protected, non-cancelling deployments (0.073961ms)
+✔ the image-size audit exceptions stay bound to the reviewed patch (0.356105ms)
+✔ malformed HEIF, ICNS, and JXL inputs terminate without looping (49.187459ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.152552
+Security configuration audit passed: production endpoints, CSP, and HSTS enforce encrypted transport.
+CI security audit passed: 3 workflows use least privilege and immutable dependencies.
+
+$ pnpm check:braces-security && node --test scripts/image-size-security-patch.test.mjs scripts/ci-security.test.mjs && node scripts/audit-security-config.mjs && node scripts/ci-security.mjs
+$ node scripts/braces-security-patch.test.mjs

@@ -14,7 +14,7 @@
     "test:deploy-scripts": "node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js && node scripts/facebook-context-retention.test.js && node scripts/facebook-nonce-retention.test.js && node scripts/reddit-profile-retention.test.js",
     "audit:facebook-exports": "node scripts/audit-facebook-backend-exports.js",
     "audit:reddit-exports": "node scripts/audit-reddit-backend-exports.js",
-    "validate:deploy-env": "node scripts/validate-deploy-env.js",
+    "validate:deploy-env": "node ../scripts/audit-function-capacity.mjs && node scripts/validate-deploy-env.js",
     "deploy": "pnpm validate:deploy-env && firebase deploy --only functions",
     "preflight:facebook-backend": "REQUIRE_FACEBOOK_DEPLOY_CONFIG=1 pnpm validate:deploy-env && pnpm test:deploy-scripts && pnpm audit:facebook-exports && pnpm check:types && pnpm lint && pnpm test --runInBand && pnpm build",
     "deploy:facebook-backend": "pnpm preflight:facebook-backend && firebase deploy --only functions,firestore:rules,firestore:indexes,database,storage --project riddle-quest-ec2b2",
@@ -58,7 +58,8 @@
     "facebook:referrals:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-referral-retention.js",
     "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-context-retention.js",
     "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-nonce-retention.js",
-    "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/reddit-profile-retention.js"
+    "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/reddit-profile-retention.js",
+    "postbuild": "node ../scripts/audit-function-capacity.mjs --built"
   },
   "engines": {
     "node": "22"
@@ -74,12 +75,27 @@
     "jose": "6.2.12",
     "openai": "^7.23.0",
     "stripe": "^22.6.2",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "overrides": {
     "basic-ftp": "6.2.1",
+    "body-parser@1": "1.20.9",
+    "body-parser@2": "2.4.0",
     "qs": "6.16.0",
-    "uuid": "11.1.1"
+    "uuid": "11.1.1",
+    "@fastify/busboy": "3.2.2",
+    "@grpc/grpc-js": "1.14.5",
+    "@modelcontextprotocol/sdk": "1.32.0",
+    "compression": "1.8.2",
+    "fast-uri": "3.1.9",
+    "hono": "4.13.11",
+    "ip-address": "10.7.4",
+    "js-yaml@3": "3.15.2",
+    "js-yaml@4": "4.3.2",
+    "morgan": "1.12.1",
+    "proxy-addr": "2.0.8",
+    "undici@6": "6.29.1",
+    "undici@8": "8.12.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

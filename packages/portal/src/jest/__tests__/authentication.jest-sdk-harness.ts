@@ -279,7 +279,10 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
             hasMore: false,
           };
         },
-        completePurchase: async () => ({result: "success"}),
+        completePurchase: async () => {
+          state.calls.push("sdk.payments.completePurchase");
+          return {result: "success"};
+        },
         beginPurchase: async () => ({result: "cancel"}),
         getSubscriptions: async () => {
           state.calls.push("sdk.payments.getSubscriptions");

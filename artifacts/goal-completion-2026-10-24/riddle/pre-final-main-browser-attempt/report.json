@@ -1,0 +1,47 @@
+{
+  "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDigest": "4924777c82f955893e28e11371893e1c59604f2a37b78b92c572158a63189c2a",
+  "startedAt": "2026-10-24T01:04:28.889Z",
+  "checks": [
+    {
+      "index": 150,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-live-race-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:live-pvp-delivery-recovery",
+        "multiplayer:live-pvp-lifecycle-recovery",
+        "multiplayer:live-pvp-seat-recovery"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:04:29.548Z",
+      "checkedAt": "2026-10-24T01:05:04.130Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/150.log",
+      "sha256": "51d04f4a119ef98db1ed48fdacf64ceb956838ef3b18ecb69c24698ba6d6c4ce",
+      "artifacts": {},
+      "artifactSnapshots": {}
+    },
+    {
+      "index": 151,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-live-race-delivery-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:live-pvp-delivery-recovery",
+        "multiplayer:live-pvp-lifecycle-recovery",
+        "multiplayer:live-pvp-seat-recovery"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:05:04.841Z",
+      "checkedAt": "2026-10-24T01:06:05.636Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/151.log",
+      "sha256": "a1bd1cec2ec89787c4d63651a5766676e09521d5091f6f83e1243cce62bd7c6d",
+      "artifacts": {},
+      "artifactSnapshots": {}
+    }
+  ]
+}

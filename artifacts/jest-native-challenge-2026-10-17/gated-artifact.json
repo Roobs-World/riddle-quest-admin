@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "kind": "jest-gated-artifact",
+  "gatedAt": "2026-10-17T16:51:40.962Z",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "buildVersion": "1.0.0-dev.20261017-native-challenge",
+  "activationRequested": false,
+  "source": {
+    "commit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+    "dirty": true
+  },
+  "archive": {
+    "file": "build.zip",
+    "bytes": 2870347,
+    "sha256": "4cfdc469c12b1d79c6611705e1314d3e2db78d9058aa83dce4465273bece61cb",
+    "entries": 417
+  }
+}

@@ -165,3 +165,25 @@ it("does not rewind authority when an older reconciliation finishes last", async
     riddles: [{classicIndex: 17, expiresAtMs: Date.now() + 60000, question}]}});
   await expect(loading).resolves.toMatchObject({riddleId: "classic-18", index: 18});
 });
+
+it("expires a language-owned Daily preload at regional 09:00 and sends only the selected locale", async () => {
+  jest.useFakeTimers().setSystemTime(new Date("2026-08-12T06:59:59Z"));
+  try {
+    mockDaily.mockResolvedValueOnce({data: {challenge: {questions: [{...question, riddleId: "daily-2026-08-11"}], totalQuestions: 1}}})
+      .mockResolvedValueOnce({data: {challenge: {questions: [{...question, riddleId: "daily-2026-08-12"}], totalQuestions: 1}}})
+      .mockResolvedValueOnce({data: {challenge: {questions: [{...question, riddleId: "english-daily-2026-08-11"}], totalQuestions: 1}}});
+    /** Owns the Daily preload across the regional rollover. */
+    const services = createFirebaseHostServices();
+    /** French selection uses the Paris challenge start boundary. */
+    const french = {gameMode: "challenge" as const, locale: "fr"};
+    await expect(services.loadRiddle(french)).resolves.toMatchObject({riddleId: "daily-2026-08-11"});
+    await expect(services.loadRiddle(french)).resolves.toMatchObject({riddleId: "daily-2026-08-11"});
+    expect(mockDaily).toHaveBeenCalledTimes(1);
+    jest.setSystemTime(new Date("2026-08-12T07:00:00Z"));
+    await expect(services.loadRiddle(french)).resolves.toMatchObject({riddleId: "daily-2026-08-12"});
+    await expect(services.loadRiddle({gameMode: "challenge", locale: "en"})).resolves.toMatchObject({riddleId: "english-daily-2026-08-11"});
+    expect(mockDaily).toHaveBeenCalledTimes(3);
+    expect(mockDaily).toHaveBeenNthCalledWith(2, {locale: "fr", includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true});
+    expect(mockDaily).toHaveBeenNthCalledWith(3, {locale: "en", includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true});
+  } finally {jest.useRealTimers();}
+});

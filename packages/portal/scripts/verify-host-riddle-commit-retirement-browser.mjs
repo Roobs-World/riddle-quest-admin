@@ -11,7 +11,7 @@ const mode = process.env.HOST_COMMIT_REACT_MODE ?? 'development';
 assert.ok(['development', 'production'].includes(mode));
 const engine = process.env.HOST_COMMIT_BROWSER ?? 'chromium';
 assert.ok(['chromium', 'firefox'].includes(engine));
-const output = path.resolve(process.env.HOST_COMMIT_REPORT_DIR ?? path.join(portal, '../../artifacts/host-riddle-commit-retirement-2026-10-06', engine + '-' + mode));
+const output = path.resolve(process.env.HOST_COMMIT_REPORT_DIR ?? path.join(portal, '../../builds/test-evidence/host-riddle-commit-retirement-2026-10-06', engine + '-' + mode));
 await mkdir(output, {recursive: true});
 await mkdir(path.join(portal, 'node_modules/.cache'), {recursive: true});
 const scratch = await mkdtemp(path.join(portal, 'node_modules/.cache/host-riddle-commit-'));

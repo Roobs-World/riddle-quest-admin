@@ -71,7 +71,7 @@ const operatorHomeDirectory = homedir();
 if (process.platform !== "linux") {
   throw new Error("Secure Jest releases require Linux and functional bubblewrap; refusing an unsandboxed fallback");
 }
-const releaseSandboxDirectory = mkdtempSync("/tmp/riddle-quest-release-sandbox-");
+const releaseSandboxDirectory = mkdtempSync("/var/tmp/riddle-quest-release-sandbox-");
 const releaseDebugLogQuarantineDirectory = join(
   repositoryDirectory,
   ".firebase",
@@ -367,7 +367,7 @@ addReadOnlyDirectoryBind(operatorCorepackCache, isolatedCorepackCache);
 // read-only bind fails even when the required runtimes are already installed.
 const operatorFirebaseEmulatorCache = join(operatorHomeDirectory, ".cache", "firebase", "emulators");
 const isolatedFirebaseEmulatorCache = join(isolatedHomeDirectory, ".cache", "firebase", "emulators");
-if (existsSync(operatorFirebaseEmulatorCache)) {
+if (process.env.JEST_RELEASE_SKIP_TESTS !== "true" && existsSync(operatorFirebaseEmulatorCache)) {
   cpSync(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, {recursive: true});
 }
 

@@ -1,0 +1,103 @@
+{
+  "verifiedAt": "2026-10-24T01:39:16.990Z",
+  "versionId": "01a16b8c-895e-71aa-8205-466517c50aa5",
+  "scope": "Exact uploaded artifact; local provider boundary mock; genuine bundled assets and MIME types",
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visibleImages": [
+        {
+          "path": "/assets/riddlequest-r-kPbkvcmu.webp",
+          "complete": true,
+          "naturalWidth": 1254,
+          "naturalHeight": 1254,
+          "visible": true
+        },
+        {
+          "path": "/assets/coin-BoXSckWC.svg",
+          "complete": true,
+          "naturalWidth": 120,
+          "naturalHeight": 120,
+          "visible": true
+        },
+        {
+          "path": "image/svg+xml,%3csvg%20width='20'%20height='15'%20viewBox='0%200%2020%2015'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M6.8%202H18.6V13H6.8L1.7%207.5L6.8%202Z'%20fill='black'%20stroke='white'%20stroke-width='1.75'%20stroke-linejoin='round'%20/%3e%3cline%20x1='9.2'%20y1='4.5'%20x2='14.8'%20y2='10.1'%20stroke='white'%20stroke-width='1.5'/%3e%3cline%20x1='14.8'%20y1='4.5'%20x2='9.2'%20y2='10.1'%20stroke='white'%20stroke-width='1.5'/%3e%3c/svg%3e",
+          "complete": true,
+          "naturalWidth": 20,
+          "naturalHeight": 15,
+          "visible": true
+        }
+      ],
+      "allVisibleImagesDecoded": true,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "visibleImages": [
+        {
+          "path": "/assets/riddlequest-r-kPbkvcmu.webp",
+          "complete": true,
+          "naturalWidth": 1254,
+          "naturalHeight": 1254,
+          "visible": true
+        },
+        {
+          "path": "/assets/coin-BoXSckWC.svg",
+          "complete": true,
+          "naturalWidth": 120,
+          "naturalHeight": 120,
+          "visible": true
+        },
+        {
+          "path": "image/svg+xml,%3csvg%20width='20'%20height='15'%20viewBox='0%200%2020%2015'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M6.8%202H18.6V13H6.8L1.7%207.5L6.8%202Z'%20fill='black'%20stroke='white'%20stroke-width='1.75'%20stroke-linejoin='round'%20/%3e%3cline%20x1='9.2'%20y1='4.5'%20x2='14.8'%20y2='10.1'%20stroke='white'%20stroke-width='1.5'/%3e%3cline%20x1='14.8'%20y1='4.5'%20x2='9.2'%20y2='10.1'%20stroke='white'%20stroke-width='1.5'/%3e%3c/svg%3e",
+          "complete": true,
+          "naturalWidth": 20,
+          "naturalHeight": 15,
+          "visible": true
+        }
+      ],
+      "allVisibleImagesDecoded": true,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "viewport": {
+        "width": 459,
+        "height": 591
+      },
+      "visibleImages": [
+        {
+          "path": "/assets/riddlequest-r-kPbkvcmu.webp",
+          "complete": true,
+          "naturalWidth": 1254,
+          "naturalHeight": 1254,
+          "visible": true
+        },
+        {
+          "path": "/assets/coin-BoXSckWC.svg",
+          "complete": true,
+          "naturalWidth": 120,
+          "naturalHeight": 120,
+          "visible": true
+        },
+        {
+          "path": "image/svg+xml,%3csvg%20width='20'%20height='15'%20viewBox='0%200%2020%2015'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M6.8%202H18.6V13H6.8L1.7%207.5L6.8%202Z'%20fill='black'%20stroke='white'%20stroke-width='1.75'%20stroke-linejoin='round'%20/%3e%3cline%20x1='9.2'%20y1='4.5'%20x2='14.8'%20y2='10.1'%20stroke='white'%20stroke-width='1.5'/%3e%3cline%20x1='14.8'%20y1='4.5'%20x2='9.2'%20y2='10.1'%20stroke='white'%20stroke-width='1.5'/%3e%3c/svg%3e",
+          "complete": true,
+          "naturalWidth": 20,
+          "naturalHeight": 15,
+          "visible": true
+        }
+      ],
+      "allVisibleImagesDecoded": true,
+      "failedRequests": [],
+      "pageErrors": []
+    }
+  ]
+}

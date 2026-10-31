@@ -1,0 +1,13 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Readiness UI passed: 1280px, echo; owned run retained, no automatic repeat or browser exception.
+[riddle-silent-guard] context isolated before navigation
+Readiness UI passed: 1280px, throw; owned run retained, no automatic repeat or browser exception.
+[riddle-silent-guard] context isolated before navigation
+Readiness UI passed: 1280px, confirmed-throw; owned run retained, no automatic repeat or browser exception.
+[riddle-silent-guard] context isolated before navigation
+Readiness UI passed: 390px, echo; owned run retained, no automatic repeat or browser exception.
+[riddle-silent-guard] context isolated before navigation
+Readiness UI passed: 390px, throw; owned run retained, no automatic repeat or browser exception.
+[riddle-silent-guard] context isolated before navigation
+Readiness UI passed: 390px, confirmed-throw; owned run retained, no automatic repeat or browser exception.

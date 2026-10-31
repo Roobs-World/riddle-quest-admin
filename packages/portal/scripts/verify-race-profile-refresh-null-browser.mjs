@@ -9,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.RACE_NULL_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.RACE_NULL_REPORT_DIR??path.join(root,'../../artifacts/race-profile-refresh-null-2026-10-05',mode));
+const output=path.resolve(process.env.RACE_NULL_REPORT_DIR??path.join(root,'../../builds/test-evidence/race-profile-refresh-null-2026-10-05',mode));
 const baseline=process.env.RACE_NULL_BASELINE_DIR;
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/race-profile-null-'));

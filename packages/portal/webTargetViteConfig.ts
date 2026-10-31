@@ -525,6 +525,50 @@ function webTargetBuildContractPlugin(target: WebTarget, expectedOutDir: string)
   };
 }
 
+/** Compacts nonsemantic shader spacing in Jest bundles while retaining lines and continuations. */
+function jestShaderIndentationPlugin(): Plugin {
+  return {
+    name: "riddle-quest-jest-shader-indentation",
+    apply: "build",
+    enforce: "pre",
+    /** Shader templates retain their tokens, comments and diagnostic line numbers. */
+    transform(source, id) {
+      if (!/[\\/]three[\\/]src[\\/]renderers[\\/]shaders[\\/].*\.glsl\.js$/.test(id)) return null;
+      return {
+        code: source.replace(/(\/\* glsl \*\/`)((?:\\[\s\S]|[^\\`])*)(`)/g,
+          (original: string, opening: string, shader: string, closing: string) => {
+            if (shader.includes("${")) return original;
+            /** Block-comment state protects shader commentary across source lines. */
+            let blockComment = false;
+            /** Continuation lines retain the whitespace separating their preprocessed tokens. */
+            const lines = shader.split("\n");
+            /** Only horizontal spacing inside parentheses changes on ordinary code lines. */
+            const compacted = lines.map((line, index) => {
+              /** Preprocessor directives and continued lines retain their complete interior spacing. */
+              const protectedLine = /^[\t ]*#/.test(line) || index > 0 && /\\[\t ]*\r?$/.test(lines[index - 1]);
+              /** Line comments stop spacing changes until the next source line. */
+              let lineComment = false;
+              /** Leading indentation may be removed unless a prior line continues into this one. */
+              const indented = index > 0 && /\\[\t ]*\r?$/.test(lines[index - 1]) ? line : line.replace(/^[\t ]+/, "");
+              return indented.replace(/\/\*|\*\/|\/\/|\([\t ]+|[\t ]+\)/g, (token: string) => {
+                if (blockComment) {
+                  if (token === "*/") blockComment = false;
+                  return token;
+                }
+                if (lineComment) return token;
+                if (token === "/*") {blockComment = true; return token;}
+                if (token === "//") {lineComment = true; return token;}
+                return protectedLine ? token : token.trim();
+              });
+            }).join("\n");
+            return opening + compacted + closing;
+          }),
+        map: null,
+      };
+    },
+  };
+}
+
 /** Creates one coherent Vite configuration for the selected compile-time Web Target. */
 export function createWebTargetViteConfig({
   command,
@@ -583,6 +627,7 @@ export function createWebTargetViteConfig({
     targetHtmlPlugin(profile),
     jestChallengePushWorkerPlugin(profile.id, command),
     webTargetDependencyPlugin(profile.id),
+    ...(profile.id === "jest" ? [jestShaderIndentationPlugin()] : []),
     react(),
     babel({presets: [reactCompilerPreset()]}),
     ...profile.createArtifactPlugins({allowYouTubeFixture, youtubeContent}),

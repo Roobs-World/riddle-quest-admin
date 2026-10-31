@@ -1,0 +1,9 @@
+{
+  "tmp": "/tmp/riddle-bll-purchase-green-7_0lzjjp",
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/demo-fixes-2026-10-23/jest-artifact",
+  "files": 419,
+  "bytes": 4718419,
+  "preflightHashesMatch": true,
+  "manifestSha256": "70308f6816c8e94c18f02c4026ef05fe3efe2e0b7fe28af6d76074e425a1b781",
+  "scope": "Paired exact compiled artifact uses real coordinator/hook/host/UI and existing synthetic auth+SDK backend fixture. The fixture does not persist grant into the fake canonical profile on reload; idempotent reload is independently tested with the coordinator ledger and official Simulator."
+}

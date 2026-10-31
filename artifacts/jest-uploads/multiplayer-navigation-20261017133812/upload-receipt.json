@@ -1,0 +1,24 @@
+{
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "version": "1.0.0-dev.20261017133812.dfa88fa4e0a9",
+  "sourceCommit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDirty": true,
+  "archivePath": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-uploads/multiplayer-navigation-20261017133812/build.zip",
+  "archiveSha256": "dfa88fa4e0a950a1d185783251e1705aff8fd8b7ea3244313f7808091f18b68e",
+  "archiveBytes": 2868716,
+  "files": 415,
+  "activationRequested": false,
+  "uploadState": "accepted",
+  "uploadStartedAt": "2026-10-17T13:38:55.260862+00:00",
+  "uploadHttpStatus": "202",
+  "uploadExitCode": 0,
+  "uploadResponse": {
+    "versionId": "01a14a16-479e-7779-a3a3-db80943f5cb3",
+    "buildStatus": "processing"
+  },
+  "versionId": "01a14a16-479e-7779-a3a3-db80943f5cb3",
+  "buildStatus": "ready",
+  "isActive": false,
+  "previewUrl": "https://jest.com/g/riddle-q?versionId=01a14a16-479e-7779-a3a3-db80943f5cb3"
+}

@@ -1,0 +1,21 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Succès débloqué !",
+    "COINS_SUFFIX": " Pièces",
+    "NEXT_LEVEL_BUTTON": "Niveau suivant",
+    "SHARE_TEXT": "Inviter un ami · 100 pièces chacun",
+    "REFERRAL_REWARD_MESSAGE": "Inscris-toi avec mon invitation et nous gagnerons chacun {coins} pièces !",
+    "OPEN_INVITE_MESSAGE": "{name} te défie sur Riddle Quest. Inscris-toi avec cette invitation et vous gagnerez chacun {coins} pièces !",
+    "REFERRAL_REWARD_TITLE": "Un ami vous a rejoint !",
+    "TITLE": "BEAU TRAVAIL !",
+    "TOTAL_COINS_LABEL": "Total des pièces",
+    "YOU_WON_TITLE": "VOUS AVEZ GAGNÉ !",
+    "SHARE_ATTEMPT_PLURAL": "tentatives",
+    "SHARE_ATTEMPT_SINGULAR": "tentatives",
+    "SHARE_CLASSIC_MODE_LABEL": "Mode classique",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Défi quotidien",
+    "SHARE_MESSAGE_TEMPLATE": "J'ai résolu le Riddle Quest {gameType} d'aujourd'hui en {attempts} {attemptLabel} !\n\n{emojiGrid}\n\nPouvez-vous battre mon score ?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Découvrez mon résultat Riddle Quest !",
+    "INVITE_FRIEND": "Inviter un ami"
+  }
+}

@@ -1,13 +1,31 @@
-import {beforeEach, describe, expect, it, jest} from "@jest/globals";
+import {afterAll, beforeAll, beforeEach, describe, expect, it, jest} from "@jest/globals";
+
 import type {Dispatch, SetStateAction} from "react";
 import type {ProductSummary} from "../../play/types";
-import type {JestPurchaseCoordinator} from "../purchases";
+import {JestPurchaseCoordinator} from "../purchases";
+import {MockJestPlatform} from "../MockJestPlatform";
+import {JestBackendClient} from "../backend";
 import type {JestSession} from "../types";
 
 /** Provides mock track event behavior. */
 const mockTrackEvent = jest.fn();
 /** Provides mock track purchase behavior. */
 const mockTrackPurchase = jest.fn();
+/** Original browser descriptor restored after installing language and lock fixtures. */
+const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator");
+
+beforeAll(() => {
+  Object.defineProperty(globalThis, "navigator", {configurable: true, value: {
+    language: "en-GB",
+    locks: {request: async (name: string, _options: LockOptions,
+      operation: (lock: Pick<Lock, "name" | "mode">) => unknown) => operation({name, mode: "exclusive"})},
+  }});
+});
+
+afterAll(() => {
+  if (originalNavigator) Object.defineProperty(globalThis, "navigator", originalNavigator);
+  else Reflect.deleteProperty(globalThis, "navigator");
+});
 
 jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
@@ -58,10 +76,15 @@ const createHarness = ({
 } = {}) => {
   /** Provides purchase behavior. */
   const purchase = jest.fn<JestPurchaseCoordinator["purchase"]>();
-  /** Provides subscribe behavior. */
-  const subscribe = jest.fn<JestPurchaseCoordinator["subscribe"]>();
-  /** Returns fresh provider state for checkout preflight. */
-  const getSubscriptions = jest.fn<JestPurchaseCoordinator["getSubscriptions"]>().mockResolvedValue({status: "success", value: products});
+  /** Settles checkout after the coordinator has published its verified catalog. */
+  const checkout = jest.fn<() => ReturnType<JestPurchaseCoordinator["subscribe"]>>();
+  /** Models the coordinator callback contract; authority guards use the real coordinator below. */
+  const subscribe = jest.fn<JestPurchaseCoordinator["subscribe"]>().mockImplementation(async (_sku, _playerId, options) => {
+    options?.onCatalog?.(products.filter((entry) => entry.productType === "subscription"));
+    return checkout();
+  });
+  /** Detects redundant hook-owned preflight requests. */
+  const getSubscriptions = jest.fn<JestPurchaseCoordinator["getSubscriptions"]>();
   /** Sets products. */
   const setProducts = jest.fn<Dispatch<SetStateAction<ProductSummary[]>>>();
   /** Tracks funnel. */
@@ -75,7 +98,7 @@ const createHarness = ({
     ...(subscriptionsEnabled === undefined ? {} : {subscriptionsEnabled}),
     trackFunnel,
   });
-  return {purchase, purchaseProduct, setProducts, subscribe, trackFunnel, getSubscriptions};
+  return {purchase, purchaseProduct, setProducts, subscribe, checkout, trackFunnel, getSubscriptions};
 };
 
 beforeEach(() => {
@@ -172,7 +195,7 @@ describe("useJestPurchase", () => {
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
 
-  it("requires a registered player before beginning a subscription", async () => {
+  it("lets the platform handle guest subscription registration without an error", async () => {
     /** Provides subscription behavior. */
     const subscription = product({
       productId: "premium-monthly",
@@ -180,15 +203,22 @@ describe("useJestPurchase", () => {
       subscriptionStatus: "inactive",
     });
     /** Provides {purchase product, subscribe} behavior. */
-    const {purchaseProduct, subscribe} = createHarness({
+    const {purchaseProduct, subscribe, checkout} = createHarness({
       products: [subscription],
       currentSession: session(false),
       subscriptionsEnabled: true,
     });
+    checkout.mockResolvedValue({status: "unavailable", message: "guest_not_allowed"});
 
-    await expect(purchaseProduct("premium-monthly")).rejects.toThrow("Registration is required to subscribe.");
-    expect(subscribe).not.toHaveBeenCalled();
+    await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
+      success: false,
+      cancelled: true,
+      productId: "premium-monthly",
+      purchaseType: "subscription",
+    });
+    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1", {locale: navigator.language, onCatalog: expect.any(Function)});
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
 
   it("rejects a production subscription before analytics or platform checkout", async () => {
@@ -218,12 +248,14 @@ describe("useJestPurchase", () => {
     const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
 
     await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
-      success: true,
+      success: false,
+      cancelled: true,
       productId: "premium-monthly",
       purchaseType: "subscription",
     });
     expect(subscribe).not.toHaveBeenCalled();
     expect(mockTrackPurchase).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it("returns a typed subscription cancellation without activating the product", async () => {
@@ -234,11 +266,11 @@ describe("useJestPurchase", () => {
       subscriptionStatus: "inactive",
     });
     /** Provides {purchase product, set products, subscribe, track funnel} behavior. */
-    const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({
+    const {purchaseProduct, setProducts, checkout, trackFunnel} = createHarness({
       products: [subscription],
       subscriptionsEnabled: true,
     });
-    subscribe.mockResolvedValue({status: "cancelled"});
+    checkout.mockResolvedValue({status: "cancelled"});
 
     await expect(purchaseProduct("premium-monthly")).resolves.toEqual({
       success: false,
@@ -259,8 +291,8 @@ describe("useJestPurchase", () => {
       subscriptionStatus: "inactive",
     });
     /** Provides {purchase product, subscribe} behavior. */
-    const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
-    subscribe.mockResolvedValue({status: "terminal-failure", message: "Entitlement inactive"});
+    const {purchaseProduct, checkout} = createHarness({products: [subscription], subscriptionsEnabled: true});
+    checkout.mockResolvedValue({status: "terminal-failure", message: "Entitlement inactive"});
 
     await expect(purchaseProduct("premium-monthly")).rejects.toThrow("Entitlement inactive");
     expect(mockTrackPurchase).not.toHaveBeenCalled();
@@ -274,8 +306,8 @@ describe("useJestPurchase", () => {
       subscriptionStatus: "inactive",
     });
     /** Provides {purchase product, subscribe} behavior. */
-    const {purchaseProduct, subscribe} = createHarness({products: [subscription], subscriptionsEnabled: true});
-    subscribe.mockResolvedValueOnce({
+    const {purchaseProduct, checkout} = createHarness({products: [subscription], subscriptionsEnabled: true});
+    checkout.mockResolvedValueOnce({
       status: "success",
       value: {activeSku: "premium-monthly", blockedSkus: [], premiumCoinsAwarded: 3400, newCoins: 3700},
     });
@@ -288,7 +320,7 @@ describe("useJestPurchase", () => {
     });
 
     // A grant without a reported balance leaves the displayed balance to the next profile load.
-    subscribe.mockResolvedValueOnce({
+    checkout.mockResolvedValueOnce({
       status: "success",
       value: {activeSku: "premium-monthly", blockedSkus: [], premiumCoinsAwarded: 3400},
     });
@@ -327,11 +359,11 @@ describe("useJestPurchase", () => {
     /** Provides products behavior. */
     const products = [monthly, yearly, supporter, consumable];
     /** Provides {purchase product, set products, subscribe, track funnel} behavior. */
-    const {purchaseProduct, setProducts, subscribe, trackFunnel} = createHarness({
+    const {purchaseProduct, setProducts, subscribe, checkout, trackFunnel} = createHarness({
       products,
       subscriptionsEnabled: true,
     });
-    subscribe.mockResolvedValue({
+    checkout.mockResolvedValue({
       status: "success",
       value: {activeSku: "premium-monthly", blockedSkus: ["premium-yearly"], premiumCoinsAwarded: 0},
     });
@@ -346,10 +378,9 @@ describe("useJestPurchase", () => {
     const update = setProducts.mock.calls.at(-1)![0] as (current: ProductSummary[]) => ProductSummary[];
     expect(update(products)).toEqual([
       {...monthly, subscriptionStatus: "active", trialEligible: false},
-      supporter,
       consumable,
     ]);
-    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1");
+    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1", {locale: navigator.language, onCatalog: expect.any(Function)});
     expect(trackFunnel).toHaveBeenCalledWith("subscription_completed", {productId: "premium-monthly"});
     expect(mockTrackPurchase).toHaveBeenCalledWith({
       productId: "premium-monthly",
@@ -360,14 +391,20 @@ describe("useJestPurchase", () => {
   });
 });
 
-it("refreshes stale offers before checkout and never starts an already-held plan", async () => {
+it("publishes the locked coordinator's active holdings without checkout analytics", async () => {
   /** Creates an offer that becomes stale before checkout. */
   const subscription = product({productId: "premium", productType: "subscription", subscriptionStatus: "inactive"});
   /** Exposes checkout and the provider state refresh. */
   const {purchaseProduct, subscribe, getSubscriptions} = createHarness({products: [subscription], subscriptionsEnabled: true});
-  getSubscriptions.mockResolvedValue({status: "success", value: [{...subscription, subscriptionStatus: "active"}]});
-  await purchaseProduct("premium");
-  expect(subscribe).not.toHaveBeenCalled();
+  subscribe.mockImplementation(async (_sku, _player, options) => {
+    options?.onCatalog?.([{...subscription, subscriptionStatus: "active"}]);
+    return {status: "cancelled"};
+  });
+  await expect(purchaseProduct("premium")).resolves.toEqual({success: false, cancelled: true,
+    productId: "premium", purchaseType: "subscription"});
+  expect(subscribe).toHaveBeenCalledTimes(1);
+  expect(getSubscriptions).not.toHaveBeenCalled();
+  expect(mockTrackEvent).not.toHaveBeenCalled();
   expect(mockTrackPurchase).not.toHaveBeenCalled();
 });
 
@@ -376,9 +413,11 @@ it("fails closed when checkout preflight cannot read subscriptions", async () =>
   const subscription = product({productId: "premium", productType: "subscription"});
   /** Controls the provider failure at the purchase boundary. */
   const {purchaseProduct, subscribe, getSubscriptions} = createHarness({products: [subscription], subscriptionsEnabled: true});
-  getSubscriptions.mockResolvedValue({status: "retryable-failure", message: "offline"});
-  await expect(purchaseProduct("premium")).rejects.toThrow();
-  expect(subscribe).not.toHaveBeenCalled();
+  subscribe.mockResolvedValue({status: "retryable-failure", message: "offline"});
+  await expect(purchaseProduct("premium")).rejects.toThrow("Failed to load shop products");
+  expect(subscribe).toHaveBeenCalledTimes(1);
+  expect(getSubscriptions).not.toHaveBeenCalled();
+  expect(mockTrackEvent).not.toHaveBeenCalled();
 });
 
 it("removes a now-blocked cadence while preserving coin packs", async () => {
@@ -388,10 +427,108 @@ it("removes a now-blocked cadence while preserving coin packs", async () => {
   const coinPack = product();
   /** Exposes the state update used to remove the stale cadence. */
   const {purchaseProduct, subscribe, getSubscriptions, setProducts} = createHarness({products: [subscription, coinPack], subscriptionsEnabled: true});
-  getSubscriptions.mockResolvedValue({status: "success", value: []});
-  await purchaseProduct("premium");
+  subscribe.mockImplementation(async (_sku, _player, options) => {
+    options?.onCatalog?.([]);
+    return {status: "cancelled"};
+  });
+  await expect(purchaseProduct("premium")).resolves.toEqual({success: false, cancelled: true,
+    productId: "premium", purchaseType: "subscription"});
   /** Applies the actual catalog updater to the prior visible state. */
   const update = setProducts.mock.calls[0][0] as (current: ProductSummary[]) => ProductSummary[];
   expect(update([subscription, coinPack])).toEqual([coinPack]);
-  expect(subscribe).not.toHaveBeenCalled();
+  expect(subscribe).toHaveBeenCalledTimes(1);
+  expect(getSubscriptions).not.toHaveBeenCalled();
+  expect(mockTrackEvent).not.toHaveBeenCalled();
+});
+
+it("opens checkout after exactly one SDK catalog read and one verified preflight", async () => {
+  /** Inactive premium offer used to initiate the guarded subscription purchase. */
+  const subscription = product({productId: "premium", productType: "subscription", subscriptionStatus: "inactive"});
+  /** Subscription-capable provider fixture with observable catalog and checkout calls. */
+  const platform = new MockJestPlatform(true);
+  /** Single signed SDK catalog response required before checkout. */
+  const catalog = jest.spyOn(platform, "getSubscriptions").mockResolvedValue({status: "success", value: {
+    subscriptions: [{sku: "premium", displayName: "Premium", displayDescription: "", price: 4.99,
+      currency: "GBP", billingPeriod: "monthly", status: "inactive", trialEligible: true}],
+    subscriptionsSigned: "catalog.signed",
+  }});
+  /** Releases authoritative holdings verification after the pending-state assertions. */
+  let finishPreflight: (() => void) | undefined;
+  /** Pending backend verification that must prevent checkout from opening. */
+  const verification = new Promise<void>((resolve) => {finishPreflight = resolve;});
+  /** Signals that the coordinator has reached authoritative holdings verification. */
+  let markPreflightStarted: (() => void) | undefined;
+  /** Synchronization point for assertions made before verification completes. */
+  const preflightStarted = new Promise<void>((resolve) => {markPreflightStarted = resolve;});
+  /** Backend client with controlled signed catalog and purchased-holding verification. */
+  const backend = new JestBackendClient("https://example.invalid");
+  /** Pauses catalog verification and grants the premium holding only after checkout. */
+  const sync = jest.spyOn(backend, "syncSubscriptions").mockImplementation(async signed => {
+    if (signed === "catalog.signed") {markPreflightStarted?.(); await verification;}
+    return {verified: true, activeSkus: signed === "catalog.signed" ? [] : ["premium"]};
+  });
+  /** Records the provider checkout that must follow successful preflight. */
+  const begin = jest.spyOn(platform, "beginSubscription");
+  /** Captures verified catalog updates applied by the purchase hook. */
+  const setProducts = jest.fn<Dispatch<SetStateAction<ProductSummary[]>>>();
+  /** Real purchase hook wired to the coordinator and controlled provider. */
+  const purchaseProduct = useJestPurchase({products: [subscription], purchases: new JestPurchaseCoordinator(platform, backend),
+    session: session(), setProducts, subscriptionsEnabled: true, trackFunnel: jest.fn()});
+
+  /** Pending purchase spanning locked preflight and provider checkout. */
+  const purchase = purchaseProduct("premium");
+  await preflightStarted;
+  expect(catalog).toHaveBeenCalledTimes(1);
+  expect(sync).toHaveBeenCalledTimes(1);
+  expect(begin).not.toHaveBeenCalled();
+  expect(mockTrackEvent).not.toHaveBeenCalled();
+  expect(setProducts).not.toHaveBeenCalled();
+  if (!finishPreflight) throw new Error("Preflight was not initialized");
+  finishPreflight();
+
+  await expect(purchase).resolves.toMatchObject({success: true, purchaseType: "subscription"});
+  expect(catalog).toHaveBeenCalledTimes(1);
+  expect(begin).toHaveBeenCalledTimes(1);
+  expect(sync.mock.calls).toEqual([["catalog.signed", "player-1"], ["mock.subscription.signed", "player-1"]]);
+  expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+  /** Catalog update carrying the verified provider price after purchase. */
+  const update = setProducts.mock.calls[0]?.[0];
+  expect(typeof update === "function" ? update([])[0]?.displayPrice : undefined).toBe("£4.99");
+});
+
+it.each([
+  {flags: {recoveredExistingSubscription: true}, expectedSuccess: false},
+  {flags: {sandbox: true}, expectedSuccess: true},
+])("does not report restored or sandbox subscriptions as new revenue: %j", async ({flags, expectedSuccess}) => {
+  /** Inactive offer used to distinguish restored or sandbox subscriptions from revenue. */
+  const subscription = product({productId: "premium", productType: "subscription", subscriptionStatus: "inactive"});
+  /** Purchase action and coordinator checkout response controlled by the revenue scenario. */
+  const {purchaseProduct, checkout} = createHarness({products: [subscription], subscriptionsEnabled: true});
+  checkout.mockResolvedValue({status: "success", value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0, ...flags}});
+  /** Hook outcome after applying the restored or sandbox subscription flags. */
+  const result = await purchaseProduct("premium");
+  expect(result.success).toBe(expectedSuccess);
+  expect(mockTrackPurchase).not.toHaveBeenCalled();
+});
+
+it("does not report checkout or change offers when the coordinator cannot acquire its lock", async () => {
+  /** Inactive offer selected while another actor owns the checkout lock. */
+  const subscription = product({productId: "premium", productType: "subscription", subscriptionStatus: "inactive"});
+  /** Purchase action, coordinator response, and catalog observer for lock contention. */
+  const {purchaseProduct, subscribe, setProducts} = createHarness({products: [subscription], subscriptionsEnabled: true});
+  subscribe.mockResolvedValue({status: "cancelled"});
+  await expect(purchaseProduct("premium")).resolves.toMatchObject({success: false, cancelled: true});
+  expect(mockTrackEvent).not.toHaveBeenCalled();
+  expect(setProducts).not.toHaveBeenCalled();
+});
+
+it("applies a sandbox consumable grant without reporting real revenue", async () => {
+  /** Purchase hook and observers for the sandbox revenue boundary. */
+  const {purchase, purchaseProduct, trackFunnel} = createHarness();
+  purchase.mockResolvedValue({status: "success", value: {coinsAwarded: 250, newCoins: 550, sandbox: true}});
+  await expect(purchaseProduct("coins-250")).resolves.toMatchObject({
+    success: true, productId: "coins-250", purchaseType: "consumable", coinsAwarded: 250, newCoins: 550,
+  });
+  expect(trackFunnel).toHaveBeenCalledWith("purchase_completed", {productId: "coins-250"});
+  expect(mockTrackPurchase).not.toHaveBeenCalled();
 });

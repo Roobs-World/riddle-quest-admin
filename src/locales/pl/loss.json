@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Obejrzyj film, aby otrzymać dodatkową próbę",
     "COIN_EXTRA_GO_BUTTON": "{coins} monet za dodatkowa probe",
-    "EXTRA_GO_PROMPT": "Brak prob. Zdobadz jedna dodatkowa probe albo pomin te lamiglowke.",
     "OPEN_SHOP_BUTTON": "Otwórz sklep",
     "OUT_OF_ATTEMPTS": "Poza próbami.",
     "SKIP_LEVEL_PREFIX": "Użyj ",

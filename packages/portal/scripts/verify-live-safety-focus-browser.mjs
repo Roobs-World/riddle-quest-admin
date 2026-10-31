@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.SAFETY_FOCUS_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.SAFETY_FOCUS_REPORT_DIR??path.join(root,'../../artifacts/live-safety-focus-2026-10-08/permanent',mode+'-'+(process.env.SAFETY_FOCUS_ENGINE??'chromium')));
+const output=path.resolve(process.env.SAFETY_FOCUS_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-safety-focus-2026-10-08/permanent',mode+'-'+(process.env.SAFETY_FOCUS_ENGINE??'chromium')));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-poll-scheduling-'));let browser,server;const observations=[];
 try{

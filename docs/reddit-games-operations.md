@@ -1,5 +1,7 @@
 # Reddit Games operations
 
+As of 16 October 2026, the hourly Reddit profile-retention schedule is removed. Social reads still suppress logically expired profiles, and the bounded operator retention command remains available. Untouched expired records are not guaranteed automatic physical deletion. Analytics does not perform this deletion.
+
 For first-time app/community provisioning, secrets, a non-promotable private
 playtest, and the sandbox Firebase deployment, run the resumable guarded wizard:
 
@@ -310,7 +312,7 @@ pnpm --dir firebase-functions reddit:profiles:retention --project riddle-quest-e
 Only aggregate counts are emitted. An `invalid` count requires investigation of
 malformed state or failed transactions; do not discard a mapping to clear a cache.
 `complete: false` means the bounded page has a backlog or failure. Monitor those
-counts and repeat bounded apply pages as required. The 50-record hourly budget
+counts and repeat bounded apply pages as required. The 50-record operator-page budget
 makes no exact physical deletion deadline; social reads already suppress the cache
 at its 24-hour logical expiry. Missing/malformed expiry fields need separate
 operator inspection. Never configure identity/account TTL or recreate missing rows.

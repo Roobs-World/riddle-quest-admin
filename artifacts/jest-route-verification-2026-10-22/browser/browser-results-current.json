@@ -1,0 +1,141 @@
+{
+  "versionId": "01a160c9-0dd3-763f-94aa-cfd010b879ee",
+  "artifactFiles": 419,
+  "exactArtifactUnchanged": true,
+  "browserSuites": {
+    "passed": 8,
+    "testsPassed": 75,
+    "testsFailed": 0,
+    "suites": [
+      {
+        "name": "hostedBrowser.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 1
+      },
+      {
+        "name": "queuedCoinActions.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 16
+      },
+      {
+        "name": "profileTour.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 6
+      },
+      {
+        "name": "viewportFit.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 1
+      },
+      {
+        "name": "coinCollection.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 3
+      },
+      {
+        "name": "instructionsModalScroll.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 1
+      },
+      {
+        "name": "musicStart.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 1
+      },
+      {
+        "name": "authentication.jest-playwright.test.ts",
+        "status": "passed",
+        "tests": 46
+      }
+    ]
+  },
+  "additionalChecks": {
+    "keyboardChecks": 165,
+    "invitationScenarios": 6,
+    "searchCloseScenarios": 24,
+    "publicMatchViewports": 2,
+    "directInvitationViewports": 2
+  },
+  "routeSweep": {
+    "baselineStatus": "failed",
+    "baselineReport": "route-sweep-results.json",
+    "baselineElapsedSeconds": 1441.647,
+    "entries": [
+      {
+        "name": "Daily",
+        "routes": 92,
+        "screens": 22,
+        "unvisited": 0,
+        "status": "passed"
+      },
+      {
+        "name": "Classic",
+        "routes": 82,
+        "screens": 20,
+        "unvisited": 0,
+        "status": "failed",
+        "failure": "Profile \u2192 Delete Account: route choice Delete Account: locator.click: Timeout 5000ms exceeded."
+      },
+      {
+        "name": "Multiplayer-enabled",
+        "routes": 171,
+        "screens": 37,
+        "unvisited": 0,
+        "status": "passed"
+      }
+    ],
+    "baselineRoutesVisited": 345,
+    "finalClassicStatus": "passed",
+    "finalClassicReport": "final-classic-route-sweep-results.json",
+    "scope": "Original baseline failure remains recorded. Its affected Classic entry passed against the corrected final artifact; Daily and PvP reuse their passing unchanged-route baseline entries.",
+    "finalClassicRoutes": 81,
+    "finalClassicScreens": 20,
+    "finalClassicUnvisited": 0,
+    "finalClassicElapsedSeconds": 305.619,
+    "combinedStatus": "passed",
+    "combinedVerifiedRoutes": 344,
+    "combinedUnvisited": 0,
+    "verifiedEntries": [
+      {
+        "name": "Daily",
+        "routes": 92,
+        "status": "passed",
+        "artifactRole": "baseline unchanged route",
+        "report": "route-sweep-results.json"
+      },
+      {
+        "name": "Classic",
+        "routes": 81,
+        "status": "passed",
+        "artifactRole": "corrected final artifact",
+        "report": "final-classic-route-sweep-results.json"
+      },
+      {
+        "name": "Multiplayer-enabled",
+        "routes": 171,
+        "status": "passed",
+        "artifactRole": "baseline unchanged route",
+        "report": "route-sweep-results.json"
+      }
+    ]
+  },
+  "providerLimits": [
+    "Provider SDK, purchases, subscription cancellation, referrals and message dialogs are mocked locally.",
+    "Public matching uses a real local Firestore authority in a separate demo project.",
+    "No real purchase, SMS or production economy write was attempted."
+  ],
+  "artifactRole": "Baseline before the guest Delete Account availability correction; final artifact requires focused guest/registered profile confirmation.",
+  "finalArtifact": {
+    "versionId": "01a160e4-07d9-7408-936a-bb5f0adc8733",
+    "files": 419,
+    "hashesUnchanged": true,
+    "focusedSuites": 2,
+    "focusedTestsPassed": 52,
+    "focusedTestsFailed": 0,
+    "report": "final-journeys-results.json",
+    "guestRegisteredDeletionCasesPassed": 2,
+    "deletionReport": "../frontend/focused-browser/deletion-current-results.json"
+  },
+  "overallStatus": "passed",
+  "pendingChecks": []
+}

@@ -1,6 +1,7 @@
 import type {RaceEntryResponse, CancelRaceInviteRequest} from "@qwordly/core/race";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductPricing} from "@qwordly/core/pricing/catalog";
+import type {CompletionRewardBreakdown} from "./completionRewardBreakdown";
 import type {
   AbandonRaceRunRequest,
   AbandonRaceRunResponse,
@@ -105,13 +106,8 @@ export type CompletionResult = {
   leveledUp?: boolean;
   /** Stores new win streak. */
   newWinStreak?: number;
-  /** Stores reward breakdown. */
-  rewardBreakdown?: {
-    /** Stores new balance. */
-    newBalance: number;
-    /** Stores total awarded. */
-    totalAwarded: number;
-  };
+  /** Local targets supply receipt totals; authoritative itemization is validated at the game bridge. */
+  rewardBreakdown?: Pick<CompletionRewardBreakdown, "newBalance" | "totalAwarded">;
 };
 
 /** Describes spend coins result. */

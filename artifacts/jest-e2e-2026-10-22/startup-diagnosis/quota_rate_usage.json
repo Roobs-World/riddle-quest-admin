@@ -1,0 +1,209 @@
+[
+  {
+    "metric": {
+      "labels": {
+        "method": "google.cloud.functions.v2.FunctionService.GetFunction",
+        "quota_metric": "cloudfunctions.googleapis.com/v2_read_requests_regional"
+      },
+      "type": "serviceruntime.googleapis.com/quota/rate/net_usage"
+    },
+    "resource": {
+      "type": "consumer_quota",
+      "labels": {
+        "service": "cloudfunctions.googleapis.com",
+        "location": "us-central1"
+      }
+    },
+    "points": [
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:35:00Z",
+          "endTime": "2026-10-22T21:36:00Z"
+        },
+        "value": {
+          "int64Value": "1"
+        }
+      }
+    ]
+  },
+  {
+    "metric": {
+      "labels": {
+        "method": "",
+        "quota_metric": "run.googleapis.com/read_regional"
+      },
+      "type": "serviceruntime.googleapis.com/quota/rate/net_usage"
+    },
+    "resource": {
+      "type": "consumer_quota",
+      "labels": {
+        "service": "run.googleapis.com",
+        "location": "europe-west1"
+      }
+    },
+    "points": [
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:39:00Z",
+          "endTime": "2026-10-22T21:40:00Z"
+        },
+        "value": {
+          "int64Value": "3"
+        }
+      }
+    ]
+  },
+  {
+    "metric": {
+      "labels": {
+        "method": "",
+        "quota_metric": "run.googleapis.com/read_regional"
+      },
+      "type": "serviceruntime.googleapis.com/quota/rate/net_usage"
+    },
+    "resource": {
+      "type": "consumer_quota",
+      "labels": {
+        "location": "europe-west2",
+        "service": "run.googleapis.com"
+      }
+    },
+    "points": [
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:33:00Z",
+          "endTime": "2026-10-22T21:34:00Z"
+        },
+        "value": {
+          "int64Value": "2"
+        }
+      }
+    ]
+  },
+  {
+    "metric": {
+      "labels": {
+        "method": "",
+        "quota_metric": "run.googleapis.com/cpu_allocation"
+      },
+      "type": "serviceruntime.googleapis.com/quota/rate/net_usage"
+    },
+    "resource": {
+      "type": "consumer_quota",
+      "labels": {
+        "service": "run.googleapis.com",
+        "location": "us-central1"
+      }
+    },
+    "points": [
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:20:00Z",
+          "endTime": "2026-10-22T21:21:00Z"
+        },
+        "value": {
+          "int64Value": "-1000"
+        }
+      }
+    ]
+  },
+  {
+    "metric": {
+      "labels": {
+        "method": "",
+        "quota_metric": "run.googleapis.com/mem_allocation"
+      },
+      "type": "serviceruntime.googleapis.com/quota/rate/net_usage"
+    },
+    "resource": {
+      "type": "consumer_quota",
+      "labels": {
+        "location": "us-central1",
+        "service": "run.googleapis.com"
+      }
+    },
+    "points": [
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:20:00Z",
+          "endTime": "2026-10-22T21:21:00Z"
+        },
+        "value": {
+          "int64Value": "-268435456"
+        }
+      }
+    ]
+  },
+  {
+    "metric": {
+      "labels": {
+        "quota_metric": "run.googleapis.com/read_regional",
+        "method": ""
+      },
+      "type": "serviceruntime.googleapis.com/quota/rate/net_usage"
+    },
+    "resource": {
+      "type": "consumer_quota",
+      "labels": {
+        "location": "us-central1",
+        "service": "run.googleapis.com"
+      }
+    },
+    "points": [
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:39:00Z",
+          "endTime": "2026-10-22T21:40:00Z"
+        },
+        "value": {
+          "int64Value": "3"
+        }
+      },
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:38:00Z",
+          "endTime": "2026-10-22T21:39:00Z"
+        },
+        "value": {
+          "int64Value": "3"
+        }
+      },
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:37:00Z",
+          "endTime": "2026-10-22T21:38:00Z"
+        },
+        "value": {
+          "int64Value": "4"
+        }
+      },
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:35:00Z",
+          "endTime": "2026-10-22T21:36:00Z"
+        },
+        "value": {
+          "int64Value": "2"
+        }
+      },
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:34:00Z",
+          "endTime": "2026-10-22T21:35:00Z"
+        },
+        "value": {
+          "int64Value": "1"
+        }
+      },
+      {
+        "interval": {
+          "startTime": "2026-10-22T21:33:00Z",
+          "endTime": "2026-10-22T21:34:00Z"
+        },
+        "value": {
+          "int64Value": "2"
+        }
+      }
+    ]
+  }
+]

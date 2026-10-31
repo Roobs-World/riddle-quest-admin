@@ -1,0 +1,395 @@
+$ node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js && node scripts/facebook-context-retention.test.js && node scripts/facebook-nonce-retention.test.js && node scripts/reddit-profile-retention.test.js
+TAP version 13
+# Subtest: requires an explicit Reddit sandbox-commerce gate
+ok 1 - requires an explicit Reddit sandbox-commerce gate
+  ---
+  duration_ms: 0.736124
+  type: 'test'
+  ...
+# Subtest: accepts only externally approval-gated Reddit capability activations
+ok 2 - accepts only externally approval-gated Reddit capability activations
+  ---
+  duration_ms: 0.135747
+  type: 'test'
+  ...
+# Subtest: validates Reddit kill switches and rejects unknown or duplicate capabilities
+ok 3 - validates Reddit kill switches and rejects unknown or duplicate capabilities
+  ---
+  duration_ms: 0.075072
+  type: 'test'
+  ...
+# Subtest: accepts only the exact Reddit app and reviewed Firebase host
+ok 4 - accepts only the exact Reddit app and reviewed Firebase host
+  ---
+  duration_ms: 0.111762
+  type: 'test'
+  ...
+# Subtest: accepts the complete non-secret Facebook deployment contract
+ok 5 - accepts the complete non-secret Facebook deployment contract
+  ---
+  duration_ms: 0.223774
+  type: 'test'
+  ...
+# Subtest: rejects absent or malformed Facebook deployment configuration
+ok 6 - rejects absent or malformed Facebook deployment configuration
+  ---
+  duration_ms: 0.220337
+  type: 'test'
+  ...
+# Subtest: rejects unsafe origins, deletion URLs, and feature switches
+ok 7 - rejects unsafe origins, deletion URLs, and feature switches
+  ---
+  duration_ms: 0.136679
+  type: 'test'
+  ...
+# Subtest: accepts the production deployment contract
+ok 8 - accepts the production deployment contract
+  ---
+  duration_ms: 0.18492
+  type: 'test'
+  ...
+# Subtest: binds Firebase predeploy validation to the production project
+ok 9 - binds Firebase predeploy validation to the production project
+  ---
+  duration_ms: 0.204787
+  type: 'test'
+  ...
+# Subtest: keeps the tracked environment example deploy-valid
+ok 10 - keeps the tracked environment example deploy-valid
+  ---
+  duration_ms: 0.815915
+  type: 'test'
+  ...
+# Subtest: binds the Facebook backend command to the complete backend release unit
+ok 11 - binds the Facebook backend command to the complete backend release unit
+  ---
+  duration_ms: 0.231098
+  type: 'test'
+  ...
+# Subtest: binds the Reddit backend command to the complete backend release unit
+ok 12 - binds the Reddit backend command to the complete backend release unit
+  ---
+  duration_ms: 0.085732
+  type: 'test'
+  ...
+# Subtest: documents an unambiguous production Functions deploy command
+ok 13 - documents an unambiguous production Functions deploy command
+  ---
+  duration_ms: 0.093647
+  type: 'test'
+  ...
+# Subtest: requires the exact Jest game UUID
+ok 14 - requires the exact Jest game UUID
+  ---
+  duration_ms: 0.076164
+  type: 'test'
+  ...
+# Subtest: rejects a plaintext Jest origin
+ok 15 - rejects a plaintext Jest origin
+  ---
+  duration_ms: 0.05276
+  type: 'test'
+  ...
+# Subtest: rejects a localhost Jest origin
+ok 16 - rejects a localhost Jest origin
+  ---
+  duration_ms: 0.070043
+  type: 'test'
+  ...
+# Subtest: rejects a untrusted Jest origin
+ok 17 - rejects a untrusted Jest origin
+  ---
+  duration_ms: 0.040997
+  type: 'test'
+  ...
+# Subtest: rejects a non-origin URL Jest origin
+ok 18 - rejects a non-origin URL Jest origin
+  ---
+  duration_ms: 0.031239
+  type: 'test'
+  ...
+# Subtest: requires the primary Jest origin
+ok 19 - requires the primary Jest origin
+  ---
+  duration_ms: 0.055324
+  type: 'test'
+  ...
+# Subtest: rejects incomplete, untrusted, or duplicated consumable configuration
+ok 20 - rejects incomplete, untrusted, or duplicated consumable configuration
+  ---
+  duration_ms: 0.043242
+  type: 'test'
+  ...
+# Subtest: rejects incomplete, untrusted, or duplicated consumable configuration
+ok 21 - rejects incomplete, untrusted, or duplicated consumable configuration
+  ---
+  duration_ms: 0.033654
+  type: 'test'
+  ...
+# Subtest: rejects incomplete, untrusted, or duplicated consumable configuration
+ok 22 - rejects incomplete, untrusted, or duplicated consumable configuration
+  ---
+  duration_ms: 0.030187
+  type: 'test'
+  ...
+# Subtest: rejects missing, untrusted, or duplicated subscription allowlists
+ok 23 - rejects missing, untrusted, or duplicated subscription allowlists
+  ---
+  duration_ms: 0.044003
+  type: 'test'
+  ...
+# Subtest: rejects missing, untrusted, or duplicated subscription allowlists
+ok 24 - rejects missing, untrusted, or duplicated subscription allowlists
+  ---
+  duration_ms: 0.027772
+  type: 'test'
+  ...
+# Subtest: rejects missing, untrusted, or duplicated subscription allowlists
+ok 25 - rejects missing, untrusted, or duplicated subscription allowlists
+  ---
+  duration_ms: 0.0263
+  type: 'test'
+  ...
+# Subtest: rejects insecure or malformed Sentry transport
+ok 26 - rejects insecure or malformed Sentry transport
+  ---
+  duration_ms: 0.061015
+  type: 'test'
+  ...
+# Subtest: rejects insecure or malformed Sentry transport
+ok 27 - rejects insecure or malformed Sentry transport
+  ---
+  duration_ms: 0.056146
+  type: 'test'
+  ...
+# Subtest: allows Sentry to be deliberately disabled
+ok 28 - allows Sentry to be deliberately disabled
+  ---
+  duration_ms: 0.046939
+  type: 'test'
+  ...
+# Subtest: fails closed when the project-specific environment file is absent
+ok 29 - fails closed when the project-specific environment file is absent
+  ---
+  duration_ms: 0.08993
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11.525868
+TAP version 13
+# Subtest: accepts the complete Facebook Functions surface
+ok 1 - accepts the complete Facebook Functions surface
+  ---
+  duration_ms: 0.788323
+  type: 'test'
+  ...
+# Subtest: rejects every omitted callable or trigger
+ok 2 - rejects every omitted callable or trigger
+  ---
+  duration_ms: 0.786329
+  type: 'test'
+  ...
+# Subtest: rejects duplicate exports and understands aliases
+ok 3 - rejects duplicate exports and understands aliases
+  ---
+  duration_ms: 0.145786
+  type: 'test'
+  ...
+# Subtest: accepts the repository entry point
+ok 4 - accepts the repository entry point
+  ---
+  duration_ms: 0.113885
+  type: 'test'
+  ...
+# Subtest: reads runtime re-exports without absorbing following exports and excludes erased type exports
+ok 5 - reads runtime re-exports without absorbing following exports and excludes erased type exports
+  ---
+  duration_ms: 0.060535
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6.038175
+TAP version 13
+# Subtest: accepts the complete Reddit Functions surface
+ok 1 - accepts the complete Reddit Functions surface
+  ---
+  duration_ms: 0.753718
+  type: 'test'
+  ...
+# Subtest: rejects every omitted Reddit endpoint
+ok 2 - rejects every omitted Reddit endpoint
+  ---
+  duration_ms: 0.197143
+  type: 'test'
+  ...
+# Subtest: accepts the repository entry point
+ok 3 - accepts the repository entry point
+  ---
+  duration_ms: 0.150766
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4.957288
+TAP version 13
+# Subtest: referral retention stays offline without an explicit project or exact apply confirmation
+ok 1 - referral retention stays offline without an explicit project or exact apply confirmation
+  ---
+  duration_ms: 3.414847
+  type: 'test'
+  ...
+# Subtest: defaults to dry-run and pages exclusively by an opaque token hash
+ok 2 - defaults to dry-run and pages exclusively by an opaque token hash
+  ---
+  duration_ms: 1.136122
+  type: 'test'
+  ...
+# Subtest: writes only after matching project confirmation and reports failures without provider details
+ok 3 - writes only after matching project confirmation and reports failures without provider details
+  ---
+  duration_ms: 1.393619
+  type: 'test'
+  ...
+# Subtest: does not claim completion for oversized token fan-out
+ok 4 - does not claim completion for oversized token fan-out
+  ---
+  duration_ms: 0.666402
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8.831035
+TAP version 13
+# Subtest: requires an explicit project and rejects malformed/unknown/duplicate flags offline
+ok 1 - requires an explicit project and rejects malformed/unknown/duplicate flags offline
+  ---
+  duration_ms: 3.729463
+  type: 'test'
+  ...
+# Subtest: defaults to dry run using only the current server clock and fixed page limit
+ok 2 - defaults to dry run using only the current server clock and fixed page limit
+  ---
+  duration_ms: 1.080686
+  type: 'test'
+  ...
+# Subtest: applies only with matching confirmation and retains incomplete page evidence
+ok 3 - applies only with matching confirmation and retains incomplete page evidence
+  ---
+  duration_ms: 1.057813
+  type: 'test'
+  ...
+# Subtest: provider failures are sanitized without echoing context/member identifiers
+ok 4 - provider failures are sanitized without echoing context/member identifiers
+  ---
+  duration_ms: 0.766362
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8.922137
+TAP version 13
+# Subtest: nonce maintenance stays offline for missing/ambiguous/unknown operator options
+ok 1 - nonce maintenance stays offline for missing/ambiguous/unknown operator options
+  ---
+  duration_ms: 4.839415
+  type: 'test'
+  ...
+# Subtest: defaults to dry-run and pages only the temporary Facebook nonce collection
+ok 2 - defaults to dry-run and pages only the temporary Facebook nonce collection
+  ---
+  duration_ms: 1.66869
+  type: 'test'
+  ...
+# Subtest: applies only the confirmed project and accepts completed/missing/idempotent rows
+ok 3 - applies only the confirmed project and accepts completed/missing/idempotent rows
+  ---
+  duration_ms: 1.242383
+  type: 'test'
+  ...
+# Subtest: malformed rows or outcomes fail the page without exposing provider diagnostics
+ok 4 - malformed rows or outcomes fail the page without exposing provider diagnostics
+  ---
+  duration_ms: 0.944449
+  type: 'test'
+  ...
+# Subtest: query errors return a fixed failure instead of false completion or private details
+ok 5 - query errors return a fixed failure instead of false completion or private details
+  ---
+  duration_ms: 0.537728
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11.836025
+TAP version 13
+# Subtest: requires an explicit project and rejects malformed/unknown/duplicate flags offline
+ok 1 - requires an explicit project and rejects malformed/unknown/duplicate flags offline
+  ---
+  duration_ms: 3.771492
+  type: 'test'
+  ...
+# Subtest: defaults to dry run using only the current server clock and fixed page limit
+ok 2 - defaults to dry run using only the current server clock and fixed page limit
+  ---
+  duration_ms: 1.079173
+  type: 'test'
+  ...
+# Subtest: applies only with matching confirmation and retains incomplete page evidence
+ok 3 - applies only with matching confirmation and retains incomplete page evidence
+  ---
+  duration_ms: 1.102768
+  type: 'test'
+  ...
+# Subtest: provider failures are sanitized without echoing profile/identity identifiers
+ok 4 - provider failures are sanitized without echoing profile/identity identifiers
+  ---
+  duration_ms: 0.713942
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9.672959

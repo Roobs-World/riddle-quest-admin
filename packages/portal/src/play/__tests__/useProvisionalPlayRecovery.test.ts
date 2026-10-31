@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {BridgeRiddle} from "@qwordly/core/bridge";
+import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
 import type {GameSessionAction, GameSessionState, PendingGuessState} from "../gameSessionTypes";
 
 /** Run the real recovery owner's mount effects against the real reducer. */
@@ -26,6 +26,7 @@ beforeEach(() => {mockEffects.length = 0; mockLayoutEffects.length = 0;});
 const predecessor: BridgeRiddle = {
   riddleId: "classic_11", sessionToken: "test-issued-session-hamster-11", text: "A small pet rodent",
   answerLength: 7, gameMode: "classic", index: 11, evaluation: {answer: "hamster", locale: "en"},
+  attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false,
 };
 /** Issued next prompt that remains active across journal reconciliation. */
 const successor: BridgeRiddle = {...predecessor, riddleId: "classic_12",
@@ -40,6 +41,113 @@ function capture(state: GameSessionState): PendingGuessState {
   return {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
     completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds};
 }
+
+it("blocks an exhausted purchase-reward submission and sends the sixth guess after Continue", () => {
+  /** Full saved draft remains visible while a purchase award overlays the exhausted question. */
+  let state = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: {
+    ...predecessor, attemptsUsed: 5, hasUsedContinue: false, awaitingContinue: true,
+  }});
+  state = gameSessionReducer(state, {type: "showAuxiliaryFanfare", fanfare: {
+    id: "purchase-exhausted", kind: "purchase", coinsAwarded: 250, totalCoins: 500, achievementIds: [],
+  }});
+  state = {...state, currentLetters: [..."HAMSTER"]};
+  /** Bridge observer records a guess only when its paid attempt is available. */
+  const post = jest.fn<(message: GameToHostMessage) => void>();
+  /** Recovery hook uses its production submit policy beneath the nonblocking reward. */
+  const exhausted = useProvisionalPlayRecovery({state, stateRef: {current: state}, postToHost: post,
+    dispatch: jest.fn(), playFeedback: jest.fn()});
+  expect(exhausted.canSubmit).toBe(false);
+  exhausted.submitGuess();
+  expect(post).not.toHaveBeenCalled();
+
+  state = gameSessionReducer(state, {type: "continueGranted"});
+  state = {...state, currentLetters: [..."HAMSTER"]};
+  /** Granted Continue makes the retained answer eligible for the host's authoritative scoring. */
+  const continued = useProvisionalPlayRecovery({state, stateRef: {current: state}, postToHost: post,
+    dispatch: jest.fn(), playFeedback: jest.fn()});
+  expect(continued.canSubmit).toBe(true);
+  continued.submitGuess();
+  expect(post).toHaveBeenCalledWith(expect.objectContaining({type: "game:submitGuess", payload: expect.objectContaining({
+    riddleId: "classic_11", sessionToken: "test-issued-session-hamster-11", gameMode: "classic", guess: "HAMSTER",
+  })}));
+});
+
+it.each(["win", "loss"] satisfies Array<NonNullable<GameSessionState["lastOutcome"]>["kind"]>)(
+  "continues a completed Daily %s in Classic without replaying its session",
+  kind => {
+    /** Issued Daily question whose acknowledged completion should lead to Classic play. */
+    const riddle: BridgeRiddle = {...predecessor, gameMode: "challenge", riddleId: "daily_2026-10-18"};
+    /** Reducer state with the Daily question installed before recording its completion. */
+    const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+    /** Acknowledged Daily outcome and confirmed Classic index used for continuation. */
+    const state: GameSessionState = {...loaded,
+      profile: {username: "Alice", coins: 600, level: 2, xp: 100, winStreak: 1,
+        gamesPlayed: 2, wins: 1, achievements: [], classicIndex: 17},
+      lastOutcome: {id: `${riddle.sessionToken}-${kind}-1`, kind, riddleId: riddle.riddleId,
+        gameMode: "challenge", sessionToken: riddle.sessionToken, attempts: 1, isCorrect: kind === "win"},
+      completionAcknowledged: true,
+    };
+    /** Host bridge observer for the continuation request. */
+    const post = jest.fn<(message: GameToHostMessage) => void>();
+    /** Committed session state that continuation must leave intact. */
+    const stateRef = {current: state};
+    /** Real recovery hook that chooses the next request from the acknowledged Daily state. */
+    const recovery = useProvisionalPlayRecovery({state, stateRef, postToHost: post,
+      dispatch: jest.fn(), playFeedback: jest.fn()});
+
+    recovery.requestRiddle();
+
+    expect(post).toHaveBeenCalledWith(expect.objectContaining({type: "game:loadRiddle", payload: {
+      gameMode: "classic", locale: state.locale, classicIndex: 17, sessionToken: undefined, riddleId: undefined,
+    }}));
+    expect(stateRef.current).toBe(state);
+    expect(stateRef.current.lastOutcome?.sessionToken).toBe(riddle.sessionToken);
+  },
+);
+
+it.each([false, true])("retains the loaded Daily recovery session with an unrelated outcome=%s", staleOutcome => {
+  /** Current Daily issuance that must retain its recovery identity. */
+  const riddle: BridgeRiddle = {...predecessor, gameMode: "challenge", riddleId: "daily_2026-10-18"};
+  /** Reducer state containing the still-active Daily question. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle});
+  /** Active Daily state with either no outcome or an unrelated prior Daily outcome. */
+  const state: GameSessionState = {...loaded, lastOutcome: staleOutcome ? {
+    id: "previous-daily-win", kind: "win", riddleId: "daily_2026-10-17", gameMode: "challenge",
+    sessionToken: "previous-daily-session-token", attempts: 1, isCorrect: true,
+  } : null};
+  /** Host bridge observer for resuming the current Daily issuance. */
+  const post = jest.fn<(message: GameToHostMessage) => void>();
+  /** Real recovery hook deciding whether the loaded Daily session is complete. */
+  const recovery = useProvisionalPlayRecovery({state, stateRef: {current: state}, postToHost: post,
+    dispatch: jest.fn(), playFeedback: jest.fn()});
+
+  recovery.requestRiddle();
+
+  expect(post).toHaveBeenCalledWith(expect.objectContaining({type: "game:loadRiddle", payload: {
+    gameMode: "challenge", locale: state.locale, classicIndex: undefined,
+    sessionToken: riddle.sessionToken, riddleId: riddle.riddleId,
+  }}));
+});
+
+it("continues a Classic win at its successor index", () => {
+  /** Reducer state containing the Classic predecessor question. */
+  const loaded = gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle: predecessor});
+  /** Completed Classic state whose continuation must request the successor index. */
+  const state: GameSessionState = {...loaded, lastOutcome: {id: "classic-win", kind: "win",
+    riddleId: predecessor.riddleId, gameMode: "classic", sessionToken: predecessor.sessionToken,
+    attempts: 1, isCorrect: true}};
+  /** Host bridge observer for the successor Classic request. */
+  const post = jest.fn<(message: GameToHostMessage) => void>();
+  /** Real recovery hook advancing from the completed Classic question. */
+  const recovery = useProvisionalPlayRecovery({state, stateRef: {current: state}, postToHost: post,
+    dispatch: jest.fn(), playFeedback: jest.fn()});
+
+  recovery.requestRiddle();
+
+  expect(post).toHaveBeenCalledWith(expect.objectContaining({type: "game:loadRiddle", payload: {
+    gameMode: "classic", locale: state.locale, classicIndex: 12, sessionToken: undefined, riddleId: undefined,
+  }}));
+});
 
 it.each([false, true])("keeps Settings open on locale return with journal recovery=%s", async (recover) => {
   /** Fresh mount occurs after returning to the original content locale. */
@@ -93,6 +201,8 @@ it.each([false, true])("keeps Settings open on locale return with journal recove
       }});
     for (const effect of mockLayoutEffects) effect();
     await new Promise<void>(resolve => setImmediate(resolve));
+    // Writer readiness schedules a render; commit recovery without remounting its owner.
+    for (const effect of mockLayoutEffects.slice(1)) effect();
     for (const effect of mockEffects) effect();
     if (recover) {
       expect(actions.map(action => action.type)).toContain("restoreQueuedGuesses");
@@ -160,7 +270,7 @@ it.each(['delayed','retry','retired-resolution','retired-retry'] as const)('writ
  /** Cancelled timers remain callable to exercise stale callbacks. */
  const timers:Array<()=>void>=[],cleared:number[]=[];
  /** Real hook clock and storage seams. */
- const adapters:PendingPlayRecoveryAdapters={journal:{...storage,writer},clock:{now:()=>1000,setTimeout:callback=>{timers.push(callback as ()=>void);return timers.length;},clearTimeout:id=>{cleared.push(id);},setInterval:()=>10,clearInterval:()=>{}}};
+ const adapters:PendingPlayRecoveryAdapters={journal:{...storage,writer},clock:{now:()=>1000,setTimeout:callback=>{timers.push(callback as ()=>void);return timers.length;},clearTimeout:id=>{if(id!==undefined)cleared.push(id);},setInterval:()=>10,clearInterval:()=>{}}};
  /** Delivery spy and committed reducer state. */
  const post=jest.fn(),stateRef={current:state},descriptor=Object.getOwnPropertyDescriptor(globalThis,'window');
  Object.defineProperty(globalThis,'window',{configurable:true,value:{addEventListener:()=>{},removeEventListener:()=>{}}});
@@ -178,6 +288,7 @@ it.each(['delayed','retry','retired-resolution','retired-retry'] as const)('writ
    if(scenario==='retired-resolution')for(const cleanup of cleanups)if(typeof cleanup==='function')cleanup();
    resolveLoad(await storage.writer('fixture',()=>1000,()=>true));await new Promise<void>(resolve=>setImmediate(resolve));
   }
+  for(const effect of mockLayoutEffects.slice(1))effect();
   for(const effect of mockEffects)effect();
   if(scenario.startsWith('retired')){expect(post).not.toHaveBeenCalled();expect(writer).toHaveBeenCalledTimes(1);}
   else expect(post).toHaveBeenCalledWith(message);

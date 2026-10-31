@@ -1,0 +1,53 @@
+{
+  "verifiedAt": "2026-10-24T02:27:44.431234+00:00",
+  "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "completedAt": "2026-10-24T02:24:50.926Z",
+  "allFiveExactBackendChecksPassed": true,
+  "sourceStillMatches": true,
+  "logs": [
+    {
+      "index": 13,
+      "status": "passed",
+      "logSha256Matches": true,
+      "ambientCapabilityDumpAbsent": true
+    },
+    {
+      "index": 31,
+      "status": "passed",
+      "logSha256Matches": true,
+      "ambientCapabilityDumpAbsent": true
+    },
+    {
+      "index": 70,
+      "status": "passed",
+      "logSha256Matches": true,
+      "ambientCapabilityDumpAbsent": true
+    },
+    {
+      "index": 154,
+      "status": "passed",
+      "logSha256Matches": true,
+      "ambientCapabilityDumpAbsent": true
+    },
+    {
+      "index": 180,
+      "status": "passed",
+      "logSha256Matches": true,
+      "ambientCapabilityDumpAbsent": true
+    }
+  ],
+  "debugSidefileCleanup": [
+    {
+      "path": "firebase-debug.log",
+      "alreadyAbsentAfterSuccessfulCli": true
+    },
+    {
+      "path": "firebase-functions/firebase-debug.log",
+      "alreadyAbsentAfterSuccessfulCli": true
+    }
+  ],
+  "sourceDirectoryPermissionsRestoredExactly": true,
+  "restoredMode": "0o775",
+  "publicLogRedactionsNeededForFinalBatch": false
+}

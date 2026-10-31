@@ -51,6 +51,14 @@ async function completed(provider: "facebook" | "reddit" | "jest", suffix = "sou
   const a = await joinLiveRaceForUser(ids[0], {locale: "en", categoryId: "history", requestId: `${suffix}-creator-join`}, {db, nowMs: NOW});
   /** Paired human provides the rematch recipient without a public account selector. */
   const b = await joinLiveRaceForUser(ids[1], {locale: "en", categoryId: "history", requestId: `${suffix}-rival-join`}, {db, nowMs: NOW + 1000});
+  /** Original shared match that supplies both participants' canonical first questions. */
+  const paired = (await db.doc(`liveRaceMatches/${a.ticketId}`).get()).data()!;
+  for (const [seat, view] of [a, b].entries()) {
+    /** First owned question answered before a rematch-eligible terminal result. */
+    const riddle = paired.runs[seat].riddles[0];
+    await updateLiveRaceForUser(ids[seat], {ticketId: view.ticketId, action: "guess", requestId: `rematch-played-${suffix}-${seat}`,
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: NOW + 7000});
+  }
   await updateLiveRaceForUser(ids[1], {ticketId: b.ticketId, action: "leave", requestId: `${suffix}-rival-forfeit`}, {db, nowMs: NOW + 8000});
   return {ids, a, b};
 }

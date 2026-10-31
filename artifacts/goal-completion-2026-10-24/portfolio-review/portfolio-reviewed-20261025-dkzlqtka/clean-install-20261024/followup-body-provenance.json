@@ -1,0 +1,13 @@
+{
+  "bodySha256": "c7c7437e06b0b9be3ae1d6da88dd6224b6ab718c6cfb7e6d4dbb9f9cc5302542",
+  "baselineImmutableCommit": "480ac243fdd67640f4f4ca223a2af389708a06db",
+  "followupImmutableCommit": "55f5fd32f4bbe48ac4db2ba7fda20b8740bbf108",
+  "followupEvidenceUrl": "https://github.com/Grindhead/Portfolio/blob/55f5fd32f4bbe48ac4db2ba7fda20b8740bbf108/docs/evidence/portfolio-reviewed-source-2026-10-25.md",
+  "baselineApplicationEvidenceRetained": true,
+  "policySnapshotDigest": "c04cf468a4e44b49a0b592432e64a23a0367af7c62f267de823da4f35c867e22",
+  "freshInstallPass": true,
+  "freshFullBuildPassClaimed": false,
+  "freshUnitOrBrowserRunClaimed": false,
+  "automaticPreviewInstallPassed": true,
+  "automaticPreviewRemainingGate": "DATABASE_URL absent"
+}

@@ -1,0 +1,20 @@
+{
+  "directory": "/tmp/rq-live-race-variants-w4gqFE",
+  "nodeVersion": "v24.17.0",
+  "variants": {
+    "baseline": {
+      "lib": "/tmp/rq-live-race-variants-w4gqFE/baseline/lib",
+      "hashes": {
+        "raceLiveQueue.js": "c943c103dc98834f58a909539d1c50bbc482542ee90bd19c5d6883b33e3beee2",
+        "raceLiveService.js": "114635b79a62f0ff31ea70fa7c04937b3f88976663ff358cf90ec224bdab8ed3"
+      }
+    },
+    "candidate": {
+      "lib": "/tmp/rq-live-race-variants-w4gqFE/candidate/lib",
+      "hashes": {
+        "raceLiveQueue.js": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72",
+        "raceLiveService.js": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80"
+      }
+    }
+  }
+}

@@ -28,16 +28,19 @@ const checkpointFields = [
 
 /** Projects an active game session into the versioned client-owned player-data snapshot. */
 export const createSavedGame = (state: GameSessionState, savedAt = Date.now()): SavedGame | null => {
-  if (state.pendingGuessState) state = {...state, ...state.pendingGuessState, pendingGuessState: null};
+  if (state.pendingGuessState) state = {...state, ...state.pendingGuessState,
+    draftRevision: state.pendingGuessState.draftRevision ?? state.draftRevision, pendingGuessState: null};
   if (state.pendingCoinSpend?.continueState &&
     state.riddle?.sessionToken === state.pendingCoinSpend.sessionToken) {
-    state = {...state, ...state.pendingCoinSpend.continueState};
+    state = {...state, ...state.pendingCoinSpend.continueState,
+      draftRevision: state.pendingCoinSpend.continueState.draftRevision ?? state.draftRevision};
   }
   if (state.pendingHintState) state = rejectHintPreview(state);
   if (!state.riddle || !state.engineSnapshot || (state.lastOutcome && state.completionAcknowledged)) return null;
   return {
     schemaVersion: 1,
     savedAt,
+    draftRevision: state.draftRevision,
     riddleId: state.riddle.riddleId,
     gameMode: state.gameMode,
     sessionToken: state.riddle.sessionToken,
@@ -109,6 +112,7 @@ export class GameSessionCheckpoints {
         const restored = cloneCheckpoint(retained);
         return {kind: "restore", action: {
           type: "restoreSession", riddleId: restored.riddleId, sessionToken: restored.sessionToken,
+          draftRevision: restored.draftRevision,
           currentLetters: restored.currentLetters,
           activeSlotIndex: restored.activeSlotIndex, hintRevealedIndices: restored.hintRevealedIndices,
           guesses: restored.guesses, engineSnapshot: restored.engineSnapshot,

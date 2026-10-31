@@ -1,0 +1,7 @@
+{
+  "original": "/home/craig-beswetherick/Documents/BeeHive/tests/helpers/silent-audio.js",
+  "originalSha256": "50ac614914e4616e7ce2d3a62485577704692777771a6f0a26ea605a39fe48ab",
+  "adapter": "/tmp/riddle-shared-silent-audio.cjs",
+  "adapterSha256": "c3efeb19c7582245ebb3919ac495c8a6a5ff80ebbff30e4b78631beade33e5fc",
+  "onlyChange": "ESM export keyword replaced with CJS module export; complete fixture implementation unchanged."
+}

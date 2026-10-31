@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-25T22:49:53.164663+00:00",
+  "completedOwnedExecSessions": [
+    33801,
+    16593,
+    70000,
+    72584
+  ],
+  "ports": {
+    "8099": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    },
+    "18199": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    },
+    "19000": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    }
+  },
+  "matchingOwnedEmulatorOrRegressionProcesses": [],
+  "allOwnedBackendWorkersClosed": true,
+  "historicalObservation": "Earlier bind probe could not immediately rebind18199; that observation is preserved in verified-gates-119a3d/approval-proof-original.json. Listener/connectivity/process checks now show no active emulator.",
+  "scope": "Does not stop or claim ownership of user browsers or peer frontend workers."
+}

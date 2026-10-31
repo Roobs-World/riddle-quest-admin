@@ -1,0 +1,134 @@
+{
+  "recordedAt": "2026-10-20T03:09:12.981Z",
+  "project": "riddle-quest-ec2b2",
+  "functions": [
+    {
+      "function": "getLiveRaceChallenge",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "europe-west1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "joinLiveRace",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "europe-west1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "listLiveRaceChallenges",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "europe-west1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "retireLiveRaceJoin",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "europe-west1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "startRaceRun",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "europe-west1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "updateLiveRace",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "europe-west1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "dailyChallengeScheduler",
+      "version": "v2",
+      "trigger": "scheduled",
+      "location": "us-central1",
+      "memory": 512,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "getLiveRaceChallenge",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "joinLiveRace",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "listLiveRaceChallenges",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "redditGameplay",
+      "version": "v2",
+      "trigger": "https",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "replenishClassicSupplyOnDemand",
+      "version": "v2",
+      "trigger": "google.cloud.firestore.document.v1.created",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "retireLiveRaceJoin",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "retryClassicSupplyOnDemand",
+      "version": "v2",
+      "trigger": "google.cloud.firestore.document.v1.updated",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "startRaceRun",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    },
+    {
+      "function": "updateLiveRace",
+      "version": "v2",
+      "trigger": "callable",
+      "location": "us-central1",
+      "memory": 256,
+      "runtime": "nodejs22"
+    }
+  ]
+}

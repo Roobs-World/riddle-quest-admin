@@ -164,6 +164,8 @@ export type FacebookReferralSettlement = {
   inviteeCoins: number;
   /** Stores inviter coins. */
   inviterCoins: number;
+  /** Solo receipt that earned this grant; absent for legacy and multiplayer settlements. */
+  completionReceiptId?: string;
 };
 
 /** Creates an opaque seven-day inviter token; only its hash is persisted. */
@@ -326,11 +328,15 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
   inviteeUid: string,
   now = Date.now(),
   db: Firestore = admin.firestore(),
+  completionReceiptId?: string,
 ): Promise<FacebookReferralSettlement> {
   if (!isFacebookFeatureEnabled("referrals") || !isFacebookFirebaseUid(inviteeUid)) {
     return {alreadySettled: false, inviteeCoins: 0, inviterCoins: 0};
   }
   requireClock(now);
+  if (completionReceiptId !== undefined && !/^[0-9a-f]{64}$/.test(completionReceiptId)) {
+    throw new Error("invalid-facebook-referral-completion-receipt");
+  }
   /** Provides binding ref behavior. */
   const bindingRef = db.collection("facebookReferralBindings").doc(inviteeUid);
   /** Sets tlement ref. */
@@ -362,10 +368,14 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
       const inviteeCoins = requireNonNegativeInteger("settlement-invitee-coins", data.inviteeCoins);
       /** Provides inviter coins behavior. */
       const inviterCoins = requireNonNegativeInteger("settlement-inviter-coins", data.inviterCoins);
+      /** Persisted attribution is immutable; a later caller cannot claim an older grant. */
+      const settledCompletionReceiptId: unknown = data.completionReceiptId;
       requireStoredClock("settlement-settled-at", data.settledAtMs);
       if (
         inviteeCoins !== FACEBOOK_REFERRAL_REWARD_COINS ||
-        (inviterCoins !== 0 && inviterCoins !== FACEBOOK_REFERRAL_REWARD_COINS)
+        (inviterCoins !== 0 && inviterCoins !== FACEBOOK_REFERRAL_REWARD_COINS) ||
+        (settledCompletionReceiptId !== undefined &&
+          (typeof settledCompletionReceiptId !== "string" || !/^[0-9a-f]{64}$/.test(settledCompletionReceiptId)))
       ) {
         throw new Error("facebook-referral-settlement-conflict");
       }
@@ -373,6 +383,7 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
         alreadySettled: true,
         inviteeCoins,
         inviterCoins,
+        ...(settledCompletionReceiptId !== undefined ? {completionReceiptId: settledCompletionReceiptId} : {}),
       };
     }
     assertJestAccountActive(inviteeDeletion);
@@ -438,7 +449,9 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
       inviteeCoins: FACEBOOK_REFERRAL_REWARD_COINS,
       inviterCoins,
       settledAtMs: now,
+      ...(completionReceiptId !== undefined ? {completionReceiptId} : {}),
     });
-    return {alreadySettled: false, inviteeCoins: FACEBOOK_REFERRAL_REWARD_COINS, inviterCoins};
+    return {alreadySettled: false, inviteeCoins: FACEBOOK_REFERRAL_REWARD_COINS, inviterCoins,
+      ...(completionReceiptId !== undefined ? {completionReceiptId} : {})};
   });
 }

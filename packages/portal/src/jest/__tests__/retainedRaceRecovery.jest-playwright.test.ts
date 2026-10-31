@@ -414,10 +414,10 @@ describeBrowser("Jest authentication integration", () => {
     expect(keyboardCoverage).toBeGreaterThan(0.98);
     /** Visual styles shared with the main-game keyboard at phone widths. */
     const multiplayerKeyboardStyle = await creator.page.locator(".race-gameplay .keyboard").evaluate((keyboard) => {
-      /** First letter key. */
-      const letterKey = keyboard.querySelector<HTMLElement>(".key:not(.utility)")!;
       /** Backspace key. */
       const utilityKey = keyboard.querySelector<HTMLElement>(".key.utility")!;
+      /** A letter in the same row shares Backspace's available flex width. */
+      const letterKey = utilityKey.parentElement!.querySelector<HTMLElement>(".key:not(.utility)")!;
       /** Rendered letter-key style. */
       const letterStyle = getComputedStyle(letterKey);
       return {

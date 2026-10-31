@@ -1,0 +1,24 @@
+FAIL src/play/__tests__/hostedBrowser.jest-playwright.test.ts (45.069 s)
+  ● standalone Jest browser game › covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+
+    locator.click: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /^multiplayer$/i })[22m
+
+      495 |       await completeMockOnboarding(dailyPage);
+      496 |       await dailyPage.locator(".game-mode-label").getByText(/daily/i).waitFor({timeout: 15_000});
+    > 497 |       await dailyPage.getByRole("button", {name: /^multiplayer$/i}).click();
+          |                                                                     ^
+      498 |       await dailyPage.locator('.race-screen[role="dialog"]').waitFor();
+      499 |       await dailyPage.locator(".race-close").click();
+      500 |       expect(await dailyPage.locator(".game-mode-label").innerText()).toBe("Daily");
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:497:69)
+
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 46 passed, 47 total
+Snapshots:   0 total
+Time:        236.255 s
+Ran all test suites within paths "src/play/__tests__/hostedBrowser.jest-playwright.test.ts", "src/jest/__tests__/authentication.jest-playwright.test.ts".
+Test results written to: ../../artifacts/jest-route-verification-2026-10-22/browser/corrected-journeys-results.json

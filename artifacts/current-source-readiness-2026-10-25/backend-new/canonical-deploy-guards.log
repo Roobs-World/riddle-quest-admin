@@ -1,0 +1,3 @@
+$ node ../scripts/audit-function-capacity.mjs && node scripts/validate-deploy-env.js
+Function capacity audit passed: no reserved warm instances.
+Validated Firebase deployment environment: /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/.env.riddle-quest-ec2b2

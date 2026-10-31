@@ -1,0 +1,25 @@
+[
+  {
+    "stage": "referral-replay-emulator",
+    "exitCode": 0,
+    "seconds": 0.718,
+    "command": [
+      "node",
+      "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/multiplayer/verify-referral-replay.cjs"
+    ],
+    "environment": {}
+  },
+  {
+    "stage": "live-race-browser-rerun",
+    "exitCode": 1,
+    "seconds": 52.106,
+    "command": [
+      "node",
+      "scripts/verify-live-race-browser.mjs"
+    ],
+    "environment": {
+      "LIVE_RACE_REPORT_DIR": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/multiplayer/live-race-corrected-expectations",
+      "LIVE_RACE_USE_EMULATOR": "1"
+    }
+  }
+]

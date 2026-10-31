@@ -1,0 +1,35 @@
+283077791bd34f4e0a0b6bbc17168cb6
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseRaceInvitation = parseRaceInvitation;
+exports.assertRaceInvitationOpen = assertRaceInvitationOpen;
+const https_1 = require("firebase-functions/v2/https");
+const race_1 = require("@qwordly/core/race");
+/** Normalizes legacy claim/publication orderings without treating status as the authority. */
+function parseRaceInvitation(value, published = false, expectedId) {
+    /** Identities are bounded single path segments, including supported legacy accounts. */
+    const validId = (id) => typeof id === "string" && id.length > 0 && id.length <= 160 && !id.includes("/");
+    /** Canonical clocks reject fractional, negative, infinite and unsafe integer values. */
+    const validMs = (clock) => typeof clock === "number" && Number.isSafeInteger(clock) && clock >= 0;
+    if (!value || !validId(value.challengeId) || !validId(value.creatorId) ||
+        expectedId !== undefined && value.challengeId !== expectedId ||
+        (value.recipientId !== undefined && !validId(value.recipientId)) ||
+        !["inviting", "claimed", "published"].includes(value.status) || value.status === "claimed" && value.recipientId === undefined || !race_1.RaceLocaleSchema.safeParse(value.locale).success ||
+        !validMs(value.createdAtMs) || !validMs(value.expiresAtMs) || value.expiresAtMs <= value.createdAtMs ||
+        value.publishedAtMs !== undefined && !validMs(value.publishedAtMs) || value.cancelledAtMs !== undefined && !validMs(value.cancelledAtMs) ||
+        value.claimedAtMs !== undefined && !validMs(value.claimedAtMs) ||
+        value.claimState !== undefined && value.claimState !== (value.recipientId ? "claimed" : "unclaimed") ||
+        value.publicationState !== undefined && !["pending", "published"].includes(value.publicationState)) {
+        throw new https_1.HttpsError("internal", "Stored race invitation is invalid.");
+    }
+    return { ...value, claimState: value.recipientId ? "claimed" : "unclaimed",
+        publicationState: published || value.publishedAtMs !== undefined || value.publicationState === "published" || value.status === "published" ? "published" : "pending" };
+}
+/** Shared publication/acceptance cancellation and expiry policy. */
+function assertRaceInvitationOpen(invitation, nowMs) {
+    if (invitation.cancelledAtMs !== undefined)
+        throw new https_1.HttpsError("failed-precondition", "Race invitation is cancelled.");
+    if (invitation.expiresAtMs <= nowMs)
+        throw new https_1.HttpsError("failed-precondition", "Race invitation has expired.");
+}
+//# sourceMappingURL=raceInvitationRecord.js.map

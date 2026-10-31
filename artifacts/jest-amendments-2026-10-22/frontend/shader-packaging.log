@@ -1,0 +1,16 @@
+{
+  "baseline": {
+    "output": "/tmp/riddle-quest-shader-packaging-baseline",
+    "bytes": 4725831,
+    "files": 420
+  },
+  "compact": {
+    "output": "/tmp/riddle-quest-shader-packaging-compact",
+    "bytes": 4717886,
+    "files": 420
+  },
+  "savedBytes": 7945,
+  "requiredSavings": 7239,
+  "belowReleaseBudget": true,
+  "unchangedBinaryAssetsStylesAndLicenses": true
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "019fb583-e998-71bc-b583-26e8be0f8d28",
+    "sku": "com.roobsworld.riddlequest.premium.monthly",
+    "displayName": "Riddle Quest Premium",
+    "displayDescription": "3,400 coins on activation and every 30 days while active. Premium status. Cancel in Profile or Settings.",
+    "priceCents": 499,
+    "billingPeriod": "monthly",
+    "archivedAt": null,
+    "createdAt": "2026-07-31T00:12:28.952Z",
+    "trialPeriodDays": null,
+    "introPriceCents": null,
+    "introDurationPeriods": null,
+    "retentionPriceCents": null,
+    "retentionDurationPeriods": null
+  }
+]

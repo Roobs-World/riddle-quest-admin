@@ -1,0 +1,8 @@
+{
+  "failCompletion": "returned-failure",
+  "balance": "300",
+  "completionAttempts": 1,
+  "beginAttempts": 1,
+  "pending": true,
+  "pageErrors": []
+}

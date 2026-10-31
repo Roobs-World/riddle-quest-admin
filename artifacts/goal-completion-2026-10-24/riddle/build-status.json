@@ -1,0 +1,160 @@
+{
+  "startedAt": "2026-10-24T01:01:41.822100+00:00",
+  "complete": true,
+  "sourceMapUpload": false,
+  "results": [
+    {
+      "name": "all-target-builds",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 29.617,
+      "log": "all-target-builds.log"
+    },
+    {
+      "name": "reddit-package",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/reddit-app",
+        "build:package:from-client"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 3.001,
+      "log": "reddit-package.log"
+    },
+    {
+      "name": "workspace-types",
+      "command": [
+        "pnpm",
+        "check:types"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 4.374,
+      "log": "workspace-types.log"
+    },
+    {
+      "name": "security",
+      "command": [
+        "pnpm",
+        "check:security"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.609,
+      "log": "security.log"
+    },
+    {
+      "name": "scalability",
+      "command": [
+        "pnpm",
+        "check:scalability"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.434,
+      "log": "scalability.log"
+    },
+    {
+      "name": "file-sizes",
+      "command": [
+        "pnpm",
+        "check:file-sizes"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.309,
+      "log": "file-sizes.log"
+    },
+    {
+      "name": "tsdoc",
+      "command": [
+        "pnpm",
+        "check:tsdoc"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.03,
+      "log": "tsdoc.log"
+    },
+    {
+      "name": "architecture",
+      "command": [
+        "pnpm",
+        "test:architecture"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 18.986,
+      "log": "architecture.log"
+    },
+    {
+      "name": "final-target-inventories",
+      "command": [
+        "node",
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.118,
+      "log": "final-target-inventories.log"
+    }
+  ],
+  "completedAt": "2026-10-24T01:02:40.302516+00:00",
+  "finalJestArtifactFiles": 419,
+  "finalJestBytesMatchPriorUpload": false,
+  "changedJestFiles": [
+    "assets/FirebasePresenceTransport-Dcdbu9mq.js",
+    "assets/FirebasePresenceTransport-Dkl6WCJ_.js",
+    "assets/GameModalView-B7_VFLQD.js",
+    "assets/GameModalView-Duj3GbRU.js",
+    "assets/JestFirebaseAppCheck-B0aVS7G9.js",
+    "assets/JestFirebaseAppCheck-CpCTJYnp.js",
+    "assets/RaceTo10Game-BLf5Ih1y.js",
+    "assets/RaceTo10Game-ByDWKjxo.js",
+    "assets/RaceTo10Game-CnrMneJZ.css",
+    "assets/RaceTo10Game-D4Vx2-k-.css",
+    "assets/SolarSystem-BILY0SZ0.js",
+    "assets/SolarSystem-_O2pUpNk.js",
+    "assets/bridge-BauygFuk.js",
+    "assets/bridge-D58EZZLb.js",
+    "assets/fakeServices-BBC2NhzA.js",
+    "assets/fakeServices-Bo5Z5BBp.js",
+    "assets/firebase-B_2lymwo.js",
+    "assets/firebase-Byt03act.js",
+    "assets/firebaseCopy-D57-ofNj.js",
+    "assets/firebaseCopy-apMRH0xO.js",
+    "assets/firebaseLiveRaceSignals-C0-QD4vT.js",
+    "assets/firebaseLiveRaceSignals-DQ-VKrsb.js",
+    "assets/firebaseServices-1p94fHnF.js",
+    "assets/firebaseServices-DQ367SlR.js",
+    "assets/index-cuZSVplQ.js",
+    "assets/index-lEXvLnIP.js",
+    "assets/jest-BfEq1qWp.js",
+    "assets/jest-DTNgz5Jg.css",
+    "assets/jest-DjndxjjJ.css",
+    "assets/jest-IGOSEBB0.js",
+    "assets/liveChallengePush-CATH2dWu.js",
+    "assets/liveChallengePush-DyNaSG4D.js",
+    "assets/loadOptionalSkipPreview-BBxGaRlx.js",
+    "assets/loadOptionalSkipPreview-DBzwGI9p.js",
+    "assets/prepareIssuedSuccessor-B25u_lIF.js",
+    "assets/prepareIssuedSuccessor-BlS_F8o8.js",
+    "assets/race-8JjNv3xs.js",
+    "assets/race-BGZ246df.js",
+    "assets/raceMatchmakingFailure-BwOJ_b61.js",
+    "assets/raceMatchmakingFailure-DTWBfR0N.js",
+    "assets/raceSchemas-B3W7WxVs.js",
+    "assets/raceSchemas-DsEyqm7V.js",
+    "assets/requestSchemas-CEmcbz6A.js",
+    "assets/requestSchemas-CzSVT8m8.js",
+    "assets/sentry-BlMS6p91.js",
+    "assets/sentry-X7elZEJ9.js",
+    "assets/starfield-B0YOSrYL.svg",
+    "assets/starfield-Cw94D4Sq.svg",
+    "assets/subscriptionCheckout-CxUsfRtk.js",
+    "assets/subscriptionCheckout-Dug3fHUT.js",
+    "assets/validation-DLkLg7v6.js",
+    "assets/validation-WhV8a4T-.js",
+    "index.html",
+    "third-party-licenses.txt"
+  ]
+}

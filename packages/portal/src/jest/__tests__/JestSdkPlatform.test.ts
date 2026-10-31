@@ -1,4 +1,5 @@
 import {JestSdkPlatform} from "../JestSdkPlatform";
+
 import type {BridgeProfile} from "@qwordly/core/bridge";
 
 /** Completes profile. */
@@ -266,10 +267,21 @@ it.each(["png", "jpeg", "webp"])("forwards inline %s notifications through the r
   await expect(new JestSdkPlatform(mock).scheduleNotification(input)).resolves.toEqual({status: "success", value: undefined});
   expect(mock.notifications.scheduleNotification).toHaveBeenCalledWith(input);
 });
+it.each(["https://example.com/card.png", `https://example.com/${"x".repeat(2048 - "https://example.com/".length)}`])("forwards HTTPS notification assets through the registered SDK adapter", async (asset) => {
+  /** Registered SDK fixture records provider dispatches. */
+  const mock = sdk();
+  mock.getPlayer.mockReturnValue({playerId: "p1", registered: true});
+  /** Payload under test at the runtime adapter boundary. */
+  const input = {identifier: "daily", scheduledInDays: 1, body: "Play", ctaText: "Open", asset};
+  await expect(new JestSdkPlatform(mock).scheduleNotification(input)).resolves.toEqual({status: "success", value: undefined});
+  expect(mock.notifications.scheduleNotification).toHaveBeenCalledWith(input);
+});
 it.each([
   {asset: "data:image/png;base64,YQ==", assetReference: "approved-card"},
   {asset: "data:image/gif;base64,YQ=="},
-  {asset: "https://example.com/card.png"},
+  {asset: "http://example.com/card.png"},
+  {asset: "https://example.com/card image.png"},
+  {asset: `https://example.com/${"x".repeat(2049 - "https://example.com/".length)}`},
   {asset: `data:image/png;base64,${Buffer.alloc(2 * 1024 * 1024 + 1).toString("base64")}`},
 ])("rejects invalid inline notification arguments before SDK dispatch", async (image) => {
   /** Registered SDK fixture records provider dispatches. */
@@ -790,14 +802,18 @@ it("handles referrals, product catalogs, and incomplete purchases", async () => 
   const platform = new JestSdkPlatform(mock);
   mock.referrals.shareReferralLink.mockResolvedValue({canceled: false});
   mock.referrals.listReferrals.mockResolvedValue({referralsSigned: "signed"});
-  mock.payments.getProducts.mockResolvedValue({products: []});
+  mock.payments.getProducts.mockResolvedValue([
+    {sku: "coins_small", name: "Small coin pack", description: null, price: 0.99, currency: "USD"},
+  ]);
   mock.payments.getIncompletePurchases.mockResolvedValue({purchases: []});
   await expect(platform.shareReferral({reference: "campaign"} as never)).resolves.toEqual({
     status: "success",
     value: undefined,
   });
   await expect(platform.listReferralsSigned()).resolves.toEqual({status: "success", value: "signed"});
-  await expect(platform.getProducts()).resolves.toEqual({status: "success", value: {products: []}});
+  await expect(platform.getProducts()).resolves.toEqual({status: "success", value: [
+    {sku: "coins_small", name: "Small coin pack", description: undefined, price: 0.99, currency: "USD"},
+  ]});
   await expect(platform.getIncompletePurchases()).resolves.toEqual({status: "success", value: {purchases: []}});
 
   mock.referrals.shareReferralLink.mockRejectedValue(new Error("offline"));
@@ -924,10 +940,10 @@ it("handles empty and failed subscription catalogs and checkout failures", async
   const mock = sdk();
   /** Provides platform behavior. */
   const platform = new JestSdkPlatform(mock);
-  mock.payments.getSubscriptions.mockResolvedValue({});
+  mock.payments.getSubscriptions.mockResolvedValue({subscriptions: [], signed: "empty.signed"});
   await expect(platform.getSubscriptions()).resolves.toEqual({
     status: "success",
-    value: {subscriptions: [], subscriptionsSigned: undefined},
+    value: {subscriptions: [], subscriptionsSigned: "empty.signed"},
   });
   mock.payments.getSubscriptions.mockRejectedValue(new Error("offline"));
   await expect(platform.getSubscriptions()).resolves.toEqual({status: "retryable-failure", message: "offline"});
@@ -944,14 +960,29 @@ it("handles empty and failed subscription catalogs and checkout failures", async
   });
 });
 
-it("times out a subscription checkout that never settles", async () => {
-  /** Provides mock behavior. */
+it("keeps subscription checkout pending until the provider settles after the confirmation deadline", async () => {
+  /** Provider SDK fixture whose checkout remains unresolved past the confirmation deadline. */
   const mock = sdk();
-  mock.payments.beginSubscription.mockImplementation(() => new Promise(() => undefined));
-  await expect(new JestSdkPlatform(mock, 1).beginSubscription("premium")).resolves.toEqual({
-    status: "retryable-failure",
-    message: "Jest subscription checkout timed out",
-  });
+  /** Releases the pending provider checkout with an explicit cancellation. */
+  let settleCheckout: (result: {
+    /** Provider cancellation discriminator delivered when the player dismisses checkout. */
+    result: "cancel"
+  }) => void = () => { throw new Error("Checkout has not started"); };
+  mock.payments.beginSubscription.mockImplementation(() => new Promise((resolve) => { settleCheckout = resolve; }));
+  jest.useFakeTimers();
+  try {
+    /** Observed checkout results, which must stay empty while the provider remains open. */
+    const settled: unknown[] = [];
+    /** Subscription request that must retain ownership until the provider responds. */
+    const checkout = new JestSdkPlatform(mock, 1).beginSubscription("premium");
+    void checkout.then((result) => settled.push(result));
+    await jest.advanceTimersByTimeAsync(30_000);
+    expect(settled).toEqual([]);
+    settleCheckout({result: "cancel"});
+    await expect(checkout).resolves.toEqual({status: "cancelled"});
+  } finally {
+    jest.useRealTimers();
+  }
 });
 
 it("marks the first milestone and contains milestone failures", async () => {
@@ -1019,4 +1050,11 @@ it("reports bounded cancellation diagnostics without exposing provider responses
   } finally {
     resetBrowserErrorReporterForTests();
   }
+});
+
+it("reports a missing provider payment module as a recoverable catalog failure", async () => {
+  await expect(new JestSdkPlatform({}).getProducts()).resolves.toEqual({
+    status: "retryable-failure",
+    message: "Jest SDK payments module is unavailable.",
+  });
 });

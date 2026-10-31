@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Guarda un video per ottenere un tentativo extra",
     "COIN_EXTRA_GO_BUTTON": "{coins} monete per un tentativo extra",
-    "EXTRA_GO_PROMPT": "Tentativi finiti. Ottieni un tentativo extra o salta questo enigma.",
     "OPEN_SHOP_BUTTON": "Negozio aperto",
     "OUT_OF_ATTEMPTS": "Finiti i tentativi.",
     "SKIP_LEVEL_PREFIX": "Usa ",

@@ -11,7 +11,6 @@ const EXPECTED_REDDIT_EXPORTS = Object.freeze([
   "redditStorage",
   "redditGameplay",
   "listLiveRaceHistory",
-  "redditProfileRetentionScheduler",
 ]);
 
 function auditRedditBackendExports(source) {

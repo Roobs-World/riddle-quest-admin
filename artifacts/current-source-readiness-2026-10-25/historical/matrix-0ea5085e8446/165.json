@@ -1,0 +1,84 @@
+{
+  "index": 165,
+  "executable": "env",
+  "args": [
+    "PORTAL_BROWSER_TESTS=1",
+    "PORTAL_USE_EXISTING_BUILD=1",
+    "pnpm",
+    "--filter",
+    "@qwordly/portal",
+    "test",
+    "--runInBand",
+    "--runTestsByPath",
+    "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+    "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+    "--testNamePattern=publishes a completed score before reusable Jest invites"
+  ],
+  "ids": [
+    "injected-jest-outcome-recovery-publication-and-recipient",
+    "injected-web-sharing"
+  ],
+  "tasks": [
+    "multiplayer:race-outcome-confirmation",
+    "multiplayer:race-web-dialog-ownership"
+  ],
+  "status": "not-run",
+  "exitCode": 125,
+  "startedAt": "2026-10-25T22:15:02.675Z",
+  "checkedAt": "2026-10-25T22:15:02.927Z",
+  "log": "artifacts/current-source-readiness-2026-10-25/historical/matrix-0ea5085e8446/165.log",
+  "sha256": "81f4071af5d119a99a0d0e0d5340d865f95f88224dc1eaeb8aa027f115e853c1",
+  "artifacts": {
+    "builds/jest/index.html": "375e7cf8d874c3b4755c54c37d82fa37dc3e838c1a6921ea71dfe4db1ef06b1b",
+    "builds/facebook/index.html": "0e434d19e361c43916d3a9f7f66cf1098fa4a462feb887d9352af2756f77af03",
+    "builds/reddit/index.html": "a5f89100096a587d7fc81cd4832583719ff772b2e23b6e228a333951edf76e2c",
+    "builds/youtube/index.html": "ac2cc0864002a2738e7c6ccaf748caaaf1ad85541a13a3f7adc089c4558d2ec9",
+    "builds/netflix/index.html": "3ab65bc6d9b163100bf00e290740e60b6d3eb84442cc039d155590b0941b5147",
+    "builds/yahoo/index.html": "7b62311db7b3a1a249b9f0b5e19d4d36399fa65d9944fb4f71dc03c0bfef4bac",
+    "build-gamesnacks.zip": "2080eaf9b6dec936d688cad84df55bdbb839305bbbcecf7e85e8336edd4da6af",
+    "build-itch.zip": "3f3f83f5be37558cb78d12ab8ea7c92fa5e44f3b14dc0420c3f53f5a8135becc",
+    "artifacts/target-dependencies/jest.json": "d26d3ef7cf6bb22cb8b92da878d6a0b48824efd35b1924dd0860c73a0b82349f",
+    "artifacts/target-dependencies/facebook.json": "837c6b0f95f21d0701456967956ed93b716646a979ae1f86eb38511eaa2dace4",
+    "artifacts/target-dependencies/reddit.json": "4dc8839869637ef1af6aaeaca6b8e73f11ce7a3ae7b7a331ce700ed0831df662",
+    "artifacts/target-dependencies/youtube.json": "a45c68261cb64cd8fb50c28bd6c5ca0630e60cdd80709b5122a75e26f8432e1e",
+    "artifacts/target-dependencies/netflix.json": "a7f0576bf816698da3e055be6669e319272da3bc0add2ca18770937ea33b96aa",
+    "artifacts/target-dependencies/yahoo.json": "9ca1c08f38db2104fa998026f9809fe904ebaa1a5e0cf2210cce045247fbac7f",
+    "artifacts/target-dependencies/gamesnacks.json": "4403b9fd4eec87c9624aeb10df6f50d74eff8406801afc301d2a6def6b5ef5dd",
+    "docs/evidence/platform-only-build-scope.md": "f69737a42b436897b1204a8656734720ee78f5c82f41e32c90e831e4eeb7bc2a",
+    "artifacts/retained-creator-recovery-2026-10-10/browser.json": "5ee68bb9378796e3b3335d14188f4961b8d84ccf431ff1b84056469f9e71e037"
+  },
+  "sourceBefore": "0ea5085e8446d42b9d0fafe13ddeaeb3e2bae94fef5abb999a13e0f10a01e3e3",
+  "sourceAfter": "0ea5085e8446d42b9d0fafe13ddeaeb3e2bae94fef5abb999a13e0f10a01e3e3",
+  "sourceStillMatches": true,
+  "executedArgs": [
+    "PORTAL_BROWSER_TESTS=1",
+    "PORTAL_USE_EXISTING_BUILD=1",
+    "pnpm",
+    "--filter",
+    "@qwordly/portal",
+    "test",
+    "--runInBand",
+    "--runTestsByPath",
+    "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+    "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+    "--testNamePattern=publishes a completed score before reusable Jest invites",
+    "--json",
+    "--outputFile",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/current-source-readiness-2026-10-25/matrix/structured/165-jest.json"
+  ],
+  "artifactsObservedAt": "2026-10-25T22:15:02.927Z",
+  "provenance": {
+    "kind": "current-exact-execution",
+    "baselineReport": "artifacts/development-checks/goal-20261024-receipts-final5c-local-receipts/checks-report-snapshot.json"
+  },
+  "environment": {
+    "SENTRY_UPLOAD_SOURCEMAPS": "false",
+    "RIDDLE_LOCAL_VERIFICATION": "1",
+    "NODE_OPTIONS": "--require=/tmp/riddle-silent-browser.cjs",
+    "silentGuardSha256": "a8877c1d5394f3a684c94742e508a54596757fbe7c7175ec445fb1b920a3621e",
+    "silentFixtureSha256": "50ac614914e4616e7ce2d3a62485577704692777771a6f0a26ea605a39fe48ab"
+  },
+  "originalRecordedStatus": "failed",
+  "skipReason": "Queued old-source command held before test startup for the reviewed backend mutation boundary; no application assertion executed.",
+  "archivedFromLog": "artifacts/current-source-readiness-2026-10-25/matrix/165.log"
+}

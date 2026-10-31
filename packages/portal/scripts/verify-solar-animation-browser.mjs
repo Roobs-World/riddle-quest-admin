@@ -1,3 +1,4 @@
+import {openSolarGame} from './solar-browser-fixture.mjs';
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {mkdir,mkdtemp,readFile,readdir,rm,writeFile} from 'node:fs/promises';
@@ -24,7 +25,7 @@ const layoutChecks=process.env.SOLAR_LAYOUT_CHECKS==='1';
 const resourceChecks=process.env.SOLAR_RESOURCE_CHECKS==='1'||motionChecks||initializationChecks||contextChecks||layoutChecks;
 const nativeRenderer=process.env.SOLAR_ANIMATION_NATIVE_RENDERER==='1';
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.SOLAR_ANIMATION_REPORT_DIR??path.join(root,sizingChecks?'../../artifacts/game-resize-work-2026-10-03':restorationChecks?'../../artifacts/game-deferred-restoration-2026-10-03':layoutChecks?'../../artifacts/game-layout-graphics-2026-10-03':contextChecks?'../../artifacts/game-context-recovery-2026-10-03':initializationChecks?'../../artifacts/game-deferred-graphics-2026-10-03':motionChecks?'../../artifacts/game-live-decoration-2026-10-03':resourceChecks?'../../artifacts/game-graphics-resources-2026-10-03':'../../artifacts/game-solar-animation-2026-10-03',mode));
+const output=path.resolve(process.env.SOLAR_ANIMATION_REPORT_DIR??path.join(root,sizingChecks?'../../builds/test-evidence/game-resize-work-2026-10-03':restorationChecks?'../../builds/test-evidence/game-deferred-restoration-2026-10-03':layoutChecks?'../../builds/test-evidence/game-layout-graphics-2026-10-03':contextChecks?'../../builds/test-evidence/game-context-recovery-2026-10-03':initializationChecks?'../../builds/test-evidence/game-deferred-graphics-2026-10-03':motionChecks?'../../builds/test-evidence/game-live-decoration-2026-10-03':resourceChecks?'../../builds/test-evidence/game-graphics-resources-2026-10-03':'../../builds/test-evidence/game-solar-animation-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/solar-animation-'));
 const originalThree=path.join(root,'node_modules/three/src/Three.js');
@@ -197,8 +198,7 @@ try{
    // The current scene uses sprites; fail the second sphere after partial sun setup instead of retired point-cloud allocation.
    const scenarios=[['renderer_constructor',1],['pixel_ratio',1],['anisotropy',1],['MeshBasicMaterial',1],['ShaderMaterial',2],['SphereGeometry',2],['SpriteMaterial',4],['RingGeometry',1],['texture_loader',5],['texture_error_sync',1],['texture_error',1],['healthy',1]];
    for(const [kind,occurrence] of scenarios){
-    await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-    if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+    await openSolarGame(page,url);
     await page.keyboard.type('pian');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
     const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken);
     await page.evaluate(({kind,occurrence})=>{window.failResource={kind,occurrence};window.controlFrames();window.releaseScene();},{kind,occurrence});
@@ -324,8 +324,7 @@ try{
    await page.getByRole('textbox',{name:'Puzzle draft'}).fill('PIANO');await metric(`${failure}: puzzle input remains editable`,await page.getByRole('textbox',{name:'Puzzle draft'}).inputValue(),'PIANO');
   }
   // A real hosted puzzle must preserve its server token and finish after an async draw failure.
-  await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-  if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+  await openSolarGame(page,url);
   await page.keyboard.type('pian');
   await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
   const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken);

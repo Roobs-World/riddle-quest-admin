@@ -1,0 +1,100 @@
+{
+  "startedAt": "2026-10-22T01:06:54.899661+00:00",
+  "updatedAt": "2026-10-22T01:07:13.179042+00:00",
+  "complete": true,
+  "deployments": false,
+  "sourceMapUpload": false,
+  "sequential": true,
+  "results": [
+    {
+      "target": "facebook",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:facebook"
+      ],
+      "startedAt": "2026-10-22T01:06:54.899759+00:00",
+      "log": "facebook.log",
+      "status": "failed",
+      "exitCode": 1,
+      "elapsedSeconds": 1.793,
+      "completedAt": "2026-10-22T01:06:56.692430+00:00"
+    },
+    {
+      "target": "reddit",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/reddit-app",
+        "build:package"
+      ],
+      "startedAt": "2026-10-22T01:06:56.692600+00:00",
+      "log": "reddit.log",
+      "status": "failed",
+      "exitCode": 1,
+      "elapsedSeconds": 2.033,
+      "completedAt": "2026-10-22T01:06:58.726064+00:00"
+    },
+    {
+      "target": "youtube",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:youtube"
+      ],
+      "startedAt": "2026-10-22T01:06:58.726242+00:00",
+      "log": "youtube.log",
+      "status": "failed",
+      "exitCode": 1,
+      "elapsedSeconds": 3.118,
+      "completedAt": "2026-10-22T01:07:01.844676+00:00"
+    },
+    {
+      "target": "netflix",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:netflix"
+      ],
+      "startedAt": "2026-10-22T01:07:01.844847+00:00",
+      "log": "netflix.log",
+      "status": "failed",
+      "exitCode": 1,
+      "elapsedSeconds": 3.664,
+      "completedAt": "2026-10-22T01:07:05.508764+00:00"
+    },
+    {
+      "target": "yahoo",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:yahoo"
+      ],
+      "startedAt": "2026-10-22T01:07:05.508948+00:00",
+      "log": "yahoo.log",
+      "status": "failed",
+      "exitCode": 1,
+      "elapsedSeconds": 3.778,
+      "completedAt": "2026-10-22T01:07:09.287178+00:00"
+    },
+    {
+      "target": "gamesnacks",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:gamesnacks"
+      ],
+      "startedAt": "2026-10-22T01:07:09.289295+00:00",
+      "log": "gamesnacks.log",
+      "status": "failed",
+      "exitCode": 1,
+      "elapsedSeconds": 3.89,
+      "completedAt": "2026-10-22T01:07:13.178859+00:00"
+    }
+  ]
+}

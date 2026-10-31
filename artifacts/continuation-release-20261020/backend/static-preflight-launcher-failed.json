@@ -1,0 +1,290 @@
+{
+  "verifiedAt": "2026-10-20T03:10:17.807400+00:00",
+  "preparedPlan": "artifacts/human-wait-backend-deployment-plan-2026-10-18.json",
+  "sourceRevision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "includesDirtyWorkingTree": true,
+  "testsRun": false,
+  "deploymentRun": false,
+  "checks": [
+    {
+      "name": "prepare-deploy",
+      "command": [
+        "node",
+        "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/scripts/prepare-deploy.js"
+      ],
+      "cwd": "/home/craig-beswetherick/Documents/riddle-quest",
+      "exitCode": 0,
+      "log": "prepare-deploy.log"
+    },
+    {
+      "name": "typescript",
+      "command": [
+        "/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin/node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "cwd": "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions",
+      "exitCode": 1,
+      "log": "typescript.log"
+    }
+  ],
+  "hashesBefore": [
+    {
+      "path": "firebase-functions/src/riddles/riddleGeneration.ts",
+      "expectedSha256": "be1c7140fbcf5f68810e5ea956e87575dff885843edf170a80a2c9a853a4eb4d",
+      "actualSha256": "be1c7140fbcf5f68810e5ea956e87575dff885843edf170a80a2c9a853a4eb4d",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/riddles/riddleGeneration.js",
+      "expectedSha256": "a55808249c62773376a92aedf3bee340fd3a0f5af8509910ae486b9f99b68089",
+      "actualSha256": "a55808249c62773376a92aedf3bee340fd3a0f5af8509910ae486b9f99b68089",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/daily/dailyRiddleGeneration.ts",
+      "expectedSha256": "f0c072064f8526b82caaae988c4bff25a8052d92db7c1f27f82ad869377a8b95",
+      "actualSha256": "f0c072064f8526b82caaae988c4bff25a8052d92db7c1f27f82ad869377a8b95",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/daily/dailyRiddleGeneration.js",
+      "expectedSha256": "7ed23a990bead6e938d6a6478dc160ed99b35b269bed56eb0246fcbeb6a36cfa",
+      "actualSha256": "7ed23a990bead6e938d6a6478dc160ed99b35b269bed56eb0246fcbeb6a36cfa",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceSetupService.ts",
+      "expectedSha256": "1c2a00e9b9b715675caef5b83031d9c236b5ce85da490813f0623cb0a64c738c",
+      "actualSha256": "1c2a00e9b9b715675caef5b83031d9c236b5ce85da490813f0623cb0a64c738c",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceSetupService.js",
+      "expectedSha256": "b6cdfcc1e152cb3cad91e0ec6ed94177205116c4811ccb55d3162a821539c6ad",
+      "actualSha256": "b6cdfcc1e152cb3cad91e0ec6ed94177205116c4811ccb55d3162a821539c6ad",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveService.ts",
+      "expectedSha256": "18e08058b9aeb23cff6050900e070df426aedcd34919ec48b55c431578d0bb11",
+      "actualSha256": "18e08058b9aeb23cff6050900e070df426aedcd34919ec48b55c431578d0bb11",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveService.js",
+      "expectedSha256": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80",
+      "actualSha256": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveQueue.ts",
+      "expectedSha256": "c197b30fb7371db23fc9d61937da875ebda450910e7af7bca723596477aa3fb5",
+      "actualSha256": "c197b30fb7371db23fc9d61937da875ebda450910e7af7bca723596477aa3fb5",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveQueue.js",
+      "expectedSha256": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72",
+      "actualSha256": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveState.ts",
+      "expectedSha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272",
+      "actualSha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveState.js",
+      "expectedSha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+      "actualSha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveInvitation.ts",
+      "expectedSha256": "65e33d6b358fbb50486f9d581453d2f2a3cde6bacb6059ee1e374bf89cd9a795",
+      "actualSha256": "65e33d6b358fbb50486f9d581453d2f2a3cde6bacb6059ee1e374bf89cd9a795",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveInvitation.js",
+      "expectedSha256": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9",
+      "actualSha256": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveJoinIntent.ts",
+      "expectedSha256": "018810f51c4db8604f3906115c239badb45374788d734932a57e2998c7e4a960",
+      "actualSha256": "018810f51c4db8604f3906115c239badb45374788d734932a57e2998c7e4a960",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveJoinIntent.js",
+      "expectedSha256": "44647a93ab11f6a9d5145d95c35a5e7b46bfd3dbfe1130eb02d6bd47ecd42489",
+      "actualSha256": "44647a93ab11f6a9d5145d95c35a5e7b46bfd3dbfe1130eb02d6bd47ecd42489",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveStream.ts",
+      "expectedSha256": "fcb444cdd4db1240d0f764fad5cc70a394b60df5d2c345b9f2dfac63ae0bd0ea",
+      "actualSha256": "fcb444cdd4db1240d0f764fad5cc70a394b60df5d2c345b9f2dfac63ae0bd0ea",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveStream.js",
+      "expectedSha256": "9cc2f68064d59aba50a97ab89766f15b7d2e7050ce428bfc07690b764c695d0f",
+      "actualSha256": "9cc2f68064d59aba50a97ab89766f15b7d2e7050ce428bfc07690b764c695d0f",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "packages/core/src/race/raceLiveSchemas.ts",
+      "expectedSha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29",
+      "actualSha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "packages/core/dist/race/raceLiveSchemas.js",
+      "expectedSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "actualSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/packages/core/dist/race/raceLiveSchemas.js",
+      "expectedSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "actualSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "matchesPreparedPlan": true
+    }
+  ],
+  "hashesAfter": [
+    {
+      "path": "firebase-functions/src/riddles/riddleGeneration.ts",
+      "expectedSha256": "be1c7140fbcf5f68810e5ea956e87575dff885843edf170a80a2c9a853a4eb4d",
+      "actualSha256": "be1c7140fbcf5f68810e5ea956e87575dff885843edf170a80a2c9a853a4eb4d",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/riddles/riddleGeneration.js",
+      "expectedSha256": "a55808249c62773376a92aedf3bee340fd3a0f5af8509910ae486b9f99b68089",
+      "actualSha256": "a55808249c62773376a92aedf3bee340fd3a0f5af8509910ae486b9f99b68089",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/daily/dailyRiddleGeneration.ts",
+      "expectedSha256": "f0c072064f8526b82caaae988c4bff25a8052d92db7c1f27f82ad869377a8b95",
+      "actualSha256": "f0c072064f8526b82caaae988c4bff25a8052d92db7c1f27f82ad869377a8b95",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/daily/dailyRiddleGeneration.js",
+      "expectedSha256": "7ed23a990bead6e938d6a6478dc160ed99b35b269bed56eb0246fcbeb6a36cfa",
+      "actualSha256": "7ed23a990bead6e938d6a6478dc160ed99b35b269bed56eb0246fcbeb6a36cfa",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceSetupService.ts",
+      "expectedSha256": "1c2a00e9b9b715675caef5b83031d9c236b5ce85da490813f0623cb0a64c738c",
+      "actualSha256": "1c2a00e9b9b715675caef5b83031d9c236b5ce85da490813f0623cb0a64c738c",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceSetupService.js",
+      "expectedSha256": "b6cdfcc1e152cb3cad91e0ec6ed94177205116c4811ccb55d3162a821539c6ad",
+      "actualSha256": "b6cdfcc1e152cb3cad91e0ec6ed94177205116c4811ccb55d3162a821539c6ad",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveService.ts",
+      "expectedSha256": "18e08058b9aeb23cff6050900e070df426aedcd34919ec48b55c431578d0bb11",
+      "actualSha256": "18e08058b9aeb23cff6050900e070df426aedcd34919ec48b55c431578d0bb11",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveService.js",
+      "expectedSha256": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80",
+      "actualSha256": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveQueue.ts",
+      "expectedSha256": "c197b30fb7371db23fc9d61937da875ebda450910e7af7bca723596477aa3fb5",
+      "actualSha256": "c197b30fb7371db23fc9d61937da875ebda450910e7af7bca723596477aa3fb5",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveQueue.js",
+      "expectedSha256": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72",
+      "actualSha256": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveState.ts",
+      "expectedSha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272",
+      "actualSha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveState.js",
+      "expectedSha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+      "actualSha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveInvitation.ts",
+      "expectedSha256": "65e33d6b358fbb50486f9d581453d2f2a3cde6bacb6059ee1e374bf89cd9a795",
+      "actualSha256": "65e33d6b358fbb50486f9d581453d2f2a3cde6bacb6059ee1e374bf89cd9a795",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveInvitation.js",
+      "expectedSha256": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9",
+      "actualSha256": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveJoinIntent.ts",
+      "expectedSha256": "018810f51c4db8604f3906115c239badb45374788d734932a57e2998c7e4a960",
+      "actualSha256": "018810f51c4db8604f3906115c239badb45374788d734932a57e2998c7e4a960",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveJoinIntent.js",
+      "expectedSha256": "44647a93ab11f6a9d5145d95c35a5e7b46bfd3dbfe1130eb02d6bd47ecd42489",
+      "actualSha256": "44647a93ab11f6a9d5145d95c35a5e7b46bfd3dbfe1130eb02d6bd47ecd42489",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveStream.ts",
+      "expectedSha256": "fcb444cdd4db1240d0f764fad5cc70a394b60df5d2c345b9f2dfac63ae0bd0ea",
+      "actualSha256": "fcb444cdd4db1240d0f764fad5cc70a394b60df5d2c345b9f2dfac63ae0bd0ea",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/lib/race/raceLiveStream.js",
+      "expectedSha256": "9cc2f68064d59aba50a97ab89766f15b7d2e7050ce428bfc07690b764c695d0f",
+      "actualSha256": "9cc2f68064d59aba50a97ab89766f15b7d2e7050ce428bfc07690b764c695d0f",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "packages/core/src/race/raceLiveSchemas.ts",
+      "expectedSha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29",
+      "actualSha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "packages/core/dist/race/raceLiveSchemas.js",
+      "expectedSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "actualSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "matchesPreparedPlan": true
+    },
+    {
+      "path": "firebase-functions/packages/core/dist/race/raceLiveSchemas.js",
+      "expectedSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "actualSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "matchesPreparedPlan": true
+    }
+  ],
+  "allPreparedHashesStillMatch": true,
+  "verificationPassed": false
+}

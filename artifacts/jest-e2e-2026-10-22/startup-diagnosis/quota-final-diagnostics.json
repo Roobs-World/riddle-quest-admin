@@ -1,0 +1,125 @@
+{
+  "start_utc": "2026-10-22T21:20:00Z",
+  "end_utc": "2026-10-22T21:46:14.104539Z",
+  "queries": {
+    "descriptors": {
+      "status": 200,
+      "descriptors": [
+        {
+          "type": "run.googleapis.com/container/cpu/allocation_time",
+          "metricKind": "DELTA",
+          "valueType": "DOUBLE",
+          "unit": "s{CPU}",
+          "description": "Container CPU allocation in seconds."
+        },
+        {
+          "type": "run.googleapis.com/container/instance_count",
+          "metricKind": "GAUGE",
+          "valueType": "INT64",
+          "unit": "1",
+          "description": "Number of container instances that exist, broken down by state."
+        },
+        {
+          "type": "run.googleapis.com/container/memory/allocation_time",
+          "metricKind": "DELTA",
+          "valueType": "DOUBLE",
+          "unit": "GiBy.s",
+          "description": "Container memory allocation in Gibibyte-seconds."
+        }
+      ]
+    },
+    "run_quota_details": {
+      "status": 200,
+      "details": [
+        {
+          "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fcpu_allocation",
+          "displayName": "Total CPU allocation",
+          "consumerQuotaLimits": [
+            {
+              "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fcpu_allocation/limits/%2Fmin%2Fproject%2Fregion",
+              "unit": "1/min/{project}/{region}",
+              "metric": "run.googleapis.com/cpu_allocation",
+              "quotaBuckets": [
+                {
+                  "effectiveLimit": "200000",
+                  "defaultLimit": "200000"
+                },
+                {
+                  "effectiveLimit": "200000",
+                  "defaultLimit": "200000",
+                  "dimensions": {
+                    "region": "us-central1"
+                  }
+                }
+              ]
+            }
+          ],
+          "metric": "run.googleapis.com/cpu_allocation",
+          "unit": "1"
+        },
+        {
+          "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Finstances",
+          "displayName": "Instances",
+          "consumerQuotaLimits": [
+            {
+              "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Finstances/limits/%2Fproject%2Fregion",
+              "unit": "1/{project}/{region}",
+              "isPrecise": true,
+              "metric": "run.googleapis.com/instances",
+              "quotaBuckets": [
+                {
+                  "effectiveLimit": "100",
+                  "defaultLimit": "100"
+                },
+                {
+                  "dimensions": {
+                    "region": "us-central1"
+                  }
+                }
+              ]
+            }
+          ],
+          "metric": "run.googleapis.com/instances"
+        },
+        {
+          "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fmem_allocation",
+          "displayName": "Total memory allocation",
+          "consumerQuotaLimits": [
+            {
+              "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fmem_allocation/limits/%2Fmin%2Fproject%2Fregion",
+              "unit": "1/min/{project}/{region}",
+              "metric": "run.googleapis.com/mem_allocation",
+              "quotaBuckets": [
+                {
+                  "effectiveLimit": "429496729600",
+                  "defaultLimit": "429496729600"
+                },
+                {
+                  "effectiveLimit": "429496729600",
+                  "defaultLimit": "429496729600",
+                  "dimensions": {
+                    "region": "us-central1"
+                  }
+                }
+              ]
+            }
+          ],
+          "metric": "run.googleapis.com/mem_allocation",
+          "unit": "By"
+        }
+      ]
+    },
+    "quota_rate_usage": {
+      "status": 200,
+      "series_count": 6,
+      "point_count": 11,
+      "next_page": false
+    },
+    "quota_exceeded": {
+      "status": 200,
+      "series_count": 0,
+      "point_count": 0,
+      "next_page": false
+    }
+  }
+}

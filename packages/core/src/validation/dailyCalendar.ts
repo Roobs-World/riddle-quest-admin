@@ -33,11 +33,13 @@ function calendarParts(locale: string, now: Date): Record<string, string> {
   return Object.fromEntries(formatter.formatToParts(now).map(part => [part.type, part.value]));
 }
 
-/** Returns the authoritative calendar date for a locale at an instant. */
+/** Returns the challenge date, beginning at 09:00 on the locale’s regional clock. */
 export function getDailyDate(locale: string, now = new Date()): string {
   /** Calendar fields expressed in the locale’s authoritative regional clock. */
   const parts = calendarParts(locale, now);
-  return `${parts.year}-${parts.month}-${parts.day}`;
+  /** Regional calendar date before applying the challenge start boundary. */
+  const day = `${parts.year}-${parts.month}-${parts.day}`;
+  return locale !== "UTC" && Number(parts.hour) < 9 ? shiftDailyDate(day, -1) : day;
 }
 
 /** Advances calendar dates without assuming that local days last 24 hours. */
@@ -48,26 +50,28 @@ export function shiftDailyDate(day: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** Resolves the instant of regional midnight, including seasonal timezone offsets. */
-export function getDailyMidnight(locale: string, day: string): Date {
-  /** Calendar midnight expressed as UTC before regional offset correction. */
-  const target = Date.parse(`${day}T00:00:00Z`);
-  /** Candidate regional-midnight instant refined by offset correction. */
+/** Resolves regional 09:00 directly, including seasonal timezone offsets. */
+export function getDailyStart(locale: string, day: string): Date {
+  /** Challenge start expressed as UTC before regional offset correction. */
+  const target = Date.parse(`${day}T${locale === "UTC" ? "00" : "09"}:00:00Z`);
+  /** Candidate regional-start instant refined by offset correction. */
   let instant = target;
   for (let attempt = 0; attempt < 4; attempt += 1) {
     /** Calendar fields expressed in the locale’s authoritative regional clock. */
     const parts = calendarParts(locale, new Date(instant));
     /** Observed regional wall-clock fields expressed on a UTC calendar scale. */
     const wall = Date.parse(`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}Z`);
-    /** Remaining regional offset needed to reach the requested midnight. */
+    /** Remaining regional offset needed to reach the requested start. */
     const correction = target - wall;
     instant += correction;
     if (correction === 0) return new Date(instant);
   }
-  throw new Error("Could not resolve Daily midnight.");
+  throw new Error("Could not resolve Daily start.");
 }
 
-/** Selects midnight generation and bounded same-day repair slots for the regional clock. */
+/** Generates only at regional 09:00; scheduler retries retain their original scheduled instant. */
 export function isDailyGenerationDue(locale: string, now: Date): boolean {
-  return Number(calendarParts(locale, now).hour) < 3;
+  /** Regional hour and minute used by the scheduler dispatch filter. */
+  const parts = calendarParts(locale, now);
+  return Number(parts.hour) === 9 && Number(parts.minute) === 0;
 }

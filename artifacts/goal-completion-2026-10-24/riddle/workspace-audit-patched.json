@@ -1,0 +1,61 @@
+{
+  "advisories": {
+    "1153174": {
+      "findings": [
+        {
+          "version": "1.30.1",
+          "paths": [
+            "firebase-functions>firebase-tools>@google-cloud/pubsub>@opentelemetry/core"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1153174,
+      "title": "OpenTelemetry Core: Unbounded memory allocation in W3C Baggage propagation",
+      "module_name": "@opentelemetry/core",
+      "vulnerable_versions": "<2.8.0",
+      "patched_versions": ">=2.8.0",
+      "severity": "moderate",
+      "cwe": "CWE-770",
+      "github_advisory_id": "GHSA-8988-4f7v-96qf",
+      "url": "https://github.com/advisories/GHSA-8988-4f7v-96qf"
+    },
+    "1243066": {
+      "findings": [
+        {
+          "version": "3.25.76",
+          "paths": [
+            "packages__reddit-app>lighthouse>puppeteer-core>chromium-bidi>zod"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243066,
+      "title": "Zod can exhaust memory while validating oversized constrained collections",
+      "module_name": "zod",
+      "vulnerable_versions": "<4.6.6",
+      "patched_versions": ">=4.6.6",
+      "severity": "high",
+      "cwe": "CWE-770",
+      "github_advisory_id": "GHSA-mrhx-c7xc-m3w5",
+      "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 1,
+      "high": 3,
+      "critical": 0
+    },
+    "dependencies": 659,
+    "devDependencies": 850,
+    "optionalDependencies": 177,
+    "totalDependencies": 1578
+  }
+}

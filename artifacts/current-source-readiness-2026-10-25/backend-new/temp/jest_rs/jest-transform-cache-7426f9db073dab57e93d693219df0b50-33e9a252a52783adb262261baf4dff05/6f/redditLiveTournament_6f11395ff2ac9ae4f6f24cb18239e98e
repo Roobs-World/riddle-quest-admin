@@ -1,0 +1,133 @@
+ca54f6991d7013ab51ba0707cf773d92
+"use strict";
+
+/* istanbul ignore next */
+function cov_1t7ujounea() {
+  var path = "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/redditLiveTournament.ts";
+  var hash = "25e0c63ade1262b3b789d360c33e8ff790eb2cfd";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/redditLiveTournament.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 2,
+          column: 62
+        }
+      },
+      "1": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 3,
+          column: 66
+        }
+      },
+      "2": {
+        start: {
+          line: 4,
+          column: 29
+        },
+        end: {
+          line: 4,
+          column: 60
+        }
+      },
+      "3": {
+        start: {
+          line: 7,
+          column: 4
+        },
+        end: {
+          line: 7,
+          column: 112
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "readRedditLiveTournamentRun",
+        decl: {
+          start: {
+            line: 6,
+            column: 9
+          },
+          end: {
+            line: 6,
+            column: 36
+          }
+        },
+        loc: {
+          start: {
+            line: 6,
+            column: 72
+          },
+          end: {
+            line: 8,
+            column: 1
+          }
+        },
+        line: 6
+      }
+    },
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    f: {
+      "0": 0
+    },
+    b: {},
+    inputSourceMap: {
+      file: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/redditLiveTournament.ts",
+      mappings: ";;AAGA,kEAGC;AAND,6DAAmE;AAEnE,uEAAuE;AACvE,SAAgB,2BAA2B,CAAC,WAA0C,EAAE,EAA+B,EACrH,MAAc,EAAE,QAAgB;IAChC,OAAO,IAAA,kDAA6B,EAAC,WAAW,EAAE,EAAE,EAAE,MAAM,EAAE,QAAQ,EAAE,QAAQ,CAAC,CAAC;AACpF,CAAC",
+      names: [],
+      sources: ["/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/redditLiveTournament.ts"],
+      sourcesContent: ["import {readProviderLiveTournamentRun} from \"./raceLiveTournament\";\n\n/** Reddit official scores resolve only owned Reddit live victories. */\nexport function readRedditLiveTournamentRun(transaction: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,\n  userId: string, ticketId: string) {\n  return readProviderLiveTournamentRun(transaction, db, userId, ticketId, \"reddit\");\n}\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "25e0c63ade1262b3b789d360c33e8ff790eb2cfd"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1t7ujounea = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1t7ujounea();
+cov_1t7ujounea().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_1t7ujounea().s[1]++;
+exports.readRedditLiveTournamentRun = readRedditLiveTournamentRun;
+const raceLiveTournament_1 =
+/* istanbul ignore next */
+(cov_1t7ujounea().s[2]++, require("./raceLiveTournament"));
+/** Reddit official scores resolve only owned Reddit live victories. */
+function readRedditLiveTournamentRun(transaction, db, userId, ticketId) {
+  /* istanbul ignore next */
+  cov_1t7ujounea().f[0]++;
+  cov_1t7ujounea().s[3]++;
+  return (0, raceLiveTournament_1.readProviderLiveTournamentRun)(transaction, db, userId, ticketId, "reddit");
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJleHBvcnRzIiwicmVhZFJlZGRpdExpdmVUb3VybmFtZW50UnVuIiwicmFjZUxpdmVUb3VybmFtZW50XzEiLCJjb3ZfMXQ3dWpvdW5lYSIsInMiLCJyZXF1aXJlIiwidHJhbnNhY3Rpb24iLCJkYiIsInVzZXJJZCIsInRpY2tldElkIiwiZiIsInJlYWRQcm92aWRlckxpdmVUb3VybmFtZW50UnVuIl0sInNvdXJjZXMiOlsiL2hvbWUvY3JhaWctYmVzd2V0aGVyaWNrL0RvY3VtZW50cy9yaWRkbGUtcXVlc3QvZmlyZWJhc2UtZnVuY3Rpb25zL3NyYy9yYWNlL3JlZGRpdExpdmVUb3VybmFtZW50LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7cmVhZFByb3ZpZGVyTGl2ZVRvdXJuYW1lbnRSdW59IGZyb20gXCIuL3JhY2VMaXZlVG91cm5hbWVudFwiO1xuXG4vKiogUmVkZGl0IG9mZmljaWFsIHNjb3JlcyByZXNvbHZlIG9ubHkgb3duZWQgUmVkZGl0IGxpdmUgdmljdG9yaWVzLiAqL1xuZXhwb3J0IGZ1bmN0aW9uIHJlYWRSZWRkaXRMaXZlVG91cm5hbWVudFJ1bih0cmFuc2FjdGlvbjogRmlyZWJhc2VGaXJlc3RvcmUuVHJhbnNhY3Rpb24sIGRiOiBGaXJlYmFzZUZpcmVzdG9yZS5GaXJlc3RvcmUsXG4gIHVzZXJJZDogc3RyaW5nLCB0aWNrZXRJZDogc3RyaW5nKSB7XG4gIHJldHVybiByZWFkUHJvdmlkZXJMaXZlVG91cm5hbWVudFJ1bih0cmFuc2FjdGlvbiwgZGIsIHVzZXJJZCwgdGlja2V0SWQsIFwicmVkZGl0XCIpO1xufVxuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFHQUEsT0FBQSxDQUFBQywyQkFBQSxHQUFBQSwyQkFBQTtBQUhBLE1BQUFDLG9CQUFBO0FBQUE7QUFBQSxDQUFBQyxjQUFBLEdBQUFDLENBQUEsT0FBQUMsT0FBQTtBQUVBO0FBQ0EsU0FBZ0JKLDJCQUEyQkEsQ0FBQ0ssV0FBMEMsRUFBRUMsRUFBK0IsRUFDckhDLE1BQWMsRUFBRUMsUUFBZ0I7RUFBQTtFQUFBTixjQUFBLEdBQUFPLENBQUE7RUFBQVAsY0FBQSxHQUFBQyxDQUFBO0VBQ2hDLE9BQU8sSUFBQUYsb0JBQUEsQ0FBQVMsNkJBQTZCLEVBQUNMLFdBQVcsRUFBRUMsRUFBRSxFQUFFQyxNQUFNLEVBQUVDLFFBQVEsRUFBRSxRQUFRLENBQUM7QUFDbkYiLCJpZ25vcmVMaXN0IjpbXX0=

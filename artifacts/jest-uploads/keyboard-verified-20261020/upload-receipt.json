@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-19T23:24:39.845Z",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "uploadHttpStatus": 202,
+  "activationRequested": false,
+  "sourceRevision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "includesUncommittedWorkingTreeChanges": true,
+  "archive": {
+    "bytes": 2875192,
+    "sha256": "7213dd133271fe78a41dc966828937cb4b885ab5a3a560420048692d80dae58b",
+    "entries": 421,
+    "files": 419,
+    "extractedBytes": 4716423
+  },
+  "version": {
+    "id": "01a1567a-cef2-741f-9229-e34a0de69530",
+    "version": "1.0.0-dev.20261020-keyboard-verified.mvfvsdrz",
+    "isActive": false,
+    "description": "Wider keyboard targets with stationary press feedback and landscape Backspace sizing corrected. Focused touch, action isolation and modal checks passed. Uploaded inactive.",
+    "shareNotesWithPlayers": false,
+    "fileSizeBytes": 4716423,
+    "activatedAt": null,
+    "deactivatedAt": null,
+    "createdAt": "2026-10-19T23:24:11.378Z",
+    "previewUrl": "/g/riddle-q?versionId=01a1567a-cef2-741f-9229-e34a0de69530",
+    "hostingMode": "bundled",
+    "selfHostedUrl": null,
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "sdkCompatibility": {
+      "engine": null,
+      "detectedVersion": null,
+      "latestVersion": null,
+      "breakingChangeVersion": null,
+      "status": "not_applicable",
+      "message": "No engine SDK version was detected for this build.",
+      "changelogUrl": null
+    }
+  },
+  "activeVersions": [
+    {
+      "id": "01a15052-3421-7521-9513-070facc7e3a1",
+      "version": "1.0.0-dev.20261018-lobby-privacy.mve69njn",
+      "isActive": true,
+      "description": "Separate public matchmaking and temporary two-player SMS lobbies. Restore the friend lobby across registration and reload, keep accepted invitation previews private to participants, and prevent duplicate active subscription checkouts. Required backend endpoints are deployed.",
+      "shareNotesWithPlayers": false,
+      "fileSizeBytes": 4718522,
+      "activatedAt": "2026-10-18T19:11:07.027Z",
+      "deactivatedAt": null,
+      "createdAt": "2026-10-18T18:42:07.009Z",
+      "previewUrl": "/g/riddle-q?versionId=01a15052-3421-7521-9513-070facc7e3a1",
+      "hostingMode": "bundled",
+      "selfHostedUrl": null,
+      "buildStatus": "ready",
+      "buildProcessingError": null,
+      "sdkCompatibility": {
+        "engine": null,
+        "detectedVersion": null,
+        "latestVersion": null,
+        "breakingChangeVersion": null,
+        "status": "not_applicable",
+        "message": "No engine SDK version was detected for this build.",
+        "changelogUrl": null
+      }
+    }
+  ],
+  "validation": {
+    "compilationPassed": true,
+    "targetBoundariesPassed": true,
+    "localesPassed": 16,
+    "licensesPassed": true,
+    "jestConsolePassed": true,
+    "jestArtifactPassed": true,
+    "w3cHtmlPassed": true,
+    "keyboardBrowserTestsAuthorized": true,
+    "keyboardBrowserTestsRun": true,
+    "touchCasesPassed": 24,
+    "nativeTaps": 2016,
+    "gapTaps": 584,
+    "heldPresses": 24,
+    "finalCssIsolationChecks": 124,
+    "earlierOfflineChecks": 261,
+    "earlierRetainedQuitCases": 4
+  },
+  "sourceEvidence": "artifacts/keyboard-targets-20261020/source-manifest.json",
+  "tapEvidence": "artifacts/keyboard-targets-20261020/tap-checks/observations.json",
+  "isolationEvidence": "artifacts/keyboard-targets-20261020/isolation/summary.json",
+  "supersedesInactiveKeyboardVersion": "01a15669-f3c6-73df-b2d2-0f8d02e1163c",
+  "temporaryCredentialRemoved": true
+}

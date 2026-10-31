@@ -12,7 +12,7 @@ const {RACE_RULES} = require("@qwordly/core/race");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-race-"));
-const output = path.resolve(process.env.LIVE_RACE_REPORT_DIR ?? path.join(root, "../../artifacts/live-pvp"));
+const output = path.resolve(process.env.LIVE_RACE_REPORT_DIR ?? path.join(root, "../../builds/test-evidence/live-pvp"));
 await mkdir(output, {recursive:true});
 const push = process.env.LIVE_RACE_PUSH === "1";
 const streams = new Map();
@@ -49,14 +49,15 @@ await writeFile(path.join(scratch,"tsconfig.json"),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,"index.html"),'<html><body style="margin:0;background:#142234"><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 let browser,server,baseUrl;
 let tickets=new Map(), started=null,winner=null,bot=false;
+let botName="Riddle Bot";
 let lastGuessCommittedAt=0;
 const latency=[];
-const reset=()=>{tickets=new Map();started=null;winner=null;bot=false;};
+const reset=()=>{tickets=new Map();started=null;winner=null;bot=false;botName="Riddle Bot";};
 function state(user) {
  const ticket=tickets.get(user), opponent=[...tickets.values()].find(item=>item.user!==user);
  const now=Date.now(), phase=winner!==null?'result':started?(now<started?'countdown':'racing'):'searching';
  const identity=item=>({displayName:item.user,avatarUrl:baseUrl+'/avatar.svg',bot:false,correctCount:item.count});
- const rival=opponent?identity(opponent):bot?{displayName:'Riddle Bot',avatarUrl:null,bot:true,correctCount:1}:null;
+ const rival=opponent?identity(opponent):bot?{displayName:botName,avatarUrl:null,bot:true,correctCount:1}:null;
  const run=started?{runId:ticket.id,role:'creator',status:phase==='result'?'completed':phase==='countdown'?'scheduled':'active',
  serverNowMs:now,startsAtMs:started,categoryId:ticket.categoryId,locale:'en',rules:RACE_RULES,correctCount:ticket.count,
  wallElapsedMs:Math.max(0,now-started),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-started),events:[],
@@ -304,36 +305,69 @@ try {
   assert.equal(await (rivalWins?b:a).locator('.live-race-reward').innerText(),'+50 coins');assert.equal(await (rivalWins?a:b).locator('.live-race-reward').count(),0);
   assert.equal(await a.evaluate(()=>window.completed),1);assert.equal(await b.evaluate(()=>window.completed),1);
   assert.equal(await a.locator('.race-gameplay').count(),0);await a.screenshot({path:path.join(output,`victory-${viewport.width}.png`),fullPage:true});
-  if(authority) assert.deepEqual(await authority.balances(),rivalWins?[100,150]:[150,100]);
+  if(authority) {
+   assert.deepEqual(await authority.balances(),rivalWins?[125,225]:[200,125]);
+   const adminRequire=createRequire(path.resolve(root,'../../firebase-functions/package.json'));
+   const db=adminRequire('firebase-admin/firestore').getFirestore();
+   const profiles=await db.getAll(...['a','b'].map(character=>db.doc(`users/jest_${character.repeat(40)}`)));
+   const achievements=profiles.map(profile=>profile.data().unlockedAchievements.map(entry=>entry.achievementId).sort());
+   assert.deepEqual(achievements,rivalWins?
+    [['race_debut'],['race_clean_run','race_debut','race_first_win']]:
+    [['race_debut','race_first_win'],['race_debut']]);
+  }
   assert.deepEqual(await a.evaluate(()=>[...new Set(window.bridgeCalls)]),['game:listRaceCategories']);
   assert.equal(await a.evaluate(()=>window.legacyFindCalls),0);
   await a.getByRole('button',{name:'Close Race to 10',exact:true}).last().click();
   await a.getByRole('button',{name:'Start PvP match',exact:true}).waitFor();
   assert.equal(await a.locator('.race-hub-tabs,.race-inbox,.race-challenge-card').count(),0);
-  assert.deepEqual(errors,[]);console.log(`Live PvP passed at ${viewport.width}px: intro, lobby identities, countdown, progress, ${authority?'penalty window and adjusted-time settlement':'immediate unpenalized victory'}, and one 50-coin grant.`);
+  assert.deepEqual(errors,[]);console.log(`Live PvP passed at ${viewport.width}px: intro, lobby identities, countdown, progress, ${authority?'penalty window, adjusted-time settlement and exact one-time achievement bonuses':'immediate unpenalized victory'}, and one 50-coin match grant.`);
   await context.close();
  }
  reset();await authority?.reset();const context=await browser.newContext({viewport:{width:390,height:844}});const page=await context.newPage();await page.goto(baseUrl+'/?user=Alice');
- await page.getByRole('button',{name:'Start PvP match',exact:true}).click();await page.locator('.live-race-self strong').waitFor();if(authority)await authority.expireSearch('Alice');else tickets.get('Alice').created=Date.now()-60000;
- await page.locator('.live-race-rival strong').waitFor();assert.equal(await page.locator('.live-race-rival strong').innerText(),'Opponent');
- const assertNeutralOpponent=async()=>assert.doesNotMatch(await page.locator('.race-screen').innerText(),/\bbot\b|🤖/i);
- await assertNeutralOpponent();
- await page.screenshot({path:path.join(output,'opponent-countdown-390.png'),fullPage:true});
- await page.locator('.race-gameplay').waitFor({timeout:15000});
- assert.match(await page.locator('.race-scoreboard').innerText(),/Opponent/);await assertNeutralOpponent();
- await page.screenshot({path:path.join(output,'opponent-gameplay-390.png'),fullPage:true});
- if(!authority){
+ await page.getByRole('button',{name:'Start PvP match',exact:true}).click();await page.locator('.live-race-self strong').waitFor();
+ if(authority){
+  await page.waitForFunction(()=>window.liveSnapshots.at(-1)?.phase==='searching');
+  const ticketId=await page.evaluate(()=>window.liveSnapshots.at(-1).ticketId);
+  await authority.expireSearch('Alice',61000);
+  await page.evaluate(()=>window.dispatchEvent(new Event('online')));
+  await page.waitForFunction(()=>{const view=window.liveSnapshots.at(-1);return view?.phase==='searching'&&view.serverNowMs-(view.searchEndsAtMs-900000)>=60000;});
+  assert.deepEqual(await page.evaluate(()=>{const view=window.liveSnapshots.at(-1);return {ticketId:view.ticketId,phase:view.phase,waitForPlayer:view.waitForPlayer,opponent:view.opponent};}),
+   {ticketId,phase:'searching',waitForPlayer:true,opponent:null});
+  assert.equal(await page.locator('.live-race-rival strong,.race-gameplay').count(),0);
+  await page.screenshot({path:path.join(output,'public-human-wait-390.png'),fullPage:true});
+ }else{
+  tickets.get('Alice').created=Date.now()-60000;
+  await page.locator('.live-race-rival strong').waitFor();assert.equal(await page.locator('.live-race-rival strong').innerText(),'Opponent');
+  const assertNeutralOpponent=async()=>assert.doesNotMatch(await page.locator('.race-screen').innerText(),/\bbot\b|🤖/i);
+  await assertNeutralOpponent();
+  await page.screenshot({path:path.join(output,'opponent-countdown-390.png'),fullPage:true});
+  await page.locator('.race-gameplay').waitFor({timeout:15000});
+  assert.match(await page.locator('.race-scoreboard').innerText(),/Opponent/);await assertNeutralOpponent();
+  await page.screenshot({path:path.join(output,'opponent-gameplay-390.png'),fullPage:true});
   for(let index=0;index<10;index++){await solve(page);if(index<9)await page.waitForFunction(count=>window.liveSnapshots.at(-1).player.correctCount===count,index+1);}
   await page.locator('.live-race-victory').waitFor();
   assert.match(await page.locator('.race-result-score').innerText(),/Opponent/);await assertNeutralOpponent();
   await page.screenshot({path:path.join(output,'opponent-result-390.png'),fullPage:true});
  }
  await context.close();
+ if(!authority){
+  reset();botName='Guest_ABC123';
+  const guestContext=await browser.newContext({viewport:{width:390,height:844}}),guest=await guestContext.newPage();
+  await guest.goto(baseUrl+'/?user=Alice');await guest.getByRole('button',{name:'Start PvP match',exact:true}).click();
+  await guest.locator('.live-race-self strong').waitFor();tickets.get('Alice').created=Date.now()-60000;
+  await guest.locator('.live-race-rival strong').waitFor();assert.equal(await guest.locator('.live-race-rival strong').innerText(),'Guest_ABC123');
+  await guest.locator('.race-gameplay').waitFor({timeout:15000});assert.match(await guest.locator('.race-scoreboard').innerText(),/Guest_ABC123/);
+  for(let index=0;index<10;index++){await solve(guest);if(index<9)await guest.waitForFunction(count=>window.liveSnapshots.at(-1).player.correctCount===count,index+1);}
+  await guest.locator('.live-race-victory').waitFor();assert.match(await guest.locator('.race-result-score').innerText(),/Guest_ABC123/);
+  assert.doesNotMatch(await guest.locator('.race-screen').innerText(),/\bbot\b|🤖/i);
+  await guest.screenshot({path:path.join(output,'assigned-guest-result-390.png'),fullPage:true});await guestContext.close();
+  console.log('Assigned Guest_ABC123 remained visible through lobby, gameplay and result; legacy bot assertions stayed unchanged.');
+ }
  const unavailable=await browser.newPage({viewport:{width:390,height:844}});await unavailable.goto(baseUrl+'/?unavailable=1&challenge=retired-ghost');
  await unavailable.getByRole('alert').waitFor();assert.match(await unavailable.getByRole('alert').innerText(),/unavailable for this account/);
  assert.equal(await unavailable.getByRole('button',{name:'Start PvP match',exact:true}).isDisabled(),true);
  assert.deepEqual(await unavailable.evaluate(()=>[...new Set(window.bridgeCalls)]),['game:listRaceCategories']);await unavailable.close();
  console.log('Retired links, category selection, PvP-only return navigation and missing live capability passed.');
- console.log('Bot fallback UI passed at 390px; server deadline advanced through the injected transport.');
+ console.log(authority?'Public human waiting retained its exact seat without a bot after the legacy deadline at 390px.':'Synthetic bot fallback UI passed at 390px; server deadline advanced through the injected transport.');
  await writeFile(path.join(output,'polling-latency.json'),JSON.stringify({transport:'injected local HTTP authority; not production latency',pushEnabled:push,samples:latency},null,2));
 }finally{await browser?.close();await authority?.clear();for(const stream of streams.values())stream.end();streams.clear();if(server){server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}await rm(scratch,{recursive:true,force:true});}

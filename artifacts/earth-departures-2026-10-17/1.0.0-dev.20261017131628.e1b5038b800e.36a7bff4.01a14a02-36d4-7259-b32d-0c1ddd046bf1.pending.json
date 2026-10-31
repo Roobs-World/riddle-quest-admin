@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "kind": "jest-upload-accepted",
+  "acceptedAt": "2026-10-17T13:17:09.323Z",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "buildVersion": "1.0.0-dev.20261017131628.e1b5038b800e.36a7bff4",
+  "versionId": "01a14a02-36d4-7259-b32d-0c1ddd046bf1",
+  "buildStatus": "processing",
+  "activationRequested": true,
+  "readiness": "pending",
+  "source": {
+    "commit": "e1b5038b800e920b1b88207ca95ad5ac1ecd748f",
+    "dirty": false
+  },
+  "archive": {
+    "file": "1.0.0-dev.20261017131628.e1b5038b800e.36a7bff4.zip",
+    "bytes": 2868545,
+    "sha256": "953222deb4a0ad1dc63b8f44c1e18ceab7aa40b34082bf56e179d4332ce52863"
+  },
+  "verification": {
+    "automatedPolling": false,
+    "authoritativeChannels": [
+      "Jest Developer Console build status",
+      "Jest build-completion email"
+    ]
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "status": "local-compiled-artifact-pass",
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-journal",
+  "filesCount": 419,
+  "totalBytes": 4718293,
+  "manifestSha256": "167abd7241f1851fa4125c0f0ba2fb88f4ac5aa562e80e84cdbc83880ef685ae",
+  "rootReportedZipSha256": "22e4afc20c5910742fe669dfa1545d16ad9e8795bfe2cdb8b810cacd9c5f2f6c",
+  "rootReportedUploadVersion": "01a16583-80fa-760e-9771-4b82d849bf15",
+  "retainedFinal": {
+    "success": true,
+    "exitCode": 0,
+    "elapsedSeconds": 327.47,
+    "counts": {
+      "numPassedTestSuites": 8,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 79,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    },
+    "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-journal",
+    "manifestSha256": "167abd7241f1851fa4125c0f0ba2fb88f4ac5aa562e80e84cdbc83880ef685ae",
+    "artifactHashesUnchanged": true,
+    "runtimeSourceFilesUnchanged": 369,
+    "testSourceFilesUnchangedDuringRun": 9,
+    "sharedScreenshotPathsRestored": 12,
+    "supersededFailures": "../retained-browser-results.json retains all3 original stale pending-record deletion assertions; only queuedCoinActions test changed, as recorded in source-proof.json. No runtime change or rebuild occurred.",
+    "keyCases": [
+      {
+        "name": "queued coin actions keeps the final visible draft letter through immediate reload (hinted=false)",
+        "status": "passed"
+      },
+      {
+        "name": "queued coin actions keeps the final visible draft letter through immediate reload (hinted=true)",
+        "status": "passed"
+      },
+      {
+        "name": "queued coin actions recovers an unaccepted Continue and its typed draft after reload",
+        "status": "passed"
+      },
+      {
+        "name": "queued coin actions keeps hint usable with confirm recovery",
+        "status": "passed"
+      },
+      {
+        "name": "queued coin actions keeps hint usable with reload recovery",
+        "status": "passed"
+      },
+      {
+        "name": "queued coin actions keeps hint usable with reject recovery",
+        "status": "passed"
+      }
+    ]
+  },
+  "navigation": {
+    "success": true,
+    "exitCode": 0,
+    "passedSuites": 1,
+    "passedGraphEntries": 3,
+    "failedGraphEntries": 0,
+    "pendingGraphEntries": 0,
+    "totalRoutes": 337,
+    "elapsedSeconds": 1353.645,
+    "entries": [
+      {
+        "query": "?harness=jest",
+        "entry": "Daily",
+        "depthLimit": 3,
+        "routes": 89,
+        "distinctScreens": 21,
+        "unvisited": 0,
+        "problemRoutes": 0
+      },
+      {
+        "query": "?harness=jest&dailyCompleted=1",
+        "entry": "Classic",
+        "depthLimit": 3,
+        "routes": 81,
+        "distinctScreens": 20,
+        "unvisited": 0,
+        "problemRoutes": 0
+      },
+      {
+        "query": "?harness=race&dailyCompleted=1",
+        "entry": "Multiplayer",
+        "depthLimit": 5,
+        "routes": 167,
+        "distinctScreens": 36,
+        "unvisited": 0,
+        "problemRoutes": 0
+      }
+    ],
+    "results": "route-sweep-results.json",
+    "matrix": "route-matrix.json"
+  },
+  "instructionLayout": {
+    "locales": 16,
+    "viewports": [
+      [
+        402,
+        682
+      ],
+      [
+        320,
+        568
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "combinations": 48,
+    "includedReportedJestCases": 3
+  },
+  "artifactHashesUnchangedAfterAll": true,
+  "runtimeSourceSetAndHashesUnchanged": 369,
+  "frozenTestSourceHashesUnchanged": 9,
+  "initialRetainedFailureRecord": "retained-first-run-summary.json",
+  "pendingLocalChecks": [],
+  "providerScope": "All local compiled-artifact suites use trusted mocked providers. Hosted real-service startup is a separate gate. Root reported HTTP500 at21:50:12UTC; this local pass does not clear that gate or authorize activation.",
+  "productionEdits": false,
+  "rebuilds": false,
+  "providerActions": false
+}

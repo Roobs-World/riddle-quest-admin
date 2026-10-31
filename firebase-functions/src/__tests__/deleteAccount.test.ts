@@ -213,6 +213,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
 }));
 
 import {deleteAccount} from "../profile/accountDeletion";
+import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
 import {createJestPurchaseGrantId} from "../jest/jestPurchaseReceipts";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 import {hashRaceCohortUser} from "../race/raceRollout";
@@ -544,6 +545,37 @@ describe("deleteAccount", () => {
     expect(mockJestDeletionSet).toHaveBeenCalledTimes(1);
     expect(mockActiveOperationsGet).toHaveBeenCalledTimes(1);
     expect(mockDeleteUser).not.toHaveBeenCalledWith("attacker-selected-user");
+  });
+
+  it.each(["facebook", "reddit"] as const)("preserves only validated %s completion attribution while removing both referral identities", async provider => {
+    /** Opaque solo receipt retained so the surviving invitee can replay its original reward. */
+    const completionReceiptId = "a".repeat(64);
+    queryDocuments.set(`${provider}ReferralSettlements:inviterUid:user-1`, [
+      queryDocument(`${provider}ReferralSettlements/attributed`, {
+        provider, inviterUid: "user-1", inviteeUid: "other-user", inviteeCoins: 100, inviterCoins: 100,
+        settledAtMs: 123, completionReceiptId,
+      }),
+      queryDocument(`${provider}ReferralSettlements/malformed`, {
+        provider, inviterUid: "user-1", inviteeUid: "other-user", inviteeCoins: 100, inviterCoins: 100,
+        settledAtMs: 123, completionReceiptId: "player@example.com",
+      }),
+      queryDocument(`${provider}ReferralSettlements/legacy`, {
+        provider, inviterUid: "user-1", inviteeUid: "other-user", inviteeCoins: 100, inviterCoins: 100,
+        settledAtMs: 123,
+      }),
+    ]);
+
+    await deleteAccountForUser("user-1");
+
+    expect(mockBatchSet).toHaveBeenCalledWith({path: `${provider}ReferralSettlements/attributed`}, {
+      provider, replayProtection: true, inviteeCoins: 100, inviterCoins: 100, settledAtMs: 123, completionReceiptId,
+    });
+    for (const receipt of ["malformed", "legacy"]) {
+      expect(mockBatchSet).toHaveBeenCalledWith({path: `${provider}ReferralSettlements/${receipt}`}, {
+        provider, replayProtection: true, inviteeCoins: 100, inviterCoins: 100, settledAtMs: 123,
+      });
+    }
+    expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
   });
 
   it("removes Jest referral identity while preserving anonymized anti-replay receipts", async () => {

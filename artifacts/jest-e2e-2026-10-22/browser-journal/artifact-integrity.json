@@ -1,0 +1,17 @@
+{
+  "snapshot": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-journal",
+  "filesCount": 419,
+  "totalBytes": 4718293,
+  "manifestSha256": "167abd7241f1851fa4125c0f0ba2fb88f4ac5aa562e80e84cdbc83880ef685ae",
+  "verifiedBeforeAt": "2026-10-22T21:27:56.639589+00:00",
+  "matchesManifestBefore": true,
+  "retainedFirstRunPostCheckAt": "2026-10-22T21:34:52.523318+00:00",
+  "matchesManifestAfterFirstRetained": true,
+  "retainedRerunPostCheckAt": "2026-10-22T21:43:08.350316+00:00",
+  "matchesManifestAfterRetainedRerun": true,
+  "runtimeSourceFilesUnchanged": 369,
+  "verifiedAfterAllAt": "2026-10-22T21:51:27.576387+00:00",
+  "matchesManifestAfterAll": true,
+  "runtimeSourceSetAndHashesUnchangedAfterAll": 369,
+  "frozenTestSourceHashesUnchangedAfterAll": 9
+}

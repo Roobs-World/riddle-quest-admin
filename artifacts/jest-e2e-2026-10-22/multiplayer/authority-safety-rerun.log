@@ -1,0 +1,18 @@
+Starting src/__tests__/race/liveRaceSafety.it.test.ts
+PASS src/__tests__/race/liveRaceSafety.it.test.ts (30.496 s)
+  ✓ routes signed Reddit safety through strict shared callables and deletion leases (957 ms)
+  ✓ authorizes both facebook human seats, preserves report replay/cap and revokes presence on block (13938 ms)
+  ✓ authorizes both reddit human seats, preserves report replay/cap and revokes presence on block (14056 ms)
+  ✓ rejects stranger live-target reports without queue writes (96 ms)
+  ✓ rejects deleted live-target reports without queue writes (89 ms)
+  ✓ rejects expired live-target reports without queue writes (79 ms)
+  ✓ rejects corrupt-seat live-target reports without queue writes (81 ms)
+  ✓ rejects cross-provider live-target reports without queue writes (84 ms)
+  ✓ rejects bot targeting and replaying a report id against a different retained match (178 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        30.603 s
+Ran all test suites within paths "src/__tests__/race/liveRaceSafety.it.test.ts".
+Test results written to: ../artifacts/jest-e2e-2026-10-22/multiplayer/authority-safety-rerun-results.json

@@ -1,0 +1,34 @@
+..                                       | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 13h ago)
+..                                       | Progress: resolved 1, reused 0, downloaded 0, added 0
+..                                       |   +1 +
+..                                       | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 602ms using pnpm v11.21.0
+FAIL src/__tests__/race/raceLiveObservation.test.ts
+  ● keeps lease-refreshing lobby polls on the read-write path
+
+    expect(received).resolves.toMatchObject()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: The frozen live race deck is incomplete or unordered.]
+
+      119 |     [`users/${OWNER}`, {username: "Alice", level: 3}],
+      120 |     ["liveRaceQueues/pool", {tickets: [ticketId], expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}]]));
+    > 121 |   await expect(poll(db, "poll-1")).resolves.toMatchObject({phase: "searching"});
+          |         ^
+      122 |   await expect(poll(db, "poll-2")).resolves.toMatchObject({phase: "searching"});
+      123 |   expect(modes).toEqual(["read-write", "read-write"]);
+      124 |   expect(writes).toEqual([`liveRaceTickets/${ticketId}`, `liveRaceTickets/${ticketId}`]);
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at Object.<anonymous> (src/__tests__/race/raceLiveObservation.test.ts:121:9)
+
+
+Test Suites: 1 failed, 6 passed, 7 total
+Tests:       1 failed, 55 passed, 56 total
+Snapshots:   0 total
+Time:        1.272 s, estimated 2 s
+Ran all test suites within paths "src/__tests__/race/raceLiveScoring.test.ts", "src/__tests__/race/raceLiveLatency.test.ts", "src/__tests__/race/raceLiveSettlementLatency.test.ts", "src/__tests__/race/raceLiveObservation.test.ts", "src/__tests__/race/raceLiveFailures.test.ts", "src/__tests__/race/raceLiveRetirementCallables.test.ts", "src/__tests__/race/raceLiveStreamingCallables.test.ts".
+Test results written to: ../artifacts/current-source-readiness-2026-10-25/backend-new/backend-unit-current-results.json

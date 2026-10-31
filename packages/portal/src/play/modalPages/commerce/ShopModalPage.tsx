@@ -15,7 +15,7 @@ export type ShopModalPageProps = {
   onPurchase: (productId: string) => void;
 };
 
-/** Localizes game-owned fallback copy while preserving provider-authored descriptions. */
+/** Localizes game-owned product badges. */
 function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTranslator>) {
   /** Game-owned pricing metadata used only for localized fallback copy. */
   const local = DEFAULT_PRODUCT_PRICING.find((item) => item.productId === product.productId);
@@ -26,8 +26,6 @@ function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTrans
     "BEST VALUE": "CoinShop.BADGE_BEST_VALUE",
   };
   return {
-    description: local && product.description === local.description
-      ? tr("CoinShop.PACK_DESCRIPTION", {coins: product.coins.toLocaleString()}) : product.description,
     badge: local && product.featuredBadge === local.featuredBadge && local.featuredBadge
       ? tr(badgeKeys[local.featuredBadge]) : product.featuredBadge,
   };
@@ -77,7 +75,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
         {loading && products.length === 0 ? <p role="status">{tr("Accessibility.LOADING")}</p> : null}
         {!loading && !catalogError && products.length === 0 ? <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p> : null}
         {visibleProducts.map((product) => {
-          /** Localized game-owned labels and provider-authored product description. */
+          /** Localized game-owned product badge. */
           const copy = shopProductCopy(product, tr);
           /** Whole-action alternatives explain the actual value of the provider coin grant. */
           const buyingPower = getCoinPackBuyingPower(product.coins);
@@ -106,7 +104,9 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
                 {product.coins.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}
               </span>
             )}
-            <small className="shop-product-description">{copy.description}</small>
+            {product.productType === "subscription" && product.description ? (
+              <small className="shop-product-description">{product.description}</small>
+            ) : null}
             {product.productType === "subscription" ? (
               <div className="shop-subscription-benefits">
                 <strong>{tr("CoinShop.SUBSCRIPTION_BENEFITS_TITLE")}</strong>

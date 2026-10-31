@@ -1,0 +1,112 @@
+{
+  "checkedAtUtc": "2026-10-24 22:54:01 UTC",
+  "spreadsheetId": "1NqOsu2_7PbYGa8cVgoDIGsGFWB0PfG-lqxIhT2nkyK0",
+  "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1NqOsu2_7PbYGa8cVgoDIGsGFWB0PfG-lqxIhT2nkyK0/edit",
+  "metadataReadBeforeRangeReads": true,
+  "questionsSheet": {
+    "title": "Questions & answers",
+    "sheetId": 20261021,
+    "rowCount": 393,
+    "columnCount": 6,
+    "range": "A1:F121"
+  },
+  "brandingSheet": {
+    "title": "Website text",
+    "sheetId": 1008413811,
+    "ranges": [
+      "B223",
+      "B230",
+      "B246",
+      "B250",
+      "B431"
+    ]
+  },
+  "currentQuestionCount": 15,
+  "currentAnswerCount": 105,
+  "currentQuestionIds": [
+    "q01",
+    "q02",
+    "q03",
+    "q04",
+    "q05",
+    "q06",
+    "q07",
+    "q08",
+    "q09",
+    "q10",
+    "q11",
+    "q12",
+    "q13",
+    "q14",
+    "q15"
+  ],
+  "expectedActiveQuestionIds": [
+    "q01",
+    "q02",
+    "q03",
+    "q04",
+    "q05",
+    "q06",
+    "q07",
+    "q08",
+    "q09",
+    "q10",
+    "q11",
+    "q12",
+    "q13",
+    "q14",
+    "q15"
+  ],
+  "canonicalBlankPaddedCellDifferencesFromFrozenSource": [],
+  "promptDifferencesFromBundledFallback": [],
+  "answerDifferencesFromBundledFallback": [],
+  "allFirst15PromptsAnd105AnswersMatch": true,
+  "branding": [
+    {
+      "range": "B223",
+      "sourceKey": "game.static.01.title",
+      "applicationKey": "game.page.title",
+      "expected": "The Creative Hive",
+      "actual": "The Creative Hive",
+      "matches": true
+    },
+    {
+      "range": "B230",
+      "sourceKey": "game.static.09.text",
+      "applicationKey": "game.brand.name",
+      "expected": "The Creative Hive",
+      "actual": "The Creative Hive",
+      "matches": true
+    },
+    {
+      "range": "B246",
+      "sourceKey": "tv.static.01.title",
+      "applicationKey": "tv.page.title",
+      "expected": "The Creative Hive",
+      "actual": "The Creative Hive",
+      "matches": true
+    },
+    {
+      "range": "B250",
+      "sourceKey": "tv.static.05.text",
+      "applicationKey": "tv.title",
+      "expected": "The Creative Hive",
+      "actual": "The Creative Hive",
+      "matches": true
+    },
+    {
+      "range": "B431",
+      "sourceKey": "tv.tracker.plural",
+      "applicationKey": "tv.tracker.bees",
+      "expected": "Bees in The Creative Hive",
+      "actual": "Bees in The Creative Hive",
+      "matches": true
+    }
+  ],
+  "allFiveBrandingValuesMatch": true,
+  "draftQuestionsOutsideFirst15NotReadOrCompared": true,
+  "sourceEdits": 0,
+  "applicationCodeEdits": 0,
+  "testsOrDeployments": 0,
+  "coverageLimit": "Current native source cells and current bundled wording fallback only; no new live API/browser behavior claim."
+}

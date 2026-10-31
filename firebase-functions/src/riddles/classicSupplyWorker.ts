@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {admin} from "../shared/firebaseAdmin";
-import {onScheduleWithSentry} from "../shared/sentryHandlers";
+import {onDocumentCreated, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {captureException} from "../shared/sentry";
 import {RIDDLE_GENERATION_BATCH_SIZE} from "../shared/constants";
 import {generateLocalizedClassicRiddlesForLocale} from "./riddleGeneration";
@@ -64,8 +64,25 @@ export async function processClassicSupplyJobs(): Promise<void> {
   await Promise.all(due.docs.map(document => processClassicSupplyJob(document.id)));
 }
 
-/** Scheduled retries also recover requests whose original worker died or timed out. */
-export const replenishClassicSupply = onScheduleWithSentry("replenishClassicSupply", {
-  schedule: "every 1 minutes", timeZone: "UTC", region: "us-central1",
-  timeoutSeconds: 540, secrets: ["OPENAI_API_KEY"],
-}, async () => {await processClassicSupplyJobs();});
+/** Processes a player-created supply request without polling an idle queue. */
+export async function handleClassicSupplyRequest(requestId: string): Promise<void> {
+  await processClassicSupplyJob(requestId);
+  /** Persisted completion state after the worker attempt. */
+  const current = await admin.firestore().collection("classicSupplyJobs").doc(requestId).get();
+  if (current.exists && current.data()?.completed !== true) throw new Error("Classic supply request remains pending.");
+}
+
+/** Event retries recover provider failures and expired leases only for an existing request. */
+export const replenishClassicSupplyOnDemand = onDocumentCreated({
+  document: "classicSupplyJobs/{requestId}", region: "us-central1", minInstances: 0,
+  timeoutSeconds: 540, secrets: ["OPENAI_API_KEY"], retry: true,
+}, async event => {await handleClassicSupplyRequest(event.params.requestId);});
+
+/** Only an explicit player-triggered reactivation restarts an expired event retry window. */
+export const retryClassicSupplyOnDemand = onDocumentUpdated({
+  document: "classicSupplyJobs/{requestId}", region: "us-central1", minInstances: 0,
+  timeoutSeconds: 540, secrets: ["OPENAI_API_KEY"], retry: true,
+}, async event => {
+  if (event.data?.before.data()?.requeuedAtMs === event.data?.after.data()?.requeuedAtMs) return;
+  await handleClassicSupplyRequest(event.params.requestId);
+});

@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-25T23:39:04.604912+00:00",
+  "ownedExecSession": 92688,
+  "ownedDriverAndObservedWorkerProcessIds": [
+    2910938,
+    2910996,
+    2911234,
+    2911504,
+    2911745,
+    2912189,
+    2912222,
+    2912235,
+    2912286,
+    2912359,
+    2912408,
+    2912409,
+    2912421,
+    2931577,
+    2932024,
+    2972940,
+    2972953,
+    2973413,
+    2973414,
+    2973425,
+    2973471,
+    2973523,
+    2973668,
+    2973669,
+    2973711
+  ],
+  "observedOwnedPidsStillRunning": [],
+  "ports": {
+    "8099": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    },
+    "18199": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    },
+    "19000": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    }
+  },
+  "allObservedOwnedWorkersClosed": true,
+  "scope": "Only this final local backend verification. No user browser or production controller was stopped."
+}

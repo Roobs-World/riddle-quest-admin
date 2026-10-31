@@ -4,7 +4,7 @@ import {mkdir,mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
 import path from 'node:path';
 const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const output=path.resolve(process.env.RACE_OPTIONS_REPORT_DIR??path.join(portal,'../../artifacts/race-options-commit-2026-10-08/permanent'));
+const output=path.resolve(process.env.RACE_OPTIONS_REPORT_DIR??path.join(portal,'../../builds/test-evidence/race-options-commit-2026-10-08/permanent'));
 await mkdir(output,{recursive:true});
 await mkdir(path.join(portal,'node_modules/.cache'),{recursive:true});
 const mode=process.env.RACE_OPTIONS_REACT_MODE??'development';assert(['development','production'].includes(mode));

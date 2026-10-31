@@ -1,0 +1,13 @@
+..                                       | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 14h ago)
+..                                       | Progress: resolved 1, reused 0, downloaded 0, added 0
+..                                       |   +1 +
+..                                       | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 604ms using pnpm v11.21.0
+$ node scripts/prepare-deploy.js
+.                                        | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
+$ tsc -p tsconfig.build.json
+Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
+$ eslint --ext .js,.ts src

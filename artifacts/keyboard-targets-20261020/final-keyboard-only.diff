@@ -1,0 +1,149 @@
+--- before/styles.puzzle.css
++++ after/styles.puzzle.css
+@@ -270,12 +270,12 @@
+   min-width: 0;
+   display: flex;
+   justify-content: center;
+-  gap: clamp(2px, 1.4vw, 10px);
++  gap: 1px;
+ }
+ .key {
++  flex: 1 1 0;
+   min-width: 0;
+   padding: 0;
+-  width: min(52px, 8vw);
+   height: 48px;
+   border: 1px solid #ffffff57;
+   border-radius: 9px;
+@@ -284,17 +284,16 @@
+   box-shadow: none;
+   font: 700 20px/1 var(--rq-font-body);
+   transition:
+-    transform 90ms ease,
++    filter 90ms ease,
+     background-color 120ms ease;
+ }
+ .key:hover:not(:disabled) {
+-  transform: translateY(-2px);
++  filter: brightness(1.1);
+ }
+ .key:active:not(:disabled) {
+-  transform: translateY(1px) scale(0.96);
++  filter: brightness(0.9);
+ }
+ .key.utility {
+-  width: clamp(44px, 16vw, 62px);
+   border-radius: 7px;
+   background: #fff;
+ }
+--- before/styles.guidance.css
++++ after/styles.guidance.css
+@@ -347,17 +347,10 @@
+     gap: 0;
+     padding-bottom: 0;
+   }
+-  .keyboard > div {
+-    gap: 2px;
+-  }
+   .keyboard .key {
+-    width: min(39px, 7.6vw);
+     height: 32px;
+     min-height: 32px;
+     font-size: 20px;
+-  }
+-  .keyboard .key.utility {
+-    width: 48px;
+   }
+   .game-input-actions {
+     padding: 0 8px;
+@@ -417,9 +410,6 @@
+     width: 88%;
+     gap: 0;
+   }
+-  .keyboard > div {
+-    gap: 2px;
+-  }
+   .game-input-actions button {
+     min-width: 0;
+     min-height: 60px;
+@@ -453,13 +443,9 @@
+     font-size: 28px;
+   }
+   .keyboard .key {
+-    width: min(39px, 7.6vw);
+     height: 32px;
+     min-height: 32px;
+     font-size: 20px;
+-  }
+-  .keyboard .key.utility {
+-    width: 48px;
+   }
+ }
+ 
+@@ -516,9 +502,6 @@
+   .keyboard {
+     gap: 0;
+     padding-bottom: 0;
+-  }
+-  .keyboard > div {
+-    gap: 2px;
+   }
+   .keyboard .key {
+     height: 32px;
+@@ -633,16 +616,12 @@
+     gap: 2px;
+     padding-bottom: 0;
+   }
+-  .keyboard > div {
+-    gap: 4px;
+-  }
+   .key {
+-    width: calc((100% - 36px) / 10);
+     height: 40px;
+     font-size: 20px;
+   }
+   .key.utility {
+-    width: 54px;
++    min-width: 56px;
+   }
+   .game-input-actions {
+     grid-column: 2;
+@@ -710,13 +689,8 @@
+     width: 100%;
+     gap: 4px;
+   }
+-  .game-content > .keyboard > div,
+-  .race-gameplay > .keyboard > div {
+-    gap: 3px;
+-  }
+   .game-content > .keyboard .key,
+   .race-gameplay > .keyboard .key {
+-    width: calc((100% - 27px) / 10);
+     height: 48px;
+     min-height: 48px;
+     border: 1px solid rgba(255, 255, 255, 0.34);
+@@ -724,10 +698,6 @@
+     background: rgba(255, 255, 255, 0.12);
+     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.28);
+   }
+-  .game-content > .keyboard .key.utility,
+-  .race-gameplay > .keyboard .key.utility {
+-    width: calc((100% - 27px) / 10);
+-  }
+   .game-content > .keyboard .key.green,
+   .race-gameplay > .keyboard .key.green {
+     background: var(--feedback-correct);
+--- before/styles.race-gameplay.css
++++ after/styles.race-gameplay.css
+@@ -584,7 +584,10 @@
+   .race-gameplay .guess-board {
+     max-width: min(100%, calc(var(--answer-length) * 42px - 4px));
+   }
+-  .race-gameplay > .keyboard { align-self: center; }
++  .race-gameplay > .keyboard {
++    align-self: center;
++    justify-self: start;
++  }
+ }
+ 
+ /* Status stays unscaled; only the unchanged puzzle and inputs use viewport fit. */

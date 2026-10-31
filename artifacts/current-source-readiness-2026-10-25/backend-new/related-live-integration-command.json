@@ -1,0 +1,25 @@
+{
+  "command": [
+    "node",
+    "scripts/run-isolated-emulators.js",
+    "emulators:exec",
+    "--config",
+    "firebase.race-verification.json",
+    "--only",
+    "firestore,database",
+    "--project",
+    "demo-riddle-quest-multiplayer",
+    "pnpm exec jest --config jest.race-coverage.config.js --coverage=false --runInBand --runTestsByPath src/__tests__/race/raceLive.it.test.ts src/__tests__/race/raceLiveInvitation.it.test.ts src/__tests__/race/raceLiveJoinRetirement.it.test.ts --json --outputFile=/home/craig-beswetherick/Documents/riddle-quest/artifacts/current-source-readiness-2026-10-25/backend-new/related-live-integration-results.json"
+  ],
+  "node": "/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin",
+  "environment": {
+    "GCLOUD_PROJECT": "demo-riddle-quest-multiplayer",
+    "FIREBASE_PROJECT_ID": "demo-riddle-quest-multiplayer",
+    "FIRESTORE_EMULATOR_HOST": "127.0.0.1:18199",
+    "FIREBASE_DATABASE_EMULATOR_HOST": "127.0.0.1:19000",
+    "NODE_OPTIONS": "--experimental-vm-modules",
+    "JAVA_TOOL_OPTIONS": "-Xmx1024m",
+    "TMPDIR": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/current-source-readiness-2026-10-25/backend-new/temp"
+  },
+  "coverageClaim": false
+}

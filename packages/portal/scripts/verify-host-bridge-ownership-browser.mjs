@@ -11,7 +11,7 @@ const component=path.join(root,'src/play/useHostBridgeLifecycle.ts');
 const baseline=process.env.HOST_BRIDGE_BASELINE_SOURCE;
 const reactMode=process.env.HOST_BRIDGE_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
-const output=path.resolve(process.env.HOST_BRIDGE_REPORT_DIR??path.join(root,'../../artifacts/host-bridge-ownership-2026-10-03',reactMode==='production'?'production':''));
+const output=path.resolve(process.env.HOST_BRIDGE_REPORT_DIR??path.join(root,'../../builds/test-evidence/host-bridge-ownership-2026-10-03',reactMode==='production'?'production':''));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/host-bridge-ownership-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

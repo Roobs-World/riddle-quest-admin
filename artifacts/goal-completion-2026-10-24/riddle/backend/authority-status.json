@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin/node",
+    "scripts/run-isolated-emulators.js",
+    "emulators:exec",
+    "--config",
+    "firebase.race-verification.json",
+    "--only",
+    "firestore,database",
+    "--project",
+    "demo-riddle-quest-authority",
+    "pnpm exec jest --config jest.production-coverage.config.js --runInBand --collectCoverage=false --runTestsByPath src/__tests__/facebookReferrals.it.test.ts src/__tests__/redditReferrals.it.test.ts src/__tests__/redditAccountDeletion.it.test.ts src/__tests__/jestAccountOperationLease.it.test.ts src/__tests__/singlePlayerAtomicRepair.it.test.ts src/__tests__/facebookReferralRetention.it.test.ts --json --outputFile /home/craig-beswetherick/Documents/riddle-quest/artifacts/goal-completion-2026-10-24/riddle/backend/authority-results.json"
+  ],
+  "project": "demo-riddle-quest-authority",
+  "exitCode": 0,
+  "elapsedSeconds": 49.687,
+  "logSha256": "1cf1798022167c7dfe91fe2421feb230e300fdd772b2956a39849e1b488b6f85",
+  "completedAt": "2026-10-24T01:17:49.413893+00:00",
+  "counts": {
+    "numPassedTestSuites": 6,
+    "numFailedTestSuites": 0,
+    "numPassedTests": 24,
+    "numFailedTests": 0
+  },
+  "logRedaction": {
+    "originalRawLogSha256": "daf49ecce81f9d65c99ff6b987df8e2285ddadfa2ca6140f3f885dae1f3e9195",
+    "redactedLogSha256": "1cf1798022167c7dfe91fe2421feb230e300fdd772b2956a39849e1b488b6f85",
+    "redactedEnvironmentDumpLines": 1,
+    "originalRawLogRemoved": true,
+    "assertionFailureOrPassOutputPreserved": true
+  }
+}

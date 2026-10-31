@@ -9,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const panel=path.join(root,'src/play/race/components/LiveRaceSafety.tsx');
 const baseline=process.env.LIVE_SAFETY_BASELINE_SOURCE;
-const output=path.resolve(process.env.LIVE_SAFETY_REPORT_DIR??path.join(root,'../../artifacts/game-live-safety-2026-10-03'));
+const output=path.resolve(process.env.LIVE_SAFETY_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-live-safety-2026-10-03'));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-safety-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

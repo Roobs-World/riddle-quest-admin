@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "kind": "jest-gated-artifact",
+  "gatedAt": "2026-10-22T07:46:16.269Z",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "buildVersion": "1.0.0-dev.20261022-instructions",
+  "activationRequested": false,
+  "source": {
+    "commit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+    "dirty": true
+  },
+  "archive": {
+    "file": "riddle-quest-instructions.zip",
+    "bytes": 2876708,
+    "sha256": "aaa8cb484e2d43909b623c156f9a00bffd79b835067aebc3e2fc8e5ba765fbf0",
+    "entries": 421
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "preparedAt": "2026-10-24T02:12:13.915Z",
+  "method": "Supported functions.yaml discovery with nullable reset fields omitted; explicit existing timeout/memory/concurrency/service account/ingress; runtime JavaScript unchanged",
+  "discoverySupportedByInstalledCli": true,
+  "regionalInstances": [
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "serviceConfigFieldMasks": [
+        "serviceConfig.ingressSettings",
+        "serviceConfig.timeoutSeconds",
+        "serviceConfig.serviceAccountEmail",
+        "serviceConfig.availableMemory",
+        "serviceConfig.maxInstanceRequestConcurrency",
+        "serviceConfig.environmentVariables"
+      ],
+      "maxInstanceCountFieldOmitted": true,
+      "minInstanceCountFieldOmitted": true,
+      "knownRuntimeConfigurationMatchesDeployed": true
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "serviceConfigFieldMasks": [
+        "serviceConfig.ingressSettings",
+        "serviceConfig.timeoutSeconds",
+        "serviceConfig.serviceAccountEmail",
+        "serviceConfig.availableMemory",
+        "serviceConfig.maxInstanceRequestConcurrency",
+        "serviceConfig.environmentVariables"
+      ],
+      "maxInstanceCountFieldOmitted": true,
+      "minInstanceCountFieldOmitted": true,
+      "knownRuntimeConfigurationMatchesDeployed": true
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "serviceConfigFieldMasks": [
+        "serviceConfig.ingressSettings",
+        "serviceConfig.timeoutSeconds",
+        "serviceConfig.serviceAccountEmail",
+        "serviceConfig.availableMemory",
+        "serviceConfig.maxInstanceRequestConcurrency",
+        "serviceConfig.environmentVariables"
+      ],
+      "maxInstanceCountFieldOmitted": true,
+      "minInstanceCountFieldOmitted": true,
+      "knownRuntimeConfigurationMatchesDeployed": true
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "serviceConfigFieldMasks": [
+        "serviceConfig.ingressSettings",
+        "serviceConfig.timeoutSeconds",
+        "serviceConfig.serviceAccountEmail",
+        "serviceConfig.availableMemory",
+        "serviceConfig.maxInstanceRequestConcurrency",
+        "serviceConfig.environmentVariables"
+      ],
+      "maxInstanceCountFieldOmitted": true,
+      "minInstanceCountFieldOmitted": true,
+      "knownRuntimeConfigurationMatchesDeployed": true
+    }
+  ],
+  "runtimeAndVendoredCoreFilesUnchanged": 513,
+  "manifestSha256": "8e491bbba08105daa331a41ed7575abd10fab1f2fc0bacfe1ec6788f7dd5883e",
+  "maxAndMinInstanceFieldsNotPresentInApiUpdateMask": true,
+  "cloudApiCallsDuringProof": 0,
+  "actualDeploymentPerformed": false,
+  "userApprovalStillRequired": true,
+  "remainingGate": "Final runtime metadata readback must match exactly after any approved rollout; no production command executed by this proof."
+}

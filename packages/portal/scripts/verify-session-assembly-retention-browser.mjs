@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.SESSION_RETENTION_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
 const baseline=process.env.SESSION_RETENTION_BASELINE_DIR;
-const output=path.resolve(process.env.SESSION_RETENTION_REPORT_DIR??path.join(root,'../../artifacts/session-assembly-retention-2026-10-05',mode));
+const output=path.resolve(process.env.SESSION_RETENTION_REPORT_DIR??path.join(root,'../../builds/test-evidence/session-assembly-retention-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/session-retention-'));
 let browser,server;const observations=[];

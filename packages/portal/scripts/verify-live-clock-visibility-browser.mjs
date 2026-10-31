@@ -11,7 +11,7 @@ const {RACE_RULES,LiveRaceViewSchema}=require('@qwordly/core/race');
 const {computeFeedback}=require('@qwordly/core/game');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_CLOCK_REACT_MODE??'development';
-const output=path.resolve(process.env.LIVE_CLOCK_REPORT_DIR??path.join(root,'../../artifacts/live-clock-visibility-2026-10-04',mode));
+const output=path.resolve(process.env.LIVE_CLOCK_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-clock-visibility-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-clock-visibility-'));
 let browser,server,baseUrl;let tickets=new Map(),started=null;const observations=[];

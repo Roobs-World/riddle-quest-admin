@@ -8,7 +8,7 @@ import {chromium,firefox} from '@playwright/test';
 
 // Supporting regression: real keyboard events through the whole solo game.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const evidence = path.resolve(process.env.TURKISH_KEYS_REPORT_DIR??path.join(root,'../../artifacts/turkish-virtual-dotless-key-2026-10-08/permanent',process.env.TURKISH_KEYS_REACT_MODE??'development'));
+const evidence = path.resolve(process.env.TURKISH_KEYS_REPORT_DIR??path.join(root,'../../builds/test-evidence/turkish-virtual-dotless-key-2026-10-08/permanent',process.env.TURKISH_KEYS_REACT_MODE??'development'));
 await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
 await mkdir(evidence, {recursive: true});
 const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/solo-keyboard-input-'));

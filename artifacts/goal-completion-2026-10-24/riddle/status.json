@@ -1,0 +1,92 @@
+{
+  "startedAt": "2026-10-24T00:46:41.182326+00:00",
+  "scope": "Current immutable Jest upload and local isolated target artifacts. Mock provider boundaries; no external release changes.",
+  "phases": [
+    {
+      "phase": "target-inventories",
+      "command": [
+        "node",
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ],
+      "startedAt": "2026-10-24T00:46:41.182357+00:00",
+      "log": "target-inventories.log",
+      "exitCode": 0,
+      "elapsedSeconds": 0.252,
+      "completedAt": "2026-10-24T00:46:41.434357+00:00"
+    },
+    {
+      "phase": "release-integrity",
+      "command": [
+        "node",
+        "scripts/release/verify-release-target-e2e.mjs"
+      ],
+      "startedAt": "2026-10-24T00:46:41.434501+00:00",
+      "log": "release-integrity.log",
+      "exitCode": 0,
+      "elapsedSeconds": 0.683,
+      "completedAt": "2026-10-24T00:46:42.117082+00:00"
+    },
+    {
+      "phase": "browser-acceptance",
+      "command": [
+        "pnpm",
+        "exec",
+        "jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+        "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+        "src/play/__tests__/coinCollection.jest-playwright.test.ts",
+        "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+        "src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts",
+        "src/play/__tests__/musicStart.jest-playwright.test.ts",
+        "src/play/__tests__/profileTour.jest-playwright.test.ts",
+        "src/play/__tests__/queuedCoinActions.jest-playwright.test.ts",
+        "src/play/__tests__/viewportFit.jest-playwright.test.ts",
+        "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts",
+        "src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts",
+        "src/youtube/__tests__/standaloneCurrency.jest-playwright.test.ts",
+        "src/youtube/__tests__/youtubeBrowser.jest-playwright.test.ts",
+        "--json",
+        "--outputFile",
+        "/home/craig-beswetherick/Documents/riddle-quest/artifacts/goal-completion-2026-10-24/riddle/browser-results.json"
+      ],
+      "startedAt": "2026-10-24T00:46:42.117263+00:00",
+      "log": "browser-acceptance.log",
+      "exitCode": 1,
+      "elapsedSeconds": 646.238,
+      "completedAt": "2026-10-24T00:57:28.357353+00:00"
+    },
+    {
+      "phase": "route-matrix",
+      "command": [
+        "pnpm",
+        "exec",
+        "jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/play/__tests__/routeSweep.jest-playwright.test.ts",
+        "--json",
+        "--outputFile",
+        "/home/craig-beswetherick/Documents/riddle-quest/artifacts/goal-completion-2026-10-24/riddle/route-results.json"
+      ],
+      "startedAt": "2026-10-24T00:57:28.378219+00:00",
+      "log": "route-matrix.log",
+      "exitCode": 1,
+      "elapsedSeconds": 251.013,
+      "completedAt": "2026-10-24T01:01:39.391350+00:00"
+    }
+  ],
+  "complete": true,
+  "completedAt": "2026-10-24T01:01:39.453909+00:00",
+  "sourceHashesUnchanged": true,
+  "artifactHashesUnchanged": true,
+  "screenshotsPreserved": 41
+}

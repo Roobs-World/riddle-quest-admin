@@ -1,0 +1,50 @@
+[
+  {
+    "step": "signed sandbox activation",
+    "zeroDollar": true,
+    "syntheticBilling": true,
+    "grant": {
+      "status": 200,
+      "verified": true,
+      "activeSkus": [
+        "com.roobsworld.riddlequest.premium.monthly"
+      ],
+      "blockedSkus": [],
+      "premiumCoinsAwarded": 3400,
+      "newCoins": 3700
+    }
+  },
+  {
+    "step": "replayed signed catalog",
+    "status": 200,
+    "verified": true,
+    "activeSkus": [
+      "com.roobsworld.riddlequest.premium.monthly"
+    ],
+    "blockedSkus": [],
+    "premiumCoinsAwarded": 0,
+    "newCoins": 3700
+  },
+  {
+    "step": "renewal cancelled",
+    "status": 200,
+    "verified": true,
+    "activeSkus": [
+      "com.roobsworld.riddlequest.premium.monthly"
+    ],
+    "blockedSkus": [],
+    "premiumCoinsAwarded": 0,
+    "newCoins": 3700
+  },
+  {
+    "step": "full reload preserves grant without duplication",
+    "status": 200,
+    "verified": true,
+    "activeSkus": [
+      "com.roobsworld.riddlequest.premium.monthly"
+    ],
+    "blockedSkus": [],
+    "premiumCoinsAwarded": 0,
+    "newCoins": 3700
+  }
+]

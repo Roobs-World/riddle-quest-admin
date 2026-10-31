@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.DEFERRED_RIDDLE_MODE??'development',engine=process.env.DEFERRED_RIDDLE_BROWSER??'chromium';
-const output=path.resolve(process.env.DEFERRED_RIDDLE_REPORT_DIR??path.join(portal,'../../artifacts/host-deferred-riddle-2026-10-08',engine+'-'+mode));
+const output=path.resolve(process.env.DEFERRED_RIDDLE_REPORT_DIR??path.join(portal,'../../builds/test-evidence/host-deferred-riddle-2026-10-08',engine+'-'+mode));
 await mkdir(output,{recursive:true});
 const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/deferred-riddle-'));
 const observations=[];let browser,server,browserVersion;

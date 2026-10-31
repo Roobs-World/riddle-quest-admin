@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-24 06:13:24 UTC",
+  "postOwnershipAuditNumber": 2,
+  "previousGoalTurnClassification": "progress",
+  "previousProgress": "Protected Portfolio health verified and former health approval hold resolved; fresh runner diagnostic established current account block.",
+  "currentGoalTurnClassification": "no progress",
+  "wholeGoalComplete": false,
+  "newSafeActionIdentified": false,
+  "projectAndAssetRightsAccepted": true,
+  "healthApprovalHoldResolved": true,
+  "music": {
+    "newAudioCandidatesSince0610UTC": 0,
+    "requestedNameCandidates": 0,
+    "hiveMusicSourceStillNull": true,
+    "artlistSignInButtons": 2,
+    "credentialFormEntryPresent": false,
+    "trackIdentityOrAccessReplyReceived": false
+  },
+  "portfolio": {
+    "checkedAt": "2026-10-24 06:12 UTC",
+    "diagnosticRunId": 40069110496,
+    "diagnosticState": "startup_failure",
+    "attempt": 1,
+    "jobs": 0,
+    "syntheticFailureMarker": 40069112568,
+    "syntheticWorkflowId": 223127356,
+    "liveHandles": [],
+    "productionDeploymentsSince0610UTC": 0
+  },
+  "repeatedDiagnosticOrHealthRequestPerformed": false,
+  "requiredNextInputs": [
+    "Requested track file/identity or signed-in Artlist session",
+    "GitHub account payment/spending resolution",
+    "Authorised client LMS acceptance",
+    "Explicit Jest release/review decision and subscription freshness resolution"
+  ]
+}

@@ -1,0 +1,238 @@
+[
+  {
+    "settleMs": 0,
+    "coinsBefore": 275,
+    "coinsAfter": 300,
+    "draftAfter": "P\nI\nA",
+    "before": {
+      "storage": {
+        "riddleQuest:tooltipSeen:achievementEarned:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStatistics:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameCoins:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameMultiplayer:jest-guest": "seen",
+        "riddleQuest:reducedMotion": "false",
+        "riddleQuest:highContrast": "false",
+        "riddleQuest:tooltipSeen:profileRanks:jest-guest": "seen",
+        "appLanguage": "en",
+        "riddleQuest:tooltipSeen:profileProgression:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStats:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:classicFromDaily:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameSkip:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:submitAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileAchievements:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileTreasure:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:profileTour:v3:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileIdentity:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileDailyPuzzles:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:gameTour:v4:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileLeaderboard:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameHint:jest-guest": "seen",
+        "riddleQuest:mockJestPlayerData": "{\"schemaVersion\":1,\"updatedAt\":1792701092489,\"profile\":{\"username\":\"Guest Solver\",\"coins\":275,\"level\":3,\"xp\":420,\"winStreak\":2,\"gamesPlayed\":7,\"wins\":5,\"achievements\":[\"first_win\",\"daily_spark\"],\"classicIndex\":1,\"totalHintsUsed\":1},\"activeGame\":{\"schemaVersion\":1,\"savedAt\":1792701092489,\"riddleId\":\"classic-fake-1\",\"gameMode\":\"classic\",\"sessionToken\":\"00000000-0000-4000-8000-000000000001\",\"currentLetters\":[\"P\",\"I\",\"A\",\"\",\"\"],\"activeSlotIndex\":3,\"hintRevealedIndices\":[0],\"guesses\":[],\"engineSnapshot\":{\"guesses\":[],\"attemptsUsed\":0,\"hasUsedContinue\":false,\"gameOver\":false},\"awaitingContinue\":false,\"letterStates\":{\"p\":\"green\"}}}",
+        "riddleQuest:soundEnabled": "true"
+      },
+      "cells": [
+        {
+          "text": "P",
+          "selected": null,
+          "disabled": true
+        },
+        {
+          "text": "I",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "A",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": null,
+          "disabled": false
+        }
+      ]
+    },
+    "after": {
+      "storage": {
+        "riddleQuest:tooltipSeen:achievementEarned:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStatistics:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameCoins:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameMultiplayer:jest-guest": "seen",
+        "riddleQuest:reducedMotion": "false",
+        "riddleQuest:highContrast": "false",
+        "riddleQuest:tooltipSeen:profileRanks:jest-guest": "seen",
+        "appLanguage": "en",
+        "riddleQuest:tooltipSeen:profileProgression:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStats:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:classicFromDaily:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameSkip:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:submitAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileAchievements:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileTreasure:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:profileTour:v3:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileIdentity:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileDailyPuzzles:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:gameTour:v4:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileLeaderboard:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameHint:jest-guest": "seen",
+        "riddleQuest:mockJestPlayerData": "{\"schemaVersion\":1,\"updatedAt\":1792701092629,\"profile\":{\"username\":\"Guest Solver\",\"coins\":300,\"level\":3,\"xp\":420,\"winStreak\":2,\"gamesPlayed\":7,\"wins\":5,\"achievements\":[\"first_win\",\"daily_spark\"],\"classicIndex\":1},\"activeGame\":{\"schemaVersion\":1,\"savedAt\":1792701092629,\"riddleId\":\"classic-fake-1\",\"gameMode\":\"classic\",\"sessionToken\":\"00000000-0000-4000-8000-000000000001\",\"currentLetters\":[\"P\",\"I\",\"A\",\"\",\"\"],\"activeSlotIndex\":3,\"hintRevealedIndices\":[0],\"guesses\":[],\"engineSnapshot\":{\"guesses\":[],\"attemptsUsed\":0,\"hasUsedContinue\":false,\"gameOver\":false},\"awaitingContinue\":false,\"letterStates\":{\"p\":\"green\"}}}",
+        "riddleQuest:soundEnabled": "true"
+      },
+      "cells": [
+        {
+          "text": "P",
+          "selected": null,
+          "disabled": true
+        },
+        {
+          "text": "I",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "A",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": null,
+          "disabled": false
+        }
+      ]
+    }
+  },
+  {
+    "settleMs": 1000,
+    "coinsBefore": 275,
+    "coinsAfter": 300,
+    "draftAfter": "P\nI\nA",
+    "before": {
+      "storage": {
+        "riddleQuest:tooltipSeen:achievementEarned:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStatistics:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameCoins:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameMultiplayer:jest-guest": "seen",
+        "riddleQuest:reducedMotion": "false",
+        "riddleQuest:highContrast": "false",
+        "riddleQuest:tooltipSeen:profileRanks:jest-guest": "seen",
+        "appLanguage": "en",
+        "riddleQuest:tooltipSeen:profileProgression:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStats:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:classicFromDaily:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameSkip:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:submitAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileAchievements:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileTreasure:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:profileTour:v3:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileIdentity:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileDailyPuzzles:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:gameTour:v4:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileLeaderboard:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameHint:jest-guest": "seen",
+        "riddleQuest:mockJestPlayerData": "{\"schemaVersion\":1,\"updatedAt\":1792701096335,\"profile\":{\"username\":\"Guest Solver\",\"coins\":275,\"level\":3,\"xp\":420,\"winStreak\":2,\"gamesPlayed\":7,\"wins\":5,\"achievements\":[\"first_win\",\"daily_spark\"],\"classicIndex\":1,\"totalHintsUsed\":1},\"activeGame\":{\"schemaVersion\":1,\"savedAt\":1792701096334,\"riddleId\":\"classic-fake-1\",\"gameMode\":\"classic\",\"sessionToken\":\"00000000-0000-4000-8000-000000000001\",\"currentLetters\":[\"P\",\"I\",\"A\",\"\",\"\"],\"activeSlotIndex\":3,\"hintRevealedIndices\":[0],\"guesses\":[],\"engineSnapshot\":{\"guesses\":[],\"attemptsUsed\":0,\"hasUsedContinue\":false,\"gameOver\":false},\"awaitingContinue\":false,\"letterStates\":{\"p\":\"green\"}}}",
+        "riddleQuest:soundEnabled": "true"
+      },
+      "cells": [
+        {
+          "text": "P",
+          "selected": null,
+          "disabled": true
+        },
+        {
+          "text": "I",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "A",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": null,
+          "disabled": false
+        }
+      ]
+    },
+    "after": {
+      "storage": {
+        "riddleQuest:tooltipSeen:achievementEarned:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:leaderboardFifthCorrectAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStatistics:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameCoins:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameMultiplayer:jest-guest": "seen",
+        "riddleQuest:reducedMotion": "false",
+        "riddleQuest:highContrast": "false",
+        "riddleQuest:tooltipSeen:profileRanks:jest-guest": "seen",
+        "appLanguage": "en",
+        "riddleQuest:tooltipSeen:profileProgression:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileStats:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:classicFromDaily:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameSkip:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:submitAnswer:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileAchievements:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileTreasure:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:profileTour:v3:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileIdentity:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileDailyPuzzles:jest-guest": "seen",
+        "riddleQuest:tooltipSequenceSeen:gameTour:v4:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:profileLeaderboard:jest-guest": "seen",
+        "riddleQuest:tooltipSeen:gameHint:jest-guest": "seen",
+        "riddleQuest:mockJestPlayerData": "{\"schemaVersion\":1,\"updatedAt\":1792701097441,\"profile\":{\"username\":\"Guest Solver\",\"coins\":300,\"level\":3,\"xp\":420,\"winStreak\":2,\"gamesPlayed\":7,\"wins\":5,\"achievements\":[\"first_win\",\"daily_spark\"],\"classicIndex\":1},\"activeGame\":{\"schemaVersion\":1,\"savedAt\":1792701097441,\"riddleId\":\"classic-fake-1\",\"gameMode\":\"classic\",\"sessionToken\":\"00000000-0000-4000-8000-000000000001\",\"currentLetters\":[\"P\",\"I\",\"A\",\"\",\"\"],\"activeSlotIndex\":3,\"hintRevealedIndices\":[0],\"guesses\":[],\"engineSnapshot\":{\"guesses\":[],\"attemptsUsed\":0,\"hasUsedContinue\":false,\"gameOver\":false},\"awaitingContinue\":false,\"letterStates\":{\"p\":\"green\"}}}",
+        "riddleQuest:soundEnabled": "true"
+      },
+      "cells": [
+        {
+          "text": "P",
+          "selected": null,
+          "disabled": true
+        },
+        {
+          "text": "I",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "A",
+          "selected": null,
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": "true",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "selected": null,
+          "disabled": false
+        }
+      ]
+    }
+  }
+]

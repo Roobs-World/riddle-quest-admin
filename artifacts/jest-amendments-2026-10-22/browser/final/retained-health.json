@@ -1,0 +1,74 @@
+{
+  "roots": [
+    2682877,
+    2682923
+  ],
+  "processes": [
+    {
+      "pid": 2682877,
+      "parent": 2682876,
+      "cpuSeconds": 0.26,
+      "elapsedSeconds": 167.2
+    },
+    {
+      "pid": 2682923,
+      "parent": 2682877,
+      "cpuSeconds": 7.42,
+      "elapsedSeconds": 166.9
+    },
+    {
+      "pid": 2688600,
+      "parent": 2682923,
+      "cpuSeconds": 0.58,
+      "elapsedSeconds": 15.0
+    },
+    {
+      "pid": 2688602,
+      "parent": 2688600,
+      "cpuSeconds": 0.0,
+      "elapsedSeconds": 15.0
+    },
+    {
+      "pid": 2688603,
+      "parent": 2688600,
+      "cpuSeconds": 0.0,
+      "elapsedSeconds": 15.0
+    },
+    {
+      "pid": 2688618,
+      "parent": 2688602,
+      "cpuSeconds": 32.99,
+      "elapsedSeconds": 15.0
+    },
+    {
+      "pid": 2688624,
+      "parent": 2688600,
+      "cpuSeconds": 0.13,
+      "elapsedSeconds": 15.0
+    },
+    {
+      "pid": 2688637,
+      "parent": 2688603,
+      "cpuSeconds": 1.83,
+      "elapsedSeconds": 15.0
+    },
+    {
+      "pid": 2688745,
+      "parent": 2688600,
+      "cpuSeconds": 0.03,
+      "elapsedSeconds": 13.4
+    },
+    {
+      "pid": 2689281,
+      "parent": 2682923,
+      "cpuSeconds": 0.01,
+      "elapsedSeconds": 0.3
+    },
+    {
+      "pid": 2689288,
+      "parent": 2689281,
+      "cpuSeconds": 0.74,
+      "elapsedSeconds": 0.3
+    }
+  ]
+}

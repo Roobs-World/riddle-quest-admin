@@ -61,12 +61,29 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     const run = match.runs[match.tickets[0] === tickets.get(user) ? 0 : 1];
     return run.riddles[run.currentPosition].answer;
   }
-  async function expireSearch(user) {
-    await db.doc(`liveRaceTickets/${tickets.get(user)}`).update({createdAtMs: Date.now() - 60000});
+  async function expireSearch(user, elapsedMs = 60000) {
+    await db.doc(`liveRaceTickets/${tickets.get(user)}`).update({createdAtMs: Date.now() - elapsedMs});
   }
   async function balances() {
     const values = await db.getAll(...Object.values(users).map(uid => db.doc(`users/${uid}`)));
     return values.map(value => value.data().coins);
+  }
+  async function publicMatchEvidence() {
+    const seats = await Promise.all(Object.entries(users).map(async ([name, uid]) => {
+      const account = (await db.doc(`users/${uid}`).get()).data();
+      const reservation = account?.usernameReservationId ?
+        (await db.doc(`usernameReservations/${account.usernameReservationId}`).get()).data() : undefined;
+      const ticketId = tickets.get(name);
+      const ticket = ticketId ? (await db.doc(`liveRaceTickets/${ticketId}`).get()).data() : undefined;
+      return {name, registered: reservation?.userId === uid, uid, ticketId,
+        ownerId: ticket?.userId, privateChallenge: Boolean(ticket?.privateChallenge), matchId: ticket?.matchId};
+    }));
+    const matchId = seats[0]?.matchId;
+    const match = matchId ? (await db.doc(`liveRaceMatches/${matchId}`).get()).data() : undefined;
+    const queues = await db.collection("liveRaceQueues").get();
+    return {seats, match: match ? {tickets: match.tickets, participantIds: match.participantIds,
+      startsAtMs: match.startsAtMs, humanPlayers: match.players.every(player => player.bot === false)} : null,
+    queuedTicketIds: queues.docs.flatMap(queue => queue.data().tickets ?? [])};
   }
   /** Advances only the injected server clock to the finished player's adjusted deadline. */
   async function expireFinishWindow(user) {
@@ -82,5 +99,5 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
     const controller = new AbortController();
     void streamLiveRaceChanges(db, users[user], ticketId, {signal:controller.signal,sendChunk:async chunk=>onChange(chunk)}, 45_000).then(()=>onComplete?.(), error=>onComplete?.(error));
     return ()=>controller.abort();
-  }, lastCommitAt:()=>lastCommitAtMs, reset, clear, call, answer, expireSearch, expireFinishWindow, balances};
+  }, lastCommitAt:()=>lastCommitAtMs, reset, clear, call, answer, expireSearch, expireFinishWindow, balances, publicMatchEvidence};
 }

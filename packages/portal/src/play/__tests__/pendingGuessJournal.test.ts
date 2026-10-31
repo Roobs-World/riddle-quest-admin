@@ -51,6 +51,9 @@ const journal = (): PendingGuessJournal => ({
     lastOutcome: null,
     completionAcknowledged: false,
     letterStates: {},
+    profile: null,
+    lastRewards: null,
+    optimisticAchievementIds: [],
   },
   successors: [],
   queue: [
@@ -413,4 +416,14 @@ it.each(["İ", "ı"])("restores exact Turkish Hint request bytes and identity fo
   }};
   expect(writePendingGuessJournal(pending)).toBe(true);
   expect(readPendingGuessJournal(scope)?.coinAction).toEqual(pending.coinAction);
+});
+
+it.each([null,{},[{index:5,letter:'P'}],[{index:0,letter:'PP'}]])('discards malformed optional hint presentation without losing pending delivery (%j)',hints=>{
+ /** Persisted bytes are untrusted even when the pending operation remains valid. */
+ const retained=journal();
+ values.set(`riddleQuest:pendingPlay:v1:${scope}`,JSON.stringify({...retained,riddle:{...retained.riddle,revealedHints:hints}}));
+ /** Parsing optional display metadata must preserve the independently idempotent request. */
+ const restored=readPendingGuessJournal(scope);
+ expect(restored?.queue[0]?.message.payload.guess).toBe('PIANO');
+ expect(restored?.riddle.revealedHints).toBeUndefined();
 });

@@ -1,0 +1,156 @@
+[
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-enter",
+    "kind": "victory",
+    "title": "YOU WON!",
+    "time": 72.80000000074506
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-enter",
+    "kind": "victory",
+    "title": "YOU WON!",
+    "time": 305.5
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 1523.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 1755.4000000003725
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "victory",
+    "title": "YOU WON!",
+    "time": 2521.9000000003725
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-promote",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 2521.9000000003725
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "victory",
+    "title": "YOU WON!",
+    "time": 2755.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-promote",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 2755.300000000745
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 2788.7000000011176
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 3022.0999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 3788.5999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 3788.7000000011176
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 4021.9000000003725
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 4021.9000000003725
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 4055.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 4288.5999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 5055.200000001118
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 5055.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 5288.5
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 5288.5999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 6321.9000000003725
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 6555.300000000745
+  }
+]

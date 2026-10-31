@@ -1,0 +1,21 @@
+Checking touch viewport soak and modal keyboard isolation
+PASS touch viewport soak and modal keyboard isolation
+Checking offline Help keyboard return then durable draft reload
+PASS offline Help keyboard return then durable draft reload
+Checking hint lock survives reload then paid Skip loads a playable successor
+FAIL hint lock survives reload then paid Skip loads a playable successor: expect(locator).toHaveText(expected) failed
+
+Locator:  locator('.guess-board .guess-row').first()
+Expected: "PIA"
+Received: "PI"
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveText" locator('.guess-board .guess-row').first() with timeout 5000ms
+  - waiting for locator('.guess-board .guess-row').first()
+    14 × locator resolved to <div class="guess-row">…</div>
+       - unexpected value "PI"
+
+Checking exhausted attempts stay blocked during purchase reward and paid sixth wins
+PASS exhausted attempts stay blocked during purchase reward and paid sixth wins
+{"cases":3,"failures":1,"artifactUnchanged":true}

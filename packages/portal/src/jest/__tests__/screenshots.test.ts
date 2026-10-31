@@ -1,9 +1,14 @@
+import {captureGameScreenshot as captureRenderedGame} from "../sharing/captureGameScreenshot";
 import {
   captureGameScreenshot,
   captureVictoryShareImage,
   sizeCheckedScreenshotProvider,
   sizeCheckedShareImage,
 } from "../sharing/screenshots";
+
+jest.mock("../sharing/captureGameScreenshot", () => ({captureGameScreenshot: jest.fn()}));
+/** Controls raster-capture outcomes while exercising the public screenshot wrapper. */
+const captureRenderedGameMock = jest.mocked(captureRenderedGame);
 
 it("rejects non-PNG and oversized screenshots", async () => {
   expect(await sizeCheckedScreenshotProvider(() => "data:image/jpeg;base64,YQ==")()).toBeNull();
@@ -86,36 +91,24 @@ const installDocument = (input: {
 describe("screenshot capture", () => {
   afterEach(() => {
     Reflect.deleteProperty(globalThis, "document");
+    captureRenderedGameMock.mockReset();
   });
 
-  it("returns null without visible game content or a canvas context", () => {
-    installDocument({});
-    expect(captureGameScreenshot()).toBeNull();
-    installDocument({text: "   "});
-    expect(captureGameScreenshot()).toBeNull();
-    installDocument({text: "Visible", context: null});
-    expect(captureGameScreenshot()).toBeNull();
-    installDocument({text: "ignored", context: null});
-    expect(captureVictoryShareImage({title: "Win", summary: "Summary", emojiGrid: "🟩"})).toBeNull();
+  it("returns null before a browser document exists", async () => {
+    expect(await captureGameScreenshot()).toBeNull();
+    expect(captureRenderedGameMock).not.toHaveBeenCalled();
   });
 
-  it("renders game copy with wrapping and returns a PNG", () => {
-    /** Provides {canvas, context} behavior. */
-    const {canvas, context} = installDocument({
-      text: "A deliberately long game summary that wraps across several lines for the generated sharing card ".repeat(
-        8,
-      ),
-    });
-    expect(captureGameScreenshot()).toBe("data:image/png;base64,YQ==");
-    expect(canvas).toMatchObject({width: 1200, height: 630});
-    expect(context?.fillText).toHaveBeenCalled();
+  it("returns the actual asynchronous capture unchanged", async () => {
+    installDocument({text: "Visible game"});
+    captureRenderedGameMock.mockResolvedValue("data:image/png;base64,YQ==");
+    expect(await captureGameScreenshot()).toBe("data:image/png;base64,YQ==");
   });
 
-  it("renders short copy without forcing a line wrap", () => {
-    /** Provides {context} behavior. */
-    const {context} = installDocument({text: "Short summary"});
-    expect(captureGameScreenshot()).toBe("data:image/png;base64,YQ==");
-    expect(context?.fillText).toHaveBeenCalledWith("Short summary", 72, 180);
+  it("returns null when asynchronous screen capture fails", async () => {
+    installDocument({text: "Visible game"});
+    captureRenderedGameMock.mockRejectedValue(new Error("Image could not be captured"));
+    expect(await captureGameScreenshot()).toBeNull();
   });
 
   it("renders a bounded victory card and recent emoji rows", () => {

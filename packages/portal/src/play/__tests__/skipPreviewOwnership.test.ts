@@ -1,4 +1,5 @@
 import {expect,it,jest} from '@jest/globals';
+import type {GameToHostMessage} from '@qwordly/core/bridge';
 /** Exercises speculative ownership and rejection against the real recovery handler. */
 const effects:Array<()=>unknown>=[],layouts:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T>(fn:T)=>fn,useEffect:(fn:()=>unknown)=>effects.push(fn),useLayoutEffect:(fn:()=>unknown)=>layouts.push(fn),useRef:<T>(current:T)=>({current}),useState:<T>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
@@ -33,7 +34,7 @@ it.each(['preview-valid','preview-wrong-index','preview-wrong-mode','preview-adv
  /** Exercises speculative ownership and rejection against the real recovery handler. */
  const storage=createPendingPlayJournalStorage({getItem:key=>values.get(key)??null,setItem:(key,value)=>{if(failWrite)throw new Error('storage unavailable');values.set(key,value);},removeItem:key=>{if(failRemove&&key.includes("pendingPlay:v1:"))throw new Error("storage unavailable");values.delete(key);}});if(target.startsWith('reject')&&target!=='reject-owned-preview')expect(storage.write(record)).toBe(true);
  /** Exercises speculative ownership and rejection against the real recovery handler. */
- const stateRef={current:target==='reject-durable-preview'?gameSessionReducer(loaded,{type:'loadRiddle',riddle:next}):loaded},post=jest.fn();
+ const stateRef={current:target==='reject-durable-preview'?gameSessionReducer(loaded,{type:'loadRiddle',riddle:next}):loaded},post=jest.fn<(message:GameToHostMessage)=>void>();
  /** Exercises speculative ownership and rejection against the real recovery handler. */
  /** Each registration retains its cancellation identity. */
  const intervals:Array<()=>void>=[],cancelled=new Set<number>();
@@ -41,13 +42,15 @@ it.each(['preview-valid','preview-wrong-index','preview-wrong-mode','preview-adv
  /** Lease expiry can admit another tab before the persistence retry. */
  let now=1000;
  /** Concrete adapters bind the mutable test clock. */
- const adapters:PendingPlayRecoveryAdapters={journal:storage,clock:{now:()=>now,setTimeout:()=>1,clearTimeout:()=>{},setInterval:callback=>{intervals.push(callback as ()=>void);return intervals.length;},clearInterval:timer=>{cancelled.add(timer);}}};
+ const adapters:PendingPlayRecoveryAdapters={journal:storage,clock:{now:()=>now,setTimeout:()=>1,clearTimeout:()=>{},setInterval:callback=>{intervals.push(callback as ()=>void);return intervals.length;},clearInterval:timer=>{if(timer!==undefined)cancelled.add(timer);}}};
  /** Exercises speculative ownership and rejection against the real recovery handler. */
  const prior=Object.getOwnPropertyDescriptor(globalThis,'window');Object.defineProperty(globalThis,'window',{configurable:true,value:{addEventListener:()=>{},removeEventListener:()=>{}}});
  try{
   /** Exercises speculative ownership and rejection against the real recovery handler. */
   const recovery=useProvisionalPlayRecovery({state:stateRef.current,stateRef,adapters,dispatch:action=>{stateRef.current=gameSessionReducer(stateRef.current,action);},postToHost:post,playFeedback:()=>{}});
-  for(const effect of layouts)effect();await new Promise<void>(resolve=>setImmediate(resolve));for(const effect of effects)effect();
+  for(const effect of layouts)effect();await new Promise<void>(resolve=>setImmediate(resolve));
+  // Writer readiness commits recovery before passive effects, without remounting its owner.
+  for(const effect of layouts.slice(1))effect();for(const effect of effects)effect();
   if(target.startsWith('preview')){
    recovery.requestSkip();
    /** Exercises speculative ownership and rejection against the real recovery handler. */

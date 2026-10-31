@@ -7,9 +7,10 @@ import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceProviderScope} from "./raceEligibility";
 import {requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
-import {liveOperationAtMs, liveRun, liveView, type LiveMatch, type LiveTicket} from "./raceLiveState";
+import {liveOperationAtMs, liveRaceSearchEndsAtMs, liveRun, liveView, type LiveMatch, type LiveTicket} from "./raceLiveState";
 import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "./raceDeckCompatibility";
 import {readLiveJoinIntent, claimLiveJoinIntent} from "./raceLiveJoinIntent";
+import {isLiveRaceRetained} from "./raceLiveQueue";
 
 /** Private invitations use the existing server transport and clock test seams. */
 type Options = {
@@ -21,13 +22,31 @@ function invitationTicketId(challengeId: string): string {
   if (!/^live_[a-f0-9]{64}$/.test(challengeId)) throw new HttpsError("invalid-argument", "Invalid invitation.");
   return challengeId.slice(5);
 }
+/** An owned link recovers only its still-active original lobby or unfinished match. */
+function canResumeCreatorInvitation({ticketId, ticket, activeTicketId, match, nowMs}: {
+  /** Original creator ticket selected by the opaque invitation handle. */
+  ticketId: string;
+  /** Retained creator lobby and its immutable content selection. */
+  ticket: LiveTicket;
+  /** Current account pointer that must still own this invitation. */
+  activeTicketId: unknown;
+  /** Already accepted match, if the invitation has a recipient. */
+  match: LiveMatch | undefined;
+  /** Server clock after applying the stored observation floor. */
+  nowMs: number;
+}): boolean {
+  if (ticket.cancelled || activeTicketId !== ticketId) return false;
+  if (ticket.matchId) return Boolean(match && match.tickets[0] === ticketId &&
+    match.runs[0].userId === ticket.userId && match.winner === undefined);
+  return nowMs < ticket.createdAtMs + LIVE_RACE_INVITE_MS;
+}
 /** Validates both authenticated providers and reciprocal safety boundaries before exposing identity. */
-async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Transaction, userId: string, ticketId: string) {
+async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Transaction, userId: string, ticketId: string, nowMs: number) {
   /** Server-only lobby receipt, never supplied as authority by the platform entry payload. */
   const snapshot = await transaction.get(db.doc(`liveRaceTickets/${ticketId}`));
   /** Authoritative invitation creator and immutable content selection. */
   const ticket = snapshot.data() as LiveTicket | undefined;
-  if (!ticket?.privateChallenge || raceProviderScope(userId) !== raceProviderScope(ticket.userId) ||
+  if (!isLiveRaceRetained(snapshot, nowMs) || !ticket?.privateChallenge || raceProviderScope(userId) !== raceProviderScope(ticket.userId) ||
     ticket.inviteRecipientId && ![ticket.userId, ticket.inviteRecipientId].includes(userId) ||
     !(["jest", "facebook"].includes(raceProviderScope(userId) ?? "") ||
       raceProviderScope(userId) === "reddit" && ticket.rematchOfTicketId && ticket.inviteRecipientId))
@@ -56,13 +75,27 @@ export async function getLiveRaceChallengeForUser(userId: string, challengeId: s
   const db = options.db ?? admin.firestore();
   return db.runTransaction(async transaction => {
     /** Private invitation and creator are validated before returning any display identity. */
-    const {ticket, player} = await readInvitation(db, transaction, userId, invitationTicketId(challengeId));
-    /** The same persisted clock floor governs preview and acceptance. */
-    const nowMs = liveOperationAtMs(ticket, undefined, options.nowMs ?? Date.now());
+    const ticketId = invitationTicketId(challengeId);
+    /** Validated invitation, retained snapshot and safe creator identity. */
+    const {snapshot, ticket, player} = await readInvitation(db, transaction, userId, ticketId, options.nowMs ?? Date.now());
     /** Match determines whether this authenticated recipient already owns the second seat. */
-    const match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch | undefined : undefined;
+    const matchSnapshot = ticket.matchId ? await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`)) : undefined;
+    /** Existing shared match used to recognize accepted participants. */
+    const match = matchSnapshot?.data() as LiveMatch | undefined;
+    /** Monotonic preview time shared with invitation acceptance. */
+    const nowMs = liveOperationAtMs(ticket, match, options.nowMs ?? Date.now());
+    if (!isLiveRaceRetained(snapshot, nowMs) || matchSnapshot && (!isLiveRaceRetained(matchSnapshot, nowMs) ||
+      match?.tickets[0] !== ticketId || match.runs[0].userId !== ticket.userId))
+      throw new HttpsError("not-found", "Invitation unavailable.");
+    /** Accepted SMS links reveal their invitation only to the two committed participants. */
+    if (ticket.matchId && ticket.userId !== userId && match?.runs[1].userId !== userId)
+      throw new HttpsError("not-found", "Invitation unavailable.");
+    /** The same persisted clock floor governs preview and acceptance. */
+    const current = ticket.userId === userId ? await transaction.get(db.doc(`liveRacePlayers/${requestDocumentId(userId, "active-live-race")}`)) : undefined;
     /** Only new entry availability depends on the original deck; owned and accepted journeys remain recoverable. */
-    let status: LiveRaceChallenge["status"] = ticket.userId === userId ? "own" : match?.runs[1].userId === userId && match.winner === undefined ? "accepted" :
+    let status: LiveRaceChallenge["status"] = ticket.userId === userId ?
+      canResumeCreatorInvitation({ticketId, ticket, activeTicketId: current?.data()?.ticketId, match, nowMs}) ? "own" : "unavailable" :
+      match?.runs[1].userId === userId && match.winner === undefined ? "accepted" :
       ticket.cancelled || ticket.matchId || nowMs >= ticket.createdAtMs + LIVE_RACE_INVITE_MS ? "unavailable" : "available";
     if (status === "available" && !isLiveRaceDeckCompatible(ticket.run)) status = "unavailable";
     return LiveRaceChallengeSchema.parse({challengeId, creator: player, locale: ticket.run.locale,
@@ -70,7 +103,7 @@ export async function getLiveRaceChallengeForUser(userId: string, challengeId: s
       status});
   });
 }
-/** Reserves the second seat atomically; concurrent recipients cannot replace an accepted rival. */
+/** Recovers an exact creator lobby or atomically reserves its sole recipient seat. */
 export async function acceptLiveRaceChallengeForUser(userId: string, input: JoinLiveRace, options: Options = {}): Promise<LiveRaceView> {
   if (input.expectedOwnerId && input.expectedOwnerId !== userId)
     throw new HttpsError("permission-denied", "Live race account changed.");
@@ -83,20 +116,41 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
   return db.runTransaction(async transaction => {
     /** Creator seat is locked together with the recipient's active-seat pointer. */
     const [intent, {snapshot, ticket: creator, player: creatorPlayer, viewer: owner}] = await Promise.all([
-      readLiveJoinIntent(db, transaction, userId, input), readInvitation(db, transaction, userId, creatorId)]);
-    if (creator.userId === userId) throw new HttpsError("failed-precondition", "Cannot accept your own challenge.");
+      readLiveJoinIntent(db, transaction, userId, input), readInvitation(db, transaction, userId, creatorId, options.nowMs ?? Date.now())]);
     if (input.locale !== creator.run.locale || input.categoryId !== creator.run.categoryId)
       throw new HttpsError("failed-precondition", "Use the invitation's content selection.");
-    /** Clock cannot move backwards across creator heartbeats. */
-    const nowMs = liveOperationAtMs(creator, undefined, options.nowMs ?? Date.now());
     /** Existing accepted match is recovered before checking invitation expiry. */
-    const existing = creator.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${creator.matchId}`))).data() as LiveMatch | undefined : undefined;
+    const matchSnapshot = creator.matchId ? await transaction.get(db.doc(`liveRaceMatches/${creator.matchId}`)) : undefined;
+    /** Original accepted match recovered before checking lobby expiry. */
+    const existing = matchSnapshot?.data() as LiveMatch | undefined;
+    /** Clock cannot move backwards across creator heartbeats or accepted match progress. */
+    const nowMs = liveOperationAtMs(creator, existing, options.nowMs ?? Date.now());
+    if (!isLiveRaceRetained(snapshot, nowMs) || matchSnapshot && (!isLiveRaceRetained(matchSnapshot, nowMs) ||
+      existing?.tickets[0] !== creatorId || existing.runs[0].userId !== creator.userId))
+      throw new HttpsError("not-found", "Invitation unavailable.");
+    if (creator.userId === userId) {
+      /** Creator account pointer that prevents an old link replacing a newer seat. */
+      const current = await transaction.get(db.doc(`liveRacePlayers/${requestDocumentId(userId, "active-live-race")}`));
+      if (!canResumeCreatorInvitation({ticketId: creatorId, ticket: creator, activeTicketId: current.data()?.ticketId, match: existing, nowMs}))
+        throw new HttpsError("failed-precondition", "Challenge expired or cancelled.");
+      assertFacebookLiveContextSelection(creator.facebookContext, contextKey);
+      if (intent?.record?.ticketId && intent.record.ticketId !== creatorId)
+        throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
+      transaction.update(snapshot.ref, {seenAtMs: nowMs});
+      if (existing) transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {observedAtMs: nowMs});
+      claimLiveJoinIntent(transaction, intent, snapshot.ref, nowMs);
+      return liveView(creatorId, creator, existing, nowMs);
+    }
     if (existing) {
       if (existing.runs[1].userId !== userId) throw new HttpsError("failed-precondition", "Challenge already accepted.");
       /** Recovery returns the original recipient seat without restarting the countdown. */
       const ownId = existing.tickets[1]!;
       /** Server ticket supplies ownership, never the untrusted caller request id. */
-      const own = (await transaction.get(db.doc(`liveRaceTickets/${ownId}`))).data() as LiveTicket;
+      const ownSnapshot = await transaction.get(db.doc(`liveRaceTickets/${ownId}`));
+      /** Recipient ticket whose owner and match must agree with the invitation. */
+      const own = ownSnapshot.data() as LiveTicket | undefined;
+      if (!isLiveRaceRetained(ownSnapshot, nowMs) || !own || own.userId !== userId || own.matchId !== creator.matchId)
+        throw new HttpsError("not-found", "Invitation unavailable.");
       assertFacebookLiveContextSelection(own.facebookContext, contextKey);
       if (intent?.record?.ticketId && intent.record.ticketId !== ownId)
         throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
@@ -116,11 +170,16 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     if (receipt.exists) throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
     if (current.data()?.ticketId) {
       /** Active journey cannot be orphaned by an invitation acceptance. */
-      const old = (await transaction.get(db.doc(`liveRaceTickets/${current.data()!.ticketId}`))).data() as LiveTicket | undefined;
+      const oldSnapshot = await transaction.get(db.doc(`liveRaceTickets/${current.data()!.ticketId}`));
+      /** Previously owned seat inspected before replacing the active pointer. */
+      const old = oldSnapshot.data() as LiveTicket | undefined;
       /** Completed or retired seats may be replaced. */
-      const match = old?.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${old.matchId}`))).data() as LiveMatch | undefined : undefined;
-      if (old && !old.cancelled && !(old.privateChallenge && !match && nowMs >= old.createdAtMs + LIVE_RACE_INVITE_MS) &&
-        (!match || match.winner === undefined))
+      const oldMatchSnapshot = old?.matchId ? await transaction.get(db.doc(`liveRaceMatches/${old.matchId}`)) : undefined;
+      /** Previous match whose unfinished state prevents another acceptance. */
+      const match = oldMatchSnapshot?.data() as LiveMatch | undefined;
+      if (old && isLiveRaceRetained(oldSnapshot, nowMs) && !old.cancelled && (old.matchId
+        ? oldMatchSnapshot && isLiveRaceRetained(oldMatchSnapshot, nowMs) && match?.winner === undefined
+        : liveRaceSearchEndsAtMs(old) > nowMs))
         throw new HttpsError("failed-precondition", "Finish the current live race first.");
     }
     assertLiveRaceDeckCompatible(creator.run);

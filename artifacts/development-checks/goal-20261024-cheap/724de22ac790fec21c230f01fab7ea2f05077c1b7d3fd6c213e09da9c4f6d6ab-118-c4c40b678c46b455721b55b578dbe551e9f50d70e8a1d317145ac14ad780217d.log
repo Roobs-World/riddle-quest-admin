@@ -1,0 +1,8 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=RaceSessionHistoryCheckpoints
+Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        0.227 s, estimated 1 s
+Ran all test suites matching RaceSessionHistoryCheckpoints.

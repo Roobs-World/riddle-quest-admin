@@ -1,0 +1,2 @@
+E2E coverage audit failed:
+- Emulator integration suites missing from jest.rules.config.js: firebase-functions/src/__tests__/race/raceLivePublicWait.it.test.ts, firebase-functions/src/__tests__/race/raceLiveStreamAdmission.it.test.ts

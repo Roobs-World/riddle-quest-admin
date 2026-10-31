@@ -1,0 +1,587 @@
+{
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-amendments-2026-10-22/jest-final-artifact",
+  "scope": "Exact compiled artifact UI with controlled local receipts/transports; no real provider transactions",
+  "cases": [
+    {
+      "name": "SolarSystem WebGL shader compilation and rendered animation",
+      "passed": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      },
+      "animationAdvanced": true
+    },
+    {
+      "name": "Daily five-component receipt en 320",
+      "passed": true,
+      "language": "en",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "rows": [
+        {
+          "label": "Daily puzzle",
+          "value": "+75"
+        },
+        {
+          "label": "Streak bonus",
+          "value": "+15"
+        },
+        {
+          "label": "Level-up bonus",
+          "value": "+10"
+        },
+        {
+          "label": "Achievement bonus",
+          "value": "+20"
+        },
+        {
+          "label": "Referral bonus",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 48,
+          "y": 109.75,
+          "width": 224,
+          "height": 61.640625
+        },
+        "next": {
+          "x": 38,
+          "y": 371.015625,
+          "width": 244,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation en 320",
+      "passed": true,
+      "language": "en",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "geometry": {
+        "x": 36,
+        "y": 431.46875,
+        "width": 248,
+        "height": 43.21875
+      },
+      "copy": "Waiting for another player. Close to stop searching.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt de 320",
+      "passed": true,
+      "language": "de",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "rows": [
+        {
+          "label": "Tagesrätsel",
+          "value": "+75"
+        },
+        {
+          "label": "Serienbonus",
+          "value": "+15"
+        },
+        {
+          "label": "Levelaufstiegsbonus",
+          "value": "+10"
+        },
+        {
+          "label": "Erfolgsbonus",
+          "value": "+20"
+        },
+        {
+          "label": "Einladungsbonus",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 40.27471923828125,
+          "y": 131.7405242919922,
+          "width": 238.529052734375,
+          "height": 56.97456359863281
+        },
+        "next": {
+          "x": 38,
+          "y": 371.015625,
+          "width": 244,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation de 320",
+      "passed": true,
+      "language": "de",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "geometry": {
+        "x": 36,
+        "y": 491.75,
+        "width": 248,
+        "height": 64.828125
+      },
+      "copy": "Warte auf einen anderen Spieler. Schließen, um die Suche zu beenden.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt fr 320",
+      "passed": true,
+      "language": "fr",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "rows": [
+        {
+          "label": "Énigme du jour",
+          "value": "+75"
+        },
+        {
+          "label": "Bonus de série",
+          "value": "+15"
+        },
+        {
+          "label": "Bonus de niveau",
+          "value": "+10"
+        },
+        {
+          "label": "Bonus de succès",
+          "value": "+20"
+        },
+        {
+          "label": "Bonus de parrainage",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 35.58283233642578,
+          "y": 128.27560424804688,
+          "width": 247.30553436279297,
+          "height": 62.718048095703125
+        },
+        "next": {
+          "x": 38,
+          "y": 371.015625,
+          "width": 244,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation fr 320",
+      "passed": true,
+      "language": "fr",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "geometry": {
+        "x": 36,
+        "y": 460.46875,
+        "width": 248,
+        "height": 43.21875
+      },
+      "copy": "En attente d'un autre joueur. Fermez pour arrêter la recherche.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt ar 320",
+      "passed": true,
+      "language": "ar",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "rows": [
+        {
+          "label": "اللغز اليومي",
+          "value": "+75"
+        },
+        {
+          "label": "مكافأة السلسلة",
+          "value": "+15"
+        },
+        {
+          "label": "مكافأة الارتقاء بالمستوى",
+          "value": "+10"
+        },
+        {
+          "label": "مكافأة الإنجاز",
+          "value": "+20"
+        },
+        {
+          "label": "مكافأة الدعوة",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 29.96160316467285,
+          "y": 94.79510498046875,
+          "width": 256.81940269470215,
+          "height": 97.61013793945312
+        },
+        "next": {
+          "x": 38,
+          "y": 383.015625,
+          "width": 244,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation ar 320",
+      "passed": true,
+      "language": "ar",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "geometry": {
+        "x": 36,
+        "y": 485.46875,
+        "width": 248,
+        "height": 21.609375
+      },
+      "copy": "في انتظار لاعب آخر. أغلق لإيقاف البحث.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt en 390",
+      "passed": true,
+      "language": "en",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "rows": [
+        {
+          "label": "Daily puzzle",
+          "value": "+75"
+        },
+        {
+          "label": "Streak bonus",
+          "value": "+15"
+        },
+        {
+          "label": "Level-up bonus",
+          "value": "+10"
+        },
+        {
+          "label": "Achievement bonus",
+          "value": "+20"
+        },
+        {
+          "label": "Referral bonus",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 80,
+          "y": 184.375,
+          "width": 230,
+          "height": 180
+        },
+        "next": {
+          "x": 41.5,
+          "y": 596.390625,
+          "width": 307,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation en 390",
+      "passed": true,
+      "language": "en",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "x": 36,
+        "y": 506.03125,
+        "width": 318,
+        "height": 43.21875
+      },
+      "copy": "Waiting for another player. Close to stop searching.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt de 390",
+      "passed": true,
+      "language": "de",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "rows": [
+        {
+          "label": "Tagesrätsel",
+          "value": "+75"
+        },
+        {
+          "label": "Serienbonus",
+          "value": "+15"
+        },
+        {
+          "label": "Levelaufstiegsbonus",
+          "value": "+10"
+        },
+        {
+          "label": "Erfolgsbonus",
+          "value": "+20"
+        },
+        {
+          "label": "Einladungsbonus",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 69.0506591796875,
+          "y": 198.7762908935547,
+          "width": 248.452880859375,
+          "height": 196.87889099121094
+        },
+        "next": {
+          "x": 41.5,
+          "y": 601.75,
+          "width": 307,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation de 390",
+      "passed": true,
+      "language": "de",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "x": 36,
+        "y": 506.03125,
+        "width": 318,
+        "height": 43.21875
+      },
+      "copy": "Warte auf einen anderen Spieler. Schließen, um die Suche zu beenden.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt fr 390",
+      "passed": true,
+      "language": "fr",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "rows": [
+        {
+          "label": "Énigme du jour",
+          "value": "+75"
+        },
+        {
+          "label": "Bonus de série",
+          "value": "+15"
+        },
+        {
+          "label": "Bonus de niveau",
+          "value": "+10"
+        },
+        {
+          "label": "Bonus de succès",
+          "value": "+20"
+        },
+        {
+          "label": "Bonus de parrainage",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 69.04380798339844,
+          "y": 172.2218780517578,
+          "width": 248.46437072753906,
+          "height": 196.8894500732422
+        },
+        "next": {
+          "x": 41.5,
+          "y": 596.390625,
+          "width": 307,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation fr 390",
+      "passed": true,
+      "language": "fr",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "x": 36,
+        "y": 520.53125,
+        "width": 318,
+        "height": 43.21875
+      },
+      "copy": "En attente d'un autre joueur. Fermez pour arrêter la recherche.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    },
+    {
+      "name": "Daily five-component receipt ar 390",
+      "passed": true,
+      "language": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "rows": [
+        {
+          "label": "اللغز اليومي",
+          "value": "+75"
+        },
+        {
+          "label": "مكافأة السلسلة",
+          "value": "+15"
+        },
+        {
+          "label": "مكافأة الارتقاء بالمستوى",
+          "value": "+10"
+        },
+        {
+          "label": "مكافأة الإنجاز",
+          "value": "+20"
+        },
+        {
+          "label": "مكافأة الدعوة",
+          "value": "+5"
+        }
+      ],
+      "geometry": {
+        "chest": {
+          "x": 56.62272644042969,
+          "y": 160.25125122070312,
+          "width": 269.0934600830078,
+          "height": 216.01422119140625
+        },
+        "next": {
+          "x": 41.5,
+          "y": 594.796875,
+          "width": 307,
+          "height": 96
+        }
+      },
+      "parserReceivedValidReceipt": true,
+      "nextLoadsPlayableSuccessor": true,
+      "shader": {
+        "compiles": 20,
+        "links": 10,
+        "failures": []
+      }
+    },
+    {
+      "name": "Compiled human wait and cancellation ar 390",
+      "passed": true,
+      "language": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "geometry": {
+        "x": 36,
+        "y": 532.328125,
+        "width": 318,
+        "height": 21.609375
+      },
+      "copy": "في انتظار لاعب آخر. أغلق لإيقاف البحث.",
+      "originalIntentCancelled": true,
+      "firstCloseReturnsHub": true,
+      "secondCloseClosesOwnerOnce": true
+    }
+  ],
+  "failures": [],
+  "artifactFiles": 419,
+  "artifactUnchanged": true
+}

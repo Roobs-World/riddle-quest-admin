@@ -1,0 +1,33 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px resume canonical; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px resume changed; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px resume edited; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px resume legacy; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px resume successor; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px hint canonical; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px hint changed; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 1280px hint edited; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px resume canonical; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px resume changed; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px resume edited; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px resume legacy; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px resume successor; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px hint canonical; accepted compatible reveal.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px hint changed; rejected changed hint and recovered without replay.
+[riddle-silent-guard] context isolated before navigation
+Known answer reveal UI passed: 390px hint edited; rejected changed hint and recovered without replay.

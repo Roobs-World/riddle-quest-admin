@@ -1,0 +1,52 @@
+[
+  {
+    "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/daily-skip-warning",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/coin-economy",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/profile-tour-stats.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-solo.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-multiplayer-unavailable.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/riddle-leaderboard-clipped.png",
+    "restoredExactly": true,
+    "previouslyExisted": false
+  },
+  {
+    "path": "/tmp/riddle-leaderboard-fixed.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-victory.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-loss.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-profile.png",
+    "restoredExactly": true,
+    "previouslyExisted": true
+  }
+]

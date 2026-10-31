@@ -12,6 +12,8 @@ import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
 import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
 import {isSingleAnswerCell} from "./answerCell";
 import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
+import {parseCompletionRewardBreakdown} from "./completionRewardBreakdown";
+import {createRequestId} from "./requestIds";
 
 export type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
 
@@ -23,6 +25,7 @@ const questionIndependentModals = new Set<GameModal>([
 
 /** Creates initial game session. */
 export const createInitialGameSession = (): GameSessionState => ({
+  draftRevision: {origin: createRequestId("draft"), sequence: 0},
   initialized: false,
   paused: false,
   locale: "en",
@@ -168,6 +171,7 @@ const hasUsablePendingMetadata = (base: PendingGuessState, state: GameSessionSta
       Number.isSafeInteger(outcome.attempts) && outcome.attempts >= 1 && outcome.attempts <= 6 &&
       outcome.isCorrect === (outcome.kind === "win"))) &&
     (rewards === null || Boolean(rewards && amount(rewards.coinsEarned) && ids(rewards.newlyUnlockedAchievementIds) &&
+      (rewards.rewardBreakdown === undefined || parseCompletionRewardBreakdown(rewards.rewardBreakdown, rewards.coinsEarned)) &&
       [rewards.totalCoins, rewards.newXp, rewards.newLevel, rewards.newWinStreak].every(value => value === undefined || amount(value)) &&
       (rewards.leveledUp === undefined || typeof rewards.leveledUp === "boolean")));
 };
@@ -194,7 +198,9 @@ const restorePendingPresentation = (state: GameSessionState, base: PendingGuessS
   /** Keyboard knowledge is derived from validated rows instead of trusting an independent persisted map. */
   const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
     completionAcknowledged, lastRewards, optimisticAchievementIds} = base;
-  return {...state, currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
+  /** Rollback retains the accepted input's ordering when available. */
+  const draftRevision = base.draftRevision ?? state.draftRevision;
+  return {...state, draftRevision, currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
     completionAcknowledged, lastRewards, optimisticAchievementIds,
     letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale)};
 };
@@ -239,18 +245,31 @@ const resetAttemptLetters = (state: GameSessionState): string[] =>
       )
     : [];
 
+/** Checks the current attempt budget, including only an already-granted Continue. */
+export const hasRemainingGuessAttempts = (state: GameSessionState): boolean => {
+  if (!state.riddle) return false;
+  /** Projected attempts take precedence while their authoritative replies are pending. */
+  const attemptsUsed = state.engineSnapshot?.attemptsUsed ?? state.riddle.attemptsUsed;
+  /** A purchased Continue extends the same question's budget by one attempt. */
+  const hasUsedContinue = state.engineSnapshot?.hasUsedContinue ?? state.riddle.hasUsedContinue;
+  return attemptsUsed < 5 + Number(hasUsedContinue);
+};
+
 /** Whether a scored nonterminal guess permits drafting while confirmation is in flight. */
 export const canDraftWhileConfirming = (state: GameSessionState): boolean =>
   Boolean(state.pendingGuessState && state.engineSnapshot && !state.engineSnapshot.gameOver &&
-    (state.engineSnapshot.attemptsUsed < 5 || state.engineSnapshot.hasUsedContinue));
+    hasRemainingGuessAttempts(state));
+
+/** Automatic reward tabs leave gameplay available beneath them. */
+export const isBlockingGameModal = (modal: GameModal): boolean => modal !== null && modal !== "reward";
 
 /** Shared edit policy for physical keys, the on-screen keyboard, and slot selection. */
 export const canEditCurrentGuess = (state: GameSessionState): boolean =>
-  Boolean(state.riddle && !state.modal && !state.paused && !state.engineSnapshot?.gameOver &&
+  Boolean(hasRemainingGuessAttempts(state) && !isBlockingGameModal(state.modal) && !state.paused && !state.engineSnapshot?.gameOver &&
     (!state.guessPending || canDraftWhileConfirming(state)));
 
 /** Provides game session reducer behavior. */
-export const gameSessionReducer = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
+const reduceGameSession = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
   switch (action.type) {
     case "hostInit": {
       /** Initialization can also arrive while recovering an account replacement. */
@@ -389,7 +408,8 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       return {...state, canRestoreCheckpoint: false, activeSlotIndex: action.index,
         pendingHintState: markHintPreviewIntent(state.pendingHintState)};
     case "guessRequested":
-      if (!state.riddle || (state.guessPending && !canDraftWhileConfirming(state)) ||
+      if (!state.riddle || !hasRemainingGuessAttempts(state) || state.engineSnapshot?.gameOver ||
+        (state.guessPending && !canDraftWhileConfirming(state)) ||
         state.currentLetters.some((letter) => !letter)) return state;
       if (state.riddle.evaluation) {
         /** Canonical scoring input preloaded with this riddle. */
@@ -420,13 +440,13 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         });
         /** Confirmed gameplay fields retained for rejection or reconciliation. */
         const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged,
-          letterStates, profile, lastRewards, optimisticAchievementIds} = state;
+          letterStates, profile, lastRewards, optimisticAchievementIds, draftRevision} = state;
         return {
           ...preview,
           guessPending: true,
           pendingGuessState: state.pendingGuessState ?? {
             currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome, completionAcknowledged,
-            letterStates, profile, lastRewards, optimisticAchievementIds,
+            letterStates, profile, lastRewards, optimisticAchievementIds, draftRevision,
           },
         };
       }
@@ -498,13 +518,14 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       /** The checkpoint used by the current operation. */
       const checkpoint = gameSessionReducer({
         ...state, ...state.pendingGuessState, guessPending: false, pendingGuessState: null,
+        draftRevision: state.pendingGuessState.draftRevision ?? state.draftRevision,
       }, {type: "guessResolved", feedback: action.feedback, attempts: action.attempts,
         isCorrect: action.isCorrect, gameOver: action.gameOver, canContinue: action.canContinue});
       /** The destructured result used by the current operation. */
       const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
-        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds} = checkpoint;
+        completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds, draftRevision} = checkpoint;
       return {...state, pendingGuessState: {currentLetters, activeSlotIndex, guesses, engineSnapshot,
-        modal, lastOutcome, completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds}};
+        modal, lastOutcome, completionAcknowledged, letterStates, profile, lastRewards, optimisticAchievementIds, draftRevision}};
     }
     case "guessFailed":
       return {...state, ...state.pendingGuessState, guessPending: false, pendingGuessState: null};
@@ -647,6 +668,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       {
         /** Gameplay checkpoint restored if the provisional Continue is rejected. */
         const continueState = action.reason === "continue" ? {
+          draftRevision: state.draftRevision,
           currentLetters: state.currentLetters, activeSlotIndex: state.activeSlotIndex,
           guesses: state.guesses, engineSnapshot: state.engineSnapshot, modal: state.modal,
           lastOutcome: state.lastOutcome, completionAcknowledged: state.completionAcknowledged,
@@ -671,7 +693,7 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
         const activeSlotIndex = savedSlot !== undefined && Number.isInteger(savedSlot) &&
           savedSlot >= 0 && savedSlot < action.draft.length && !continued.hintRevealedIndices.includes(savedSlot)
           ? savedSlot : firstEditableSlot(currentLetters, continued.hintRevealedIndices);
-        return {...continued, currentLetters, activeSlotIndex};
+        return {...continued, currentLetters, activeSlotIndex, draftRevision: action.draftRevision ?? continued.draftRevision};
       }
     case "confirmCoinSpend":
       if (state.pendingCoinSpend?.requestId !== action.requestId) return state;
@@ -866,9 +888,9 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
     case "openModal":
       // A delayed fifth-guess acknowledgement must not reopen a consumed Continue offer.
       if (action.modal === "continue" && state.engineSnapshot?.hasUsedContinue) return state;
-      if ((action.modal === "skip" && state.gameMode === "challenge") ||
-        (state.guessPending && !canDraftWhileConfirming(state) &&
-          (action.modal === "hint" || action.modal === "skip"))) {
+      if (state.guessPending &&
+        ((!canDraftWhileConfirming(state) && (action.modal === "hint" || action.modal === "skip")) ||
+          (action.modal === "skip" && state.gameMode === "challenge"))) {
         return state;
       }
       return action.modal === "leaderboard"
@@ -894,6 +916,21 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
       action satisfies never;
       return state;
   }
+};
+
+/** Advances input ordering without using wall clocks or presentation-only renders. */
+export const gameSessionReducer = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
+  /** Rejected actions and presentation updates keep their existing input revision. */
+  const next = reduceGameSession(state, action);
+  if (next === state) return state;
+  if ((action.type === "restoreSession" || action.type === "restoreQueuedGuesses") && action.draftRevision)
+    return {...next, draftRevision: action.draftRevision};
+  if (action.type !== "typeLetter" && action.type !== "backspace" && action.type !== "selectSlot") return next;
+  if (next.draftRevision !== state.draftRevision ||
+    (next.activeSlotIndex === state.activeSlotIndex && next.currentLetters.length === state.currentLetters.length &&
+      next.currentLetters.every((letter, index) => letter === state.currentLetters[index]))) return next;
+  return {...next, draftRevision: {...state.draftRevision,
+    sequence: Math.min(Number.MAX_SAFE_INTEGER, state.draftRevision.sequence + 1)}};
 };
 
 /** Gets current guess value. */

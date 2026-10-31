@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-10-24 03:29:43 UTC",
+  "readOnly": true,
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "game": {
+    "isPublished": false,
+    "publishedRevisionId": null,
+    "inReviewRevisionId": null,
+    "draftRevisionId": "01a16719-be19-73ab-b59b-81495d130c25",
+    "draftRevisionStatus": "draft",
+    "draftSubmittedForReviewAt": null,
+    "draftApprovedAt": null
+  },
+  "finalUploadedBuild": {
+    "id": "01a16bab-1ab2-769f-9640-062af485a1ef",
+    "version": "1.0.0-dev.20261024020836.27e4f179021a.2588cf21",
+    "buildStatus": "ready",
+    "isActive": false,
+    "buildProcessingError": null,
+    "fileSizeBytes": 4718560
+  },
+  "activeVersion": {
+    "id": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "version": "1.0.0-dev.20261023-demo-fixes",
+    "isActive": true
+  },
+  "historicalLatestRejection": {
+    "exists": true,
+    "submittedForReviewAt": "2026-10-23T04:51:42.739Z",
+    "rejectionTextIntentionallyNotCopied": true
+  },
+  "interpretation": {
+    "currentlyRunningReview": false,
+    "currentState": "Unpublished draft; final uploaded candidate READY and inactive. An explicit release/review-submission decision is required; waiting alone cannot begin review.",
+    "publicationReviewAndListingChangesRemainHeld": true,
+    "subscriptionFreshness": "External platform freshness contract or trusted entitlement lookup, or explicit product decision; not a background processing wait.",
+    "newlyActionableOwnedDevelopmentTaskIdentified": false,
+    "completedDevelopmentVerificationUnchanged": true,
+    "repeatTestsBuildsUploadsOrCloudWritesPerformed": false
+  },
+  "registerLimits": {
+    "developmentTasksVerified": 192,
+    "exactRequiredCommandsPassed": 182,
+    "gateClausesPreserved": 31,
+    "providerSnapshotIsHistorical": true,
+    "historicalProviderSnapshotDate": "2026-09-22T15:42:02.625736Z",
+    "historicalProviderActivationAndOAuthRowsDoNotOverrideFreshReadback": true
+  },
+  "evidence": {
+    "development": "artifacts/development-checks/goal-20261024-receipts-final5c-local-receipts/report.json",
+    "legacyDelivery": "artifacts/goal-completion-2026-10-24/riddle/backend/legacy/delivery-classification.json",
+    "publicationHold": "docs/development-tasks/jest-build-activation-publication-hold.json",
+    "freshnessLimit": "docs/evidence/jest-api-alignment-2026-10-18.md:30"
+  }
+}

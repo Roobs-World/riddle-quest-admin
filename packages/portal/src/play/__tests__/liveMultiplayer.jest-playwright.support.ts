@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
-import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, RACE_RULES, type JoinLiveRace, type UpdateLiveRace, type LiveRaceView} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, RACE_RULES, type JoinLiveRace, type RetireLiveRaceJoin, type UpdateLiveRace, type LiveRaceView} from "@qwordly/core/race";
 import {installLiveHistoryJourney} from "./liveHistory.jest-playwright.support";
 import {installLiveRematchJourney} from "./liveRematch.jest-playwright.support";
 
@@ -10,6 +10,8 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
   const joins: JoinLiveRace[] = [];
   /** Seat commands verify polling and explicit retirement at the platform boundary. */
   const updates: UpdateLiveRace[] = [];
+  /** Modern closes retire the original join without sending a legacy ticket leave. */
+  const retirements: RetireLiveRaceJoin[] = [];
   /** Safety requests contain the owned seat, never a rival identity. */
   const reports: unknown[] = [], blocks: unknown[] = [];
   /** Live requests must preserve Reddit's same-origin boundary. */
@@ -51,7 +53,8 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
   await page.route(target === "Reddit" ? "**/api/game/race.live.retire" : "**/retireLiveRaceJoin", route => {
     /** Actual shipped adapters may select only their original join and verified account precondition. */
     const raw = route.request().postDataJSON(), input = RetireLiveRaceJoinSchema.parse(target === "Reddit" ? raw : raw.data);
-    expect(input).toEqual({requestId: expect.any(String), expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account"});
+    expect(input).toEqual({requestId: joins.at(-1)?.requestId, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account"});
+    retirements.push(input);
     requestUrls.push(route.request().url()); return reply(route, {status: "retired"});
   });
   await page.route(target === "Reddit" ? "**/api/game/race.live.update" : "**/updateLiveRace", route => {
@@ -76,6 +79,20 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
   });
   /** More specific owned rematch routes fall through to the unchanged public lobby fixture. */
   const verifyRematch = await installLiveRematchJourney(page, target, requestUrls);
+  /** Observe the original-join command even when its lazy transport follows the rendered intro. */
+  const waitForRetirement = () => {
+    /** Capture ownership before clicking Close can start a replacement journey. */
+    const expectedRequestId = joins.at(-1)?.requestId;
+    if (!expectedRequestId) throw new Error("A joined lobby is required before observing retirement");
+    return page.waitForRequest(request => {
+      if (!request.url().endsWith(target === "Reddit" ? "/api/game/race.live.retire" : "/retireLiveRaceJoin")) return false;
+      /** Read each target's real command envelope rather than an unrelated poll. */
+      const raw = request.postDataJSON();
+      /** Only this account's original join may confirm the observed retirement. */
+      const input = target === "Reddit" ? raw : raw.data;
+      return input.requestId === expectedRequestId && input.expectedOwnerId === (target === "Facebook" ? "jest-guest" : "reddit-account");
+    });
+  };
   return async (locale: string) => {
     await page.locator(".multiplayer-navigation-action").click();
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
@@ -144,18 +161,15 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     await page.waitForFunction(() => document.querySelector(".live-race-block")?.hasAttribute("disabled"));
     await page.waitForFunction(() => !document.querySelector(".race-screen")?.textContent?.includes("LiveRival"));
     expect(blocks).toEqual([{liveTicketId: "b".repeat(64)}]);
-    /** Rendering the intro can precede the lazy transport's owned leave request. */
-    const leaving = page.waitForRequest(request => {
-      if (!request.url().endsWith(target === "Reddit" ? "/api/game/race.live.update" : "/updateLiveRace")) return false;
-      /** Check the real command rather than waiting for an unrelated progress poll. */
-      const raw = request.postDataJSON();
-      return (target === "Reddit" ? raw : raw.data).action === "leave";
-    });
+    /** Rendering the intro can precede the lazy transport's original-join retirement. */
+    const leaving = waitForRetirement();
     await page.locator(".race-close").click();
     await leaving;
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
     await page.waitForFunction(() => (document.querySelector(".live-race-start") as HTMLButtonElement | null)?.disabled === false);
-    expect(updates.filter(input => input.action === "leave")).toHaveLength(1);
+    expect(retirements).toHaveLength(1);
+    expect(retirements[0].requestId).toBe(joins[1].requestId);
+    expect(updates.filter(input => input.action === "leave")).toHaveLength(0);
     expect(updates.every(input => input.ticketId === "b".repeat(64))).toBe(true);
     startsAtMs = null;
     await page.locator(".live-race-start").click();
@@ -163,11 +177,16 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     expect(joins).toHaveLength(3);
     expect(await page.locator(".live-race-safety").count()).toBe(0);
     expect(joins[2].requestId).not.toBe(joins[0].requestId);
+    /** The replacement search owns a distinct, independently observed retirement. */
+    const leavingReplacement = waitForRetirement();
     await page.locator(".race-close").click();
+    await leavingReplacement;
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();
     await page.locator(".race-close").click();
     await page.locator(".race-screen").waitFor({state: "detached"});
-    expect(updates.filter(input => input.action === "leave")).toHaveLength(2);
+    expect(retirements).toHaveLength(2);
+    expect(retirements[1].requestId).toBe(joins[2].requestId);
+    expect(updates.filter(input => input.action === "leave")).toHaveLength(0);
     await verifyHistory(locale, verifyRematch);
     if (target === "Reddit") expect(requestUrls.every(url => new URL(url).origin === new URL(page.url()).origin &&
       new URL(url).pathname.startsWith("/api/"))).toBe(true);

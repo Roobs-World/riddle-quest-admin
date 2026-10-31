@@ -1,0 +1,68 @@
+{
+  "observedAt": "2026-10-24T23:36:22.184194+00:00",
+  "commit": "480ac243fdd67640f4f4ca223a2af389708a06db",
+  "runs": [
+    {
+      "id": 40143408909,
+      "name": "",
+      "path": "BuildFailed",
+      "event": "pull_request",
+      "head_branch": "codex/portfolio-verified-fixes-20261025",
+      "head_sha": "480ac243fdd67640f4f4ca223a2af389708a06db",
+      "status": "completed",
+      "conclusion": "startup_failure",
+      "html_url": "https://github.com/Grindhead/Portfolio/actions/runs/40143408909",
+      "created_at": "2026-10-24T23:36:11Z",
+      "updated_at": "2026-10-24T23:36:11Z",
+      "check_suite_id": 108806994012
+    },
+    {
+      "id": 40143394642,
+      "name": "",
+      "path": "BuildFailed",
+      "event": "push",
+      "head_branch": "codex/portfolio-verified-fixes-20261025",
+      "head_sha": "480ac243fdd67640f4f4ca223a2af389708a06db",
+      "status": "completed",
+      "conclusion": "startup_failure",
+      "html_url": "https://github.com/Grindhead/Portfolio/actions/runs/40143394642",
+      "created_at": "2026-10-24T23:36:00Z",
+      "updated_at": "2026-10-24T23:36:00Z",
+      "check_suite_id": 108806960198
+    }
+  ],
+  "checkRuns": [
+    {
+      "id": 121019665409,
+      "name": "Vercel Preview Comments",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Grindhead/Portfolio/runs/121019665409",
+      "details_url": "https://vercel.com/github",
+      "started_at": "2026-10-24T23:36:15Z",
+      "completed_at": "2026-10-24T23:36:15Z"
+    },
+    {
+      "id": 121019665392,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Grindhead/Portfolio/runs/121019665392",
+      "details_url": "https://dashboard.gitguardian.com",
+      "started_at": "2026-10-24T23:36:15Z",
+      "completed_at": "2026-10-24T23:36:18Z"
+    }
+  ],
+  "statusState": "pending",
+  "statuses": [
+    {
+      "id": 57182601851,
+      "context": "Vercel",
+      "state": "pending",
+      "description": "Vercel is deploying your app",
+      "target_url": "https://vercel.com/craig-beswethericks-projects-d44935d2/portfolio/FHDUx5rmDEMhRGC83NFYkpCB33Rx",
+      "created_at": "2026-10-24T23:36:01Z",
+      "updated_at": "2026-10-24T23:36:01Z"
+    }
+  ]
+}

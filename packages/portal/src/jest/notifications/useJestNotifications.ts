@@ -174,7 +174,7 @@ export function useJestNotifications({
           body: copy.raceBody,
           ctaText: copy.raceCta,
           priority: "high",
-          ...notificationAsset({title: `${gameTitle}: ${copy.raceTitle}`, body: copy.raceBody, ctaText: copy.raceCta}, assetReference),
+          ...(await notificationAsset({title: `${gameTitle}: ${copy.raceTitle}`, body: copy.raceBody, ctaText: copy.raceCta}, assetReference)),
           entryPayload: {
             campaign: "race_to_10_results_v1",
             reference: "race_to_10_results_d1_v1",

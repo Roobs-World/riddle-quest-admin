@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "kind": "jest-gated-artifact",
+  "gatedAt": "2026-10-25T22:22:25.052Z",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "buildVersion": "1.0.0-dev.20261025-maintenance-119a3d57559a",
+  "activationRequested": false,
+  "source": {
+    "commit": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "dirty": true
+  },
+  "archive": {
+    "file": "build.zip",
+    "bytes": 2940658,
+    "sha256": "aaa5a0ac68176afa38de32a558b26ea26cc9c51e9d8f4640089f0ea73c9fc2e2",
+    "entries": 421
+  }
+}

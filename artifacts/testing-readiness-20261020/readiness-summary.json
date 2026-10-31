@@ -1,0 +1,57 @@
+{
+  "checkedAt": "2026-10-20T18:25:45.584829+00:00",
+  "status": "awaiting-tester-access",
+  "technicalReleaseReady": true,
+  "allTesterPrerequisitesVerified": false,
+  "activeVersionId": "01a1567e-c03d-712d-b40e-2ef13b822050",
+  "version": "1.0.0-dev.20261020-keyboard-complete.mvfvxio4",
+  "pinnedTestUrl": "https://jest.com/g/riddle-q?versionId=01a1567e-c03d-712d-b40e-2ef13b822050",
+  "gamePublished": false,
+  "backend": {
+    "regionalInstances": 16,
+    "allCurrentInstancesReady": true,
+    "matchingRuntimeFiles": 533,
+    "matchingPreparedFiles": 21,
+    "currentDailyLocalesPlayable": 16,
+    "currentDailyLocalesSupported": 16,
+    "historicalDutchGenerationRetryRecovered": true
+  },
+  "hostedContent": {
+    "filesChecked": 419,
+    "allFilesMatchUploadedArchive": true,
+    "failures": [],
+    "officialJestSdkAvailable": true
+  },
+  "access": {
+    "consoleBrowserAuthenticated": false,
+    "sandboxUsersVerified": false,
+    "sandboxUsersCreated": false,
+    "existingSandboxUsersKnownAbsent": false,
+    "requiredNextStep": "Owner signs in to Jest Developer Console; confirm or prepare three Sandbox Users and separate browser sessions.",
+    "reason": "The connected browser shows Jest Sign in. Authenticated MCP configuration tools do not expose Sandbox User management.",
+    "additionalSetupToConfirm": [
+      "Fresh unfinished Daily and first-achievement player",
+      "Sandbox active and inactive subscription states",
+      "Authorized SMS recipient and send for real delivery coverage"
+    ]
+  },
+  "verificationScope": {
+    "newGameplayTestsRun": false,
+    "hostedGameplayRun": false,
+    "messagesSent": false,
+    "purchasesMade": false,
+    "accountGrantsOrSeeding": false,
+    "runtimeCodeChanges": false,
+    "newDeployments": false,
+    "publicationOrReviewActions": false
+  },
+  "evidence": {
+    "backend": "artifacts/testing-readiness-20261020/backend/backend-readiness.json",
+    "hostedContent": "artifacts/testing-readiness-20261020/hosted-content/readback.json",
+    "provider": "artifacts/testing-readiness-20261020/frontend/provider-readiness.json",
+    "handoff": "docs/testing/hosted-testing-handoff-2026-10-20.md",
+    "report": "docs/evidence/testing-readiness-2026-10-20.md"
+  },
+  "activeBuildReady": true,
+  "purchaseCatalogConfigured": true
+}

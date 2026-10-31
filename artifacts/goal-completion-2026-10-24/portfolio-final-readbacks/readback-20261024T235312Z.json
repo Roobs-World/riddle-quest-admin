@@ -1,0 +1,88 @@
+{
+  "observedAt": "2026-10-24T23:53:15.747231+00:00",
+  "sinceReceipt": "2026-10-24T23:51:30Z",
+  "readOnly": true,
+  "pr": {
+    "number": 26,
+    "url": "https://github.com/Grindhead/Portfolio/pull/26",
+    "title": "Fix Portfolio auth markup and media delivery",
+    "state": "open",
+    "isDraft": true,
+    "merged": false,
+    "mergedAt": null,
+    "autoMergeConfigured": false,
+    "baseRef": "fresh-start",
+    "baseSha": "230a82d20a3a5d748b590ddceade064a6319bcec",
+    "headRef": "codex/portfolio-verified-fixes-20261025",
+    "headSha": "55f5fd32f4bbe48ac4db2ba7fda20b8740bbf108"
+  },
+  "latestActionsRun": {
+    "id": 40144422722,
+    "workflow_id": 223127356,
+    "path": "BuildFailed",
+    "event": "pull_request",
+    "head_sha": "55f5fd32f4bbe48ac4db2ba7fda20b8740bbf108",
+    "status": "completed",
+    "conclusion": "startup_failure",
+    "created_at": "2026-10-24T23:51:32Z",
+    "updated_at": "2026-10-24T23:51:32Z",
+    "jobs": 0
+  },
+  "actionsRunsCreatedSinceReceipt": [
+    {
+      "id": 40144422722,
+      "workflow_id": 223127356,
+      "path": "BuildFailed",
+      "event": "pull_request",
+      "head_sha": "55f5fd32f4bbe48ac4db2ba7fda20b8740bbf108",
+      "status": "completed",
+      "conclusion": "startup_failure",
+      "created_at": "2026-10-24T23:51:32Z",
+      "updated_at": "2026-10-24T23:51:32Z",
+      "html_url": "https://github.com/Grindhead/Portfolio/actions/runs/40144422722"
+    }
+  ],
+  "liveActionsRunsInLatest12": [],
+  "knownFinalPrRun": {
+    "id": 40144313225,
+    "jobs": 0
+  },
+  "checks": [
+    {
+      "id": 121022387003,
+      "name": "Vercel Preview Comments",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://vercel.com/github"
+    },
+    {
+      "id": 121022298458,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "details_url": "https://dashboard.gitguardian.com"
+    }
+  ],
+  "statusState": "failure",
+  "statuses": [
+    {
+      "id": 57182942004,
+      "context": "Vercel",
+      "state": "failure",
+      "description": "Deployment has failed \u2014 run this Vercel CLI command: npx vercel inspect dpl_ERhEzjRCgHUbTbbPgWvgSr1W7c6n --logs",
+      "target_url": "https://vercel.com/craig-beswethericks-projects-d44935d2/portfolio/ERhEzjRCgHUbTbbPgWvgSr1W7c6n",
+      "updated_at": "2026-10-24T23:50:20Z"
+    }
+  ],
+  "newDeliverySignal": false,
+  "canonicalReadInThisAudit": false,
+  "canonicalLastObservation": "2026-10-24T23:50:59Z: READY dpl_B5ca2VsdMDTn4aJKWgTL51mpmdtz at130686f; no new production claim made",
+  "billingWarningReadInThisAudit": false,
+  "lastDirectAccountStartupEvidence": "Root browser receipt for final PR run40144313225, retained in sealed clean-install-20261024/startup-annotation-browser.json",
+  "sourceSettingsCredentialsOrPrChanges": false,
+  "originalPortfolioTouched": false,
+  "sealedPackagesTouched": false,
+  "newActionsMarkerObserved": true,
+  "deliverySignalAssessment": "The only newer run is the synthetic BuildFailed marker, terminal startup_failure with zero jobs; no live worker, successful CI or changed deployment status.",
+  "jobsVerifiedAt": "2026-10-24T23:53:33.774008+00:00"
+}

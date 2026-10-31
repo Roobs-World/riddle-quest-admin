@@ -1,0 +1,22 @@
+Live multilingual IME, paste, and physical/software deletion passed at 1280px.
+Hint and manual skip advanced the completed-riddle counter and preserved the current question on reload at 1280px.
+Live PvP passed at 1280px: intro, lobby identities, countdown, progress, penalty window, adjusted-time settlement and exact one-time achievement bonuses, and one 50-coin match grant.
+Live multilingual IME, paste, and physical/software deletion passed at 390px.
+Hint and exhausted guesses advanced the completed-riddle counter and preserved the current question on reload at 390px.
+Live PvP passed at 390px: intro, lobby identities, countdown, progress, penalty window, adjusted-time settlement and exact one-time achievement bonuses, and one 50-coin match grant.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.live-race-rival strong') to be visible[22m
+
+    at /home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-live-race-browser.mjs:327:48 {
+  log: [
+    "  - waiting for locator('.live-race-rival strong') to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.17.0

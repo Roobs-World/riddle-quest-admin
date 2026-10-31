@@ -1,0 +1,32 @@
+vite v8.3.1 building client environment for netflix...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../builds/netflix/index.html                             0.81 kB │ gzip:  0.41 kB
+../../builds/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../builds/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../builds/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../builds/netflix/assets/core-game-CcqtoK8X.js           2.31 kB │ gzip:  1.01 kB
+../../builds/netflix/assets/playable-pack-en-C_2M5S95.js   87.86 kB │ gzip: 47.71 kB
+../../builds/netflix/assets/playable-pack-pt-Bwbl_1cs.js   90.15 kB │ gzip: 48.94 kB
+../../builds/netflix/assets/playable-pack-nl-CDnUDPfT.js   90.54 kB │ gzip: 49.18 kB
+../../builds/netflix/assets/playable-pack-id-Bh4fJLFp.js   91.21 kB │ gzip: 49.52 kB
+../../builds/netflix/assets/playable-pack-it-CaH7105D.js   91.35 kB │ gzip: 49.59 kB
+../../builds/netflix/assets/playable-pack-es-CenOlxzW.js   91.65 kB │ gzip: 49.76 kB
+../../builds/netflix/assets/playable-pack-de-DJwB7IV2.js   92.15 kB │ gzip: 50.02 kB
+../../builds/netflix/assets/playable-pack-tr-w4VQfK91.js   92.54 kB │ gzip: 50.24 kB
+../../builds/netflix/assets/playable-pack-pl-C4-0MonP.js   92.70 kB │ gzip: 50.33 kB
+../../builds/netflix/assets/playable-pack-fr-B93oSJOl.js   93.56 kB │ gzip: 50.76 kB
+../../builds/netflix/assets/playable-pack-ja-DGYBWHbA.js   94.66 kB │ gzip: 51.39 kB
+../../builds/netflix/assets/playable-pack-vi-BYqBqFGc.js   96.78 kB │ gzip: 52.54 kB
+../../builds/netflix/assets/playable-pack-ko-Bp0IkVhN.js   97.36 kB │ gzip: 52.86 kB
+../../builds/netflix/assets/playable-pack-ar-DPiMrvDz.js  102.12 kB │ gzip: 55.42 kB
+../../builds/netflix/assets/index-D_0H8HyZ.js             105.45 kB │ gzip: 35.31 kB
+../../builds/netflix/assets/playable-pack-ru-kj6AddOd.js  114.09 kB │ gzip: 61.96 kB
+../../builds/netflix/assets/playable-pack-hi-DFSUrjeV.js  134.49 kB │ gzip: 72.98 kB
+../../builds/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 992ms
+netflix artifact audit passed: 24 files, 1.80 MiB

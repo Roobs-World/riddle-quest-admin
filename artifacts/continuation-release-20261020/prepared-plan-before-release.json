@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "project": "riddle-quest-ec2b2",
+  "status": "prepared-not-deployed",
+  "preparedAt": "2026-10-19T00:53:55.028230+00:00",
+  "sourceRevision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "includesUncommittedWorkingTreeChanges": true,
+  "productionDeploymentAuthorizationReceivedForThisTask": false,
+  "deploymentAttemptedForThisTask": false,
+  "frontendActivationRequestedForThisTask": false,
+  "clientZipSha256": "23078e0758ddb8378318d9ec3f1933e23db32c34610a50c59b278b6e5b7d557a",
+  "functions": [
+    {
+      "name": "joinLiveRace",
+      "regions": [
+        "us-central1",
+        "europe-west1"
+      ],
+      "regionPolicy": "explicit-existing-regions",
+      "regionDeclaration": "firebase-functions/src/race/raceLiveCallables.ts:21",
+      "entrypoint": "firebase-functions/src/race/raceLiveCallables.ts:47",
+      "impact": "Public human waiting, queue admission and pairing, immutable deck selection."
+    },
+    {
+      "name": "updateLiveRace",
+      "regions": [
+        "us-central1",
+        "europe-west1"
+      ],
+      "regionPolicy": "explicit-existing-regions",
+      "regionDeclaration": "firebase-functions/src/race/raceLiveCallables.ts:21",
+      "entrypoint": "firebase-functions/src/race/raceLiveCallables.ts:65",
+      "impact": "Public waiting and pairing, retained-ticket validation, authenticated streaming admission, settlement reward eligibility."
+    },
+    {
+      "name": "retireLiveRaceJoin",
+      "regions": [
+        "us-central1",
+        "europe-west1"
+      ],
+      "regionPolicy": "explicit-existing-regions",
+      "regionDeclaration": "firebase-functions/src/race/raceLiveCallables.ts:21",
+      "entrypoint": "firebase-functions/src/race/raceLiveCallables.ts:56",
+      "impact": "Retirement invokes the same changed live leave and settlement authority."
+    },
+    {
+      "name": "getLiveRaceChallenge",
+      "regions": [
+        "us-central1",
+        "europe-west1"
+      ],
+      "regionPolicy": "explicit-existing-regions",
+      "regionDeclaration": "firebase-functions/src/race/raceLiveCallables.ts:21",
+      "entrypoint": "firebase-functions/src/race/raceLiveCallables.ts:81",
+      "impact": "Private invitation retention, creator recovery and accepted participant checks."
+    },
+    {
+      "name": "listLiveRaceChallenges",
+      "regions": [
+        "us-central1",
+        "europe-west1"
+      ],
+      "regionPolicy": "explicit-existing-regions",
+      "regionDeclaration": "firebase-functions/src/race/raceLiveCallables.ts:21",
+      "entrypoint": "firebase-functions/src/race/raceLiveCallables.ts:103",
+      "impact": "Inbox listing invokes the changed authoritative private invitation preview."
+    },
+    {
+      "name": "startRaceRun",
+      "regions": [
+        "us-central1",
+        "europe-west1"
+      ],
+      "regionPolicy": "explicit-existing-regions",
+      "regionDeclaration": "firebase-functions/src/race/raceCallables.ts:58",
+      "entrypoint": "firebase-functions/src/race/raceCallables.ts:164",
+      "impact": "Recorded-race deck selection is restricted to validated locale/category/eligible content; original multiplayer difficulty mix is preserved."
+    },
+    {
+      "name": "redditGameplay",
+      "regionPolicy": "preserve-existing",
+      "regionsRequireLiveVerification": true,
+      "regionOmittedInSource": true,
+      "optionsSource": "firebase-functions/src/reddit/redditGameplayEndpoint.ts:71",
+      "entrypoint": "firebase-functions/src/reddit/redditGameplayEndpoint.ts:392",
+      "impact": "The HTTP gateway embeds callable .run implementations, including live join, update, retirement, invitation reads and recorded race start. Updating only standalone callables leaves this independent old-handler path available."
+    },
+    {
+      "name": "dailyChallengeScheduler",
+      "regionPolicy": "preserve-existing",
+      "regionsRequireLiveVerification": true,
+      "regionOmittedInSource": true,
+      "previousObservedRegions": [
+        "us-central1"
+      ],
+      "previousRegionEvidence": "docs/evidence/firebase-demand-only-2026-10-16.md:16",
+      "entrypoint": "firebase-functions/src/daily/dailyScheduler.ts:59",
+      "impact": "New dated Daily content requires independently reviewed medium difficulty. Existing playable dated documents are reused."
+    },
+    {
+      "name": "replenishClassicSupplyOnDemand",
+      "regions": [
+        "us-central1"
+      ],
+      "regionPolicy": "explicit-existing-region",
+      "regionDeclaration": "firebase-functions/src/riddles/classicSupplyWorker.ts:77",
+      "entrypoint": "firebase-functions/src/riddles/classicSupplyWorker.ts:76",
+      "impact": "New Classic indices divisible by three require independently reviewed medium difficulty."
+    },
+    {
+      "name": "retryClassicSupplyOnDemand",
+      "regions": [
+        "us-central1"
+      ],
+      "regionPolicy": "explicit-existing-region",
+      "regionDeclaration": "firebase-functions/src/riddles/classicSupplyWorker.ts:83",
+      "entrypoint": "firebase-functions/src/riddles/classicSupplyWorker.ts:82",
+      "impact": "Reactivated supply work follows the same Classic difficulty policy."
+    }
+  ],
+  "functionExportCount": 10,
+  "deploymentSelectors": [
+    "functions:joinLiveRace",
+    "functions:updateLiveRace",
+    "functions:retireLiveRaceJoin",
+    "functions:getLiveRaceChallenge",
+    "functions:listLiveRaceChallenges",
+    "functions:startRaceRun",
+    "functions:redditGameplay",
+    "functions:dailyChallengeScheduler",
+    "functions:replenishClassicSupplyOnDemand",
+    "functions:retryClassicSupplyOnDemand"
+  ],
+  "criticalSettlementCohort": {
+    "functions": [
+      "updateLiveRace",
+      "retireLiveRaceJoin",
+      "redditGameplay"
+    ],
+    "requireCompleteCohortBeforeRelease": true,
+    "mixedRevisionRisk": "An old standalone update, retirement wrapper, or embedded Reddit update handler can settle the same match without the new confirmed-correct-answer reward gate.",
+    "retirementCallsite": "firebase-functions/src/race/raceLiveRetirement.ts:39",
+    "embeddedGatewayCallsites": [
+      "firebase-functions/src/reddit/redditGameplayEndpoint.ts:252",
+      "firebase-functions/src/reddit/redditGameplayEndpoint.ts:257"
+    ],
+    "streamAdmissionShipsWith": "updateLiveRace",
+    "streamAdmissionCallsite": "firebase-functions/src/race/raceLiveCallables.ts:73",
+    "platformDeploymentAtomicityClaimed": false
+  },
+  "regionVerification": {
+    "requiredBeforeDeployment": true,
+    "mustVerifyExistingRegionsFor": [
+      "dailyChallengeScheduler",
+      "redditGameplay"
+    ],
+    "rule": "Read live function metadata, preserve every existing intended region, and stop on missing or ambiguous resources before making production changes.",
+    "sourceWithOmittedRegionsMustNotBeTreatedAsExplicitUsRegion": true,
+    "cliExistingRegionResolution": "firebase-functions/node_modules/firebase-tools/lib/deploy/functions/prepare.js:357",
+    "liveVerificationPerformedForThisPlan": false
+  },
+  "validation": {
+    "reportedBy": "Root readback of compile, static checks and isolated test result files.",
+    "backendCompilationPassed": true,
+    "backendLintPassed": true,
+    "moduleCycleAuditPassed": true,
+    "functionCapacityAuditPassed": true,
+    "testsRun": true,
+    "browserHarnessesRun": true,
+    "userTestAuthorizationPending": false,
+    "endToEndVerificationExecuted": true,
+    "userTestAuthorizationReceived": true,
+    "endToEndVerificationStatus": "passed-local-emulator-and-browser-tests",
+    "uniqueBackendTestsPassed": 399,
+    "uniqueBackendTestFiles": 19,
+    "realFirestoreIntegrationTestsPassed": 269,
+    "callableSecurityUnitTestsPassed": 130,
+    "browserSuitesPassed": 6,
+    "browserWidths": [
+      1280,
+      390
+    ],
+    "hostedJestIdentityAndSmsVerified": false,
+    "backendEvidence": "artifacts/matchmaking-e2e-20261018/backend/summary.json",
+    "browserEvidence": "artifacts/matchmaking-e2e-20261018/browser/summary.json",
+    "fullRegressionEvidenceScope": "399 unique tests passed on the previous 2026-10-18 source; the current performance changes passed targeted relevant regressions separately.",
+    "performanceReview": {
+      "date": "2026-10-19",
+      "backendTestsPassed": 94,
+      "backendSuitesPassed": 5,
+      "checkoutTestsPassed": 64,
+      "completionTestsPassed": 44,
+      "pollingTestsPassed": 14,
+      "notificationBrowserScenariosPassed": 13,
+      "completionCollectionBrowserChecksPassed": 132,
+      "eightConcurrentPlayersMatchedCorrectly": true,
+      "clientMeasurementStatus": "passed-styled-production-comparison",
+      "evidenceDirectory": "artifacts/performance-current-20261019",
+      "browserPollingScheduleChecksPassed": 79,
+      "clientEvidence": "artifacts/performance-current-20261019/client/REPORT.md",
+      "summaryEvidence": "artifacts/performance-current-20261019/summary.json"
+    }
+  },
+  "preparedFileHashes": [
+    {
+      "source": "firebase-functions/src/riddles/riddleGeneration.ts",
+      "sourceSha256": "be1c7140fbcf5f68810e5ea956e87575dff885843edf170a80a2c9a853a4eb4d",
+      "compiled": "firebase-functions/lib/riddles/riddleGeneration.js",
+      "compiledSha256": "a55808249c62773376a92aedf3bee340fd3a0f5af8509910ae486b9f99b68089"
+    },
+    {
+      "source": "firebase-functions/src/daily/dailyRiddleGeneration.ts",
+      "sourceSha256": "f0c072064f8526b82caaae988c4bff25a8052d92db7c1f27f82ad869377a8b95",
+      "compiled": "firebase-functions/lib/daily/dailyRiddleGeneration.js",
+      "compiledSha256": "7ed23a990bead6e938d6a6478dc160ed99b35b269bed56eb0246fcbeb6a36cfa"
+    },
+    {
+      "source": "firebase-functions/src/race/raceSetupService.ts",
+      "sourceSha256": "1c2a00e9b9b715675caef5b83031d9c236b5ce85da490813f0623cb0a64c738c",
+      "compiled": "firebase-functions/lib/race/raceSetupService.js",
+      "compiledSha256": "b6cdfcc1e152cb3cad91e0ec6ed94177205116c4811ccb55d3162a821539c6ad"
+    },
+    {
+      "source": "firebase-functions/src/race/raceLiveService.ts",
+      "sourceSha256": "18e08058b9aeb23cff6050900e070df426aedcd34919ec48b55c431578d0bb11",
+      "compiled": "firebase-functions/lib/race/raceLiveService.js",
+      "compiledSha256": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80"
+    },
+    {
+      "source": "firebase-functions/src/race/raceLiveQueue.ts",
+      "sourceSha256": "c197b30fb7371db23fc9d61937da875ebda450910e7af7bca723596477aa3fb5",
+      "compiled": "firebase-functions/lib/race/raceLiveQueue.js",
+      "compiledSha256": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72"
+    },
+    {
+      "source": "firebase-functions/src/race/raceLiveState.ts",
+      "sourceSha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272",
+      "compiled": "firebase-functions/lib/race/raceLiveState.js",
+      "compiledSha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94"
+    },
+    {
+      "source": "firebase-functions/src/race/raceLiveInvitation.ts",
+      "sourceSha256": "65e33d6b358fbb50486f9d581453d2f2a3cde6bacb6059ee1e374bf89cd9a795",
+      "compiled": "firebase-functions/lib/race/raceLiveInvitation.js",
+      "compiledSha256": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9"
+    },
+    {
+      "source": "firebase-functions/src/race/raceLiveJoinIntent.ts",
+      "sourceSha256": "018810f51c4db8604f3906115c239badb45374788d734932a57e2998c7e4a960",
+      "compiled": "firebase-functions/lib/race/raceLiveJoinIntent.js",
+      "compiledSha256": "44647a93ab11f6a9d5145d95c35a5e7b46bfd3dbfe1130eb02d6bd47ecd42489"
+    },
+    {
+      "source": "firebase-functions/src/race/raceLiveStream.ts",
+      "sourceSha256": "fcb444cdd4db1240d0f764fad5cc70a394b60df5d2c345b9f2dfac63ae0bd0ea",
+      "compiled": "firebase-functions/lib/race/raceLiveStream.js",
+      "compiledSha256": "9cc2f68064d59aba50a97ab89766f15b7d2e7050ce428bfc07690b764c695d0f"
+    },
+    {
+      "source": "packages/core/src/race/raceLiveSchemas.ts",
+      "sourceSha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29",
+      "compiled": "packages/core/dist/race/raceLiveSchemas.js",
+      "compiledSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "deploymentCopy": "firebase-functions/packages/core/dist/race/raceLiveSchemas.js",
+      "deploymentCopySha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+      "deploymentCopyMatchesCompiled": true
+    }
+  ],
+  "unchangedDeploymentExclusions": [
+    {
+      "functions": [
+        "blockRival",
+        "reportRival"
+      ],
+      "reason": "Safety writes do not invoke live update settlement or grant rewards.",
+      "source": "firebase-functions/src/social/socialSafety.ts:61"
+    },
+    {
+      "functions": [
+        "deleteAccount",
+        "retryJestAccountDeletion",
+        "deleteRedditAccount",
+        "facebookDataDeletionCallback"
+      ],
+      "reason": "Live account cleanup calls the unchanged liveRun constructor and seals unfinished matches with zero reward; it does not invoke live reward settlement.",
+      "source": "firebase-functions/src/profile/accountDeletion/liveRaceAccountDeletion.ts:94"
+    },
+    {
+      "functions": [
+        "sendLiveRaceChallenge"
+      ],
+      "reason": "The send operation is unchanged and does not execute the separately imported invitation preview used by inbox listing.",
+      "source": "firebase-functions/src/race/raceLiveChallengeNotifications.ts:23"
+    },
+    {
+      "functions": [
+        "confirmLiveGuessReceipt",
+        "listLiveRaceHistory",
+        "setLiveRacePushSubscription",
+        "deliverLiveRaceChallengePush",
+        "deliverRaceSettlementEvent",
+        "deliverRacePerformanceEvent"
+      ],
+      "reason": "These unchanged operations do not execute the changed deck selection, live waiting, streaming admission, or live reward settlement paths."
+    }
+  ],
+  "releaseOrder": [
+    "Obtain explicit production deployment authorization for this task.",
+    "Read live endpoint metadata and resolve the regions requiring verification.",
+    "Recheck prepared source and compiled hashes; rebuild and repeat static checks if source changes.",
+    "Deploy the complete selected backend cohort without deleting unrelated endpoints or adding regions.",
+    "Verify each deployed regional revision is active and receives latest traffic.",
+    "Activate frontend content only after an explicit activation request and successful backend verification."
+  ],
+  "difficultyScope": "single-player-only",
+  "multiplayerDeckDifficultyCounts": {
+    "easy": 10,
+    "medium": 5,
+    "hard": 0
+  },
+  "latestUploadedClient": {
+    "id": "01a151a5-c1d5-77f8-b24e-7a6370b86a20",
+    "version": "1.0.0-dev.20261019-performance.mvejisdk",
+    "buildStatus": "ready",
+    "isActive": false
+  }
+}

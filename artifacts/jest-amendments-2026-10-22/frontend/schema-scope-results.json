@@ -1,0 +1,198 @@
+[
+  {
+    "root": "artifacts/jest-route-verification-2026-10-22/jest-final-artifact",
+    "totalBytes": 4716708,
+    "files": 419,
+    "initialBytes": 575002,
+    "initial": [
+      {
+        "file": "./assets/index-Dh9XNzqy.js",
+        "bytes": 43
+      },
+      {
+        "file": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323
+      },
+      {
+        "file": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007
+      },
+      {
+        "file": "./assets/preload-helper-CbVdWqyQ.js",
+        "bytes": 1506
+      },
+      {
+        "file": "./assets/i18n-BKrlktMX.js",
+        "bytes": 36743
+      },
+      {
+        "file": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109
+      },
+      {
+        "file": "./assets/core-game-DAqVGBIz.js",
+        "bytes": 2963
+      },
+      {
+        "file": "./assets/browserStorage-DdPqSJP2.js",
+        "bytes": 2230
+      },
+      {
+        "file": "./assets/ReferralSharingCapability-C4gJfjCo.js",
+        "bytes": 25529
+      },
+      {
+        "file": "./assets/jest-Dikshjq1.js",
+        "bytes": 255603
+      },
+      {
+        "file": "./assets/jest-DTNgz5Jg.css",
+        "bytes": 30946
+      }
+    ]
+  },
+  {
+    "root": "builds/jest",
+    "totalBytes": 4717886,
+    "files": 420,
+    "initialBytes": 1111621,
+    "initial": [
+      {
+        "file": "./assets/index-BGx0nLZC.js",
+        "bytes": 43
+      },
+      {
+        "file": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323
+      },
+      {
+        "file": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007
+      },
+      {
+        "file": "./assets/preload-helper-CbVdWqyQ.js",
+        "bytes": 1506
+      },
+      {
+        "file": "./assets/i18n-_SQK5BfH.js",
+        "bytes": 37036
+      },
+      {
+        "file": "./assets/startupWarmup-CkGJvW6Z.js",
+        "bytes": 1603
+      },
+      {
+        "file": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109
+      },
+      {
+        "file": "./assets/core-game-DAqVGBIz.js",
+        "bytes": 2963
+      },
+      {
+        "file": "./assets/browserStorage-DdPqSJP2.js",
+        "bytes": 2230
+      },
+      {
+        "file": "./assets/raceSchemas-DiHZvydB.js",
+        "bytes": 108431
+      },
+      {
+        "file": "./assets/requestSchemas-BdKeSNAH.js",
+        "bytes": 7813
+      },
+      {
+        "file": "./assets/vendor-firebase-NTL0Yt-F.js",
+        "bytes": 397082
+      },
+      {
+        "file": "./assets/firebase-Bdcjrxqy.js",
+        "bytes": 5184
+      },
+      {
+        "file": "./assets/profileMapper-Dk_qHeaf.js",
+        "bytes": 2101
+      },
+      {
+        "file": "./assets/firebaseServices-CdlfQIj4.js",
+        "bytes": 8682
+      },
+      {
+        "file": "./assets/validation-DMPo2gXC.js",
+        "bytes": 6011
+      },
+      {
+        "file": "./assets/ReferralSharingCapability-DVgnyhnr.js",
+        "bytes": 26223
+      },
+      {
+        "file": "./assets/jest-DhZ_EaMd.js",
+        "bytes": 254328
+      },
+      {
+        "file": "./assets/jest-DTNgz5Jg.css",
+        "bytes": 30946
+      }
+    ]
+  },
+  {
+    "root": "/tmp/riddle-quest-schema-scope",
+    "totalBytes": 4717840,
+    "files": 421,
+    "initialBytes": 673239,
+    "initial": [
+      {
+        "file": "./assets/index-Bvx_FFrp.js",
+        "bytes": 43
+      },
+      {
+        "file": "./assets/rolldown-runtime-BX80bFGj.js",
+        "bytes": 323
+      },
+      {
+        "file": "./assets/vendor-react-CuZr8RiT.js",
+        "bytes": 219007
+      },
+      {
+        "file": "./assets/preload-helper-CbVdWqyQ.js",
+        "bytes": 1506
+      },
+      {
+        "file": "./assets/i18n-_SQK5BfH.js",
+        "bytes": 37036
+      },
+      {
+        "file": "./assets/core-bridge-constants--aS0k-qf.js",
+        "bytes": 109
+      },
+      {
+        "file": "./assets/core-game-DAqVGBIz.js",
+        "bytes": 2963
+      },
+      {
+        "file": "./assets/browserStorage-DdPqSJP2.js",
+        "bytes": 2230
+      },
+      {
+        "file": "./assets/schemas-CO2VaCxt.js",
+        "bytes": 93518
+      },
+      {
+        "file": "./assets/cloudFunctionsSchemas-DyGo4Y1i.js",
+        "bytes": 3567
+      },
+      {
+        "file": "./assets/ReferralSharingCapability-Cd4ew_cZ.js",
+        "bytes": 26192
+      },
+      {
+        "file": "./assets/jest-3Xrx2ZLo.js",
+        "bytes": 255799
+      },
+      {
+        "file": "./assets/jest-DTNgz5Jg.css",
+        "bytes": 30946
+      }
+    ]
+  }
+]

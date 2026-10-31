@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.STATIC_KEYBOARD_REACT_MODE??'development',baseline=process.env.STATIC_KEYBOARD_BASELINE_DIR;
-const output=path.resolve(process.env.STATIC_KEYBOARD_REPORT_DIR??path.join(root,'../../artifacts/static-keyboard-work-2026-10-04',mode));
+const output=path.resolve(process.env.STATIC_KEYBOARD_REPORT_DIR??path.join(root,'../../builds/test-evidence/static-keyboard-work-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/static-keyboard-'));
 const source=`

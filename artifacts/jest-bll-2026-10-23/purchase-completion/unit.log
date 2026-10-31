@@ -1,0 +1,7 @@
+
+Test Suites: 2 passed, 2 total
+Tests:       54 passed, 54 total
+Snapshots:   0 total
+Time:        0.208 s, estimated 1 s
+Ran all test suites within paths "src/jest/__tests__/purchases.test.ts", "src/jest/__tests__/useJestPurchase.test.ts".
+Test results written to: ../../artifacts/jest-bll-2026-10-23/purchase-completion/unit-results.json

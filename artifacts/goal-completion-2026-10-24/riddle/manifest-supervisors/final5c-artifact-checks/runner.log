@@ -1,0 +1,7 @@
+Start 1 at 2026-10-24T02:05:41.445Z: pnpm --filter @qwordly/portal check:types
+passed 1 at 2026-10-24T02:05:43.046Z; source matches true
+Start 3 at 2026-10-24T02:05:44.730Z: node scripts/release/verify-packaged-game-evidence.mjs
+passed 3 at 2026-10-24T02:05:45.995Z; source matches true
+Start 5 at 2026-10-24T02:05:46.882Z: node scripts/release/verify-release-target-e2e.mjs
+passed 5 at 2026-10-24T02:05:49.086Z; source matches true
+{"selected":3,"recorded":3,"failed":[],"report":"artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e.json","sourceStillMatches":true}

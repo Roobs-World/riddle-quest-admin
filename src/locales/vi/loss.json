@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Xem video để có thêm một lượt thử",
     "COIN_EXTRA_GO_BUTTON": "{coins} xu để có thêm một lượt",
-    "EXTRA_GO_PROMPT": "Hết lượt thử. Nhận thêm một lượt hoặc bỏ qua câu đố này.",
     "OPEN_SHOP_BUTTON": "Mở cửa hàng",
     "OUT_OF_ATTEMPTS": "Hết sức cố gắng.",
     "SKIP_LEVEL_PREFIX": "Dùng ",

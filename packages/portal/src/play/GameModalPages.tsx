@@ -152,8 +152,9 @@ export function GameModalPages({
         />
       )}
 
-      {state.modal === "skip" && state.gameMode === "classic" && (
+      {state.modal === "skip" && (economyAvailable || state.gameMode === "challenge") && (
         <SkipModalPage
+          gameMode={state.gameMode}
           balance={balance}
           onClose={onClose}
           onOpenModal={onOpenModal}

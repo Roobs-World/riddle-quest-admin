@@ -1,0 +1,7 @@
+{
+  "firebase-functions/lib/race/raceLiveService.js": "114635b79a62f0ff31ea70fa7c04937b3f88976663ff358cf90ec224bdab8ed3",
+  "firebase-functions/lib/race/raceLiveInvitation.js": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9",
+  "firebase-functions/lib/race/raceLiveQueue.js": "c943c103dc98834f58a909539d1c50bbc482542ee90bd19c5d6883b33e3beee2",
+  "packages/portal/src/play/race/LiveRaceGame.tsx": "0ec8db7c755016b507c087ea9b6d233cf4da0df50858a6830a44d7e674ee9be4",
+  "packages/portal/src/play/race/RaceTo10Game.tsx": "734028921d42b2e15227a5997aad94ede0be38f99c9589e1e319b247375d5093"
+}

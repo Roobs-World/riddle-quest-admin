@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-10-24 23:38:06 UTC",
+  "source": "Authenticated GitHub run-summary UI via selected Chrome tab1499258602",
+  "url": "https://github.com/Grindhead/Portfolio/actions/runs/40143408909",
+  "commit": "480ac243fdd67640f4f4ca223a2af389708a06db",
+  "event": "pull_request",
+  "status": "Startup failure",
+  "annotations": {
+    "errors": 1,
+    "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings."
+  },
+  "scope": "Fresh cause evidence for this PR startup rejection. No application test job ran. No rerun or account-setting change performed."
+}

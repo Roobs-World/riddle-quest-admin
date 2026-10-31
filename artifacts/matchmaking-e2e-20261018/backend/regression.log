@@ -1,0 +1,256 @@
+FAIL src/__tests__/race/raceLive.it.test.ts (22.943 s)
+  ● records both participants once on a started forfeit
+
+    TypeError: Cannot read properties of undefined (reading 'multiplayerGamesPlayed')
+
+      615 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+      616 |   const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+    > 617 |   expect(profiles.map(profile => profile.data()!.stats.multiplayerGamesPlayed)).toEqual([1, 1]);
+          |                                                       ^
+      618 |   expect(profiles.map(profile => profile.data()!.coins)).toEqual([125, 200]);
+      619 | });
+      620 |
+
+      at src/__tests__/race/raceLive.it.test.ts:617:55
+          at Array.map (<anonymous>)
+      at Object.<anonymous> (src/__tests__/race/raceLive.it.test.ts:617:19)
+
+  ● counts a timed-out human draw once without awarding a win reward
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Array [
+    -   125,
+    -   125,
+    +   undefined,
+    +   undefined,
+      ]
+
+      629 |   expect(results.map(result => result.result)).toEqual(["tie", "tie"]);
+      630 |   expect(results.map(result => result.rewardCoins)).toEqual([0, 0]);
+    > 631 |   expect(results.map(result => result.newCoins)).toEqual([125, 125]);
+          |                                                  ^
+      632 |   await Promise.all([update(A, a, end + 1000), update(B, b, end + 1000)]);
+      633 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+      634 |   const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
+
+      at Object.<anonymous> (src/__tests__/race/raceLive.it.test.ts:631:50)
+
+  ● rejects invalid or overflowing totals before recording any settlement grant: {"stats.multiplayerGamesPlayed":-1}
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"actionAvailableAtMs": 1800000006000, "opponent": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Alice", "level": 1}, "phase": "result", "player": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Bob", "level": 1}, "result": "loss", "rewardCoins": 0, "run": {"adjustedElapsedMs": 1000, "categoryId": "history", "challengeId": undefined, "correctCount": 0, "currentRiddle": null, "events": [], "locale": "en", "opponent": {"adjustedFinishMs": 300000, "avatarUrl": "https://example.com/avatar.png", "displayName": "Alice", "events": []}, "rivalryChallengeId": undefined, "role": "creator", "rules": {"deckSize": 15, "hintPenaltyMs": 15000, "maxAdjustedTimeMs": 300000, "maxGuessesPerRiddle": 5, "maxHintsPerRiddle": 7, "skipPenaltyMs": 45000, "targetCorrect": 10, "version": "race10_v1"}, "runId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4", "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "status": "completed", "totalPenaltyMs": 0, "wallElapsedMs": 1000}, "searchEndsAtMs": 1800000007000, "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "ticketId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4"}
+
+      647 |   /** Captures account state before an idempotent read or rejected settlement. */
+      648 |   const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+    > 649 |   await expect(update(B, b, NOW + 7000, "leave", "invalid-game-total"))
+          |         ^
+      650 |     .rejects.toMatchObject({code: "data-loss"});
+      651 |   expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
+      652 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceLive.it.test.ts:649:9
+
+  ● rejects invalid or overflowing totals before recording any settlement grant: {"stats.multiplayerWins":-1}
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"actionAvailableAtMs": 1800000006000, "opponent": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Alice", "level": 1}, "phase": "result", "player": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Bob", "level": 1}, "result": "loss", "rewardCoins": 0, "run": {"adjustedElapsedMs": 1000, "categoryId": "history", "challengeId": undefined, "correctCount": 0, "currentRiddle": null, "events": [], "locale": "en", "opponent": {"adjustedFinishMs": 300000, "avatarUrl": "https://example.com/avatar.png", "displayName": "Alice", "events": []}, "rivalryChallengeId": undefined, "role": "creator", "rules": {"deckSize": 15, "hintPenaltyMs": 15000, "maxAdjustedTimeMs": 300000, "maxGuessesPerRiddle": 5, "maxHintsPerRiddle": 7, "skipPenaltyMs": 45000, "targetCorrect": 10, "version": "race10_v1"}, "runId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4", "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "status": "completed", "totalPenaltyMs": 0, "wallElapsedMs": 1000}, "searchEndsAtMs": 1800000007000, "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "ticketId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4"}
+
+      647 |   /** Captures account state before an idempotent read or rejected settlement. */
+      648 |   const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+    > 649 |   await expect(update(B, b, NOW + 7000, "leave", "invalid-game-total"))
+          |         ^
+      650 |     .rejects.toMatchObject({code: "data-loss"});
+      651 |   expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
+      652 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceLive.it.test.ts:649:9
+
+  ● rejects invalid or overflowing totals before recording any settlement grant: {"coins":-1}
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"actionAvailableAtMs": 1800000006000, "opponent": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Alice", "level": 1}, "phase": "result", "player": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Bob", "level": 1}, "result": "loss", "rewardCoins": 0, "run": {"adjustedElapsedMs": 1000, "categoryId": "history", "challengeId": undefined, "correctCount": 0, "currentRiddle": null, "events": [], "locale": "en", "opponent": {"adjustedFinishMs": 300000, "avatarUrl": "https://example.com/avatar.png", "displayName": "Alice", "events": []}, "rivalryChallengeId": undefined, "role": "creator", "rules": {"deckSize": 15, "hintPenaltyMs": 15000, "maxAdjustedTimeMs": 300000, "maxGuessesPerRiddle": 5, "maxHintsPerRiddle": 7, "skipPenaltyMs": 45000, "targetCorrect": 10, "version": "race10_v1"}, "runId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4", "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "status": "completed", "totalPenaltyMs": 0, "wallElapsedMs": 1000}, "searchEndsAtMs": 1800000007000, "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "ticketId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4"}
+
+      647 |   /** Captures account state before an idempotent read or rejected settlement. */
+      648 |   const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+    > 649 |   await expect(update(B, b, NOW + 7000, "leave", "invalid-game-total"))
+          |         ^
+      650 |     .rejects.toMatchObject({code: "data-loss"});
+      651 |   expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
+      652 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceLive.it.test.ts:649:9
+
+  ● rejects invalid or overflowing totals before recording any settlement grant: {"coins":9007199254740991}
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"actionAvailableAtMs": 1800000006000, "opponent": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Alice", "level": 1}, "phase": "result", "player": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Bob", "level": 1}, "result": "loss", "rewardCoins": 0, "run": {"adjustedElapsedMs": 1000, "categoryId": "history", "challengeId": undefined, "correctCount": 0, "currentRiddle": null, "events": [], "locale": "en", "opponent": {"adjustedFinishMs": 300000, "avatarUrl": "https://example.com/avatar.png", "displayName": "Alice", "events": []}, "rivalryChallengeId": undefined, "role": "creator", "rules": {"deckSize": 15, "hintPenaltyMs": 15000, "maxAdjustedTimeMs": 300000, "maxGuessesPerRiddle": 5, "maxHintsPerRiddle": 7, "skipPenaltyMs": 45000, "targetCorrect": 10, "version": "race10_v1"}, "runId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4", "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "status": "completed", "totalPenaltyMs": 0, "wallElapsedMs": 1000}, "searchEndsAtMs": 1800000007000, "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "ticketId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4"}
+
+      647 |   /** Captures account state before an idempotent read or rejected settlement. */
+      648 |   const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+    > 649 |   await expect(update(B, b, NOW + 7000, "leave", "invalid-game-total"))
+          |         ^
+      650 |     .rejects.toMatchObject({code: "data-loss"});
+      651 |   expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
+      652 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceLive.it.test.ts:649:9
+
+  ● rejects invalid or overflowing totals before recording any settlement grant: {"stats.multiplayerGamesPlayed":9007199254740991}
+
+    expect(received).rejects.toMatchObject()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"actionAvailableAtMs": 1800000006000, "opponent": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Alice", "level": 1}, "phase": "result", "player": {"avatarUrl": "https://example.com/avatar.png", "bot": false, "correctCount": 0, "displayName": "Bob", "level": 1}, "result": "loss", "rewardCoins": 0, "run": {"adjustedElapsedMs": 1000, "categoryId": "history", "challengeId": undefined, "correctCount": 0, "currentRiddle": null, "events": [], "locale": "en", "opponent": {"adjustedFinishMs": 300000, "avatarUrl": "https://example.com/avatar.png", "displayName": "Alice", "events": []}, "rivalryChallengeId": undefined, "role": "creator", "rules": {"deckSize": 15, "hintPenaltyMs": 15000, "maxAdjustedTimeMs": 300000, "maxGuessesPerRiddle": 5, "maxHintsPerRiddle": 7, "skipPenaltyMs": 45000, "targetCorrect": 10, "version": "race10_v1"}, "runId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4", "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "status": "completed", "totalPenaltyMs": 0, "wallElapsedMs": 1000}, "searchEndsAtMs": 1800000007000, "serverNowMs": 1800000007000, "startsAtMs": 1800000006000, "ticketId": "e89760426ae8091682677ce2aa64aa606ad2592b8fda1afd7d6a78bd2b54a1f4"}
+
+      647 |   /** Captures account state before an idempotent read or rejected settlement. */
+      648 |   const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());
+    > 649 |   await expect(update(B, b, NOW + 7000, "leave", "invalid-game-total"))
+          |         ^
+      650 |     .rejects.toMatchObject({code: "data-loss"});
+      651 |   expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data())).toEqual(before);
+      652 |   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
+
+      at expect (../node_modules/.pnpm/expect@30.5.2/node_modules/expect/build/index.js:2116:15)
+      at src/__tests__/race/raceLive.it.test.ts:649:9
+
+FAIL src/__tests__/race/raceLiveDeckCompatibility.it.test.ts (7.842 s)
+  ● recovers and settles an already-accepted public match despite incompatible future content
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "rewardCoins": 50,
+    +   "rewardCoins": 0,
+        "winner": 0,
+      }
+
+      225 |   const terminal = await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "leave", requestId: "accepted-future-forfeit"}, {db, nowMs});
+      226 |   expect(terminal.phase).toBe("result");
+    > 227 |   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
+          |                                    ^
+      228 |   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 200,
+      229 |     stats: {multiplayerGamesPlayed: 1, multiplayerWins: entry === "bot" ? 0 : 1}});
+      230 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(entry === "bot" ? 100 : 125);
+
+      at src/__tests__/race/raceLiveDeckCompatibility.it.test.ts:227:36
+
+  ● recovers and settles an already-accepted private match despite incompatible future content
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   "rewardCoins": 50,
+    +   "rewardCoins": 0,
+        "winner": 0,
+      }
+
+      225 |   const terminal = await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "leave", requestId: "accepted-future-forfeit"}, {db, nowMs});
+      226 |   expect(terminal.phase).toBe("result");
+    > 227 |   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
+          |                                    ^
+      228 |   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 200,
+      229 |     stats: {multiplayerGamesPlayed: 1, multiplayerWins: entry === "bot" ? 0 : 1}});
+      230 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(entry === "bot" ? 100 : 125);
+
+      at src/__tests__/race/raceLiveDeckCompatibility.it.test.ts:227:36
+
+  ● recovers and settles an already-accepted bot match despite incompatible future content
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 5
+    + Received  + 1
+
+      Object {
+    -   "coins": 125,
+    -   "stats": Object {
+    -     "multiplayerGamesPlayed": 1,
+    -     "multiplayerWins": 0,
+    -   },
+    +   "coins": 100,
+      }
+
+      226 |   expect(terminal.phase).toBe("result");
+      227 |   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
+    > 228 |   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 200,
+          |                                                     ^
+      229 |     stats: {multiplayerGamesPlayed: 1, multiplayerWins: entry === "bot" ? 0 : 1}});
+      230 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(entry === "bot" ? 100 : 125);
+      231 |   /** Later terminal reads do not grant badges or victory coins again. */
+
+      at src/__tests__/race/raceLiveDeckCompatibility.it.test.ts:228:53
+
+FAIL src/__tests__/race/raceLiveJoinRetirement.it.test.ts (39.682 s)
+  ● retirement replay does not duplicate signals or rewards (matched=true)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 600
+    Received: 500
+
+      116 |   /** The existing settlement authority may grant the rival exactly once after an active forfeit. */
+      117 |   const before = await state(), marker = await liveJoinIntentRef(db, A, FIRST).get();
+    > 118 |   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(matched ? 600 : 500);
+          |                                                            ^
+      119 |   expect(await retire(A, FIRST, NOW + 8000)).toEqual({status: "retired"}); expect(await state()).toEqual(before);
+      120 |   expect((await liveJoinIntentRef(db, A, FIRST).get()).updateTime?.valueOf()).toBe(marker.updateTime?.valueOf());
+      121 | });
+
+      at src/__tests__/race/raceLiveJoinRetirement.it.test.ts:118:60
+
+FAIL src/__tests__/race/raceLiveIdentityPayload.it.test.ts
+  ● loads only public identity for a public join
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 0
+    + Received  + 2
+
+      Array [
+        "avatarUrl",
+    +   "coins",
+        "level",
+    +   "privateBlob",
+        "username",
+      ]
+
+      78 | /** Only identity fields should be loaded, and fixture account economy/storage must stay unchanged. */
+      79 | function expectIdentityOnly(reads: ProfileRead[]) {
+    > 80 |   for (const read of reads) expect(read.fields).toEqual(["avatarUrl", "level", "username"]);
+         |                                                 ^
+      81 | }
+      82 |
+      83 | it.each(["public", "private", "reconnect"] as const)("loads only public identity for a %s join", async kind => {
+
+      at expectIdentityOnly (src/__tests__/race/raceLiveIdentityPayload.it.test.ts:80:49)
+      at src/__tests__/race/raceLiveIdentityPayload.it.test.ts:90:3
+
+
+Test Suites: 4 failed, 6 passed, 10 total
+Tests:       12 failed, 216 passed, 228 total
+Snapshots:   0 total
+Time:        106.089 s
+Ran all test suites within paths "src/__tests__/race/raceLivePublicWait.it.test.ts", "src/__tests__/race/raceLive.it.test.ts", "src/__tests__/race/raceLiveGuessReceipt.it.test.ts", "src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts", "src/__tests__/race/raceLiveJoinRetirement.it.test.ts", "src/__tests__/race/raceLiveDeckCompatibility.it.test.ts", "src/__tests__/race/raceLiveAccountDeletion.it.test.ts", "src/__tests__/race/raceLiveHistory.it.test.ts", "src/__tests__/race/raceLiveRematch.it.test.ts", "src/__tests__/race/raceLiveIdentityPayload.it.test.ts".
+Test results written to: ../artifacts/matchmaking-e2e-20261018/backend/regression-results.json

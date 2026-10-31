@@ -37,6 +37,19 @@ describe("Jest signed verification", () => {
     expect(
       verifyJestSigned(sign({aud: "game", sub: "p1", referrals: {campaign: []}}), secret, "game", "p1"),
     ).toMatchObject({sub: "p1"}));
+  it("accepts signed claims during their validity window", () =>
+    expect(verifyJestSigned(sign({...payload, nbf: 1_000, exp: 1_101}), secret, "game", "p1", 1_100))
+      .toMatchObject({sub: "p1", nbf: 1_000, exp: 1_101}));
+  it.each([
+    [{exp: 1_099}, "expired-token"],
+    [{exp: 1_100}, "expired-token"],
+    [{exp: "1200"}, "expired-token"],
+    [{exp: null}, "expired-token"],
+    [{nbf: 1_101}, "token-not-active"],
+    [{nbf: "1000"}, "token-not-active"],
+    [{nbf: null}, "token-not-active"],
+  ])("rejects expired, premature, or malformed validity claims", (claims, message) =>
+    expect(() => verifyJestSigned(sign({...payload, ...claims}), secret, "game", "p1", 1_100)).toThrow(message));
   it("rejects oversized signed payloads before decoding them", () =>
     expect(() => verifyJestSigned(`a.${"a".repeat(256_001)}.a`, secret, "game")).toThrow("malformed-token"));
 

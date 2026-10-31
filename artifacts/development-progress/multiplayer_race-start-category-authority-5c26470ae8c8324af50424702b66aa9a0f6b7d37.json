@@ -1,0 +1,530 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-start-category-authority",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Bind multiplayer reward/profile refresh to its account and identity-loader lifetime, drop unmounted or replaced callbacks before applying balances, and let only the newest same-account profile load update host state. Verify real React normal/StrictMode desktop/mobile account switch, response reordering and unmount paths, preserving all prior reliability gates. Require synchronous auth-subscription ownership before React commit, scope queued reward/profile writes to the expected UID and ignore retired subscription notifications. Propagate account ownership to the actual optional provider result handler; preserve both valid same-account completions when profile reads reorder. Pin the exact subscription account visit across provider recording and result presentation, including switches away and back to the same UID. Bind access and category preloading to the exact rendered account visit, rejecting stale access continuations before another request. Keep preloaded categories and avoid repeated access/catalog requests on same-account profile notifications, while switches away and back start a fresh visit. Prevent cached categories from appearing in any committed replacement frame before passive cleanup, including changed account visits, locales, authorities, deep links or locale eligibility. Verify populated-cache replacement, sign-out and deep-link catalog suppression in normal/StrictMode desktop/mobile browsers. Bind the entire rendered multiplayer journey to account, locale and incoming challenge/inbox/tournament entry identity. A replacement must show fresh session state in its first committed frame, with no preceding run/result/provider/dialog state. Balance and catalog changes retain the existing journey. Verify retired-session callbacks cannot close, contaminate errors or dispatch from the replacement. Scope optional provider standings caches to their exact tournament/context adapters before rendering, so replacing a provider cannot expose its preceding standings in a committed frame. Preserve competitive session identity, active run and typed input across provider replacement; retain late-response rejection and provider-write recovery. Bind native context/matchmaking and tournament/challenge share dialogs to exact selected provider and delivery identities. Replacing a provider must release retired loading guards, allow its replacement to open a new dialog, and ignore old completion/failure without clearing the new guard. Unrelated provider changes retain owned dialog guards; still-owned native context completion refreshes the latest optional view selection. Isolate synchronous and asynchronous provider access/catalog failures from the host React lifetime. Optional access preloading crosses a promise rejection boundary and rechecks cancellation/account ownership before its queued provider call. Verify mounted-host survival, no cached categories after failure and no read from an account retired before the queued call. Verify actual development React StrictMode effect replay in both host prefetch and profile/reward ownership harnesses. Assert two auth subscription setups, one replay cleanup and one live subscription under development StrictMode, versus one setup under normal/development and production wrappers. Preserve all previous behavioral assertions and production checks. Verify actual development StrictMode session enter/dispose effect replay in the rendered multiplayer dialog surface, including all four provider dialog types, provider replacement, retired success/failure isolation and unrelated provider controls. Require one live session after replay and zero after explicit unmount. Verify native browser resource ownership across account/locale entry replacement, three unmount/remount cycles and development StrictMode replay. Track actual interval handles and bridge/visibility listener identities; require one of each while mounted and none after unmount, no retired interval execution and no retired event dispatch. Validate the gate with independent interval, bridge and visibility leak controls. Resolve fallback-race rematches through the live matchmaking capability resolver. An explicit unavailable result must not revive the cached preceding adapter; replacement uses the new adapter with a fresh search receipt. Preserve legacy direct consumers without a resolver. Verify real rendered result-to-rematch flow at desktop/mobile widths. Bound provider discovery calls and continuations to their exact current matchmaking adapter. Cancel retired success, empty, fallback, failure and rejection paths; do not retry retired adapters or automatically search replacements. Preserve the original deadline and explicit fresh searches through replacements. Separate provider invocation ownership and schema/preference validation into a focused discovery helper. Verify recovery callbacks using an observable stored journal. Recheck discovery account/navigation/provider ownership after synchronous persistence and external-store callbacks. Retired completion must not publish a challenge, error or fallback start. Clear its owned journal and restore the originating hub, preserving replacement journeys and explicit searches. Extract the cancellable delivery budget into the discovery helper. Require desktop/mobile callback retirement and transient publication assertions. Cancel a pending discovery wait on the next session tick when its current adapter is removed or replaced, without awaiting the provider or its delivery deadline. Capture the original wait and adapter before consulting the live resolver; recheck account generation so resolver reentrancy cannot cancel or tick a replacement account journey. Preserve active gameplay/input and require explicit replacement search. Retain all late-response and completion-callback gates. Retire settled failed and empty discovery intents when their provider changes. Clear stale errors, retry guidance, attribution and the owned journal while preserving the selected hub. Share one retirement transition with pending/completion cleanup, incrementing generation to invalidate retired continuations. Preserve active gameplay, replacement-account searches and newer shared-journal ownership. Verify actual browser storage revision ownership during provider retirement across pending, failed and empty searches. Preserve newer same-account and foreign-account challenge journals, denied first observations, and a competing replacement between cleanup reads followed by denied second observation. Reject late old SDK completion and preserve explicit fresh replacement searches. Validate the gate with an injected removal of the expected-revision guard. Verify visibility-based recovery with gameplay interval callbacks suspended. Retired pending/failed/empty provider searches must clear on the document visibility listener without an interval servicing cleanup; unchanged providers preserve their owned search/retry state. Late retired results cannot revive discovery. Exercise desktop/mobile production and actual development StrictMode effect replay, with explicit setup/cleanup counts. Validate the gate by disabling visible-session tick recovery in the injected bundle. Revalidate current client/core suites, all retained browser gates, isolated artifacts, backend Node22 preparation/types/lint and emulator coverage after accepted-run recovery changes. Update the invitation callable contract assertion for forwarded optional settings, verifying valid opt-in/opt-out preferences, authenticated identity and rejection of malformed or client-selected run pointers before authority. Preserve strict source/accepted-revision dashboard gates. Validate cold recovery from a ready challenge existing-attempt pointer against the accepted run ID, selected challenge ID, recipient role and challenge category before adopting authority state or sending readiness. Preserve independent creator cold resume. Verify schema-valid mismatches through public session tests and the actual rendered direct-link bridge flow. Privately retain accepted entry facts across snapshot publication and unrelated view updates using snapshot-lifetime ownership. Automatic resume dispatch and challenge/run/role/category validation must use those accepted facts, surviving rewritten or erased public entry objects. Bind invitation/challenge response selection to the original private command. Extract the existing run/start request checks without weakening them. Verify adversarial public mutation through real rendered bridge flows and retain prior cold-resume/entry ownership gates. Validate provided opponent name and recorded target time during existing challenge attempt recovery against private accepted-entry facts. Public preview rewrites must not authorize contradictory opponent details. Preserve valid full views and optional omitted opponent views without synthesizing competitive facts. Exercise rendered direct-link recovery and retain prior pointer/private-selection/startup gates. Route creator acceptance to Activity using privately accepted roles and recording identity. Public role rewrites, cleared entry views or overwritten active challenge IDs must neither enable creator acceptance nor deny recipient acceptance. Render a copied private entry view without exposing retained authority objects. Verify actual challenge-card clicks at desktop/mobile widths and retain prior entry/recovery ownership gates. Recheck accepted-entry journey ownership after optional analytics delivery and terminal-entry journal cleanup. Navigation must retain its Activity request; replacement entry must issue only its own resume, without duplicate receipts from retired processing. Preserve valid automatic recovery when optional analytics throws. Verify rendered bridge callbacks and a negative control that removes the ownership guard. Retain original accepted request identity for waiting/terminal invitation views, which omit their own challenge ID. Polling, visibility recovery, expiry, cancellation capability and retry must use private accepted facts rather than mutable public snapshots. Preserve expired authority-time state across delayed poll responses even when public views are overwritten. Verify actual rendered creator cancellation, recipient capability denial, original polling/retry selection and immutable deadline through desktop/mobile injected bridge tests. Validate cancellation success against the endpoint contract: only cancelled is a committed cancellation receipt. Preserve accepted cancelled invitation state across later reads, including waiting, ready, expired and unavailable responses; no cancelled-to-ready recovery resume or polling may occur. Exercise actual creator cancellation button and subsequent bridge reads at desktop/mobile widths. Make the retained waiting harness polling jitter deterministic alongside its injected clock. Pin race-start response validation to the private issued command and retained accepted challenge preview. Rewritten public challenge identity, opponent name or recorded target must not authorize contradictory starts; creator commands without challenge selection must remain valid when UI fields change. Privately retain direct-entry/provider previews across unrelated snapshot updates and expose only copies for start validation. Verify actual rendered acceptance and creator controls at desktop/mobile widths. Pin default acceptance of provider-matched challenges to their privately retained preview identity before issuing the start command. Public active-ID changes cannot retarget a provider match. Verify provider name/time poisoning rejection, valid matches and explicit different-recording selection without inheriting a preceding preview. Exercise real discovery and rendered Accept Challenge at desktop/mobile widths. Revalidate all 57 retained multiplayer browser gates together after private entry, waiting, cancellation, start selection and provider acceptance changes. Run complete current client/core suites, Node22 backend preparation/types/lint and isolated demo Firestore race coverage, retaining exact captured-file stability evidence. Preserve global full-source and accepted-revision requirements before any automatic dashboard completion receipt. Require direct and provider challenge start categories to match their privately accepted preview, even when public preview category is rewritten. Correct recording ID, role and opponent alone cannot authorize another category. Verify real rendered acceptance for mismatched, rewritten and valid category responses at desktop/mobile widths.",
+    "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "completedAt": "2026-10-24T02:33:18.220Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "node22-backend-build-and-operator-safeguards",
+      "node22-isolated-backend-race-coverage",
+      "backend-types",
+      "client-race-recovery",
+      "backend-lint",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations",
+      "full-core-tests",
+      "portal-types",
+      "injected-event-aggregate-browser",
+      "client-firebase-target-routing",
+      "retained-rule-ownership-browser",
+      "retained-checkpoint-isolation-browser",
+      "injected-timeout-reload-browser",
+      "injected-first-resume-browser",
+      "injected-private-outcome-browser",
+      "injected-private-command-ownership-browser",
+      "injected-pending-answer-recovery-browser",
+      "injected-known-answer-feedback-browser",
+      "injected-known-answer-reveals-browser",
+      "injected-answer-free-checkpoints-browser",
+      "injected-paid-draft-checkpoints-browser",
+      "timeout-receipt-and-calibration-contracts",
+      "injected-provider-record-recovery-browser",
+      "injected-provider-record-deadline-browser",
+      "injected-responsive-hub-navigation-browser",
+      "injected-provider-capability-recovery-browser",
+      "race-draft-reload-browser",
+      "browser-player-state-deletion",
+      "complete-client-suite",
+      "abandoned-race-entry-browser",
+      "provider-confirmed-outcome-browser",
+      "race-keyboard-activation-browser",
+      "race-draft-cleanup-browser",
+      "race-overlay-ownership-browser",
+      "race-dialog-keyboard-ownership-browser",
+      "race-quit-focus-recovery-browser",
+      "race-quit-focus-containment-browser",
+      "race-resume-selection-browser",
+      "race-resume-read-observation-browser",
+      "race-search-journal-observation-browser",
+      "race-analytics-delivery-browser",
+      "race-offline-delivery-browser",
+      "race-profile-refresh-browser",
+      "race-prefetch-ownership-browser",
+      "race-rendered-entry-ownership-browser",
+      "race-provider-rendered-cache-browser",
+      "race-dialog-adapter-ownership-browser",
+      "race-prefetch-development-strict-browser",
+      "race-profile-refresh-development-strict-browser",
+      "race-dialog-adapter-development-strict-browser",
+      "race-session-browser-resource-ownership",
+      "race-matchmaking-removal-browser",
+      "race-discovery-provider-ownership-browser",
+      "race-discovery-storage-ownership-browser",
+      "race-discovery-callback-ownership-browser",
+      "race-discovery-prompt-cancellation-browser",
+      "race-retired-search-recovery-browser",
+      "race-retirement-shared-journal-browser",
+      "race-visibility-retirement-browser",
+      "race-visibility-retirement-development-strict-browser",
+      "invitation-callable-recovery-contracts",
+      "race-existing-attempt-authority-browser",
+      "race-private-entry-selection-browser",
+      "race-existing-opponent-authority-browser",
+      "race-private-creator-acceptance-browser",
+      "race-entry-effect-ownership-browser",
+      "race-waiting-selection-browser",
+      "race-cancellation-receipt-browser",
+      "race-start-selection-authority-browser",
+      "race-provider-start-selection-browser",
+      "race-start-category-authority-browser"
+    ],
+    "checks": [
+      {
+        "id": "node22-backend-build-and-operator-safeguards",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage; current-source check at 2026-10-24T02:05:23.393Z; output artifacts/development-checks/goal-20261024-final5c-preparation/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-012-3ac3cd8ad7a4d48cac682dd30e6c3f8cc86e54a9ac49590e4a8ac3e66cc10a6c.log SHA-256 3ac3cd8ad7a4d48cac682dd30e6c3f8cc86e54a9ac49590e4a8ac3e66cc10a6c"
+      },
+      {
+        "id": "node22-isolated-backend-race-coverage",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore,database --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand; current-source check at 2026-10-24T02:15:17.962Z; output artifacts/development-checks/goal-20261024-backend-final5c-backend/013.log SHA-256 5d61be8633f6279cf7056ad17cd5d67609f03b94c03b4264da657fcdad48ad31"
+      },
+      {
+        "id": "backend-types",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types; current-source check at 2026-10-24T02:02:50.944Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-014-971a1b57d55545f85ea5d7464171dff050e55a4c2ff340067825fa4b22972677.log SHA-256 971a1b57d55545f85ea5d7464171dff050e55a4c2ff340067825fa4b22972677"
+      },
+      {
+        "id": "client-race-recovery",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; current-source check at 2026-10-24T02:03:08.274Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-015-75005311655c0c9249cffd1fdf458f2e3abfbee9a13b70e3d765f66f48e7bb21.log SHA-256 75005311655c0c9249cffd1fdf458f2e3abfbee9a13b70e3d765f66f48e7bb21"
+      },
+      {
+        "id": "backend-lint",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint; current-source check at 2026-10-24T02:03:15.555Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-016-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log SHA-256 802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-007-faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5.log SHA-256 faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-002-4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c.log SHA-256 4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-008-7a81b13c947b5d213469c10c7f9b568eae775ea672d37f7157c04a40ea05aee6.log SHA-256 7a81b13c947b5d213469c10c7f9b568eae775ea672d37f7157c04a40ea05aee6"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-009-7b3afb7836602e696ca81c01d4e980e302d988e27ce63adfbaf9a5a513e31b21.log SHA-256 7b3afb7836602e696ca81c01d4e980e302d988e27ce63adfbaf9a5a513e31b21"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-010-0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee.log SHA-256 0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-011-a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770.log SHA-256 a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770"
+      },
+      {
+        "id": "full-core-tests",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/core test --runInBand; current-source check at 2026-10-24T02:03:18.594Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-017-5ed5c443335c2cdc4709f95a4aa0654bc3ce9206b339c5a2baf7cd9033a5d390.log SHA-256 5ed5c443335c2cdc4709f95a4aa0654bc3ce9206b339c5a2baf7cd9033a5d390"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-24T02:05:43.046Z; output artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-001-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "injected-event-aggregate-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-event-aggregate-browser.mjs; current-source check at 2026-10-24T02:02:05.642Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/018.log SHA-256 260328d50efec5157ce993f774afefaa2e9dd81595e4dbf14c63cb5c154fb08c"
+      },
+      {
+        "id": "client-firebase-target-routing",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts; current-source check at 2026-10-24T02:03:20.952Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-019-dc5747c4fac6f848f979b867adb976a31793e1104d42cad8d65b5dbfa3078008.log SHA-256 dc5747c4fac6f848f979b867adb976a31793e1104d42cad8d65b5dbfa3078008"
+      },
+      {
+        "id": "retained-rule-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rule-ownership-browser.mjs; current-source check at 2026-10-24T02:02:10.744Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/020.log SHA-256 844ad9e90c441a844fef3b4edd928740302ffb60f865229e1f54887edc77baae"
+      },
+      {
+        "id": "retained-checkpoint-isolation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs; current-source check at 2026-10-24T02:02:25.785Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/021.log SHA-256 76165e8a3bcca1b2c2326541fc600b7025cf319f99c99ea5bd18b3a5a6f42df2"
+      },
+      {
+        "id": "injected-timeout-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-timeout-recovery-browser.mjs; current-source check at 2026-10-24T02:02:28.660Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/022.log SHA-256 012b8463c8252d509c794db680501ade4c63eaba29c02f6080393d2d6afa37db"
+      },
+      {
+        "id": "injected-first-resume-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-startup-recovery-browser.mjs; current-source check at 2026-10-24T02:02:33.217Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/023.log SHA-256 2f3df26f9b0c359d81ff75e9577c1163fa5d981c6c3b47160fe8dde74600eabf"
+      },
+      {
+        "id": "injected-private-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-outcome-isolation-browser.mjs; current-source check at 2026-10-24T02:02:36.273Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/024.log SHA-256 60451136d43bd9571d995a8564182e6f95656ac8bba476df95d7ef5050635bff"
+      },
+      {
+        "id": "injected-private-command-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-command-ownership-browser.mjs; current-source check at 2026-10-24T02:02:43.090Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/025.log SHA-256 8809066444b29a2e09dcc1a9e18089bb5794c09557ccfeb2b258a1d631bdd2a1"
+      },
+      {
+        "id": "injected-pending-answer-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-pending-input-browser.mjs; current-source check at 2026-10-24T02:02:48.513Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/026.log SHA-256 882f4a4a2e0d2a0b67ba99e02692375a44864900ed1485b1b82a098a06768633"
+      },
+      {
+        "id": "injected-known-answer-feedback-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs; current-source check at 2026-10-24T02:03:04.981Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/027.log SHA-256 8586984b3c17071caa99a67b58ddfbf7da824903e802fd7fd24c20f4eb8a407d"
+      },
+      {
+        "id": "injected-known-answer-reveals-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs; current-source check at 2026-10-24T02:03:11.634Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/028.log SHA-256 a60fda705d76c57c4ac4893340baf08ff178227b60b70a740b1773448d46b36b"
+      },
+      {
+        "id": "injected-answer-free-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs; current-source check at 2026-10-24T02:03:19.950Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/029.log SHA-256 cb4c57fbf83e37baec24a060ecd2fab002f8ff5dabd7a93e5fd57d39edaaa72a"
+      },
+      {
+        "id": "injected-paid-draft-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs; current-source check at 2026-10-24T02:03:40.285Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/030.log SHA-256 343ab2199381cdc7958293787edcf60cb0a5130f103ac7f5a79085bfca1522a8"
+      },
+      {
+        "id": "timeout-receipt-and-calibration-contracts",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts; current-source check at 2026-10-24T02:15:19.110Z; output artifacts/development-checks/goal-20261024-backend-final5c-backend/031.log SHA-256 b12537a9d18a96e7dcdc2475d5b4a9a39467c6e1ce3abd5ce393f4070606e455"
+      },
+      {
+        "id": "injected-provider-record-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs; current-source check at 2026-10-24T02:03:43.891Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/032.log SHA-256 2ac4794c74f0bd9083ee04bc1301ad6a73d51764b37fadf0aec8bda1d19478df"
+      },
+      {
+        "id": "injected-provider-record-deadline-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs; current-source check at 2026-10-24T02:03:50.467Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/033.log SHA-256 6592dc0838317e2d2fdf18f157bbaefafa54ea2f371083918e8964444a55558c"
+      },
+      {
+        "id": "injected-responsive-hub-navigation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hub-navigation-browser.mjs; current-source check at 2026-10-24T02:03:56.857Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/034.log SHA-256 319cb0f3c9b86673dc9c0ba28a097a482a4ac0e1a10946ddba606776edfa3cb1"
+      },
+      {
+        "id": "injected-provider-capability-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-capability-browser.mjs; current-source check at 2026-10-24T02:04:02.317Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/035.log SHA-256 23791604ba062b66dd921d99ec296933b56d8367dbee3c508417485a47b8314d"
+      },
+      {
+        "id": "race-draft-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-reload-browser.mjs; current-source check at 2026-10-24T02:05:03.944Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/036.log SHA-256 25f12e8a9dc7b8aaecfe6814056d0ab77584230427d11751efc1c543ba9a31ab"
+      },
+      {
+        "id": "browser-player-state-deletion",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=playerPreferences.test.ts; current-source check at 2026-10-24T02:03:23.096Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-037-2838e6f01cc73efeaa4d8eb0ee7f8a8d1ac644dd89bb2e0333471b5fada9ee35.log SHA-256 2838e6f01cc73efeaa4d8eb0ee7f8a8d1ac644dd89bb2e0333471b5fada9ee35"
+      },
+      {
+        "id": "complete-client-suite",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand; current-source check at 2026-10-24T02:03:40.065Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-038-da970e55e1d79c60fca9cae69611fdc2012c5a243ab6744c385edffc7281e89e.log SHA-256 da970e55e1d79c60fca9cae69611fdc2012c5a243ab6744c385edffc7281e89e"
+      },
+      {
+        "id": "abandoned-race-entry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-abandoned-entry-browser.mjs; current-source check at 2026-10-24T02:05:21.281Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/039.log SHA-256 4e103fa42e8cb00aff9663b8ef6733cb620c8d71fd873139ddc6948d949b3014"
+      },
+      {
+        "id": "provider-confirmed-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs; current-source check at 2026-10-24T02:05:24.498Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/040.log SHA-256 f2fddc09cb1339ace45be9b02d9e8b7dff652642adf1eb75ae4b299b5df3cba4"
+      },
+      {
+        "id": "race-keyboard-activation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-keyboard-activation-browser.mjs; current-source check at 2026-10-24T02:05:32.742Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/041.log SHA-256 a12a96e2f3d1ad3fa80616dd5e590325ce1ae2709d1689255ae66a28d017ba2f"
+      },
+      {
+        "id": "race-draft-cleanup-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-cleanup-browser.mjs; current-source check at 2026-10-24T02:05:51.753Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/042.log SHA-256 c8fdad818f2978bfb299a8a87b510bc5f078fe9f1061a46d67540c0a17bb2afa"
+      },
+      {
+        "id": "race-overlay-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-overlay-ownership-browser.mjs; current-source check at 2026-10-24T02:05:56.801Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/043.log SHA-256 8d4459f769a764b3d6f1e6ba919edd9a9db19e9556bfacc94f5249145c4d0d17"
+      },
+      {
+        "id": "race-dialog-keyboard-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs; current-source check at 2026-10-24T02:05:59.860Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/044.log SHA-256 9deda62777bd2285bd1113389beb81ac3d5eba0757721a6e0800745ff7c0c7d9"
+      },
+      {
+        "id": "race-quit-focus-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs; current-source check at 2026-10-24T02:06:02.570Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/045.log SHA-256 e3772615a1e3e2ef697ebe76ea46c2513410df52b5c1d813ebab4d58d4be54d0"
+      },
+      {
+        "id": "race-quit-focus-containment-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs; current-source check at 2026-10-24T02:06:04.954Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/046.log SHA-256 3e39aa8c75aa500b0618f87927e9e4c946b4c6d6bc0f18cf87e865079bb2fad7"
+      },
+      {
+        "id": "race-resume-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-selection-browser.mjs; current-source check at 2026-10-24T02:06:06.333Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/047.log SHA-256 6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6"
+      },
+      {
+        "id": "race-resume-read-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-read-observation-browser.mjs; current-source check at 2026-10-24T02:06:07.936Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/048.log SHA-256 6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6"
+      },
+      {
+        "id": "race-search-journal-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-search-journal-observation-browser.mjs; current-source check at 2026-10-24T02:06:09.329Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/049.log SHA-256 15b81b00018ef1f9de4098f3d275c90d25b7a273790ee2c1c934ba7e332d42b2"
+      },
+      {
+        "id": "race-analytics-delivery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-analytics-delivery-browser.mjs; current-source check at 2026-10-24T02:06:12.560Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/050.log SHA-256 245751c078089b4fb91d44b009790ea14dc5bb96ac5af01ed03c210233e13185"
+      },
+      {
+        "id": "race-offline-delivery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-offline-delivery-browser.mjs; current-source check at 2026-10-24T02:06:15.281Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/051.log SHA-256 e6c5aa3ec7495c7aed52a46cd0efc9ec8ceaeed4a9b8fc969ba8f6cdb76078d7"
+      },
+      {
+        "id": "race-profile-refresh-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-profile-refresh-browser.mjs; current-source check at 2026-10-24T02:06:17.592Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/052.log SHA-256 4fa98292b5c48f45c874ee4660d8c4acd18cbbb4b8e062a95ade63b3380f7137"
+      },
+      {
+        "id": "race-prefetch-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-prefetch-browser.mjs; current-source check at 2026-10-24T02:06:23.845Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/053.log SHA-256 37cc0a8b17a60affe32070a7dedd211036bff370bab928ec153569cf78290194"
+      },
+      {
+        "id": "race-rendered-entry-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rendered-entry-browser.mjs; current-source check at 2026-10-24T02:06:28.336Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/054.log SHA-256 54e6c2a3e7fa897d759744de9ad8848e0a37965815d29eabf3cb1a1cd62c84bc"
+      },
+      {
+        "id": "race-provider-rendered-cache-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs; current-source check at 2026-10-24T02:06:34.707Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/055.log SHA-256 85a5571ffd203d43dfc2bd726baa0a64deacf129926cbee6568fa0e0edf28270"
+      },
+      {
+        "id": "race-dialog-adapter-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs; current-source check at 2026-10-24T02:06:46.053Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/056.log SHA-256 2dc8fc7be1c71871f921b64f8fa0e92795c77e1df85528f26b1ce6970be7b1ad"
+      },
+      {
+        "id": "race-prefetch-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-prefetch-browser.mjs; current-source check at 2026-10-24T02:06:53.845Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/057.log SHA-256 f8b390bb18bf1e61dda3ecff1f13f60546bc59be38621800ae66963cde161e92"
+      },
+      {
+        "id": "race-profile-refresh-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-profile-refresh-browser.mjs; current-source check at 2026-10-24T02:06:56.444Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/058.log SHA-256 e4a124efe83a69fcd4c7cb15c0a78c95d2339afea83280b75aa0c1610075391d"
+      },
+      {
+        "id": "race-dialog-adapter-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs; current-source check at 2026-10-24T02:07:07.972Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/059.log SHA-256 025bd1592b1b548d04b246afc0a0728080806e8d515dbc6f3bb8dd9d7428f39d"
+      },
+      {
+        "id": "race-session-browser-resource-ownership",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-session-resources-browser.mjs; current-source check at 2026-10-24T02:07:14.298Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/060.log SHA-256 01796502405fb21b0fcf89c8830580c5555a13fd95dd317620f97774f01a4774"
+      },
+      {
+        "id": "race-matchmaking-removal-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs; current-source check at 2026-10-24T02:07:19.148Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/061.log SHA-256 858c2081fba3bba56ff9624a2d3ef04a739912e0bcb6e0e74d54305e6762128a"
+      },
+      {
+        "id": "race-discovery-provider-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-provider-browser.mjs; current-source check at 2026-10-24T02:07:24.064Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/062.log SHA-256 ff4a29e784969f1e48fb42de88a052c2654fbbacaf395fa08722f961641c9286"
+      },
+      {
+        "id": "race-discovery-storage-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-browser.mjs; current-source check at 2026-10-24T02:07:25.321Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/063.log SHA-256 8fbcd9e375c4a78d74234b6d8bccf85e401d9eba102c1902744b095d35c191a6"
+      },
+      {
+        "id": "race-discovery-callback-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-callback-browser.mjs; current-source check at 2026-10-24T02:07:28.502Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/064.log SHA-256 cd6510174b47f6e7511ee5be2b6ce1269a4e11e6d1569d63037d0919fe37c2c1"
+      },
+      {
+        "id": "race-discovery-prompt-cancellation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs; current-source check at 2026-10-24T02:07:31.223Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/065.log SHA-256 2e0e72f296cc30490fbbeaba6b1d5600240bfe53a5b25875b533f0fe7e3b572a"
+      },
+      {
+        "id": "race-retired-search-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-retired-search-browser.mjs; current-source check at 2026-10-24T02:07:33.485Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/066.log SHA-256 8f78c79aa04de8fee503129c308fb5e1527e79676dd3bc4d3062d9af0291c484"
+      },
+      {
+        "id": "race-retirement-shared-journal-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-retirement-journal-browser.mjs; current-source check at 2026-10-24T02:07:47.703Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/067.log SHA-256 6656f840ecb74755da11a878b150d3384c499e65d2ee2bb1e37854bd76d3f20a"
+      },
+      {
+        "id": "race-visibility-retirement-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs; current-source check at 2026-10-24T02:07:53.128Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/068.log SHA-256 117bda075a3b2572a48e703fc7fa2c3a843a440fe566d514d3d28e0ab9dd7a75"
+      },
+      {
+        "id": "race-visibility-retirement-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs; current-source check at 2026-10-24T02:07:59.030Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/069.log SHA-256 cbb12726397b159184db9215603f4f0c99900c71e60c65ab96a670170ac9ae92"
+      },
+      {
+        "id": "invitation-callable-recovery-contracts",
+        "status": "passed",
+        "evidence": "env GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIRESTORE_EMULATOR_HOST=127.0.0.1:18199 PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceCallables.test.ts; current-source check at 2026-10-24T02:15:20.447Z; output artifacts/development-checks/goal-20261024-backend-final5c-backend/070.log SHA-256 9a19494048210106514cea01e2001f7938ad3a4fd725a84b3c4659195b81886e"
+      },
+      {
+        "id": "race-existing-attempt-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-existing-attempt-browser.mjs; current-source check at 2026-10-24T02:08:00.902Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/071.log SHA-256 2dd3b5d018891b38943667492ce66137b8291fdb5962b13ea1b2c3ae2204ad11"
+      },
+      {
+        "id": "race-private-entry-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-private-entry-browser.mjs; current-source check at 2026-10-24T02:08:02.703Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/072.log SHA-256 d7833b9dcb0c835b482a1c47859c60e250d45e90c47c68ee12ab6cc432487bd0"
+      },
+      {
+        "id": "race-existing-opponent-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-existing-opponent-browser.mjs; current-source check at 2026-10-24T02:08:04.730Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/073.log SHA-256 93d0acb1fdd8bfa51aa33a9d7cee8ef214cb49d4ab54e8c3b45b16ab8a30610e"
+      },
+      {
+        "id": "race-private-creator-acceptance-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-private-creator-browser.mjs; current-source check at 2026-10-24T02:08:06.761Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/074.log SHA-256 bd4d770214db2402f4dbe8da4441569b281eb9b0bf150f9b55925ce8ab781ae8"
+      },
+      {
+        "id": "race-entry-effect-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-entry-effect-browser.mjs; current-source check at 2026-10-24T02:08:08.420Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/075.log SHA-256 e2d3e4504cc3d420542a68f940d8ee78f17ca5bef75462df12f8ee75b9324454"
+      },
+      {
+        "id": "race-waiting-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-waiting-selection-browser.mjs; current-source check at 2026-10-24T02:08:10.725Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/076.log SHA-256 e795b4413abf8f0732c3d17807443bbc9de61568439551968a02d6e7a1267947"
+      },
+      {
+        "id": "race-cancellation-receipt-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs; current-source check at 2026-10-24T02:08:13.752Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/077.log SHA-256 e373b8c929534fef21fb4e74d5ed3c682fba7797ba0a70ad742d297855917527"
+      },
+      {
+        "id": "race-start-selection-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-selection-browser.mjs; current-source check at 2026-10-24T02:08:15.909Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/078.log SHA-256 796cd9db59a55aaebdd9e084ffdd2836a99892224ef13d3c25f37e77c360de6d"
+      },
+      {
+        "id": "race-provider-start-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-start-browser.mjs; current-source check at 2026-10-24T02:08:18.043Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/079.log SHA-256 78654e1748b39667a1c687376613d805484675d9ea2666ad14cc4e1e7675451e"
+      },
+      {
+        "id": "race-start-category-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-category-browser.mjs; current-source check at 2026-10-24T02:08:20.505Z; output artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/080.log SHA-256 e1b84608f22590dd122b258aab2ccb6dfe5369bab03e0ce0d05a87f44061d305"
+      }
+    ],
+    "remainingGates": [
+      "The ongoing multiplayer edge-case and reliability audit remains active.",
+      "Jest build activation is authorized; game publication, review submission and listing visibility remain on hold. Firebase Functions deployment is authorized but this verification does not deploy."
+    ],
+    "nextAction": "Continue the multiplayer reliability audit; preserve Jest game publication hold and deployment verification requirements.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "e988ab1ad24e11705973e94eece37f955cd5ab11be025d8965c7576f4baeb47e"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "f20057458f52b6f3762e138112c987f7380d367de421ed50b3945a585b42f9de"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "01064746ef43a1c5b0269fcab32b5e184e6f2ba263f5a223859d221c84a837b5"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "7dc0bc9c3f6ddfdd2a3ce4c8b99d843bc3b6b1a370311605ffb8a7914f395d4c"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "0d5e6c78a5af124e2f4d97fbf03bcbb7b9b72873790b84c7ece7a83cf79292ff"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "263d7931384c5a12b4b09a27889a06f93af9d0d5aa65f7fc31a6547ffc839509"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "f7646bac3d171c9a4523221649e4275e320c0acbb564263e8c1500eb9d6e4e9f"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

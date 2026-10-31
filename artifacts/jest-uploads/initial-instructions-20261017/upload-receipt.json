@@ -1,0 +1,22 @@
+{
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "version": "1.0.0-dev.20261017143639.instructions",
+  "snapshotCommit": "db9454dde00b44c64902828ac2c0e3e740447039",
+  "archiveSha256": "407f463e7c5c5e1d1bf0aae55432fd3b5641616d85821d658b4968d3531d08ab",
+  "archiveBytes": 2871723,
+  "activationRequested": false,
+  "testsRun": false,
+  "state": "accepted",
+  "startedAt": "2026-10-17T14:36:51.289Z",
+  "requestStartedAt": "2026-10-17T14:36:56.829Z",
+  "httpStatus": 202,
+  "response": {
+    "versionId": "01a14a4b-66d3-747b-9533-20ddc039a46d",
+    "buildStatus": "processing"
+  },
+  "buildStatus": "ready",
+  "isActive": false,
+  "completedAt": "2026-10-17T14:42:34.518387+00:00",
+  "previewUrl": "https://jest.com/g/riddle-q?versionId=01a14a4b-66d3-747b-9533-20ddc039a46d"
+}

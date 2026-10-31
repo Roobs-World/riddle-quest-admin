@@ -1,0 +1,6 @@
+Test Suites: 1 passed, 1 total
+Tests:       49 passed, 49 total
+Snapshots:   0 total
+Time:        0.521 s
+Ran all test suites within paths "src/__tests__/jestEndpoints.test.ts".
+Test results written to: ../artifacts/jest-e2e-2026-10-22/multiplayer/referral-selection-results.json

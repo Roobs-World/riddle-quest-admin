@@ -1,6 +1,8 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import type {BridgeProfile, BridgeRiddle} from "@qwordly/core/bridge";
 import type {GameSessionState} from "../gameSessionTypes";
+import {CompleteGameOutputSchema} from "@qwordly/core/validation";
+import {parseCompletionRewardBreakdown} from "../completionRewardBreakdown";
 
 /** Provides mock use memo behavior. */
 const mockUseMemo = (factory: () => unknown) => factory();
@@ -402,4 +404,145 @@ it("records a win reward without layering a coin notice onto the victory result"
   );
   expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({type: "setNotice"}));
   expect(requestRiddle).not.toHaveBeenCalled();
+});
+
+/** Real settled receipt explains the Daily base and independently awarded bonuses. */
+const itemizedCompletion = {attempts: 1, isCorrect: true, coinsEarned: 115, newlyUnlockedAchievementIds: [],
+  rewardBreakdown: {baseWinCoins: 75, levelUpBonus: 10, dailyStreakBonus: 10, achievementBonus: 20,
+    totalAwarded: 115, newBalance: 415}};
+
+/** The canonical transport contract determines which receipt fields the display boundary must require. */
+const canonicalBreakdownSchema = CompleteGameOutputSchema.shape.rewardBreakdown.unwrap();
+/** Required fields are derived so a future canonical addition cannot silently bypass the display parser. */
+const requiredReceiptFields = Object.entries(canonicalBreakdownSchema.shape)
+  .filter(([, field]) => !field.safeParse(undefined).success).map(([field]) => field);
+
+it.each(requiredReceiptFields)("keeps display admission aligned with canonical required coin field %s", field => {
+  expect(canonicalBreakdownSchema.safeParse(itemizedCompletion.rewardBreakdown).success).toBe(true);
+  expect(parseCompletionRewardBreakdown(itemizedCompletion.rewardBreakdown, 115)).toEqual({baseWinCoins: 75,
+    levelUpBonus: 10, dailyStreakBonus: 10, achievementBonus: 20, totalAwarded: 115, newBalance: 415});
+  /** Missing and negative field values violate the actual transport contract as well as display admission. */
+  const missing = Object.fromEntries(Object.entries(itemizedCompletion.rewardBreakdown).filter(([key]) => key !== field));
+  /** Coin fields must remain nonnegative in both the canonical and display boundaries. */
+  const negative = {...itemizedCompletion.rewardBreakdown, [field]: -1};
+  for (const malformed of [missing, negative]) {
+    expect(canonicalBreakdownSchema.safeParse(malformed).success).toBe(false);
+    expect(parseCompletionRewardBreakdown(malformed, 115)).toBeUndefined();
+  }
+});
+
+it("preserves the canonical optional referral field while requiring whole display amounts", () => {
+  /** A complete referral receipt remains accepted by both boundaries without invented components. */
+  const referral = {...itemizedCompletion.rewardBreakdown, referralBonus: 10, totalAwarded: 125};
+  expect(canonicalBreakdownSchema.safeParse(referral).success).toBe(true);
+  expect(parseCompletionRewardBreakdown(referral, 125)).toEqual({baseWinCoins: 75, levelUpBonus: 10,
+    dailyStreakBonus: 10, achievementBonus: 20, referralBonus: 10, totalAwarded: 125, newBalance: 415});
+  /** Presentation is deliberately stricter than transport for fractional values that cannot be whole coins. */
+  const fractional = {...itemizedCompletion.rewardBreakdown, baseWinCoins: 75.5, achievementBonus: 19.5};
+  expect(canonicalBreakdownSchema.safeParse(fractional).success).toBe(true);
+  expect(parseCompletionRewardBreakdown(fractional, 115)).toBeUndefined();
+});
+
+it("rejects an array carrying named receipt properties just as the canonical object boundary does", () => {
+  expect(parseCompletionRewardBreakdown(itemizedCompletion.rewardBreakdown, 115)?.totalAwarded).toBe(115);
+  /** Named array properties must not turn a non-object transport value into an accepted receipt. */
+  const array = Object.assign([], itemizedCompletion.rewardBreakdown);
+  expect(canonicalBreakdownSchema.safeParse(array).success).toBe(false);
+  expect(parseCompletionRewardBreakdown(array, 115)).toBeUndefined();
+});
+
+/** Routes completion receipts into real reducer state, including its acknowledgement and replacement rules. */
+function createCompletionDeliveryHarness() {
+  /** Current issued question and wallet belong to this player. */
+  const stateRef = {current: gameSessionReducer(gameSessionReducer(createInitialGameSession(), {type: "hostInit",
+    locale: "en", gameMode: "classic", user: {uid: "receipt-player", isAnonymous: false, accountGeneration: 1},
+    profile: repeatedProfile, products: []}), {type: "loadRiddle",
+    riddle: repeatedRiddle, profile: repeatedProfile})};
+  for (const letter of "PIANO") stateRef.current = gameSessionReducer(stateRef.current, {type: "typeLetter", letter});
+  stateRef.current = gameSessionReducer(stateRef.current, {type: "guessRequested"});
+  stateRef.current = gameSessionReducer(stateRef.current, {type: "guessResolved", attempts: 1, isCorrect: true,
+    gameOver: true, canContinue: false, feedback: {guess: [..."piano"], feedback: ["green", "green", "green", "green", "green"]}});
+  /** The delivery owner can reject a late receipt after its question has been superseded. */
+  let currentCompletion = true;
+  /** All bridge results run the production parsing and state transition. */
+  const router = useGameMessageRouter({stateRef,
+    dispatch: action => {stateRef.current = gameSessionReducer(stateRef.current, action);},
+    postToHost: jest.fn(), requestRiddle: jest.fn(), onCompletionResult: () => {
+      if (currentCompletion) stateRef.current = gameSessionReducer(stateRef.current, {type: "completionAcknowledged"});
+      return currentCompletion;
+    }});
+  return {stateRef, retire: () => {currentCompletion = false;},
+    deliver: (data: unknown) => router({type: "host:operationResult", requestId: "owned-completion",
+      payload: {operation: "completeGame", ok: true, data}})};
+}
+
+it("retains stable itemization across receipt replay without applying a historical balance", async () => {
+  /** This matching win still owns every receipt delivery. */
+  const owner = createCompletionDeliveryHarness();
+  await owner.deliver(itemizedCompletion);
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown).toEqual({baseWinCoins: 75, levelUpBonus: 10,
+    dailyStreakBonus: 10, achievementBonus: 20, totalAwarded: 115, newBalance: 415});
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "coinsUpdated", newCoins: 900});
+  await owner.deliver(structuredClone(itemizedCompletion));
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown).toEqual({baseWinCoins: 75, levelUpBonus: 10,
+    dailyStreakBonus: 10, achievementBonus: 20, totalAwarded: 115, newBalance: 415});
+  expect(owner.stateRef.current.profile?.coins).toBe(900);
+  expect(owner.stateRef.current.completionAcknowledged).toBe(true);
+});
+
+it.each<unknown>([
+  undefined, {newBalance: 415, totalAwarded: 115},
+  {...itemizedCompletion.rewardBreakdown, baseWinCoins: -1},
+  {...itemizedCompletion.rewardBreakdown, achievementBonus: NaN},
+  {...itemizedCompletion.rewardBreakdown, newBalance: Infinity},
+  {...itemizedCompletion.rewardBreakdown, baseWinCoins: 75.5, achievementBonus: 19.5},
+  {...itemizedCompletion.rewardBreakdown, newBalance: Number.MAX_SAFE_INTEGER + 1},
+  {...itemizedCompletion.rewardBreakdown, baseWinCoins: 25},
+  {...itemizedCompletion.rewardBreakdown, totalAwarded: 195},
+])("replaces prior details with a total-only result when receipt components are absent or malformed: %j", async rewardBreakdown => {
+  /** A valid first delivery makes stale itemization observable if replacement is broken. */
+  const owner = createCompletionDeliveryHarness();
+  await owner.deliver(itemizedCompletion);
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown?.baseWinCoins).toBe(75);
+  await owner.deliver({...itemizedCompletion, rewardBreakdown});
+  expect(owner.stateRef.current.lastRewards?.coinsEarned).toBe(115);
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown).toBeUndefined();
+});
+
+it.each([false, true])("omits win itemization for loss or superseded zero-reward correctness %s", async isCorrect => {
+  /** The same receipt slot previously displayed a successful reward. */
+  const owner = createCompletionDeliveryHarness();
+  await owner.deliver(itemizedCompletion);
+  expect(owner.stateRef.current.lastRewards?.coinsEarned).toBe(115);
+  await owner.deliver({...itemizedCompletion, coinsEarned: 0, isCorrect, rewardBreakdown: undefined});
+  expect(owner.stateRef.current.lastRewards?.coinsEarned).toBe(0);
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown).toBeUndefined();
+});
+
+it("retires receipt details on question change and ignores a previous question's late replay", async () => {
+  /** The current question has a confirmed itemized award before advancing. */
+  const owner = createCompletionDeliveryHarness();
+  await owner.deliver(itemizedCompletion);
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown?.totalAwarded).toBe(115);
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "closeModal"});
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "loadRiddle",
+    riddle: {...repeatedRiddle, riddleId: "next-question", sessionToken: "00000000-0000-4000-8000-000000000002", index: 2}});
+  owner.retire();
+  await owner.deliver(itemizedCompletion);
+  expect(owner.stateRef.current.riddle?.riddleId).toBe("next-question");
+  expect(owner.stateRef.current.lastRewards).toBeNull();
+});
+
+it("clears receipt details when the account generation changes", async () => {
+  /** An established player owns the completed reward record. */
+  const owner = createCompletionDeliveryHarness();
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "authState",
+    user: {uid: "receipt-player", isAnonymous: false, accountGeneration: 1}, profile: repeatedProfile});
+  await owner.deliver(itemizedCompletion);
+  expect(owner.stateRef.current.lastRewards?.rewardBreakdown?.totalAwarded).toBe(115);
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "authState",
+    user: {uid: "receipt-player", isAnonymous: false, accountGeneration: 2}, profile: {...repeatedProfile, coins: 250}});
+  expect(owner.stateRef.current.profile?.coins).toBe(250);
+  expect(owner.stateRef.current.lastRewards).toBeNull();
+  expect(owner.stateRef.current.riddle).toBeNull();
 });

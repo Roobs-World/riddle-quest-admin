@@ -12,7 +12,7 @@ assert.ok(['development','production'].includes(mode));
 const baseline=process.env.CLASSIC_PREPARATION_BASELINE_DIR;
 const sessionBaseline=process.env.CLASSIC_PREPARATION_SESSION_BASELINE_DIR;
 const guidanceBaseline=process.env.CLASSIC_PREPARATION_GUIDANCE_BASELINE_DIR;
-const output=path.resolve(process.env.CLASSIC_PREPARATION_REPORT_DIR??path.join(root,'../../artifacts/classic-question-preparation-2026-10-05',mode));
+const output=path.resolve(process.env.CLASSIC_PREPARATION_REPORT_DIR??path.join(root,'../../builds/test-evidence/classic-question-preparation-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/classic-preparation-'));
 let server,browser;const observations=[];

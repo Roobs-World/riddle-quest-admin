@@ -1,0 +1,20 @@
+{
+  "extends": "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vite/client",
+      "jest",
+      "node"
+    ],
+    "typeRoots": [
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/@types",
+      "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules",
+      "/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/@types+node@26.6.3/node_modules/@types"
+    ]
+  },
+  "include": [
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/jest/__tests__/startupColdRecovery.test.ts",
+    "/home/craig-beswetherick/Documents/riddle-quest/packages/portal/src/jest/__tests__/backend.test.ts"
+  ],
+  "exclude": []
+}

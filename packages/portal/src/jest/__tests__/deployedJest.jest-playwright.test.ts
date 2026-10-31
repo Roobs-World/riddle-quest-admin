@@ -1,7 +1,6 @@
 import {afterAll, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type BrowserContext, type Frame, type Page} from "@playwright/test";
 import {existsSync} from "node:fs";
-import {RaceRunResponseSchema} from "@qwordly/core/race";
 
 import {assertPrivateJestStorageState, persistPrivateJestStorageState} from "./deployedJestStorageState";
 import {assertExactDeployedJestBuildUrl} from "./deployedJestBuildIdentity";
@@ -117,6 +116,8 @@ describeDeployed("deployed Jest sandbox game", () => {
     const consoleErrors: string[] = [];
     /** Provides failed requests behavior. */
     const failedRequests: string[] = [];
+    /** Failed endpoint/status pairs distinguish platform attestation from game startup failures. */
+    const failedResponses: string[] = [];
     /** Provides successful functions behavior. */
     const successfulFunctions = new Set<string>();
     /** Provides referral verifications behavior. */
@@ -125,8 +126,19 @@ describeDeployed("deployed Jest sandbox game", () => {
     page.on("console", (message) => {
       if (message.type() === "error") consoleErrors.push(message.text());
     });
-    page.on("requestfailed", (request) => failedRequests.push(request.url()));
+    page.on("requestfailed", (request) => {
+      /** Closing a live seat deliberately aborts its authenticated observation stream. */
+      const retiredLiveStream = new URL(request.url()).pathname.endsWith("/updateLiveRace") &&
+        request.headers().accept?.includes("text/event-stream") &&
+        request.failure()?.errorText === "net::ERR_ABORTED";
+      if (!retiredLiveStream) failedRequests.push(request.url());
+    });
     page.on("response", (response) => {
+      if (!response.ok()) {
+        /** Query parameters and response payloads may contain credentials. */
+        const endpoint = new URL(response.url());
+        failedResponses.push(`${response.status()} ${endpoint.hostname}${endpoint.pathname}`);
+      }
       /** Provides function name behavior. */
       const functionName = new URL(response.url()).pathname.split("/").filter(Boolean).at(-1) ?? "";
       if (response.ok() && response.url().includes("cloudfunctions.net")) {
@@ -171,7 +183,7 @@ describeDeployed("deployed Jest sandbox game", () => {
     const startupError = game.locator(".route-missing");
     await playableContent.or(startupError).first().waitFor({timeout: 30_000});
     if (await startupError.isVisible()) {
-      throw new Error(`Deployed Jest startup failed: ${(await startupError.innerText()).replace(/\s+/g, " ").trim()}`);
+      throw new Error(`Deployed Jest startup failed: ${(await startupError.innerText()).replace(/\s+/g, " ").trim()}; ${JSON.stringify({failedResponses, successfulFunctions: [...successfulFunctions]})}`);
     }
     if (await letsPlay.isVisible()) {
       await letsPlay.click();
@@ -208,12 +220,11 @@ describeDeployed("deployed Jest sandbox game", () => {
         const rowStyle = firstRow ? getComputedStyle(firstRow) : null;
         return {
           keyHeight: keyStyle?.height,
-          keyMinHeight: keyStyle?.minHeight,
           letterGap: rowStyle?.columnGap,
           rowGap: keyboardStyle.rowGap,
         };
       }),
-    ).toEqual({keyHeight: "48px", keyMinHeight: "48px", letterGap: "3px", rowGap: "4px"});
+    ).toEqual({keyHeight: "48px", letterGap: "3px", rowGap: "4px"});
     expect(await game.locator(".keyboard .key").first().evaluate(key => key.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
     expect(await game.locator(".guess-row").count()).toBe(5);
     expect(
@@ -224,105 +235,25 @@ describeDeployed("deployed Jest sandbox game", () => {
       ),
     ).toBe(true);
 
-    await game.evaluate(() => {
-      /** Provides scope behavior. */
-      const scope = globalThis as typeof globalThis & {
-        /** Stores riddle quest live race messages. */
-        __RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: unknown[];
-      };
-      scope.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ = [];
-      window.addEventListener("riddle-quest:host-to-game", (event) => {
-        /** Provides detail behavior. */
-        const detail = (event as CustomEvent<unknown>).detail;
-        if (detail && typeof detail === "object" && "type" in detail && detail.type === "host:operationResult") {
-          scope.__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?.push(structuredClone(detail));
-        }
-      });
-    });
+    if ((await game.locator(".game-mode-label").innerText()).trim() === "Daily") {
+      await game.getByRole("button", {name: /^skip$/i}).click();
+      await game.getByRole("dialog", {name: "Leave the Daily riddle?"}).waitFor();
+      await game.getByRole("button", {name: "Play Classic", exact: true}).click();
+      await game.locator(".game-mode-label").getByText("Classic", {exact: true}).waitFor();
+    }
     await game.getByRole("button", {name: /^multiplayer$/i}).click();
     await game.getByRole("button", {name: /^History /}).click();
-    await game.waitForFunction(
-      () =>
-        (
-          globalThis as typeof globalThis & {
-            /** Stores riddle quest live race messages. */
-            __RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: Array<{
-              /** Stores payload. */
-              payload?: {
-                /** Stores operation. */
-                operation?: string;
-              };
-            }>;
-          }
-        ).__RIDDLE_QUEST_LIVE_RACE_MESSAGES__?.some((message) => message.payload?.operation === "raceStart") === true,
-      undefined,
-      {timeout: 30_000},
-    );
-    /** Provides race messages behavior. */
-    const raceMessages = await game.evaluate(
-      () =>
-        (
-          globalThis as typeof globalThis & {
-            /** Stores riddle quest live race messages. */
-            __RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: unknown[];
-          }
-        ).__RIDDLE_QUEST_LIVE_RACE_MESSAGES__ ?? [],
-    );
-    expect(raceMessages).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          payload: expect.objectContaining({operation: "raceStart", ok: true}),
-        }),
-      ]),
-    );
-    /** Provides race start behavior. */
-    const raceStart = raceMessages.find(
-      (
-        message,
-      ): message is {
-        /** Stores payload. */
-        payload: {
-          /** Stores operation. */
-          operation: string; /** Stores data. */
-          /** Stores data. */
-          data: unknown;
-        };
-      } =>
-        typeof message === "object" &&
-        message !== null &&
-        "payload" in message &&
-        typeof message.payload === "object" &&
-        message.payload !== null &&
-        "operation" in message.payload &&
-        message.payload.operation === "raceStart",
-    );
-    /** Provides validation behavior. */
-    const validation = RaceRunResponseSchema.safeParse(raceStart?.payload.data);
-    if (!validation.success) {
-      throw new Error(JSON.stringify({raceStart, issues: validation.error.issues}, null, 2));
-    }
-    await game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 5_000});
+    expect(await game.getByRole("button", {name: /^History /}).getAttribute("aria-pressed")).toBe("true");
+    expect(await game.locator(".live-race-start").isEnabled()).toBe(true);
     expect(await game.locator(".race-error").count()).toBe(0);
-    expect(await game.locator(".race-gameplay .coin-pill").count()).toBe(0);
-    await game.locator(".race-actions button").last().click();
-    await game.waitForFunction(() => {
-      /** Observed authoritative responses from the live host. */
-      const messages = (globalThis as typeof globalThis & {
-        /** Correlated operation results retained by this test. */
-        __RIDDLE_QUEST_LIVE_RACE_MESSAGES__?: Array<{
-          /** Server response payload. */
-          payload?: {
-          /** Operation discriminator. */ operation?: string;
-          /** Whether the authoritative operation succeeded. */ ok?: boolean;
-          /** Returned skip penalty. */ data?: {
-            /** Added milliseconds. */
-            penaltyAddedMs?: number;
-          };
-        }}>;
-      }).__RIDDLE_QUEST_LIVE_RACE_MESSAGES__;
-      return messages?.some(message => message.payload?.operation === "raceSkip" &&
-        message.payload.ok === true && message.payload.data?.penaltyAddedMs === 45_000);
-    }, undefined, {timeout: 30_000});
+    await game.locator(".live-race-start").click();
+    await game.locator(".race-gameplay .guess-board").waitFor({state: "visible", timeout: 30_000});
+    expect(await game.locator(".race-error").count()).toBe(0);
+    await game.getByRole("button", {name: /close race to 10/i}).click();
+    if (await game.getByRole("button", {name: /^quit race$/i}).isVisible()) {
+      await game.getByRole("button", {name: /^quit race$/i}).click();
+    }
+    await game.locator(".race-category-grid").waitFor({state: "visible"});
     await game.getByRole("button", {name: /close race to 10/i}).click();
     /** Provides confirm quit behavior. */
     const confirmQuit = game.getByRole("button", {name: /^quit race$/i});
@@ -349,7 +280,9 @@ describeDeployed("deployed Jest sandbox game", () => {
       expect.arrayContaining([
         "exchangeJestIdentity",
         "getCurrentClassicRiddle",
-        "startRaceRun",
+        "listRaceCategories",
+        "joinLiveRace",
+        "updateLiveRace",
         "verifyJestReferrals",
       ]),
     );

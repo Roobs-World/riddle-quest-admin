@@ -1,0 +1,78 @@
+[
+  {
+    "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fcpu_allocation",
+    "displayName": "Total CPU allocation",
+    "consumerQuotaLimits": [
+      {
+        "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fcpu_allocation/limits/%2Fmin%2Fproject%2Fregion",
+        "unit": "1/min/{project}/{region}",
+        "metric": "run.googleapis.com/cpu_allocation",
+        "quotaBuckets": [
+          {
+            "effectiveLimit": "200000",
+            "defaultLimit": "200000"
+          },
+          {
+            "effectiveLimit": "200000",
+            "defaultLimit": "200000",
+            "dimensions": {
+              "region": "us-central1"
+            }
+          }
+        ]
+      }
+    ],
+    "metric": "run.googleapis.com/cpu_allocation",
+    "unit": "1"
+  },
+  {
+    "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Finstances",
+    "displayName": "Instances",
+    "consumerQuotaLimits": [
+      {
+        "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Finstances/limits/%2Fproject%2Fregion",
+        "unit": "1/{project}/{region}",
+        "isPrecise": true,
+        "metric": "run.googleapis.com/instances",
+        "quotaBuckets": [
+          {
+            "effectiveLimit": "100",
+            "defaultLimit": "100"
+          },
+          {
+            "dimensions": {
+              "region": "us-central1"
+            }
+          }
+        ]
+      }
+    ],
+    "metric": "run.googleapis.com/instances"
+  },
+  {
+    "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fmem_allocation",
+    "displayName": "Total memory allocation",
+    "consumerQuotaLimits": [
+      {
+        "name": "projects/329028367192/services/run.googleapis.com/consumerQuotaMetrics/run.googleapis.com%2Fmem_allocation/limits/%2Fmin%2Fproject%2Fregion",
+        "unit": "1/min/{project}/{region}",
+        "metric": "run.googleapis.com/mem_allocation",
+        "quotaBuckets": [
+          {
+            "effectiveLimit": "429496729600",
+            "defaultLimit": "429496729600"
+          },
+          {
+            "effectiveLimit": "429496729600",
+            "defaultLimit": "429496729600",
+            "dimensions": {
+              "region": "us-central1"
+            }
+          }
+        ]
+      }
+    ],
+    "metric": "run.googleapis.com/mem_allocation",
+    "unit": "By"
+  }
+]

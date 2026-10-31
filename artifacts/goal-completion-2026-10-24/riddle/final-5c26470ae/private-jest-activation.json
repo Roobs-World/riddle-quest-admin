@@ -1,0 +1,58 @@
+{
+  "approvalQuestionItemId": "call_ca39d7fde2f84f82bba25be72461615b:0",
+  "explicitUserApproval": "Activate the tested build for private testing",
+  "scope": "Activate exact tested READY24October build for private testing; keep game unpublished; no review submission/listing change/real purchase",
+  "before": {
+    "checkedAt": "2026-10-24 08:33:47 UTC",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "isPublished": false,
+    "publishedRevisionId": null,
+    "inReviewRevisionId": null,
+    "draftRevisionId": "01a16719-be19-73ab-b59b-81495d130c25",
+    "draftRevisionStatus": "draft",
+    "activeVersionId": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "candidate": {
+      "id": "01a16bab-1ab2-769f-9640-062af485a1ef",
+      "version": "1.0.0-dev.20261024020836.27e4f179021a.2588cf21",
+      "buildStatus": "ready",
+      "isActive": false,
+      "buildProcessingError": null,
+      "fileSizeBytes": 4718560
+    },
+    "prior": {
+      "id": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+      "isActive": true
+    }
+  },
+  "activationActionPerformed": true,
+  "after": {
+    "checkedAt": "2026-10-24 08:34:01 UTC",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "isPublished": false,
+    "publishedRevisionId": null,
+    "inReviewRevisionId": null,
+    "draftRevisionId": "01a16719-be19-73ab-b59b-81495d130c25",
+    "draftRevisionStatus": "draft",
+    "draftSubmittedForReviewAt": null,
+    "activeVersionId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+    "candidate": {
+      "id": "01a16bab-1ab2-769f-9640-062af485a1ef",
+      "version": "1.0.0-dev.20261024020836.27e4f179021a.2588cf21",
+      "buildStatus": "ready",
+      "isActive": true,
+      "buildProcessingError": null,
+      "fileSizeBytes": 4718560,
+      "activatedAt": "2026-10-24T08:33:53.752Z"
+    },
+    "prior": {
+      "id": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+      "isActive": false,
+      "deactivatedAt": "2026-10-24T08:33:53.752Z"
+    }
+  },
+  "toolSuccess": true,
+  "privateActivationVerified": true,
+  "noBuildUploadTestReviewSubmissionPublicationListingChangeOrPurchasePerformed": true
+}

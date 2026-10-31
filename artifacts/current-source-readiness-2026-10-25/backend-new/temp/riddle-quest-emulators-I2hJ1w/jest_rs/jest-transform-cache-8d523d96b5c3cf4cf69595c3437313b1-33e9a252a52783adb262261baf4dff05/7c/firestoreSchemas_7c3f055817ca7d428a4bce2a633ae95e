@@ -1,0 +1,214 @@
+b6f820036ac101bb02e12b86382d5c08
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductPricingSchema = exports.SpecialOfferSchema = exports.RegionalPriceSchema = exports.RiddleCollections = exports.DailyRiddleSchema = exports.ClassicRiddleSchema = exports.FirestoreRiddleSchema = exports.PlayerSchema = exports.UnlockedAchievementSchema = exports.PlayerStatsSchema = exports.PlayerProgressSchema = void 0;
+const zod_1 = require("zod");
+const profanity_1 = require("./profanity");
+const locales_1 = require("./locales");
+const requestSchemas_1 = require("./requestSchemas");
+const raceSchemas_1 = require("../race/raceSchemas");
+/** Provides coerce timestamp to millis behavior. */
+const coerceTimestampToMillis = (value) => {
+    if (value == null || typeof value === "number") {
+        return value;
+    }
+    if (typeof value === "string") {
+        /** Parses d. */
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? value : parsed.getTime();
+    }
+    if (value instanceof Date) {
+        return value.getTime();
+    }
+    if (typeof value === "object") {
+        /** Provides timestamp like behavior. */
+        const timestampLike = value;
+        if (typeof timestampLike.toMillis === "function") {
+            return timestampLike.toMillis();
+        }
+        if (typeof timestampLike.toDate === "function") {
+            return timestampLike.toDate().getTime();
+        }
+        if (typeof timestampLike.seconds === "number") {
+            /** Provides nanos behavior. */
+            const nanos = typeof timestampLike.nanoseconds === "number" ? timestampLike.nanoseconds : 0;
+            return timestampLike.seconds * 1000 + Math.floor(nanos / 1_000_000);
+        }
+    }
+    return value;
+};
+/** Validates the timestamp as millis data shape. */
+const TimestampAsMillisSchema = zod_1.z.preprocess(coerceTimestampToMillis, zod_1.z.number());
+/** Validates the player progress data shape. */
+exports.PlayerProgressSchema = zod_1.z.object({
+    classicIndex: zod_1.z.number().int().nonnegative().default(1),
+    dailyChallengeIndex: zod_1.z.number().int().nonnegative().default(0),
+    dailyChallengeCurrentQuestion: zod_1.z.number().int().nonnegative().default(0),
+});
+/** Validates the player stats data shape. */
+exports.PlayerStatsSchema = zod_1.z.object({
+    xp: zod_1.z.number().int().nonnegative().default(0),
+    level: zod_1.z.number().int().positive().default(1),
+    dailyPuzzlesCompleted: zod_1.z.number().int().nonnegative().default(0),
+    bestStreak: zod_1.z.number().int().nonnegative().default(0),
+    totalWordsGuessed: zod_1.z.number().int().nonnegative().default(0),
+    winRate: zod_1.z.number().nonnegative().default(0),
+    averageGuesses: zod_1.z.number().nonnegative().default(0),
+    totalScore: zod_1.z.number().int().nonnegative().default(0),
+    highestLevelClassic: zod_1.z.number().int().nonnegative().default(0),
+    gamesPlayed: zod_1.z.number().int().nonnegative().default(0),
+    wins: zod_1.z.number().int().nonnegative().default(0),
+    challengeWins: zod_1.z.number().int().nonnegative().default(0),
+    winStreak: zod_1.z.number().int().nonnegative().default(0),
+    totalWins: zod_1.z.number().int().nonnegative().default(0),
+    totalGuessesInWins: zod_1.z.number().int().nonnegative().default(0),
+    totalHintsUsed: zod_1.z.number().int().nonnegative().default(0),
+    multiplayerGamesPlayed: zod_1.z.number().int().nonnegative().default(0),
+    multiplayerWins: zod_1.z.number().int().nonnegative().default(0),
+    multiplayerChallengesCreated: zod_1.z.number().int().nonnegative().default(0),
+});
+/** Validates the unlocked achievement data shape. */
+exports.UnlockedAchievementSchema = zod_1.z.object({
+    achievementId: zod_1.z.string(),
+    unlockedAt: zod_1.z.number(),
+});
+/** Validates the player data shape. */
+exports.PlayerSchema = zod_1.z.object({
+    userId: zod_1.z.string(),
+    email: zod_1.z.string().email(),
+    username: requestSchemas_1.UsernameSchema.refine((username) => (0, profanity_1.validateUsernameForProfanity)(username) === "", {
+        message: "Username contains inappropriate language. Please choose a different username.",
+    }),
+    displayName: zod_1.z.string().optional(),
+    avatarUrl: zod_1.z.string().url().optional(),
+    preferredLanguage: zod_1.z.enum(locales_1.SUPPORTED_LOCALES).optional(),
+    coins: zod_1.z.number().int().nonnegative().default(0),
+    createdAt: TimestampAsMillisSchema.optional(),
+    registeredAt: TimestampAsMillisSchema.optional(),
+    lastLogin: TimestampAsMillisSchema.optional(),
+    lastDailyChallengeCompletedAt: TimestampAsMillisSchema.optional(),
+    lastCompletedDailyChallengeKey: zod_1.z.string().optional(),
+    lastDailyChallengeAttemptedKey: zod_1.z.string().optional(),
+    stats: exports.PlayerStatsSchema.default(() => ({
+        xp: 0,
+        level: 1,
+        dailyPuzzlesCompleted: 0,
+        bestStreak: 0,
+        totalWordsGuessed: 0,
+        winRate: 0,
+        averageGuesses: 0,
+        totalScore: 0,
+        highestLevelClassic: 0,
+        gamesPlayed: 0,
+        wins: 0,
+        challengeWins: 0,
+        winStreak: 0,
+        totalWins: 0,
+        totalGuessesInWins: 0,
+        totalHintsUsed: 0,
+        multiplayerGamesPlayed: 0,
+        multiplayerWins: 0,
+        multiplayerChallengesCreated: 0,
+    })),
+    progress: exports.PlayerProgressSchema.default(() => ({
+        classicIndex: 1,
+        dailyChallengeIndex: 0,
+        dailyChallengeCurrentQuestion: 0,
+    })),
+    unlockedAchievements: zod_1.z.array(exports.UnlockedAchievementSchema).optional().default([]),
+    hasPurchasedApp: zod_1.z.boolean().optional().default(false),
+    fcmToken: zod_1.z.string().optional(),
+    fcmTokenUpdatedAt: TimestampAsMillisSchema.optional(),
+    lastStreakReminderSentAt: TimestampAsMillisSchema.optional(),
+});
+/** Validates the firestore riddle data shape. */
+exports.FirestoreRiddleSchema = zod_1.z.object({
+    riddleId: zod_1.z.string(),
+    canonicalRiddleId: zod_1.z.string().min(1).max(160).optional(),
+    canonicalKey: zod_1.z.string().optional(),
+    challengeKey: zod_1.z.string().optional(),
+    locale: zod_1.z.enum(locales_1.SUPPORTED_LOCALES).optional(),
+    dailyIndex: zod_1.z.number().int().nonnegative().optional(),
+    classicIndex: zod_1.z.number().int().nonnegative().optional(),
+    text: zod_1.z.string(),
+    answer: zod_1.z.string().min(1),
+    category: zod_1.z.string().optional(),
+    categoryId: raceSchemas_1.RaceCategoryIdSchema.optional(),
+    difficultyBand: raceSchemas_1.RaceDifficultyBandSchema.optional(),
+    raceEligible: zod_1.z.boolean().optional(),
+    qualityVersion: raceSchemas_1.RaceContentQualityVersionSchema.optional(),
+    timestamp: zod_1.z.unknown().optional(),
+});
+/** Validates the classic riddle data shape. */
+exports.ClassicRiddleSchema = zod_1.z.object({
+    riddleId: zod_1.z.string(),
+    canonicalRiddleId: zod_1.z.string().min(1).max(160).optional(),
+    canonicalKey: zod_1.z.string().optional(),
+    locale: zod_1.z.enum(locales_1.SUPPORTED_LOCALES).optional(),
+    text: zod_1.z.string(),
+    answer: zod_1.z.string().min(1),
+    classicIndex: zod_1.z.number().int().nonnegative(),
+    category: zod_1.z.string().default("classic"),
+    categoryId: raceSchemas_1.RaceCategoryIdSchema.optional(),
+    difficultyBand: raceSchemas_1.RaceDifficultyBandSchema.optional(),
+    raceEligible: zod_1.z.boolean().optional(),
+    qualityVersion: raceSchemas_1.RaceContentQualityVersionSchema.optional(),
+});
+/** Validates the daily riddle data shape. */
+exports.DailyRiddleSchema = zod_1.z.object({
+    riddleId: zod_1.z.string(),
+    canonicalRiddleId: zod_1.z.string().min(1).max(160).optional(),
+    canonicalKey: zod_1.z.string().optional(),
+    challengeKey: zod_1.z.string().optional(),
+    locale: zod_1.z.enum(locales_1.SUPPORTED_LOCALES).optional(),
+    text: zod_1.z.string(),
+    answer: zod_1.z.string().min(1),
+    dailyIndex: zod_1.z.number().int().nonnegative(),
+    category: zod_1.z.string().default("daily"),
+    categoryId: raceSchemas_1.RaceCategoryIdSchema.optional(),
+    difficultyBand: raceSchemas_1.RaceDifficultyBandSchema.optional(),
+    raceEligible: zod_1.z.boolean().optional(),
+    qualityVersion: raceSchemas_1.RaceContentQualityVersionSchema.optional(),
+    timestamp: zod_1.z.unknown(),
+});
+/** Renders the riddle collections interface. */
+exports.RiddleCollections = {
+    RIDDLES: "riddles",
+    DAILY_RIDDLES: "dailyRiddles",
+};
+/** Validates the regional price data shape. */
+exports.RegionalPriceSchema = zod_1.z
+    .object({
+    amount: zod_1.z.number().nonnegative(),
+    currency: zod_1.z.string().min(1),
+    displayPrice: zod_1.z.string().min(1),
+    symbol: zod_1.z.string().min(1),
+})
+    .passthrough();
+/** Validates the special offer data shape. */
+exports.SpecialOfferSchema = zod_1.z
+    .object({
+    badgeText: zod_1.z.string().min(1),
+    description: zod_1.z.string().min(1),
+    discountPercentage: zod_1.z.number().nonnegative(),
+    isActive: zod_1.z.boolean(),
+    validFrom: zod_1.z.number(),
+    validTo: zod_1.z.number(),
+})
+    .passthrough();
+/** Validates the product pricing data shape. */
+exports.ProductPricingSchema = zod_1.z
+    .object({
+    productId: zod_1.z.string().min(1),
+    productKey: zod_1.z.string().min(1),
+    name: zod_1.z.string().min(1),
+    description: zod_1.z.string(),
+    coins: zod_1.z.number().int().nonnegative(),
+    isActive: zod_1.z.boolean(),
+    sortOrder: zod_1.z.number(),
+    regionalPrices: zod_1.z.array(exports.RegionalPriceSchema).default([]),
+    specialOffer: exports.SpecialOfferSchema.optional(),
+    featuredOrder: zod_1.z.number().optional(),
+    featuredBadge: zod_1.z.string().optional(),
+})
+    .passthrough();

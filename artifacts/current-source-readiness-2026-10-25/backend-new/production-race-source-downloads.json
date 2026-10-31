@@ -1,0 +1,50 @@
+[
+  {
+    "function": "joinLiveRace",
+    "region": "europe-west1",
+    "generation": "1792884674845614",
+    "source": "gs://gcf-v2-sources-329028367192-europe-west1/joinLiveRace/function-source.zip#1792884674845614",
+    "exitCode": 0,
+    "archive": "production-joinLiveRace-europe-west1.zip",
+    "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+    "error": null,
+    "archiveRetained": false,
+    "restrictedSourceFilesNotReadOrExtracted": true
+  },
+  {
+    "function": "joinLiveRace",
+    "region": "us-central1",
+    "generation": "1792884673238751",
+    "source": "gs://gcf-v2-sources-329028367192-us-central1/joinLiveRace/function-source.zip#1792884673238751",
+    "exitCode": 0,
+    "archive": "production-joinLiveRace-us-central1.zip",
+    "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+    "error": null,
+    "archiveRetained": false,
+    "restrictedSourceFilesNotReadOrExtracted": true
+  },
+  {
+    "function": "updateLiveRace",
+    "region": "europe-west1",
+    "generation": "1792884735876710",
+    "source": "gs://gcf-v2-sources-329028367192-europe-west1/updateLiveRace/function-source.zip#1792884735876710",
+    "exitCode": 0,
+    "archive": "production-updateLiveRace-europe-west1.zip",
+    "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+    "error": null,
+    "archiveRetained": false,
+    "restrictedSourceFilesNotReadOrExtracted": true
+  },
+  {
+    "function": "updateLiveRace",
+    "region": "us-central1",
+    "generation": "1792884727188960",
+    "source": "gs://gcf-v2-sources-329028367192-us-central1/updateLiveRace/function-source.zip#1792884727188960",
+    "exitCode": 0,
+    "archive": "production-updateLiveRace-us-central1.zip",
+    "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+    "error": null,
+    "archiveRetained": false,
+    "restrictedSourceFilesNotReadOrExtracted": true
+  }
+]

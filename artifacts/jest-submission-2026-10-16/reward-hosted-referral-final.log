@@ -1,0 +1,27 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Case: standalone Jest browser game covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+PASS src/play/__tests__/hostedBrowser.jest-playwright.test.ts (50.563 s)
+  ● Console
+
+    console.info
+      Immediate wrong-answer feedback: 3.0ms with server response held
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:659:15)
+
+    console.info
+      Immediate correct-answer feedback: 8.3ms with server response held
+
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:1030:15)
+
+Case result: passed standalone Jest browser game covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+Case: Jest authentication integration runs the complete profile invite, attributed registration, and inviter reward journey
+Case result: passed Jest authentication integration runs the complete profile invite, attributed registration, and inviter reward journey
+Case: Jest authentication integration surfaces a server-authoritative referral reward in the game
+PASS src/jest/__tests__/authentication.jest-playwright.test.ts (6.107 s)
+
+Test Suites: 2 passed, 2 total
+Tests:       44 skipped, 3 passed, 47 total
+Snapshots:   0 total
+Time:        56.783 s, estimated 76 s
+Ran all test suites matching src/play/__tests__/hostedBrowser.jest-playwright.test.ts|src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "standalone Jest browser game|referral reward|profile invite".
+Case result: passed Jest authentication integration surfaces a server-authoritative referral reward in the game

@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "Ежедневное испытание",
     "SHARE_MESSAGE_TEMPLATE": "Я решил сегодняшнюю Riddle Quest {gameType} за {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nСможешь ли ты побить мой результат?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Оцените мой результат Riddle Quest!",
-    "INVITE_FRIEND": "Пригласить друга"
+    "INVITE_FRIEND": "Пригласить друга",
+    "REWARD_CLASSIC": "Классическая загадка",
+    "REWARD_DAILY": "Загадка дня",
+    "REWARD_LEVEL_BONUS": "Бонус за уровень",
+    "REWARD_STREAK_BONUS": "Бонус за серию",
+    "REWARD_ACHIEVEMENT_BONUS": "Бонус за достижение",
+    "REWARD_REFERRAL_BONUS": "Бонус за приглашение"
   }
 }

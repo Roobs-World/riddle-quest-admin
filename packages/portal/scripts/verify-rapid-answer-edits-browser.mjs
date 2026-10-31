@@ -12,7 +12,7 @@ const {computeFeedback}=require('@qwordly/core/game');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.RAPID_ANSWER_REACT_MODE??'development';
 const fixture=path.join(root,'../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json');
-const output=path.resolve(process.env.RAPID_ANSWER_REPORT_DIR??path.join(root,'../../artifacts/rapid-answer-edits-2026-10-04',mode));
+const output=path.resolve(process.env.RAPID_ANSWER_REPORT_DIR??path.join(root,'../../builds/test-evidence/rapid-answer-edits-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/rapid-answer-edits-'));
 let browser,server,baseUrl;let tickets=new Map(),started=null;const observations=[];

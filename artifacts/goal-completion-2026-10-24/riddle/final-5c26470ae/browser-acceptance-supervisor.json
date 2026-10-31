@@ -1,0 +1,15 @@
+{
+  "supervisorPid": 500612,
+  "supervisorStartTicks": "6250656",
+  "startedAt": "2026-10-24T02:22:24.587643+00:00",
+  "scope": "Local exact-uploaded-artifact browser verification only; no production operations",
+  "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "artifactDirectory": "jest-upload-artifact",
+  "deadlineSeconds": 2700,
+  "complete": true,
+  "workerPid": 500613,
+  "workerProcessGroup": 500613,
+  "workerStartTicks": "6250657",
+  "exitCode": 0,
+  "completedAt": "2026-10-24T02:27:39.582446+00:00"
+}

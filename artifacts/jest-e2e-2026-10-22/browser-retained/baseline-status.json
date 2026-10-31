@@ -1,0 +1,54 @@
+{
+  "artifact": "artifacts/jest-instructions-modal-2026-10-22/jest-artifact",
+  "manifestSha256": "08c4ec32eedd71896eb9964b8bf1ba324b4aa460b4950bfd3d39c3cb7024be03",
+  "phase": "original-artifact-baseline",
+  "retained": {
+    "success": true,
+    "numPassedTestSuites": 8,
+    "numFailedTestSuites": 0,
+    "numPassedTests": 77,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  },
+  "elapsedSeconds": 317.738,
+  "scope": "Trusted local provider mocks in the exact compiled Jest artifact; user interaction via Playwright. This run predates two new immediate-reload regressions that reproduce on this artifact.",
+  "navigation": {
+    "success": true,
+    "entries": [
+      {
+        "query": "?harness=jest",
+        "entry": "Daily",
+        "depthLimit": 3,
+        "routes": 89,
+        "distinctScreens": 21,
+        "unvisited": 0,
+        "problemRoutes": 0
+      },
+      {
+        "query": "?harness=jest&dailyCompleted=1",
+        "entry": "Classic",
+        "depthLimit": 3,
+        "routes": 81,
+        "distinctScreens": 20,
+        "unvisited": 0,
+        "problemRoutes": 0
+      },
+      {
+        "query": "?harness=race&dailyCompleted=1",
+        "entry": "Multiplayer",
+        "depthLimit": 5,
+        "routes": 167,
+        "distinctScreens": 36,
+        "unvisited": 0,
+        "problemRoutes": 0
+      }
+    ],
+    "totalRoutes": 337,
+    "elapsedSeconds": 1343.838,
+    "results": "route-sweep-results.json",
+    "matrix": "route-matrix.json"
+  },
+  "knownIssue": "A separate immediate-reload check can lose the final visible draft letter. A corrected artifact and two additional retained cases are pending.",
+  "providerLimit": "No real purchases, SMS, terms acceptance or account deletion; live provider authority is covered separately.",
+  "knownIssueEvidence": "../mobile/immediate-reload-retained-red.log"
+}

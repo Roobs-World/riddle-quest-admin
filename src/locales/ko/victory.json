@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "일일 도전",
     "SHARE_MESSAGE_TEMPLATE": "오늘의 Riddle Quest {gameType}을(를) {attempts} {attemptLabel}에서 해결했습니다!\n\n{emojiGrid}\n\n내 점수를 이길 수 있나요?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "내 Riddle Quest 결과를 확인하세요!",
-    "INVITE_FRIEND": "친구 초대"
+    "INVITE_FRIEND": "친구 초대",
+    "REWARD_CLASSIC": "클래식 수수께끼",
+    "REWARD_DAILY": "일일 수수께끼",
+    "REWARD_LEVEL_BONUS": "레벨 업 보너스",
+    "REWARD_STREAK_BONUS": "연속 기록 보너스",
+    "REWARD_ACHIEVEMENT_BONUS": "업적 보너스",
+    "REWARD_REFERRAL_BONUS": "초대 보너스"
   }
 }

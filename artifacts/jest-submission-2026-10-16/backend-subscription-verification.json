@@ -1,0 +1,62 @@
+{
+  "scope": "Deployed backend checked using older active client. New candidate acceptance remains pending.",
+  "zeroDollar": true,
+  "syntheticBillingOnly": true,
+  "priceChanged": false,
+  "coinsBefore": 300,
+  "grant": 3400,
+  "coinsAfter": 3700,
+  "replayGrant": 0,
+  "reloadGrant": 0,
+  "renewalCancellation": "Jest SDK success; entitlement remains active through paid-through sandbox period",
+  "checks": [
+    {
+      "step": "signed sandbox activation",
+      "zeroDollar": true,
+      "syntheticBilling": true,
+      "grant": {
+        "status": 200,
+        "verified": true,
+        "activeSkus": [
+          "com.roobsworld.riddlequest.premium.monthly"
+        ],
+        "blockedSkus": [],
+        "premiumCoinsAwarded": 3400,
+        "newCoins": 3700
+      }
+    },
+    {
+      "step": "replayed signed catalog",
+      "status": 200,
+      "verified": true,
+      "activeSkus": [
+        "com.roobsworld.riddlequest.premium.monthly"
+      ],
+      "blockedSkus": [],
+      "premiumCoinsAwarded": 0,
+      "newCoins": 3700
+    },
+    {
+      "step": "renewal cancelled",
+      "status": 200,
+      "verified": true,
+      "activeSkus": [
+        "com.roobsworld.riddlequest.premium.monthly"
+      ],
+      "blockedSkus": [],
+      "premiumCoinsAwarded": 0,
+      "newCoins": 3700
+    },
+    {
+      "step": "full reload preserves grant without duplication",
+      "status": 200,
+      "verified": true,
+      "activeSkus": [
+        "com.roobsworld.riddlequest.premium.monthly"
+      ],
+      "blockedSkus": [],
+      "premiumCoinsAwarded": 0,
+      "newCoins": 3700
+    }
+  ]
+}

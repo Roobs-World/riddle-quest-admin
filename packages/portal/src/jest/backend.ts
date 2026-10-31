@@ -85,8 +85,8 @@ export type JestBackendClientOptions = {
   requestTimeoutMs?: number;
 };
 
-/** Default deadline for identity, purchase, referral, and entitlement requests. */
-export const JEST_BACKEND_REQUEST_TIMEOUT_MS = 15_000;
+/** Bounds signed HTTP requests while allowing a cold backend to start under the loading heartbeat. */
+export const JEST_BACKEND_REQUEST_TIMEOUT_MS = 30_000;
 
 /**
  * Resolves and validates a Jest backend URL before any signed identity or

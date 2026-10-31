@@ -1,0 +1,122 @@
+{
+  "checkedAt": "2026-10-25T21:58:40.376962+00:00",
+  "scope": "Read-only current production immutable deployment archives vs isolated current TypeScript compilation and existing current core distribution. No environment or secret files extracted.",
+  "functions": [
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "generation": "1792884674845614",
+      "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+      "filesCompared": 243,
+      "allMatch": true,
+      "differences": [],
+      "raceFiles": [
+        {
+          "path": "lib/race/raceLiveState.js",
+          "localSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "deployedSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "matches": true
+        },
+        {
+          "path": "lib/race/raceLiveService.js",
+          "localSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "deployedSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "matches": true
+        },
+        {
+          "path": "packages/core/dist/race/raceLiveSchemas.js",
+          "localSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "deployedSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "generation": "1792884673238751",
+      "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+      "filesCompared": 243,
+      "allMatch": true,
+      "differences": [],
+      "raceFiles": [
+        {
+          "path": "lib/race/raceLiveState.js",
+          "localSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "deployedSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "matches": true
+        },
+        {
+          "path": "lib/race/raceLiveService.js",
+          "localSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "deployedSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "matches": true
+        },
+        {
+          "path": "packages/core/dist/race/raceLiveSchemas.js",
+          "localSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "deployedSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "generation": "1792884735876710",
+      "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+      "filesCompared": 243,
+      "allMatch": true,
+      "differences": [],
+      "raceFiles": [
+        {
+          "path": "lib/race/raceLiveState.js",
+          "localSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "deployedSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "matches": true
+        },
+        {
+          "path": "lib/race/raceLiveService.js",
+          "localSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "deployedSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "matches": true
+        },
+        {
+          "path": "packages/core/dist/race/raceLiveSchemas.js",
+          "localSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "deployedSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "generation": "1792884727188960",
+      "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+      "filesCompared": 243,
+      "allMatch": true,
+      "differences": [],
+      "raceFiles": [
+        {
+          "path": "lib/race/raceLiveState.js",
+          "localSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "deployedSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "matches": true
+        },
+        {
+          "path": "lib/race/raceLiveService.js",
+          "localSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "deployedSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "matches": true
+        },
+        {
+          "path": "packages/core/dist/race/raceLiveSchemas.js",
+          "localSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "deployedSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "matches": true
+        }
+      ]
+    }
+  ]
+}

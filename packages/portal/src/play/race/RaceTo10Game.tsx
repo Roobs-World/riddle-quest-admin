@@ -15,10 +15,11 @@ import {RaceTopbar} from "./components/RaceHeader";
 import {RaceCategoryIcon} from "./components/RaceCategoryIcon";
 import {useRaceDialogFocus} from "./hooks";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types";
+import {readLiveRaceLobby} from "./logic/liveRaceLobbyStorage";
 
-/** Platform PvP invitations and ordinary multiplayer entries open the live intro. */
+/** Shared invitations enter their private lobby; ordinary multiplayer entries open category selection. */
 export function RaceTo10Game(props: RaceTo10GameProps) {
-  return <LiveRaceEntry key={JSON.stringify([props.ownerId ?? null, props.locale])} {...props} />;
+  return <LiveRaceEntry key={JSON.stringify([props.ownerId ?? null, props.locale, props.challengeId ?? null])} {...props} />;
 }
 
 /** Immutable entry selection for public searches, private lobbies and incoming acceptances. */
@@ -27,6 +28,8 @@ type LiveSelection = {
   /** Invitation content language remains authoritative. */ locale: RaceLocale;
   /** Creates a private seat without public matchmaking. */ createChallenge?: boolean;
   /** Accepts this existing server-owned lobby. */ challengeId?: string;
+  /** Re-enters an acknowledged creator lobby without creating another invitation. */ resumeChallenge?: boolean;
+  /** Recovers the exact acknowledged public seat without creating a replacement. */ resumeTicketId?: string;
   /** Starts a new private invitation for this owned completed seat. */ rematchOfTicketId?: string;
   /** Optional native audience selection owns this private journey's transport. */ transport?: LiveRaceCapability;
 };
@@ -34,20 +37,52 @@ type LiveSelection = {
 /** Owns live category selection without resuming or creating recorded races. */
 function LiveRaceEntry(props: RaceTo10GameProps) {
   /** Immutable server content and invitation selection for the mounted live seat. */
-  const [playing, setPlaying] = useState<LiveSelection | null>(null);
+  const [playing, setPlaying] = useState<LiveSelection | null>(() => {
+    /** Validated account-owned lobby hint used to resume an acknowledged seat. */
+    const saved = readLiveRaceLobby(props.ownerId, props.locale);
+    return saved && !props.challengeId && props.matchmaking?.live ? {
+      categoryId: saved.categoryId, locale: saved.locale, ...("challengeId" in saved ?
+        {challengeId: saved.challengeId, resumeChallenge: true} : {resumeTicketId: saved.ticketId}),
+    } : null;
+  });
+  /** Opening a shared link enters its lobby once; leaving returns to category selection. */
+  const [incomingConsumed, setIncomingConsumed] = useState(false);
   /** A replacement authenticated capability starts at the intro instead of inheriting an old provider's ticket. */
   const [entryProvider, setEntryProvider] = useState(props.matchmaking?.live);
   if (entryProvider !== props.matchmaking?.live) {
     // Adjust before children commit so no old seat can subscribe or dispatch through the replacement provider.
     setEntryProvider(props.matchmaking?.live);
     setPlaying(null);
+    setIncomingConsumed(false);
   }
   if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={playing.transport ?? props.matchmaking.live}
-    locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId}
-    rematchOfTicketId={playing.rematchOfTicketId} coins={props.coins} ownerId={props.ownerId} onCompleted={props.onLiveResult}
+    locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} resumeChallenge={playing.resumeChallenge}
+    resumeTicketId={playing.resumeTicketId} rematchOfTicketId={playing.rematchOfTicketId} coins={props.coins} ownerId={props.ownerId} onCompleted={props.onLiveResult}
     onRematch={rematchOfTicketId => setPlaying({locale: playing.locale, categoryId: playing.categoryId, rematchOfTicketId})}
     onClose={() => setPlaying(null)} />;
+  if (!incomingConsumed && props.challengeId && /^live_[a-f0-9]{64}$/.test(props.challengeId) && props.matchmaking?.live?.challenge)
+    return <LiveRaceInvitationEntry {...props} challengeId={props.challengeId} transport={props.matchmaking.live}
+      onStart={selection => {setIncomingConsumed(true); setPlaying(selection);}} />;
   return <LiveRaceIntro {...props} onStart={setPlaying} />;
+}
+
+/** A shared invitation opens its own lobby without loading the public category picker. */
+function LiveRaceInvitationEntry({challengeId, transport, locale, coins, onClose, onStart}: {
+  /** Opaque invitation received from the owning platform. */ challengeId: string;
+  /** Authenticated invitation transport. */ transport: LiveRaceCapability;
+  /** Current supported content language. */ locale: RaceLocale;
+  /** Current balance displayed in the shared header. */ coins: number;
+  /** Leaves multiplayer without creating a seat. */ onClose: () => void;
+  /** Uses the server's validated category and invitation selection. */ onStart: (selection: LiveSelection) => void;
+}) {
+  /** Invitation dialog and inactive quit-dialog references used for focus ownership. */
+  const dialogRef = useRef<HTMLElement | null>(null), quitDialogRef = useRef<HTMLDivElement | null>(null);
+  useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: false, dismissQuitConfirmation: () => {}, requestClose: onClose});
+  return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby="race-title"
+    tabIndex={-1} data-analytics-screen="multiplayer_friend_lobby_entry">
+    <RaceTopbar live coins={coins} onClose={onClose} />
+    <LiveRaceInvitationCard challengeId={challengeId} transport={transport} locale={locale} onAccept={onStart} autoJoin />
+  </section>;
 }
 
 /** Loads only the category catalog and starts the target's live matchmaking capability. */

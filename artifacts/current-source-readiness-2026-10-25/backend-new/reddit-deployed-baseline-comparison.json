@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-10-25T22:18:03.200224+00:00",
+  "baselineMeaning": "Clean compilation of current source BEFORE queue fix, already proved equal to all four deployed callable JS trees",
+  "functions": [
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "revision": "joinliverace-00024-mad",
+      "source": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1792884673238751",
+        "object": "joinLiveRace/function-source.zip"
+      },
+      "archiveSha256": "0333e13539acd0b84f54c1e78e1d3183e19c6c34ae2ebcb2a1daac65f539a689",
+      "currentRuntimeFilesCompared": 243,
+      "differencesBeforeFix": [],
+      "extraDeployedRuntimeJs": [],
+      "safePackageInputSha256": {
+        "package.json": "c30ed07ba23c71397068f6765e5acdb57e0a8965f594fcf4bafcd2af26521b5f",
+        "package-lock.json": "e22ecd0c1b414325858c037b490b852b8581b7355f9dfaaecc3aed8d1e4920fd",
+        "packages/core/package.json": "6d4b1c67f6f3354e3f23ad7f202f0051ff2ccb084b55bc284a6cfb38994d33f6"
+      },
+      "restrictedArchiveEntriesRead": false
+    },
+    {
+      "function": "redditGameplay",
+      "region": "us-central1",
+      "revision": "redditgameplay-00045-yac",
+      "source": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1792804884381307",
+        "object": "redditGameplay/function-source.zip"
+      },
+      "archiveSha256": "c7cc4bc7e0f206001ed6c60987d1daeeb5e5dc5e91aa1b077993c8fbfad0f5a4",
+      "currentRuntimeFilesCompared": 243,
+      "differencesBeforeFix": [
+        {
+          "path": "lib/race/raceLiveState.js",
+          "currentBeforeFixSha256": "fb3c4d50f64c842654e84f0ae3dd032abd97c3f0b916b25f988a1f86aa3839ee",
+          "deployedSha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94"
+        },
+        {
+          "path": "lib/race/raceLiveService.js",
+          "currentBeforeFixSha256": "fb24a8d8f24febeda8671b440ea78035b5349e3e959c8753df2b8fd7e176e5d4",
+          "deployedSha256": "53e47de8189af8af752c69bb0e61b5d9e1d2a9301214a600d19772eab562d48f"
+        },
+        {
+          "path": "packages/core/dist/race/raceLiveSchemas.js",
+          "currentBeforeFixSha256": "7683aefe6eacb4e706c48ac2e0769bd7a3cd2ec61cfa4675e452921423eb212f",
+          "deployedSha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce"
+        }
+      ],
+      "extraDeployedRuntimeJs": [],
+      "safePackageInputSha256": {
+        "package.json": "7ad9c1be08e438cf44af81031154cf8340b9222dcf6506c89c78df5d00d3eed9",
+        "package-lock.json": "e22ecd0c1b414325858c037b490b852b8581b7355f9dfaaecc3aed8d1e4920fd",
+        "packages/core/package.json": "6d4b1c67f6f3354e3f23ad7f202f0051ff2ccb084b55bc284a6cfb38994d33f6"
+      },
+      "restrictedArchiveEntriesRead": false
+    }
+  ],
+  "safePackageInputsMatchBetweenDeployedBundles": false,
+  "rawCopiesRetained": false
+}

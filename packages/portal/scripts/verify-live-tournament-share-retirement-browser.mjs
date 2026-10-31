@@ -8,7 +8,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const engine=process.env.SHARE_RETIREMENT_BROWSER??'chromium',mode=process.env.SHARE_RETIREMENT_MODE??'development';
 const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const evidence=path.resolve(process.env.SHARE_RETIREMENT_REPORT_DIR??path.join(portal,'../../artifacts/live-tournament-share-retirement-2026-10-08',engine+'-'+mode));
+const evidence=path.resolve(process.env.SHARE_RETIREMENT_REPORT_DIR??path.join(portal,'../../builds/test-evidence/live-tournament-share-retirement-2026-10-08',engine+'-'+mode));
 await mkdir(evidence,{recursive:true});
 const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/share-retirement-probe-'));
 let browser,server,browserVersion;const observations=[];

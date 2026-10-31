@@ -1,0 +1,143 @@
+{
+  "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDigest": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+  "auditedAt": "2026-10-24T01:13:17.652Z",
+  "checks": [
+    {
+      "index": 176,
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "test",
+        "--runInBand",
+        "--runTestsByPath",
+        "src/facebook/__tests__/contexts.test.ts"
+      ],
+      "ids": [
+        "context-reconciliation"
+      ],
+      "tasks": [
+        "multiplayer:race-web-dialog-ownership"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:13:04.350Z",
+      "checkedAt": "2026-10-24T01:13:05.131Z",
+      "log": "artifacts/development-checks/goal-20261024-cheap/8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635-176-c9a4eba16cfa738823500233a644102a968191df51a866f873820765bb8c4d77.log",
+      "sha256": "c9a4eba16cfa738823500233a644102a968191df51a866f873820765bb8c4d77",
+      "artifacts": {
+        "builds/jest/index.html": "b2e4d6e0bc7fd1aac20e09545fb23dc22c7cb67434022bb01217d20370d54ccb",
+        "builds/facebook/index.html": "a703b8c7dccab9c4957c7f07e7fe7c133047730aa1da17897e81fbc4c0f462b9",
+        "builds/reddit/index.html": "5eb041b1ae9714fe7111c69aef96accd27eaa47849c0e31bd2eb557c4d2bb1dd",
+        "builds/youtube/index.html": "99e3a4d1e73300b06528383cc010fc1fbf7fb7327ecba58b02b68b28a1311f3b",
+        "builds/netflix/index.html": "9a04b555352a46ba76c123b6a0ec1cc6413ecdab5191400d28ecba1dccb157a0",
+        "builds/yahoo/index.html": "62e6b2b6942b40e6cd202955c6c260aa958287739ea374b1ba415a19fbc860a7",
+        "build-gamesnacks.zip": "513ead5d981eea06f6663063488768f51e02b8885053c63971070d7291860c65",
+        "build-itch.zip": "bab74e11358935ab37fca3fb781f1045fce9bccc8d622c8d92e88e9e04f88038",
+        "artifacts/target-dependencies/jest.json": "e988ab1ad24e11705973e94eece37f955cd5ab11be025d8965c7576f4baeb47e",
+        "artifacts/target-dependencies/facebook.json": "f20057458f52b6f3762e138112c987f7380d367de421ed50b3945a585b42f9de",
+        "artifacts/target-dependencies/reddit.json": "01064746ef43a1c5b0269fcab32b5e184e6f2ba263f5a223859d221c84a837b5",
+        "artifacts/target-dependencies/youtube.json": "79cfae4e7c5488d43829f5ec3877ac934b737631b2ffa5d27b1b2bf5268ee4be",
+        "artifacts/target-dependencies/netflix.json": "a0a013d2194178cdd3c8dc7bbe72fbdae37b1decaf09b7c536291ff021e7464d",
+        "artifacts/target-dependencies/yahoo.json": "ed5f345c0ac4eb03ed792121f6dd895e85d00d6e27bcb6dcf8c592e7f1865675",
+        "artifacts/target-dependencies/gamesnacks.json": "02ad39e8b8c3ea832a2d0539ebeb2b1645e42b8d9e3ca6d32f97f0710952b441",
+        "docs/evidence/platform-only-build-scope.md": "f69737a42b436897b1204a8656734720ee78f5c82f41e32c90e831e4eeb7bc2a",
+        "artifacts/retained-creator-recovery-2026-10-10/browser.json": "f291cfadbed17a862caab70bf4ef286dfe794ee4f89d314649bf8a73e7332c2c"
+      },
+      "sourceBefore": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+      "sourceAfter": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+      "sourceStillMatches": true,
+      "originReport": "artifacts/development-checks/goal-20261024-cheap/724de22ac790fec21c230f01fab7ea2f05077c1b7d3fd6c213e09da9c4f6d6ab.json"
+    },
+    {
+      "index": 177,
+      "executable": "node",
+      "args": [
+        "--test",
+        "scripts/release/development-source-digest.test.mjs"
+      ],
+      "ids": [
+        "source-digest-regressions"
+      ],
+      "tasks": [
+        "multiplayer:retained-invitation-creator-recovery"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:13:05.589Z",
+      "checkedAt": "2026-10-24T01:13:06.082Z",
+      "log": "artifacts/development-checks/goal-20261024-cheap/8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635-177-34b0490a0fc97bcc7faf30c5e7ee6d3e256a38da5767e25d9a60f50d0713590e.log",
+      "sha256": "34b0490a0fc97bcc7faf30c5e7ee6d3e256a38da5767e25d9a60f50d0713590e",
+      "artifacts": {
+        "builds/jest/index.html": "b2e4d6e0bc7fd1aac20e09545fb23dc22c7cb67434022bb01217d20370d54ccb",
+        "builds/facebook/index.html": "a703b8c7dccab9c4957c7f07e7fe7c133047730aa1da17897e81fbc4c0f462b9",
+        "builds/reddit/index.html": "5eb041b1ae9714fe7111c69aef96accd27eaa47849c0e31bd2eb557c4d2bb1dd",
+        "builds/youtube/index.html": "99e3a4d1e73300b06528383cc010fc1fbf7fb7327ecba58b02b68b28a1311f3b",
+        "builds/netflix/index.html": "9a04b555352a46ba76c123b6a0ec1cc6413ecdab5191400d28ecba1dccb157a0",
+        "builds/yahoo/index.html": "62e6b2b6942b40e6cd202955c6c260aa958287739ea374b1ba415a19fbc860a7",
+        "build-gamesnacks.zip": "513ead5d981eea06f6663063488768f51e02b8885053c63971070d7291860c65",
+        "build-itch.zip": "bab74e11358935ab37fca3fb781f1045fce9bccc8d622c8d92e88e9e04f88038",
+        "artifacts/target-dependencies/jest.json": "e988ab1ad24e11705973e94eece37f955cd5ab11be025d8965c7576f4baeb47e",
+        "artifacts/target-dependencies/facebook.json": "f20057458f52b6f3762e138112c987f7380d367de421ed50b3945a585b42f9de",
+        "artifacts/target-dependencies/reddit.json": "01064746ef43a1c5b0269fcab32b5e184e6f2ba263f5a223859d221c84a837b5",
+        "artifacts/target-dependencies/youtube.json": "79cfae4e7c5488d43829f5ec3877ac934b737631b2ffa5d27b1b2bf5268ee4be",
+        "artifacts/target-dependencies/netflix.json": "a0a013d2194178cdd3c8dc7bbe72fbdae37b1decaf09b7c536291ff021e7464d",
+        "artifacts/target-dependencies/yahoo.json": "ed5f345c0ac4eb03ed792121f6dd895e85d00d6e27bcb6dcf8c592e7f1865675",
+        "artifacts/target-dependencies/gamesnacks.json": "02ad39e8b8c3ea832a2d0539ebeb2b1645e42b8d9e3ca6d32f97f0710952b441",
+        "docs/evidence/platform-only-build-scope.md": "f69737a42b436897b1204a8656734720ee78f5c82f41e32c90e831e4eeb7bc2a",
+        "artifacts/retained-creator-recovery-2026-10-10/browser.json": "f291cfadbed17a862caab70bf4ef286dfe794ee4f89d314649bf8a73e7332c2c"
+      },
+      "sourceBefore": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+      "sourceAfter": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+      "sourceStillMatches": true,
+      "originReport": "artifacts/development-checks/goal-20261024-cheap/724de22ac790fec21c230f01fab7ea2f05077c1b7d3fd6c213e09da9c4f6d6ab.json"
+    },
+    {
+      "index": 179,
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "lint"
+      ],
+      "ids": [
+        "node22-backend-lint-build"
+      ],
+      "tasks": [
+        "multiplayer:retained-invitation-creator-recovery"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:13:06.544Z",
+      "checkedAt": "2026-10-24T01:13:11.606Z",
+      "log": "artifacts/development-checks/goal-20261024-cheap/8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635-179-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log",
+      "sha256": "802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616",
+      "artifacts": {
+        "builds/jest/index.html": "b2e4d6e0bc7fd1aac20e09545fb23dc22c7cb67434022bb01217d20370d54ccb",
+        "builds/facebook/index.html": "a703b8c7dccab9c4957c7f07e7fe7c133047730aa1da17897e81fbc4c0f462b9",
+        "builds/reddit/index.html": "5eb041b1ae9714fe7111c69aef96accd27eaa47849c0e31bd2eb557c4d2bb1dd",
+        "builds/youtube/index.html": "99e3a4d1e73300b06528383cc010fc1fbf7fb7327ecba58b02b68b28a1311f3b",
+        "builds/netflix/index.html": "9a04b555352a46ba76c123b6a0ec1cc6413ecdab5191400d28ecba1dccb157a0",
+        "builds/yahoo/index.html": "62e6b2b6942b40e6cd202955c6c260aa958287739ea374b1ba415a19fbc860a7",
+        "build-gamesnacks.zip": "513ead5d981eea06f6663063488768f51e02b8885053c63971070d7291860c65",
+        "build-itch.zip": "bab74e11358935ab37fca3fb781f1045fce9bccc8d622c8d92e88e9e04f88038",
+        "artifacts/target-dependencies/jest.json": "e988ab1ad24e11705973e94eece37f955cd5ab11be025d8965c7576f4baeb47e",
+        "artifacts/target-dependencies/facebook.json": "f20057458f52b6f3762e138112c987f7380d367de421ed50b3945a585b42f9de",
+        "artifacts/target-dependencies/reddit.json": "01064746ef43a1c5b0269fcab32b5e184e6f2ba263f5a223859d221c84a837b5",
+        "artifacts/target-dependencies/youtube.json": "79cfae4e7c5488d43829f5ec3877ac934b737631b2ffa5d27b1b2bf5268ee4be",
+        "artifacts/target-dependencies/netflix.json": "a0a013d2194178cdd3c8dc7bbe72fbdae37b1decaf09b7c536291ff021e7464d",
+        "artifacts/target-dependencies/yahoo.json": "ed5f345c0ac4eb03ed792121f6dd895e85d00d6e27bcb6dcf8c592e7f1865675",
+        "artifacts/target-dependencies/gamesnacks.json": "02ad39e8b8c3ea832a2d0539ebeb2b1645e42b8d9e3ca6d32f97f0710952b441",
+        "docs/evidence/platform-only-build-scope.md": "f69737a42b436897b1204a8656734720ee78f5c82f41e32c90e831e4eeb7bc2a",
+        "artifacts/retained-creator-recovery-2026-10-10/browser.json": "f291cfadbed17a862caab70bf4ef286dfe794ee4f89d314649bf8a73e7332c2c"
+      },
+      "sourceBefore": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+      "sourceAfter": "8c9f8dc5e4df381aa3e04937e585cebd4237f90a287870d469115d9cb06a1635",
+      "sourceStillMatches": true,
+      "originReport": "artifacts/development-checks/goal-20261024-cheap/724de22ac790fec21c230f01fab7ea2f05077c1b7d3fd6c213e09da9c4f6d6ab.json"
+    }
+  ]
+}

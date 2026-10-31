@@ -1,0 +1,36 @@
+{
+  "build": {
+    "id": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "version": "1.0.0-dev.20261023-demo-fixes",
+    "isActive": true,
+    "description": "Fix healthy cold-start timeouts and show server-confirmed coins even when Jest purchase confirmation fails. Frozen source: 3,349 unit tests pass. Exact package: 79 retained browser checks plus 3 purchase cases pass. All 20 Simulator launch checks pass. Hosted recovery and no-scroll Help verified.",
+    "shareNotesWithPlayers": false,
+    "fileSizeBytes": 4718419,
+    "activatedAt": "2026-10-23T04:51:42.742Z",
+    "deactivatedAt": null,
+    "createdAt": "2026-10-23T04:41:38.467Z",
+    "previewUrl": "/g/riddle-q?versionId=01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "hostingMode": "bundled",
+    "selfHostedUrl": null,
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "sdkCompatibility": {
+      "engine": null,
+      "detectedVersion": null,
+      "latestVersion": null,
+      "breakingChangeVersion": null,
+      "status": "not_applicable",
+      "message": "No engine SDK version was detected for this build.",
+      "changelogUrl": null
+    }
+  },
+  "review": {
+    "id": "01a16618-11b9-71bb-9b52-48281a4c80f5",
+    "status": "in_review",
+    "versionId": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "submittedAt": "2026-10-23T04:51:42.739Z",
+    "approvedAt": null,
+    "submittedBy": "grindheadgames@gmail.com"
+  },
+  "isPublished": false
+}

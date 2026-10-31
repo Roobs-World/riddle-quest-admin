@@ -1,0 +1,10 @@
+{
+  "beforeSha256": "db4a57902ab69d05ecca7ec2d94862e4df8db6fcce253716a5e3e560d030001e",
+  "afterSha256": "4a65ed25f7160afb7354f49c92383848ec38c9175320152f2ab4d171846cd881",
+  "cachedSourceMatches": [
+    "/tmp/jest_rs/jest-transform-cache-933e6e22abcd508c445fc3df74effe67-33e9a252a52783adb262261baf4dff05/32/purchasestest_32dde90e95127bf572fda8797f051520.map",
+    "/tmp/jest_rs/jest-transform-cache-933e6e22abcd508c445fc3df74effe67-33e9a252a52783adb262261baf4dff05/ac/purchasestest_aca2d0db0faeb34e7f1a9a18b89fd4af.map"
+  ],
+  "cachedSourcesExamined": 5,
+  "method": "Reverse only the two added imports, the changed acknowledgement expectation/title and the added lifecycle cases. Production preedit hash independently matches root runtime-before inventory."
+}

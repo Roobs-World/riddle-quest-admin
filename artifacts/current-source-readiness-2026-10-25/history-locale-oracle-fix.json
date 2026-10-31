@@ -1,0 +1,8 @@
+{
+  "appliedAt": "2026-10-25T23:00:25.295756+00:00",
+  "scope": "Only locale-keyed literal expectation in the new history behavior check. Navigation, ticket identity, waits, product code and all other assertions unchanged.",
+  "path": "packages/portal/src/play/__tests__/liveHistory.jest-playwright.support.ts",
+  "beforeSha256": "94da161b5a355270722f98cead2bf7809764e4f8bfaca2b47cb0fe6cb500e139",
+  "afterSha256": "afb01524da1f9539606aaa57f5b241632016a8f224049681a28875518eeca457",
+  "sourceAfter": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619"
+}

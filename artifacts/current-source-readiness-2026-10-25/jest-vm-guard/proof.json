@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "scope": "Real Jest VM self-test; two separately created contexts. No repository source/config changes, CLI selection changes, or provider mock mutation.",
+  "result": {
+    "passedSuites": 1,
+    "passedTests": 1,
+    "contexts": 2,
+    "beforeNavigationGuard": true,
+    "nativeMediaForcedMuted": true,
+    "webAudioDestinationGain": 0,
+    "sharedSilentWavHeader": "RIFF",
+    "realAudioServerRequests": 0,
+    "laterPageRouteExternalContinuationBlocked": true,
+    "mockedExternalProviderFulfillAllowed": true
+  },
+  "configInjection": "Environment-owned native CJS config loader adds one setupFilesAfterEnv bridge in memory; on-disk config and declared command arguments stay unchanged.",
+  "knownPriorProvenance": "Earlier ordinary Node browser scripts had the full guard. Earlier Jest VM browsers had observed headless --mute-audio only; context fixture/network guard was not installed and is not retroactively claimed.",
+  "files": {
+    "riddle-shared-silent-audio.cjs": "c3efeb19c7582245ebb3919ac495c8a6a5ff80ebbff30e4b78631beade33e5fc",
+    "results.json": "90d2605d1febb2c3a622ecf433624c3705ad512267e8a61a6c2107f66cfdaf52",
+    "silence.test.cjs": "4e3f5790a30b953a0292312507b3bc6904a939fd746297749fc559e515d26bc6",
+    "second-failed-results.json": "569c85462d06924072648208db4855a0a2847dab65388288f93366ab7728a430",
+    "riddle-jest-silent-setup.cjs": "ff38ee97be56941990468b05cb5fe5004e0bb4a5cb1a0fc43669cf505e7bd4c2",
+    "jest.config.cjs": "357fa890d5fa13a2f1c3e736b493bda9b1ca6b9d734921e93795336e339c6716",
+    "riddle-silent-browser-v5.cjs": "29b7fec07cb7ded9bbdd0a253e198e3243dcb644018ef919c8793a9febf8d0c9",
+    "riddle-shared-silent-audio-adapter.json": "4bc13ebe637a26105e4373a1254729071cf64585a25d4fcfd83880fa99ebbc6c",
+    "initial-failed-results.json": "cc4560b644bce75d69e11b7b1b7d5f2272c3b7dfd2c9c7fa005a09070877cc64"
+  }
+}

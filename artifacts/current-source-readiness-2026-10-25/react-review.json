@@ -1,0 +1,23 @@
+{
+  "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+  "skill": "/home/craig-beswetherick/.codex/plugins/cache/openai-curated-remote/vercel/0.54.1/skills/react-best-practices/SKILL.md",
+  "scope": "Post-edit review of the four-view guest/legacy label change.",
+  "files": {
+    "packages/portal/src/play/race/LiveRaceGame.tsx": "7231a7e989cbe997f726e6b2e07d64b95fedeacca47badfaa0646a57fe02f1e5",
+    "packages/portal/src/play/race/components/LiveRaceIdentity.tsx": "58da5911132016856980ea29804573f0a7e7fd49a5f47b22faac105bd0f3bbc4",
+    "packages/portal/src/play/race/components/LiveRaceHistory.tsx": "817fa492b37d8fca851b83139212e29cbe3bc85ac2a5bffa1f5a3e38db442ad7",
+    "packages/portal/src/play/race/logic/liveRacePlayerName.ts": "838eb0b432071d92ae2c5409056d6c774881ad4807e3c43b21e45566ff172e5f"
+  },
+  "checks": {
+    "noAddedHooksEffectsSubscriptionsOrNetworkCalls": true,
+    "labelDerivedDuringRenderWithoutStateOrMemo": true,
+    "normalHumanAndAssignedGuestRunReferencesRetained": true,
+    "legacyProjectionCopiesRatherThanMutatesAuthority": true,
+    "unavailableHumanPrivacyMaskPrecedesNameFormatting": true,
+    "existingLocalisedFallbackAndAllLocalesRetained": true,
+    "markupAriaFocusAndKeyboardStructureUnchanged": true,
+    "directTypeOnlyAndPresentationImportsNoNewDependency": true,
+    "strictInitialBudgetUnchanged": true
+  },
+  "blockingFindings": []
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "path": "packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+    "sha256": "a872687d3e40e1513a14990ef97a3e4f6aca1c9027c596add5c57d00b7b7e9ff"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/profileTour.jest-playwright.test.ts",
+    "sha256": "8328fbcf6b7f0ae4d2453cc30045ab319dc52899564e1092fdf9f52549c23d49"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts",
+    "sha256": "5d69fab58b610ce42ddbd41ff25d83e81e0b96cb1ff3f1b6f894c344e4e12d77"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/coinCollection.jest-playwright.test.ts",
+    "sha256": "68ff019318b38b58e48d3a850cd73a11002e1317b76c58b1f493359b8b4bf4c0"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/musicStart.jest-playwright.test.ts",
+    "sha256": "3745259cda963abccdbcb9a9c2d9a87f77ac0c5e2c5eaadec665a4d48ff58988"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts",
+    "sha256": "dd49020ca49228eea2806adad70d83a184e31231ec1e07632c5a1e055966299a"
+  },
+  {
+    "path": "packages/portal/src/play/__tests__/viewportFit.jest-playwright.test.ts",
+    "sha256": "80640f2792f0bd1df37be50bd50da877024381b6dc611c181b44062df6b01a2d"
+  },
+  {
+    "path": "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts",
+    "sha256": "d5b23a203c47b39820366dbcff71975f64ccaa78420e99fafba1c9beb3c44f73"
+  }
+]

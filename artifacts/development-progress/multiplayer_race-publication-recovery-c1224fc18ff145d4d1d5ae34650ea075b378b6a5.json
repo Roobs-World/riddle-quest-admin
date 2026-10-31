@@ -1,0 +1,104 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-publication-recovery",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Recover rejected or malformed challenge-publication confirmations using the original run-bound mutation receipt, validate publication metadata against the recorded result and emit sharing once.",
+    "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+    "sourceDigest": "5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb",
+    "completedAt": "2026-10-13T08:18:46.494Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "race-transitions",
+      "portal-types",
+      "isolated-target-builds",
+      "injected-publication-recovery",
+      "artifact-dependency-evidence"
+    ],
+    "checks": [
+      {
+        "id": "race-transitions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; current-source check at 2026-10-13T07:35:15.128Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-fc75e68dd7fcdd2619b6035c4bcd7f2ff19703f5208a41c4a6a06af3290fb299-0554be8dbd996857b7b726a80e303f80312f4cf5dc1676ff1bc681314eda0ade.log SHA-256 0554be8dbd996857b7b726a80e303f80312f4cf5dc1676ff1bc681314eda0ade"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-13T07:26:18.681Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-13T07:26:06.434Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-77fc6d0d4155a51e64ba88bb5d343ea75b3584f81714a046a2d59de390234033-3c10bef4893a9fcbd45fbad0c67495832ce48930c5058c642a4190eaf32cdb65.log SHA-256 3c10bef4893a9fcbd45fbad0c67495832ce48930c5058c642a4190eaf32cdb65"
+      },
+      {
+        "id": "injected-publication-recovery",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-retained-start-quit-publication-browser.mjs; current-source check at 2026-10-13T07:58:01.831Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-54634232ef98b54db8dc124165c655ba335a19ccf6583dac3073179e15e4fa94-4d289a0dd4f470efd64f3559f755a2ca366aca32cbe273e966043f05f518648b.log SHA-256 4d289a0dd4f470efd64f3559f755a2ca366aca32cbe273e966043f05f518648b"
+      },
+      {
+        "id": "artifact-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-13T07:47:18.637Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146-e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe.log SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe"
+      }
+    ],
+    "remainingGates": [
+      "Remaining multiplayer architecture requirements have independent development checks.",
+      "Provider submission, approval and deployment require their own receipts."
+    ],
+    "nextAction": "Continue the remaining multiplayer requirements and accepted-revision release verification.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "f3cf41378efdb1257ec96ae4d495476058711511cdc0f1c9116250449bfb703c"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "687b4011cb0e3fe94c65a49270194ffaf4a82bafbe75816bc2549b2ba76ff11c"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "f7c36ea57ecc22e2e4d29a7044959ff1faa250aba26ad6314a070cc76b932f3c"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "0db0aa6786ba60cbb7a6af0b8510131bdae2892030476d1a744c322725a8a967"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "e1d4f16f0dbf6cd62e80d0aa5b4422eaec17202d7d2e9fdf81b1e48f46f31416"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "0a53af5f0acee8bab4e9e8e3e602fe1a4b3775b9d610ad5924b2c139c5d53c79"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "checkId": "isolated-target-builds",
+        "sha256": "8f20f526744f181bccca7057013cf077a848299e0d1ce4466b398a9f92948ebb"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "01a09700-5868-719a-aa89-af8b581731e7",
+    "reference": "riddle-q-notification",
+    "moderationStatus": "pass",
+    "processingStatus": "complete",
+    "archivedAt": null,
+    "usage": {
+      "logo": false,
+      "hero": false,
+      "heroVideo": false
+    }
+  },
+  {
+    "id": "01a0857f-9c85-728e-8b74-bac7cdb89d9c",
+    "reference": "riddle-q-hero",
+    "moderationStatus": "pass",
+    "processingStatus": "complete",
+    "archivedAt": null,
+    "usage": {
+      "logo": false,
+      "hero": false,
+      "heroVideo": false
+    }
+  },
+  {
+    "id": "01a0857f-3f67-7130-ab7a-4d73249e4804",
+    "reference": "riddle-q-logo",
+    "moderationStatus": "pass",
+    "processingStatus": "complete",
+    "archivedAt": null,
+    "usage": {
+      "logo": true,
+      "hero": true,
+      "heroVideo": false
+    }
+  }
+]

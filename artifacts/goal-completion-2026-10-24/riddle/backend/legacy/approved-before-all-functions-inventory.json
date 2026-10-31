@@ -1,0 +1,2166 @@
+{
+  "capturedAt": "2026-10-24T03:21:09.866567+00:00",
+  "instances": [
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933467141",
+            "object": "requestRaceHint/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/requestRaceHint",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "requestracehint-00026-qec"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933503646",
+            "object": "getCurrentDailyChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getCurrentDailyChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getcurrentdailychallenge-00012-hin"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933495433",
+            "object": "readyRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/readyRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "readyracerun-00025-yap"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933462608",
+            "object": "retireLiveRaceJoin/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/retireLiveRaceJoin",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "retireliveracejoin-00006-rem"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933557492",
+            "object": "getRaceAccess/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceAccess",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getraceaccess-00023-xoj"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933490650",
+            "object": "publishRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/publishRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "publishracechallenge-00025-gic"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933450359",
+            "object": "getCurrentClassicRiddle/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getCurrentClassicRiddle",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getcurrentclassicriddle-00013-deh"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933541972",
+            "object": "skipRiddle/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRiddle",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "skipriddle-00011-qib"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933509193",
+            "object": "resumeRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/resumeRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "resumeracerun-00027-wex"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933456484",
+            "object": "skipRaceRiddle/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRaceRiddle",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "skipraceriddle-00028-cer"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933486245",
+            "object": "setLiveRacePushSubscription/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/setLiveRacePushSubscription",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "setliveracepushsubscription-00011-foy"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933515848",
+            "object": "joinLiveRace/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/joinLiveRace",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "joinliverace-00023-jer"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933475590",
+            "object": "reserveRaceInvite/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/reserveRaceInvite",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "reserveraceinvite-00023-vec"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933519962",
+            "object": "listLiveRaceHistory/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistory",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listliveracehistory-00008-jon"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933534913",
+            "object": "submitRaceGuess/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitRaceGuess",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "submitraceguess-00028-fem"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933481109",
+            "object": "aggregatePresenceStatus/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/aggregatePresenceStatus",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "aggregatepresencestatus-00033-cim"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933521486",
+            "object": "deliverLiveRaceChallengePush/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/deliverLiveRaceChallengePush",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "deliverliveracechallengepush-00012-dun"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933528039",
+            "object": "getRaceEntry/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceEntry",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getraceentry-00026-wid"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933520373",
+            "object": "updateLiveRace/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/updateLiveRace",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "updateliverace-00024-jev"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933554598",
+            "object": "listRaceCategories/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceCategories",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listracecategories-00024-joy"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933520246",
+            "object": "startRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/startRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "startracerun-00028-nuf"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933777707",
+            "object": "sendLiveRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/sendLiveRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "sendliveracechallenge-00010-cuq"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1791410809886597",
+            "object": "listLiveRaceHistoryPage/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listliveracehistorypage-00001-yaf"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933486351",
+            "object": "completeGame/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/completeGame",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "completegame-00012-peb"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933502616",
+            "object": "getRaceOutcome/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceOutcome",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getraceoutcome-00026-haj"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933507859",
+            "object": "getHint/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getHint",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "gethint-00012-gip"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933244790",
+            "object": "confirmLiveGuessReceipt/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/confirmLiveGuessReceipt",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "confirmliveguessreceipt-00002-fec"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933467974",
+            "object": "getRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getracechallenge-00023-nem"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933732209",
+            "object": "getLiveRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getLiveRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getliveracechallenge-00015-lej"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933289787",
+            "object": "listRaceInbox/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceInbox",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listraceinbox-00024-yoz"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933520552",
+            "object": "abandonRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/abandonRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "abandonracerun-00026-cuv"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933503814",
+            "object": "submitSinglePlayerGuess/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitSinglePlayerGuess",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "submitsingleplayerguess-00012-teq"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933472837",
+            "object": "cancelRaceInvite/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/cancelRaceInvite",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "cancelraceinvite-00023-hux"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804863377090",
+            "object": "spendCoins/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/spendCoins",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "spendcoins-00011-zik"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933526326",
+            "object": "getClassicRiddleBuffer/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getClassicRiddleBuffer",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getclassicriddlebuffer-00013-hem"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933609643",
+            "object": "listLiveRaceChallenges/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceChallenges",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listliveracechallenges-00013-mop"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933492296",
+            "object": "recordRaceAnalytics/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/recordRaceAnalytics",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "recordraceanalytics-00024-vod"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792804933619817",
+            "object": "findRaceMatch/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/findRaceMatch",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "findracematch-00025-tap"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804830329080",
+            "object": "getFacebookClientConfiguration/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getFacebookClientConfiguration",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getfacebookclientconfiguration-00033-boy"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797354188",
+            "object": "requestRaceHint/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/requestRaceHint",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "requestracehint-00057-yas"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797186399",
+            "object": "getCurrentDailyChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentDailyChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getcurrentdailychallenge-00060-tol"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797164104",
+            "object": "readyRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/readyRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "readyracerun-00033-sit"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851392931",
+            "object": "retireLiveRaceJoin/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retireLiveRaceJoin",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "retireliveracejoin-00006-gix"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797148529",
+            "object": "syncJestAvatar/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestAvatar",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "syncjestavatar-00027-qar"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804840456477",
+            "object": "acceptFacebookNotificationPermissionPrompt/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/acceptFacebookNotificationPermissionPrompt",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "acceptfacebooknotificationpermissionprompt-00033-kem"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797193134",
+            "object": "getRaceAccess/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceAccess",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getraceaccess-00050-rog"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804841478471",
+            "object": "yahooOAuthCallback/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthCallback",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "yahoooauthcallback-00034-bov"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804796833216",
+            "object": "publishRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/publishRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "publishracechallenge-00054-yex"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797267688",
+            "object": "getCurrentClassicRiddle/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentClassicRiddle",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getcurrentclassicriddle-00057-xid"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797180306",
+            "object": "skipRiddle/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRiddle",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "skipriddle-00051-zat"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804819549662",
+            "object": "blockRival/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockRival",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "blockrival-00033-han"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804829743884",
+            "object": "createFacebookReferral/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createFacebookReferral",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "createfacebookreferral-00033-ret"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804884049740",
+            "object": "exchangeRedditIdentity/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeRedditIdentity",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "exchangeredditidentity-00034-gob"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797251411",
+            "object": "exchangeJestIdentity/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeJestIdentity",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "exchangejestidentity-00054-duc"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797364683",
+            "object": "resumeRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/resumeRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "resumeracerun-00056-noy"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797182129",
+            "object": "getLeaderboard/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLeaderboard",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getleaderboard-00045-wul"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797225826",
+            "object": "skipRaceRiddle/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRaceRiddle",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "skipraceriddle-00058-quf"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851208496",
+            "object": "replenishClassicSupplyOnDemand/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/replenishClassicSupplyOnDemand",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "replenishclassicsupplyondemand-00003-vit"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851202001",
+            "object": "joinLiveRace/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinLiveRace",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "joinliverace-00023-waz"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797159919",
+            "object": "reserveRaceInvite/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reserveRaceInvite",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "reserveraceinvite-00035-civ"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804852896333",
+            "object": "listLiveRaceHistory/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistory",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listliveracehistory-00008-rus"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804819369270",
+            "object": "facebookDataDeletionStatus/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionStatus",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "facebookdatadeletionstatus-00033-wuw"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797315230",
+            "object": "submitRaceGuess/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitRaceGuess",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "submitraceguess-00058-dob"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804841832521",
+            "object": "confirmYahooStripeCheckout/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/confirmYahooStripeCheckout",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "confirmyahoostripecheckout-00034-wes"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804829956034",
+            "object": "joinFacebookContext/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinFacebookContext",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "joinfacebookcontext-00033-seq"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797251898",
+            "object": "facebookDataDeletionCallback/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionCallback",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "facebookdatadeletioncallback-00033-huc"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804885934602",
+            "object": "yahooStripeWebhook/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooStripeWebhook",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "yahoostripewebhook-00034-gux"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797171202",
+            "object": "verifyJestReferrals/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/verifyJestReferrals",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "verifyjestreferrals-00051-yiw"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804850694878",
+            "object": "retryClassicSupplyOnDemand/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryClassicSupplyOnDemand",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "retryclassicsupplyondemand-00003-zas"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804829932081",
+            "object": "leaveFacebookContext/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/leaveFacebookContext",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "leavefacebookcontext-00033-vof"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797236582",
+            "object": "syncJestSubscriptions/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestSubscriptions",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "syncjestsubscriptions-00048-nag"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804883933341",
+            "object": "createYahooStripeCheckout/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createYahooStripeCheckout",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "createyahoostripecheckout-00035-dos"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804830208353",
+            "object": "syncBlockedRivalPresenceVisibility/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncBlockedRivalPresenceVisibility",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "syncblockedrivalpresencevisibility-00033-yug"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797160755",
+            "object": "getRaceEntry/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceEntry",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getraceentry-00031-zul"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1791411894794381",
+            "object": "blockLiveRaceOpponent/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "blockliveraceopponent-00001-lor"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804861603929",
+            "object": "dailyChallengeScheduler/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/dailyChallengeScheduler",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "dailychallengescheduler-00053-xav"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804830062652",
+            "object": "syncKnownRivalPresenceVisibility/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncKnownRivalPresenceVisibility",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "syncknownrivalpresencevisibility-00033-dal"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804850989203",
+            "object": "updateLiveRace/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateLiveRace",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "updateliverace-00024-lit"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804883348519",
+            "object": "yahooOAuthStart/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthStart",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "yahoooauthstart-00034-vut"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804829627115",
+            "object": "bindFacebookReferral/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/bindFacebookReferral",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "bindfacebookreferral-00033-lob"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797252733",
+            "object": "listRaceCategories/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceCategories",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listracecategories-00052-wab"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797163505",
+            "object": "startRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/startRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "startracerun-00058-kit"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797243607",
+            "object": "retryJestAccountDeletion/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryJestAccountDeletion",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "retryjestaccountdeletion-00037-gaj"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851617274",
+            "object": "sendLiveRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/sendLiveRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "sendliveracechallenge-00010-xod"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804840759051",
+            "object": "redditStorage/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditStorage",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "redditstorage-00034-zeg"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1791410809376022",
+            "object": "listLiveRaceHistoryPage/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listliveracehistorypage-00001-zuq"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804819246039",
+            "object": "recordFacebookTournament/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookTournament",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "recordfacebooktournament-00034-tax"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797101212",
+            "object": "grantFacebookRewardedContinue/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantFacebookRewardedContinue",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "grantfacebookrewardedcontinue-00016-tif"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797201784",
+            "object": "completeGame/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/completeGame",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "completegame-00054-wom"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797259615",
+            "object": "getRaceOutcome/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceOutcome",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getraceoutcome-00054-zab"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804820547984",
+            "object": "setPresenceConsent/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/setPresenceConsent",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "setpresenceconsent-00033-zij"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804840392623",
+            "object": "claimFacebookNotificationPermissionPrompt/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/claimFacebookNotificationPermissionPrompt",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "claimfacebooknotificationpermissionprompt-00033-cis"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1791411961331998",
+            "object": "reportLiveRaceOpponent/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "reportliveraceopponent-00001-muw"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797144184",
+            "object": "deleteAccount/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteAccount",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "deleteaccount-00045-rok"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797154763",
+            "object": "getHint/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getHint",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "gethint-00051-zus"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804885748083",
+            "object": "deliverRaceSettlementEvent/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRaceSettlementEvent",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "deliverracesettlementevent-00032-giq"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851284840",
+            "object": "confirmLiveGuessReceipt/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/confirmLiveGuessReceipt",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "confirmliveguessreceipt-00002-hok"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804819357885",
+            "object": "listFacebookTournament/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookTournament",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listfacebooktournament-00033-bel"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797149586",
+            "object": "updateUsername/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateUsername",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "updateusername-00045-vez"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804840545635",
+            "object": "deleteRedditAccount/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteRedditAccount",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "deleteredditaccount-00036-wuz"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797231831",
+            "object": "getRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getracechallenge-00051-wel"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797236883",
+            "object": "grantJestPurchase/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantJestPurchase",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "grantjestpurchase-00052-nup"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804830052767",
+            "object": "listFacebookContextBoard/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookContextBoard",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listfacebookcontextboard-00033-new"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804819754781",
+            "object": "reportRival/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportRival",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "reportrival-00033-biz"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851511035",
+            "object": "getLiveRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLiveRaceChallenge",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getliveracechallenge-00015-vur"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804843806119",
+            "object": "deliverRacePerformanceEvent/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRacePerformanceEvent",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "deliverraceperformanceevent-00031-ben"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797187515",
+            "object": "listRaceInbox/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceInbox",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listraceinbox-00052-vin"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797241974",
+            "object": "abandonRaceRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/abandonRaceRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "abandonracerun-00050-kev"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804796755751",
+            "object": "submitSinglePlayerGuess/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitSinglePlayerGuess",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "submitsingleplayerguess-00041-qeq"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804884381307",
+            "object": "redditGameplay/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditGameplay",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "redditgameplay-00045-yac"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804830058126",
+            "object": "recordFacebookContextRun/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookContextRun",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "recordfacebookcontextrun-00033-toj"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797397298",
+            "object": "cancelRaceInvite/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/cancelRaceInvite",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "cancelraceinvite-00028-xoh"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804720854286",
+            "object": "spendCoins/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/spendCoins",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "spendcoins-00048-jeg"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797286178",
+            "object": "getClassicRiddleBuffer/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getClassicRiddleBuffer",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "getclassicriddlebuffer-00040-kow"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797427603",
+            "object": "issueFacebookIdentityNonce/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/issueFacebookIdentityNonce",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "issuefacebookidentitynonce-00034-nem"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804851441027",
+            "object": "listLiveRaceChallenges/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceChallenges",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "listliveracechallenges-00013-fev"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797187712",
+            "object": "recordRaceAnalytics/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordRaceAnalytics",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "recordraceanalytics-00054-top"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797172314",
+            "object": "updateAvatar/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateAvatar",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "updateavatar-00045-mir"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797285974",
+            "object": "findRaceMatch/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/findRaceMatch",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "findracematch-00037-how"
+      },
+      "state": "ACTIVE"
+    },
+    {
+      "buildConfig": {
+        "runtime": "nodejs22",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792804797200132",
+            "object": "exchangeFacebookIdentity/function-source.zip"
+          }
+        }
+      },
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeFacebookIdentity",
+      "serviceConfig": {
+        "allTrafficOnLatestRevision": true,
+        "revision": "exchangefacebookidentity-00034-pen"
+      },
+      "state": "ACTIVE"
+    }
+  ],
+  "environmentValuesNotRequested": true
+}

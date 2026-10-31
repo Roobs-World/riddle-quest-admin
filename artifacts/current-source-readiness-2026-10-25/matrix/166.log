@@ -1,0 +1,41 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --runTestsByPath src/reddit/__tests__/redditBrowser.jest-playwright.test.ts
+[riddle-silent-guard] environment-owned Jest setup bridge installed before test modules
+[riddle-silent-guard] Jest VM Playwright API patched before test modules
+[riddle-silent-guard] muted chromium launch
+2026-10-25T23:07:15.867Z pw:browser <launching> /home/craig-beswetherick/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --mute-audio --user-data-dir=/home/craig-beswetherick/.cache/riddle-quest-verify/browser-temp-20261025/playwright_chromiumdev_profile-qJX32R --remote-debugging-pipe --no-startup-window
+2026-10-25T23:07:15.869Z pw:browser <launched> pid=2899529
+[riddle-silent-guard] context isolated before navigation
+2026-10-25T23:07:15.957Z pw:browser [pid=2899529][err] [1025/230715.956827:WARNING:sandbox/policy/linux/sandbox_linux.cc:405] InitializeSandbox() called with multiple threads in process gpu-process.
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+2026-10-25T23:07:17.193Z pw:browser [pid=2899529][err] [1025/230717.193879:ERROR:gpu/command_buffer/service/gl_utils.cc:427] [.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+2026-10-25T23:07:17.197Z pw:browser [pid=2899529][err] [1025/230717.196230:INFO:CONSOLE:0] "[.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels", source: http://127.0.0.1:39229/ (0)
+2026-10-25T23:07:17.280Z pw:browser [pid=2899529][err] [1025/230717.280670:ERROR:gpu/command_buffer/service/gl_utils.cc:427] [.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+2026-10-25T23:07:17.455Z pw:browser [pid=2899529][err] [1025/230717.454936:INFO:CONSOLE:0] "[.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels", source: http://127.0.0.1:39229/ (0)
+2026-10-25T23:07:17.456Z pw:browser [pid=2899529][err] [1025/230717.456478:ERROR:gpu/command_buffer/service/gl_utils.cc:427] [.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+2026-10-25T23:07:17.465Z pw:browser [pid=2899529][err] [1025/230717.465680:INFO:CONSOLE:0] "[.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels", source: http://127.0.0.1:39229/ (0)
+2026-10-25T23:07:17.467Z pw:browser [pid=2899529][err] [1025/230717.467160:ERROR:gpu/command_buffer/service/gl_utils.cc:427] [.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
+2026-10-25T23:07:17.472Z pw:browser [pid=2899529][err] [1025/230717.471949:INFO:CONSOLE:0] "[.WebGL-0x754023ee800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)", source: http://127.0.0.1:39229/ (0)
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+  console.info
+    Reddit: feedback 8.8ms; next draft survives confirmation
+
+      at verifyImmediateSoloFeedback (src/play/__tests__/instantFeedback.jest-playwright.support.ts:46:11)
+
+2026-10-25T23:07:37.832Z pw:browser [pid=2899529] <gracefully close start>
+2026-10-25T23:07:37.859Z pw:browser [pid=2899529] <process did exit: exitCode=0, signal=null>
+2026-10-25T23:07:37.859Z pw:browser [pid=2899529] starting temporary directories cleanup
+2026-10-25T23:07:37.860Z pw:browser [pid=2899529] finished temporary directories cleanup
+2026-10-25T23:07:37.860Z pw:browser [pid=2899529] <gracefully close end>
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        22.417 s
+Ran all test suites within paths "src/reddit/__tests__/redditBrowser.jest-playwright.test.ts".

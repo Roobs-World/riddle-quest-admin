@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-10-22T00:55:24.027332+00:00",
+  "scope": "Local-only Facebook/Reddit referral completion attribution; no deployment or production data mutation",
+  "before": {
+    "success": false,
+    "numPassedTestSuites": 0,
+    "numFailedTestSuites": 1,
+    "numPassedTests": 0,
+    "numFailedTests": 4,
+    "numPendingTests": 33
+  },
+  "unit": {
+    "success": true,
+    "numPassedTestSuites": 8,
+    "numFailedTestSuites": 0,
+    "numPassedTests": 136,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  },
+  "integration": {
+    "success": true,
+    "numPassedTestSuites": 7,
+    "numFailedTestSuites": 0,
+    "numPassedTests": 137,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  },
+  "finalCombined": {
+    "suitesPassed": 15,
+    "testsPassed": 273,
+    "failed": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "backendTypecheck": {
+      "command": "pnpm exec tsc -p tsconfig.json --noEmit",
+      "exitCode": 0
+    },
+    "backendLint": {
+      "command": "pnpm exec eslint --ext .js,.ts src",
+      "exitCode": 0
+    },
+    "tsdocAudit": {
+      "command": "node scripts/audit-tsdoc.mjs",
+      "exitCode": 0
+    },
+    "diffWhitespace": {
+      "command": "git diff --check -- <eight owned files>",
+      "exitCode": 0
+    }
+  },
+  "emulator": {
+    "project": "demo-rq-attribution",
+    "firestore": "127.0.0.1:19799",
+    "productionData": false,
+    "stopped": true,
+    "legacyRaceFixtureProject": "demo-riddle-quest-multiplayer"
+  },
+  "sourceSha256": {
+    "firebase-functions/src/gameplay/completeGameLogic.ts": "4b3d537eaf4bd734abbd50f3f675f036eb9b3628c1ea4cd97d079a02a53a112a",
+    "firebase-functions/src/facebook/facebookReferrals.ts": "e0d0c09884a3da36ed9a981c8c116119315964baae1c51c849865ffe92500444",
+    "firebase-functions/src/reddit/redditReferrals.ts": "1be081644a99e2c414eca3088774a8488ee6cf351e21f754abd45a6e2c488c00",
+    "firebase-functions/src/profile/accountDeletion/deleteAccountData.ts": "649e1af539f5fadee698c7570d72f7b9e787ea87ae1fedac19bbeb340894f9cb",
+    "firebase-functions/src/__tests__/completeGameTransaction.test.ts": "07bc11c95e49653d5e6c3eb4eb2659e5e38f2adefd34fb61a018ff472858e1f6",
+    "firebase-functions/src/__tests__/facebookReferrals.test.ts": "36468b1d25c569d0b049d2200598dda265589ce6de5b260a2c2dcf39994e62bf",
+    "firebase-functions/src/__tests__/redditReferrals.test.ts": "5b901a85a9680ac9b782b977321d88fe7d59fb76ba85e97777e67e08d499f036",
+    "firebase-functions/src/__tests__/deleteAccount.test.ts": "1742fad1385fe78bd1f3918e79a44f93337a585ab138cce32c8c2c8b60618ad5"
+  },
+  "frontendIndependentReview": {
+    "mode": "read-only",
+    "newTestsRun": false,
+    "actionableFindings": []
+  },
+  "integrationLog": "Filtered test progress and verdicts; excludes Firebase CLI debug environment output."
+}

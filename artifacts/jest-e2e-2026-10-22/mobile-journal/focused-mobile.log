@@ -1,0 +1,13 @@
+Checking touch viewport soak and modal keyboard isolation
+PASS touch viewport soak and modal keyboard isolation
+Checking offline Help keyboard return then durable draft reload
+PASS offline Help keyboard return then durable draft reload
+Checking hint lock survives reload then paid Skip loads a playable successor
+PASS hint lock survives reload then paid Skip loads a playable successor
+Checking exhausted attempts stay blocked during purchase reward and paid sixth wins
+PASS exhausted attempts stay blocked during purchase reward and paid sixth wins
+Checking delayed journal keeps answer input closed while Help stays available
+PASS delayed journal keeps answer input closed while Help stays available
+Checking SDK-only startup restores PIA before the first hinted journal seed
+PASS SDK-only startup restores PIA before the first hinted journal seed
+{"cases":6,"failures":0,"artifactUnchanged":true}

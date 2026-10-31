@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-25T22:46:55.440123+00:00",
+  "allFiveImmutableGenerationsReadable": true,
+  "readability": [
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "expectedGeneration": "1792884674845614",
+      "generationReadable": true,
+      "size": 4126046
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "expectedGeneration": "1792884673238751",
+      "generationReadable": true,
+      "size": 4126046
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "expectedGeneration": "1792884735876710",
+      "generationReadable": true,
+      "size": 4126046
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "expectedGeneration": "1792884727188960",
+      "generationReadable": true,
+      "size": 4126046
+    },
+    {
+      "function": "redditGameplay",
+      "region": "us-central1",
+      "expectedGeneration": "1792804884381307",
+      "generationReadable": true,
+      "size": 1129080
+    }
+  ],
+  "rollbackStages": [
+    {
+      "rollbackStage": "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+      "safeFiles": 1019,
+      "actualSdkZipMatchesAllFiles": true,
+      "restrictedFilesExtracted": false,
+      "noIgnoreFileGenerated": true
+    },
+    {
+      "rollbackStage": "/var/tmp/riddle-backend-surgical-20261025/reddit-before",
+      "safeFiles": 535,
+      "actualSdkZipMatchesAllFiles": true,
+      "restrictedFilesExtracted": false,
+      "noIgnoreFileGenerated": true
+    }
+  ],
+  "callableOriginalAll1019HashesMatchImmutableBaseline": true,
+  "redditOriginalAll535HashesMatchImmutableBaseline": true,
+  "rawAuthenticatedArchiveRemoved": true,
+  "rollbackMethod": "Explicit private safe original stage with same supported external empty ignore file. Do not pass generation-qualified gs:// URLs to functions --source; use immutable refs only to preflight/read originals."
+}

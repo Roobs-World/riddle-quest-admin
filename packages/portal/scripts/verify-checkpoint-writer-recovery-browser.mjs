@@ -10,7 +10,7 @@ const portal = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mode = process.env.CHECKPOINT_WRITER_REACT_MODE ?? 'development';
 const engine = process.env.CHECKPOINT_WRITER_BROWSER ?? 'chromium';
 assert.ok(['development', 'production'].includes(mode));assert.ok(['chromium', 'firefox'].includes(engine));
-const output = path.resolve(process.env.CHECKPOINT_WRITER_REPORT_DIR ?? path.join(portal, '../../artifacts/checkpoint-writer-recovery-2026-10-06', engine + '-' + mode));
+const output = path.resolve(process.env.CHECKPOINT_WRITER_REPORT_DIR ?? path.join(portal, '../../builds/test-evidence/checkpoint-writer-recovery-2026-10-06', engine + '-' + mode));
 await mkdir(output, {recursive: true});await mkdir(path.join(portal, 'node_modules/.cache'), {recursive: true});
 const scratch = await mkdtemp(path.join(portal, 'node_modules/.cache/checkpoint-writer-recovery-'));
 const observations = [];let browser, server, browserVersion;

@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "شاهد فيديو لتحصل على محاولة إضافية",
     "COIN_EXTRA_GO_BUTTON": "{coins} عملات لفرصة إضافية",
-    "EXTRA_GO_PROMPT": "نفدت المحاولات. احصل على فرصة إضافية أو تخط هذا اللغز.",
     "OPEN_SHOP_BUTTON": "افتح المتجر",
     "OUT_OF_ATTEMPTS": "من المحاولات.",
     "SKIP_LEVEL_PREFIX": "استخدم ",

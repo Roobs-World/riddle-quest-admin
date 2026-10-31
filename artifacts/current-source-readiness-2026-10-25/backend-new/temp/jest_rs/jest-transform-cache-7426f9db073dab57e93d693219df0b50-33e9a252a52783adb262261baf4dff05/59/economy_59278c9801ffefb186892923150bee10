@@ -1,0 +1,48 @@
+cba75f99e6e4f9379e4be6a23134b301
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DAILY_STREAK_BONUS = exports.SOLO_BONUS_COINS = exports.SOLO_WIN_COINS = exports.SOLO_COIN_COSTS = void 0;
+exports.normalizeEconomyDifficulty = normalizeEconomyDifficulty;
+exports.getSoloWinCoins = getSoloWinCoins;
+exports.getCoinPackBuyingPower = getCoinPackBuyingPower;
+exports.getDailyStreakBonusCoins = getDailyStreakBonusCoins;
+/** Stable action prices: harder content increases earnings without increasing help costs. */
+exports.SOLO_COIN_COSTS = Object.freeze({ hint: 25, continue: 50, skip: 100 });
+/** Base rewards exclude the separately settled streak, level and achievement bonuses. */
+exports.SOLO_WIN_COINS = Object.freeze({
+    classic: Object.freeze({ easy: 25, medium: 40, hard: 60 }),
+    challenge: Object.freeze({ easy: 75, medium: 100, hard: 125 }),
+});
+/** Gives legacy or malformed content the conservative easy reward. */
+function normalizeEconomyDifficulty(value) {
+    return value === "medium" || value === "hard" ? value : "easy";
+}
+/** Calculates a base win grant from trusted content, never from player level or payment history. */
+function getSoloWinCoins(mode, difficulty) {
+    return exports.SOLO_WIN_COINS[mode][normalizeEconomyDifficulty(difficulty)];
+}
+/** Compares a pack to gameplay spending using whole actions and mutually exclusive examples. */
+function getCoinPackBuyingPower(coins) {
+    /** Invalid pack grants must never produce an inflated value claim. */
+    const balance = Number.isSafeInteger(coins) && coins > 0 ? coins : 0;
+    return { hints: Math.floor(balance / exports.SOLO_COIN_COSTS.hint), continues: Math.floor(balance / exports.SOLO_COIN_COSTS.continue) };
+}
+/**
+ * One-off bonuses settled alongside a solo win and reported as separate
+ * `rewardBreakdown` lines. They stay well below the smallest base win so a
+ * completion that happens to trigger several of them never dwarfs an ordinary
+ * riddle reward.
+ */
+exports.SOLO_BONUS_COINS = Object.freeze({ levelUp: 10, achievement: 10 });
+/** Daily-streak bonus schedule: a small flat bonus that grows weekly up to a cap. */
+exports.DAILY_STREAK_BONUS = Object.freeze({ initial: 10, weeklyStep: 10, intervalDays: 7, max: 100 });
+/** Returns the bonus paid on a Daily win for the active streak day. */
+function getDailyStreakBonusCoins(streakValue) {
+    /** Whole, non-negative streak days. */
+    const streak = Math.max(0, Math.floor(streakValue));
+    if (streak === 0)
+        return 0;
+    /** Completed weekly milestones within the active streak. */
+    const milestones = Math.floor(streak / exports.DAILY_STREAK_BONUS.intervalDays);
+    return Math.min(exports.DAILY_STREAK_BONUS.initial + milestones * exports.DAILY_STREAK_BONUS.weeklyStep, exports.DAILY_STREAK_BONUS.max);
+}

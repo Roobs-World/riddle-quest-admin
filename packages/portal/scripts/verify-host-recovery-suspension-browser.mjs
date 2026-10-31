@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.RECOVERY_SUSPENSION_MODE??'development',engine=process.env.RECOVERY_SUSPENSION_BROWSER??'chromium';
-const output=path.resolve(process.env.RECOVERY_SUSPENSION_REPORT_DIR??path.join(portal,'../../artifacts/host-recovery-suspension-2026-10-08',engine+'-'+mode));
+const output=path.resolve(process.env.RECOVERY_SUSPENSION_REPORT_DIR??path.join(portal,'../../builds/test-evidence/host-recovery-suspension-2026-10-08',engine+'-'+mode));
 await mkdir(output,{recursive:true});
 const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/recovery-suspension-'));
 const observations=[];let browser,server,browserVersion;

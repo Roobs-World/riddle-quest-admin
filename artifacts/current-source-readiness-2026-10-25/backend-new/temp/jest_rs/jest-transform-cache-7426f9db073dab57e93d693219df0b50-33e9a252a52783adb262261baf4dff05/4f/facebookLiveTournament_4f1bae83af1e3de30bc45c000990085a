@@ -1,0 +1,133 @@
+c4866ddcb057fda74b79cf8646685898
+"use strict";
+
+/* istanbul ignore next */
+function cov_1s38x3u1de() {
+  var path = "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/facebookLiveTournament.ts";
+  var hash = "4640f709aa9052c569fe22c43c898ed948dcfd77";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/facebookLiveTournament.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 2,
+          column: 62
+        }
+      },
+      "1": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 3,
+          column: 70
+        }
+      },
+      "2": {
+        start: {
+          line: 4,
+          column: 29
+        },
+        end: {
+          line: 4,
+          column: 60
+        }
+      },
+      "3": {
+        start: {
+          line: 7,
+          column: 4
+        },
+        end: {
+          line: 7,
+          column: 114
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "readFacebookLiveTournamentRun",
+        decl: {
+          start: {
+            line: 6,
+            column: 9
+          },
+          end: {
+            line: 6,
+            column: 38
+          }
+        },
+        loc: {
+          start: {
+            line: 6,
+            column: 74
+          },
+          end: {
+            line: 8,
+            column: 1
+          }
+        },
+        line: 6
+      }
+    },
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    f: {
+      "0": 0
+    },
+    b: {},
+    inputSourceMap: {
+      file: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/facebookLiveTournament.ts",
+      mappings: ";;AAGA,sEAGC;AAND,6DAAmE;AAEnE,2EAA2E;AAC3E,SAAgB,6BAA6B,CAAC,WAA0C,EAAE,EAA+B,EACvH,MAAc,EAAE,QAAgB;IAChC,OAAO,IAAA,kDAA6B,EAAC,WAAW,EAAE,EAAE,EAAE,MAAM,EAAE,QAAQ,EAAE,UAAU,CAAC,CAAC;AACtF,CAAC",
+      names: [],
+      sources: ["/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/facebookLiveTournament.ts"],
+      sourcesContent: ["import {readProviderLiveTournamentRun} from \"./raceLiveTournament\";\n\n/** Facebook official scores resolve only owned Facebook live victories. */\nexport function readFacebookLiveTournamentRun(transaction: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,\n  userId: string, ticketId: string) {\n  return readProviderLiveTournamentRun(transaction, db, userId, ticketId, \"facebook\");\n}\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "4640f709aa9052c569fe22c43c898ed948dcfd77"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1s38x3u1de = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1s38x3u1de();
+cov_1s38x3u1de().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_1s38x3u1de().s[1]++;
+exports.readFacebookLiveTournamentRun = readFacebookLiveTournamentRun;
+const raceLiveTournament_1 =
+/* istanbul ignore next */
+(cov_1s38x3u1de().s[2]++, require("./raceLiveTournament"));
+/** Facebook official scores resolve only owned Facebook live victories. */
+function readFacebookLiveTournamentRun(transaction, db, userId, ticketId) {
+  /* istanbul ignore next */
+  cov_1s38x3u1de().f[0]++;
+  cov_1s38x3u1de().s[3]++;
+  return (0, raceLiveTournament_1.readProviderLiveTournamentRun)(transaction, db, userId, ticketId, "facebook");
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJleHBvcnRzIiwicmVhZEZhY2Vib29rTGl2ZVRvdXJuYW1lbnRSdW4iLCJyYWNlTGl2ZVRvdXJuYW1lbnRfMSIsImNvdl8xczM4eDN1MWRlIiwicyIsInJlcXVpcmUiLCJ0cmFuc2FjdGlvbiIsImRiIiwidXNlcklkIiwidGlja2V0SWQiLCJmIiwicmVhZFByb3ZpZGVyTGl2ZVRvdXJuYW1lbnRSdW4iXSwic291cmNlcyI6WyIvaG9tZS9jcmFpZy1iZXN3ZXRoZXJpY2svRG9jdW1lbnRzL3JpZGRsZS1xdWVzdC9maXJlYmFzZS1mdW5jdGlvbnMvc3JjL3JhY2UvZmFjZWJvb2tMaXZlVG91cm5hbWVudC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQge3JlYWRQcm92aWRlckxpdmVUb3VybmFtZW50UnVufSBmcm9tIFwiLi9yYWNlTGl2ZVRvdXJuYW1lbnRcIjtcblxuLyoqIEZhY2Vib29rIG9mZmljaWFsIHNjb3JlcyByZXNvbHZlIG9ubHkgb3duZWQgRmFjZWJvb2sgbGl2ZSB2aWN0b3JpZXMuICovXG5leHBvcnQgZnVuY3Rpb24gcmVhZEZhY2Vib29rTGl2ZVRvdXJuYW1lbnRSdW4odHJhbnNhY3Rpb246IEZpcmViYXNlRmlyZXN0b3JlLlRyYW5zYWN0aW9uLCBkYjogRmlyZWJhc2VGaXJlc3RvcmUuRmlyZXN0b3JlLFxuICB1c2VySWQ6IHN0cmluZywgdGlja2V0SWQ6IHN0cmluZykge1xuICByZXR1cm4gcmVhZFByb3ZpZGVyTGl2ZVRvdXJuYW1lbnRSdW4odHJhbnNhY3Rpb24sIGRiLCB1c2VySWQsIHRpY2tldElkLCBcImZhY2Vib29rXCIpO1xufVxuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFHQUEsT0FBQSxDQUFBQyw2QkFBQSxHQUFBQSw2QkFBQTtBQUhBLE1BQUFDLG9CQUFBO0FBQUE7QUFBQSxDQUFBQyxjQUFBLEdBQUFDLENBQUEsT0FBQUMsT0FBQTtBQUVBO0FBQ0EsU0FBZ0JKLDZCQUE2QkEsQ0FBQ0ssV0FBMEMsRUFBRUMsRUFBK0IsRUFDdkhDLE1BQWMsRUFBRUMsUUFBZ0I7RUFBQTtFQUFBTixjQUFBLEdBQUFPLENBQUE7RUFBQVAsY0FBQSxHQUFBQyxDQUFBO0VBQ2hDLE9BQU8sSUFBQUYsb0JBQUEsQ0FBQVMsNkJBQTZCLEVBQUNMLFdBQVcsRUFBRUMsRUFBRSxFQUFFQyxNQUFNLEVBQUVDLFFBQVEsRUFBRSxVQUFVLENBQUM7QUFDckYiLCJpZ25vcmVMaXN0IjpbXX0=

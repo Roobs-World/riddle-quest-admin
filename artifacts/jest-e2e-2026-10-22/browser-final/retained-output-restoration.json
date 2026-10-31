@@ -1,0 +1,62 @@
+[
+  {
+    "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/daily-skip-warning",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/daily-skip-warning",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/coin-economy",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/coin-economy",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/profile-tour-stats.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/profile-tour-stats.png",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-solo.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/jest-feedback-solo.png",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-multiplayer-unavailable.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/jest-feedback-multiplayer-unavailable.png",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/riddle-leaderboard-clipped.png",
+    "output": null,
+    "restored": true,
+    "priorExisted": false
+  },
+  {
+    "path": "/tmp/riddle-leaderboard-fixed.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/riddle-leaderboard-fixed.png",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-victory.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/jest-feedback-victory.png",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-loss.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/jest-feedback-loss.png",
+    "restored": true,
+    "priorExisted": true
+  },
+  {
+    "path": "/tmp/jest-feedback-profile.png",
+    "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-final/retained-screenshots/jest-feedback-profile.png",
+    "restored": true,
+    "priorExisted": true
+  }
+]

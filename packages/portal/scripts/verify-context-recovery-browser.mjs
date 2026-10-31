@@ -1,3 +1,4 @@
+import {openSolarGame} from './solar-browser-fixture.mjs';
 import path from 'node:path';
 
 // Real hosted game and Three resource objects; driver callbacks use actual DOM event dispatch.
@@ -9,8 +10,7 @@ export async function verifyContextRecovery({page,width,url,baseline,metric,outp
  const scenarios=nativeRenderer?['native-restoration','native-restoration-failure']:['restoration','restore-failure','restore-dispose-failure','loss-failure','creation-callback-failure','constructor-listener-failure','normal-retirement'];
  for(const scenario of scenarios) {
   const check=(name,actual,expected)=>metric(scenario+': '+name,actual,expected);
-  await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-  if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+  await openSolarGame(page,url);
   await page.keyboard.type('pian');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
   const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame).activeGame.sessionToken);
   if(scenario==='constructor-listener-failure')await page.evaluate(()=>{window.failResource={kind:'renderer_after_listeners',occurrence:1};window.controlFrames();window.releaseScene();});

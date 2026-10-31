@@ -1,0 +1,2858 @@
+[
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/requestRaceHint",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "requestracehint-00025-cav",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getCurrentDailyChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getcurrentdailychallenge-00011-wan",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/readyRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "readyracerun-00024-cen",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/retireLiveRaceJoin",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "retireliveracejoin-00005-hol",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceAccess",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getraceaccess-00022-siq",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/publishRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "publishracechallenge-00024-cut",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getCurrentClassicRiddle",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getcurrentclassicriddle-00012-hiq",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRiddle",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "skipriddle-00010-gef",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/resumeRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "resumeracerun-00026-dug",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/skipRaceRiddle",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "skipraceriddle-00027-lif",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/setLiveRacePushSubscription",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "setliveracepushsubscription-00010-kip",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/joinLiveRace",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "joinliverace-00022-bem",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/reserveRaceInvite",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "reserveraceinvite-00022-gim",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistory",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listliveracehistory-00007-xiq",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitRaceGuess",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "submitraceguess-00027-jam",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/aggregatePresenceStatus",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "aggregatepresencestatus-00032-rax",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a6e99741d3ccaf3a7e11b1f68ad5e53502bcbb2d"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/deliverLiveRaceChallengePush",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "deliverliveracechallengepush-00011-xum",
+      "secretEnvironmentVariables": [
+        {
+          "key": "FACEBOOK_NOTIFICATION_APP_ACCESS_TOKEN",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_NOTIFICATION_APP_ACCESS_TOKEN",
+          "version": "2"
+        },
+        {
+          "key": "FACEBOOK_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_UID_SECRET",
+          "version": "3"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceEntry",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getraceentry-00025-xar",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/updateLiveRace",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "updateliverace-00023-yox",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceCategories",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listracecategories-00023-nuk",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/startRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "startracerun-00027-dux",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/sendLiveRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "sendliveracechallenge-00009-wap",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listliveracehistorypage-00001-yaf",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/completeGame",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "completegame-00011-mem",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceOutcome",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getraceoutcome-00025-mib",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getHint",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "gethint-00011-viz",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "6dbbeed41d173eb2380318673689f063c7890cff"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/confirmLiveGuessReceipt",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "confirmliveguessreceipt-00001-cuw",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getracechallenge-00022-ger",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getLiveRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getliveracechallenge-00014-gih",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listRaceInbox",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listraceinbox-00023-tih",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/abandonRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "abandonracerun-00025-jov",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/submitSinglePlayerGuess",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "submitsingleplayerguess-00011-reb",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/cancelRaceInvite",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "cancelraceinvite-00022-buy",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/spendCoins",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "spendcoins-00010-qig",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getClassicRiddleBuffer",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getclassicriddlebuffer-00012-qib",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceChallenges",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listliveracechallenges-00012-sil",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/recordRaceAnalytics",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "recordraceanalytics-00023-gic",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/findRaceMatch",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "findracematch-00024-val",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getFacebookClientConfiguration",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getfacebookclientconfiguration-00032-rew",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/requestRaceHint",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "requestracehint-00056-kap",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentDailyChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getcurrentdailychallenge-00059-lez",
+      "secretEnvironmentVariables": [
+        {
+          "key": "OPENAI_API_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "OPENAI_API_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/readyRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "readyracerun-00032-mex",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retireLiveRaceJoin",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "retireliveracejoin-00005-lal",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestAvatar",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "syncjestavatar-00026-vip",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/acceptFacebookNotificationPermissionPrompt",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "acceptfacebooknotificationpermissionprompt-00032-xuw",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceAccess",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getraceaccess-00049-toh",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f59918735c0d594cd0450e1a4e5fc96787d621a6"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthCallback",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "yahoooauthcallback-00033-wud",
+      "secretEnvironmentVariables": [
+        {
+          "key": "Yahoo",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "Yahoo",
+          "version": "1"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 30
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/publishRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "publishracechallenge-00053-vaw",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getCurrentClassicRiddle",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getcurrentclassicriddle-00056-dag",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRiddle",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "skipriddle-00050-raj",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockRival",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "blockrival-00032-mab",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createFacebookReferral",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "createfacebookreferral-00032-mec",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "4f53387898a6f80e4a402a288c181bc738f27a17"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeRedditIdentity",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "exchangeredditidentity-00033-quh",
+      "secretEnvironmentVariables": [
+        {
+          "key": "REDDIT_GATEWAY_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_GATEWAY_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "REDDIT_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_UID_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f62fa63d9ddf71f160e4d248f9246eb5894cceb2"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeJestIdentity",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "exchangejestidentity-00053-wor",
+      "secretEnvironmentVariables": [
+        {
+          "key": "JEST_SHARED_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "JEST_SHARED_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/resumeRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "resumeracerun-00055-kim",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLeaderboard",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getleaderboard-00044-niv",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/skipRaceRiddle",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "skipraceriddle-00057-cik",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "4b572427cd5ecdeaadba343224a85f9e0a36e75e"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/replenishClassicSupplyOnDemand",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "replenishclassicsupplyondemand-00002-jid",
+      "secretEnvironmentVariables": [
+        {
+          "key": "OPENAI_API_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "OPENAI_API_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 540
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinLiveRace",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "joinliverace-00022-viz",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reserveRaceInvite",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "reserveraceinvite-00034-raz",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistory",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listliveracehistory-00007-zeh",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionStatus",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "facebookdatadeletionstatus-00032-vuc",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitRaceGuess",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "submitraceguess-00057-wed",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "69412542125137603264ca2bc45527a448bc5331"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/confirmYahooStripeCheckout",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "confirmyahoostripecheckout-00033-wal",
+      "secretEnvironmentVariables": [
+        {
+          "key": "STRIPE_SECRET_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "STRIPE_SECRET_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 30
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinFacebookContext",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "joinfacebookcontext-00032-gef",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "d452248010eb0c949cdbd5e8758239a55238a690"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/facebookDataDeletionCallback",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "facebookdatadeletioncallback-00032-xon",
+      "secretEnvironmentVariables": [
+        {
+          "key": "FACEBOOK_APP_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_APP_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "FACEBOOK_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_UID_SECRET",
+          "version": "3"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 540
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9a6819db87baab8d817d25d34653d67f266b013e"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooStripeWebhook",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "yahoostripewebhook-00033-zib",
+      "secretEnvironmentVariables": [
+        {
+          "key": "STRIPE_SECRET_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "STRIPE_SECRET_KEY",
+          "version": "2"
+        },
+        {
+          "key": "STRIPE_WEBHOOK_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "STRIPE_WEBHOOK_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 30
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f62fa63d9ddf71f160e4d248f9246eb5894cceb2"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/verifyJestReferrals",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "verifyjestreferrals-00050-tis",
+      "secretEnvironmentVariables": [
+        {
+          "key": "JEST_SHARED_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "JEST_SHARED_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "4b572427cd5ecdeaadba343224a85f9e0a36e75e"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryClassicSupplyOnDemand",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "retryclassicsupplyondemand-00002-qur",
+      "secretEnvironmentVariables": [
+        {
+          "key": "OPENAI_API_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "OPENAI_API_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 540
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/leaveFacebookContext",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "leavefacebookcontext-00032-qeg",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f62fa63d9ddf71f160e4d248f9246eb5894cceb2"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestSubscriptions",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "syncjestsubscriptions-00047-sov",
+      "secretEnvironmentVariables": [
+        {
+          "key": "JEST_SHARED_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "JEST_SHARED_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "69412542125137603264ca2bc45527a448bc5331"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/createYahooStripeCheckout",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "createyahoostripecheckout-00034-gut",
+      "secretEnvironmentVariables": [
+        {
+          "key": "STRIPE_SECRET_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "STRIPE_SECRET_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 30
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncBlockedRivalPresenceVisibility",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "syncblockedrivalpresencevisibility-00032-rey",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceEntry",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getraceentry-00030-cah",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "blockliveraceopponent-00001-lor",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-scheduled": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "4b572427cd5ecdeaadba343224a85f9e0a36e75e"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/dailyChallengeScheduler",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "512Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "dailychallengescheduler-00052-tuy",
+      "secretEnvironmentVariables": [
+        {
+          "key": "OPENAI_API_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "OPENAI_API_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 900
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncKnownRivalPresenceVisibility",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "syncknownrivalpresencevisibility-00032-cuy",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateLiveRace",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "updateliverace-00023-rik",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f59918735c0d594cd0450e1a4e5fc96787d621a6"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/yahooOAuthStart",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "yahoooauthstart-00033-rix",
+      "secretEnvironmentVariables": [
+        {
+          "key": "Yahoo",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "Yahoo",
+          "version": "1"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 30
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/bindFacebookReferral",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "bindfacebookreferral-00032-tes",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceCategories",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listracecategories-00051-lit",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/startRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "startracerun-00057-lew",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f62fa63d9ddf71f160e4d248f9246eb5894cceb2"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryJestAccountDeletion",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "retryjestaccountdeletion-00036-qeg",
+      "secretEnvironmentVariables": [
+        {
+          "key": "JEST_SHARED_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "JEST_SHARED_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 540
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/sendLiveRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "sendliveracechallenge-00009-rif",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "4f53387898a6f80e4a402a288c181bc738f27a17"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditStorage",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "redditstorage-00033-top",
+      "secretEnvironmentVariables": [
+        {
+          "key": "REDDIT_GATEWAY_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_GATEWAY_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "REDDIT_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_UID_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listliveracehistorypage-00001-zuq",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "2a2285264a1c6378b873b25388b3c015cd27bfa0"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookTournament",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "recordfacebooktournament-00033-mif",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantFacebookRewardedContinue",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "grantfacebookrewardedcontinue-00015-wum",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/completeGame",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "completegame-00053-viy",
+      "secretEnvironmentVariables": [
+        {
+          "key": "OPENAI_API_KEY",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "OPENAI_API_KEY",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceOutcome",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getraceoutcome-00053-noy",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/setPresenceConsent",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "setpresenceconsent-00032-coj",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/claimFacebookNotificationPermissionPrompt",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "claimfacebooknotificationpermissionprompt-00032-weg",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "reportliveraceopponent-00001-muw",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "30573745a09089c35368d58d0edec9bb2fdd1e3b"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteAccount",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "deleteaccount-00044-pim",
+      "secretEnvironmentVariables": [
+        {
+          "key": "FACEBOOK_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_UID_SECRET",
+          "version": "3"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 540
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getHint",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "gethint-00050-luj",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9de0fce13fd962a6026a0ff9186dacb137a6082c"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRaceSettlementEvent",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "deliverracesettlementevent-00031-jam",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "6dbbeed41d173eb2380318673689f063c7890cff"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/confirmLiveGuessReceipt",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "confirmliveguessreceipt-00001-loz",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookTournament",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listfacebooktournament-00032-coy",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateUsername",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "updateusername-00044-vum",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "4f53387898a6f80e4a402a288c181bc738f27a17"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deleteRedditAccount",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "deleteredditaccount-00035-jab",
+      "secretEnvironmentVariables": [
+        {
+          "key": "REDDIT_GATEWAY_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_GATEWAY_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "REDDIT_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_UID_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getracechallenge-00050-feh",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f62fa63d9ddf71f160e4d248f9246eb5894cceb2"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/grantJestPurchase",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "grantjestpurchase-00051-num",
+      "secretEnvironmentVariables": [
+        {
+          "key": "JEST_SHARED_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "JEST_SHARED_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listFacebookContextBoard",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listfacebookcontextboard-00032-pul",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportRival",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "reportrival-00032-fuh",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLiveRaceChallenge",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getliveracechallenge-00014-cab",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9de0fce13fd962a6026a0ff9186dacb137a6082c"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/deliverRacePerformanceEvent",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "deliverraceperformanceevent-00030-wol",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listRaceInbox",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listraceinbox-00051-guh",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "a2cd3798684d0bfd1a572b75e8d7941bca01c9ad"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/abandonRaceRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "abandonracerun-00049-sar",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/submitSinglePlayerGuess",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "submitsingleplayerguess-00040-hih",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "3fd95309dd39f1ea69c4a577dd1666efc6a6aa16"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditGameplay",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "redditgameplay-00044-fog",
+      "secretEnvironmentVariables": [
+        {
+          "key": "REDDIT_GATEWAY_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_GATEWAY_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "REDDIT_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "REDDIT_UID_SECRET",
+          "version": "2"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordFacebookContextRun",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "recordfacebookcontextrun-00032-tid",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/cancelRaceInvite",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "cancelraceinvite-00027-rez",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/spendCoins",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "spendcoins-00047-sad",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "9dcd77682a4ec4aed99d38b46edf1681325ea245"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getClassicRiddleBuffer",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "getclassicriddlebuffer-00039-foz",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "d452248010eb0c949cdbd5e8758239a55238a690"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/issueFacebookIdentityNonce",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "issuefacebookidentitynonce-00033-nic",
+      "secretEnvironmentVariables": [
+        {
+          "key": "FACEBOOK_APP_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_APP_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "FACEBOOK_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_UID_SECRET",
+          "version": "3"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "f9b4992183eab20a98061658f5561482b930de76"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceChallenges",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "listliveracechallenges-00012-zab",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/recordRaceAnalytics",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "recordraceanalytics-00053-pir",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateAvatar",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "updateavatar-00044-til",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-callable": "true",
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "01e539305d1c898cf8f7cb22bbedd3e0fbf56324"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/findRaceMatch",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "findracematch-00036-lug",
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  },
+  {
+    "buildConfig": {
+      "runtime": "nodejs22"
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase",
+      "firebase-functions-hash": "d452248010eb0c949cdbd5e8758239a55238a690"
+    },
+    "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/exchangeFacebookIdentity",
+    "serviceConfig": {
+      "allTrafficOnLatestRevision": true,
+      "availableMemory": "256Mi",
+      "ingressSettings": "ALLOW_ALL",
+      "maxInstanceCount": 20,
+      "maxInstanceRequestConcurrency": 80,
+      "revision": "exchangefacebookidentity-00033-viq",
+      "secretEnvironmentVariables": [
+        {
+          "key": "FACEBOOK_APP_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_APP_SECRET",
+          "version": "2"
+        },
+        {
+          "key": "FACEBOOK_UID_SECRET",
+          "projectId": "riddle-quest-ec2b2",
+          "secret": "FACEBOOK_UID_SECRET",
+          "version": "3"
+        }
+      ],
+      "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+      "timeoutSeconds": 60
+    },
+    "state": "ACTIVE"
+  }
+]

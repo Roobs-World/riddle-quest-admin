@@ -1,0 +1,199 @@
+{
+  "startedAt": "2026-10-22T21:27:37.344024+00:00",
+  "complete": true,
+  "sequential": true,
+  "runtimeEdits": false,
+  "canonicalJestBuild": false,
+  "immutableSnapshotEdits": false,
+  "deployments": false,
+  "sourceMapUpload": false,
+  "environment": {
+    "SENTRY_UPLOAD_SOURCEMAPS": "0",
+    "DEBUG": "unset"
+  },
+  "results": [
+    {
+      "target": "facebook",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:facebook"
+      ],
+      "startedAt": "2026-10-22T21:27:37.344075+00:00",
+      "log": "facebook.log",
+      "exitCode": 0,
+      "status": "passed",
+      "completedAt": "2026-10-22T21:27:42.580978+00:00",
+      "elapsedSeconds": 5.237,
+      "verificationSummary": [
+        "Facebook artifact audit passed: 416 files, 4.47 MB, 0.64 MB initial resources, isolated SDK/config, and no Jest/native/secrets leakage"
+      ],
+      "measurements": {
+        "outputDirectory": "builds/facebook",
+        "fileCount": 416,
+        "totalBytes": 4686334,
+        "totalMiB": 4.469236373901367,
+        "inventoryHashesVerified": true,
+        "sourceMaps": 0,
+        "initialReferencedResourceBytes": 666350,
+        "initialResourceCount": 13,
+        "initialByteLimit": 5242880
+      }
+    },
+    {
+      "target": "reddit",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/reddit-app",
+        "build:package"
+      ],
+      "startedAt": "2026-10-22T21:27:42.581313+00:00",
+      "log": "reddit.log",
+      "exitCode": 0,
+      "status": "passed",
+      "completedAt": "2026-10-22T21:27:50.287090+00:00",
+      "elapsedSeconds": 7.706,
+      "verificationSummary": [
+        "Reddit artifact audit passed: 429 regular files, 2 entry documents, 3.94 MB, 0.63 MB initial resources, isolated and same-origin only",
+        "Devvit package contract passed: 430 regular files/7.45 MiB, isolated inline/game client, CJS server, Redis, and one gateway host"
+      ],
+      "packageTestsPassed": 11,
+      "measurements": {
+        "outputDirectory": "builds/reddit",
+        "fileCount": 429,
+        "totalBytes": 4130572,
+        "totalMiB": 3.939220428466797,
+        "inventoryHashesVerified": true,
+        "sourceMaps": 0,
+        "initialReferencedResourceBytes": 661246,
+        "initialResourceCount": 22,
+        "initialByteLimit": 5242880
+      }
+    },
+    {
+      "target": "youtube",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:youtube"
+      ],
+      "startedAt": "2026-10-22T21:27:50.287422+00:00",
+      "log": "youtube.log",
+      "exitCode": 0,
+      "status": "passed",
+      "completedAt": "2026-10-22T21:27:53.760686+00:00",
+      "elapsedSeconds": 3.473,
+      "verificationSummary": [
+        "YouTube artifact audit passed: 24 files, 1.80 MiB total and conservative initial transfer, 16 locale(s)"
+      ],
+      "measurements": {
+        "outputDirectory": "builds/youtube",
+        "fileCount": 24,
+        "totalBytes": 1891211,
+        "totalMiB": 1.8035993576049805,
+        "inventoryHashesVerified": true,
+        "sourceMaps": 0,
+        "conservativeInitialTransferBytes": 1891211,
+        "recommendedInitialByteLimit": 15728640,
+        "exclusiveInitialByteLimit": 31457280,
+        "exclusiveTotalByteLimit": 262144000,
+        "releaseLocales": 16,
+        "classicRiddlesPerLocale": 180
+      }
+    },
+    {
+      "target": "netflix",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:netflix"
+      ],
+      "startedAt": "2026-10-22T21:27:53.760889+00:00",
+      "log": "netflix.log",
+      "exitCode": 0,
+      "status": "passed",
+      "completedAt": "2026-10-22T21:27:57.171856+00:00",
+      "elapsedSeconds": 3.411,
+      "verificationSummary": [
+        "netflix artifact audit passed: 24 files, 1.80 MiB"
+      ],
+      "measurements": {
+        "outputDirectory": "builds/netflix",
+        "fileCount": 24,
+        "totalBytes": 1890553,
+        "totalMiB": 1.8029718399047852,
+        "inventoryHashesVerified": true,
+        "sourceMaps": 0,
+        "exclusiveTotalByteLimit": 31457280,
+        "releaseLocales": 16,
+        "classicRiddlesPerLocale": 180
+      }
+    },
+    {
+      "target": "yahoo",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:yahoo"
+      ],
+      "startedAt": "2026-10-22T21:27:57.172002+00:00",
+      "log": "yahoo.log",
+      "exitCode": 0,
+      "status": "passed",
+      "completedAt": "2026-10-22T21:28:00.655463+00:00",
+      "elapsedSeconds": 3.483,
+      "verificationSummary": [
+        "yahoo artifact audit passed: 24 files, 1.80 MiB"
+      ],
+      "measurements": {
+        "outputDirectory": "builds/yahoo",
+        "fileCount": 24,
+        "totalBytes": 1890547,
+        "totalMiB": 1.8029661178588867,
+        "inventoryHashesVerified": true,
+        "sourceMaps": 0,
+        "exclusiveTotalByteLimit": 31457280,
+        "releaseLocales": 16,
+        "classicRiddlesPerLocale": 180
+      }
+    },
+    {
+      "target": "gamesnacks",
+      "command": [
+        "pnpm",
+        "--dir",
+        "packages/portal",
+        "build:gamesnacks"
+      ],
+      "startedAt": "2026-10-22T21:28:00.655613+00:00",
+      "log": "gamesnacks.log",
+      "exitCode": 0,
+      "status": "passed",
+      "completedAt": "2026-10-22T21:28:03.961131+00:00",
+      "elapsedSeconds": 3.306,
+      "verificationSummary": [
+        "Prepared GameSnacks bundle with 24 runtime files."
+      ],
+      "measurements": {
+        "outputDirectory": "builds/gamesnacks",
+        "fileCount": 28,
+        "totalBytes": 2677810,
+        "totalMiB": 2.5537586212158203,
+        "inventoryHashesVerified": true,
+        "sourceMaps": 0,
+        "runtimeFiles": 24,
+        "runtimeBytes": 1890288,
+        "exclusiveTotalByteLimit": 104857600,
+        "exclusiveFileByteLimit": 10485760,
+        "releaseLocales": 16,
+        "classicRiddlesPerLocale": 180
+      }
+    }
+  ],
+  "updatedAt": "2026-10-22T21:28:03.961180+00:00"
+}

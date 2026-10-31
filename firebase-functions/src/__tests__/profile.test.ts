@@ -203,11 +203,12 @@ describe("Profile Cloud Functions", () => {
 
   it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
       [
         {
+          minInstances: 0,
           enforceAppCheck: true,
           invoker: "public",
           timeoutSeconds: 540,

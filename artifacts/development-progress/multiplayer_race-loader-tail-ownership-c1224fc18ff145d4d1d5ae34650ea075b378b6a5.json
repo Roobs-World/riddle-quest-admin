@@ -1,0 +1,644 @@
+{
+  "completion": {
+    "taskId": "multiplayer:race-loader-tail-ownership",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Bind multiplayer reward/profile refresh to its account and identity-loader lifetime, drop unmounted or replaced callbacks before applying balances, and let only the newest same-account profile load update host state. Verify real React normal/StrictMode desktop/mobile account switch, response reordering and unmount paths, preserving all prior reliability gates. Require synchronous auth-subscription ownership before React commit, scope queued reward/profile writes to the expected UID and ignore retired subscription notifications. Propagate account ownership to the actual optional provider result handler; preserve both valid same-account completions when profile reads reorder. Pin the exact subscription account visit across provider recording and result presentation, including switches away and back to the same UID. Bind access and category preloading to the exact rendered account visit, rejecting stale access continuations before another request. Keep preloaded categories and avoid repeated access/catalog requests on same-account profile notifications, while switches away and back start a fresh visit. Prevent cached categories from appearing in any committed replacement frame before passive cleanup, including changed account visits, locales, authorities, deep links or locale eligibility. Verify populated-cache replacement, sign-out and deep-link catalog suppression in normal/StrictMode desktop/mobile browsers. Bind the entire rendered multiplayer journey to account, locale and incoming challenge/inbox/tournament entry identity. A replacement must show fresh session state in its first committed frame, with no preceding run/result/provider/dialog state. Balance and catalog changes retain the existing journey. Verify retired-session callbacks cannot close, contaminate errors or dispatch from the replacement. Scope optional provider standings caches to their exact tournament/context adapters before rendering, so replacing a provider cannot expose its preceding standings in a committed frame. Preserve competitive session identity, active run and typed input across provider replacement; retain late-response rejection and provider-write recovery. Bind native context/matchmaking and tournament/challenge share dialogs to exact selected provider and delivery identities. Replacing a provider must release retired loading guards, allow its replacement to open a new dialog, and ignore old completion/failure without clearing the new guard. Unrelated provider changes retain owned dialog guards; still-owned native context completion refreshes the latest optional view selection. Isolate synchronous and asynchronous provider access/catalog failures from the host React lifetime. Optional access preloading crosses a promise rejection boundary and rechecks cancellation/account ownership before its queued provider call. Verify mounted-host survival, no cached categories after failure and no read from an account retired before the queued call. Verify actual development React StrictMode effect replay in both host prefetch and profile/reward ownership harnesses. Assert two auth subscription setups, one replay cleanup and one live subscription under development StrictMode, versus one setup under normal/development and production wrappers. Preserve all previous behavioral assertions and production checks. Verify actual development StrictMode session enter/dispose effect replay in the rendered multiplayer dialog surface, including all four provider dialog types, provider replacement, retired success/failure isolation and unrelated provider controls. Require one live session after replay and zero after explicit unmount. Verify native browser resource ownership across account/locale entry replacement, three unmount/remount cycles and development StrictMode replay. Track actual interval handles and bridge/visibility listener identities; require one of each while mounted and none after unmount, no retired interval execution and no retired event dispatch. Validate the gate with independent interval, bridge and visibility leak controls. Resolve fallback-race rematches through the live matchmaking capability resolver. An explicit unavailable result must not revive the cached preceding adapter; replacement uses the new adapter with a fresh search receipt. Preserve legacy direct consumers without a resolver. Verify real rendered result-to-rematch flow at desktop/mobile widths. Bound provider discovery calls and continuations to their exact current matchmaking adapter. Cancel retired success, empty, fallback, failure and rejection paths; do not retry retired adapters or automatically search replacements. Preserve the original deadline and explicit fresh searches through replacements. Separate provider invocation ownership and schema/preference validation into a focused discovery helper. Verify recovery callbacks using an observable stored journal. Recheck discovery account/navigation/provider ownership after synchronous persistence and external-store callbacks. Retired completion must not publish a challenge, error or fallback start. Clear its owned journal and restore the originating hub, preserving replacement journeys and explicit searches. Extract the cancellable delivery budget into the discovery helper. Require desktop/mobile callback retirement and transient publication assertions. Cancel a pending discovery wait on the next session tick when its current adapter is removed or replaced, without awaiting the provider or its delivery deadline. Capture the original wait and adapter before consulting the live resolver; recheck account generation so resolver reentrancy cannot cancel or tick a replacement account journey. Preserve active gameplay/input and require explicit replacement search. Retain all late-response and completion-callback gates. Retire settled failed and empty discovery intents when their provider changes. Clear stale errors, retry guidance, attribution and the owned journal while preserving the selected hub. Share one retirement transition with pending/completion cleanup, incrementing generation to invalidate retired continuations. Preserve active gameplay, replacement-account searches and newer shared-journal ownership. Verify actual browser storage revision ownership during provider retirement across pending, failed and empty searches. Preserve newer same-account and foreign-account challenge journals, denied first observations, and a competing replacement between cleanup reads followed by denied second observation. Reject late old SDK completion and preserve explicit fresh replacement searches. Validate the gate with an injected removal of the expected-revision guard. Verify visibility-based recovery with gameplay interval callbacks suspended. Retired pending/failed/empty provider searches must clear on the document visibility listener without an interval servicing cleanup; unchanged providers preserve their owned search/retry state. Late retired results cannot revive discovery. Exercise desktop/mobile production and actual development StrictMode effect replay, with explicit setup/cleanup counts. Validate the gate by disabling visible-session tick recovery in the injected bundle. Revalidate current client/core suites, all retained browser gates, isolated artifacts, backend Node22 preparation/types/lint and emulator coverage after accepted-run recovery changes. Update the invitation callable contract assertion for forwarded optional settings, verifying valid opt-in/opt-out preferences, authenticated identity and rejection of malformed or client-selected run pointers before authority. Preserve strict source/accepted-revision dashboard gates. Validate cold recovery from a ready challenge existing-attempt pointer against the accepted run ID, selected challenge ID, recipient role and challenge category before adopting authority state or sending readiness. Preserve independent creator cold resume. Verify schema-valid mismatches through public session tests and the actual rendered direct-link bridge flow. Privately retain accepted entry facts across snapshot publication and unrelated view updates using snapshot-lifetime ownership. Automatic resume dispatch and challenge/run/role/category validation must use those accepted facts, surviving rewritten or erased public entry objects. Bind invitation/challenge response selection to the original private command. Extract the existing run/start request checks without weakening them. Verify adversarial public mutation through real rendered bridge flows and retain prior cold-resume/entry ownership gates. Validate provided opponent name and recorded target time during existing challenge attempt recovery against private accepted-entry facts. Public preview rewrites must not authorize contradictory opponent details. Preserve valid full views and optional omitted opponent views without synthesizing competitive facts. Exercise rendered direct-link recovery and retain prior pointer/private-selection/startup gates. Route creator acceptance to Activity using privately accepted roles and recording identity. Public role rewrites, cleared entry views or overwritten active challenge IDs must neither enable creator acceptance nor deny recipient acceptance. Render a copied private entry view without exposing retained authority objects. Verify actual challenge-card clicks at desktop/mobile widths and retain prior entry/recovery ownership gates. Recheck accepted-entry journey ownership after optional analytics delivery and terminal-entry journal cleanup. Navigation must retain its Activity request; replacement entry must issue only its own resume, without duplicate receipts from retired processing. Preserve valid automatic recovery when optional analytics throws. Verify rendered bridge callbacks and a negative control that removes the ownership guard. Retain original accepted request identity for waiting/terminal invitation views, which omit their own challenge ID. Polling, visibility recovery, expiry, cancellation capability and retry must use private accepted facts rather than mutable public snapshots. Preserve expired authority-time state across delayed poll responses even when public views are overwritten. Verify actual rendered creator cancellation, recipient capability denial, original polling/retry selection and immutable deadline through desktop/mobile injected bridge tests. Validate cancellation success against the endpoint contract: only cancelled is a committed cancellation receipt. Preserve accepted cancelled invitation state across later reads, including waiting, ready, expired and unavailable responses; no cancelled-to-ready recovery resume or polling may occur. Exercise actual creator cancellation button and subsequent bridge reads at desktop/mobile widths. Make the retained waiting harness polling jitter deterministic alongside its injected clock. Pin race-start response validation to the private issued command and retained accepted challenge preview. Rewritten public challenge identity, opponent name or recorded target must not authorize contradictory starts; creator commands without challenge selection must remain valid when UI fields change. Privately retain direct-entry/provider previews across unrelated snapshot updates and expose only copies for start validation. Verify actual rendered acceptance and creator controls at desktop/mobile widths. Pin default acceptance of provider-matched challenges to their privately retained preview identity before issuing the start command. Public active-ID changes cannot retarget a provider match. Verify provider name/time poisoning rejection, valid matches and explicit different-recording selection without inheriting a preceding preview. Exercise real discovery and rendered Accept Challenge at desktop/mobile widths. Revalidate all 57 retained multiplayer browser gates together after private entry, waiting, cancellation, start selection and provider acceptance changes. Run complete current client/core suites, Node22 backend preparation/types/lint and isolated demo Firestore race coverage, retaining exact captured-file stability evidence. Preserve global full-source and accepted-revision requirements before any automatic dashboard completion receipt. Require direct and provider challenge start categories to match their privately accepted preview, even when public preview category is rewritten. Correct recording ID, role and opponent alone cannot authorize another category. Verify real rendered acceptance for mismatched, rewritten and valid category responses at desktop/mobile widths. End invitation facts after a valid start/resume/readiness run is adopted. Set selected identity from the confirmed run and clear preceding entry/preview ownership so a new explicit recording can recover an uncertain paid action without an old attempt pointer rejecting it. Preserve pre-adoption entry validation and post-adoption immutable run identity/competitive target checks. Verify completed recovery, Activity selection, another recording, interrupted hint and actual rendered Retry. Match challenge and rivalry identifiers exactly against the private start command, including their absence. Creator and fallback starts cannot acquire an unrequested challenge; creator/counter starts cannot inherit another rivalry. Preserve valid creator, counter and fallback origins through rendered bridge flows at desktop/mobile widths. Bind opponent presence to the private start origin: creator recordings have none; direct/fallback challengers require a recorded opponent. Reject invalid creator/fallback views before readiness, preserving optional omitted-opponent compatibility for resume consumers. Verify rendered creator/fallback starts and retained existing-attempt omitted-opponent recovery. Restore global documentation and maintainable-file gates by documenting missing declarations and extracting the unchanged authentication SDK browser harness into a focused module. Verify retained identity, subscription, completed-recipient, public-creator and unavailable-challenge paths. Reject recorded opponents on creator authority snapshots during readiness, cold resume and later recovery, independently of mutated public views. Keep clean retries and optional legacy challenger enrichment valid. Require newly charged hint metadata to identify a previously unrevealed slot of the private original question. Validate terminal hint letters against a privately known answer; preserve rollback and read recovery without replaying paid actions. Pin block/report target before synchronous inbox notifications and correlate acknowledgment cleanup to the original private command target. Preserve both correct server dispatch and exact local inbox removal after public target replacement or erasure. Drive scheduled countdown and GO activation exclusively from the private confirmed schedule and monotonic receipt anchor. Ignore public start/server/receipt timestamp rewrites and optional-field erasure. Publish independently cloned scheduled content so GO presentation cannot transfer nested authority ownership. Keep provider discovery recovery policy and monotonic retry deadline private. Derived readiness and explicit retry use one shared rule. Terminal failure cannot be retried, waiting cannot be bypassed, new-intent recovery rotates receipts, same-intent recovery retains them, and empty discovery rotates independently of public presentation edits. Block retry during the privately owned discovery delivery wait. Isolate optional matchmaking resolver exceptions during search entry, ticks, asynchronous completion, saved discovery recovery and fallback rematch. Treat failed lookup as unavailable, retire owned discovery, reject late SDK responses, and preserve legacy direct adapters without a resolver. Share capability resolution and ownership rules in the discovery helper. Retire an observed saved search when cold startup cannot resolve its provider, including lookup failures. Preserve newer shared journals and confirmed-run precedence. Prevent revival under a newly available provider on reopen; require a fresh explicit search. Recheck account ownership after cleanup notifications and publish copied failed-search guidance from the recovery helper. Recover the missing category catalog after cold saved discovery settles or its provider retires. Preserve failed/empty discovery guidance and original retry receipts across catalog reads, protect replacement journeys and existing commands, and reuse the catalog read guard for entry and rematch. Verify rendered desktop/mobile cold cancellation, failure, empty, saved failure and retirement. Restore documentation comments for completed concurrent Daily routing tests without changing their behavior. Align retained hosted browser fixtures with Daily-first routing: assert Daily in the subscription path; use trusted fake authority confirmation of Daily completion before the unavailable-challenge path reopens Classic and multiplayer. Prioritize missing category reads over provider discovery retry after catalog network errors, malformed replies or timeouts. Restore privately accepted discovery diagnostics after categories load. Enable rendered Retry for the missing catalog independently of a terminal search policy or its cooldown, then retain the original policy and receipt once categories exist. Share catalog dispatch and failure-hint preparation without relaxing source-size or receipt gates. Retain generation ownership both before and after optional provider lookup. Pass the lifetime-aware predicate into SDK dispatch and asynchronous completion. Recheck the lifetime after final capability observation before retiring discovery or releasing loading. Verify replacement command/journal/rendered challenge ownership under initial, dispatch, completion and retirement reentry, retaining the valid control and legacy no-resolver compatibility. Retain account ownership across SDK method access, outer result status/content access and nested response schema parsing. Copy explicit outer delivery fields once while preserving inherited/non-enumerable accessor compatibility. Recheck ownership after parsing before writing offers, journals or fallback state. Preserve cancellation and invalid-response controls. After the Daily timezone chat completes, align its calendar map exactly with SupportedLocale and document missing declarations, restoring normal build/type/documentation gates. Retain authority receipt ownership after schema parsing before committing accepted run/catalog/outcome facts. Pass the captured account generation into authority application and reject retired run-scoped receipts before guess/paid checkpoint confirmation. Preserve replacement command, journal and rendered challenge under catalog/start/resume/guess/hint/skip observation and valid-start control. Use the shared captured lifetime helper without raising the session file-size ceiling. Detach owned delivery and loader handles before cancellation adapters can synchronously replace the session. Recheck exact delivery identity after cancellation, mutation-receipt creation, clock observation and scheduling. Capture session lifetime before envelope parsing and acknowledgment so an old response cannot erase a replacement command. Verify acknowledgment, replacement sends, disposal, timer scheduling, receipt creation and loader cleanup through public tests and real React desktop/mobile harnesses. Bind the post-guess loader tail to its generation before cancelling the previous handle. Recheck ownership after cancellation and clock observation, retain only a still-owned returned timer handle, and avoid retaining handles whose callbacks completed before scheduling returned. Verify replacement during cancellation, clock reads and scheduling; preserve normal asynchronous delay and immediate-completion cleanup through real rendered desktop/mobile scenarios.",
+    "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+    "sourceDigest": "5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb",
+    "completedAt": "2026-10-13T08:18:06.323Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "node22-backend-build-and-operator-safeguards",
+      "node22-isolated-backend-race-coverage",
+      "backend-types",
+      "client-race-recovery",
+      "backend-lint",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations",
+      "full-core-tests",
+      "portal-types",
+      "injected-event-aggregate-browser",
+      "client-firebase-target-routing",
+      "retained-rule-ownership-browser",
+      "retained-checkpoint-isolation-browser",
+      "injected-timeout-reload-browser",
+      "injected-first-resume-browser",
+      "injected-private-outcome-browser",
+      "injected-private-command-ownership-browser",
+      "injected-pending-answer-recovery-browser",
+      "injected-known-answer-feedback-browser",
+      "injected-known-answer-reveals-browser",
+      "injected-answer-free-checkpoints-browser",
+      "injected-paid-draft-checkpoints-browser",
+      "timeout-receipt-and-calibration-contracts",
+      "injected-provider-record-recovery-browser",
+      "injected-provider-record-deadline-browser",
+      "injected-responsive-hub-navigation-browser",
+      "injected-provider-capability-recovery-browser",
+      "race-draft-reload-browser",
+      "browser-player-state-deletion",
+      "complete-client-suite",
+      "abandoned-race-entry-browser",
+      "provider-confirmed-outcome-browser",
+      "race-keyboard-activation-browser",
+      "race-draft-cleanup-browser",
+      "race-overlay-ownership-browser",
+      "race-dialog-keyboard-ownership-browser",
+      "race-quit-focus-recovery-browser",
+      "race-quit-focus-containment-browser",
+      "race-resume-selection-browser",
+      "race-resume-read-observation-browser",
+      "race-search-journal-observation-browser",
+      "race-analytics-delivery-browser",
+      "race-offline-delivery-browser",
+      "race-profile-refresh-browser",
+      "race-prefetch-ownership-browser",
+      "race-rendered-entry-ownership-browser",
+      "race-provider-rendered-cache-browser",
+      "race-dialog-adapter-ownership-browser",
+      "race-prefetch-development-strict-browser",
+      "race-profile-refresh-development-strict-browser",
+      "race-dialog-adapter-development-strict-browser",
+      "race-session-browser-resource-ownership",
+      "race-matchmaking-removal-browser",
+      "race-discovery-provider-ownership-browser",
+      "race-discovery-storage-ownership-browser",
+      "race-discovery-callback-ownership-browser",
+      "race-discovery-prompt-cancellation-browser",
+      "race-retired-search-recovery-browser",
+      "race-retirement-shared-journal-browser",
+      "race-visibility-retirement-browser",
+      "race-visibility-retirement-development-strict-browser",
+      "invitation-callable-recovery-contracts",
+      "race-existing-attempt-authority-browser",
+      "race-private-entry-selection-browser",
+      "race-existing-opponent-authority-browser",
+      "race-private-creator-acceptance-browser",
+      "race-entry-effect-ownership-browser",
+      "race-waiting-selection-browser",
+      "race-cancellation-receipt-browser",
+      "race-start-selection-authority-browser",
+      "race-provider-start-selection-browser",
+      "race-start-category-authority-browser",
+      "race-entry-run-handoff-browser",
+      "race-start-origin-context-browser",
+      "race-start-opponent-presence-browser",
+      "authentication-harness-retained-paths",
+      "race-creator-opponent-authority-browser",
+      "race-hint-reveal-evidence-browser",
+      "race-safety-selection-browser",
+      "race-countdown-clock-ownership-browser",
+      "race-discovery-retry-policy-browser",
+      "race-resolver-failure-browser",
+      "race-cold-search-retirement-browser",
+      "race-cold-search-catalog-browser",
+      "race-catalog-retry-browser",
+      "race-resolver-reentry-browser",
+      "race-provider-observation-browser",
+      "race-authority-observation-browser",
+      "race-timer-ownership-browser",
+      "race-loader-tail-ownership-browser",
+      "retained-authentication-entry-paths"
+    ],
+    "checks": [
+      {
+        "id": "node22-backend-build-and-operator-safeguards",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage; current-source check at 2026-10-13T07:26:29.924Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-711f1d9b87b8f5adfcfd30038350575729cc567dd0dd1ad639d6cb3622700c9e-8c84614f823d53c97945ab8cd19d1d123dc9cf1d991c21e1d042f3b97fb6565b.log SHA-256 8c84614f823d53c97945ab8cd19d1d123dc9cf1d991c21e1d042f3b97fb6565b"
+      },
+      {
+        "id": "node22-isolated-backend-race-coverage",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore,database --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand; current-source check at 2026-10-13T07:35:07.429Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-0b5f3e1d09aed466e8de62d42d3621ecd771049ff065c7cffd462a0aafcc4120-733dace01bef42cd16e4b39addf74b5c7e47a29fbd4d84b47a053c27abb2402d.log SHA-256 733dace01bef42cd16e4b39addf74b5c7e47a29fbd4d84b47a053c27abb2402d"
+      },
+      {
+        "id": "backend-types",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types; current-source check at 2026-10-13T07:35:09.634Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-cbdfa15a368370ec03cc5360d0784a9add8c1dfd4946562002feec0b0f69bdf8-6cf567e5f806874bb5e437ce8cfe9cc0ba22171f5b0f8d254d8fb12868778db4.log SHA-256 6cf567e5f806874bb5e437ce8cfe9cc0ba22171f5b0f8d254d8fb12868778db4"
+      },
+      {
+        "id": "client-race-recovery",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__; current-source check at 2026-10-13T07:35:15.128Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-fc75e68dd7fcdd2619b6035c4bcd7f2ff19703f5208a41c4a6a06af3290fb299-0554be8dbd996857b7b726a80e303f80312f4cf5dc1676ff1bc681314eda0ade.log SHA-256 0554be8dbd996857b7b726a80e303f80312f4cf5dc1676ff1bc681314eda0ade"
+      },
+      {
+        "id": "backend-lint",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint; current-source check at 2026-10-13T07:35:20.024Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-25b2389645c3e7db05fe1ecfbf00fd9b416b26b47a759fddf865f74ad6966279-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log SHA-256 802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-13T07:26:06.434Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-77fc6d0d4155a51e64ba88bb5d343ea75b3584f81714a046a2d59de390234033-3c10bef4893a9fcbd45fbad0c67495832ce48930c5058c642a4190eaf32cdb65.log SHA-256 3c10bef4893a9fcbd45fbad0c67495832ce48930c5058c642a4190eaf32cdb65"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-13T07:47:18.637Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146-e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe.log SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; current-source check at 2026-10-13T07:26:25.905Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-bb2a1e5b36d7ff65f4344366547708258b1b43b62b5d7319df4393f38c8f912c-d6b2e4fd58b009cbfcbc2a979073eb87ff2f3b7e39b032b13564a0677f56d728.log SHA-256 d6b2e4fd58b009cbfcbc2a979073eb87ff2f3b7e39b032b13564a0677f56d728"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; current-source check at 2026-10-13T07:26:26.353Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-fb61e916e20dc77e5240e797df07e4e4bc1a506a78dd17b9c2ed0975a94e8bef-7d93d799c833d74edb2e0bc69196363f29bedff607d1ffdcc59df176bb9d9491.log SHA-256 7d93d799c833d74edb2e0bc69196363f29bedff607d1ffdcc59df176bb9d9491"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-13T07:26:26.905Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-626eddf19032e8a705e4e0e06aead9f637e9c2cc093e34abdc13c73a4343bc84-ff885c061bcdf05fe8557f20aafb4108bfb8e20551e97ca941901305f1171b06.log SHA-256 ff885c061bcdf05fe8557f20aafb4108bfb8e20551e97ca941901305f1171b06"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-13T07:46:30.728Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-0b11dae300a3f6b2ea9b1c98f6cd255d3e46cca56b94f997111188782470602b-744e7ecb336c0e239b8f78cfce3141e06afbbc77acb3a2f7fc386aaaa33050d4.log SHA-256 744e7ecb336c0e239b8f78cfce3141e06afbbc77acb3a2f7fc386aaaa33050d4"
+      },
+      {
+        "id": "full-core-tests",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/core test --runInBand; current-source check at 2026-10-13T08:04:18.964Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-b0fb822af63a65df6a3ec86b278fbe9ce136798b3452e422a4ae06bf5e0a2c5d-64aa8d686b5bf6dd1b1879cd67912d233305fbc7432891ee310d89e9381661e8.log SHA-256 64aa8d686b5bf6dd1b1879cd67912d233305fbc7432891ee310d89e9381661e8"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-13T07:26:18.681Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "injected-event-aggregate-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-event-aggregate-browser.mjs; current-source check at 2026-10-13T07:35:24.847Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-e18aac7af328d2292201281804e546660af35b00ff7b32385956d00185888ad6-260328d50efec5157ce993f774afefaa2e9dd81595e4dbf14c63cb5c154fb08c.log SHA-256 260328d50efec5157ce993f774afefaa2e9dd81595e4dbf14c63cb5c154fb08c"
+      },
+      {
+        "id": "client-firebase-target-routing",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts; current-source check at 2026-10-13T07:35:25.667Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-b96238bd0801ef80d278447fcd5efd71d9f554d675b288d0a01cac35b08a9967-7f7b67df4e80ae3509ab26eadf15f211994a405052bdad7cfed6ef66cf1cf0ca.log SHA-256 7f7b67df4e80ae3509ab26eadf15f211994a405052bdad7cfed6ef66cf1cf0ca"
+      },
+      {
+        "id": "retained-rule-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rule-ownership-browser.mjs; current-source check at 2026-10-13T07:52:08.217Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-9f0b82975cc6c18ef7f2880d17f1e92509964705160d7ff96185832b8cb1a680-844ad9e90c441a844fef3b4edd928740302ffb60f865229e1f54887edc77baae.log SHA-256 844ad9e90c441a844fef3b4edd928740302ffb60f865229e1f54887edc77baae"
+      },
+      {
+        "id": "retained-checkpoint-isolation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs; current-source check at 2026-10-13T07:55:09.524Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-a81e63463de9fc2169588c544782c5b566264bef0bf029526b2f9834b7df5732-76165e8a3bcca1b2c2326541fc600b7025cf319f99c99ea5bd18b3a5a6f42df2.log SHA-256 76165e8a3bcca1b2c2326541fc600b7025cf319f99c99ea5bd18b3a5a6f42df2"
+      },
+      {
+        "id": "injected-timeout-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-timeout-recovery-browser.mjs; current-source check at 2026-10-13T07:35:27.814Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-0e1d21d088b70e34b72a2a7b03f78fb56d92c0ecc71042614a27ebe57ed74dc5-012b8463c8252d509c794db680501ade4c63eaba29c02f6080393d2d6afa37db.log SHA-256 012b8463c8252d509c794db680501ade4c63eaba29c02f6080393d2d6afa37db"
+      },
+      {
+        "id": "injected-first-resume-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-startup-recovery-browser.mjs; current-source check at 2026-10-13T07:35:30.939Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-45fff251b41ac20043294cbc828bf75578f41c29d580afb6733054712a5d75eb-2f3df26f9b0c359d81ff75e9577c1163fa5d981c6c3b47160fe8dde74600eabf.log SHA-256 2f3df26f9b0c359d81ff75e9577c1163fa5d981c6c3b47160fe8dde74600eabf"
+      },
+      {
+        "id": "injected-private-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-outcome-isolation-browser.mjs; current-source check at 2026-10-13T07:35:33.067Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-7c722d942b5e1e24d4bc195118026eca25977e0a413821e1cbbe48b01c13b682-60451136d43bd9571d995a8564182e6f95656ac8bba476df95d7ef5050635bff.log SHA-256 60451136d43bd9571d995a8564182e6f95656ac8bba476df95d7ef5050635bff"
+      },
+      {
+        "id": "injected-private-command-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-command-ownership-browser.mjs; current-source check at 2026-10-13T07:35:37.372Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-bf35c24620a6532d9a7895ef37282103eb76a988fc66f70a1ecffcdfd2e665b6-8809066444b29a2e09dcc1a9e18089bb5794c09557ccfeb2b258a1d631bdd2a1.log SHA-256 8809066444b29a2e09dcc1a9e18089bb5794c09557ccfeb2b258a1d631bdd2a1"
+      },
+      {
+        "id": "injected-pending-answer-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-pending-input-browser.mjs; current-source check at 2026-10-13T07:35:40.408Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-076df74fcdf79a4567a731ef44c1eb630935333b51c4f8e50d7c918e1bcb9c89-882f4a4a2e0d2a0b67ba99e02692375a44864900ed1485b1b82a098a06768633.log SHA-256 882f4a4a2e0d2a0b67ba99e02692375a44864900ed1485b1b82a098a06768633"
+      },
+      {
+        "id": "injected-known-answer-feedback-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs; current-source check at 2026-10-13T07:35:46.079Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-97bbec952382967051acac657fb397fa562e536d72454a9d39b8d2ba15815e0b-8586984b3c17071caa99a67b58ddfbf7da824903e802fd7fd24c20f4eb8a407d.log SHA-256 8586984b3c17071caa99a67b58ddfbf7da824903e802fd7fd24c20f4eb8a407d"
+      },
+      {
+        "id": "injected-known-answer-reveals-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs; current-source check at 2026-10-13T07:35:50.369Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-11baabc069b74959b8332df7cda049f7be16bd52620c3201fb0608de547847fd-a60fda705d76c57c4ac4893340baf08ff178227b60b70a740b1773448d46b36b.log SHA-256 a60fda705d76c57c4ac4893340baf08ff178227b60b70a740b1773448d46b36b"
+      },
+      {
+        "id": "injected-answer-free-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs; current-source check at 2026-10-13T07:35:56.279Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-3e3c05752b9c6dc02c69631a16d143c0c39d048cb4cd937f638370ab5f53a7dc-cb4c57fbf83e37baec24a060ecd2fab002f8ff5dabd7a93e5fd57d39edaaa72a.log SHA-256 cb4c57fbf83e37baec24a060ecd2fab002f8ff5dabd7a93e5fd57d39edaaa72a"
+      },
+      {
+        "id": "injected-paid-draft-checkpoints-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs; current-source check at 2026-10-13T07:36:09.213Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-17d0478fc39530a16b024c98f7104840b96059fe1d8d76de7c46bcfcc9c94a47-343ab2199381cdc7958293787edcf60cb0a5130f103ac7f5a79085bfca1522a8.log SHA-256 343ab2199381cdc7958293787edcf60cb0a5130f103ac7f5a79085bfca1522a8"
+      },
+      {
+        "id": "timeout-receipt-and-calibration-contracts",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts; current-source check at 2026-10-13T07:36:10.159Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-57f534ddb71456ec0a9790a04877d8564aaa813954bd5310b8bf8c240ff7d244-aaecc87119bc6b474daf97ee8fa308ae6450db7260e48badbc1ca6c1a78e2921.log SHA-256 aaecc87119bc6b474daf97ee8fa308ae6450db7260e48badbc1ca6c1a78e2921"
+      },
+      {
+        "id": "injected-provider-record-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs; current-source check at 2026-10-13T07:36:11.814Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-f5bfa864dd35beaa808a4ef8235799ad924e1871421dfd0b7469bca7c9aebedb-2ac4794c74f0bd9083ee04bc1301ad6a73d51764b37fadf0aec8bda1d19478df.log SHA-256 2ac4794c74f0bd9083ee04bc1301ad6a73d51764b37fadf0aec8bda1d19478df"
+      },
+      {
+        "id": "injected-provider-record-deadline-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs; current-source check at 2026-10-13T07:36:15.018Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-a43d1dd6790c8f42a0f301b11897764dedbf62ee55d4a74e50fdfac5dff26e40-6592dc0838317e2d2fdf18f157bbaefafa54ea2f371083918e8964444a55558c.log SHA-256 6592dc0838317e2d2fdf18f157bbaefafa54ea2f371083918e8964444a55558c"
+      },
+      {
+        "id": "injected-responsive-hub-navigation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hub-navigation-browser.mjs; current-source check at 2026-10-13T07:36:17.215Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-30af30c1774a7ad8e90c4d042375bcc1bb7cb87959576b6273332c679fd57f18-319cb0f3c9b86673dc9c0ba28a097a482a4ac0e1a10946ddba606776edfa3cb1.log SHA-256 319cb0f3c9b86673dc9c0ba28a097a482a4ac0e1a10946ddba606776edfa3cb1"
+      },
+      {
+        "id": "injected-provider-capability-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-capability-browser.mjs; current-source check at 2026-10-13T07:36:20.226Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-d540608232ef91823781bbeb67457f310d12f38ae042b70a9e2942fba871590b-23791604ba062b66dd921d99ec296933b56d8367dbee3c508417485a47b8314d.log SHA-256 23791604ba062b66dd921d99ec296933b56d8367dbee3c508417485a47b8314d"
+      },
+      {
+        "id": "race-draft-reload-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-reload-browser.mjs; current-source check at 2026-10-13T07:37:19.706Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-d498062180733baa0c31a4150a8b573955dd3a96ad380fc7b26b4f07e145b618-25f12e8a9dc7b8aaecfe6814056d0ab77584230427d11751efc1c543ba9a31ab.log SHA-256 25f12e8a9dc7b8aaecfe6814056d0ab77584230427d11751efc1c543ba9a31ab"
+      },
+      {
+        "id": "browser-player-state-deletion",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=playerPreferences.test.ts; current-source check at 2026-10-13T07:37:20.519Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-41f0c5904c4cefeee54dd804fdebb4e6f087f682786df02eb8d5c175292ff193-6290febf94fd43a7adf8d3d297b85d1f08f15cd7204fb531a9a521fdc261f034.log SHA-256 6290febf94fd43a7adf8d3d297b85d1f08f15cd7204fb531a9a521fdc261f034"
+      },
+      {
+        "id": "complete-client-suite",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand; current-source check at 2026-10-13T07:37:31.100Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-5704da0c2c5243ff53cf1d842b513b8d79205137599357d66cf9bbb7fb5c07c4-77d65e639fb017ff9a3ee1a850fde659f89a001b66bc9500a2c114960cefa780.log SHA-256 77d65e639fb017ff9a3ee1a850fde659f89a001b66bc9500a2c114960cefa780"
+      },
+      {
+        "id": "abandoned-race-entry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-abandoned-entry-browser.mjs; current-source check at 2026-10-13T07:37:46.635Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-fad5b1dc492b14778aeaec6ee243b84b36ab3c084382db096872907213087388-4e103fa42e8cb00aff9663b8ef6733cb620c8d71fd873139ddc6948d949b3014.log SHA-256 4e103fa42e8cb00aff9663b8ef6733cb620c8d71fd873139ddc6948d949b3014"
+      },
+      {
+        "id": "provider-confirmed-outcome-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs; current-source check at 2026-10-13T07:37:48.264Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-38a468dcc42d83263c28c32a45628c4fdcfb56c7f9f91adeeb517736e2465b32-f2fddc09cb1339ace45be9b02d9e8b7dff652642adf1eb75ae4b299b5df3cba4.log SHA-256 f2fddc09cb1339ace45be9b02d9e8b7dff652642adf1eb75ae4b299b5df3cba4"
+      },
+      {
+        "id": "race-keyboard-activation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-keyboard-activation-browser.mjs; current-source check at 2026-10-13T07:37:51.570Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-efeb6d7ed02b2e6a3e469d4309dff02a4d501f079fea170539f5bd285c24c446-a12a96e2f3d1ad3fa80616dd5e590325ce1ae2709d1689255ae66a28d017ba2f.log SHA-256 a12a96e2f3d1ad3fa80616dd5e590325ce1ae2709d1689255ae66a28d017ba2f"
+      },
+      {
+        "id": "race-draft-cleanup-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-draft-cleanup-browser.mjs; current-source check at 2026-10-13T07:38:06.919Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-11d85761b08a46a24715753d10bb006b703f7d740706d8b95470ead52d27e54b-c8fdad818f2978bfb299a8a87b510bc5f078fe9f1061a46d67540c0a17bb2afa.log SHA-256 c8fdad818f2978bfb299a8a87b510bc5f078fe9f1061a46d67540c0a17bb2afa"
+      },
+      {
+        "id": "race-overlay-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-overlay-ownership-browser.mjs; current-source check at 2026-10-13T07:38:09.324Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-4af03a2c4c2ce5588402d87ccde1144a9ad2250ea923d7c586ca390f0fedf063-5354552be7bed714c807c2c14676266d41e58a438051b38492b4a518eff46354.log SHA-256 5354552be7bed714c807c2c14676266d41e58a438051b38492b4a518eff46354"
+      },
+      {
+        "id": "race-dialog-keyboard-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs; current-source check at 2026-10-13T07:38:12.033Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-26b61813696a79a7cf8415052314a713efc83e7ebba7b6d2e28ded6f4d54b1c3-9deda62777bd2285bd1113389beb81ac3d5eba0757721a6e0800745ff7c0c7d9.log SHA-256 9deda62777bd2285bd1113389beb81ac3d5eba0757721a6e0800745ff7c0c7d9"
+      },
+      {
+        "id": "race-quit-focus-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs; current-source check at 2026-10-13T07:38:14.254Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-9b82e38adfc939e02f0e1d7cd1d1c474674c3e003f014984ceade34ff9dea116-e3772615a1e3e2ef697ebe76ea46c2513410df52b5c1d813ebab4d58d4be54d0.log SHA-256 e3772615a1e3e2ef697ebe76ea46c2513410df52b5c1d813ebab4d58d4be54d0"
+      },
+      {
+        "id": "race-quit-focus-containment-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs; current-source check at 2026-10-13T07:38:16.271Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-2e274e2c8d1e166de35b2b551ee60e4743657e5a064fad0e4be99f6a16a48619-3e39aa8c75aa500b0618f87927e9e4c946b4c6d6bc0f18cf87e865079bb2fad7.log SHA-256 3e39aa8c75aa500b0618f87927e9e4c946b4c6d6bc0f18cf87e865079bb2fad7"
+      },
+      {
+        "id": "race-resume-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-selection-browser.mjs; current-source check at 2026-10-13T07:38:17.277Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-c1cc69bba5cc9552a371b8a2cc0ecaf6bd9cf4d3cc7eb9669f954c713569f57f-6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6.log SHA-256 6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6"
+      },
+      {
+        "id": "race-resume-read-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resume-read-observation-browser.mjs; current-source check at 2026-10-13T07:38:18.296Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-977fd64fbe3c8343f182f2b06bc4129d5575e0aa85f73943bbb41b41dcfdac3c-6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6.log SHA-256 6cf51c78a5c7ad7e8fac715856b2f59d666a08855e9ad926083c6916dee774f6"
+      },
+      {
+        "id": "race-search-journal-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-search-journal-observation-browser.mjs; current-source check at 2026-10-13T07:38:19.302Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-a4824de7ee80967b0d280c2dfc45478020e816e5fbdf0edf054c54843c6bbaba-15b81b00018ef1f9de4098f3d275c90d25b7a273790ee2c1c934ba7e332d42b2.log SHA-256 15b81b00018ef1f9de4098f3d275c90d25b7a273790ee2c1c934ba7e332d42b2"
+      },
+      {
+        "id": "race-analytics-delivery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-analytics-delivery-browser.mjs; current-source check at 2026-10-13T07:38:22.010Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-f7fcdf20bcab26adf8df80329e884d9b1b36f0e3f3eb02e176ad11c59b2dc8ae-245751c078089b4fb91d44b009790ea14dc5bb96ac5af01ed03c210233e13185.log SHA-256 245751c078089b4fb91d44b009790ea14dc5bb96ac5af01ed03c210233e13185"
+      },
+      {
+        "id": "race-offline-delivery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-offline-delivery-browser.mjs; current-source check at 2026-10-13T07:38:24.284Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-518f8c2b5a175ad779cea5d43cc7059cd184be7302d0d33f35bc365e81424c07-e6c5aa3ec7495c7aed52a46cd0efc9ec8ceaeed4a9b8fc969ba8f6cdb76078d7.log SHA-256 e6c5aa3ec7495c7aed52a46cd0efc9ec8ceaeed4a9b8fc969ba8f6cdb76078d7"
+      },
+      {
+        "id": "race-profile-refresh-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-profile-refresh-browser.mjs; current-source check at 2026-10-13T07:38:26.331Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-34007d6417530a0fe25691222da4f4f200e1c442ebae1047d36a69899155ad8f-4fa98292b5c48f45c874ee4660d8c4acd18cbbb4b8e062a95ade63b3380f7137.log SHA-256 4fa98292b5c48f45c874ee4660d8c4acd18cbbb4b8e062a95ade63b3380f7137"
+      },
+      {
+        "id": "race-prefetch-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-prefetch-browser.mjs; current-source check at 2026-10-13T07:38:31.797Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-916a3730a24501980b61bf6814c62f4eba530e2633531b44f167d1a59d421afc-37cc0a8b17a60affe32070a7dedd211036bff370bab928ec153569cf78290194.log SHA-256 37cc0a8b17a60affe32070a7dedd211036bff370bab928ec153569cf78290194"
+      },
+      {
+        "id": "race-rendered-entry-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-rendered-entry-browser.mjs; current-source check at 2026-10-13T07:38:35.932Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-ea31fd3d33dfe2d260776de3321c8db8713a873e597b27ac15eb13e88b75d4c1-54e6c2a3e7fa897d759744de9ad8848e0a37965815d29eabf3cb1a1cd62c84bc.log SHA-256 54e6c2a3e7fa897d759744de9ad8848e0a37965815d29eabf3cb1a1cd62c84bc"
+      },
+      {
+        "id": "race-provider-rendered-cache-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs; current-source check at 2026-10-13T07:38:41.335Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-2059f202f85fa1d9d0828dd283566b51d9896855b93ad9112c5808ad259dfff4-85a5571ffd203d43dfc2bd726baa0a64deacf129926cbee6568fa0e0edf28270.log SHA-256 85a5571ffd203d43dfc2bd726baa0a64deacf129926cbee6568fa0e0edf28270"
+      },
+      {
+        "id": "race-dialog-adapter-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs; current-source check at 2026-10-13T07:38:51.368Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-c35e17cb7fdbd29e723a4fb929ea62514c9341aa2494460bd258f00bed093d6b-2dc8fc7be1c71871f921b64f8fa0e92795c77e1df85528f26b1ce6970be7b1ad.log SHA-256 2dc8fc7be1c71871f921b64f8fa0e92795c77e1df85528f26b1ce6970be7b1ad"
+      },
+      {
+        "id": "race-prefetch-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-prefetch-browser.mjs; current-source check at 2026-10-13T07:38:58.279Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-006bf10f71b1ba6d411c9cfb89ab5e98a51dfe5fddf7cd888bea26f6319749cc-f8b390bb18bf1e61dda3ecff1f13f60546bc59be38621800ae66963cde161e92.log SHA-256 f8b390bb18bf1e61dda3ecff1f13f60546bc59be38621800ae66963cde161e92"
+      },
+      {
+        "id": "race-profile-refresh-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-profile-refresh-browser.mjs; current-source check at 2026-10-13T07:39:00.555Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-79ad746c0d0d5258ef111567d290b66efe56690ac272cd44d6ee53d1adcbb1fb-e4a124efe83a69fcd4c7cb15c0a78c95d2339afea83280b75aa0c1610075391d.log SHA-256 e4a124efe83a69fcd4c7cb15c0a78c95d2339afea83280b75aa0c1610075391d"
+      },
+      {
+        "id": "race-dialog-adapter-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs; current-source check at 2026-10-13T07:39:11.651Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-da2a5da237f2418cf2eda449a19b21ae07c2b5e2a7ebaca96aa8b36842627d00-025bd1592b1b548d04b246afc0a0728080806e8d515dbc6f3bb8dd9d7428f39d.log SHA-256 025bd1592b1b548d04b246afc0a0728080806e8d515dbc6f3bb8dd9d7428f39d"
+      },
+      {
+        "id": "race-session-browser-resource-ownership",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-session-resources-browser.mjs; current-source check at 2026-10-13T07:39:17.765Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-e5ba1e7ce847e33668d761d3e63ecc1eba576f354d1826332e59e4f6eb6f72ac-01796502405fb21b0fcf89c8830580c5555a13fd95dd317620f97774f01a4774.log SHA-256 01796502405fb21b0fcf89c8830580c5555a13fd95dd317620f97774f01a4774"
+      },
+      {
+        "id": "race-matchmaking-removal-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs; current-source check at 2026-10-13T07:39:22.272Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-52472c307c8ff2ba094e692327e3008b0a98146ae3b2f48b4e4f81367757712c-858c2081fba3bba56ff9624a2d3ef04a739912e0bcb6e0e74d54305e6762128a.log SHA-256 858c2081fba3bba56ff9624a2d3ef04a739912e0bcb6e0e74d54305e6762128a"
+      },
+      {
+        "id": "race-discovery-provider-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-provider-browser.mjs; current-source check at 2026-10-13T07:39:26.966Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-5d9c250914f04d3dbc561a373eb237d63f37d6217192e1a99580af546b8ac918-ff4a29e784969f1e48fb42de88a052c2654fbbacaf395fa08722f961641c9286.log SHA-256 ff4a29e784969f1e48fb42de88a052c2654fbbacaf395fa08722f961641c9286"
+      },
+      {
+        "id": "race-discovery-storage-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-browser.mjs; current-source check at 2026-10-13T07:47:22.030Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-40f29b56e7e2ec5129cafbff1a0b630d19c3531f9a4e9f62ca2c798233e9883f-8fbcd9e375c4a78d74234b6d8bccf85e401d9eba102c1902744b095d35c191a6.log SHA-256 8fbcd9e375c4a78d74234b6d8bccf85e401d9eba102c1902744b095d35c191a6"
+      },
+      {
+        "id": "race-discovery-callback-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-callback-browser.mjs; current-source check at 2026-10-13T07:39:29.883Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-ff9feb6c89ccb9fa82c1e19c03e2c5dc901504358db02bac434264b31e3a4d6b-cd6510174b47f6e7511ee5be2b6ce1269a4e11e6d1569d63037d0919fe37c2c1.log SHA-256 cd6510174b47f6e7511ee5be2b6ce1269a4e11e6d1569d63037d0919fe37c2c1"
+      },
+      {
+        "id": "race-discovery-prompt-cancellation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs; current-source check at 2026-10-13T07:39:32.367Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-5c52afcdee2149714f36500dcf742dd012fa26fe542258f6bda78e34ff2fe893-2e0e72f296cc30490fbbeaba6b1d5600240bfe53a5b25875b533f0fe7e3b572a.log SHA-256 2e0e72f296cc30490fbbeaba6b1d5600240bfe53a5b25875b533f0fe7e3b572a"
+      },
+      {
+        "id": "race-retired-search-recovery-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-retired-search-browser.mjs; current-source check at 2026-10-13T07:39:34.391Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-5f67a37c9f592dec4b0203e4987f69cca87c9ce806370f9f8f0b1df55d4537cb-8f78c79aa04de8fee503129c308fb5e1527e79676dd3bc4d3062d9af0291c484.log SHA-256 8f78c79aa04de8fee503129c308fb5e1527e79676dd3bc4d3062d9af0291c484"
+      },
+      {
+        "id": "race-retirement-shared-journal-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-retirement-journal-browser.mjs; current-source check at 2026-10-13T07:39:48.313Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-b14f427a4e9294b7745e60f9aedf010a81bb428e0ed24ce5cad53e609abb8196-6656f840ecb74755da11a878b150d3384c499e65d2ee2bb1e37854bd76d3f20a.log SHA-256 6656f840ecb74755da11a878b150d3384c499e65d2ee2bb1e37854bd76d3f20a"
+      },
+      {
+        "id": "race-visibility-retirement-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs; current-source check at 2026-10-13T07:39:53.562Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-7e663ebf8e03b1aa2c7e158fee0b8062c588be10b3d807a11bd730b453abad51-117bda075a3b2572a48e703fc7fa2c3a843a440fe566d514d3d28e0ab9dd7a75.log SHA-256 117bda075a3b2572a48e703fc7fa2c3a843a440fe566d514d3d28e0ab9dd7a75"
+      },
+      {
+        "id": "race-visibility-retirement-development-strict-browser",
+        "status": "passed",
+        "evidence": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs; current-source check at 2026-10-13T07:39:59.281Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-ad293c46ff0393d1aec8a129519ffadf7fd7ebfad8572f83abbbdb6d149771be-cbb12726397b159184db9215603f4f0c99900c71e60c65ab96a670170ac9ae92.log SHA-256 cbb12726397b159184db9215603f4f0c99900c71e60c65ab96a670170ac9ae92"
+      },
+      {
+        "id": "invitation-callable-recovery-contracts",
+        "status": "passed",
+        "evidence": "env GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIRESTORE_EMULATOR_HOST=127.0.0.1:18199 PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceCallables.test.ts; current-source check at 2026-10-13T07:40:00.409Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-c3c71a06d518a467aa97f732196ff830730836a290ae8329dc46cbd1b897fd58-4d3f293433950bda91a44965f1d0948b8b1d45c452a4420bd2e5d03c996c8b1e.log SHA-256 4d3f293433950bda91a44965f1d0948b8b1d45c452a4420bd2e5d03c996c8b1e"
+      },
+      {
+        "id": "race-existing-attempt-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-existing-attempt-browser.mjs; current-source check at 2026-10-13T07:40:02.054Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-02f4c4517633d31dbd7054bf951ad7f440d839dc85d7fac39e198b05c12881d1-2dd3b5d018891b38943667492ce66137b8291fdb5962b13ea1b2c3ae2204ad11.log SHA-256 2dd3b5d018891b38943667492ce66137b8291fdb5962b13ea1b2c3ae2204ad11"
+      },
+      {
+        "id": "race-private-entry-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-private-entry-browser.mjs; current-source check at 2026-10-13T07:40:03.694Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-9ab8c2912cc1d3bcebc37d69b4f37e3617754fecdedb150ec118ac3aa2ae1494-d7833b9dcb0c835b482a1c47859c60e250d45e90c47c68ee12ab6cc432487bd0.log SHA-256 d7833b9dcb0c835b482a1c47859c60e250d45e90c47c68ee12ab6cc432487bd0"
+      },
+      {
+        "id": "race-existing-opponent-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-existing-opponent-browser.mjs; current-source check at 2026-10-13T07:40:05.527Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-8894aa2f71e3f2c17989466e4ec7c844b71ca1ba4e804fd28459590b0bc3b119-93d0acb1fdd8bfa51aa33a9d7cee8ef214cb49d4ab54e8c3b45b16ab8a30610e.log SHA-256 93d0acb1fdd8bfa51aa33a9d7cee8ef214cb49d4ab54e8c3b45b16ab8a30610e"
+      },
+      {
+        "id": "race-private-creator-acceptance-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-private-creator-browser.mjs; current-source check at 2026-10-13T07:40:07.382Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-10805bc95565e2bc9fc44429377e535d5d1721a964e5dfb891ed58fccd2c4d5e-bd4d770214db2402f4dbe8da4441569b281eb9b0bf150f9b55925ce8ab781ae8.log SHA-256 bd4d770214db2402f4dbe8da4441569b281eb9b0bf150f9b55925ce8ab781ae8"
+      },
+      {
+        "id": "race-entry-effect-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-entry-effect-browser.mjs; current-source check at 2026-10-13T07:40:08.757Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-1f79d08cb05c976f6266357a430951532a2d3b2e33dced114e3c98a84ebf7398-e2d3e4504cc3d420542a68f940d8ee78f17ca5bef75462df12f8ee75b9324454.log SHA-256 e2d3e4504cc3d420542a68f940d8ee78f17ca5bef75462df12f8ee75b9324454"
+      },
+      {
+        "id": "race-waiting-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-waiting-selection-browser.mjs; current-source check at 2026-10-13T07:40:10.917Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-badd5470e474d3b71a7c1d8e546029bc9e7a17602496fc0d9dddd814d105f6b6-e795b4413abf8f0732c3d17807443bbc9de61568439551968a02d6e7a1267947.log SHA-256 e795b4413abf8f0732c3d17807443bbc9de61568439551968a02d6e7a1267947"
+      },
+      {
+        "id": "race-cancellation-receipt-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs; current-source check at 2026-10-13T07:40:13.664Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-07cbba64eca0c6defec140d386f4ab7adab5a180251fa5d0e498db2f61c17711-e373b8c929534fef21fb4e74d5ed3c682fba7797ba0a70ad742d297855917527.log SHA-256 e373b8c929534fef21fb4e74d5ed3c682fba7797ba0a70ad742d297855917527"
+      },
+      {
+        "id": "race-start-selection-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-selection-browser.mjs; current-source check at 2026-10-13T07:40:15.502Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-98e12c0571702f398a91eb493ff614e14afb3dcc103d47d171fe6ecd7b66a40b-796cd9db59a55aaebdd9e084ffdd2836a99892224ef13d3c25f37e77c360de6d.log SHA-256 796cd9db59a55aaebdd9e084ffdd2836a99892224ef13d3c25f37e77c360de6d"
+      },
+      {
+        "id": "race-provider-start-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-start-browser.mjs; current-source check at 2026-10-13T07:40:17.416Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-355832907977c645ca0ecaf90c46213e58590b2a9a91f088af30245da4d93984-78654e1748b39667a1c687376613d805484675d9ea2666ad14cc4e1e7675451e.log SHA-256 78654e1748b39667a1c687376613d805484675d9ea2666ad14cc4e1e7675451e"
+      },
+      {
+        "id": "race-start-category-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-category-browser.mjs; current-source check at 2026-10-13T07:40:19.600Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-08a523cd62edfe8d7b1cf9eb5be7ba85e83f8f933b26fbef78962b2844a02dce-e1b84608f22590dd122b258aab2ccb6dfe5369bab03e0ce0d05a87f44061d305.log SHA-256 e1b84608f22590dd122b258aab2ccb6dfe5369bab03e0ce0d05a87f44061d305"
+      },
+      {
+        "id": "race-entry-run-handoff-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs; current-source check at 2026-10-13T07:40:21.147Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-692e86fe7e46d2acaa30c714fdb9d30622d22732273317f207c9ee77eb0fff51-e936c0bdc5e07d89affc9da23250533cf9a6ca771e6848f13404e891af9245e6.log SHA-256 e936c0bdc5e07d89affc9da23250533cf9a6ca771e6848f13404e891af9245e6"
+      },
+      {
+        "id": "race-start-origin-context-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-origin-browser.mjs; current-source check at 2026-10-13T07:40:23.292Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-6749e610e40fa68cf5205e4f3d121f74e15159e8c22f8e0efaaa4448b8cfbd86-50833a839d0aa4fe6e4e06c871bc57f1854cd6e1efcd83994c5f962392c89a22.log SHA-256 50833a839d0aa4fe6e4e06c871bc57f1854cd6e1efcd83994c5f962392c89a22"
+      },
+      {
+        "id": "race-start-opponent-presence-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-start-opponent-browser.mjs; current-source check at 2026-10-13T07:40:24.733Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-fcc546e007395fb3827b4ffa3c982047367d0dd62b70954dcd6a185242c6ef09-8b32bc7e38f9b1ac4d092a3806ea2ee94723e75a197156f64a21a3c36faa6816.log SHA-256 8b32bc7e38f9b1ac4d092a3806ea2ee94723e75a197156f64a21a3c36faa6816"
+      },
+      {
+        "id": "authentication-harness-retained-paths",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed; current-source check at 2026-10-13T07:40:51.011Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-3503f6ab79e05a156a9fa6e2428a113cf9a834f13051eddb2aeb8d6d442845e3-a60c8057fc51dfefba7b93440da4a99ed05d0839b86046178836d6372f268b2d.log SHA-256 a60c8057fc51dfefba7b93440da4a99ed05d0839b86046178836d6372f268b2d"
+      },
+      {
+        "id": "race-creator-opponent-authority-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-creator-opponent-browser.mjs; current-source check at 2026-10-13T07:40:52.547Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-4c72cf30a7c348e429e1663924c592a598683c04b337fa4142916a0a0bb80c8b-f8a572e1c8eacc2cc86203d3aa967849d6112e6e5501ba885843952cf5494a67.log SHA-256 f8a572e1c8eacc2cc86203d3aa967849d6112e6e5501ba885843952cf5494a67"
+      },
+      {
+        "id": "race-hint-reveal-evidence-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs; current-source check at 2026-10-13T07:41:04.448Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-9843994ccda079fe8102d4d38e0f84a23c141ad4662ac5843bfbb18bb8feb644-6e89ddc6b62c37a0ab582b499388e0e31a46a3993bc9c7005ec152335df50a62.log SHA-256 6e89ddc6b62c37a0ab582b499388e0e31a46a3993bc9c7005ec152335df50a62"
+      },
+      {
+        "id": "race-safety-selection-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-safety-selection-browser.mjs; current-source check at 2026-10-13T07:41:06.966Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-fbdcf3a48968c1cc8079b8c1f94a10ca4c7e8e5a9c33bcd6219b6bfbb8c6911d-f04f8b603312d1c9dee7169a4ce66e7cb4a3b6c4ec6e20e000624ae6431baa2e.log SHA-256 f04f8b603312d1c9dee7169a4ce66e7cb4a3b6c4ec6e20e000624ae6431baa2e"
+      },
+      {
+        "id": "race-countdown-clock-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-countdown-clock-browser.mjs; current-source check at 2026-10-13T07:41:49.623Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-45f5671e08669f6bf078d06e503bc0b53840f9eb84c3ae7b6668624b8e0620ef-ae8c3a0be304124d0e697eab464ccc0472b86129d93f93697c1e7cd650f3f914.log SHA-256 ae8c3a0be304124d0e697eab464ccc0472b86129d93f93697c1e7cd650f3f914"
+      },
+      {
+        "id": "race-discovery-retry-policy-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs; current-source check at 2026-10-13T07:41:54.911Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-77d419e7f2c22bcea0cfb5515f579500d383cb2a803398de2dde469b5139f633-9fab451fc76dd6858892374bbad83c2bfc5b75d63758d872f6e9e2cfaded39f0.log SHA-256 9fab451fc76dd6858892374bbad83c2bfc5b75d63758d872f6e9e2cfaded39f0"
+      },
+      {
+        "id": "race-resolver-failure-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resolver-failure-browser.mjs; current-source check at 2026-10-13T07:41:56.313Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-579dde65c2378dfc0968f40b372fca2a5b9a3f83943b67e40c5883d4c6d3511a-1a5e4d530b81b556a30918928d75f8cde1691a2dc6355e0faa1bf816b80bfcc0.log SHA-256 1a5e4d530b81b556a30918928d75f8cde1691a2dc6355e0faa1bf816b80bfcc0"
+      },
+      {
+        "id": "race-cold-search-retirement-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs; current-source check at 2026-10-13T07:41:57.724Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-6eb900282a4169fef12cd0b31e8109a5c67d05b039fb367a29c352fe14804e81-278a5de1410009e246c5e2d00a98b2dd95577c2e03fd992b11da4508ffbe1b67.log SHA-256 278a5de1410009e246c5e2d00a98b2dd95577c2e03fd992b11da4508ffbe1b67"
+      },
+      {
+        "id": "race-cold-search-catalog-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs; current-source check at 2026-10-13T07:41:59.422Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-10b00f0ebc96801a653ddc2de165934ef4aa066dba8a0d758d2827f08be6cb97-748d3f38e911d02f9d3173ef75985945fff02be4b59e601d4d8afb3ad827ebc5.log SHA-256 748d3f38e911d02f9d3173ef75985945fff02be4b59e601d4d8afb3ad827ebc5"
+      },
+      {
+        "id": "race-catalog-retry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-catalog-retry-browser.mjs; current-source check at 2026-10-13T07:42:00.922Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-29f58b2cb84f6d5d773de8c643170954b745748db61669e450a598e7866e8f5b-1ec72f57c495561c2abd92282783b2f8fe1de9dc6df975805f0a39f4a5f54691.log SHA-256 1ec72f57c495561c2abd92282783b2f8fe1de9dc6df975805f0a39f4a5f54691"
+      },
+      {
+        "id": "race-resolver-reentry-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-resolver-reentry-browser.mjs; current-source check at 2026-10-13T07:42:02.633Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-0481d4b35640b5a17cde439bd129f24bf06f1ad46fcb86a28646d571c8cc8075-cec1b3a6a9b089b815476f5776f381297cc754f94951759eb82f7569cda16008.log SHA-256 cec1b3a6a9b089b815476f5776f381297cc754f94951759eb82f7569cda16008"
+      },
+      {
+        "id": "race-provider-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-provider-observation-browser.mjs; current-source check at 2026-10-13T07:42:05.176Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-10062856f53bcc6d07736dad7a04648f65d526451a0bb31859d55137b84fb8a9-dbe3cc82977d44115004984eccaed9ea30130e97acaeb60e61b92f637d065be3.log SHA-256 dbe3cc82977d44115004984eccaed9ea30130e97acaeb60e61b92f637d065be3"
+      },
+      {
+        "id": "race-authority-observation-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-authority-observation-browser.mjs; current-source check at 2026-10-13T07:42:09.544Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-6c568ef385bb9ed579c2afa45be993244159990564097d968c9592c5103a9f9c-10f93a5815f89132358b546c314430784372c3124d13cc0edf412f8e1dbb01c1.log SHA-256 10f93a5815f89132358b546c314430784372c3124d13cc0edf412f8e1dbb01c1"
+      },
+      {
+        "id": "race-timer-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-timer-ownership-browser.mjs; current-source check at 2026-10-13T07:42:11.221Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-d6d39316ddd8214d403348c681ce525f8939970326c4acb2533697055849bfdb-72f282287774f33f08e0879f0bb50efa368d0f8e3efed80d3cdff81a46a78864.log SHA-256 72f282287774f33f08e0879f0bb50efa368d0f8e3efed80d3cdff81a46a78864"
+      },
+      {
+        "id": "race-loader-tail-ownership-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs; current-source check at 2026-10-13T07:42:17.114Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-36c517f230a1e9656844e22782e4786554e8779650b496df33012e71504725ed-eb6cde7f1af5b7370ba5c56dc348fb94168474abb521c027d656f5bfe82e09cc.log SHA-256 eb6cde7f1af5b7370ba5c56dc348fb94168474abb521c027d656f5bfe82e09cc"
+      },
+      {
+        "id": "retained-authentication-entry-paths",
+        "status": "passed",
+        "evidence": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs --runInBand src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts --testNamePattern=renders typed invitation waiting|recovers a waiting invitation|consumes an unavailable challenge|reopens a completed recipient|opens a public creator entry|retains public recipient acceptance|suspends typed invitation polling; current-source check at 2026-10-13T07:45:22.338Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-6e1d9f7485164721ec9a6f2c6fa3cf57675ed3c4972e76f4f5c62e4756f99844-d15ca5530eca1a028d7347d8bc9525764a33f3845451c485b3fca4a8225c0aae.log SHA-256 d15ca5530eca1a028d7347d8bc9525764a33f3845451c485b3fca4a8225c0aae"
+      }
+    ],
+    "remainingGates": [
+      "The ongoing multiplayer edge-case and reliability audit remains active.",
+      "Jest build activation is authorized; game publication, review submission and listing visibility remain on hold. Firebase Functions deployment is authorized but this verification does not deploy."
+    ],
+    "nextAction": "Continue the multiplayer reliability audit; preserve Jest game publication hold and deployment verification requirements.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "f3cf41378efdb1257ec96ae4d495476058711511cdc0f1c9116250449bfb703c"
+      },
+      {
+        "target": "facebook",
+        "file": "artifacts/target-dependencies/facebook.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "687b4011cb0e3fe94c65a49270194ffaf4a82bafbe75816bc2549b2ba76ff11c"
+      },
+      {
+        "target": "reddit",
+        "file": "artifacts/target-dependencies/reddit.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "f7c36ea57ecc22e2e4d29a7044959ff1faa250aba26ad6314a070cc76b932f3c"
+      },
+      {
+        "target": "youtube",
+        "file": "artifacts/target-dependencies/youtube.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "0db0aa6786ba60cbb7a6af0b8510131bdae2892030476d1a744c322725a8a967"
+      },
+      {
+        "target": "netflix",
+        "file": "artifacts/target-dependencies/netflix.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "e1d4f16f0dbf6cd62e80d0aa5b4422eaec17202d7d2e9fdf81b1e48f46f31416"
+      },
+      {
+        "target": "yahoo",
+        "file": "artifacts/target-dependencies/yahoo.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "0a53af5f0acee8bab4e9e8e3e602fe1a4b3775b9d610ad5924b2c139c5d53c79"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "artifacts/target-dependencies/gamesnacks.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "8f20f526744f181bccca7057013cf077a848299e0d1ce4466b398a9f92948ebb"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

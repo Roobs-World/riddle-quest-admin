@@ -1,0 +1,10 @@
+{
+  "verifiedAt": "2026-10-24T03:26:48.756Z",
+  "head": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "indexEmpty": true,
+  "functionsDirectoryMode": "0o775",
+  "headUnchanged": true,
+  "sourceDigestUnchanged": true,
+  "noApplicationSourceChangeDuringLegacyDeployment": true
+}

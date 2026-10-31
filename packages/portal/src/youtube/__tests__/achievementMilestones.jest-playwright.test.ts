@@ -19,7 +19,7 @@ describeBrowser("earned achievement milestones in isolated solo artifacts", () =
     /** Browser executing the built gameplay and persistence paths. */
     const browser = await chromium.launch({headless: true});
     /** Directory retaining screenshots of earned milestone badges. */
-    const evidence = path.resolve(packageRoot, "../../artifacts/achievements-expansion/browser");
+    const evidence = path.resolve(packageRoot, "../../builds/test-evidence/achievements-expansion/browser");
     await mkdir(evidence, {recursive: true});
     try {
       for (const width of [390, 1280]) {

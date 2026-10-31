@@ -1,0 +1,7 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --testPathPatterns=raceConfirmedHistory '--testNamePattern=equivalent confirmed rows|invalid attempt count'
+Test Suites: 1 passed, 1 total
+Tests:       12 skipped, 6 passed, 18 total
+Snapshots:   0 total
+Time:        0.199 s, estimated 1 s
+Ran all test suites matching raceConfirmedHistory with tests matching "equivalent confirmed rows|invalid attempt count".

@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "scripts/run-isolated-emulators.js",
+    "emulators:exec",
+    "--config",
+    "firebase.race-verification.json",
+    "--only",
+    "firestore,database",
+    "--project",
+    "demo-riddle-quest-multiplayer",
+    "node /var/tmp/riddle-backend-surgical-20261025/run-resumable-compiled-regression.cjs"
+  ],
+  "startedAt": "2026-10-25T22:35:22.355373+00:00",
+  "checkedAt": "2026-10-25T22:35:30.952395+00:00",
+  "exitCode": 0,
+  "safeOuterEnvironment": {
+    "GCLOUD_PROJECT": "demo-riddle-quest-multiplayer",
+    "FIREBASE_PROJECT_ID": "demo-riddle-quest-multiplayer",
+    "FIRESTORE_EMULATOR_HOST": "127.0.0.1:18199",
+    "FIREBASE_DATABASE_EMULATOR_HOST": "127.0.0.1:19000",
+    "NODE_OPTIONS": "--experimental-vm-modules --require=/tmp/riddle-silent-browser.cjs",
+    "RIDDLE_MATRIX_GENERATION": "next",
+    "TMPDIR": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/current-source-readiness-2026-10-25/backend-new/temp",
+    "JAVA_TOOL_OPTIONS": "-Xmx1536m",
+    "DEBUG": ""
+  },
+  "logSha256": "94e5abc177c1cdb68c665cfd0a31adabadd7f4ff1fa8558dafae4d3820b98a62"
+}

@@ -1,0 +1,6 @@
+Passed 390px en
+Passed 1280px en
+Passed 320px rtl
+Passed 390px reduced
+Passed 390px late
+{"passed":true,"mode":"production","scenarios":13,"output":"/home/craig-beswetherick/Documents/riddle-quest/artifacts/performance-current-20261019/completion/fanfare-final"}

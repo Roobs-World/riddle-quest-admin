@@ -1,13 +1,10 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
-import type {Dispatch, MutableRefObject} from "react";
 import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
-import type {SavedGame} from "../../../platform/types";
-import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
 import type {PendingGuessState} from "../../gameSessionTypes";
-import {gameSessionReducer} from "../../gameSession";
+import {canEditCurrentGuess, gameSessionReducer, hasRemainingGuessAttempts} from "../../gameSession";
 import {
-  createPendingPlayRecoveryStorage,
+  browserAdapters, capturePendingBase, findSegment, ownsSkipSuccessor,
   pendingPlayScope,
   reconcileConfirmedPendingPlay,
   createRejectedPlayDraft,
@@ -18,58 +15,8 @@ import {
 import {createRequestId} from "../../requestIds";
 import {getConfirmedRiddleOutcome} from "../../ConfirmedRiddleOutcome";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "../../modalPages/commerce/commerceCosts";
-import type {GameFeedbackKind} from "./useGameAudio";
-/** A paid Skip owns only the next Classic index while its origin or optional preview remains current. */
-const ownsSkipSuccessor = (origin: BridgeRiddle, target: BridgeRiddle, current: BridgeRiddle | null) =>
-  origin.gameMode === "classic" && origin.index !== undefined && target.gameMode === "classic" &&
-  target.index === origin.index + 1 && target.sessionToken !== origin.sessionToken &&
-  Boolean(current && current.gameMode === "classic" &&
-    (current.sessionToken === origin.sessionToken || current.index === origin.index + 1));
-/** Clock seam for retry, lease renewal and account-scope cleanup. */
-export type PendingPlayClock = Pick<Window, "setTimeout" | "clearTimeout" | "setInterval" | "clearInterval"> & {
-  /** Current lease and retransmission time. */ now: () => number;
-};
-/** Stable adapters used for one mounted Provisional Play recovery owner. */
-export type PendingPlayRecoveryAdapters = {
-  /** Durable journal and cross-tab lease adapter. */ journal: ReturnType<typeof createPendingPlayRecoveryStorage>;
-  /** Retry and lease time adapter. */ clock: PendingPlayClock;
-};
-/** Browser implementation keeps global access behind the recovery seam. */
-const browserAdapters: PendingPlayRecoveryAdapters = {
-  journal: createPendingPlayRecoveryStorage({
-    getItem: (key) => localStorage.getItem(key),
-    setItem: (key, value) => localStorage.setItem(key, value),
-    removeItem: (key) => localStorage.removeItem(key),
-  }),
-  clock: {
-    now: Date.now,
-    setTimeout: (callback, delay) => window.setTimeout(callback, delay),
-    clearTimeout: (timer) => window.clearTimeout(timer),
-    setInterval: (callback, delay) => window.setInterval(callback, delay),
-    clearInterval: (timer) => window.clearInterval(timer),
-  },
-};
-/** Describes post to host. */
-type PostToHost = (message: GameToHostMessage) => void;
-/** Captures only fields needed to restore one issued question. */
-const capturePendingBase = (state: GameSessionState): PendingGuessState => ({
-  currentLetters: [...state.currentLetters],
-  activeSlotIndex: state.activeSlotIndex,
-  guesses: [...state.guesses],
-  engineSnapshot: state.engineSnapshot,
-  modal: state.modal,
-  lastOutcome: state.lastOutcome,
-  completionAcknowledged: state.completionAcknowledged,
-  letterStates: {...state.letterStates},
-  profile: state.profile,
-  lastRewards: state.lastRewards,
-  optimisticAchievementIds: [...state.optimisticAchievementIds],
-});
-/** Finds the checkpoint for an issued session retained in the journal. */
-const findSegment = (journal: PendingGuessJournal, sessionToken: string) =>
-  journal.riddle.sessionToken === sessionToken
-    ? {riddle: journal.riddle, base: journal.base, draft: journal.draft, draftActiveSlotIndex: journal.draftActiveSlotIndex, first: true as const}
-    : journal.successors.find((segment) => segment.riddle.sessionToken === sessionToken);
+import type {RecoveryOptions, PendingAnswer, RestoredJournal, ContinueSubmit, SkipLoad, SkipPreview, EarlySkipLoad, DirectGuess, DeliveryOwner, PendingPlayRecoveryAdapters} from "../../pendingPlayRecoveryTypes";
+export type {PendingPlayClock, PendingPlayRecoveryAdapters} from "../../pendingPlayRecoveryTypes";
 /** Owns player-initiated host commands and their idempotent retry identifiers. */
 export function useProvisionalPlayRecovery({
   state,
@@ -79,44 +26,15 @@ export function useProvisionalPlayRecovery({
   postToHost,
   playFeedback,
   adapters = browserAdapters,
-}: {
-  /** Stable storage and time adapters for the mounted recovery owner. */
-  adapters?: PendingPlayRecoveryAdapters;
-  /** Stores state. */
-  state: GameSessionState;
-  /** Stores state ref. */
-  stateRef: MutableRefObject<GameSessionState>;
-  /** Stores restored game. */
-  restoredGame?: SavedGame | null;
-  /** Stores dispatch. */
-  dispatch: Dispatch<GameSessionAction>;
-  /** Stores post to host. */
-  postToHost: PostToHost;
-  /** Stores play feedback. */
-  playFeedback: (kind: GameFeedbackKind) => void;
-}) {
+}: RecoveryOptions) {
   /** Provides guess retry ref behavior. */
-  const guessRetryRef = useRef<{
-    /** Stores riddle id. */
-    riddleId: string;
-    /** Stores guess. */
-    guess: string;
-    /** Stores request id. */
-    requestId: string;
-    /** Confirmed row count before sending this guess. */
-    guesses: number;
-  } | null>(null);
+  const guessRetryRef = useRef<PendingAnswer | null>(null);
   /** Local previews wait in this order for authoritative delivery. */
   const queuedGuessesRef = useRef<QueuedGuess[]>([]);
   /** The journal ref used by the current operation. */
   const journalRef = useRef<PendingGuessJournal | null>(null);
   /** Tracks the displayed journal segment and the render preceding its restoration. */
-  const restoredJournalRef = useRef<{
-    /** Account generation and locale owning the restored segment. */ scope: string;
-    /** Issued question whose draft was restored. */ sessionToken: string;
-    /** Exact loaded host riddle distinguishes a refreshed same-session reconcile reply. */ riddle: BridgeRiddle;
-    /** Render preceding restoration must not overwrite its durable draft. */ before: GameSessionState;
-  } | null>(null);
+  const restoredJournalRef = useRef<RestoredJournal | null>(null);
   /** The owner ref used by the current operation. */
   const [ownerRef] = useState(() => ({current: createRequestId("pending-owner")}));
   /** The sent request ref used by the current operation. */
@@ -129,6 +47,10 @@ export function useProvisionalPlayRecovery({
   const [pendingCount, setPendingCount] = useState(0);
   /** Prevents later guesses or repeated purchases from overtaking a queued coin action. */
   const [coinActionPending, setCoinActionPending] = useState(false);
+  /** One explicit sixth-attempt submission waits for its exact paid grant. */
+  const [queuedContinueSubmit, setQueuedContinueSubmit] = useState<Readonly<ContinueSubmit> | null>(null);
+  /** Effect replay cannot send the same deferred answer twice. */
+  const consumedContinueSubmitRef = useRef<string | null>(null);
   /** Blocks repeated Continue clicks before React commits the local deduction. */
   const continuePendingRef = useRef(false);
   useEffect(() => {
@@ -136,25 +58,11 @@ export function useProvisionalPlayRecovery({
       continuePendingRef.current = false;
   }, [state.pendingCoinSpend]);
   /** Correlates the one successor load permitted by an accepted Skip request. */
-  const skipLoadRef = useRef<{
-    /** Accepted paid request. */
-    requestId: string;
-    /** Question being left behind. */
-    sessionToken: string;
-    /** Issued predecessor bounds the accepted successor index. */
-    riddle: BridgeRiddle;
-  } | null>(null);
+  const skipLoadRef = useRef<SkipLoad | null>(null);
   /** Correlates the speculative issued successor shown before a Skip receipt. */
-  const skipPreviewRef = useRef<{
-    /** Request that loaded the provisional successor. */ requestId: string;
-    /** Session being skipped. */ sessionToken: string;
-  } | null>(null);
+  const skipPreviewRef = useRef<SkipPreview | null>(null);
   /** Holds an authoritative successor that arrives before its correlated Skip receipt. */
-  const earlySkipLoadRef = useRef<{
-    /** Paid Skip request awaiting confirmation. */ requestId: string;
-    /** Server-confirmed successor. */ riddle: BridgeRiddle;
-    /** Issued predecessor used to recheck ownership when the paid receipt arrives. */ origin: BridgeRiddle;
-  } | null>(null);
+  const earlySkipLoadRef = useRef<EarlySkipLoad | null>(null);
   /** A failed receipt write retries the latest journal within its admitted lifetime. */
   const pendingSettlementWriteRef = useRef<string | null>(null);
   /** The lease renew ref used by the current operation. */
@@ -167,11 +75,7 @@ export function useProvisionalPlayRecovery({
   const priorScopeRef = useRef(scope);
   scopeRef.current = scope;
   /** The non-journaled fallback still owns an exact request, question and player scope. */
-  const directGuessRef = useRef<{
-    /** Correlated fallback request. */ requestId: string;
-    /** Account generation and content locale at submission. */ scope: string | null;
-    /** Authority-issued question at submission. */ sessionToken: string;
-  } | null>(null);
+  const directGuessRef = useRef<DirectGuess | null>(null);
   /** Retains ownership when evaluation or durable journal storage is unavailable. */
   const sendDirectGuess = useCallback((message: QueuedGuess["message"]) => {
     directGuessRef.current = {requestId: message.requestId!, scope: scopeRef.current,
@@ -179,10 +83,7 @@ export function useProvisionalPlayRecovery({
     postToHost(message);
   }, [postToHost]);
   /** Exact committed lifetime; old callbacks cannot revive when an account returns. */
-  const deliveryOwnerRef = useRef<{
-    /** Scope admitted by this commit. */
-    scope: string | null;
-  } | null>(null);
+  const deliveryOwnerRef = useRef<DeliveryOwner | null>(null);
   /** Replacement commit lifetimes retain immutable predecessors without re-reading another tab. */
   const journalObservedRef = useRef(new Map<string, string | null>());
   /** Loaded writer changes rerun recovery even when the displayed question is unchanged. */
@@ -227,7 +128,7 @@ export function useProvisionalPlayRecovery({
   const retryTimerRef = useRef<number | null>(null);
   useLayoutEffect(() => {
     /** A fresh token owns every timer installed during this committed scope. */
-    const owner = {scope};
+    const owner = {scope, postToHost};
     deliveryOwnerRef.current = owner;
     /** Failed optional chunk loads retry only while this commit still owns admission. */
     let writerRetry: number | null = null;
@@ -311,26 +212,29 @@ export function useProvisionalPlayRecovery({
     priorScopeRef.current = scope;
     setJournalAvailable(true);
   }, [scope]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!scope || !state.riddle || !journalWriterRef.current) return;
     // A settled receipt awaiting deletion must not be restored from its old durable bytes.
     if (pendingSettlementWriteRef.current && !journalRef.current) return;
     /** Restores one displayed segment without writing its pre-restoration empty draft back to storage. */
     const restoreSegment = (journal: PendingGuessJournal, segment: NonNullable<ReturnType<typeof findSegment>>) => {
       restoredJournalRef.current = {scope, sessionToken: segment.riddle.sessionToken, riddle: state.riddle!, before: state};
+      if (journalWriterRef.current?.prefersProviderDraft(journal, restoredGame)) return;
       /** Complete newer host history takes precedence over an older draft-only gameplay checkpoint. */
       const hostHistoryIsCurrent = journal.queue.length === 0 && !journal.coinAction &&
         state.riddle!.attemptsUsed > 0 && state.riddle!.acceptedGuesses?.length === state.riddle!.attemptsUsed &&
         state.riddle!.attemptsUsed >= (segment.base.engineSnapshot?.attemptsUsed ?? 0);
+      for (const hint of segment.riddle.revealedHints ?? [])
+        dispatch({type: "applyHint", index: hint.index, letter: hint.letter, newCoins: state.profile?.coins ?? 0});
       dispatch({type: "restoreQueuedGuesses", base: hostHistoryIsCurrent ? capturePendingBase(state) : segment.base,
         guesses: journal.queue.filter(item => item.message.payload.sessionToken === segment.riddle.sessionToken)
           .map(item => item.message.payload.guess),
         guessAttempts: journal.queue.filter(item => item.message.payload.sessionToken === segment.riddle.sessionToken)
-          .map(item => item.attempts),draft: segment.draft,draftActiveSlotIndex: segment.draftActiveSlotIndex});
+          .map(item => item.attempts),draft: segment.draft,draftActiveSlotIndex: segment.draftActiveSlotIndex,draftRevision: segment.draftRevision});
       if (journal.coinAction?.type === "game:spendCoins" && journal.coinAction.payload.sessionToken === segment.riddle.sessionToken)
         dispatch({type: "previewCoinSpend",requestId: journal.coinAction.requestId!,
           amount: journal.coinAction.payload.amount ?? CONTINUE_COIN_COST,reason: "continue",
-          draft: segment.draft,draftActiveSlotIndex: segment.draftActiveSlotIndex});
+          draft: segment.draft,draftActiveSlotIndex: segment.draftActiveSlotIndex,draftRevision: segment.draftRevision});
     };
     /** The active journal used by the current operation. */
     let activeJournal = journalRef.current;
@@ -397,7 +301,7 @@ export function useProvisionalPlayRecovery({
         activeJournal.successors.length >= 3
       )
         return;
-      activeJournal.successors.push({riddle: state.riddle, base: capturePendingBase(state), draft: [], draftActiveSlotIndex: 0});
+      activeJournal.successors.push({riddle: state.riddle, base: capturePendingBase(state), draft: [], draftActiveSlotIndex: 0, draftRevision: state.draftRevision});
       journalWriterRef.current?.write(activeJournal);
       return;
     }
@@ -429,32 +333,13 @@ export function useProvisionalPlayRecovery({
     sendFirst();
     if ((journal.queue.length || journal.coinAction) && leaseRenewRef.current === null)
       renewDelivery();
-  }, [dispatch, scope, sendFirst, renewDelivery, state.riddle, state.completionAcknowledged, writerRevision]);
-  useEffect(() => {
-    /** The journal used by the current operation. */
-    const journal = journalRef.current;
-    if (!journal || !state.riddle || restoredJournalRef.current?.before === state) return;
-    /** The segment used by the current operation. */
-    const segment = findSegment(journal, state.riddle.sessionToken);
-    if (!segment) return;
-    /** Only unchanged cell values and cursor justify checking whether durable bytes already match. */
-    const unchanged = segment.draftActiveSlotIndex === state.activeSlotIndex &&
-      segment.draft.length === state.currentLetters.length &&
-      segment.draft.every((letter, index) => letter === state.currentLetters[index]);
-    if (segment.riddle.sessionToken === journal.riddle.sessionToken) {
-      journal.draft = [...state.currentLetters];
-      journal.draftActiveSlotIndex = state.activeSlotIndex;
-    }
-    else {
-      /** The successor used by the current operation. */
-      const successor = journal.successors.find((item) => item.riddle.sessionToken === state.riddle?.sessionToken);
-      if (successor) {
-        successor.draft = [...state.currentLetters];
-        successor.draftActiveSlotIndex = state.activeSlotIndex;
-      }
-    }
-    journalWriterRef.current?.write(journal, unchanged);
-  }, [state.currentLetters, state.activeSlotIndex, state.guessPending, state.riddle?.sessionToken, writerRevision]);
+  }, [dispatch, scope, sendFirst, renewDelivery, state.riddle, state.completionAcknowledged, writerRevision, restoredGame]);
+  useLayoutEffect(() => {
+    if (scope && journalWriterRef.current && restoredJournalRef.current?.before !== state)
+      journalRef.current = journalWriterRef.current.checkpoint(scope, state, journalRef.current, capturePendingBase(state));
+  }, [scope, state.currentLetters, state.activeSlotIndex, state.guessPending, state.pendingHintState,
+    state.pendingCoinSpend, state.pendingGuessState, state.lastOutcome, state.engineSnapshot,
+    state.riddle?.sessionToken, writerRevision]);
   /** Provides hint retry ref behavior. */
   const hintRetryRef = useRef<{
     /** Stores session token. */
@@ -482,18 +367,28 @@ export function useProvisionalPlayRecovery({
   const requestRiddle = useCallback(() => {
     /** Provides current behavior. */
     const current = stateRef.current;
+    /** A completed Daily advances to Classic instead of requesting the same finished session. */
+    const completedDaily = current.riddle?.gameMode === "challenge" &&
+      current.lastOutcome?.gameMode === "challenge" &&
+      current.lastOutcome.sessionToken === current.riddle.sessionToken &&
+      current.lastOutcome.riddleId === current.riddle.riddleId;
     /** The next classic used by the current operation. */
     const nextClassic =
       current.gameMode === "classic" && current.lastOutcome?.kind === "win" && current.riddle?.index !== undefined;
+    /** A recovered completion can be older than progress committed by another tab. */
+    const classicIndex = nextClassic && current.riddle?.index !== undefined
+      ? getConfirmedRiddleOutcome(current.riddle)?.kind === "win" && Number.isSafeInteger(current.profile?.classicIndex)
+        ? Math.max(current.riddle.index + 1, current.profile?.classicIndex ?? 0) : current.riddle.index + 1
+      : current.profile?.classicIndex;
     postToHost({
       type: "game:loadRiddle",
       requestId: createRequestId("load"),
       payload: {
-        gameMode: current.gameMode,
+        gameMode: completedDaily ? "classic" : current.gameMode,
         locale: current.locale,
-        classicIndex: nextClassic ? current.riddle!.index! + 1 : current.profile?.classicIndex,
-        sessionToken: nextClassic ? undefined : (current.riddle?.sessionToken ?? restoredGame?.sessionToken),
-        riddleId: nextClassic ? undefined : (current.riddle?.riddleId ?? restoredGame?.riddleId),
+        classicIndex,
+        sessionToken: nextClassic || completedDaily ? undefined : (current.riddle?.sessionToken ?? restoredGame?.sessionToken),
+        riddleId: nextClassic || completedDaily ? undefined : (current.riddle?.riddleId ?? restoredGame?.riddleId),
       },
     });
   }, [postToHost, restoredGame?.riddleId, restoredGame?.sessionToken, stateRef]);
@@ -504,23 +399,36 @@ export function useProvisionalPlayRecovery({
   /** The submit control follows the same consecutive-answer guard as its handler. */
   const repeatsPreviousGuess = state.guesses.at(-1)?.guess.join("").toLocaleLowerCase(state.riddle?.evaluation?.locale) ===
     currentAttempt.join("").toLocaleLowerCase(state.riddle?.evaluation?.locale);
-  /** Indicates whether can submit. */
-  const canSubmit =
+  /** Draft validity is shared by immediate answers and answers waiting for their paid grant. */
+  const canSubmitDraft =
     (!scope || Boolean(journalWriterRef.current)) &&
+    hasRemainingGuessAttempts(state) &&
+    !state.engineSnapshot?.gameOver &&
     !repeatsPreviousGuess &&
-    !coinActionPending &&
-    !state.pendingCoinSpend?.continueState &&
     (!state.guessPending ||
       (state.riddle?.evaluation &&
-        !state.engineSnapshot?.gameOver &&
         journalAvailable &&
-        scope !== null &&
-        (state.engineSnapshot?.attemptsUsed ?? 0) < 5 + (state.engineSnapshot?.hasUsedContinue ? 1 : 0))) &&
+        scope !== null)) &&
     currentAttempt.length > 0 &&
     currentAttempt.every(Boolean);
-  /** Submits guess. */
-  const submitGuess = useCallback(() => {
-    if (!canSubmit || !state.riddle || journalRef.current?.coinAction || skipLoadRef.current) return;
+  /** Ordinary answer delivery still waits for every preceding paid operation. */
+  const canSubmitReady = canSubmitDraft && !coinActionPending && !state.pendingCoinSpend?.continueState;
+  /** Only the same question's pending Continue may retain a sixth-attempt click. */
+  const continueAction = journalRef.current?.coinAction;
+  /** The pending local grant never authorizes a network guess by itself. */
+  const canQueueContinueSubmit = Boolean(canSubmitDraft && state.pendingCoinSpend?.continueState &&
+    state.engineSnapshot?.hasUsedContinue && continueAction?.type === "game:spendCoins" &&
+    continueAction.payload.reason === "continue" && continueAction.requestId === state.pendingCoinSpend.requestId &&
+    continueAction.payload.sessionToken === state.riddle?.sessionToken);
+  /** A retained click becomes busy immediately and is revoked when its draft changes. */
+  const submitPending = Boolean(queuedContinueSubmit && queuedContinueSubmit.owner === deliveryOwnerRef.current &&
+    queuedContinueSubmit.scope === scope && queuedContinueSubmit.sessionToken === state.riddle?.sessionToken &&
+    queuedContinueSubmit.guess === currentAttempt.join(""));
+  /** Explicit Submit can retain a ready answer while its existing Continue settles. */
+  const canSubmit = !submitPending && (canSubmitReady || canQueueContinueSubmit);
+  /** Sends through the existing durable guess and replay-safe delivery path. */
+  const submitReadyGuess = useCallback(() => {
+    if (!canSubmitReady || !state.riddle || journalRef.current?.coinAction || skipLoadRef.current) return;
     /** Provides guess behavior. */
     const guess = currentAttempt.join("");
     /** The last guess used by the current operation. */
@@ -553,7 +461,7 @@ export function useProvisionalPlayRecovery({
         requestId,
       },
     };
-    if (state.riddle.evaluation && scope && journalAvailable) {
+    if (state.riddle.evaluation && scope && journalAvailable && journalWriterRef.current) {
       if (!adapters.journal.acquire(scope, ownerRef.current, adapters.clock.now())) {
         dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
         return;
@@ -585,17 +493,8 @@ export function useProvisionalPlayRecovery({
       /** Failed durability must not append an unsaved request to the live retry queue. */
       const retained = journalRef.current;
       /** Working copy is published only after durable admission succeeds. */
-      const journal: PendingGuessJournal = retained ? {...retained, successors: retained.successors.map(segment => ({...segment}))} : {
-        version: 1,
-        scope,
-        riddle: state.riddle,
-        confirmedClassicIndex: state.profile?.classicIndex ?? 1,
-        base,
-        successors: [],
-        queue: [],
-        draft: [],
-        draftActiveSlotIndex: 0,
-      };
+      const journal: PendingGuessJournal = retained ? {...retained, successors: retained.successors.map(segment => ({...segment}))}
+        : journalWriterRef.current.create(state, scope, state.riddle, base);
       /** The segment used by the current operation. */
       const segment = findSegment(journal, state.riddle.sessionToken);
       if (!segment || journal.queue.length >= 18) {
@@ -615,6 +514,7 @@ export function useProvisionalPlayRecovery({
       journal.queue = [...journal.queue, queued];
       journal.draft = [];
       journal.draftActiveSlotIndex = 0;
+      journal.draftRevision = state.draftRevision;
       if (!journalWriterRef.current?.write(journal)) {
         if (queuedGuessesRef.current.length > 0) {
           dispatch({type: "setNotice", notice: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"});
@@ -639,7 +539,37 @@ export function useProvisionalPlayRecovery({
       dispatch({type: "guessRequested"});
       sendDirectGuess(message);
     }
-  }, [canSubmit, currentAttempt, dispatch, journalAvailable, playFeedback, postToHost, scope, sendFirst, renewDelivery, sendDirectGuess, state]);
+  }, [canSubmitReady, currentAttempt, dispatch, journalAvailable, playFeedback, postToHost, scope, sendFirst, renewDelivery, sendDirectGuess, state]);
+  /** Retains an explicit click without submitting a speculative paid attempt. */
+  const submitGuess = useCallback(() => {
+    if (!canSubmit) return;
+    /** Admission rechecks mutable receipt ownership in case it settled before this click. */
+    const action = journalRef.current?.coinAction, owner = deliveryOwnerRef.current;
+    if (canQueueContinueSubmit && scope && owner && action?.type === "game:spendCoins" &&
+      action.payload.reason === "continue" && action.requestId &&
+      action.requestId === state.pendingCoinSpend?.requestId && action.payload.sessionToken === state.riddle?.sessionToken) {
+      setQueuedContinueSubmit({owner, scope, requestId: action.requestId, sessionToken: action.payload.sessionToken,
+        guess: currentAttempt.join(""), status: "waiting"});
+      return;
+    }
+    submitReadyGuess();
+  }, [canSubmit, canQueueContinueSubmit, currentAttempt, scope, state.pendingCoinSpend?.requestId, state.riddle?.sessionToken, submitReadyGuess]);
+  useEffect(() => {
+    if (!queuedContinueSubmit || stateRef.current !== state) return;
+    if (queuedContinueSubmit.owner !== deliveryOwnerRef.current || queuedContinueSubmit.scope !== scope ||
+      queuedContinueSubmit.sessionToken !== state.riddle?.sessionToken ||
+      queuedContinueSubmit.guess !== currentAttempt.join("") || !state.engineSnapshot?.hasUsedContinue ||
+      state.engineSnapshot?.gameOver || state.lastOutcome) {
+      setQueuedContinueSubmit(null);
+      return;
+    }
+    if (queuedContinueSubmit.status !== "accepted" || state.pendingCoinSpend || coinActionPending ||
+      !canSubmitReady || journalRef.current?.coinAction || skipLoadRef.current || !canEditCurrentGuess(state)) return;
+    setQueuedContinueSubmit(null);
+    if (consumedContinueSubmitRef.current === queuedContinueSubmit.requestId) return;
+    consumedContinueSubmitRef.current = queuedContinueSubmit.requestId;
+    submitReadyGuess();
+  }, [queuedContinueSubmit, canSubmitReady, coinActionPending, currentAttempt, scope, state, stateRef, submitReadyGuess]);
   /** Restores the last confirmed checkpoint and removes every dependent provisional action. */
   const rollbackQueuedPlay = useCallback(
     (first: QueuedGuess) => {
@@ -668,7 +598,7 @@ export function useProvisionalPlayRecovery({
           dispatch({type: "restoreConfirmedRiddle", riddle: checkpoint.riddle, base: checkpoint.base});
           // The same riddle object may not rerun the recovery effect after rollback.
           if (retainedDraft) dispatch({type: "restoreQueuedGuesses",base: checkpoint.base,guesses: [],
-            draft: retainedDraft.draft,draftActiveSlotIndex: retainedDraft.draftActiveSlotIndex});
+            draft: retainedDraft.draft,draftActiveSlotIndex: retainedDraft.draftActiveSlotIndex,draftRevision: retainedDraft.draftRevision});
         }
         postToHost({
           type: "game:loadRiddle",
@@ -720,6 +650,15 @@ export function useProvisionalPlayRecovery({
         if (!action || action.requestId !== message.requestId || operation !== expectedOperation)
           return true;
         if (!message.payload.ok && message.payload.errorKind === "retryable") return true;
+        if (action.type === "game:spendCoins" && action.payload.reason === "continue") {
+          /** The same receipt validation required by the normal coin-confirmation path. */
+          const data = message.payload.data;
+          /** Malformed and rejected grants must never release the retained sixth answer. */
+          const accepted = message.payload.ok && typeof data === "object" && data !== null &&
+            "newCoins" in data && typeof data.newCoins === "number" && Number.isFinite(data.newCoins);
+          setQueuedContinueSubmit(intent => !intent || intent.requestId !== action.requestId ? intent
+            : accepted ? {...intent, status: "accepted"} : null);
+        }
         /** Durable confirmed state before the paid action. */
         const checkpoint = journalRef.current;
         /** A rejected paid Skip invalidates only its explicitly owned speculative question. */
@@ -861,6 +800,7 @@ export function useProvisionalPlayRecovery({
           {
             ...stateRef.current,
             ...segment.base,
+            draftRevision: segment.base.draftRevision ?? stateRef.current.draftRevision,
             riddle: segment.riddle,
             guessPending: false,
             pendingGuessState: null,
@@ -874,34 +814,8 @@ export function useProvisionalPlayRecovery({
             canContinue: first.canContinue,
           },
         );
-        /** The destructured result used by the current operation. */
-        const {
-          currentLetters,
-          activeSlotIndex,
-          guesses,
-          engineSnapshot,
-          modal,
-          lastOutcome,
-          completionAcknowledged,
-          letterStates,
-          profile,
-          lastRewards,
-          optimisticAchievementIds,
-        } = base;
-        /** The updated base used by the current operation. */
-        const updatedBase: PendingGuessState = {
-          currentLetters,
-          activeSlotIndex,
-          guesses,
-          engineSnapshot,
-          modal,
-          lastOutcome,
-          completionAcknowledged,
-          letterStates,
-          profile,
-          lastRewards,
-          optimisticAchievementIds,
-        };
+        /** Settlement retains the same complete snapshot shape as draft admission. */
+        const updatedBase = capturePendingBase(base);
         if (segment.riddle.sessionToken === journal.riddle.sessionToken) journal.base = updatedBase;
         else {
           /** The successor used by the current operation. */
@@ -918,6 +832,7 @@ export function useProvisionalPlayRecovery({
             journal.base = nextSegment.base;
             journal.draft = nextSegment.draft;
             journal.draftActiveSlotIndex = nextSegment.draftActiveSlotIndex;
+            journal.draftRevision = nextSegment.draftRevision;
           }
         }
         if (journal.queue.length > 0 || journal.coinAction) journalWriterRef.current?.write(journal);
@@ -1032,7 +947,7 @@ export function useProvisionalPlayRecovery({
     (message: QueuedCoinAction): boolean => {
       /** Latest gameplay state, including a draft typed while prior answers synchronize. */
       const current = stateRef.current;
-      if (!scope || !current.riddle || journalRef.current?.coinAction || skipLoadRef.current) return false;
+      if (!scope || !current.riddle || !journalWriterRef.current || journalRef.current?.coinAction || skipLoadRef.current) return false;
       if (
         (current.guessPending && !journalRef.current) ||
         !adapters.journal.acquire(scope, ownerRef.current, adapters.clock.now())
@@ -1042,17 +957,7 @@ export function useProvisionalPlayRecovery({
       }
       /** Existing ordered answers, or a checkpoint for a standalone coin action. */
       const journal: PendingGuessJournal = {
-        ...(journalRef.current ?? {
-          version: 1,
-          scope,
-          riddle: current.riddle,
-          confirmedClassicIndex: current.profile?.classicIndex ?? 1,
-          base: {...capturePendingBase(current), modal: null},
-          successors: [],
-          queue: [],
-          draft: [...current.currentLetters],
-          draftActiveSlotIndex: current.activeSlotIndex,
-        }),
+        ...(journalRef.current ?? journalWriterRef.current.create(current, scope, current.riddle, {...capturePendingBase(current), modal: null})),
         coinAction: message,
       };
       if (!journalWriterRef.current?.write(journal)) {
@@ -1161,7 +1066,18 @@ export function useProvisionalPlayRecovery({
   );
   /** Requests skip. */
   const requestSkip = useCallback(() => {
-    if (!state.riddle || state.riddle.gameMode !== "classic" || stateRef.current.pendingCoinSpend) return;
+    if (!state.riddle || stateRef.current.pendingCoinSpend) return;
+    if (state.riddle.gameMode === "challenge") {
+      /** A mode change must not retire unconfirmed guesses or a newer session. */
+      const current = stateRef.current;
+      if (current.riddle?.sessionToken !== state.riddle.sessionToken || current.guessPending || current.lastOutcome) return;
+      postToHost({
+        type: "game:loadRiddle",
+        requestId: createRequestId("load"),
+        payload: {gameMode: "classic", locale: current.locale, classicIndex: current.profile?.classicIndex},
+      });
+      return;
+    }
     /** Provides retry behavior. */
     const retry = skipRetryRef.current;
     /** Requests id. */
@@ -1206,9 +1122,11 @@ export function useProvisionalPlayRecovery({
     !state.pendingCoinSpend && (!state.guessPending || Boolean(journalRef.current));
 
   return {
+    inputReady: Boolean(journalWriterRef.current) && deliveryOwnerRef.current?.scope === scope && deliveryOwnerRef.current?.postToHost === postToHost,
     waitingForSkippedRiddle,
     coinActionsReady,
     canSubmit,
+    submitPending,
     submitGuess,
     handleQueuedGuessResult,
     acceptRiddleResult,

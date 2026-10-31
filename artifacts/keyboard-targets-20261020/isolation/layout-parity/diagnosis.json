@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-20",
+  "scope": "Read-only production-versus-fixture review and before/current 844x390 geometry probe before the final landscape alignment correction.",
+  "fixtureParity": {
+    "parentClasses": "Both actual LiveRaceGame and touch fixture render race-screen race-screen-gameplay around the actual RaceGameplay component.",
+    "sizingHook": "Both use actual useRaceGameplayFit with screen, viewport and gameplay refs.",
+    "cssOrder": "Shared styles, race-lobby styles, then race-gameplay styles. No missing relevant production wrapper or rule identified.",
+    "optionalSafetyClass": "The live safety class has a lobby-only layout rule and does not resolve this gameplay overlap.",
+    "productionAncestor": "Race renders in the untransformed game-overlay-surfaces sibling, outside the fitted solo game-content."
+  },
+  "confirmedPreexistingIssue": {
+    "description": "The compensated keyboard width extends outside its landscape grid column when centered, crossing the adjacent answer-board column.",
+    "beforeAndCurrentSame": true,
+    "enAndTr": {
+      "keyboardLeft": 453.4649658203125,
+      "keyboardTop": 208.15219116210938,
+      "activeLastCellRight": 468.97760009765625,
+      "activeLastCellBottom": 211.5234375,
+      "boundingIntersectionWidthPx": 15.51263427734375,
+      "boundingIntersectionHeightPx": 3.371246337890625
+    },
+    "ar": {
+      "keyboardRight": 405.22093200683594,
+      "keyboardTop": 217.72828674316406,
+      "activeLastCellLeft": 378.6315612792969,
+      "activeLastCellBottom": 224.640625,
+      "boundingIntersectionWidthPx": 26.589370727539062,
+      "boundingIntersectionHeightPx": 6.9123382568359375
+    },
+    "limits": "These are bounding-rectangle intersections, not a claim that every point inside rounded cell corners intercepted a tap."
+  },
+  "rootCorrection": "In the existing short landscape rule, .race-gameplay > .keyboard now uses justify-self: start. This retains compensated target width while aligning expansion away from the adjacent board in either text direction.",
+  "subsequentVerification": "Final dedicated controls rerun passed 10 cases and 165 checks, including every key against every answer cell and action, plus 600x500 boundary and 844x390. The separate touch-target agent owns complete English, Turkish and Arabic baseline/current tap comparisons.",
+  "productionEditsByReviewer": false
+}

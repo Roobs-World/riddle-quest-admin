@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-10-24 08:40:09 UTC",
+  "resumedRunActivatedAt": "2026-10-24T07:55:08Z",
+  "resumedAuditNumber": 2,
+  "currentGoalTurnClassification": "progress",
+  "progress": "Explicitly approved exact tested Jest build activated for private testing and verified, while game publication/review state remained unchanged.",
+  "privateActivation": {
+    "approvalReference": "call_ca39d7fde2f84f82bba25be72461615b:0",
+    "userAnswer": "Activate the tested build for private testing",
+    "activeVersionId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+    "priorVersionId": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "priorVersionActive": false,
+    "ready": true,
+    "gamePublished": false,
+    "inReviewRevisionId": null,
+    "reviewSubmitted": false,
+    "evidence": "riddle/final-5c26470ae/private-jest-activation.json"
+  },
+  "testedSourceOrUploadChanges": false,
+  "historicalVerificationReceiptsPreserved": true,
+  "healthApprovalHoldResolved": true,
+  "musicIdentification": {
+    "userRightsAccepted": true,
+    "silentInspection": true,
+    "audiblePlaybackOrAudioUpload": false,
+    "previouslyObservedPreloadedAudioAssets": 0,
+    "catalogResponsesObtainedForIdentityComparison": 0,
+    "rawPrivateHeadersOrCredentialValuesForwarded": false,
+    "previewComparisonPerformed": false,
+    "nativeTabMuteRequiresPrivilegedExtensionApi": true,
+    "supportedMuteControlExposedBySelectedBrowser": false,
+    "catalogInspectionTabClosed": true,
+    "filenameSearchCheckedAt": "2026-10-24T08:38:42Z",
+    "filenameSearchCount": 27092,
+    "exactTrackArtistArtlist40460AssetCandidates": 0,
+    "onlyNameHit": "Existing pending-track task JSON",
+    "projectAudioFiles": {
+      "riddle": 2,
+      "portfolio": 0,
+      "bee": 1
+    },
+    "additionalAudioOnlyContainerConsidered": "music.webm",
+    "actualGameAudioIdentity": "Unconfirmed",
+    "attributionOrImportSourceIdentifyingRequestedTrack": false,
+    "unknownAudioNotAssumedIncorrectOrSelected": true
+  },
+  "portfolio": {
+    "readbackAt": "2026-10-24 08:36 UTC",
+    "newActionsRunsSince0756UTC": 0,
+    "queuedOrRunningHandles": [],
+    "newProductionDeployments": 0,
+    "lastDirectRunnerDiagnostic": 40069110496,
+    "lastDiagnosticState": "startup_failure",
+    "canonicalRevision": "130686f829331bfc603ba128582cdac1361984aa"
+  },
+  "remainingImmediateInputs": [
+    "Requested audio file/identity or signed-in Artlist account",
+    "GitHub account payment/spending recovery"
+  ],
+  "otherRemainingGates": [
+    "CI credential verification in authorised successful delivery",
+    "Actual client LMS acceptance",
+    "Separate Jest public release/review decision and subscription freshness resolution"
+  ],
+  "wholeGoalComplete": false
+}

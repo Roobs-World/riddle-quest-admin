@@ -153,4 +153,48 @@ describe("Jest backend transport security", () => {
       jest.useRealTimers();
     }
   });
+
+  it.each([
+    {path: "exchangeJestIdentity", invoke: (client: JestBackendClient) => client.exchangeIdentity("signed")},
+    {path: "retryJestAccountDeletion", invoke: (client: JestBackendClient) => client.retryAccountDeletion("signed")},
+    {path: "grantJestPurchase", invoke: (client: JestBackendClient) => client.grantPurchase("signed", "p1", "token")},
+    {path: "verifyJestReferrals", invoke: (client: JestBackendClient) => client.verifyReferrals("signed", "p1")},
+    {path: "syncJestSubscriptions", invoke: (client: JestBackendClient) => client.syncSubscriptions("signed", "p1")},
+  ])("bounds $path at 30s even when fetch ignores abort", async ({path, invoke}) => {
+    jest.useFakeTimers();
+    try {
+      /** Models an unresponsive transport that never settles its fetch promise. */
+      const fetchMock = jest.spyOn(globalThis, "fetch").mockImplementation(() => new Promise<Response>(() => undefined));
+      /** Exercises each signed boundary under the production default, with no automatic retry. */
+      const pending = invoke(new JestBackendClient("/"));
+      /** Observes the rejection before advancing time to prevent an unhandled rejection. */
+      const rejection = expect(pending).rejects.toThrow(`Jest backend ${path} timed out.`);
+      await jest.advanceTimersByTimeAsync(29_999);
+      expect(fetchMock.mock.calls[0]?.[1]?.signal?.aborted).toBe(false);
+      await jest.advanceTimersByTimeAsync(1);
+      await rejection;
+      expect(fetchMock.mock.calls[0]?.[1]?.signal?.aborted).toBe(true);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it.each([400, 503])("clears the longer deadline immediately after HTTP %i", async (status) => {
+    jest.useFakeTimers();
+    try {
+      /** Supplies an authoritative rejection rather than an unresolved transport. */
+      const fetchMock = jest.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}", {status}));
+      await expect(new JestBackendClient("/").exchangeIdentity("signed")).rejects.toThrow(
+        `Jest backend exchangeJestIdentity failed (${status})`,
+      );
+      expect(jest.getTimerCount()).toBe(0);
+      await jest.advanceTimersByTimeAsync(60_000);
+      expect(fetchMock.mock.calls[0]?.[1]?.signal?.aborted).toBe(false);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
 });

@@ -1,0 +1,50 @@
+..                                       | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 14h ago)
+..                                       | Progress: resolved 1, reused 0, downloaded 0, added 0
+..                                       |   +1 +
+..                                       | Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 593ms using pnpm v11.21.0
+jest-haste-map: Haste module naming collision: functions
+  The following files share their name; please adjust your hasteImpl:
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/callables-candidate/package.json
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/package.json
+
+jest-haste-map: Haste module naming collision: @qwordly/core
+  The following files share their name; please adjust your hasteImpl:
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/callables-candidate/packages/core/package.json
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-candidate/packages/core/package.json
+
+FAIL ../../../../../var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs
+  ● keeps an owned malformed resumable seat observable through poll without new admission
+
+    The frozen race questions are not compatible with gameplay.
+
+      at assertRaceDeckCompatible (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceDeckCompatibility.ts:17:13)
+      at assertLiveRaceDeckCompatible (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceDeckCompatibility.ts:35:3)
+      at prepareLiveRaceQueue (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceLiveQueue.ts:49:31)
+      at evaluateLiveRaceUpdate (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceLiveService.ts:356:39)
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at Object.updateLiveRaceForUser (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceLiveService.ts:293:20)
+      at ../../../../../var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs:15:34
+
+  ● keeps an owned malformed resumable seat observable through resume without new admission
+
+    The frozen race questions are not compatible with gameplay.
+
+      at assertRaceDeckCompatible (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceDeckCompatibility.ts:17:13)
+      at assertLiveRaceDeckCompatible (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceDeckCompatibility.ts:35:3)
+      at prepareLiveRaceQueue (../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceLiveQueue.ts:49:31)
+      at ../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/src/race/raceLiveService.ts:144:114
+      at Transaction.runTransactionOnce (../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:505:28)
+      at ../node_modules/.pnpm/@google-cloud+firestore@9.2.0_supports-color@8.1.1/node_modules/@google-cloud/firestore/build/src/transaction.js:477:28
+      at ../../../../../var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs:15:164
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.971 s
+Ran all test suites within paths "/var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs".
+Test results written to: ../artifacts/current-source-readiness-2026-10-25/backend-new/old-reddit-modern-before-results.json

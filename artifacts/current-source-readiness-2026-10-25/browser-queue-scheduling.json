@@ -1,0 +1,8 @@
+{
+  "scope": "Resource scheduling only; no application source, declared check arguments, guard, mock, assertion, timeout or two-slot admission change.",
+  "oldWaitingPollMs": 200,
+  "newWaitingPollMs": 20,
+  "effect": "Future waiting workers, including backend154, get more opportunities to acquire a released slot. Already-running browser loops are unchanged.",
+  "runnerBeforeSha256": "dfb4b5062ff1231d66276e91f6f2dd614ed1ec061c19964408336f17f748fb2b",
+  "runnerAfterSha256": "e86aa0427b11a48b7c55e47ba5f537bdd6b718910f9a46a2116f02686d212d04"
+}

@@ -1,0 +1,180 @@
+{
+  "recordedAt": "2026-10-25T23:14:18.822684+00:00",
+  "status": "verified-complete",
+  "completedAt": "2026-10-25T23:08:59.500616+00:00",
+  "project": "riddle-quest-ec2b2",
+  "targets": [
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "revision": "updateliverace-00026-dut",
+      "status": "verified",
+      "completedAt": "2026-10-25T23:01:39.573200+00:00",
+      "runtime": "nodejs22",
+      "runtimeAndScaling": {
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceRequestConcurrency": 80,
+        "allTrafficOnLatestRevision": true
+      },
+      "immutableSource": {
+        "source": {
+          "bucket": "gcf-v2-sources-329028367192-europe-west1",
+          "generation": "1792969167285279",
+          "object": "updateLiveRace/function-source.zip"
+        },
+        "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+        "filesCompared": 1019,
+        "allMatch": true,
+        "build": "projects/329028367192/locations/europe-west1/builds/9afd19bf-f056-44ad-9312-4fca764d0898",
+        "buildStatus": "SUCCESS",
+        "temporaryArchiveRemoved": true
+      },
+      "privateAndNonSourceConfigPreserved": true
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "revision": "joinliverace-00025-gax",
+      "status": "verified",
+      "completedAt": "2026-10-25T23:03:19.210801+00:00",
+      "runtime": "nodejs22",
+      "runtimeAndScaling": {
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceRequestConcurrency": 80,
+        "allTrafficOnLatestRevision": true
+      },
+      "immutableSource": {
+        "source": {
+          "bucket": "gcf-v2-sources-329028367192-europe-west1",
+          "generation": "1792969309620235",
+          "object": "joinLiveRace/function-source.zip"
+        },
+        "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+        "filesCompared": 1019,
+        "allMatch": true,
+        "build": "projects/329028367192/locations/europe-west1/builds/536fa9ea-4640-4150-9da9-46e005701a78",
+        "buildStatus": "SUCCESS",
+        "temporaryArchiveRemoved": true
+      },
+      "privateAndNonSourceConfigPreserved": true
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "revision": "updateliverace-00026-xav",
+      "status": "verified",
+      "completedAt": "2026-10-25T23:05:14.789213+00:00",
+      "runtime": "nodejs22",
+      "runtimeAndScaling": {
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceRequestConcurrency": 80,
+        "allTrafficOnLatestRevision": true
+      },
+      "immutableSource": {
+        "source": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1792969412594096",
+          "object": "updateLiveRace/function-source.zip"
+        },
+        "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+        "filesCompared": 1019,
+        "allMatch": true,
+        "build": "projects/329028367192/locations/us-central1/builds/eb787336-c6b3-4568-950c-f269a98d4251",
+        "buildStatus": "SUCCESS",
+        "temporaryArchiveRemoved": true
+      },
+      "privateAndNonSourceConfigPreserved": true
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "revision": "joinliverace-00025-pip",
+      "status": "verified",
+      "completedAt": "2026-10-25T23:07:18.402639+00:00",
+      "runtime": "nodejs22",
+      "runtimeAndScaling": {
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceRequestConcurrency": 80,
+        "allTrafficOnLatestRevision": true
+      },
+      "immutableSource": {
+        "source": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1792969528420695",
+          "object": "joinLiveRace/function-source.zip"
+        },
+        "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+        "filesCompared": 1019,
+        "allMatch": true,
+        "build": "projects/329028367192/locations/us-central1/builds/25f204dd-39cc-4fc4-9491-c067dcdb7805",
+        "buildStatus": "SUCCESS",
+        "temporaryArchiveRemoved": true
+      },
+      "privateAndNonSourceConfigPreserved": true
+    },
+    {
+      "function": "redditGameplay",
+      "region": "us-central1",
+      "revision": "redditgameplay-00046-zuh",
+      "status": "verified",
+      "completedAt": "2026-10-25T23:08:59.499961+00:00",
+      "runtime": "nodejs22",
+      "runtimeAndScaling": {
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceRequestConcurrency": 80,
+        "allTrafficOnLatestRevision": true
+      },
+      "immutableSource": {
+        "source": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1792969651404715",
+          "object": "redditGameplay/function-source.zip"
+        },
+        "archiveSha256": "97980528bd4ba37b8adcfdee423b2d09a40571a4c9916a9ce95720c8c85265c7",
+        "filesCompared": 535,
+        "allMatch": true,
+        "build": "projects/329028367192/locations/us-central1/builds/f66b7477-553d-4877-9952-71ae3e035101",
+        "buildStatus": "SUCCESS",
+        "temporaryArchiveRemoved": true
+      },
+      "privateAndNonSourceConfigPreserved": true
+    }
+  ],
+  "canonicalRuntimeFilesRehashed": 243,
+  "inventoryBeforeCount": 120,
+  "inventoryAfterCount": 120,
+  "unselectedFunctionsUnchanged": true,
+  "immutableOldNewRevisionEnvironmentAndSecretMountsEqual": true,
+  "rollbackRequired": false,
+  "safeOriginalRollbackStagesRetainedThroughManualAcceptance": true,
+  "rollbackCommands": "backend-delivery-plan-summary.json targets[].rollbackCommand",
+  "artifactBoundBackendProofSource": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+  "immutableBackendGateEvidence": "verified-gates-119a3d/relocation-index.json",
+  "localFinalSourceMatrixClaimedComplete": false,
+  "noProductionGameplayFixturesRun": true,
+  "gamePublicationChanged": false,
+  "rawEnvironmentOrSecretValuesRecorded": false,
+  "controlledDeliveryEvidence": "targeted-backend-delivery.json",
+  "events": "delivery-events.jsonl",
+  "extraImmutableRevisionParityEvidence": "immutable-revision-private-config-parity.json"
+}

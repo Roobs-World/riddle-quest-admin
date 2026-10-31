@@ -1,0 +1,95 @@
+{
+  "classifiedAt": "2026-10-24T03:27:42.198772+00:00",
+  "deploymentSucceeded": true,
+  "allFourDependencyUpdatesActiveLatestAndSourceAttested": true,
+  "all120InstancesActiveLatest": true,
+  "other116CurrentSourceInstancesUnchanged": true,
+  "runtimeAndVendoredCoreFilesByteIdentical": 513,
+  "productionDependencyAuditVulnerabilities": 0,
+  "allApplicationEnvironmentMapsUnchanged": true,
+  "providerEnvironmentDifference": {
+    "function": "listLiveRaceHistoryPage",
+    "region": "us-central1",
+    "addedKey": "FUNCTION_SIGNATURE_TYPE",
+    "privatelyVerifiedDocumentedHttpDefaultEquivalent": true,
+    "allExistingEnvironmentValuesUnchanged": true,
+    "applicationKeysAddedRemovedOrChanged": false
+  },
+  "exactConfigurationPreservationPassed": false,
+  "strictDeploymentGuardResultPreserved": false,
+  "strictGuardReportNotModified": true,
+  "strictGuardExitCode": 1,
+  "configuredEffectiveMaximumRemains20AllFour": true,
+  "scalingMetadataDifference": "Cloud Functions maxInstanceCount and Cloud Run template/revision maximum now explicitly20; before omitted. Service-level maximum20 unchanged.",
+  "causeOfExplicitMaximumMaterialization": "UNPROVEN; actual API request mask/body unavailable with debug removed; offline YAML conversion omitted max/min fields.",
+  "noFurtherProductionMutationOrGuessedRestorationPerformed": true,
+  "instances": [
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "revision": "blockliveraceopponent-00002-kug",
+      "sourceGeneration": "1792812083140904",
+      "state": "ACTIVE",
+      "latest": true,
+      "serviceMaximumBefore": 20,
+      "serviceMaximumAfter": 20,
+      "revisionMaximumBefore": "omitted; documented default 100",
+      "revisionMaximumAfter": 20,
+      "configuredEffectiveMaximumBefore": 20,
+      "configuredEffectiveMaximumAfter": 20
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "revision": "listliveracehistorypage-00002-doh",
+      "sourceGeneration": "1792812084042216",
+      "state": "ACTIVE",
+      "latest": true,
+      "serviceMaximumBefore": 20,
+      "serviceMaximumAfter": 20,
+      "revisionMaximumBefore": "omitted; documented default 100",
+      "revisionMaximumAfter": 20,
+      "configuredEffectiveMaximumBefore": 20,
+      "configuredEffectiveMaximumAfter": 20
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "revision": "listliveracehistorypage-00002-xaj",
+      "sourceGeneration": "1792812161201037",
+      "state": "ACTIVE",
+      "latest": true,
+      "serviceMaximumBefore": 20,
+      "serviceMaximumAfter": 20,
+      "revisionMaximumBefore": "omitted; documented default 100",
+      "revisionMaximumAfter": 20,
+      "configuredEffectiveMaximumBefore": 20,
+      "configuredEffectiveMaximumAfter": 20
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "revision": "reportliveraceopponent-00002-mib",
+      "sourceGeneration": "1792812161205772",
+      "state": "ACTIVE",
+      "latest": true,
+      "serviceMaximumBefore": 20,
+      "serviceMaximumAfter": 20,
+      "revisionMaximumBefore": "omitted; documented default 100",
+      "revisionMaximumAfter": 20,
+      "configuredEffectiveMaximumBefore": 20,
+      "configuredEffectiveMaximumAfter": 20
+    }
+  ],
+  "primaryReferences": {
+    "effectiveMaximumRule": "https://docs.cloud.google.com/run/docs/configuring/max-instances#service-vs-revision-level",
+    "reservedRuntimeEnvironment": "https://cloud.google.com/functions/docs/configuring/env-var",
+    "frameworkHttpDefault": "https://github.com/GoogleCloudPlatform/functions-framework"
+  },
+  "evidence": {
+    "strictDeployment": "deployment.json",
+    "source": "approved-deployed-source-attestation.json",
+    "before": "approved-before-runtime-and-scaling.json",
+    "after": "approved-after-runtime-and-scaling.json",
+    "environment": "application-environment-and-signature-attestation.json",
+    "revisionEnvironment": "provider-environment-revision-comparison.json",
+    "requestObservability": "actual-request-observability.json",
+    "workspace": "final-workspace-confirmation.json"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "directory": "/tmp/riddle-e2e-journal-prior-qgplu47z",
+  "paths": [
+    {
+      "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/daily-skip-warning",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/0",
+      "existed": true,
+      "directory": true
+    },
+    {
+      "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/coin-economy",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/1",
+      "existed": true,
+      "directory": true
+    },
+    {
+      "path": "/tmp/profile-tour-stats.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/2",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-solo.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/3",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-multiplayer-unavailable.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/4",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/riddle-leaderboard-clipped.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/5",
+      "existed": false,
+      "directory": false
+    },
+    {
+      "path": "/tmp/riddle-leaderboard-fixed.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/6",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-victory.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/7",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-loss.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/8",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-profile.png",
+      "backup": "/tmp/riddle-e2e-journal-prior-qgplu47z/9",
+      "existed": true,
+      "directory": false
+    }
+  ]
+}

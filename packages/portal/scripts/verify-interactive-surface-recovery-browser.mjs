@@ -12,7 +12,7 @@ const continueCost=SOLO_COIN_COSTS.continue;
 const mode=process.env.INTERACTIVE_RECOVERY_REACT_MODE??'development';
 const baseline=process.env.INTERACTIVE_RECOVERY_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.INTERACTIVE_RECOVERY_REPORT_DIR??path.join(root,'../../artifacts/game-interactive-recovery-2026-10-03',mode));
+const output=path.resolve(process.env.INTERACTIVE_RECOVERY_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-interactive-recovery-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/interactive-recovery-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
@@ -28,7 +28,9 @@ import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
-window.probe={errors:[],unhandled:[],windowErrors:[],saves:[],guesses:0,completions:0,spends:[],skips:[],hints:[],loads:[],sceneRenders:0,customRenders:0};
+window.probe={errors:[],unhandled:[],windowErrors:[],saves:[],guesses:0,completions:0,completionRequests:[],completionReceipts:[],guessReceipts:[],spends:[],skips:[],hints:[],loads:[],sceneRenders:0,customRenders:0};
+window.addEventListener('riddle-quest:game-to-host',event=>{const m=event.detail;if(m?.type==='game:completeGame')window.probe.completionRequests.push({requestId:m.requestId,payload:m.payload});});
+window.addEventListener('riddle-quest:host-to-game',event=>{const m=event.detail;if(m?.type==='host:operationResult'&&m.payload.operation==='completeGame'&&m.payload.ok===true)window.probe.completionReceipts.push({requestId:m.requestId});if(m?.type==='host:operationResult'&&m.payload.operation==='guess'&&m.payload.ok===true)window.probe.guessReceipts.push({requestId:m.requestId});});
 window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 window.addEventListener('error',event=>window.probe.windowErrors.push(String(event.error??event.message)));
 configureBrowserErrorReporter((error,context)=>window.probe.errors.push({...context,error:String(error)}));
@@ -43,8 +45,9 @@ const services={...source,skipRiddle:async input=>{window.probe.skips.push(input
  window.probe.completions++;if(window.holdCompletion)await new Promise(resolve=>window.releaseCompletion=resolve);const result=await source.completeGame(input);window.probe.authorityCoins=(await source.loadProfile('jest-guest'))?.coins;return result;},spendCoins:async input=>{window.probe.spends.push(input);if(window.holdSpend)await new Promise(resolve=>window.releaseSpend=resolve);return source.spendCoins(input);}};
 const params=new URL(location.href).searchParams;
 function ProviderRace(){window.probe.customRenders++;throw Error('provider surface render failed');}
-const session=createHostedPlaySession({hostServices:services,economyAvailable:true,raceAvailable:params.has('race'),raceLocalePolicy:'all',onPlayerDataChange:update=>window.probe.saves.push(update)});
+const session=createHostedPlaySession({hostServices:services,economyAvailable:true,raceAvailable:params.has('race'),raceLocalePolicy:'all',initialGameMode:params.has('daily')?'challenge':'classic',onPlayerDataChange:update=>window.probe.saves.push(update)});
 createRoot(document.querySelector('#root')).render(<React.StrictMode><FatalErrorBoundary><PlayHostApp session={session} raceSurface={params.has('provider')?ProviderRace:undefined}/></FatalErrorBoundary></React.StrictMode>);
+window.profile=()=>source.loadProfile('jest-guest');
 window.loaded=true;
 `);
 let browser,server;const observations=[];
@@ -74,7 +77,7 @@ try{
    const metric=async(name,actual,expected)=>{observations.push({variant,width,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
    const value=field=>page.evaluate(field=>window.probe[field],field);
    const solarReports=()=>page.evaluate(()=>window.probe.errors.filter(row=>row.operation==='render_interactive_surface').length);
-   const start=async()=>{await page.goto(url+(variant.startsWith('race')?'?race=1&harness=race':variant==='provider-render'?'?race=1&provider=1&harness=race':''));await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();};
+   const start=async(gameMode='classic')=>{const query=variant.startsWith('race')?'?race=1&harness=race':variant==='provider-render'?'?race=1&provider=1&harness=race':gameMode==='challenge'?'?daily=1':'';await page.goto(url+query);await page.getByText(gameMode==='challenge'?'I speak without a mouth and hear without ears. What am I?':'What has keys but cannot open doors?',{exact:true}).waitFor();if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();await page.locator('.keyboard .key:not(:disabled)').first().waitFor();};
    const failure=async()=>{await page.waitForFunction(()=>window.probe.errors.some(row=>row.operation==='render_interactive_surface'||row.errorKind==='react_render'));};
    await start();await page.keyboard.type('pian');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
    const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken);
@@ -116,20 +119,48 @@ try{
    if(!baseline)await page.screenshot({path:path.join(output,`${variant}-${width}.png`)});
 
    if(variant.startsWith('modal')){
-    await start();await page.evaluate(()=>window.holdCompletion=true);await page.keyboard.type('piano');await page.getByRole('button',{name:/^submit$/i}).click();await failure();
+    await start();await page.evaluate(async()=>{window.probe.beforeProfile=await window.profile();window.holdCompletion=true;});await page.keyboard.type('piano');await page.getByRole('button',{name:/^submit$/i}).click();await failure();
+    await page.waitForFunction(()=>window.probe.guessReceipts.length===1&&typeof window.releaseCompletion==='function');await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     const hasNext=await page.getByRole('button',{name:'Next',exact:true}).count();
     await metric('winning fallback exposes Next',hasNext,1);
     if(hasNext){
-     await metric('Next waits for authoritative completion',await page.getByRole('button',{name:'Next',exact:true}).isDisabled(),true);
+     await metric('ordinary Classic Next stays available while completion settles',await page.getByRole('button',{name:'Next',exact:true}).isDisabled(),false);
      await metric('terminal failure cannot dismiss its only Next action',await page.getByRole('button',{name:'Close',exact:true}).isDisabled(),true);
-     await page.keyboard.press('Escape');await metric('Escape cannot bypass terminal acknowledgement',await page.getByRole('alertdialog').count(),1);
-     await page.waitForFunction(()=>typeof window.releaseCompletion==='function');await page.evaluate(()=>window.releaseCompletion());await page.getByRole('button',{name:'Next',exact:true}).waitFor();
-     await page.waitForFunction(()=>!document.querySelector('.surface-recovery .play-primary')?.disabled);
-     await page.getByRole('button',{name:'Next',exact:true}).click();await page.waitForFunction(()=>window.probe.loads.length===2);try{await page.getByRole('alertdialog').waitFor({state:'detached',timeout:5000});}catch(error){await writeFile(path.join(output,'next-debug.json'),JSON.stringify(await page.evaluate(()=>({probe:window.probe,text:document.body.innerText})),null,2));throw error;}
-     await metric('confirmed winning Next clears the recovery dialog',await page.getByRole('alertdialog').count(),0);
+     await page.keyboard.press('Escape');await metric('Escape retains the explicit terminal Next action',await page.getByRole('alertdialog').count(),1);
+     await page.waitForFunction(()=>typeof window.releaseCompletion==='function');
+     await metric('held Classic has no successful completion receipt',await page.evaluate(()=>window.probe.completionReceipts.length),0);
+     await page.getByRole('button',{name:'Next',exact:true}).click();await page.waitForFunction(()=>window.probe.loads.length===2);await page.getByText('What has a face and hands but no arms?',{exact:true}).waitFor();
+     await metric('provisional Classic requests exactly the adjacent issued question without old locators',await page.evaluate(()=>{const x=window.probe.loads[1];return[x.gameMode,x.classicIndex,x.riddleId??null,x.sessionToken??null];}),['classic',2,null,null]);
+     await metric('provisional Next clears the recovery dialog before acknowledgement',await page.getByRole('alertdialog').count(),0);
+     await page.keyboard.type('cl');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('')==='CL'));
+     await page.evaluate(()=>window.releaseCompletion());await page.waitForFunction(()=>window.probe.completionReceipts.length===1);await page.waitForFunction(()=>window.probe.saves.some(row=>row.profile?.classicIndex===2));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await metric('Classic receives exactly one successful receipt for the completed round',await page.evaluate(()=>{const q=window.probe.completionRequests,r=window.probe.completionReceipts;return[q.length,r.length,q[0]?.payload.riddleId,q[0]?.payload.sessionToken,q[0]?.payload.gameMode,Boolean(q[0]?.requestId)&&q[0]?.requestId===r[0]?.requestId];}),[1,1,'classic-fake-1','00000000-0000-4000-8000-000000000001','classic',true]);
+     await metric('Classic fallback has one answer one completion and no spend',await page.evaluate(()=>[window.probe.guesses,window.probe.completions,window.probe.spends]),[1,1,[]]);
+     await metric('late completion preserves the latest durable successor draft and identity',await page.evaluate(()=>{const x=window.probe.saves.findLast(row=>Object.hasOwn(row,'activeGame'))?.activeGame;return[x?.riddleId,x?.sessionToken,x?.currentLetters,x?.activeSlotIndex];}),['classic-fake-2','00000000-0000-4000-8000-000000000002',['C','L','','',''],2]);
+     await metric('late completion keeps the visible successor draft', (await page.locator('.guess-row').first().locator('.cell').allTextContents()).join('').toUpperCase(),'CL');
+     await metric('late completion cannot reopen the old recovery',await page.getByRole('alertdialog').count(),0);
+     await metric('Classic authority applies the original win exactly once',await page.evaluate(async()=>{const p=await window.profile();return[p.gamesPlayed-window.probe.beforeProfile.gamesPlayed,p.wins-window.probe.beforeProfile.wins,p.classicIndex];}),[1,1,2]);
     }
     await metric('winning fallback never duplicates rewards',await value('completions'),1);
     await metric('winning fallback advances once',await page.evaluate(()=>window.probe.loads.length),2);
+
+    await start('challenge');await page.evaluate(async()=>{window.probe.beforeProfile=await window.profile();window.holdCompletion=true;});await page.keyboard.type('echo');await page.getByRole('button',{name:/^submit$/i}).click();await failure();
+    await page.waitForFunction(()=>window.probe.guessReceipts.length===1&&typeof window.releaseCompletion==='function');await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    await metric('held Daily has no successful completion receipt',await page.evaluate(()=>window.probe.completionReceipts.length),0);
+    const dailyNext=page.getByRole('button',{name:'Next',exact:true});await dailyNext.waitFor();
+    await metric('Daily Next still waits for authoritative completion',await dailyNext.isDisabled(),true);
+    await metric('Daily terminal recovery cannot dismiss the win',await page.getByRole('button',{name:'Close',exact:true}).isDisabled(),true);
+    await page.keyboard.press('Escape');await metric('Daily Escape cannot bypass acknowledgement',await page.getByRole('alertdialog').count(),1);
+    await dailyNext.evaluate(button=>button.click());await page.waitForTimeout(50);
+    await metric('disabled Daily Next issues no successor request',await page.evaluate(()=>window.probe.loads.length),1);
+    await metric('held Daily completion grants nothing early',await page.evaluate(async()=>{const p=await window.profile();const b=window.probe.beforeProfile;return[p.gamesPlayed-b.gamesPlayed,p.wins-b.wins,(p.dailyPuzzlesCompleted??0)-(b.dailyPuzzlesCompleted??0)];}),[0,0,0]);
+    await page.evaluate(()=>window.releaseCompletion());await page.waitForFunction(()=>window.probe.completionReceipts.length===1);await page.waitForFunction(()=>!document.querySelector('.surface-recovery .play-primary')?.disabled);
+    await metric('Daily receives exactly one successful receipt for its completed round',await page.evaluate(()=>{const q=window.probe.completionRequests,r=window.probe.completionReceipts;return[q.length,r.length,q[0]?.payload.riddleId,q[0]?.payload.sessionToken,q[0]?.payload.gameMode,Boolean(q[0]?.requestId)&&q[0]?.requestId===r[0]?.requestId];}),[1,1,'daily-fake-1','00000000-0000-4000-8000-000000000003','challenge',true]);
+    await dailyNext.click();await page.waitForFunction(()=>window.probe.loads.length===2);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
+    await metric('acknowledged Daily resumes Classic without the completed Daily locators',await page.evaluate(()=>{const x=window.probe.loads[1];return[x.gameMode,x.classicIndex,x.riddleId??null,x.sessionToken??null];}),['classic',1,null,null]);
+    await metric('Daily authority completes exactly once without advancing Classic',await page.evaluate(async()=>{const p=await window.profile();const b=window.probe.beforeProfile;return[p.gamesPlayed-b.gamesPlayed,p.wins-b.wins,(p.dailyPuzzlesCompleted??0)-(b.dailyPuzzlesCompleted??0),p.classicIndex];}),[1,1,1,1]);
+    await metric('Daily fallback has one answer one completion and no spend',await page.evaluate(()=>[window.probe.guesses,window.probe.completions,window.probe.spends]),[1,1,[]]);
+    await metric('acknowledged Daily clears its recovery dialog',await page.getByRole('alertdialog').count(),0);
 
     for(const paidSurface of (variant==='modal-download'?['recovery','healthy']:['recovery'])) {
     if(paidSurface==='healthy')await page.unroute(`**/assets/${modalAsset}`);

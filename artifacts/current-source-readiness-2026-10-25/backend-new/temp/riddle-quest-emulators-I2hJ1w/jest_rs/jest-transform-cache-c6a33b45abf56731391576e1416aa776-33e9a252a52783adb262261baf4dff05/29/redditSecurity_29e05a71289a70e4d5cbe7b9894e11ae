@@ -1,0 +1,176 @@
+bd9d3770ee296b65b0ce238ae8d22f10
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isRedditFirebaseUid = exports.MAX_REDDIT_ACCOUNT_GENERATION = void 0;
+exports.canonicalRedditGatewayAssertion = canonicalRedditGatewayAssertion;
+exports.hashRedditGatewayPayload = hashRedditGatewayPayload;
+exports.verifyRedditGatewayAssertion = verifyRedditGatewayAssertion;
+exports.redditFirebaseUid = redditFirebaseUid;
+const node_crypto_1 = require("node:crypto");
+/** Defines the max assertion bytes value. */
+const MAX_ASSERTION_BYTES = 4_096;
+/** Defines the max payload bytes value. */
+const MAX_PAYLOAD_BYTES = 64 * 1_024;
+/** Defines the max identifier bytes value. */
+const MAX_IDENTIFIER_BYTES = 256;
+/** Defines the max operation bytes value. */
+const MAX_OPERATION_BYTES = 80;
+/** Renders the nonce interface. */
+const NONCE = /^[A-Za-z0-9_-]{32,128}$/u;
+/** Renders the identifier interface. */
+const IDENTIFIER = /^[A-Za-z0-9_:-]{1,256}$/u;
+/** Renders the operation interface. */
+const OPERATION = /^[a-z][a-z0-9_.-]{0,79}$/u;
+/** Defines the max reddit account generation value. */
+exports.MAX_REDDIT_ACCOUNT_GENERATION = 1_000_000;
+/** Indicates whether is record. */
+const isRecord = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+/** Provides valid identifier behavior. */
+const validIdentifier = (value) => typeof value === "string" && Buffer.byteLength(value, "utf8") <= MAX_IDENTIFIER_BYTES && IDENTIFIER.test(value);
+/** Produces the one canonical byte representation signed by the Devvit gateway. */
+function canonicalRedditGatewayAssertion(assertion) {
+    return JSON.stringify([
+        assertion.version,
+        assertion.appName,
+        assertion.installationId,
+        assertion.subredditId,
+        assertion.postId,
+        assertion.userId,
+        assertion.operation,
+        assertion.issuedAtMs,
+        assertion.nonce,
+        assertion.payloadHash,
+    ]);
+}
+/** Hashes the exact JSON payload transported beside a signed gateway assertion. */
+function hashRedditGatewayPayload(payload) {
+    /** Serializes d. */
+    const serialized = JSON.stringify(payload);
+    if (serialized === undefined || Buffer.byteLength(serialized, "utf8") > MAX_PAYLOAD_BYTES) {
+        throw new Error("invalid-reddit-gateway-payload");
+    }
+    return (0, node_crypto_1.createHash)("sha256").update(serialized, "utf8").digest("hex");
+}
+/** Verifies a trusted Devvit-server assertion and atomically consumes its nonce when configured. */
+async function verifyRedditGatewayAssertion(body, signature, options) {
+    if (!isRecord(body) || Buffer.byteLength(JSON.stringify(body), "utf8") > MAX_ASSERTION_BYTES) {
+        throw new Error("invalid-reddit-gateway-assertion");
+    }
+    /** Provides fields behavior. */
+    const fields = [
+        "version",
+        "appName",
+        "installationId",
+        "subredditId",
+        "postId",
+        "userId",
+        "operation",
+        "issuedAtMs",
+        "nonce",
+        "payloadHash",
+    ];
+    if (Object.keys(body).length !== fields.length || fields.some((field) => !(field in body))) {
+        throw new Error("invalid-reddit-gateway-assertion");
+    }
+    if (body.version !== 1 ||
+        !validIdentifier(body.appName) ||
+        !validIdentifier(body.installationId) ||
+        !validIdentifier(body.subredditId) ||
+        !validIdentifier(body.postId) ||
+        !validIdentifier(body.userId) ||
+        typeof body.operation !== "string" ||
+        Buffer.byteLength(body.operation, "utf8") > MAX_OPERATION_BYTES ||
+        !OPERATION.test(body.operation) ||
+        !Number.isSafeInteger(body.issuedAtMs) ||
+        body.issuedAtMs < 0 ||
+        typeof body.nonce !== "string" ||
+        !NONCE.test(body.nonce) ||
+        typeof body.payloadHash !== "string" ||
+        !/^[0-9a-f]{64}$/u.test(body.payloadHash))
+        throw new Error("invalid-reddit-gateway-assertion");
+    /** Asserts ion. */
+    const assertion = body;
+    if (assertion.appName !== options.expectedAppName)
+        throw new Error("reddit-gateway-app-mismatch");
+    if (assertion.operation !== options.expectedOperation)
+        throw new Error("reddit-gateway-operation-mismatch");
+    if (assertion.payloadHash !== hashRedditGatewayPayload(options.expectedPayload ?? {})) {
+        throw new Error("reddit-gateway-payload-mismatch");
+    }
+    if (Buffer.byteLength(options.gatewaySecret, "utf8") < 32)
+        throw new Error("invalid-reddit-gateway-secret");
+    if (!/^[A-Za-z0-9_-]{43}$/u.test(signature))
+        throw new Error("invalid-reddit-gateway-signature");
+    /** Provides expected behavior. */
+    const expected = (0, node_crypto_1.createHmac)("sha256", options.gatewaySecret)
+        .update("riddle-quest-reddit-gateway-v1\0", "utf8")
+        .update(canonicalRedditGatewayAssertion(assertion), "utf8")
+        .digest();
+    /** Provides actual behavior. */
+    const actual = Buffer.from(signature, "base64url");
+    if (actual.length !== expected.length || !(0, node_crypto_1.timingSafeEqual)(actual, expected)) {
+        throw new Error("invalid-reddit-gateway-signature");
+    }
+    /** Provides max age ms behavior. */
+    const maxAgeMs = options.maxAgeMs ?? 60_000;
+    if (!Number.isSafeInteger(maxAgeMs) || maxAgeMs < 1) {
+        throw new Error("invalid-reddit-gateway-time");
+    }
+    /** Reads fresh server time; a fixed test clock retains the existing options contract. */
+    const readNowMs = () => {
+        /** Every observation must remain a safe nonnegative millisecond timestamp. */
+        const value = options.nowMs ?? Date.now();
+        if (!Number.isSafeInteger(value) || value < 0)
+            throw new Error("invalid-reddit-gateway-time");
+        return value;
+    };
+    /** Enforces the same inclusive age and future-skew limits at each verification boundary. */
+    const assertFresh = (nowMs) => {
+        if (assertion.issuedAtMs - nowMs > 5_000 || nowMs - assertion.issuedAtMs > maxAgeMs) {
+            throw new Error("stale-reddit-gateway-assertion");
+        }
+    };
+    /** Initial validation must reject stale requests before creating their replay record. */
+    const startedAtMs = readNowMs();
+    assertFresh(startedAtMs);
+    if (options.consumeNonce) {
+        if (!(await options.consumeNonce(assertion)))
+            throw new Error("reddit-gateway-replay");
+        /** Persisting the replay record may outlast the assertion's acceptance window. */
+        const completedAtMs = readNowMs();
+        if (completedAtMs < startedAtMs)
+            throw new Error("invalid-reddit-gateway-time");
+        assertFresh(completedAtMs);
+    }
+    return assertion;
+}
+/** Derives a stable provider-scoped Firebase UID using an independent versioned key. */
+function redditFirebaseUid(userId, uidSecretBase64, accountGeneration = 1) {
+    if (!validIdentifier(userId))
+        throw new Error("invalid-reddit-user-id");
+    if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/u.test(uidSecretBase64)) {
+        throw new Error("invalid-reddit-uid-secret");
+    }
+    /** Provides secret behavior. */
+    const secret = Buffer.from(uidSecretBase64, "base64");
+    if (secret.length < 32 || secret.toString("base64") !== uidSecretBase64)
+        throw new Error("invalid-reddit-uid-secret");
+    if (!Number.isSafeInteger(accountGeneration) ||
+        accountGeneration < 1 ||
+        accountGeneration > exports.MAX_REDDIT_ACCOUNT_GENERATION) {
+        throw new Error("invalid-reddit-account-generation");
+    }
+    /** Provides digest behavior. */
+    const digest = (0, node_crypto_1.createHmac)("sha256", secret)
+        .update("riddle-quest-reddit-uid-v1\0", "utf8")
+        .update(String(accountGeneration), "utf8")
+        .update("\0", "utf8")
+        .update(userId, "utf8")
+        .digest("hex")
+        .slice(0, 40);
+    return `reddit_${digest}`;
+}
+/** Indicates whether is reddit firebase uid. */
+const isRedditFirebaseUid = (value) => /^reddit_[0-9a-f]{40}$/u.test(value);
+exports.isRedditFirebaseUid = isRedditFirebaseUid;
+//# sourceMappingURL=redditSecurity.js.map

@@ -1,0 +1,36 @@
+FAIL src/play/__tests__/hostedBrowser.jest-playwright.test.ts (33.003 s)
+  ● standalone Jest browser game › covers onboarding, navigation, guest progress preservation, gameplay, rewards and responsive layouts
+
+    locator.waitFor: Timeout 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.tooltip-card').getByRole('heading', { name: /use a hint/i }) to be visible[22m
+
+      115 |   /** Provides first tour tooltip behavior; new players start on the riddle, not the coin shop. */
+      116 |   const hintTooltip = page.locator(".tooltip-card");
+    > 117 |   await hintTooltip.getByRole("heading", {name: /use a hint/i}).waitFor();
+          |                                                                 ^
+      118 |   expect(await hintTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameHint-title");
+      119 |   /** Provides tooltip continue behavior. */
+      120 |   const tooltipContinue = hintTooltip.getByRole("button", {name: /got it/i});
+
+      at completeOnboardingAndTours (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:117:65)
+      at Object.<anonymous> (src/play/__tests__/hostedBrowser.jest-playwright.test.ts:318:7)
+
+FAIL src/jest/__tests__/authentication.jest-playwright.test.ts (166.675 s)
+  ● Jest authentication integration › shows a retryable startup screen for identity exchange failures
+
+    expect(received).not.toContain(expected) // indexOf
+
+    Expected value: not "sdk.payments.getIncompletePurchases"
+    Received array:     ["sdk.init", "sdk.progress:5", "sdk.getPlayer", "sdk.progress:15", "sdk.getPlayer", "sdk.getPlayerSigned", "sdk.data.getAll", "sdk.data.getAll", "sdk.payments.getIncompletePurchases", "sdk.progress:42", "sdk.progress:100", "sdk.markGameLoaded"]
+
+      1313 |     await verifyRetryableStartupScreen(page, message, pageErrors, scenario === "init-timeout" ? 35_000 : 15_000);
+      1314 |     if (scenario === "identity-failure") {
+    > 1315 |       expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.getIncompletePurchases");
+           |                                                       ^
+      1316 |     }
+      1317 |     await context.close();
+      1318 |   });
+
+      at src/jest/__tests__/authentication.jest-playwright.test.ts:1315:55
+

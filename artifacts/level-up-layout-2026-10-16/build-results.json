@@ -1,0 +1,32 @@
+[
+  {
+    "target": "jest",
+    "exitCode": 0,
+    "log": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/level-up-layout-2026-10-16/build-jest.log"
+  },
+  {
+    "target": "facebook",
+    "exitCode": 0,
+    "log": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/level-up-layout-2026-10-16/build-facebook.log"
+  },
+  {
+    "target": "reddit",
+    "exitCode": 0,
+    "log": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/level-up-layout-2026-10-16/build-reddit.log"
+  },
+  {
+    "target": "youtube",
+    "exitCode": 0,
+    "log": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/level-up-layout-2026-10-16/build-youtube.log"
+  },
+  {
+    "target": "netflix",
+    "exitCode": 0,
+    "log": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/level-up-layout-2026-10-16/build-netflix.log"
+  },
+  {
+    "target": "yahoo",
+    "exitCode": 0,
+    "log": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/level-up-layout-2026-10-16/build-yahoo.log"
+  }
+]

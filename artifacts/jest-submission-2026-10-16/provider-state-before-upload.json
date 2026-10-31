@@ -1,0 +1,68 @@
+{
+  "game": {
+    "id": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "slug": "riddle-q",
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "gameType": {
+      "__type": "game",
+      "flagshipGameId": null,
+      "visibility": "public",
+      "public": true
+    },
+    "notificationBoost": 0,
+    "createdAt": "2026-07-28T20:27:12.749Z",
+    "archivedAt": null,
+    "suppressGameChangeEvents": false,
+    "loadingScreenMode": "manual",
+    "supportedOrientation": "portrait",
+    "sandboxCapabilities": [],
+    "isPublished": false
+  },
+  "draftRevision": {
+    "id": "01a11ab6-4000-7069-8c5c-d01e5721ec88",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "revisionStatus": "draft",
+    "revisionName": null,
+    "rejectionReason": null,
+    "submittedForReviewAt": null,
+    "submittedForReviewByEmail": null,
+    "approvedAt": null,
+    "createdAt": "2026-10-08T08:51:53.984Z",
+    "name": "Riddle-Q",
+    "description": "Solve  riddles with color clues in Riddle Quest, test yourself and others with this addictive word game. ",
+    "publisher": "RoobsWorld",
+    "supportEmail": "grindheadgames@gmail.com",
+    "imageAssetKey": "assets/019faa68-f3ec-755d-9ab5-c887fb426801/fb9712f0-e0fe-4105-9672-0720f05ebe51.png",
+    "imageUrl": "https://d1xty6ge1shmrt.cloudfront.net/assets/019faa68-f3ec-755d-9ab5-c887fb426801/fb9712f0-e0fe-4105-9672-0720f05ebe51.png",
+    "heroVideoAssetKey": null,
+    "heroVideoUrl": null,
+    "logoAssetKey": "assets/019faa68-f3ec-755d-9ab5-c887fb426801/7c60af54-af28-4e99-8438-79deac3874a8.png",
+    "logoUrl": "https://d1xty6ge1shmrt.cloudfront.net/assets/019faa68-f3ec-755d-9ab5-c887fb426801/7c60af54-af28-4e99-8438-79deac3874a8.png",
+    "shareImageAssetKey": "assets/019faa68-f3ec-755d-9ab5-c887fb426801/02775e06-2bd3-4e7f-9c76-f01f27bd702e.card.png",
+    "shareImageUrl": "https://d1xty6ge1shmrt.cloudfront.net/assets/019faa68-f3ec-755d-9ab5-c887fb426801/02775e06-2bd3-4e7f-9c76-f01f27bd702e.card.png",
+    "color": null,
+    "category": "word",
+    "keywords": [
+      "riddles",
+      "word",
+      "multiplayer"
+    ],
+    "visibility": "public",
+    "public": true,
+    "activeVersionId": "01a119b9-7208-7698-ace8-929284e189e2"
+  },
+  "publishedRevision": null,
+  "inReviewRevision": null,
+  "latestRejection": {
+    "rejectionReason": "Loads in under 10 seconds: Finding a player for PVP took a really, really long time.\n\nExperience is intuitive, coherent, and complete: Blocker: The $4.99 subscription? What do I get? It has zero description. This is selling a product that the user doesn't understand the benefits of.\n\nOther Notes: \n- The PVP button doesn't match the style of the rest of the game. \n- Your chest reward opening shouldn't be scrollable. \n- Directing players to coins in the shop before they have played a level seems out of order. \n- The level pop ups between stages are making things feel cluttered and over explained. \n- In this same \"you won\" popup, why do I need to tap the chest to collect my coins? It already told me I get +195 coins so just grant them and don't grey out the next button. This is just adding an extra unnecessary tap. Also next could be a lot bigger - this is a key cta to keep me in the game for multiple rounds.\n- Something feels off about the design of the Level Up popup.. level 2 is not centered and very small. Why is the sparkle icon being shown twice? \n- Coin awards feel off. I got +25 coins for completing my fourth riddle but +195 coins for completing my first? that's a huge difference\n- Register/Login do the same thing, so I'd combine the buttons (i.e. label can say \"Register / Login\")\n\nOther notes: Hi Craig, we have some polishing feedback and 2 blockers for you before this gets approved. Please resubmit once you have addressed the notes!",
+    "revisionName": null,
+    "submittedForReviewAt": "2026-10-08T08:51:53.980Z"
+  },
+  "versionsCount": 289,
+  "activeVersion": {
+    "id": "01a119b9-7208-7698-ace8-929284e189e2",
+    "version": "1.0.0-dev.20261008034336.1337ba42cf17.df4526e2",
+    "description": null,
+    "isActive": true
+  }
+}

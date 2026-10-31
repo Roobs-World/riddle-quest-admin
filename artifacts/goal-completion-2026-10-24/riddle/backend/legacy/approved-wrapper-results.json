@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-10-24T03:20:37.040248+00:00",
+  "checks": 14,
+  "results": [
+    {
+      "name": "blockLiveRaceOpponent:production-attestation",
+      "status": "passed"
+    },
+    {
+      "name": "blockLiveRaceOpponent:missing-auth",
+      "status": "passed"
+    },
+    {
+      "name": "reportLiveRaceOpponent:production-attestation",
+      "status": "passed"
+    },
+    {
+      "name": "reportLiveRaceOpponent:missing-auth",
+      "status": "passed"
+    },
+    {
+      "name": "listLiveRaceHistoryPage:production-attestation",
+      "status": "passed"
+    },
+    {
+      "name": "listLiveRaceHistoryPage:missing-auth",
+      "status": "passed"
+    },
+    {
+      "name": "block:owner-seat-completed-binding",
+      "status": "passed"
+    },
+    {
+      "name": "report:owner-seat-replay-identity",
+      "status": "passed"
+    },
+    {
+      "name": "history:authorized-owner-bounded-page",
+      "status": "passed"
+    },
+    {
+      "name": "blockLiveRaceOpponent:strict-rejection:{\"liveTicketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"targetUserId\":\"forged\"}",
+      "status": "passed"
+    },
+    {
+      "name": "reportLiveRaceOpponent:strict-rejection:{\"liveTicketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"category\":\"invalid\",\"requestId\":\"legacy-report-001\"}",
+      "status": "passed"
+    },
+    {
+      "name": "reportLiveRaceOpponent:strict-rejection:{\"liveTicketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"category\":\"spam\",\"requestId\":\"x\"}",
+      "status": "passed"
+    },
+    {
+      "name": "listLiveRaceHistoryPage:strict-rejection:{\"locale\":\"en\",\"limit\":21}",
+      "status": "passed"
+    },
+    {
+      "name": "listLiveRaceHistoryPage:strict-rejection:{\"locale\":\"en\",\"userId\":\"forged\"}",
+      "status": "passed"
+    }
+  ],
+  "dependencyVersions": {
+    "zod": "4.6.7",
+    "firebase-functions": "7.4.0"
+  },
+  "allPassed": true,
+  "cloudCalls": 0
+}

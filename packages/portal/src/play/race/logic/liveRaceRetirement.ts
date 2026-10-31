@@ -21,11 +21,18 @@ export function createLiveRaceRetirement(transport: Pick<LiveRaceCapability, "up
   const seats = new Map<string, {
     /** Confirmation or definitive rejection permanently stops this cleanup. */
     stopped: boolean;
+    /** Only a validated authority receipt permits an explicit close to finish. */
+    confirmed: boolean;
+    /** Every observer of this cleanup waits for the same finite job. */
+    completion: Promise<boolean>;
     /** Local deadline and retry wait can be released by a late terminal receipt. */
     owner: AbortController;
   }>();
-  return (view: LiveRaceView | null): void => {
-    if (!retireJoin && !view) return;
+  return (view: LiveRaceView | null, {retry = false}: {
+    /** An explicit retry may reopen only an exhausted cleanup for the original join. */
+    retry?: boolean;
+  } = {}): Promise<boolean> => {
+    if (!retireJoin && !view) return Promise.resolve(true);
     /** Terminal observations cannot reopen a completed cleanup after an older response arrives. */
     const terminal = !retireJoin && Boolean(view && (view.phase === "result" || view.phase === "cancelled" || view.run?.status === "completed"));
     /** Modern observations share the original intent even if a late response names a recovered canonical ticket. */
@@ -33,13 +40,14 @@ export function createLiveRaceRetirement(transport: Pick<LiveRaceCapability, "up
     /** Existing ownership coalesces late joins, polls and unmount cleanup. */
     const existing = seats.get(key);
     if (existing) {
-      if (terminal) {existing.stopped = true; existing.owner.abort();}
-      return;
+      if (terminal) {existing.confirmed = true; existing.stopped = true; existing.owner.abort();}
+      if (existing.confirmed) return Promise.resolve(true);
+      if (!retry || !existing.stopped) return existing.completion;
     }
     /** The finite job stays detached from the retired component's effects and setters. */
-    const seat = {stopped: terminal, owner: new AbortController()};
+    const seat = {stopped: terminal, confirmed: terminal, completion: Promise.resolve(terminal), owner: new AbortController()};
     seats.set(key, seat);
-    if (terminal) return;
+    if (terminal) return seat.completion;
     /** All retries address only this originally observed ticket with the same idempotency key. */
     const command: UpdateLiveRace | null = view ? {ticketId: view.ticketId, action: "leave", requestId} : null;
     /** A validated terminal receipt, including one after timeout, releases every local wait. */
@@ -53,6 +61,7 @@ export function createLiveRaceRetirement(transport: Pick<LiveRaceCapability, "up
         if (!parsed.success || parsed.data.ticketId !== command!.ticketId ||
           !["result", "cancelled"].includes(parsed.data.phase) && parsed.data.run?.status !== "completed") return false;
       }
+      seat.confirmed = true;
       seat.stopped = true;
       seat.owner.abort();
       return true;
@@ -79,7 +88,10 @@ export function createLiveRaceRetirement(transport: Pick<LiveRaceCapability, "up
       // Retain the deduplication marker even when the finite recovery budget is exhausted.
       seat.stopped = true;
       seat.owner.abort();
+      return seat.confirmed;
     };
-    void run();
+    // Publish the shared promise before a synchronous adapter can reenter cleanup.
+    seat.completion = Promise.resolve().then(run);
+    return seat.completion;
   };
 }

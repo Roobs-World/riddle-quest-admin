@@ -1,0 +1,479 @@
+{
+  "advisories": {
+    "1153174": {
+      "findings": [
+        {
+          "version": "1.30.1",
+          "paths": [
+            "firebase-functions>firebase-tools>@google-cloud/pubsub>@opentelemetry/core"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1153174,
+      "title": "OpenTelemetry Core: Unbounded memory allocation in W3C Baggage propagation",
+      "module_name": "@opentelemetry/core",
+      "vulnerable_versions": "<2.8.0",
+      "patched_versions": ">=2.8.0",
+      "severity": "moderate",
+      "cwe": "CWE-770",
+      "github_advisory_id": "GHSA-8988-4f7v-96qf",
+      "url": "https://github.com/advisories/GHSA-8988-4f7v-96qf"
+    },
+    "1242883": {
+      "findings": [
+        {
+          "version": "10.7.1",
+          "paths": [
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>express-rate-limit>ip-address",
+            "firebase-functions>firebase-tools>proxy-agent>pac-proxy-agent>socks-proxy-agent>socks>ip-address",
+            "firebase-functions>firebase-tools>proxy-agent>socks-proxy-agent>socks>ip-address"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1242883,
+      "title": "ip-address: Address6 matches a zone identifier in quadratic time ahead of its length limit, allowing a single long string to stall the process",
+      "module_name": "ip-address",
+      "vulnerable_versions": "<=10.7.3",
+      "patched_versions": ">=10.7.4",
+      "severity": "moderate",
+      "cwe": "CWE-1333",
+      "github_advisory_id": "GHSA-rxp7-6hxx-x8q5",
+      "url": "https://github.com/advisories/GHSA-rxp7-6hxx-x8q5"
+    },
+    "1243066": {
+      "findings": [
+        {
+          "version": "4.6.5",
+          "paths": [
+            "firebase-functions>@qwordly/core>zod",
+            "firebase-functions>openai>zod",
+            "firebase-functions>zod",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>zod",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>zod-to-json-schema>zod",
+            "firebase-functions>firebase-tools>zod",
+            "packages__core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@json-render/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/hub-ui>@devframes/json-render>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/json-render-ui>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-inspect>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-inspect>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-inspect>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-inspect>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/service-open>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/service-open>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/service-open>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>@devframes/service-open>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-messages>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>devframe>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>@devframes/hub>@devframes/agentic>@modelcontextprotocol/server>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/client>@modelcontextprotocol/core>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/client>zod",
+            "packages__portal>@rolldown/plugin-babel>vite>@vitejs/devtools>@devframes/plugin-terminals>@devframes/vite>@devframes/hub-ui>devframe>@devframes/agentic>@modelcontextprotocol/server>@modelcontextprotocol/core>zod"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "version": "3.25.76",
+          "paths": [
+            "packages__reddit-app>lighthouse>puppeteer-core>chromium-bidi>zod"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243066,
+      "title": "Zod can exhaust memory while validating oversized constrained collections",
+      "module_name": "zod",
+      "vulnerable_versions": "<4.6.6",
+      "patched_versions": ">=4.6.6",
+      "severity": "high",
+      "cwe": "CWE-770",
+      "github_advisory_id": "GHSA-mrhx-c7xc-m3w5",
+      "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
+    },
+    "1243073": {
+      "findings": [
+        {
+          "version": "1.20.8",
+          "paths": [
+            "firebase-functions>firebase-tools>body-parser",
+            "firebase-functions>firebase-tools>exegesis>body-parser",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>body-parser",
+            "firebase-functions>firebase-tools>express>body-parser"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243073,
+      "title": "body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body",
+      "module_name": "body-parser",
+      "vulnerable_versions": "<1.20.9",
+      "patched_versions": ">=1.20.9",
+      "severity": "high",
+      "cwe": "CWE-248",
+      "github_advisory_id": "GHSA-27r3-jxmh-p828",
+      "url": "https://github.com/advisories/GHSA-27r3-jxmh-p828"
+    },
+    "1243074": {
+      "findings": [
+        {
+          "version": "2.3.0",
+          "paths": [
+            "firebase-functions>firebase-functions>express>body-parser",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>express>body-parser",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>express-rate-limit>express>body-parser"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243074,
+      "title": "body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body",
+      "module_name": "body-parser",
+      "vulnerable_versions": ">=2.0.0 <2.4.0",
+      "patched_versions": ">=2.4.0",
+      "severity": "high",
+      "cwe": "CWE-248",
+      "github_advisory_id": "GHSA-27r3-jxmh-p828",
+      "url": "https://github.com/advisories/GHSA-27r3-jxmh-p828"
+    },
+    "1243077": {
+      "findings": [
+        {
+          "version": "8.11.2",
+          "paths": [
+            "firebase-functions>openai>undici",
+            "firebase-functions>firebase-tools>superstatic>re2>node-gyp>undici"
+          ],
+          "dev": false,
+          "optional": true,
+          "bundled": false
+        }
+      ],
+      "id": 1243077,
+      "title": "undici vulnerable to Denial of Service via unbounded memory in the EventSource parser",
+      "module_name": "undici",
+      "vulnerable_versions": ">=8.0.0 <8.12.2",
+      "patched_versions": ">=8.12.2",
+      "severity": "moderate",
+      "cwe": "CWE-770",
+      "github_advisory_id": "GHSA-4qv8-2p9j-2685",
+      "url": "https://github.com/advisories/GHSA-4qv8-2p9j-2685"
+    },
+    "1243079": {
+      "findings": [
+        {
+          "version": "6.29.0",
+          "paths": [
+            "firebase-functions>firebase-tools>undici"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243079,
+      "title": "undici vulnerable to Denial of Service via unbounded memory in the EventSource parser",
+      "module_name": "undici",
+      "vulnerable_versions": ">=6.5.0 <6.29.1",
+      "patched_versions": ">=6.29.1",
+      "severity": "moderate",
+      "cwe": "CWE-770",
+      "github_advisory_id": "GHSA-4qv8-2p9j-2685",
+      "url": "https://github.com/advisories/GHSA-4qv8-2p9j-2685"
+    },
+    "1243080": {
+      "findings": [
+        {
+          "version": "8.11.2",
+          "paths": [
+            "firebase-functions>openai>undici",
+            "firebase-functions>firebase-tools>superstatic>re2>node-gyp>undici"
+          ],
+          "dev": false,
+          "optional": true,
+          "bundled": false
+        }
+      ],
+      "id": 1243080,
+      "title": "undici vulnerable to Subresource Integrity bypass via non-lowercase algorithm tokens",
+      "module_name": "undici",
+      "vulnerable_versions": ">=8.0.0 <8.12.2",
+      "patched_versions": ">=8.12.2",
+      "severity": "moderate",
+      "cwe": "CWE-178",
+      "github_advisory_id": "GHSA-f72v-6w45-q472",
+      "url": "https://github.com/advisories/GHSA-f72v-6w45-q472"
+    },
+    "1243098": {
+      "findings": [
+        {
+          "version": "3.1.8",
+          "paths": [
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv>fast-uri",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv-formats>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv-formats>ajv>fast-uri"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243098,
+      "title": "fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding",
+      "module_name": "fast-uri",
+      "vulnerable_versions": ">=3.0.0 <3.1.9",
+      "patched_versions": ">=3.1.9",
+      "severity": "moderate",
+      "cwe": "CWE-172, CWE-180",
+      "github_advisory_id": "GHSA-w74x-v6f9-j3xg",
+      "url": "https://github.com/advisories/GHSA-w74x-v6f9-j3xg"
+    },
+    "1243101": {
+      "findings": [
+        {
+          "version": "3.1.8",
+          "paths": [
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv>fast-uri",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv-formats>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv-formats>ajv>fast-uri"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243101,
+      "title": "fast-uri vulnerable to improper path equivalence in relative reference normalization",
+      "module_name": "fast-uri",
+      "vulnerable_versions": ">=3.0.0 <3.1.9",
+      "patched_versions": ">=3.1.9",
+      "severity": "low",
+      "cwe": "CWE-41",
+      "github_advisory_id": "GHSA-xhq7-xmqj-769h",
+      "url": "https://github.com/advisories/GHSA-xhq7-xmqj-769h"
+    },
+    "1243104": {
+      "findings": [
+        {
+          "version": "3.1.8",
+          "paths": [
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv>fast-uri",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv-formats>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv-formats>ajv>fast-uri"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243104,
+      "title": "fast-uri vulnerable to host confusion via unchecked WHATWG host canonicalization",
+      "module_name": "fast-uri",
+      "vulnerable_versions": ">=3.1.3 <3.1.9",
+      "patched_versions": ">=3.1.9",
+      "severity": "moderate",
+      "cwe": "CWE-20, CWE-436",
+      "github_advisory_id": "GHSA-wjr9-j795-jxcr",
+      "url": "https://github.com/advisories/GHSA-wjr9-j795-jxcr"
+    },
+    "1243107": {
+      "findings": [
+        {
+          "version": "3.1.8",
+          "paths": [
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv>fast-uri",
+            "firebase-functions>firebase-tools>@modelcontextprotocol/sdk>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv>fast-uri",
+            "firebase-functions>firebase-tools>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis>ajv-formats>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv>fast-uri",
+            "firebase-functions>firebase-tools>exegesis-express>exegesis>ajv-formats>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv>fast-uri",
+            "packages__reddit-app>lighthouse>ajv-formats>ajv>fast-uri"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243107,
+      "title": "fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references",
+      "module_name": "fast-uri",
+      "vulnerable_versions": ">=3.0.0 <3.1.9",
+      "patched_versions": ">=3.1.9",
+      "severity": "low",
+      "cwe": "CWE-41, CWE-116",
+      "github_advisory_id": "GHSA-333x-w4r6-6crp",
+      "url": "https://github.com/advisories/GHSA-333x-w4r6-6crp"
+    },
+    "1243112": {
+      "findings": [
+        {
+          "version": "8.11.2",
+          "paths": [
+            "firebase-functions>openai>undici",
+            "firebase-functions>firebase-tools>superstatic>re2>node-gyp>undici"
+          ],
+          "dev": false,
+          "optional": true,
+          "bundled": false
+        }
+      ],
+      "id": 1243112,
+      "title": "undici vulnerable to Denial of Service via unhandled error on excessive content-encodings",
+      "module_name": "undici",
+      "vulnerable_versions": ">=8.0.0 <8.12.2",
+      "patched_versions": ">=8.12.2",
+      "severity": "high",
+      "cwe": "CWE-248, CWE-459",
+      "github_advisory_id": "GHSA-xjj6-f33q-929c",
+      "url": "https://github.com/advisories/GHSA-xjj6-f33q-929c"
+    },
+    "1243114": {
+      "findings": [
+        {
+          "version": "6.29.0",
+          "paths": [
+            "firebase-functions>firebase-tools>undici"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ],
+      "id": 1243114,
+      "title": "undici vulnerable to Denial of Service via unhandled error on excessive content-encodings",
+      "module_name": "undici",
+      "vulnerable_versions": ">=6.23.0 <6.29.1",
+      "patched_versions": ">=6.29.1",
+      "severity": "high",
+      "cwe": "CWE-248, CWE-459",
+      "github_advisory_id": "GHSA-xjj6-f33q-929c",
+      "url": "https://github.com/advisories/GHSA-xjj6-f33q-929c"
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 2,
+      "moderate": 7,
+      "high": 7,
+      "critical": 0
+    },
+    "dependencies": 658,
+    "devDependencies": 850,
+    "optionalDependencies": 177,
+    "totalDependencies": 1578
+  }
+}

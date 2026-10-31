@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-25T22:43:05.937191+00:00",
+  "scope": "Read-only local gcloud upload membership enumeration; no upload or ignore-file mutation",
+  "candidates": [
+    {
+      "candidate": "callables-candidate",
+      "localSafeFiles": 1019,
+      "gcloudFilesForUpload": 1019,
+      "exactMembershipMatch": true,
+      "noSymlinks": true,
+      "noEnvironmentFiles": true,
+      "membershipSha256": "18875bf77d975008cc8bc7785a8c544a3fb95ed3f2168fb2b2076110510e243e"
+    },
+    {
+      "candidate": "reddit-candidate",
+      "localSafeFiles": 535,
+      "gcloudFilesForUpload": 535,
+      "exactMembershipMatch": true,
+      "noSymlinks": true,
+      "noEnvironmentFiles": true,
+      "membershipSha256": "2756ddef627ea8acda28e36c9d92184b55fa88d375d8189fdd33796f08856507"
+    }
+  ]
+}

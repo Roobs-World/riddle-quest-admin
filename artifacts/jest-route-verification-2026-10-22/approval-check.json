@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-22 00:38:45 UTC",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "account": "grindheadgames@gmail.com",
+  "app": {
+    "version": "1.0.0-dev.20261022-routes",
+    "versionId": "01a160e4-07d9-7408-936a-bb5f0adc8733",
+    "reviewStatus": "in_review",
+    "approvedAt": null,
+    "isPublished": false,
+    "submittedAt": "2026-10-22T00:07:28.707Z"
+  },
+  "build": {
+    "status": "ready",
+    "isActive": true,
+    "processingError": null
+  },
+  "assets": {
+    "total": 21,
+    "approved": 21,
+    "unapproved": [],
+    "pendingReplacements": [],
+    "requiredFallback": [
+      {
+        "reference": "riddle-q-notification",
+        "status": "pass",
+        "archivedAt": null
+      }
+    ]
+  },
+  "agreements": [
+    {
+      "document": "Application Development and Publishing Agreement",
+      "version": "2026-10-11",
+      "status": "Signed",
+      "signedBy": "grindheadgames@gmail.com"
+    },
+    {
+      "document": "Acceptable Use Policy",
+      "version": "2026-10-11",
+      "status": "Signed",
+      "signedBy": "grindheadgames@gmail.com"
+    }
+  ],
+  "events": {
+    "sdkErrorsOrWarnings": 0,
+    "notificationModerationEvents": 0,
+    "notificationErrors": 0
+  },
+  "automatedLaunchChecks": {
+    "passed": 20,
+    "applicable": 20,
+    "source": "Submitted self-review from prior verification, not rerun"
+  },
+  "payoutSetup": {
+    "stripeOnboarding": "Not started",
+    "configuredTeamPayoutMethod": "manual_wire",
+    "publicationPrerequisite": false,
+    "bankDetailsChanged": false
+  },
+  "remainingApproval": "Human app review by Jest; no current approval decision."
+}

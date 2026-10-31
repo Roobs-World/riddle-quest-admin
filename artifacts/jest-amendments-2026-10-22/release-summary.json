@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-dev.20261022-review-amends",
+  "archive": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-amendments-2026-10-22/riddle-quest-review-amends.zip",
+  "archiveBytes": 2876637,
+  "sha256": "1a10914c1e6e4354325edd673a1adc64619fe8bd5d0994e8b5494414eed3bb25",
+  "filesCount": 419,
+  "totalBytes": 4717292,
+  "zipMatchesSnapshot": true,
+  "versionId": "01a16125-cdb0-7622-b9b3-5df0975e2759",
+  "buildStatus": "ready",
+  "buildProcessingError": null,
+  "isActive": false,
+  "uploadedVia": "Jest official MCP upload command",
+  "checkedAt": "2026-10-22T01:07:19.776056+00:00"
+}

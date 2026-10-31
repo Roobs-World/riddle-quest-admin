@@ -1,6 +1,7 @@
 import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
 import type {ProductSummary} from "./types";
+import type {CompletionRewardBreakdown} from "./completionRewardBreakdown";
 
 /** Identifies the modal currently presented by the game session. */
 export type GameModal =
@@ -28,10 +29,14 @@ export type PendingGuessState = Pick<GameSessionState,
   "currentLetters" | "activeSlotIndex" | "guesses" | "engineSnapshot" |
   "modal" | "lastOutcome" | "completionAcknowledged" | "letterStates" |
   "profile" | "lastRewards" | "optimisticAchievementIds"
->;
+> & {
+  /** Optional ordering retained by current rollback snapshots. */
+  draftRevision?: import("./draftCheckpointRevision").DraftCheckpointRevision;
+};
 
 /** Captures all reducer-owned state for a classic or daily game session. */
 export type GameSessionState = {
+  /** Logical input ordering shared by both client persistence records. */ draftRevision: import("./draftCheckpointRevision").DraftCheckpointRevision;
   /** Indicates whether host initialization has completed. */ initialized: boolean;
   /** Indicates whether lifecycle signals have paused gameplay. */ paused: boolean;
   /** Active locale used for content and presentation. */ locale: string;
@@ -72,6 +77,8 @@ export type GameSessionState = {
   /** Transient player-facing status or error message. */ notice: string | null;
   /** Rewards returned by the most recent authoritative completion. */
   lastRewards: {
+    /** Validated server receipt components, absent for provisional or legacy rewards. */
+    rewardBreakdown?: CompletionRewardBreakdown;
     /** Stores coins earned. */
     coinsEarned: number; /** Stores total coins. */
     /** Stores total coins. */
@@ -191,6 +198,8 @@ export type GameSessionAction =
   | {
       /** Reconstructs locally pending rows after a reload. */
       type: "restoreQueuedGuesses";
+      /** Optional ordering from the retained draft. */
+      draftRevision?: GameSessionState["draftRevision"];
       /** The base used by the current operation. */
       base: PendingGuessState;
       /** The guesses used by the current operation. */
@@ -271,6 +280,7 @@ export type GameSessionAction =
       /** The paid action whose local gameplay should be previewed. */ reason?: "continue" | "skip";
       /** Unsubmitted continued-attempt letters retained by the paid-action journal. */ draft?: string[];
       /** Editable selection restored together with the continued-attempt draft. */ draftActiveSlotIndex?: number;
+      /** Ordering restored with the same continued-attempt input. */ draftRevision?: GameSessionState["draftRevision"];
     }
   | {
       /** Replaces the preview with the server balance. */ type: "confirmCoinSpend";
@@ -327,6 +337,8 @@ export type GameSessionAction =
   | {
       /** Stores type. */
       type: "restoreSession";
+      /** Optional ordering from the provider snapshot. */
+      draftRevision?: GameSessionState["draftRevision"];
       /** Riddle that issued this saved snapshot. */
       riddleId: string;
       /** Session that issued this saved snapshot. */

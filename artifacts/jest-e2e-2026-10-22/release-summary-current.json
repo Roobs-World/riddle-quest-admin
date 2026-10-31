@@ -1,0 +1,44 @@
+{
+  "readbackWindowUtc": {
+    "after": "2026-10-22T21:48:55Z",
+    "before": "2026-10-22T21:49:47Z"
+  },
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "isPublished": false,
+  "activeVersion": {
+    "id": "01a16293-7459-71e2-95b3-94196b6540d0",
+    "version": "1.0.0-dev.20261022-instructions",
+    "description": "Fit instructions modal without scrolling while retaining all content and readable text",
+    "isActive": true
+  },
+  "draftVersionId": "01a16583-80fa-760e-9771-4b82d849bf15",
+  "review": {
+    "id": "01a160ef-28c7-7029-9351-c31297d8527c",
+    "status": "in_review",
+    "activeVersionId": "01a16293-7459-71e2-95b3-94196b6540d0",
+    "approvedAt": null,
+    "submittedAt": "2026-10-22T07:56:59.883Z"
+  },
+  "newVersion": {
+    "id": "01a16583-80fa-760e-9771-4b82d849bf15",
+    "version": "1.0.0-dev.20261022-e2e-journal",
+    "buildStatus": "ready",
+    "isActive": false
+  },
+  "hostedGate": "blocked: reproducible Google Frontend HTTP 500",
+  "finalHealthCheckUtc": "2026-10-22T21:50:12.813Z",
+  "localAcceptance": {
+    "unitSuitesPassed": 320,
+    "unitTestsPassed": 3335,
+    "retainedBrowserSuitesPassed": 8,
+    "retainedBrowserTestsPassed": 79,
+    "navigationRoutesPassed": 337,
+    "navigationFailures": 0,
+    "navigationPendingEntries": 0,
+    "focusedCompiledJourneysPassed": 6,
+    "artifactHashesUnchanged": 419,
+    "runtimeSourceFilesUnchanged": 369,
+    "allSevenTargetBuildsPassed": true
+  },
+  "releaseAction": "No activation or final review submission performed for the journal candidate."
+}

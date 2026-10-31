@@ -1,0 +1,139 @@
+{
+  "project": "riddle-quest-ec2b2",
+  "checkedAt": "2026-10-25T21:52:14.501096+00:00",
+  "scope": "Read-only metadata, no environment values or secrets requested",
+  "functions": [
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "exitCode": 0,
+      "metadata": {
+        "buildConfig": {
+          "build": "projects/329028367192/locations/europe-west1/builds/5c282965-ef70-4f3a-9e65-553923125afb",
+          "runtime": "nodejs22",
+          "source": {
+            "storageSource": {
+              "bucket": "gcf-v2-sources-329028367192-europe-west1",
+              "generation": "1792884674845614",
+              "object": "joinLiveRace/function-source.zip"
+            }
+          },
+          "sourceProvenance": {
+            "resolvedStorageSource": {
+              "bucket": "gcf-v2-sources-329028367192-europe-west1",
+              "generation": "1792884674845614",
+              "object": "joinLiveRace/function-source.zip"
+            }
+          }
+        },
+        "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/joinLiveRace",
+        "serviceConfig": {
+          "allTrafficOnLatestRevision": true,
+          "revision": "joinliverace-00024-bap"
+        },
+        "state": "ACTIVE",
+        "updateTime": "2026-10-24T23:32:33.257358315Z"
+      },
+      "error": null
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "exitCode": 0,
+      "metadata": {
+        "buildConfig": {
+          "build": "projects/329028367192/locations/us-central1/builds/46cd0c74-88ee-4f3e-abc6-0d3fcaabd84d",
+          "runtime": "nodejs22",
+          "source": {
+            "storageSource": {
+              "bucket": "gcf-v2-sources-329028367192-us-central1",
+              "generation": "1792884673238751",
+              "object": "joinLiveRace/function-source.zip"
+            }
+          },
+          "sourceProvenance": {
+            "resolvedStorageSource": {
+              "bucket": "gcf-v2-sources-329028367192-us-central1",
+              "generation": "1792884673238751",
+              "object": "joinLiveRace/function-source.zip"
+            }
+          }
+        },
+        "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinLiveRace",
+        "serviceConfig": {
+          "allTrafficOnLatestRevision": true,
+          "revision": "joinliverace-00024-mad"
+        },
+        "state": "ACTIVE",
+        "updateTime": "2026-10-24T23:32:32.080430187Z"
+      },
+      "error": null
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "exitCode": 0,
+      "metadata": {
+        "buildConfig": {
+          "build": "projects/329028367192/locations/europe-west1/builds/5c282965-ef70-4f3a-9e65-553923125afb",
+          "runtime": "nodejs22",
+          "source": {
+            "storageSource": {
+              "bucket": "gcf-v2-sources-329028367192-europe-west1",
+              "generation": "1792884735876710",
+              "object": "updateLiveRace/function-source.zip"
+            }
+          },
+          "sourceProvenance": {
+            "resolvedStorageSource": {
+              "bucket": "gcf-v2-sources-329028367192-europe-west1",
+              "generation": "1792884735876710",
+              "object": "updateLiveRace/function-source.zip"
+            }
+          }
+        },
+        "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/updateLiveRace",
+        "serviceConfig": {
+          "allTrafficOnLatestRevision": true,
+          "revision": "updateliverace-00025-fos"
+        },
+        "state": "ACTIVE",
+        "updateTime": "2026-10-24T23:32:30.319506419Z"
+      },
+      "error": null
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "exitCode": 0,
+      "metadata": {
+        "buildConfig": {
+          "build": "projects/329028367192/locations/us-central1/builds/46cd0c74-88ee-4f3e-abc6-0d3fcaabd84d",
+          "runtime": "nodejs22",
+          "source": {
+            "storageSource": {
+              "bucket": "gcf-v2-sources-329028367192-us-central1",
+              "generation": "1792884727188960",
+              "object": "updateLiveRace/function-source.zip"
+            }
+          },
+          "sourceProvenance": {
+            "resolvedStorageSource": {
+              "bucket": "gcf-v2-sources-329028367192-us-central1",
+              "generation": "1792884727188960",
+              "object": "updateLiveRace/function-source.zip"
+            }
+          }
+        },
+        "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateLiveRace",
+        "serviceConfig": {
+          "allTrafficOnLatestRevision": true,
+          "revision": "updateliverace-00025-moj"
+        },
+        "state": "ACTIVE",
+        "updateTime": "2026-10-24T23:32:36.758865449Z"
+      },
+      "error": null
+    }
+  ]
+}

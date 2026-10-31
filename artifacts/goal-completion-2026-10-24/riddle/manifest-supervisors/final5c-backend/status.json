@@ -1,0 +1,25 @@
+{
+  "label": "final5c-backend",
+  "runner": "backend",
+  "entrypoint": "artifacts/goal-completion-2026-10-24/riddle/run-backend-exact-manifest-checks.mjs",
+  "runnerArguments": [
+    "--output=artifacts/development-checks/goal-20261024-backend-final5c-backend"
+  ],
+  "evidenceDirectory": "artifacts/development-checks/goal-20261024-backend-final5c-backend",
+  "indices": [],
+  "selection": "all declared checks for this runner",
+  "supervisorPid": 443736,
+  "startedAt": "2026-10-24T02:06:06.948Z",
+  "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceBefore": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "status": "passed",
+  "inheritedDebugDisabled": true,
+  "maximumRuntimeMinutes": 45,
+  "report": "artifacts/development-checks/goal-20261024-backend-final5c-backend/report.json",
+  "childPid": 443868,
+  "exitCode": 0,
+  "signal": null,
+  "sourceAfter": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "finishedAt": "2026-10-24T02:24:51.474Z",
+  "sourceStillMatches": true
+}

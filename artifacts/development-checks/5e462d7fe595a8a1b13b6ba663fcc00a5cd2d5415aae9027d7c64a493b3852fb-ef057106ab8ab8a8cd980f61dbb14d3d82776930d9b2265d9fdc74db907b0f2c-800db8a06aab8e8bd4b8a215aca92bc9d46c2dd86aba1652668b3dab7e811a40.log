@@ -1,0 +1,19 @@
+
+file:///home/craig-beswetherick/Documents/riddle-quest/scripts/release/verify-packaged-game-evidence.mjs:12
+  if (createHash('sha256').update(bytes).digest('hex') !== row.sha256) throw new Error(`Changed tested artifact: ${row.target}`);
+                                                                             ^
+
+Error: Changed tested artifact: gamesnacks
+    at file:///home/craig-beswetherick/Documents/riddle-quest/scripts/release/verify-packaged-game-evidence.mjs:12:78
+
+Node.js v24.17.0
+
+Command failed: node scripts/release/verify-packaged-game-evidence.mjs
+file:///home/craig-beswetherick/Documents/riddle-quest/scripts/release/verify-packaged-game-evidence.mjs:12
+  if (createHash('sha256').update(bytes).digest('hex') !== row.sha256) throw new Error(`Changed tested artifact: ${row.target}`);
+                                                                             ^
+
+Error: Changed tested artifact: gamesnacks
+    at file:///home/craig-beswetherick/Documents/riddle-quest/scripts/release/verify-packaged-game-evidence.mjs:12:78
+
+Node.js v24.17.0

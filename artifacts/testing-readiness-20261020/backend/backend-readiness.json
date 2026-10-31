@@ -1,0 +1,327 @@
+{
+  "checkedAt": "2026-10-20T18:22:10.909744+00:00",
+  "project": "riddle-quest-ec2b2",
+  "backendReadyForHostedTesting": true,
+  "currentBlockers": [],
+  "currentRegionalFunctions": [
+    {
+      "id": "joinLiveRace",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "joinliverace-00022-viz",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "joinLiveRace",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "joinliverace-00022-bem",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "updateLiveRace",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "updateliverace-00023-rik",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "updateLiveRace",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "updateliverace-00023-yox",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "retireLiveRaceJoin",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "retireliveracejoin-00005-lal",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "retireLiveRaceJoin",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "retireliveracejoin-00005-hol",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "getLiveRaceChallenge",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "getliveracechallenge-00014-cab",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "getLiveRaceChallenge",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "getliveracechallenge-00014-gih",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "listLiveRaceChallenges",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "listliveracechallenges-00012-zab",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "listLiveRaceChallenges",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "listliveracechallenges-00012-sil",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "startRaceRun",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "startracerun-00057-lew",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "startRaceRun",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "startracerun-00027-dux",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "redditGameplay",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "redditgameplay-00044-fog",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "dailyChallengeScheduler",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "dailychallengescheduler-00052-tuy",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "replenishClassicSupplyOnDemand",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "replenishclassicsupplyondemand-00002-jid",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    },
+    {
+      "id": "retryClassicSupplyOnDemand",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "retryclassicsupplyondemand-00002-qur",
+      "allTrafficOnLatestRevision": true,
+      "matchesVerifiedReleaseRevision": true,
+      "matchesVerifiedReleaseSourceProvenance": true
+    }
+  ],
+  "sourceParity": {
+    "preparedSourceCompiledAndVendoredFiles": [
+      {
+        "path": "firebase-functions/src/riddles/riddleGeneration.ts",
+        "sha256": "be1c7140fbcf5f68810e5ea956e87575dff885843edf170a80a2c9a853a4eb4d",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/riddles/riddleGeneration.js",
+        "sha256": "a55808249c62773376a92aedf3bee340fd3a0f5af8509910ae486b9f99b68089",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/daily/dailyRiddleGeneration.ts",
+        "sha256": "f0c072064f8526b82caaae988c4bff25a8052d92db7c1f27f82ad869377a8b95",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/daily/dailyRiddleGeneration.js",
+        "sha256": "7ed23a990bead6e938d6a6478dc160ed99b35b269bed56eb0246fcbeb6a36cfa",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceSetupService.ts",
+        "sha256": "1c2a00e9b9b715675caef5b83031d9c236b5ce85da490813f0623cb0a64c738c",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceSetupService.js",
+        "sha256": "b6cdfcc1e152cb3cad91e0ec6ed94177205116c4811ccb55d3162a821539c6ad",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceLiveService.ts",
+        "sha256": "18e08058b9aeb23cff6050900e070df426aedcd34919ec48b55c431578d0bb11",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceLiveService.js",
+        "sha256": "a06e1c1de0db8b8a8dd331b2f930d18fdc09a3e8287211cd7195b6be60a44c80",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceLiveQueue.ts",
+        "sha256": "c197b30fb7371db23fc9d61937da875ebda450910e7af7bca723596477aa3fb5",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceLiveQueue.js",
+        "sha256": "fb3caf8e697e7e51500c5f23bd1404198f10d204057b70f9e17e93f2bb240d72",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceLiveState.ts",
+        "sha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceLiveState.js",
+        "sha256": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceLiveInvitation.ts",
+        "sha256": "65e33d6b358fbb50486f9d581453d2f2a3cde6bacb6059ee1e374bf89cd9a795",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceLiveInvitation.js",
+        "sha256": "ea29da6b1094675d41a310fa3cd419adf7252f4aec45f0aed9b44ada305481d9",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceLiveJoinIntent.ts",
+        "sha256": "018810f51c4db8604f3906115c239badb45374788d734932a57e2998c7e4a960",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceLiveJoinIntent.js",
+        "sha256": "44647a93ab11f6a9d5145d95c35a5e7b46bfd3dbfe1130eb02d6bd47ecd42489",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/src/race/raceLiveStream.ts",
+        "sha256": "fcb444cdd4db1240d0f764fad5cc70a394b60df5d2c345b9f2dfac63ae0bd0ea",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/lib/race/raceLiveStream.js",
+        "sha256": "9cc2f68064d59aba50a97ab89766f15b7d2e7050ce428bfc07690b764c695d0f",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "packages/core/src/race/raceLiveSchemas.ts",
+        "sha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "packages/core/dist/race/raceLiveSchemas.js",
+        "sha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+        "matchesPreparedPlan": true
+      },
+      {
+        "path": "firebase-functions/packages/core/dist/race/raceLiveSchemas.js",
+        "sha256": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+        "matchesPreparedPlan": true
+      }
+    ],
+    "preparedFilesCompared": 21,
+    "runtimeAndCoreFilesCompared": 533,
+    "allCurrentRuntimeFilesMatchDeployedStage": true,
+    "aggregateRuntimeSha256": "ac70e719921d70098c11b1fe8a23c528be92edec04175d7210d5712b26c1f57f",
+    "matchesVerifiedReleaseFingerprint": true,
+    "evidence": "artifacts/continuation-release-20261020/backend/deployment-receipt.json"
+  },
+  "dailyContent": {
+    "checkedAt": "2026-10-20T18:20:44.915Z",
+    "supportedLocales": 16,
+    "playableLocales": 16,
+    "allDatesAndLocalesMatch": true,
+    "answerAndClueContentPersisted": false,
+    "evidence": "artifacts/testing-readiness-20261020/backend/daily-availability.json"
+  },
+  "historicalDailyIncident": {
+    "classification": "recovered-bounded-content-generation-retry",
+    "challengeDate": "2026-10-20",
+    "affectedLocale": "nl",
+    "errorLevelRecords": 4,
+    "failedInvocationStartedAt": "2026-10-20T07:00:22.327627Z",
+    "failedInvocationCompletedAt": "2026-10-20T07:04:53.193182Z",
+    "failedLocales": 1,
+    "otherLocalesGenerated": 5,
+    "candidateAttemptsAcrossInvocation": 13,
+    "laterPlayableImmutableDutchDocumentCreatedAt": "2026-10-20T07:08:04.633790Z",
+    "currentDutchDocumentPlayable": true,
+    "requiresProductionCodeChangeForCurrentReadiness": false,
+    "notes": "The four ERROR records describe one scheduler invocation that exhausted its bounded locale generation attempts; existing scheduled retry recovered Dutch content at07:08UTC. No other released cohort revision had ERROR-level entries in the inspected interval."
+  },
+  "hostedTestPrerequisites": {
+    "identity": "Use actual Jest SDK signed identity in a dedicated authorized test-player session. Signed client payloads remain server-verified.",
+    "callables": "Use the hosted game origin and real Firebase identity/App Check tokens; production App Check remains enforced.",
+    "sms": "Use separate authorized players for public/private lobbies and an authorized recipient to confirm actual SMS delivery.",
+    "prerequisiteAbsenceObserved": false
+  },
+  "verificationScope": {
+    "productionGameplayCalls": false,
+    "testSuitesRun": false,
+    "generationTriggered": false,
+    "accountWritesOrSeeding": false,
+    "deployments": false,
+    "codeChanges": false,
+    "reads": "Read-only Cloud Functions metadata, sanitizedERROR-log classification and canonicalDaily-doc inspection. Text/answers and auth token existed only in memory and were not saved.",
+    "remainingLiveCoverage": "Hosted identity/AppCheck/callable gameplay and realSMS delivery were not executed by this readiness check."
+  },
+  "evidence": {
+    "functions": "artifacts/testing-readiness-20261020/backend/functions-current.json",
+    "errors": "artifacts/testing-readiness-20261020/backend/post-deploy-errors.json",
+    "daily": "artifacts/testing-readiness-20261020/backend/daily-availability.json"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-10-24T23:31:56.809986+00:00",
+  "finishedAt": "2026-10-24T23:31:59.652390+00:00",
+  "exitCode": 0,
+  "command": [
+    "node",
+    "/home/craig-beswetherick/Documents/portfolio/node_modules/prettier/bin/prettier.cjs",
+    "--check",
+    "**/*.{ts,tsx,js,jsx,mjs,md,mdx,json,yml,yaml}",
+    "--ignore-path",
+    ".gitignore",
+    "--ignore-path",
+    ".prettierignore",
+    "--cache",
+    "--cache-location",
+    "/tmp/portfolio-reviewed-20261025-dkzlqtka/state/prettier-cache"
+  ],
+  "cwd": "/tmp/portfolio-reviewed-20261025-dkzlqtka/repo",
+  "cachePresentBefore": false,
+  "cacheLocation": "/tmp/portfolio-reviewed-20261025-dkzlqtka/state/prettier-cache",
+  "toolchain": "Existing original pinned Prettier; no install; no app tests or build",
+  "editorParsedJsonEqualsHead": true
+}

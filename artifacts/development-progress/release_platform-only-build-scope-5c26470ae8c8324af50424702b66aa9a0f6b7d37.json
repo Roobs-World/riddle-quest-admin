@@ -1,0 +1,80 @@
+{
+  "completion": {
+    "taskId": "release:platform-only-build-scope",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks",
+      "itch"
+    ],
+    "work": "Exclude standalone web and all PWA build/release paths; retain named HTML5 platform handoffs and historical dashboard receipts with durable scope exclusions.",
+    "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "completedAt": "2026-10-24T02:29:52.067Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "release-contracts",
+      "dashboard-content",
+      "isolated-target-builds",
+      "target-dependency-evidence",
+      "release-target-integrity",
+      "file-sizes",
+      "documentation"
+    ],
+    "checks": [
+      {
+        "id": "release-contracts",
+        "status": "passed",
+        "evidence": "node --test scripts/release/platform-releases.test.mjs scripts/release/package-html5-platform.test.mjs scripts/release/html5-handoff-preparation.test.mjs scripts/release/development-progress.test.mjs scripts/release/record-release-automation.test.mjs scripts/release/refresh-submission-dashboard.test.mjs; current-source check at 2026-10-24T02:04:02.540Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-155-ba22eb7b1548ae81b00bf32870205aa4f9c4de0790b1360c81a3b12bc6357ca3.log SHA-256 ba22eb7b1548ae81b00bf32870205aa4f9c4de0790b1360c81a3b12bc6357ca3"
+      },
+      {
+        "id": "dashboard-content",
+        "status": "passed",
+        "evidence": "node --test docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs; current-source check at 2026-10-24T02:04:04.441Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-156-e4185014f6515909565f444dc840406fb8e17eeeb5e5f04346d63b09bb414f93.log SHA-256 e4185014f6515909565f444dc840406fb8e17eeeb5e5f04346d63b09bb414f93"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-007-faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5.log SHA-256 faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-002-4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c.log SHA-256 4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c"
+      },
+      {
+        "id": "release-target-integrity",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-release-target-e2e.mjs; current-source check at 2026-10-24T02:05:49.086Z; output artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-005-8bac0549674f2a70e3e52f45f9c0b3d4382a09666796f912af8cfb4231043847.log SHA-256 8bac0549674f2a70e3e52f45f9c0b3d4382a09666796f912af8cfb4231043847"
+      },
+      {
+        "id": "file-sizes",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-010-0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee.log SHA-256 0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee"
+      },
+      {
+        "id": "documentation",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-011-a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770.log SHA-256 a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770"
+      }
+    ],
+    "remainingGates": [
+      "Provider publication and existing deployment/listing changes remain separate from build scope.",
+      "The broader multiplayer reliability goal remains active."
+    ],
+    "nextAction": "Continue multiplayer reliability improvements for supported HTML5 platform targets.",
+    "artifacts": [
+      {
+        "target": "itch",
+        "file": "docs/evidence/platform-only-build-scope.md",
+        "sha256": "f69737a42b436897b1204a8656734720ee78f5c82f41e32c90e831e4eeb7bc2a"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

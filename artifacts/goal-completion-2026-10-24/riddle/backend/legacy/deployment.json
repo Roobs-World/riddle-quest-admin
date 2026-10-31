@@ -1,0 +1,218 @@
+{
+  "startedAt": "2026-10-24T03:21:13.739377+00:00",
+  "completedAt": "2026-10-24T03:23:39.361546+00:00",
+  "exitCode": 0,
+  "elapsedSeconds": 145.622,
+  "approvalReference": "call_af6998e2c2f547d5b1933614d9c50750:0; user answered: Approve this dependency-only deployment; exact four legacy instances, unchanged game logic and endpoint settings",
+  "selectedExports": [
+    "blockLiveRaceOpponent",
+    "reportLiveRaceOpponent",
+    "listLiveRaceHistoryPage"
+  ],
+  "expectedRegionalInstances": 4,
+  "successfulUpdateMessages": 4,
+  "newRevisions": [
+    "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+    "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+    "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+    "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent"
+  ],
+  "newImmutableSourceGenerations": [
+    "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+    "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+    "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+    "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent"
+  ],
+  "runtimeAndVendoredCoreFilesUnchanged": 513,
+  "preservingManifestSha256": "8e491bbba08105daa331a41ed7575abd10fab1f2fc0bacfe1ec6788f7dd5883e",
+  "completeEnvironmentMapsComparedPrivately": true,
+  "environmentValuesOrHashesRecorded": false,
+  "allFourBeforeImmutableSourcesMatchPreparation": true,
+  "beforeAndAfterRuntimeScalingAttested": true,
+  "runtimeOrScalingDifferences": [
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "field": "functionRuntimeOptions",
+      "before": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "after": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "field": "serviceTemplateScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "field": "revisionScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "field": "functionRuntimeOptions",
+      "before": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "after": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "field": "serviceTemplateScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "field": "revisionScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "field": "functionRuntimeOptions",
+      "before": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "after": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "field": "serviceTemplateScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "field": "revisionScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "field": "functionRuntimeOptions",
+      "before": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "after": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": 20,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "field": "serviceTemplateScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "field": "revisionScaling",
+      "before": {},
+      "after": {
+        "autoscaling.knative.dev/maxScale": "20"
+      }
+    }
+  ],
+  "allFourActiveLatestAndEnvironmentPreserved": false,
+  "other116CurrentSourceInstancesUnchanged": true,
+  "unexpectedOtherInstanceChanges": [],
+  "allFourImmutableSourcesAttested": true,
+  "sanitizedStatusLogOnly": true,
+  "logSha256": "aef1858c40387506792038e9be54dd357d1c8414e39c3a16381e1c5e1ba22d40",
+  "lockSha256": "821e75ced3813737470c24ae76b825783d9a739939dd7ef4f5b1bd63d02f0237",
+  "approvedDependencyOnlyDeliveryPassed": false
+}

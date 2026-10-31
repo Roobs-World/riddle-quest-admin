@@ -1,0 +1,20 @@
+Checking diagnose immediate draft reload without observer delay
+FAIL diagnose immediate draft reload without observer delay: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
++   'PI',
++   'PI',
++   'PI',
++   'PI',
++   'PI',
++   'PI'
+-   'PIA',
+-   'PIA',
+-   'PIA',
+-   'PIA',
+-   'PIA',
+-   'PIA'
+  ]
+
+{"cases":0,"failures":1,"artifactUnchanged":true}

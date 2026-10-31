@@ -1,0 +1,58 @@
+[
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-enter",
+    "kind": "victory",
+    "title": "YOU WON!",
+    "time": 226.40000000037253
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-enter",
+    "kind": "victory",
+    "title": "YOU WON!",
+    "time": 226.40000000037253
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 226.40000000037253
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "level",
+    "title": "Level 3",
+    "time": 226.40000000037253
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 1268.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Win",
+    "time": 1268.300000000745
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 2268.4000000003725
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "First Try",
+    "time": 2268.4000000003725
+  }
+]

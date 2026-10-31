@@ -1,5 +1,5 @@
 import {getSoloWinCoins, normalizeEconomyDifficulty, type EconomyDifficulty} from "@qwordly/core/game";
-import {getDailyDate, getDailyMidnight, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {getDailyDate, getDailyStart, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {countCoinRewardAchievements} from "@qwordly/core/game";
 import * as functions from "firebase-functions";
 import {createHash} from "node:crypto";
@@ -60,7 +60,7 @@ export type AuthoritativeCompleteGameData = CompleteGameRequestData & {
   terminalAt?: Date;
 };
 
-/** Narrow recovery window around regional midnight for a committed terminal win. */
+/** Narrow recovery window around regional Daily rollover for a committed terminal win. */
 export const DAILY_COMPLETION_ROLLOVER_GRACE_MS = 15 * 60 * 1_000;
 /** Retains loss replay receipts beyond the longest valid private session. */
 export const LOSS_COMPLETION_RECEIPT_TTL_MS = 45 * 24 * 60 * 60 * 1_000;
@@ -93,8 +93,8 @@ export function isDailyCompletionDateEligible(
   if (!isCorrect || !terminalAt) return false;
   /** Provides rollover behavior. */
   if (!/^\d{4}-\d{2}-\d{2}$/.test(challengeDate)) return false;
-  /** Authoritative next regional midnight used to validate terminal Daily recovery. */
-  const rollover = getDailyMidnight(locale, shiftDailyDate(challengeDate, 1));
+  /** Authoritative next regional Daily rollover used to validate terminal Daily recovery. */
+  const rollover = getDailyStart(locale, shiftDailyDate(challengeDate, 1));
   /** Provides rollover ms behavior. */
   const rolloverMs = rollover.getTime();
   return (
@@ -381,7 +381,7 @@ async function commitAuthoritativeCompletion(
         newWinStreak = computeNextDailyWinStreak(
           currentStats.winStreak,
           user.lastDailyChallengeCompletedAt,
-          getDailyMidnight(data.locale, data.challengeDate!),
+          getDailyStart(data.locale, data.challengeDate!),
           data.locale,
           user.lastCompletedDailyChallengeKey,
         );
@@ -462,7 +462,7 @@ async function commitAuthoritativeCompletion(
             lastDailyChallengeCompletedAt:
               data.challengeDate === getDailyDate(data.locale)
                 ? admin.firestore.FieldValue.serverTimestamp()
-                : admin.firestore.Timestamp.fromDate(getDailyMidnight(data.locale, data.challengeDate!)),
+                : admin.firestore.Timestamp.fromDate(getDailyStart(data.locale, data.challengeDate!)),
             lastCompletedDailyChallengeKey: data.challengeDate ?? data.completionKey,
           }
         : {}),
@@ -479,12 +479,13 @@ async function commitAuthoritativeCompletion(
   // receipt replays safely and the referral transaction resumes idempotently.
   if (data.isCorrect) {
     /** Provides facebook referral behavior. */
-    const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid);
+    const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid, Date.now(), db, receiptId);
     /** Provides reddit referral behavior. */
-    const redditReferral = await settleRedditReferralAfterAuthoritativeWin(auth.uid);
+    const redditReferral = await settleRedditReferralAfterAuthoritativeWin(auth.uid, Date.now(), db, receiptId);
     /** Provides referral behavior. */
     const referral = {
-      inviteeCoins: facebookReferral.inviteeCoins + redditReferral.inviteeCoins,
+      inviteeCoins: (facebookReferral.completionReceiptId === receiptId ? facebookReferral.inviteeCoins : 0) +
+        (redditReferral.completionReceiptId === receiptId ? redditReferral.inviteeCoins : 0),
     };
     if (referral.inviteeCoins > 0 && result.rewardBreakdown) {
       result = {

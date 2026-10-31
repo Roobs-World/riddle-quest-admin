@@ -1,0 +1,50 @@
+{
+  "reviewer": "keyboard_accessibility",
+  "reviewDate": "2026-10-20",
+  "method": "Independent source and task-only diff review. Browser verification is recorded separately in isolation/summary.json and tap-checks/observations.json.",
+  "scope": {
+    "patch": "artifacts/keyboard-targets-20261020/final-keyboard-only.diff",
+    "productionFiles": [
+      "packages/portal/src/styles.puzzle.css",
+      "packages/portal/src/styles.guidance.css",
+      "packages/portal/src/styles.race-gameplay.css"
+    ],
+    "sharedTargets": [
+      "Jest",
+      "Facebook",
+      "Reddit"
+    ],
+    "excluded": [
+      "answer cells",
+      "native answer input",
+      "self-contained playable keyboard",
+      "backend"
+    ],
+    "initialPatch": "artifacts/keyboard-targets-20261020/before/keyboard-only.diff"
+  },
+  "hashes": {
+    "keyboardOnlyDiffSha256": "e070032b7f471b08b8d88a16abc0473096258c678ab5df4d07d7693a23723878",
+    "stylesPuzzleSha256": "aa19d1ee17ceacb9f77239d149bd1dce7d740e34e231f1e69f209e0b166824d8",
+    "stylesGuidanceSha256": "86eee9375cb012defd29692df9d242367c09b57f8b8a05bb4279ca56f63ca9e0",
+    "initialKeyboardOnlyDiffSha256": "8782c19d5adc8c78037e5f1e5986f1e692b2a2f258e37c4d68575fd3490df56a",
+    "stylesRaceGameplaySha256": "cdb6adc461c6f5dcb6dde24f0c98d0f715bc6d3d483cdaaca5ac0af51c103025"
+  },
+  "result": "No blocking issue found in the task-only CSS patch.",
+  "findings": [],
+  "confirmed": [
+    "All letter and backspace buttons inherit flex: 1 1 0 with min-width: 0. The final landscape utility Backspace intentionally has min-width: 56 px to prevent its tap target shrinking. Other keys remain equal flex within each row.",
+    "The only shared keyboard-row gap declaration is 1 px. Remaining .keyboard gap declarations separate rows and retain their existing values.",
+    "Hover and press feedback use filter brightness instead of translating or scaling button hit rectangles.",
+    "The task-only patch contains no pointer handler, pointer-events, pseudo-element hit extension, negative margin, z-index, answer-cell or adjacent-action edits.",
+    "Key height declarations, the existing 33 px physical-height compensation, viewport fitting, modal isolation, native disabled behavior, focus rules and reduced-motion settings are unchanged.",
+    "The shared shortcut keyboard has at most 10 keys per row, including Turkish dotted and dotless I. Equal row sizing does not introduce a longer alphabet row.",
+    "The existing direction inheritance and DOM order remain unchanged for RTL layouts.",
+    "Preexisting navigation and background asset differences in the dirty worktree are outside the isolated keyboard patch.",
+    "The short landscape race keyboard aligns to logical inline start, preserving compensated width while moving its expansion away from adjacent answer cells in both LTR and RTL layouts. Heights and viewport fitting are unchanged."
+  ],
+  "verificationLimits": [
+    "Source review alone establishes layout intent. Final rendered bounds, tap routing and keyboard/action separation are verified by the separately linked browser results.",
+    "No claim of 44 px minimum physical targets is made. The existing 33 px height floor on fitted short screens remains unchanged.",
+    "This static review was followed by explicitly authorized browser checks. See isolation/summary.json for final CSS controls verification and the separate expanded-target evidence for before/after key sizing."
+  ]
+}

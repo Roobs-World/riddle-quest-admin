@@ -1,0 +1,29 @@
+{
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "sourceCommit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDirty": true,
+  "createdAt": "2026-10-17T14:00:49.555107+00:00",
+  "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-uploads/multiplayer-invites-20261017140049",
+  "sourceFiles": [
+    {
+      "path": "packages/portal/src/jest/sharing/useJestSharing.ts",
+      "sha256": "2b43cbe88a02a99082fe432f36a360370abe32432f923e06552e62ef780b8a4b"
+    },
+    {
+      "path": "packages/portal/src/jest/JestPlayApp.tsx",
+      "sha256": "9f54dd5125342c04438d5e1454dac75c2733f784e91ea46e5db96045101b2b4a"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceInviteShare.tsx",
+      "sha256": "22e30765c8a8377490320a7286903904ad142d34ec74beedd20a6165e72ac98d"
+    },
+    {
+      "path": "packages/portal/src/styles.race-lobby.css",
+      "sha256": "d4756c35a22b37bb748376b20d9b08d6a5b6510b49161ee6821cf60aaa51ae5c"
+    }
+  ],
+  "snapshotDirectory": "/tmp/riddle-quest-invite-release-fr_9r5d6",
+  "snapshotCommit": "1ed181f6d1028b3638435f27c3271eaa01d61ab0",
+  "version": "1.0.0-dev.20261017140049.invites"
+}

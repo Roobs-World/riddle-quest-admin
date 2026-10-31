@@ -60,6 +60,7 @@ describe("game session persistence", () => {
     expect(createSavedGame(active, 123_456)).toEqual({
       schemaVersion: 1,
       savedAt: 123_456,
+      draftRevision: active.draftRevision,
       riddleId: riddle.riddleId,
       sessionToken: riddle.sessionToken,
       gameMode: "classic",

@@ -1,0 +1,43 @@
+{
+  "phase": "browser-acceptance",
+  "command": [
+    "pnpm",
+    "exec",
+    "jest",
+    "--config",
+    "jest.config.cjs",
+    "--runInBand",
+    "--runTestsByPath",
+    "src/jest/__tests__/authentication.jest-playwright.test.ts",
+    "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+    "src/play/__tests__/viewportFit.jest-playwright.test.ts",
+    "src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts",
+    "src/play/__tests__/profileTour.jest-playwright.test.ts",
+    "src/play/__tests__/queuedCoinActions.jest-playwright.test.ts",
+    "src/play/__tests__/coinCollection.jest-playwright.test.ts",
+    "src/play/__tests__/musicStart.jest-playwright.test.ts",
+    "--json",
+    "--outputFile",
+    "/home/craig-beswetherick/Documents/riddle-quest/artifacts/goal-completion-2026-10-24/riddle/final/browser-acceptance-results.json"
+  ],
+  "cwd": "packages/portal",
+  "startedAt": "2026-10-24T01:41:45.335244+00:00",
+  "completedAt": "2026-10-24T01:47:20.567409+00:00",
+  "exitCode": 0,
+  "elapsedSeconds": 335.232,
+  "sourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "sourceDigestAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "artifactHashesUnchanged": true,
+  "log": "browser-acceptance.log",
+  "logSha256": "f1454b8f977eca5a1ae9b469002a656323cf7d479009a808f883f86c501e7c7a",
+  "screenshotsPreserved": 8,
+  "counts": {
+    "numPassedTestSuites": 8,
+    "numFailedTestSuites": 0,
+    "numPassedTests": 79,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  },
+  "structuredResultsSha256": "56dd298d07d25849c6b06bb1abe68a1d6f8c23c664ff43d677e2183bdf469024",
+  "sourceHashesUnchanged": true
+}

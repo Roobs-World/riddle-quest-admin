@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "@qwordly/core/race";
 import {tr} from "../../i18n";
 
@@ -8,10 +8,12 @@ type InvitationCardProps = {
   /** Target-owned authenticated invitation read. */ transport: LiveRaceCapability;
   /** Inbox already supplies a validated read so polling never fans out another ten requests. */ initialChallenge?: LiveRaceChallenge;
   /** Active content language cannot silently change during invitation acceptance. */ locale?: RaceLocale;
-  /** Explicit recipient acceptance mounts the existing live lobby. */ onAccept: (selection: {
+  /** A shared-link launch joins its validated lobby without another acceptance screen. */ autoJoin?: boolean;
+  /** Recipient acceptance mounts the existing live lobby. */ onAccept: (selection: {
     /** Server invitation content category. */ categoryId: LiveRaceChallenge["categoryId"];
     /** Server invitation content language. */ locale: LiveRaceChallenge["locale"];
-    /** Invitation being accepted. */ challengeId: string;
+    /** Invitation being accepted by its recipient. */ challengeId: string;
+    /** The authenticated creator resumes this exact lobby instead of accepting a rival seat. */ resumeChallenge?: boolean;
   }) => void;
 };
 
@@ -36,7 +38,7 @@ export function LiveRaceInvitationCard(props: InvitationCardProps) {
 }
 
 /** Cached previews render immediately; SDK launches and explicit recovery own bounded reads. */
-function LiveRaceInvitationPanel({challengeId, transport, onAccept, initialChallenge, locale}: InvitationCardProps) {
+function LiveRaceInvitationPanel({challengeId, transport, onAccept, initialChallenge, locale, autoJoin = false}: InvitationCardProps) {
   /** Current inbox data is validated during rendering without a timer, loading flash, or extra request. */
   const cached = useMemo(() => {
     if (initialChallenge === undefined) return null;
@@ -52,6 +54,8 @@ function LiveRaceInvitationPanel({challengeId, transport, onAccept, initialChall
   const [loadFailed, setLoadFailed] = useState(false);
   /** Explicit retry after an unavailable transport. */
   const [retry, setRetry] = useState(0);
+  /** Effect replay cannot admit the same link twice. */
+  const joined = useRef(false);
   useEffect(() => {
     if (!needsRead) return;
     /** Read lifetime rejects late replies after close, locale or account changes. */
@@ -72,14 +76,24 @@ function LiveRaceInvitationPanel({challengeId, transport, onAccept, initialChall
   }, [challengeId, transport, retry, needsRead]);
   /** Rendering always selects the current receipt rather than copying cached data through an effect. */
   const challenge = needsRead ? loaded : cached, failed = needsRead ? loadFailed : cached === null;
+  /** Only a compatible available or participant-owned invitation may start a seat. */
+  const canJoin = Boolean(challenge && (!locale || challenge.locale === locale) &&
+    (challenge.status === "available" || challenge.status === "accepted" || challenge.status === "own"));
+  useEffect(() => {
+    if (!autoJoin || !canJoin || !challenge || joined.current) return;
+    joined.current = true;
+    onAccept({categoryId: challenge.categoryId, locale: challenge.locale, challengeId: challenge.challengeId,
+      ...(challenge.status === "own" ? {resumeChallenge: true} : {})});
+  }, [autoJoin, canJoin, challenge, onAccept]);
   return <div className="race-panel live-race-invitation" role="alert" aria-live="polite">
     {failed ? <><p>{tr("RaceTo10.ERROR_GENERIC")}</p><button onClick={() => {setRetrySource(initialChallenge); setRetry(value => value + 1);}}>{tr("RaceTo10.RETRY")}</button></> :
-      !challenge ? <p>{tr("RaceTo10.LOADING_CHALLENGE")}</p> : <>
+      !challenge || autoJoin && canJoin ? <p>{tr("RaceTo10.LOADING_CHALLENGE")}</p> : <>
         <h2>{tr("RaceTo10.CHALLENGED_BY", {name: challenge.creator.displayName})}</h2>
         <p>{tr(locale && challenge.locale !== locale ? "RaceTo10.ERROR_LOCALE_MISMATCH" :
           challenge.status === "unavailable" ? "RaceTo10.INVITATION_EXPIRED" : "RaceTo10.FIRST_TO_TEN")}</p>
-        {(!locale || challenge.locale === locale) && (challenge.status === "available" || challenge.status === "accepted") && <button className="race-primary"
-          onClick={() => onAccept({categoryId: challenge.categoryId, locale: challenge.locale, challengeId: challenge.challengeId})}>{tr("RaceTo10.ACCEPT_CHALLENGE")}</button>}
+        {canJoin && <button className="race-primary"
+          onClick={() => onAccept({categoryId: challenge.categoryId, locale: challenge.locale, challengeId: challenge.challengeId,
+            ...(challenge.status === "own" ? {resumeChallenge: true} : {})})}>{tr(challenge.status === "own" ? "RaceTo10.LOBBY" : "RaceTo10.ACCEPT_CHALLENGE")}</button>}
       </>}
   </div>;
 }

@@ -1,0 +1,772 @@
+{
+  "renderer": "html2canvas-pro@2.5.2",
+  "scope": "Exact final compiled screenshot callback in the current built Jest artifact with mock gameplay data, plus source-provider DOM resource/privacy/scroll fixtures. Official hosted Simulator and review submission remain separate release evidence.",
+  "oldProviderFailure": {
+    "expectedWidth": 390,
+    "actualWidth": 1200,
+    "message": "chromium-390-game must capture viewport width: 1200 !== 390"
+  },
+  "unitTestsPassed": 13,
+  "targetBoundaryTestsPassed": 1,
+  "portalTypesPassed": true,
+  "actualApp": [
+    {
+      "name": "actual-390-game",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9985546522131888,
+      "meanDifference": 0.9841613971695262,
+      "samples": 5535
+    },
+    {
+      "name": "actual-390-keyboard",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9009457441513191,
+      "meanDifference": 4.981859410430845,
+      "samples": 6027
+    },
+    {
+      "name": "actual-390-race",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9865234375,
+      "meanDifference": 1.407672991071383,
+      "samples": 35840
+    },
+    {
+      "name": "actual-390-shop",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.859814323607427,
+      "meanDifference": 6.583200707338501,
+      "samples": 30160
+    },
+    {
+      "name": "actual-390-shop-scrolled",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.8823607427055703,
+      "meanDifference": 6.4796419098142435,
+      "samples": 30160
+    },
+    {
+      "name": "actual-390-profile",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9686662946428571,
+      "meanDifference": 1.306724330357173,
+      "samples": 35840
+    },
+    {
+      "name": "actual-390-settings",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9975617038216561,
+      "meanDifference": 0.21294453290870488,
+      "samples": 20096
+    },
+    {
+      "name": "actual-390-victory",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9535417020553763,
+      "meanDifference": 1.984216635524497,
+      "samples": 23548
+    },
+    {
+      "name": "actual-390-registration",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.8405172413793104,
+      "meanDifference": 2.3242846661775944,
+      "samples": 10904
+    },
+    {
+      "name": "actual-390-loss",
+      "passed": true,
+      "width": 390,
+      "height": 844,
+      "matched": 0.9072557471264368,
+      "meanDifference": 2.1289032567049677,
+      "samples": 13920
+    },
+    {
+      "name": "actual-1280-game",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.999385155906895,
+      "meanDifference": 1.0393500219587108,
+      "samples": 11385
+    },
+    {
+      "name": "actual-1280-keyboard",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.9289847883597884,
+      "meanDifference": 4.383074294532667,
+      "samples": 12096
+    },
+    {
+      "name": "actual-1280-race",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.9893407027240426,
+      "meanDifference": 2.2539834188714614,
+      "samples": 126650
+    },
+    {
+      "name": "actual-1280-shop",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.9203629032258065,
+      "meanDifference": 5.151919056152849,
+      "samples": 44640
+    },
+    {
+      "name": "actual-1280-shop-scrolled",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.9564740143369176,
+      "meanDifference": 2.6152031063322,
+      "samples": 44640
+    },
+    {
+      "name": "actual-1280-profile",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.9689932885906041,
+      "meanDifference": 1.2441952888537513,
+      "samples": 126650
+    },
+    {
+      "name": "actual-1280-settings",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.9982824017748515,
+      "meanDifference": 0.15030177246594623,
+      "samples": 27946
+    },
+    {
+      "name": "actual-1280-victory",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.8691731112433075,
+      "meanDifference": 2.274035296450656,
+      "samples": 42025
+    },
+    {
+      "name": "actual-1280-registration",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.8176136363636364,
+      "meanDifference": 4.41505681818177,
+      "samples": 14080
+    },
+    {
+      "name": "actual-1280-loss",
+      "passed": true,
+      "width": 1280,
+      "height": 900,
+      "matched": 0.840515350877193,
+      "meanDifference": 4.275182748537943,
+      "samples": 18240
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "chromium-390-game",
+      "passed": true,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "chromium-390-failed-avatar",
+      "passed": true,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "chromium-390-scrolled",
+      "passed": true,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "chromium-390-modal",
+      "passed": true,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "chromium-1280-game",
+      "passed": true,
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "name": "chromium-1280-failed-avatar",
+      "passed": true,
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "name": "chromium-1280-scrolled",
+      "passed": true,
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "name": "chromium-1280-modal",
+      "passed": true,
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "engine": "webkit",
+      "skipped": true,
+      "reason": "WebKit system dependency libevent-2.1.so.7 is unavailable"
+    }
+  ],
+  "passedBrowserCases": 55,
+  "sourceSha256": {
+    "packages/portal/src/jest/sharing/captureGameScreenshot.ts": "0327b8cdeddf83982e274b7edf320cdbb3a1b57a04f55629a051f6304435b2fb",
+    "packages/portal/src/jest/sharing/screenshots.ts": "8576247621e8c74711f9c378bdf8391992154e4b79f32e1cb0d877dd52dec929",
+    "packages/portal/src/jest/__tests__/screenshots.test.ts": "9ab45139ff1e791dcc0c83e7ad0904884dcce7dc60b173a6352f1722334095cd",
+    "packages/portal/scripts/verify-jest-screenshot-browser.mjs": "387f5de9cf0acbbcf790cb06ecbbd24697c5553409fbca3dd7ddb916cf952f5d",
+    "packages/portal/scripts/verify-jest-screenshot-fixtures.mjs": "ffbd15a2c5cdcc131d7944356dbb2c70a6db525c3c7528a52ae78a3b9789c6c9",
+    "scripts/release/release-registry.mjs": "c9a1ac85afea8887f5c616d2550d15b9b7bc35661fee1b9823e4980af143c2ce",
+    "packages/portal/scripts/web-target-dependencies.test.mjs": "5bd4fe3bb3007b871e6b63189f592c8189cd051585e1593819804909fd2a1310"
+  },
+  "finalSourceAdjustment": {
+    "change": "Removed redundant unbounded image.decode prewait; renderer retains imageTimeout=5000",
+    "unitTestsPassedAfterChange": 13,
+    "fixtureCasesPassedAfterChange": 8,
+    "realAppCases": "Twenty real-app visual comparisons were recorded before this resource-wait-only correction. Exact final compiled callback verification is the release follow-up.",
+    "compiledFollowup": "Exact compiled callback passed20 Chromium and19 applicable WebKit cases. Desktop WebKit shop fits viewport, so its conditional scrolled-shop case does not apply."
+  },
+  "compiledCallback": {
+    "module": "assets/captureGameScreenshot-s8gyYdL6.js",
+    "sha256": "53e9a9b60b72a5ef3d111ead1ce0d48e417e165e082d6f4a493bda96a96c39a4",
+    "chromium": [
+      {
+        "engine": "chromium",
+        "name": "actual-390-game",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9985546522131888,
+        "meanDifference": 0.9841613971695262,
+        "samples": 5535
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-keyboard",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9009457441513191,
+        "meanDifference": 4.981859410430845,
+        "samples": 6027
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-race",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9865234375,
+        "meanDifference": 1.407672991071383,
+        "samples": 35840
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-shop",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.859814323607427,
+        "meanDifference": 6.583200707338501,
+        "samples": 30160
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-shop-scrolled",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.8823607427055703,
+        "meanDifference": 6.479619805481795,
+        "samples": 30160
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-profile",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9686662946428571,
+        "meanDifference": 1.306724330357173,
+        "samples": 35840
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-settings",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9975617038216561,
+        "meanDifference": 0.21294453290870488,
+        "samples": 20096
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-victory",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9535417020553763,
+        "meanDifference": 1.984216635524497,
+        "samples": 23548
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-registration",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.8405172413793104,
+        "meanDifference": 2.3242846661775944,
+        "samples": 10904
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-390-loss",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.8962251828631139,
+        "meanDifference": 2.3010928247997273,
+        "samples": 15312
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-game",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.999385155906895,
+        "meanDifference": 1.0393500219587108,
+        "samples": 11385
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-keyboard",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9289847883597884,
+        "meanDifference": 4.383074294532667,
+        "samples": 12096
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-race",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9893407027240426,
+        "meanDifference": 2.2539834188714614,
+        "samples": 126650
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-shop",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9203629032258065,
+        "meanDifference": 5.151919056152849,
+        "samples": 44640
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-shop-scrolled",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9564740143369176,
+        "meanDifference": 2.6152031063322,
+        "samples": 44640
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-profile",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9689932885906041,
+        "meanDifference": 1.2441952888537513,
+        "samples": 126650
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-settings",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9982824017748515,
+        "meanDifference": 0.15030177246594623,
+        "samples": 27946
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-victory",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.8691731112433075,
+        "meanDifference": 2.274035296450656,
+        "samples": 42025
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-registration",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.8176136363636364,
+        "meanDifference": 4.41505681818177,
+        "samples": 14080
+      },
+      {
+        "engine": "chromium",
+        "name": "actual-1280-loss",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.840515350877193,
+        "meanDifference": 4.275182748537943,
+        "samples": 18240
+      }
+    ],
+    "webkit": [
+      {
+        "engine": "webkit",
+        "name": "actual-390-game",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9380307136404697,
+        "meanDifference": 6.515447154471434,
+        "samples": 5535
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-keyboard",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9016094242575079,
+        "meanDifference": 5.098501189093534,
+        "samples": 6027
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-race",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9556361607142857,
+        "meanDifference": 2.893294270833475,
+        "samples": 35840
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-shop",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.8437002652519894,
+        "meanDifference": 7.905050839966426,
+        "samples": 30160
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-shop-scrolled",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.8672413793103448,
+        "meanDifference": 7.71466622458185,
+        "samples": 30160
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-profile",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.965625,
+        "meanDifference": 1.3136625744047445,
+        "samples": 35840
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-settings",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9934812898089171,
+        "meanDifference": 0.7671012473460662,
+        "samples": 20096
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-victory",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.9345591982333956,
+        "meanDifference": 3.081125077855023,
+        "samples": 23548
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-registration",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.851063829787234,
+        "meanDifference": 6.141354854487607,
+        "samples": 10904
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-390-loss",
+        "passed": true,
+        "width": 390,
+        "height": 844,
+        "matched": 0.8882575757575758,
+        "meanDifference": 3.8870602577499627,
+        "samples": 15312
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-game",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9744400527009223,
+        "meanDifference": 2.9553213292343488,
+        "samples": 11385
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-keyboard",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9252645502645502,
+        "meanDifference": 4.127507716049392,
+        "samples": 12096
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-race",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9796446900908015,
+        "meanDifference": 2.653830767205337,
+        "samples": 126650
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-shop",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9034722222222222,
+        "meanDifference": 6.128464755079306,
+        "samples": 44640
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-profile",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9731069877615476,
+        "meanDifference": 0.9188393209632314,
+        "samples": 126650
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-settings",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.9953481714735561,
+        "meanDifference": 0.571638159307231,
+        "samples": 27946
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-victory",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.8925639500297442,
+        "meanDifference": 2.8845131865954943,
+        "samples": 42025
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-registration",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.809375,
+        "meanDifference": 7.012855113636389,
+        "samples": 14080
+      },
+      {
+        "engine": "webkit",
+        "name": "actual-1280-loss",
+        "passed": true,
+        "width": 1280,
+        "height": 900,
+        "matched": 0.8649122807017544,
+        "meanDifference": 5.067891081871373,
+        "samples": 18240
+      }
+    ],
+    "webkitHarness": "Existing BeeHive Playwright 1.61.0 package with its matched cached WebKit2311, without a browser install or environment override; snap GIO_MODULE_DIR is removed only when present."
+  },
+  "fixtureEngines": {
+    "chromium": [
+      {
+        "name": "chromium-390-game",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "chromium-390-failed-avatar",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "chromium-390-scrolled",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "chromium-390-modal",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "chromium-1280-game",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "name": "chromium-1280-failed-avatar",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "name": "chromium-1280-scrolled",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "name": "chromium-1280-modal",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      }
+    ],
+    "webkit": [
+      {
+        "name": "webkit-390-game",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "webkit-390-failed-avatar",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "webkit-390-scrolled",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "webkit-390-modal",
+        "passed": true,
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "webkit-1280-game",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "name": "webkit-1280-failed-avatar",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "name": "webkit-1280-scrolled",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "name": "webkit-1280-modal",
+        "passed": true,
+        "width": 1280,
+        "height": 900
+      }
+    ]
+  },
+  "verifiedBrowserCaseCount": 55,
+  "testTemporalCorrections": {
+    "loss": "Wait for the observable post-ack .modal-continue > .modal-x Close affordance before comparing. Initial pending PNG was valid; native reference had advanced to acknowledged layout. Pixel gates unchanged.",
+    "profile": "Returning-player fixture marks the versioned profileTour:v3 complete, preventing its350ms first-tour overlay from appearing between capture and reference. No runtime change."
+  }
+}

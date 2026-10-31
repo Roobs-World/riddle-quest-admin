@@ -1,0 +1,16 @@
+jest-haste-map: Haste module naming collision: functions
+  The following files share their name; please adjust your hasteImpl:
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/callables-candidate/package.json
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-candidate/package.json
+
+jest-haste-map: Haste module naming collision: @qwordly/core
+  The following files share their name; please adjust your hasteImpl:
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/callables-candidate/packages/core/package.json
+    * <rootDir>/../../../../../var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/package.json
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        0.694 s
+Ran all test suites within paths "/var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs".
+Test results written to: ../artifacts/current-source-readiness-2026-10-25/backend-new/old-reddit-modern-after-results.json

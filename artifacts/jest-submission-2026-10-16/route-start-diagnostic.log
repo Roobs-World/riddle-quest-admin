@@ -1,0 +1,21 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+  console.log
+    Route sweep ?harness=jest: 1 routes, 0 distinct screens, 0 unvisited
+
+      at src/play/__tests__/routeSweep.jest-playwright.test.ts:288:13
+
+  console.log
+    Route sweep ?harness=jest&dailyCompleted=1: 1 routes, 0 distinct screens, 0 unvisited
+
+      at src/play/__tests__/routeSweep.jest-playwright.test.ts:288:13
+
+  console.log
+    Route sweep ?harness=race&dailyCompleted=1: 1 routes, 0 distinct screens, 0 unvisited
+
+      at src/play/__tests__/routeSweep.jest-playwright.test.ts:288:13
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        6.786 s
+Ran all test suites matching src/play/__tests__/routeSweep.jest-playwright.test.ts.

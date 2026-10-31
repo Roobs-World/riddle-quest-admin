@@ -1,0 +1,11 @@
+{
+  "dialogFirstFrame": 1,
+  "tabsFirstFrame": 4,
+  "phases": [
+    {
+      "phase": "entering",
+      "kind": "level",
+      "time": 107.40000000596046
+    }
+  ]
+}

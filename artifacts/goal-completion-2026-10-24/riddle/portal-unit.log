@@ -1,0 +1,9 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ jest --config jest.config.cjs --runInBand --json --outputFile /home/craig-beswetherick/Documents/riddle-quest/artifacts/goal-completion-2026-10-24/riddle/portal-unit-results.json
+
+Test Suites: 19 skipped, 321 passed, 321 of 340 total
+Tests:       129 skipped, 3349 passed, 3478 total
+Snapshots:   0 total
+Time:        13.528 s
+Ran all test suites.
+Test results written to: ../../artifacts/goal-completion-2026-10-24/riddle/portal-unit-results.json

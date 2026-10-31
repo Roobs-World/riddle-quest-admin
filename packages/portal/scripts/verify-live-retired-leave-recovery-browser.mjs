@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_WAIT_REACT_MODE??'development',baseline=process.env.LIVE_WAIT_BASELINE_DIR;
-const output=path.resolve(process.env.LIVE_WAIT_REPORT_DIR??path.join(root,'../../artifacts/live-retired-leave-recovery-2026-10-05',mode));
+const output=path.resolve(process.env.LIVE_WAIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-retired-leave-recovery-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-wait-'));
 const source=`
@@ -20,7 +20,7 @@ import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URLSearchParams(location.search).get('scenario')??'idle';
 window.probe={requests:[],joins:[],subscriptions:[],active:[0,0,0],grants:[],closes:[],events:[],retirements:[],renders:[],errors:[],unhandled:[]};
-window.pendingDeliveryTimers=new Map();const timeout=window.setTimeout,clear=window.clearTimeout;window.setTimeout=function(callback,delay,...args){const tracked=[2000,10000].includes(delay)&&new Error().stack.includes('liveRaceDeliveryDeadline');let id;id=timeout.call(this,(...values)=>{window.pendingDeliveryTimers.delete(id);callback(...values);},delay,...args);if(tracked)window.pendingDeliveryTimers.set(id,delay);return id;};window.clearTimeout=function(id){window.pendingDeliveryTimers.delete(id);return clear.call(this,id);};
+window.pendingDeliveryTimers=new Map();const timeout=window.setTimeout,clear=window.clearTimeout;window.setTimeout=function(callback,delay,...args){const tracked=[2000,10000,30000].includes(delay)&&new Error().stack.includes('liveRaceDeliveryDeadline');let id;id=timeout.call(this,(...values)=>{window.pendingDeliveryTimers.delete(id);callback(...values);},delay,...args);if(tracked)window.pendingDeliveryTimers.set(id,delay);return id;};window.clearTimeout=function(id){window.pendingDeliveryTimers.delete(id);return clear.call(this,id);};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 window.addEventListener('riddle-quest:live-race-completed',e=>window.probe.events.push(e.detail));
 const listeners=[new Set(),new Set(),new Set()],held=new Map(),acceptedLeaves=new Set();
@@ -61,19 +61,17 @@ try {
   if(scenario==='overlap')await page.evaluate(()=>{window.hold={generation:1,action:'poll'};window.notify(1);window.releasePoll=window.capturePoll();});
   if(['overlap','guess','terminal','commit','owner-commit','remove-commit','speculative'].includes(scenario)){await page.evaluate(scenario=>{window.hold={generation:1,action:'guess'};window.terminalNext=scenario!=='guess';},scenario);await page.keyboard.type('o');await page.keyboard.press('Enter');}
   if(scenario==='leave'){await page.evaluate(()=>window.hold={generation:1,action:'leave'});await page.keyboard.press('Escape');}
-  if(!['idle','idle-minimal','private','stable'].includes(scenario)){await page.waitForFunction(()=>window.held(1));metric('held delivery owns its expected deadline',await page.evaluate(()=>[...window.pendingDeliveryTimers.values()]),scenario==='overlap'?[2000,10000]:[scenario==='poll'?2000:10000]);}
+  if(!['idle','idle-minimal','private','stable'].includes(scenario)){await page.waitForFunction(()=>window.held(1));metric('held delivery owns its expected deadline',await page.evaluate(()=>[...window.pendingDeliveryTimers.values()]),scenario==='overlap'?[2000,10000]:[scenario.startsWith('join')?30000:scenario==='poll'?2000:10000]);}
   if(scenario==='join-close'){
    await page.getByRole('button',{name:'Close Race to 10',exact:true}).click();
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
    metric('close retains the unresolved join before advertising another start',await intro.count(),0);
    await page.evaluate(()=>window.release(1));
    await page.waitForFunction(()=>window.probe.requests.some(x=>x.generation===1&&x.action==='leave'));
-   if(await intro.count()===0){
-    await page.getByRole('button',{name:'Retry',exact:true}).waitFor();
-    metric('failed owned leave still excludes a replacement search',await intro.count(),0);
-    await page.getByRole('button',{name:'Retry',exact:true}).click();
-   }
+   await page.getByRole('button',{name:'Retry',exact:true}).waitFor();
+   metric('failed owned leave still excludes a replacement search',await intro.count(),0);
    await page.waitForFunction(()=>window.probe.retirements.some(x=>x.generation===1));
+   metric('owned leave automatically recovers once after the outage',await page.evaluate(()=>window.probe.requests.filter(x=>x.generation===1&&x.action==='leave').length),2);
    await intro.waitFor();
    metric('close retries only the original leave identity',await page.evaluate(()=>new Set(window.probe.requests.filter(x=>x.action==='leave').map(x=>x.ticketId+':'+x.requestId)).size),1);
    metric('close cannot duplicate its unresolved join',await page.evaluate(()=>window.probe.joins.length),1);

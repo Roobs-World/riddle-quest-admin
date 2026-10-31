@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.KEYBOARD_REACT_MODE??'development',baseline=process.env.KEYBOARD_BASELINE_DIR;
-const output=path.resolve(process.env.KEYBOARD_REPORT_DIR??path.join(root,'../../artifacts/game-keyboard-lifetime-2026-10-03',mode));
+const output=path.resolve(process.env.KEYBOARD_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-keyboard-lifetime-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-keyboard-'));
 const source=`

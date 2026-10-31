@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=
 assert.ok(['development','production'].includes(mode));
 const lifecycle=process.env.CHECKPOINT_COMMIT_LIFECYCLE??'visibility',browserName=process.env.CHECKPOINT_COMMIT_BROWSER??'chromium';
 assert.ok(['visibility','pagehide','both'].includes(lifecycle));assert.ok(['chromium','firefox'].includes(browserName));
-const output=path.resolve(process.env.CHECKPOINT_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/checkpoint-commit-2026-10-04',mode));
+const output=path.resolve(process.env.CHECKPOINT_COMMIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/checkpoint-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/checkpoint-commit-'));let server,browser;const observations=[];
 try{

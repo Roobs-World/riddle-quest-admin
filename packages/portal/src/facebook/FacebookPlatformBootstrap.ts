@@ -277,7 +277,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
         capabilities: {
           accountManagement: {username: true, avatar: false, deletion: true},
           ...(nativeSocial ? {nativeSocial} : {}),
-          ...(this.ageCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true})} : {}),
+          ...(this.ageCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true, directInvites: true})} : {}),
           ...(overlay ? {overlay} : {}),
           lifecycle: createFacebookLifecycle(sdk),
         },

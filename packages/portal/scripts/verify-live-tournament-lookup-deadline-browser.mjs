@@ -1,7 +1,7 @@
 /** Real tournament recovery reads expire captured eight-second lookup deadlines without retiring admitted native posts. */
 import assert from 'node:assert/strict';import {mkdir,mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';import {createServer} from 'node:http';import path from 'node:path';import {fileURLToPath} from 'node:url';import {build} from 'vite';import {chromium,firefox} from '@playwright/test';
 const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),engine=process.env.TOURNAMENT_LOOKUP_BROWSER??'chromium',mode=process.env.TOURNAMENT_LOOKUP_MODE??'development';
-const evidence=path.resolve(process.env.TOURNAMENT_LOOKUP_REPORT_DIR??path.join(portal,'../../artifacts/live-tournament-lookup-deadline-2026-10-06',engine+'-'+mode));await mkdir(evidence,{recursive:true});
+const evidence=path.resolve(process.env.TOURNAMENT_LOOKUP_REPORT_DIR??path.join(portal,'../../builds/test-evidence/live-tournament-lookup-deadline-2026-10-06',engine+'-'+mode));await mkdir(evidence,{recursive:true});
 const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/tournament-lookup-probe-'));let browser,server,browserVersion;const observations=[];
 try{
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');

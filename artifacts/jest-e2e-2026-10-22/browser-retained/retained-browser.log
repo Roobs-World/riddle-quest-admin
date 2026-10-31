@@ -1,0 +1,7 @@
+
+Test Suites: 8 passed, 8 total
+Tests:       77 passed, 77 total
+Snapshots:   0 total
+Time:        317.738 s
+Ran all test suites within paths "src/play/__tests__/hostedBrowser.jest-playwright.test.ts", "src/play/__tests__/profileTour.jest-playwright.test.ts", "src/play/__tests__/queuedCoinActions.jest-playwright.test.ts", "src/play/__tests__/coinCollection.jest-playwright.test.ts", "src/play/__tests__/musicStart.jest-playwright.test.ts", "src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts", "src/play/__tests__/viewportFit.jest-playwright.test.ts", "src/jest/__tests__/authentication.jest-playwright.test.ts".
+Test results written to: ../../artifacts/jest-e2e-2026-10-22/browser-retained/retained-browser-results.json

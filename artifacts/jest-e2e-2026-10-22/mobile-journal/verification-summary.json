@@ -1,0 +1,64 @@
+{
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-journal",
+  "files": 419,
+  "bytes": 4718293,
+  "canonicalInitialBytesReportedByRoot": 576518,
+  "artifactHashesUnchanged": true,
+  "focusedJourneys": {
+    "passed": 6,
+    "failed": 0
+  },
+  "targetedSettlementBrowser": {
+    "passed": 3,
+    "failed": 0
+  },
+  "fullPortalUnit": {
+    "passedSuites": 320,
+    "passedTests": 3335,
+    "skippedSuites": 19,
+    "skippedTests": 129
+  },
+  "typedFixtureFollowup": {
+    "passedSuites": 4,
+    "passedTests": 33
+  },
+  "productionTypes": true,
+  "allOwnedTestTypes": true,
+  "tsdoc": true,
+  "whitespace": true,
+  "fullRetainedBrowserOwner": "platform_audit",
+  "runtimeFiles": [
+    "packages/portal/src/play/GameFrameApp.tsx",
+    "packages/portal/src/play/GameFrameControls.tsx",
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+    "packages/portal/src/play/journalWriter.ts",
+    "packages/portal/src/play/readPendingGuessJournal.ts"
+  ],
+  "testFiles": [
+    "packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts",
+    "packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts",
+    "packages/portal/src/play/__tests__/journalWriter.test.ts",
+    "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts",
+    "packages/portal/src/play/__tests__/terminalPaidReceiptPresentation.test.ts",
+    "packages/portal/src/play/__tests__/terminalPaidLiveness.test.ts",
+    "packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts",
+    "packages/portal/src/play/__tests__/skipSuccessorOwnership.test.ts"
+  ],
+  "sourceHashes": {
+    "packages/portal/src/play/GameFrameApp.tsx": "7c732404464c12705879f7d780ae5ba3a10e2a4a4c9a1296065b0f1dd54cdf65",
+    "packages/portal/src/play/GameFrameControls.tsx": "8a6f6436559c96487ae6faad2dfa087293ebbd6b958e7a15d62d58a320d9c743",
+    "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "2424d1f083a5a17645a30aa11d81623ad90ac15309cbeed635c5097439525c0b",
+    "packages/portal/src/play/journalWriter.ts": "4606907b6e6c5ac451966b4b04491c4936286a8a053a14fa8a2b7e35ea35d086",
+    "packages/portal/src/play/readPendingGuessJournal.ts": "2433a62cc9b9494f0c5f2acde42a015222fec613ed545283cb44604b20147c76",
+    "packages/portal/src/play/__tests__/queuedCoinActions.jest-playwright.test.ts": "1afb8ba3ce901304f7e1c417fa114bf9a99d081f5629884d69e7bbf5b0297bf8",
+    "packages/portal/src/play/__tests__/useProvisionalPlayRecovery.test.ts": "4c54f1fadcaba385f2d44a7571d776b806a4bb8aac714e6ccc370dcaeac4a595",
+    "packages/portal/src/play/__tests__/journalWriter.test.ts": "3977fdf77ae70db671f77102eb3ee4a89365d8b22e78483311e52243a1846efb",
+    "packages/portal/src/play/__tests__/pendingGuessJournal.test.ts": "7ce39de8bd29248f24d925fb8508c5e17c688097fc5498fa8ec04604b5897049",
+    "packages/portal/src/play/__tests__/terminalPaidReceiptPresentation.test.ts": "0b11681a49a388b4c899b3f00af65e4373a31d350d6e7b25ce2e22e173d747af",
+    "packages/portal/src/play/__tests__/terminalPaidLiveness.test.ts": "8f2ce1c58ffb1066b71c8042cc32c6b05e2fb6a5210a29a7c32e22d8dbf0702e",
+    "packages/portal/src/play/__tests__/skipPreviewOwnership.test.ts": "6fe2542e8edd1ddc9bf4c5cdc01f85425a9088f689be3ef3b8ab90b885aec7dc",
+    "packages/portal/src/play/__tests__/skipSuccessorOwnership.test.ts": "6864df81ee0191a5fa57ba9aa8e96778bb5bf50b8dba8a19c0fbadd27e385a72"
+  },
+  "summary": "summary.md",
+  "runtimeDiff": "runtime-repair.diff"
+}

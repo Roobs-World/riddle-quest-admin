@@ -13,16 +13,16 @@ it("declares database-adjacent gameplay alongside existing client endpoints", ()
   }
 });
 
-it("keeps live transport warm in both supported regions", () => {
+it("lets live transport scale to zero in both supported regions", () => {
   for (const callable of [joinLiveRace, updateLiveRace]) {
     expect(callable.__endpoint.region).toEqual(["us-central1", "europe-west1"]);
-    expect(callable.__endpoint.minInstances).toBe(1);
+    expect(callable.__endpoint.minInstances).toBe(0);
   }
 });
 
-it("keeps the single-player question, guess, hint and completion path warm", () => {
+it("lets the single-player question, guess, hint and completion path scale to zero", () => {
   for (const callable of [getCurrentDailyChallenge, getClassicRiddleBuffer, completeGame, submitSinglePlayerGuess, getHint]) {
-    expect(callable.__endpoint.minInstances).toBe(1);
+    expect(callable.__endpoint.minInstances).toBe(0);
   }
 });
 
@@ -32,6 +32,6 @@ it("lets lower-frequency single-player actions scale to zero", () => {
   }
 });
 
-it("keeps the shared Reddit gameplay gateway warm", () => {
-  expect(redditGameplay.__endpoint.minInstances).toBe(1);
+it("lets the shared Reddit gameplay gateway scale to zero", () => {
+  expect(redditGameplay.__endpoint.minInstances).toBe(0);
 });

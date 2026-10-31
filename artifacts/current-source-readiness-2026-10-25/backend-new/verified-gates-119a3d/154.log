@@ -1,0 +1,18 @@
+(node:2842518) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-live-seat-browser", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Real Firestore PvP recovered both players after catalog removal and settled one 50-coin win at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Real Firestore PvP recovered both players after catalog removal and settled one 50-coin win at 390px.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

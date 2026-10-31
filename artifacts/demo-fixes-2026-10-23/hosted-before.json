@@ -1,0 +1,25 @@
+{
+  "buildId": "01a16583-80fa-760e-9771-4b82d849bf15",
+  "sourceUnchangedFromUpload": true,
+  "jestOpenPlayerReports": 0,
+  "jestDeveloperEvents": 0,
+  "githubOpenIssues": 0,
+  "typing": {
+    "nativeCuaTypeText": "PEN produced P after focusing first answer button",
+    "individualNativeKeys": "E then N completed PEN",
+    "localExactArtifactKeyboardChecks": "24/24 passed; no production input fix justified"
+  },
+  "officialSimulatorPurchase": {
+    "environment": "Official mock checkout with actual game backend; no charge",
+    "beforeCoins": 7325,
+    "product": "com.roobsworld.riddlequest.coinpack2",
+    "checkoutCount": 1,
+    "configuredCompletePurchaseResponse": "internal_error",
+    "coinsAfterReturningToShop": 7325,
+    "thenChangedOnlyCompletionResponse": "success",
+    "thenAction": "native Reload app",
+    "coinsAfterReload": 7875,
+    "confirmedDifference": 550,
+    "finding": "Durably granted coins stayed hidden until the account reloaded. No second checkout occurred."
+  }
+}

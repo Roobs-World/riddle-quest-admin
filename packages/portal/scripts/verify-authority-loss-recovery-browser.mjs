@@ -9,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.AUTHORITY_LOSS_REACT_MODE??'development';
 const baseline=process.env.AUTHORITY_LOSS_BASELINE_DIR;
-const output=path.resolve(process.env.AUTHORITY_LOSS_REPORT_DIR??path.join(root,'../../artifacts/authority-loss-recovery-2026-10-03',mode));
+const output=path.resolve(process.env.AUTHORITY_LOSS_REPORT_DIR??path.join(root,'../../builds/test-evidence/authority-loss-recovery-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/authority-loss-'));let browser,server;
 const observations=[];

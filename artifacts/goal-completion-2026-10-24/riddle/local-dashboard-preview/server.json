@@ -1,0 +1,9 @@
+{
+  "pid": 500188,
+  "port": 41831,
+  "url": "http://127.0.0.1:41831/",
+  "directory": "docs/reports/platform-release-readiness/dist",
+  "startedAt": "2026-10-24T02:22:14.902612+00:00",
+  "scope": "Loopback-only local dashboard preview; no publication",
+  "initialSnapshot": "Existing reviewed snapshot before final receipt recording"
+}

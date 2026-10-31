@@ -229,7 +229,7 @@ export const createPlayHostMessageHandlers = ({
   resize: () => undefined,
   recordAchievements: (message) => persistAchievementProjection(message.payload.achievementIds),
   loadRiddle: async (message) => {
-    await loadAndPostRiddle({...message.payload, gameMode}, message.requestId);
+    await loadAndPostRiddle(message.payload, message.requestId);
   },
   submitGuess: async (message) => {
     try {

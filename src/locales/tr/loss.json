@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Ek bir deneme için video izle",
     "COIN_EXTRA_GO_BUTTON": "{coins} jeton ile ekstra hak",
-    "EXTRA_GO_PROMPT": "Deneme hakkin bitti. Bir ekstra hak al veya bu bulmacayi atla.",
     "OPEN_SHOP_BUTTON": "Magazayi ac",
     "OUT_OF_ATTEMPTS": "Deneme hakki bitti.",
     "SKIP_LEVEL_PREFIX": "Kullan: ",

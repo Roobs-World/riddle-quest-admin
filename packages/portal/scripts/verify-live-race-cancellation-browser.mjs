@@ -56,8 +56,8 @@ try {
       {name: "rejected-private-acceptance", query: "rejected", message: "This invitation has expired.", screen: "invitation_unavailable"},
       {name: "expired-private-poll", query: "expired", message: "This invitation has expired."},
       {name: "expired-private-resume", query: "expired&resume", message: "This invitation has expired."},
-      {name: "cancelled-private", query: "resume", message: "This invitation was cancelled."},
-      {name: "cancelled-public", query: "public&resume", message: "Try a new search to find an opponent."},
+      {name: "cancelled-private", query: "resume", message: "This invitation has expired."},
+      {name: "cancelled-public", query: "public&resume", message: "Opponent search is unavailable for this account."},
     ].filter(scenario => process.env.LIVE_RACE_INVITATION_ONLY !== "true" || scenario.screen === "invitation_unavailable")) {
       const page = await context.newPage(), errors = [];
       page.on("pageerror", error => errors.push(error.message));
@@ -73,10 +73,11 @@ try {
         await page.waitForTimeout(9500);
         assert.deepEqual(await page.evaluate(() => window.transportCalls), ["join", "challenge"], "Definitively unavailable invitation must stop automatic joins without creating or leaving a seat");
       }
-      const panel = await page.locator(".race-panel").boundingBox();
+      const panelSelector = await page.locator(".friend-lobby").count() ? ".friend-lobby" : ".race-panel";
+      const panel = await page.locator(panelSelector).boundingBox();
       assert.ok(panel.x > 0 && panel.x + panel.width <= viewport.width, "Styled terminal panel must fit the viewport");
-      assert.ok(await page.locator(".race-panel").evaluate(element => parseFloat(getComputedStyle(element).borderRadius) > 0), "Terminal panel keeps rounded corners");
-      await page.locator(".race-panel .race-primary").click();
+      assert.ok(await page.locator(panelSelector).evaluate(element => parseFloat(getComputedStyle(element).borderRadius) > 0), "Terminal panel keeps rounded corners");
+      await page.locator(panelSelector).getByRole("button", {name: "Close Race to 10", exact: true}).click();
       await page.getByText("Back to multiplayer", {exact: true}).waitFor();
       assert.equal(await page.evaluate(() => window.closeCalls), 1);
       assert.equal(await page.evaluate(() => window.transportCalls.includes("leave")), false, "A retired seat must not be left again");

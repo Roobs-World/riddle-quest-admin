@@ -1,0 +1,431 @@
+{
+  "recordedAt": "2026-10-25T23:55:00.423106+00:00",
+  "scope": "Bounded read-only classification of exactly39 open Facebook launch rows; no status/source/provider mutation or new tests. Does not claim full product acceptance.",
+  "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+  "canonicalChecklist": "docs/facebook-launch-todo.md",
+  "canonicalChecklistSha256": "7e30a50f1aacf410e5c952048ce83b478e34cb033df69c60e59690baccbeb979",
+  "portfolioLocalRegisterSha256AtRead": "aad7000c46e4c5fda1f00c6fd81e83153a5c919b3d6043d1d56bd58a7f2bf84b",
+  "openRows": 39,
+  "categories": {
+    "owner_operations": 7,
+    "partner_admin_security": 3,
+    "cloud_release_retention": 3,
+    "hosted_device_acceptance": 17,
+    "provider_contract": 3,
+    "content_translation": 3,
+    "owner_finance": 1,
+    "reward_trust_provider": 1,
+    "release_approval": 1
+  },
+  "rows": [
+    {
+      "id": "O-01",
+      "canonicalId": "Grindhead/riddle-quest:O-01",
+      "title": "Prepare your workspace and evidence record",
+      "category": "owner_operations",
+      "nextAction": "Assign a named operator/tester and private evidence location per launch task; tool/runtime/source preparation is already evidenced.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "O-02",
+      "canonicalId": "Grindhead/riddle-quest:O-02",
+      "title": "Decide and record the launch feature scope",
+      "category": "owner_operations",
+      "nextAction": "Accept the concrete day-one feature/omission matrix, then compare exact deployed configuration and enabled copy.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P0-01",
+      "canonicalId": "Grindhead/riddle-quest:P0-01",
+      "title": "Reconcile Business verification and finish Partner approval",
+      "category": "partner_admin_security",
+      "nextAction": "Owner confirms business address/website and completes the separate Partner application; current Business verification is not Partner acceptance.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P0-02",
+      "canonicalId": "Grindhead/riddle-quest:P0-02",
+      "title": "Independently review the app configuration and public URLs",
+      "category": "partner_admin_security",
+      "nextAction": "Owner/admin verifies contact email and approved support details; independently confirm exact origins, tester access and signed deletion acceptance.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P0-03",
+      "canonicalId": "Grindhead/riddle-quest:P0-03",
+      "title": "Prove secret issuance and repair provider IAM",
+      "category": "partner_admin_security",
+      "nextAction": "Security operator proves issuance/revocation and effective IAM; review provider-specific runtime cutover. A UID-key migration is conditional on actual exposure, never blind in-place rotation.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "O-03",
+      "canonicalId": "Grindhead/riddle-quest:O-03",
+      "title": "Complete the backend release and temporary-record retention",
+      "category": "cloud_release_retention",
+      "nextAction": "Review the full Facebook release scope and approved retention/backfill plan; preview then explicitly authorize database/TTL changes and record physical expiry. Five repaired race functions do not certify this full release.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P0-04",
+      "canonicalId": "Grindhead/riddle-quest:P0-04",
+      "title": "Run the complete real-host acceptance matrix",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Run the enabled-feature matrix on the exact accepted Meta Testing draft with role accounts on Facebook web and physical iOS/Android.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P0-05",
+      "canonicalId": "Grindhead/riddle-quest:P0-05",
+      "title": "Prove notification delivery across all three platforms",
+      "category": "hosted_device_acceptance",
+      "nextAction": "After approved reminder contract/implementation, demonstrate real delivery/replacement/cancellation/routing on all supported surfaces; subscription consent alone is insufficient.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P0-06",
+      "canonicalId": "Grindhead/riddle-quest:P0-06",
+      "title": "Capture provider contracts without publishing reusable credentials",
+      "category": "provider_contract",
+      "nextAction": "Obtain official app-specific identity/purchase/unconsumed/refund/notification/tournament contracts and authentic private fixtures; retain only sanitized verifier outcomes.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P2-01",
+      "canonicalId": "Grindhead/riddle-quest:P2-01",
+      "title": "Finish real identity acceptance and nonce expiry verification",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Verify genuine signed identity, replay/invalid rejection and actual deployed nonce/rate-limit expiry with disposable role accounts.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P2-03",
+      "canonicalId": "Grindhead/riddle-quest:P2-03",
+      "title": "Verify Firebase authentication and App Check refresh",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Accept actual-host Firebase/App Check login, refresh, generation change and recovery with enforcement enabled.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P2-05",
+      "canonicalId": "Grindhead/riddle-quest:P2-05",
+      "title": "Verify loading, saving, failure recovery and pause/resume",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Accept actual-host save/load/error/background/resume paths; signed purchase recovery depends on P5-03 or explicit omission.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "O-04",
+      "canonicalId": "Grindhead/riddle-quest:O-04",
+      "title": "Finish support, listing and IARC rating",
+      "category": "owner_operations",
+      "nextAction": "Owner/support/content reviewer confirms support operator, accurate listing/media, IARC rating and unavailable-feature omissions.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "O-05",
+      "canonicalId": "Grindhead/riddle-quest:O-05",
+      "title": "Accept account deletion on real hosts",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Authorize disposable-account signed/in-game deletion and retry/fresh-generation acceptance on supported real hosts; local tests are not destructive production acceptance.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P3-03",
+      "canonicalId": "Grindhead/riddle-quest:P3-03",
+      "title": "Deploy context cleanup and accept shared-context races",
+      "category": "cloud_release_retention",
+      "nextAction": "Reconcile the obsolete hourly-scheduler instruction with the approved 16Oct demand-only rollout. Preserve retirement; assign an approved manual/on-demand cleanup cadence and prove bounded physical removal plus two-player context/device flows.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P3-04",
+      "canonicalId": "Grindhead/riddle-quest:P3-04",
+      "title": "Accept native tournaments backed by official results",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Two consenting role testers verify native tournament presentation against authoritative results, sharing and expiry on real supported hosts.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P3-05",
+      "canonicalId": "Grindhead/riddle-quest:P3-05",
+      "title": "Verify provider-rendered names/photos and overlay disposal",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Verify native provider identity overlays, disposal, accessibility and pause/unmount/deletion behavior on real web/iOS/Android.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P3-06",
+      "canonicalId": "Grindhead/riddle-quest:P3-06",
+      "title": "Prove opt-in presence with two tabs and two devices",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Use two tabs/devices and a consenting rival to prove opt-in aggregate presence through disconnect, crash, reconnect and opt-out.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P3-07",
+      "canonicalId": "Grindhead/riddle-quest:P3-07",
+      "title": "Prove strangers, blocked rivals and deleted players cannot view presence",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Use three role testers to prove stranger rejection and visibility revocation after opt-out/block/deletion with actual deployed triggers.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "O-06",
+      "canonicalId": "Grindhead/riddle-quest:O-06",
+      "title": "Finish auditable support/moderation closure and retention",
+      "category": "owner_operations",
+      "nextAction": "Approve disposition schema, operator/backup authority, evidence standard, appeal route and dispute/legal exceptions; then implement audited server closure/exception/purge using the already-approved90days-after-closure rule. Intake-only source is not a completed workflow.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P4-02",
+      "canonicalId": "Grindhead/riddle-quest:P4-02",
+      "title": "Remove overlong-answer questions and finish the supported-language corpus",
+      "category": "content_translation",
+      "nextAction": "Owner/content reviewer accepts the Cuba/Havana source proposal; privately provision approved translation key and generation budget, then generate15 source-bound locale bundles with a distinct critic.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P4-03",
+      "canonicalId": "Grindhead/riddle-quest:P4-03",
+      "title": "Audit meaning, Unicode, duplicates and the complete corpus",
+      "category": "content_translation",
+      "nextAction": "After P4-02, audit exact complete bundle hashes, semantic critique, Unicode/length/duplicate/difficulty constraints and native/script samples.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P4-04",
+      "canonicalId": "Grindhead/riddle-quest:P4-04",
+      "title": "Import complete bundles with honest machine provenance",
+      "category": "content_translation",
+      "nextAction": "After accepted15-locale audit, preview exact-project imports and obtain source/bundle-hash/retirement authorization before private-backup transactional import. Reconcile the hard-coded180 count with the final approved source and clarify whether16 includes English; do not fake counts.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P4-05",
+      "canonicalId": "Grindhead/riddle-quest:P4-05",
+      "title": "Test physical keyboards, scripts and accessibility",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Test physical iOS/Android/desktop keyboards, composition, grapheme deletion, RTL, shaping, focus and zoom across required scripts.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P4-06",
+      "canonicalId": "Grindhead/riddle-quest:P4-06",
+      "title": "Verify every cross-language social entry is rejected safely",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Two real-host testers exercise incompatible locale invites/context/matchmaking/rematch/tournament paths and compatible controls without cross-locale mutations.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-01",
+      "canonicalId": "Grindhead/riddle-quest:P5-01",
+      "title": "Verify all six coin packs and finish payout setup",
+      "category": "owner_finance",
+      "nextAction": "Owner completes legal/tax/bank certification and payment eligibility; after verified P5-03 contract, accept exact six-pack catalog/grants with approved Meta test payments.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-02",
+      "canonicalId": "Grindhead/riddle-quest:P5-02",
+      "title": "Verify the durable Remove Interstitial Ads purchase",
+      "category": "hosted_device_acceptance",
+      "nextAction": "After P5-03, prove actual durable Remove Interstitial Ads purchase, restore and authenticated refund revocation; no subscription substitution.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-03",
+      "canonicalId": "Grindhead/riddle-quest:P5-03",
+      "title": "Implement signed purchase/refund boundaries and wire recovery",
+      "category": "provider_contract",
+      "nextAction": "Reconcile official signed-claim/player-binding and refund/raw-body contracts using authentic private fixtures; then implement server verification and runtime grant/recovery wiring before enabling staged commerce.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-04",
+      "canonicalId": "Grindhead/riddle-quest:P5-04",
+      "title": "Accept refunds, debt repayment and entitlement revocation",
+      "category": "hosted_device_acceptance",
+      "nextAction": "After authenticated refund adapter P5-03, exercise real test refund/debt/entitlement revoke and restore cases with idempotent accounting.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-05",
+      "canonicalId": "Grindhead/riddle-quest:P5-05",
+      "title": "Finish rewarded extra-try setup; keep coin rewards separately gated",
+      "category": "reward_trust_provider",
+      "nextAction": "Owner accepts or rejects bounded SDK-mediated extra-try trust; obtain ad/property approval/test fill, reviewed backend/flag rollout and physical-device acceptance. Coin rewards remain omitted or separately contract-verified/implemented.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-06",
+      "canonicalId": "Grindhead/riddle-quest:P5-06",
+      "title": "Accept interstitial placement, no-fill and frequency rules",
+      "category": "hosted_device_acceptance",
+      "nextAction": "After approved provider setup, accept real interstitial no-fill/placement/frequency/entitlement and lifecycle behavior on supported surfaces.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-07",
+      "canonicalId": "Grindhead/riddle-quest:P5-07",
+      "title": "Backfill referral retention and accept real invitation retries",
+      "category": "cloud_release_retention",
+      "nextAction": "Review referral retention preview, explicitly authorize lifetime-binding backfill/TTL ordering, then prove hosted retry/idempotency and physical cleanup.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-09",
+      "canonicalId": "Grindhead/riddle-quest:P5-09",
+      "title": "Accept the native notification opt-in prompt",
+      "category": "hosted_device_acceptance",
+      "nextAction": "After reviewed configuration/backend rollout, accept real native prompt eligibility/consent/denial/retry and persistence on supported hosts; no reminder-delivery claim.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-10",
+      "canonicalId": "Grindhead/riddle-quest:P5-10",
+      "title": "Establish and implement reminder scheduling/cancellation",
+      "category": "provider_contract",
+      "nextAction": "Obtain app-approved scheduling/cancel channel, templates/limits/deletion contract and authentic fixtures; then wire the staged transport/dispatch and client schedule/cancel path, or explicitly omit reminders.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P5-11",
+      "canonicalId": "Grindhead/riddle-quest:P5-11",
+      "title": "Verify feature/age/API gates and dialog exclusion",
+      "category": "hosted_device_acceptance",
+      "nextAction": "Accept shipped feature/age/API failure gates and provider-dialog exclusion/pause/resume on actual supported hosts; injected selections remain supporting evidence.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P6-01",
+      "canonicalId": "Grindhead/riddle-quest:P6-01",
+      "title": "Produce a clean, audited, immutable testing handoff",
+      "category": "owner_operations",
+      "nextAction": "Agree the final reviewed release source/content/scope and clean immutable Facebook handoff. Current dirty-source182-check proof is valid but not a clean release-commit or Meta candidate acceptance claim.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P6-03",
+      "canonicalId": "Grindhead/riddle-quest:P6-03",
+      "title": "Exercise every deployed emergency switch",
+      "category": "owner_operations",
+      "nextAction": "Authorize a controlled configuration test window; exercise deployed emergency switches, preserve other providers, verify effects and restore only reviewed changes.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P6-06",
+      "canonicalId": "Grindhead/riddle-quest:P6-06",
+      "title": "Upload a Testing draft, complete reviews and promote approved bytes",
+      "category": "release_approval",
+      "nextAction": "Reconcile actual Meta review state, exact Testing-draft bytes and required approvals; current game upload/review/activation/publication hold remains. Jest inactive ZIP approval is separately pending.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    },
+    {
+      "id": "P6-07",
+      "canonicalId": "Grindhead/riddle-quest:P6-07",
+      "title": "Validate public play and operate the launch window",
+      "category": "owner_operations",
+      "nextAction": "After approved promotion, assign support/on-call window and explicit thresholds, then verify consenting non-role public/device play, monitoring and exact production bytes.",
+      "statusRetained": "open",
+      "source": "docs/facebook-launch-todo.md"
+    }
+  ],
+  "remainingConditionalImplementation": [
+    {
+      "id": "O-06",
+      "gap": "Auditable closure/appeal/exception/purge workflow is absent; source queue is intake-only.",
+      "prerequisite": "Approved disposition/authority/evidence/appeal/exception model and operator assignment.90-day routine period is already decided, not a new question.",
+      "evidence": [
+        "docs/facebook-moderation-runbook.md",
+        "firebase-functions/src/social/socialSafety.ts"
+      ]
+    },
+    {
+      "id": "P5-03",
+      "gap": "Server authenticated purchase/refund verification and runtime commerce/recovery integration remain; staged ledger/client recovery do not establish provider authority.",
+      "prerequisite": "Actual app/player-bound signed purchase/unconsumed/refund/raw-body contract plus private genuine fixtures.",
+      "evidence": [
+        "packages/portal/src/facebook/FacebookCommerceCapability.ts",
+        "packages/portal/src/facebook/FacebookPlatformBootstrap.ts",
+        "scripts/audit-facebook-commerce-activation.mjs"
+      ]
+    },
+    {
+      "id": "P5-10",
+      "gap": "Client scheduling/cancellation intentionally returns unavailable; staged server transport/dispatch lacks app-approved production wiring and fixture-backed response decoder.",
+      "prerequisite": "App-specific approved channel/permissions/templates/limits/cancel/delete fixtures, or owner-approved omission.",
+      "evidence": [
+        "packages/portal/src/facebook/FacebookNotificationCapability.ts",
+        "firebase-functions/src/facebook/facebookNotificationTransport.ts",
+        "firebase-functions/src/facebook/facebookNotificationDispatch.ts"
+      ]
+    }
+  ],
+  "independentlyActionableRuntimeFixEstablished": false,
+  "boundedConclusion": "No additional independently unblocked runtime defect was established by this39-row census. Conditional implementation gaps above remain open; this is not a blanket claim that code or launch work is complete. Source documentation reconciliation and scoped operational/design preparation can proceed, while implementing unknown provider authority or an unapproved moderation policy cannot.",
+  "importantReconciliation": {
+    "ids": [
+      "O-03",
+      "P3-03"
+    ],
+    "finding": "The1Oct hourly Facebook context scheduler procedure is superseded by the16Oct approved demand-only retirement. Request-time expiry/account deletion/manual retention remain; untouched expired records have no automatic physical-deletion guarantee. Reconcile the launch procedure and accept an operational cadence rather than blindly restoring deleted schedulers.",
+    "evidence": [
+      "docs/evidence/firebase-demand-only-2026-10-16.md",
+      "artifacts/current-source-readiness-2026-10-25/backend-new/retention-clean-compile-and-archive-proof.json",
+      "firebase-functions/src/race/facebookContextRetention.ts"
+    ]
+  },
+  "noPublicReviewActivationPublicationOrUploadAction": true,
+  "optionalImplementationConditionalOnScope": [
+    {
+      "id": "P5-05",
+      "condition": "Only if owner retains coin rewards rather than the already-implemented extra-try path.",
+      "work": "Applicable server-verifiable receipt/callback, app/player/placement/expiry/replay-bound idempotent coin grant and daily cap; current SDK completion alone is insufficient."
+    },
+    {
+      "id": "P0-03",
+      "condition": "Only if private security review confirms an exposed fixed UID key with dependent provider records.",
+      "work": "Reviewed dual-key/account-generation/deletion migration before key replacement; no blind rotation or speculative migration."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0-dev.20261022-e2e-reload",
+  "archive": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/riddle-quest-e2e-reload.zip",
+  "archiveBytes": 2876868,
+  "sha256": "d8aa79926d544c1be8aca4371cdf9124eaafa83a3a415e1f38d59e0895bf7696",
+  "filesCount": 419,
+  "totalBytes": 4717654,
+  "initialResourceBytes": 576168,
+  "zipMatchesSnapshot": true
+}

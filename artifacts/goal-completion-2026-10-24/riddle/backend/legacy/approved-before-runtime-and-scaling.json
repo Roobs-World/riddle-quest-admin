@@ -1,0 +1,217 @@
+{
+  "capturedAt": "2026-10-24T03:21:13.672572+00:00",
+  "phase": "approved-before",
+  "project": "riddle-quest-ec2b2",
+  "instances": [
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "region": "us-central1",
+      "functionState": "ACTIVE",
+      "runtime": "nodejs22",
+      "source": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1791411894794381",
+        "object": "blockLiveRaceOpponent/function-source.zip"
+      },
+      "revision": "blockliveraceopponent-00001-lor",
+      "allTrafficOnLatestRevision": true,
+      "functionRuntimeOptions": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "serviceScaling": {
+        "run.googleapis.com/maxScale": "20"
+      },
+      "serviceTemplateScaling": {},
+      "revisionScaling": {},
+      "revisionConcurrency": 80,
+      "revisionTimeoutSeconds": 60,
+      "revisionServiceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "environmentEquality": {
+        "applicationKeySetMatchesPreparedArchive": true,
+        "applicationValuesMatchPreparedArchive": true,
+        "unexpectedApplicationKeyNames": [],
+        "missingApplicationKeyNames": [],
+        "applicationKeyCount": 17,
+        "completeEnvironmentKeyCount": 23,
+        "completeEnvironmentKeySetMatchesBefore": true,
+        "completeEnvironmentValuesExactlyMatchBefore": true,
+        "completeEnvironmentValuesSemanticallyMatchBefore": true,
+        "providerManagedSerializationOnlyKeys": []
+      },
+      "secretBindingCount": 0,
+      "trafficShape": [
+        {
+          "latestRevision": true,
+          "percent": 100
+        }
+      ]
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "region": "europe-west1",
+      "functionState": "ACTIVE",
+      "runtime": "nodejs22",
+      "source": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1791410809886597",
+        "object": "listLiveRaceHistoryPage/function-source.zip"
+      },
+      "revision": "listliveracehistorypage-00001-yaf",
+      "allTrafficOnLatestRevision": true,
+      "functionRuntimeOptions": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "serviceScaling": {
+        "run.googleapis.com/maxScale": "20"
+      },
+      "serviceTemplateScaling": {},
+      "revisionScaling": {},
+      "revisionConcurrency": 80,
+      "revisionTimeoutSeconds": 60,
+      "revisionServiceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "environmentEquality": {
+        "applicationKeySetMatchesPreparedArchive": true,
+        "applicationValuesMatchPreparedArchive": true,
+        "unexpectedApplicationKeyNames": [],
+        "missingApplicationKeyNames": [],
+        "applicationKeyCount": 17,
+        "completeEnvironmentKeyCount": 23,
+        "completeEnvironmentKeySetMatchesBefore": true,
+        "completeEnvironmentValuesExactlyMatchBefore": true,
+        "completeEnvironmentValuesSemanticallyMatchBefore": true,
+        "providerManagedSerializationOnlyKeys": []
+      },
+      "secretBindingCount": 0,
+      "trafficShape": [
+        {
+          "latestRevision": true,
+          "percent": 100
+        }
+      ]
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "region": "us-central1",
+      "functionState": "ACTIVE",
+      "runtime": "nodejs22",
+      "source": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1791410809376022",
+        "object": "listLiveRaceHistoryPage/function-source.zip"
+      },
+      "revision": "listliveracehistorypage-00001-zuq",
+      "allTrafficOnLatestRevision": true,
+      "functionRuntimeOptions": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "serviceScaling": {
+        "run.googleapis.com/maxScale": "20"
+      },
+      "serviceTemplateScaling": {},
+      "revisionScaling": {},
+      "revisionConcurrency": 80,
+      "revisionTimeoutSeconds": 60,
+      "revisionServiceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "environmentEquality": {
+        "applicationKeySetMatchesPreparedArchive": true,
+        "applicationValuesMatchPreparedArchive": true,
+        "unexpectedApplicationKeyNames": [],
+        "missingApplicationKeyNames": [],
+        "applicationKeyCount": 17,
+        "completeEnvironmentKeyCount": 23,
+        "completeEnvironmentKeySetMatchesBefore": true,
+        "completeEnvironmentValuesExactlyMatchBefore": true,
+        "completeEnvironmentValuesSemanticallyMatchBefore": true,
+        "providerManagedSerializationOnlyKeys": []
+      },
+      "secretBindingCount": 0,
+      "trafficShape": [
+        {
+          "latestRevision": true,
+          "percent": 100
+        }
+      ]
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "region": "us-central1",
+      "functionState": "ACTIVE",
+      "runtime": "nodejs22",
+      "source": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1791411961331998",
+        "object": "reportLiveRaceOpponent/function-source.zip"
+      },
+      "revision": "reportliveraceopponent-00001-muw",
+      "allTrafficOnLatestRevision": true,
+      "functionRuntimeOptions": {
+        "availableMemory": "256Mi",
+        "availableCpu": "1",
+        "timeoutSeconds": 60,
+        "maxInstanceCount": null,
+        "minInstanceCount": null,
+        "maxInstanceRequestConcurrency": 80,
+        "serviceAccountEmail": "329028367192-compute@developer.gserviceaccount.com",
+        "ingressSettings": "ALLOW_ALL",
+        "vpcConnector": null,
+        "vpcConnectorEgressSettings": null
+      },
+      "serviceScaling": {
+        "run.googleapis.com/maxScale": "20"
+      },
+      "serviceTemplateScaling": {},
+      "revisionScaling": {},
+      "revisionConcurrency": 80,
+      "revisionTimeoutSeconds": 60,
+      "revisionServiceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "environmentEquality": {
+        "applicationKeySetMatchesPreparedArchive": true,
+        "applicationValuesMatchPreparedArchive": true,
+        "unexpectedApplicationKeyNames": [],
+        "missingApplicationKeyNames": [],
+        "applicationKeyCount": 17,
+        "completeEnvironmentKeyCount": 24,
+        "completeEnvironmentKeySetMatchesBefore": true,
+        "completeEnvironmentValuesExactlyMatchBefore": true,
+        "completeEnvironmentValuesSemanticallyMatchBefore": true,
+        "providerManagedSerializationOnlyKeys": []
+      },
+      "secretBindingCount": 0,
+      "trafficShape": [
+        {
+          "latestRevision": true,
+          "percent": 100
+        }
+      ]
+    }
+  ],
+  "completeEnvironmentMapsComparedPrivately": true,
+  "environmentOrSecretValuesAndTheirHashesRecorded": false
+}

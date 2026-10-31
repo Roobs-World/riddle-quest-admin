@@ -1,0 +1,7 @@
+{
+  "tmp": "/tmp/riddle-bll-purchase-yg5rm_yh",
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-journal",
+  "fileCount": 419,
+  "preflightHashesMatch": true,
+  "scope": "Real compiled Jest coordinator/hook/host/UI with existing trusted SDK+backend fixtures. Only synthetic checkout and provider acknowledgement injected. No real provider traffic or signing token inspection."
+}

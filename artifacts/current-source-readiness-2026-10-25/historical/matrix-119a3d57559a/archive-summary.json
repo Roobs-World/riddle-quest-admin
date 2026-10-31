@@ -1,0 +1,20 @@
+{
+  "sourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+  "canonicalCommands": 182,
+  "passedCanonicalCommands": 179,
+  "knownFailures": {
+    "150": "Legacy bot display compatibility regression; newer assigned guest policy retained.",
+    "151": "Stale15s observation wait versus30s join plus2s retry.",
+    "153": "Same stale observation bound for expired join."
+  },
+  "extras": {
+    "182": "45 real packaged flows passed",
+    "183": "Five final compiled Continue cases passed",
+    "184": "Exact proposed delivery wait bytes passed without shared source mutation",
+    "185": "Exact proposed lifecycle wait bytes passed without shared source mutation"
+  },
+  "status": "complete-diagnostic-census-superseded-before-completion",
+  "sourceStable": true,
+  "completionReceiptsRecorded": false,
+  "uploadTransmitted": false
+}

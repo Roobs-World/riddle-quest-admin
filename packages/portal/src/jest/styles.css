@@ -15,7 +15,7 @@
   text-align: center;
   border: 4px solid #fec880;
   border-radius: 36px;
-  background: var(--play-panel) url("../../../../assets/images/home-bg.svg") center / 118% 118% no-repeat;
+  background: var(--play-panel) url("../../../../assets/images/home-bg.svg?no-inline") center / 118% 118% no-repeat;
 }
 
 .game-modal.jest-registration-dialog h2 {

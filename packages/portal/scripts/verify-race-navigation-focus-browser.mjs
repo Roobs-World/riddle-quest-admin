@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.RACE_NAV_REACT_MODE??'development',baseline=process.env.RACE_NAV_BASELINE_DIR;
-const output=path.resolve(process.env.RACE_NAV_REPORT_DIR??path.join(root,'../../artifacts/race-navigation-focus-2026-10-05',mode));
+const output=path.resolve(process.env.RACE_NAV_REPORT_DIR??path.join(root,'../../builds/test-evidence/race-navigation-focus-2026-10-05',mode));
 assert.ok(['development','production'].includes(mode));await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});const scratch=await mkdtemp(path.join(root,'node_modules/.cache/race-navigation-focus-'));let server,browser;const observations=[];
 try{
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');

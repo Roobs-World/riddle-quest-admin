@@ -9,7 +9,8 @@
 - Keep purchase grants, identity exchange, and referral rewards server-authoritative and idempotent.
 - When removing visible text, verify it is unused elsewhere and remove the corresponding key from every locale.
 - When adding visible text, add it to every supported locale or reuse an existing translated key.
-- Verify UI changes in injected browser harnesses and build all six isolated target artifacts before handoff.
+- Run tests and browser test harnesses only when the user explicitly requests them. Build the target artifacts needed for the requested change or upload.
+- After each requested code change, upload the current game to Jest and tell the user when the upload has completed processing. Activate a build, publish the game, or submit it for review only when explicitly requested.
 
 ## Agent skills
 

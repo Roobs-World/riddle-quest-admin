@@ -1,0 +1,2649 @@
+{
+  "checkedAt": "2026-10-25T21:21:32.912Z",
+  "baselineDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "currentDigest": "556d817b0cc5f4845096ea5c8dc5b38022e3dc3a04a26cfc0f3e502ad4ebcb10",
+  "manifests": 192,
+  "priorChecks": 182,
+  "priorLogsMatching": 182,
+  "priorReceiptsMatching": 192,
+  "changedSource": [
+    {
+      "path": "docs/evidence/completion-readback-2026-10-25.json",
+      "kind": "added",
+      "sha256": "a5e8d289850854cb5ff4f77c380ad7c9c71ec97342c8055a8f7358f1d176e8aa"
+    },
+    {
+      "path": "docs/evidence/completion-readback-2026-10-25.md",
+      "kind": "added",
+      "sha256": "9dee95b7234ff9fabbe59f032bb6090e938946c0db91b143d42c98e63a1e3bba"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25-game.png",
+      "kind": "added",
+      "sha256": "2c38680bc3d56c8bfdbb099cb743a1ed2357e1179c56f437b180c622e320265b"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25-loss.png",
+      "kind": "added",
+      "sha256": "9d0edfe68509c4cf7ea7cfa8fca1b9c386eeefe5fd7352ad78b3e7c3c9b09926"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25-pending-loss.png",
+      "kind": "added",
+      "sha256": "c49ddd0002c36ee1abb6bf833248edadf2f804fc570bae50bfb4b80a781cd0f2"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25-registration.png",
+      "kind": "added",
+      "sha256": "4b8a2167eeb4ffbf85666eb03210db73302b7e937c9f38f5dd3916a67c40b415"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25-results.json",
+      "kind": "added",
+      "sha256": "de10b48bbcd8944e8cebc2421d9a903827ede590cd2b7571fdb4b0458194233b"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25-shop.png",
+      "kind": "added",
+      "sha256": "c2b138ee48ed6bbc80c8aeaa5d9a1b356fddd322962e19da150122844ab93ed7"
+    },
+    {
+      "path": "docs/evidence/jest-screenshot-feedback-2026-10-25.md",
+      "kind": "added",
+      "sha256": "862ce3a6cb65831962a26b5ee15e8343482bd59145178a3da33d04416a88de4e"
+    },
+    {
+      "path": "docs/evidence/review-feedback-2026-10-25-active.png",
+      "kind": "added",
+      "sha256": "883b4878b8a002ad1e6464013b69bbf3a2e5fbec6ab22e5180be29386fd1c8ac"
+    },
+    {
+      "path": "docs/evidence/review-feedback-2026-10-25-deployment.json",
+      "kind": "added",
+      "sha256": "f9c76d1c3e766e92d6c3291bd5141e14a2ca5404d32a830d980422e334379bc8"
+    },
+    {
+      "path": "docs/evidence/review-feedback-2026-10-25-results.json",
+      "kind": "added",
+      "sha256": "27616c2ed32e45f2cf6fad05255421acefbd3e1585f84141add5d128207cfec3"
+    },
+    {
+      "path": "docs/evidence/review-feedback-2026-10-25-submission.png",
+      "kind": "added",
+      "sha256": "6dd4fcf0c3d43459d4c65ca92b9ba9651d3cbbd9ba97988ce576c05191f06e1f"
+    },
+    {
+      "path": "docs/evidence/review-feedback-2026-10-25.md",
+      "kind": "added",
+      "sha256": "f9f53ebd9798a8d997dfc1d42103ce005d27a7157d3c9dd70c6f03babb22a7b5"
+    },
+    {
+      "path": "docs/jest-html5-operations.md",
+      "kind": "changed",
+      "before": {
+        "sha256": "be66aa49fa437663937fe31368956c2de715ee65c32b2240f73124f118f87f43"
+      },
+      "after": {
+        "sha256": "b68f5196e243dc4202936f8dc7b71fd4239660da11a555c581dcef358f7763a5"
+      }
+    },
+    {
+      "path": "docs/privacy-data-inventory.md",
+      "kind": "changed",
+      "before": {
+        "sha256": "87a5d1b409e54e96a443392373a1e17c0871cef6d065ab36e6e905b7b69ab489"
+      },
+      "after": {
+        "sha256": "9fa17e98a087270bf359102ac5ca540a4c49a009533563af9f7a5a16a590571d"
+      }
+    },
+    {
+      "path": "firebase-functions/src/__tests__/race/raceLivePublicWait.it.test.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "69aed4f19eb047c1d1a60dd63e76793ed884b4edb8755488534d5b181e245edf"
+      },
+      "after": {
+        "sha256": "f21cb59da9df8b64a160949c96cdf340cb5fee7ee7d0e8eb1d514e90300db8b6"
+      }
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveService.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "5a731f2352bbff6ff9d573b80b55008b0d46581158af31a1bd9d861bc7d7d1e0"
+      },
+      "after": {
+        "sha256": "ca0ccbadd3e1cedcfd0459c74e6c64f1a58882bdece8bb45a192a31198057400"
+      }
+    },
+    {
+      "path": "firebase-functions/src/race/raceLiveState.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "7f31abe5ae43c0aaaae795baa59a67a1d73c33b3b7b0b63d495db8d456aa5272"
+      },
+      "after": {
+        "sha256": "ddbf08994bc41a10dc3dce0c06034f5bab9468739d0d922b039f6363f3e77848"
+      }
+    },
+    {
+      "path": "packages/core/src/race/raceLiveSchemas.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "8fb12da59abc53a3c3ec30a614b61deb781ac7deb5e475ab58ccbde668d61c29"
+      },
+      "after": {
+        "sha256": "12e394ffabd399367a30fbef65ff355c594ea56bc8f2a9bacd4482a9fc400347"
+      }
+    },
+    {
+      "path": "packages/portal/package.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "4d0d79bc93316a8ea1a5db61692e91bb6edaccd0aa22e7da645699be8c7d99b4"
+      },
+      "after": {
+        "sha256": "ce10e86d6a12648dcd225825626eda8d32bdeed1f013e24e6377d87e81811924"
+      }
+    },
+    {
+      "path": "packages/portal/public/third-party-licenses.txt",
+      "kind": "changed",
+      "before": {
+        "sha256": "64896a7d3cc32ad27fbe396ab2097d4f96ba8a7501598995f50d0974b56b13b5"
+      },
+      "after": {
+        "sha256": "5429fe0f6e1fd25a45b708e3547dee616297189b878ff64d0bcfcae459e7ed56"
+      }
+    },
+    {
+      "path": "packages/portal/scripts/audit-jest-artifact.mjs",
+      "kind": "changed",
+      "before": {
+        "sha256": "26b7ba8d76edf4a62b0b3a20eec23b0276f6ffe98ebdf341590c2b9cec2b742c"
+      },
+      "after": {
+        "sha256": "affa5c67689242d4f178f2a903a298a2d478f0d13b5678c0aee9346ea8ed6715"
+      }
+    },
+    {
+      "path": "packages/portal/scripts/verify-jest-screenshot-browser.mjs",
+      "kind": "added",
+      "sha256": "387f5de9cf0acbbcf790cb06ecbbd24697c5553409fbca3dd7ddb916cf952f5d"
+    },
+    {
+      "path": "packages/portal/scripts/verify-jest-screenshot-fixtures.mjs",
+      "kind": "added",
+      "sha256": "ffbd15a2c5cdcc131d7944356dbb2c70a6db525c3c7528a52ae78a3b9789c6c9"
+    },
+    {
+      "path": "packages/portal/scripts/verify-live-search-close-browser.mjs",
+      "kind": "changed",
+      "before": {
+        "sha256": "8a011ca4521f5349bc56110a66dfe559d74cb37a1183dfa9566234ec8583ea44"
+      },
+      "after": {
+        "sha256": "868d0595fe815bb7cbbe0c1bd6224a023b65763f90aa8d012c4c925e2c00dcaf"
+      }
+    },
+    {
+      "path": "packages/portal/scripts/verify-retained-modal-locale-browser.mjs",
+      "kind": "changed",
+      "before": {
+        "sha256": "e27627e4bd56bd26f845bd895de9bcd6a66398b02d326913074ce3324ac4a30e"
+      },
+      "after": {
+        "sha256": "fc69ed7ee415898cbd0e39652d6aa0d0125fada71fd84057f837e9b20afa89c0"
+      }
+    },
+    {
+      "path": "packages/portal/scripts/verify-review-feedback-browser.mjs",
+      "kind": "added",
+      "sha256": "92f6f577153174c87f57d77b6e98526a2a3477698364745f87d923778d73a362"
+    },
+    {
+      "path": "packages/portal/scripts/web-target-dependencies.test.mjs",
+      "kind": "changed",
+      "before": {
+        "sha256": "31e16d49fd5e1c191dd301dc20f435920c5565eae3ca7794bd7665262ed1e83a"
+      },
+      "after": {
+        "sha256": "5bd4fe3bb3007b871e6b63189f592c8189cd051585e1593819804909fd2a1310"
+      }
+    },
+    {
+      "path": "packages/portal/src/jest/__tests__/screenshots.test.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "154aedb625fd0fbe9ed12ac9f04f2bb4af24f51fb9da061c68e3a12ba0081298"
+      },
+      "after": {
+        "sha256": "9ab45139ff1e791dcc0c83e7ad0904884dcce7dc60b173a6352f1722334095cd"
+      }
+    },
+    {
+      "path": "packages/portal/src/jest/sharing/captureGameScreenshot.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "8c8e3cb8a48d0e80168a5977900dea9481087f8cf02be708709dd023971a29d8"
+      },
+      "after": {
+        "sha256": "0327b8cdeddf83982e274b7edf320cdbb3a1b57a04f55629a051f6304435b2fb"
+      }
+    },
+    {
+      "path": "packages/portal/src/jest/sharing/screenshots.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "0c2cbbdcedaf99f0f003323795fc4685651c90c71ad1af3ec974e5a35e5dde56"
+      },
+      "after": {
+        "sha256": "8576247621e8c74711f9c378bdf8391992154e4b79f32e1cb0d877dd52dec929"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/GameFrameApp.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "7c732404464c12705879f7d780ae5ba3a10e2a4a4c9a1296065b0f1dd54cdf65"
+      },
+      "after": {
+        "sha256": "a7d0d88c4a808a03eb89af28e1336955747066f492c1118d544e7c3260923d77"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/GameModalView.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "cf42eec733e572b9b27f73fa942259896adbccfc91be2d8f219026a62f540a6c"
+      },
+      "after": {
+        "sha256": "224fb2395d6e85b158e5f902d16d0e0c0405da956963de364eda85e3a5af97c6"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/__tests__/VictoryModalContent.test.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "bcafd928ec0eea778bab77c1bd81b7f7c376949f8728c99696b71e2a5707e48a"
+      },
+      "after": {
+        "sha256": "4582ef9047551a6581a81bbe6f91f4aed13c35e30f94c98eb68d0f16cfd13166"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "2424d1f083a5a17645a30aa11d81623ad90ac15309cbeed635c5097439525c0b"
+      },
+      "after": {
+        "sha256": "1fff93bb3244010e88537b71ce0ae56222a4d584977e19270ab530d5dcf917df"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/ContinueActions.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "dfae6faafc45d66dd4dd4aa75f28c796f354e8a5536b318d187ae5817c33629a"
+      },
+      "after": {
+        "sha256": "c324772063571a4f3100a45bffbb5449277d812266f46d43061ab47b1e691f42"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "a4743efc436adf8e87c80298ac6ec99dbf836f0e83986fe73306b6514c503ee8"
+      },
+      "after": {
+        "sha256": "9f4c456f61ba486b01107f28f6b0c3e6c2bb5b3b34fce4b762392d1239d024e8"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/fanfare/VictoryModalContent.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "a815d35d5c66a244b8cea414b3a886ba221979c8b1bd51970107574533dbdcb3"
+      },
+      "after": {
+        "sha256": "a0708a511d6bb2698e636c67020ad3796839bff23a6c1875eaf4fad742eae606"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/LiveRaceGame.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "709b36823b47489ab1207d0519663e7f34e66f4d59e46eceb7b827cbb6104720"
+      },
+      "after": {
+        "sha256": "f130377e5bf9a27438b74d96752195ebb8164563c0390cf858e1bea5dc7dbb35"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/__tests__/liveRacePolling.test.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "331fcdc46dbe6c028b5afc8a7bc8b154155f55527702f8604ef16a316ce6d676"
+      },
+      "after": {
+        "sha256": "c8630ceffaad600aa8226c46524574c377bb1e6e892087e626945bfc37ec5ca6"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/__tests__/liveRaceRetirement.test.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "9670f746b7a4f060e63a10badf1667ab47e7fdcb09c5d8707a33529edc98ccff"
+      },
+      "after": {
+        "sha256": "c9a55035280ab7d99cf5a685a2df893a5d095368eb1fea429976624bd21fce33"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceIdentity.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "9e1de3d95005baa2b305a36443a583465f15c855b47693e24b869a03f2a3553b"
+      },
+      "after": {
+        "sha256": "66ab7dee9c83abef7229ff31529c9ca080e72bdf2422fbfc95a84fb1510d0a0e"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceSearchWheel.tsx",
+      "kind": "changed",
+      "before": {
+        "sha256": "09a5c332b1e62ef6a907fab03ccb08ab4adc5a613e318a7023a7af0c0d1193d8"
+      },
+      "after": {
+        "sha256": "1c672ac6ba8dd0eb7d96e9ce5768e851e6fc3c69b46e56ff3281014b4d08ec11"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceDeliveryDeadline.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "18ee3022b4a2105265a1850c50b24c41bd402077ab8d4dcfbed3ae6b63cf677e"
+      },
+      "after": {
+        "sha256": "a1988d105ac268683f231061ea84ef9dbd97aeb5fd6e8a28317394593b9d3a94"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRacePolling.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "2c5c19dab154d004610c06c16bde966914b6612a236abdbeb22761e3c578cd31"
+      },
+      "after": {
+        "sha256": "471a790e3bae5a32dec083c0e1afa805e475961d02cef3f5c507dbd93329beb2"
+      }
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceRetirement.ts",
+      "kind": "changed",
+      "before": {
+        "sha256": "b62ccacb251267742c21e01a603a9e94be7db80033a1f973e17f626a1f29458d"
+      },
+      "after": {
+        "sha256": "0c97e1ceff293a35f8382e786a42dc968b087832b49b7cd153477c240523860f"
+      }
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "kind": "changed",
+      "before": {
+        "sha256": "9db82fb7834da8709643b324eb96c6a6cc39e4411af24b023b2c9028fecc6f6d"
+      },
+      "after": {
+        "sha256": "c9f4e98d0fe44a9b970559da075f83330469f34903bf9252650e595aa920bec5"
+      }
+    },
+    {
+      "path": "scripts/release/release-registry.mjs",
+      "kind": "changed",
+      "before": {
+        "sha256": "530717f5a62ba283d0bd9d8c7ec8881723621d81b18b1d96872af2b4ff27c8bc"
+      },
+      "after": {
+        "sha256": "c9a1ac85afea8887f5c616d2550d15b9b7bc35661fee1b9823e4980af143c2ce"
+      }
+    },
+    {
+      "path": "src/locales/ar/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "12acb199227949aece871a4ef8fada7d4c3cb1f846c322a33dd15f6cf2a5fed5"
+      },
+      "after": {
+        "sha256": "d49b15bd688eee35c2e251720aef5b428bfe63f890c7f66db1474cd33868faba"
+      }
+    },
+    {
+      "path": "src/locales/ar/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "0163778bf9b6a4f7bb096d0fe7e48e3e643795a95a0d5c2749e810bdbf1d4ccb"
+      },
+      "after": {
+        "sha256": "cded6fc7a444d41c5d437c6baa39788e8a15f7ff92c3687e4519d9b64886ff40"
+      }
+    },
+    {
+      "path": "src/locales/ar/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "0026bbf368d97a626318f1d85b08ee67ac6e7b3728c12ea67816b2504b1e40ee"
+      },
+      "after": {
+        "sha256": "47ae8d555365c6deb35a5388f4e7d1b601774628c5a0a272cf2ca205929a09bc"
+      }
+    },
+    {
+      "path": "src/locales/de/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "74048d31807567a509e5f2e77c828f440ea06cb06c96a88b0abcad23015a3ee1"
+      },
+      "after": {
+        "sha256": "94bb4885eaa1237c6cd834421d99b570d03a0a8cbdf82251c4a2fb4292d6efd6"
+      }
+    },
+    {
+      "path": "src/locales/de/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "4ad229064a76d2dcc361b8349cb685e3c32052fd3742c3b4219c9371a5601ca0"
+      },
+      "after": {
+        "sha256": "c9a9fda4fa9aa2ac56f3d7f3323ac666a7e8fb112da45350fcb53591fd22b9a8"
+      }
+    },
+    {
+      "path": "src/locales/de/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "c3c73f67af048ba58753e1caf9b309ac86542efd054905b71d4f4f939d41d0a8"
+      },
+      "after": {
+        "sha256": "9f942d3ec4377e74a930de6ac565e9f38e94180ae1b4a902e082631fd210ef5d"
+      }
+    },
+    {
+      "path": "src/locales/en/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "3f0e571451fc644110592a6a9b349368eb205a89e2d6ca20d788047e1669672c"
+      },
+      "after": {
+        "sha256": "641f8c17459d6a67f229f155a9e16c401b1b4c41df4426a29a1d5ade1b21079b"
+      }
+    },
+    {
+      "path": "src/locales/en/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "22cbd1588563b424d7c8cd5c544789c62837a04d027b1fde030b985c5598e4d6"
+      },
+      "after": {
+        "sha256": "5c7fa5b73ca4c88261fbe39449f1b875c6b46d5f135ea3d239d4099ff5694417"
+      }
+    },
+    {
+      "path": "src/locales/en/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "1bd70d1799f7194fc88bdad5fb5038006160cbf66f1953d0b0d25895c4a6c927"
+      },
+      "after": {
+        "sha256": "f693dd6f29bd51b0bbe6d5c3833de274cf15a0a7410ca9d8b96fb3ead4a295c5"
+      }
+    },
+    {
+      "path": "src/locales/es/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "d6f3a61ecfb5d8df87419477a30b8743394fd68923694e363e5c17fb8d531809"
+      },
+      "after": {
+        "sha256": "a17e5f8f91d820b261f3602d660f64f5253185fbc403024d9bba31bc19451875"
+      }
+    },
+    {
+      "path": "src/locales/es/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "70546b6118f4a2b9fb4258c0d77720c658d2710824bc8f4586d59850fb73e7e7"
+      },
+      "after": {
+        "sha256": "a12fc754794f225cd4f09635e8e500ea2e84056b60522273bf775ef386a9c329"
+      }
+    },
+    {
+      "path": "src/locales/es/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "418663160511392ca4127f5a440ee69959e6b3f2ffa2ea363a446ac70f912338"
+      },
+      "after": {
+        "sha256": "fc416f64c67a29f991f31f5af5e8067d24da0bbd826db2987240203ab7562955"
+      }
+    },
+    {
+      "path": "src/locales/fr/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "1f9314a612c1ca6510f7d154674ae365ccce82f32057e5a70f74d2b53e50ed87"
+      },
+      "after": {
+        "sha256": "9e7d7b01e0ca1a71086c87352a7adaf6ca5241ca3090668a15761ce8e04a94d4"
+      }
+    },
+    {
+      "path": "src/locales/fr/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "d82578d6080dd6c779da08c122314c6ee7331388613064b5abd58170541ce535"
+      },
+      "after": {
+        "sha256": "4c7bb75124b1cbe861b0019afdc8a66232176b2b7c126f11bacb8706b6dfde94"
+      }
+    },
+    {
+      "path": "src/locales/fr/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "f780520efdd2a249c49ef9131b19a71e365c7d0125dde61bba055d8b011b381a"
+      },
+      "after": {
+        "sha256": "9ada6f739e4feb90a355fea7702a048ba8da2b6c4d0e7319e0421c567fc81858"
+      }
+    },
+    {
+      "path": "src/locales/hi/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "95792f3c2e06dda77fb63041e2c19da1e2b6b37125a270bd7ee531b4647f87a1"
+      },
+      "after": {
+        "sha256": "a588021696f0387c3b9f6366fb275ee73f2d142a69ead311b2d9919d3bbda8e5"
+      }
+    },
+    {
+      "path": "src/locales/hi/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "367f02780cd7484d562df5ca50e20e66234cea653eec846908603aab78d5e682"
+      },
+      "after": {
+        "sha256": "c5ab9f91445f6e0af649334836818089ef41938b3b25706bc3abeb9ee3036cd6"
+      }
+    },
+    {
+      "path": "src/locales/hi/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "826ee8d94e22bf7a46ff7e944ce1512721bcc7e35c5c5a47ec466c44317d88db"
+      },
+      "after": {
+        "sha256": "d782eb309e22667e92221c30faef04ac6f4d40af90d96b3cc1eb951dafbbfb1e"
+      }
+    },
+    {
+      "path": "src/locales/id/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "3dfd73758ce33e1d3b9d23d083253e0294b5c5501ef3fd28f99c00d994885b5a"
+      },
+      "after": {
+        "sha256": "b8e2400ea559ea02a6dd46e7729f420b6bc67027e761fb61aaf81fdc08f748f2"
+      }
+    },
+    {
+      "path": "src/locales/id/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "8ec255f705834f7acfd790d4ba4fead1560383990617f13635a532fbf1ed9d6e"
+      },
+      "after": {
+        "sha256": "6b61542220fde582a7fd5474c44514592d64ed8b4da8dc305e5cf0b3934eefc6"
+      }
+    },
+    {
+      "path": "src/locales/id/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "830e51518071c7cf83a8cb64647c5a44bbb7a0ca947b9a6446d30f36f0c77ea4"
+      },
+      "after": {
+        "sha256": "4dd8c2665414a90c2e184b841ef428c0a5803cbb98506840d3b74d4d73633712"
+      }
+    },
+    {
+      "path": "src/locales/it/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "379ce8182b1286089683a4821c9bdda31542bfcbb9037cb5e7289feeca1f01ca"
+      },
+      "after": {
+        "sha256": "013ffd4ae30cc58d87bac882342fc058fcad3148fb6b49fbdcc7d1e0c921552f"
+      }
+    },
+    {
+      "path": "src/locales/it/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "60f45ea62bbab182c30ca8383ff236c6f393d5658500e393a1f83773d1e0a646"
+      },
+      "after": {
+        "sha256": "371f97753e5b5a148028161c3d7ffdc16eb354d505cb16e7be24381206e4df97"
+      }
+    },
+    {
+      "path": "src/locales/it/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "4f0df7f2a6e2a3b13715266a9f5c2d04674bc0661048daf564949444ad27323e"
+      },
+      "after": {
+        "sha256": "03fe3d9c739ed8cc421c31de79b5eb617d836f7e69088bd525cb0895ccedf58e"
+      }
+    },
+    {
+      "path": "src/locales/ja/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "0184d949640c6ba34f085891a762352e856a0fced89904ced9f75655e977379a"
+      },
+      "after": {
+        "sha256": "11305c6343490d06295f1254326183d382a920a58890dd0e91d16618d7b2f193"
+      }
+    },
+    {
+      "path": "src/locales/ja/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "12cc6eb7641c84668bc1a9cf37338bcf24a5e97c736e06cd73c299adef56287b"
+      },
+      "after": {
+        "sha256": "6b5c44b140df2c004bef52071dfd9816f00a55ad44f9c02a8977b97d72f4a4ab"
+      }
+    },
+    {
+      "path": "src/locales/ja/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "bbef2b94bdea8004e652aa3c50b407129563ee11d603c3cd9a3e59029d8ec1ef"
+      },
+      "after": {
+        "sha256": "47928f42986e1ef6bacadaafe9f5bb5dd6474f5c44a22e8cd8b04fa58c09bcc6"
+      }
+    },
+    {
+      "path": "src/locales/ko/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "7bba9a6f2c8575f421d22864347bdff372b313bf80e19f7a23b61281530517f3"
+      },
+      "after": {
+        "sha256": "b95e4e3cba02ede07626fd58fa58348aade8239d14f3d5da4bf152370ab23907"
+      }
+    },
+    {
+      "path": "src/locales/ko/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "2cc814eb3a6af8f016c8d7bd24982db6c55e7a5a994e09f51194671a9aa249a5"
+      },
+      "after": {
+        "sha256": "7b94a2d8008cd295d3d2bc67c1b675c3c6f796f903e18a9f4b217c687d9c9356"
+      }
+    },
+    {
+      "path": "src/locales/ko/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "ab4032d12b30742f488a3b06507b43fef4b484b8ec7a1533bdd1bb57658cdc46"
+      },
+      "after": {
+        "sha256": "b72826b8402e0e3cf9c216e0566198384bf6cf7023421430d3ed365af4eeef3f"
+      }
+    },
+    {
+      "path": "src/locales/nl/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "a7df8b307b03ada2f97c87df3f92d0f34618c38844c53d95a748f11cdccee4a7"
+      },
+      "after": {
+        "sha256": "5144af520ca88043072e027a230b6ecc5eca935fc768be7d6831fbb067ae8d5d"
+      }
+    },
+    {
+      "path": "src/locales/nl/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "24d0964d2805c419afa998596dde2b760b0a25e82ce10e63610eee0830cfa642"
+      },
+      "after": {
+        "sha256": "871ae12b837d832fab29ed999c509817bb6f05b1512d76ab83e30c9c0405e1a6"
+      }
+    },
+    {
+      "path": "src/locales/nl/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "6b828b7bf2f1aad8c7afffada90253c885763d54ccff5b9c879a414e9f0c03ec"
+      },
+      "after": {
+        "sha256": "04a16004e32baca29fc26a2925670c717a243f6c117522522e7df6d540cd174c"
+      }
+    },
+    {
+      "path": "src/locales/pl/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "2945ca9dfa6f79c828e601ff850d7025194dd4ed3350f276b3801f4374a70003"
+      },
+      "after": {
+        "sha256": "e6299ccf382a028626db3c7fc7c6cc2744474d0797bc0c6704486b115b510f9b"
+      }
+    },
+    {
+      "path": "src/locales/pl/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "697dd85dd22cc0c59af5f6954cac7c7545a0a7e5f97fae8667ea342e44b8cdb7"
+      },
+      "after": {
+        "sha256": "c57483d4585bd8f580ab72c64356cafb18025cd293d0ac9863ccb6f489de793a"
+      }
+    },
+    {
+      "path": "src/locales/pl/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "f918cd0dad5b03b31e96d549c47c05577075fa84dde136bceb28e328fafaee11"
+      },
+      "after": {
+        "sha256": "e8ee8f115790f8c05818f7d680dc9706982d49fa3887c68b46aee47ecaef718a"
+      }
+    },
+    {
+      "path": "src/locales/pt/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "90884c9ccabaca8c4e8841778405b49ed40d4f0cf2f4d7853750969ada8a47e7"
+      },
+      "after": {
+        "sha256": "1dbbbdafca52ab700c42bf71a165e26a86d55f2d8df56557389799d7d0b8dd46"
+      }
+    },
+    {
+      "path": "src/locales/pt/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "abd92bcda1af82b0aa66249e7078fa7c5b8a68041db4a27155515fba851a9940"
+      },
+      "after": {
+        "sha256": "416c85271b682965f65a420e569cbcd1de476915805f237f755e7f2210cc1982"
+      }
+    },
+    {
+      "path": "src/locales/pt/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "3e7a31695e183842bd7759e557276e31963e68d05034d7348dcd385e4eb2d8aa"
+      },
+      "after": {
+        "sha256": "8dc1f31d49e41e68a94aadb4420a4caff3c908615838a9ffb87ec3ccc831cbf5"
+      }
+    },
+    {
+      "path": "src/locales/ru/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "b221f94dfdf5a546db1082cfe8b500b19d64af2858d0eea8574ca7a9e79207f6"
+      },
+      "after": {
+        "sha256": "dffb8dc4b27a6045dfbe38a37c2fe3e5c80ad30e8e3d5f1717374322229524c7"
+      }
+    },
+    {
+      "path": "src/locales/ru/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "1a3104691fb940fee0618c3aabca54e463217fb91935fccef4d31505ee06ade5"
+      },
+      "after": {
+        "sha256": "81eeb4ee350b06b83dec9293404a76d699a5f1cfd60c0cf74bdddc0b556362b5"
+      }
+    },
+    {
+      "path": "src/locales/ru/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "5229af974a022cfb734d19d026b68560aaa5eb1a5ddada0f00b670a97b4813f8"
+      },
+      "after": {
+        "sha256": "35d4a015ea3ec8d5b550007d508033a2234116bba253da6a3dd24571b07f1498"
+      }
+    },
+    {
+      "path": "src/locales/tr/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "b51afa50d81f7c2e2291101dc2cbdd5b82905b79908967943624aac3614dac93"
+      },
+      "after": {
+        "sha256": "64c21e3c73dbe1419d65b63e17682e81a4979657684d25f112985e2e8a4c6140"
+      }
+    },
+    {
+      "path": "src/locales/tr/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "9dd333f71f278d66e436f5530f544ac62a64809af4ce79a692841547886afd75"
+      },
+      "after": {
+        "sha256": "dc9efdfa5bd3773430e130e3b4c1d6702c9587bf48820da89dd6f2a461f5448a"
+      }
+    },
+    {
+      "path": "src/locales/tr/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "fc7ca6cc2b0422dc86c09efb55c44d9be248aab9f5c4d26340be8bdf98b5499b"
+      },
+      "after": {
+        "sha256": "4d6f817918e3634f093e1e1c53b6e3d5a27ebb3e420815bdf5426286548c69a0"
+      }
+    },
+    {
+      "path": "src/locales/vi/loss.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "9b0f818683044c4e6109c4a711b509f7432e65e98222d4d8f60ce4e68515f395"
+      },
+      "after": {
+        "sha256": "bf52c89875307161603367dbecbe3cb34f1d9fcf260a5d955a94932260fc75d6"
+      }
+    },
+    {
+      "path": "src/locales/vi/race.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "07e2b36d354111a6e2e9e953d4c9a9fe3267b9f2d17c8375f1e1d47e038da4a8"
+      },
+      "after": {
+        "sha256": "c60f15f49cc1a5109ab29b28ff9e6dba31529e64ffc7dcbfb9235e35a2d43dea"
+      }
+    },
+    {
+      "path": "src/locales/vi/shop.json",
+      "kind": "changed",
+      "before": {
+        "sha256": "d922be86bf20349515e67e239043957c385f51c902986934b09543fa6a411763"
+      },
+      "after": {
+        "sha256": "37e4343da9a5ede0977d15362609dce74c6ea5a329ea41ae3390ee9e48d53547"
+      }
+    }
+  ],
+  "logs": [
+    {
+      "command": "node --test packages/portal/scripts/jest-upload-artifact.test.mjs scripts/release/platform-releases.test.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-006-914aa0d77ddc830dfbb752276fcb72f9d5b0ac9c4431b6efca8d806724400aa2.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions check:types",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-014-971a1b57d55545f85ea5d7464171dff050e55a4c2ff340067825fa4b22972677.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/play/race/__tests__",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-015-75005311655c0c9249cffd1fdf458f2e3abfbee9a13b70e3d765f66f48e7bb21.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-016-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/core test --runInBand",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-017-5ed5c443335c2cdc4709f95a4aa0654bc3ce9206b339c5a2baf7cd9033a5d390.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/__tests__/firebase.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-019-dc5747c4fac6f848f979b867adb976a31793e1104d42cad8d65b5dbfa3078008.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=playerPreferences.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-037-2838e6f01cc73efeaa4d8eb0ee7f8a8d1ac644dd89bb2e0333471b5fada9ee35.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-038-da970e55e1d79c60fca9cae69611fdc2012c5a243ab6744c385edffc7281e89e.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=raceConfirmedHistory",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-113-64bec419636ca65e753b808bb5f5858e5be8361018a2639f479d346ae910633e.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=raceConfirmedHistory --testNamePattern=equivalent confirmed rows|invalid attempt count",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-114-ab275ee2abacf8b57ed208c82724980ed6b83ac245637bc29a8d3be81b41003b.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=RaceSession|raceAuthority|raceReset|raceRecoveryClock|raceStartReceipt",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-116-8c2123b5e7864968fa795bc6b14137f72a18a761b4dbc11a5adf23f533ace2a5.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=RaceSessionHistoryCheckpoints",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-118-3692c8b089cfa12991cb5db949d3bb9d5766c821960463f6697b5fb699078c90.log",
+      "matches": true
+    },
+    {
+      "command": "node --test scripts/release/platform-releases.test.mjs scripts/release/package-html5-platform.test.mjs scripts/release/html5-handoff-preparation.test.mjs scripts/release/development-progress.test.mjs scripts/release/record-release-automation.test.mjs scripts/release/refresh-submission-dashboard.test.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-155-ba22eb7b1548ae81b00bf32870205aa4f9c4de0790b1360c81a3b12bc6357ca3.log",
+      "matches": true
+    },
+    {
+      "command": "node --test docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-156-e4185014f6515909565f444dc840406fb8e17eeeb5e5f04346d63b09bb414f93.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --testPathPatterns=src/observability/__tests__",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-161-661c0fd0763f8f7733a3b855167ad2d68cc1d25d401ac6f48ece96da678fc069.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/play/__tests__/firebaseRaceMatchmaking.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-167-efe4393b82159bb35dc02a5ba4f89f88363862de4f65d7ea68a8d57ce8b61575.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/facebook/__tests__/contexts.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-176-0030cb38633cfb73e4ad5e9e4993cff454b2ea56c78f3797e0395b48268fec66.log",
+      "matches": true
+    },
+    {
+      "command": "node --test scripts/release/development-source-digest.test.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-177-5b97d61b5a18b60220c6bec3b4b20a58b7305c3bf102707841926b18059da42a.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint",
+      "log": "artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-179-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm check:types",
+      "log": "artifacts/development-checks/goal-20261024-final5c-preparation/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-004-9e2dceda2074c1e0d1d7b2f7fa180784c2fe75a6c26083ff27215aed8759b0f1.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage",
+      "log": "artifacts/development-checks/goal-20261024-final5c-preparation/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-012-3ac3cd8ad7a4d48cac682dd30e6c3f8cc86e54a9ac49590e4a8ac3e66cc10a6c.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal check:types",
+      "log": "artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-001-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log",
+      "matches": true
+    },
+    {
+      "command": "node scripts/release/verify-packaged-game-evidence.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-003-73c6621ab76ba2a13085dceb3ea9aca3f54eaf0e72a6bdc501d3ffa2f5fa234c.log",
+      "matches": true
+    },
+    {
+      "command": "node scripts/release/verify-release-target-e2e.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-005-8bac0549674f2a70e3e52f45f9c0b3d4382a09666796f912af8cfb4231043847.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/portal build:all-targets",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-007-faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm --filter @qwordly/reddit-app build",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-181-639812ad862462ff75306319e485d9bde729419d0bfe1ed93fc1d526a2f16768.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm check:security",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-008-7a81b13c947b5d213469c10c7f9b568eae775ea672d37f7157c04a40ea05aee6.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm check:scalability",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-009-7b3afb7836602e696ca81c01d4e980e302d988e27ce63adfbaf9a5a513e31b21.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm check:file-sizes",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-010-0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm check:tsdoc",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-011-a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770.log",
+      "matches": true
+    },
+    {
+      "command": "pnpm test:architecture",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-000-5eea1dbaa2d03f66a121f6a46c8ce4078e8a4a91b30689a54b456a77fd457c7d.log",
+      "matches": true
+    },
+    {
+      "command": "node scripts/release/verify-target-dependency-evidence.mjs",
+      "log": "artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-002-4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-084-13c3687ad8425e96f11cef25dbe599dce154614662f972f32a4673fa7cd1aad7.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=starts a guest through signed identity|opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-148-fd154b9e6d343f4463c5fdc86bebdf86134004a95a4bc350b62cd576577ee9a3.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts --testNamePattern=keeps unavailable Daily visible",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-149-7a15c84c733c07ceb5978870e15da2695f6627e214c15e1bb32c0b8e1e3d8a92.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal exec jest --config jest.config.cjs --runInBand src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts --testNamePattern=renders typed invitation waiting|recovers a waiting invitation|consumes an unavailable challenge|reopens a completed recipient|opens a public creator entry|retains public recipient acceptance|suspends typed invitation polling",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-152-c046e3f20bbbbddfc4bb89001aab7064c9f06aee3667c2a744389465a4e9542b.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=recovers lost hint and skip confirmations|preserves solving time when hint|preserves the player.s draft|keeps the immediate result visible",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-157-040923ee3b687a76f2d69ce45941a216419ac16dbbde2589e1884906939292b8.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=recovers a completely lost hint response|rejects inconsistent hint confirmations|recovers rejected race preparation|recovers lost quit confirmations|recovers lost publication confirmations",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-158-99535fe8099eda00b72d495be6c721d4d8bf5c9d02d5b3dd4a5575d33c912d5a.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=merges guess confirmation hints|restores successor typing after|rejects inconsistent hint confirmations|preserves the player.s draft through projected|confirms the result when a hint penalty",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-159-a213817e2637190a31f6dff8543f8d31488523af95f747ed26448bc2ac6c748a.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=rejects inconsistent hint confirmations|preserves the player.s draft through projected|preserves solving time when hint and skip|recovers lost hint and skip confirmations",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-160-3872f9bcf95371774cae83ec2bbccec3a5bd11f41e0d0779a79c09d74b6c3bd0.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=rejects inconsistent hint confirmations|publishes a completed score before reusable Jest invites",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-162-0e7dc070e8d83c8812c3956defb030d35fecf4536a81a8e4e5b1699699985249.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-163-a83fb0f3d4f5f22d1c1ee4bac7a5a2d5e2f7c4f3d58f5b182d9be5dd8d8d399c.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=confirms the result when a hint penalty or final skip|publishes a completed score before reusable Jest invites",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-164-e02a0b9cfe7ab858af5b85596235496f5d09d7cfa976e5cd2c88f7ab049f1dc3.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=publishes a completed score before reusable Jest invites",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-165-5013a7d47281649ddf7b4863fd5f61d794d7639ec5cbc08c0e8ed3e5521d323d.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/reddit/__tests__/redditBrowser.jest-playwright.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-166-b8c52271f049eb61de9eb990afbec86e1bd7682999b6df509a83b0cca94b18f4.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=renders the preloaded next riddle|shows an opponent win immediately|shows a completed creator result|recovers a guess rejected|keeps the immediate result visible|acknowledges close during|confirms quitting an active race|preserves solving time when hint|replays an opponent skip milestone",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-168-f6f775e0531b66948c231aba84323f08d5ad1ff1d7702ae4a1e5cc85ebdcc825.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=preserves solving time when hint and skip|publishes a completed score before reusable Jest invites",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-169-da46ca898e51728d027bd9b485214105802d700d0903ecf620ac24961b817125.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=recovers lost quit confirmations|confirms quitting an active race|acknowledges close during a delayed start|recovers lost publication confirmations|recovers a guess rejected after the ghost deadline",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-171-625450930b9d4eb1de230eb86b09ebae98d7fa0c3360e695e8000ae517fb3d3f.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=confirms an automatic skip|merges guess confirmation hints|restores successor typing after|confirms the result when a hint penalty|preserves the player.s draft through projected|preserves solving time when hint and skip",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-173-c9f1f0ca24a8276c35e4bc6be553f7e1dc74e3b11f63403328e5b73503a9e562.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=restores successor typing after|rejects inconsistent hint confirmations|preserves solving time when hint and skip|recovers a completely lost hint response",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-174-a2648c86d53a53070a12f073676522462e591ed6835c66b93c3b3eeab16a096d.log",
+      "matches": true
+    },
+    {
+      "command": "env PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts --testNamePattern=confirms the result when a hint penalty|rejects inconsistent hint confirmations|preserves the player.s draft through projected|shows an opponent win immediately",
+      "log": "artifacts/development-checks/goal-20261024-final5c-browser-selectors/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-175-5aabc0273c1c37d7bee0b9dd1b1fad17aa16153322b5a7b7cc6f5a99e42d9921.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-event-aggregate-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/018.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-rule-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/020.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/021.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-timeout-recovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/022.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-startup-recovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/023.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-outcome-isolation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/024.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-command-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/025.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-pending-input-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/026.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/027.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/028.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/029.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/030.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/032.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/033.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-hub-navigation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/034.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-capability-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/035.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-draft-reload-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/036.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-abandoned-entry-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/039.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/040.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-keyboard-activation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/041.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-draft-cleanup-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/042.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-overlay-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/043.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/044.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/045.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/046.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-resume-selection-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/047.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-resume-read-observation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/048.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-search-journal-observation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/049.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-analytics-delivery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/050.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-offline-delivery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/051.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-profile-refresh-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/052.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-prefetch-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/053.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-rendered-entry-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/054.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/055.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/056.log",
+      "matches": true
+    },
+    {
+      "command": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-prefetch-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/057.log",
+      "matches": true
+    },
+    {
+      "command": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-profile-refresh-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/058.log",
+      "matches": true
+    },
+    {
+      "command": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/059.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-session-resources-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/060.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/061.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-discovery-provider-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/062.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-discovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/063.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-discovery-callback-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/064.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/065.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-retired-search-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/066.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-retirement-journal-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/067.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/068.log",
+      "matches": true
+    },
+    {
+      "command": "env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/069.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-existing-attempt-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/071.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-private-entry-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/072.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-existing-opponent-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/073.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-private-creator-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/074.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-entry-effect-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/075.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-waiting-selection-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/076.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/077.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-start-selection-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/078.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-start-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/079.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-start-category-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/080.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/081.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-start-origin-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/082.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-start-opponent-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/083.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-creator-opponent-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/085.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/086.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-safety-selection-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/087.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-countdown-clock-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/088.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/089.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-resolver-failure-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/090.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/091.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/092.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-catalog-retry-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/093.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-resolver-reentry-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/094.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-provider-observation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/095.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-authority-observation-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/096.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-timer-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/097.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/098.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/099.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/100.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/101.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/102.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/103.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/104.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/105.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-integration-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/106.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/107.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/108.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-time-rollover-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/109.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/110.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/111.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/audit-race-history-continuity-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/112.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/115.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/117.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/119.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/120.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/121.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/122.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-normalization-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/123.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-progression-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/124.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-attempt-budget-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/125.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-cleanup-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/126.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-clock-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/127.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-dispatch-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/128.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-event-history-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/129.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-fallback-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/130.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-guess-evidence-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/131.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-guess-feedback-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/132.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-hints-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/133.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-live-progress-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/134.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-loader-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/135.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-locale-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/136.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-paid-evidence-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/137.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-private-snapshot-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/138.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-readiness-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/139.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-reentry-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/140.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-storage-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/141.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-tick-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/142.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-unscored-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/143.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-wrong-attempt-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/144.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-scoring-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/145.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-graphemes-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/146.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-history-whitespace-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/147.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-race-resume-hint-ownership-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/172.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-live-race-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-main-final5c-main/150.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-live-race-delivery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-main-final5c-main/151.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-live-race-lifecycle-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-main-final5c-main/153.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-retained-start-quit-publication-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-main-final5c-main/170.log",
+      "matches": true
+    },
+    {
+      "command": "node packages/portal/scripts/verify-retained-creator-recovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-main-final5c-main/178.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore,database --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand",
+      "log": "artifacts/development-checks/goal-20261024-backend-final5c-backend/013.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-backend-final5c-backend/031.log",
+      "matches": true
+    },
+    {
+      "command": "env GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIRESTORE_EMULATOR_HOST=127.0.0.1:18199 PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceCallables.test.ts",
+      "log": "artifacts/development-checks/goal-20261024-backend-final5c-backend/070.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --only firestore --project demo-riddle-quest-live-seat-browser node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs",
+      "log": "artifacts/development-checks/goal-20261024-backend-final5c-backend/154.log",
+      "matches": true
+    },
+    {
+      "command": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIREBASE_PROJECT_ID=demo-riddle-quest-multiplayer OPENAI_API_KEY=test-openai-api-key pnpm --dir firebase-functions test:race:coverage",
+      "log": "artifacts/development-checks/goal-20261024-backend-final5c-backend/180.log",
+      "matches": true
+    }
+  ],
+  "receipts": [
+    {
+      "taskId": "architecture:build-evidence-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "architecture:isolated-platform-delivery",
+      "matches": true
+    },
+    {
+      "taskId": "release:jest-build-activation-publication-hold",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:live-pvp-delivery-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:live-pvp-lifecycle-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:live-pvp-seat-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "release:platform-only-build-scope",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-abandoned-entry",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-analytics-delivery-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-answer-free-checkpoints",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-async-delivery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-attempt-budget-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-authentication-daily-gate",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-authentication-harness-extraction",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-authority-clock-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-authority-observation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-authority-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-backend-completion-audit",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-backend-documentation-gate",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-browser-plan-coverage",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-cancellation-receipt",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-catalog-retry",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-cleanup-lifetime-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-clock-transition-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-cold-search-catalog",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-cold-search-retirement",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-command-clock-ordering",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-concurrent-offer-expiry",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-confirmed-guess-retention",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-countdown-clock-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-creator-opponent-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-current-integration",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-delivery-expiry-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-delivery-expiry",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-delivery-timeout-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-development-strict-dialogs",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-development-strict-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-dialog-adapter-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-dialog-keyboard-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-discovery-callback-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-discovery-completion-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-discovery-prompt-cancellation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-discovery-provider-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-discovery-retry-policy",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-documentation-gate",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-draft-cleanup-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-draft-confirmation-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-draft-reload",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-draft-storage-failure",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-draft-write-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-entry-effect-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-entry-journal-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-entry-run-handoff",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-event-history-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-exclusive-opponent-intent",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-exhaustion-audit",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-existing-attempt-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-existing-opponent-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-fallback-category-contract",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-fallback-receipt-identity",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-guess-concurrent-history",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-guess-draft-confirmation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-guess-feedback-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-guess-progression-evidence",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-harness-delayed-receipts",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-harness-feedback-parity",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-hint-concurrent-history",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-hint-confirmation-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-hint-reveal-evidence",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-continuity",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-graphemes",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-integration-prototype",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-integration",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-ledger-bounds",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-ledger-preparation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-normalization",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-progression",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-prototype-retained",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-runtime-integration",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-scoring",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-history-whitespace",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-immutable-rule-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-immutable-snapshot-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-integrated-entry-lifetimes",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-keyboard-activation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-keyboard-feedback-strength",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-known-answer-reveals",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-known-event-aggregates",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-live-clock-contract",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-live-progress-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-loader-lifetime-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-loader-tail-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-match-timeout-receipts",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-matchmaking-removal",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-mutation-refresh",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-offline-delivery-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-optional-effect-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-optional-storage-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-outbound-journey-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-outcome-confirmation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-overlay-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-owned-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-paid-confirmation-evidence",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-paid-draft-checkpoints",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-pending-checkpoint-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-position-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-prefetch-failure-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-prefetch-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-private-command-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-private-creator-acceptance",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-private-entry-selection",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-private-outcome-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-private-snapshot-isolation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-profile-refresh-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-projected-attempt-rows",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-projection-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-capability-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-confirmed-outcome",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-entry-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-observation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-record-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-record-timeout",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-rendered-cache",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-start-selection",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-provider-view-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-publication-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-queue-lease",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-quit-focus-containment",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-quit-focus-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-quit-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-readiness-clock-ordering",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-readiness-delivery-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-readiness-expiry-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-receipt-progress-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-receipt-projection-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-recovery-clock-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-reddit-history-opt-in",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-rendered-entry-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-replacement-offer-deadline",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-replay-identity",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-replay-stale-failure",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-request-receipt-binding",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-reset-clock-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-resolver-failure",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-resolver-reentry",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-response-acceptance",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-response-lifetime-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-restored-attempt-rows",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-restored-hint-integrity",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-resume-hint-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-resume-pointer-deletion",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-resume-read-observation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-resume-selection-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-retired-search-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-retirement-shared-journal",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-reward-acceptance",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-safety-selection",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-saved-run-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-scheduled-draft",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-search-journal-observation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-search-journal-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-search-retry-journal",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-session-browser-resources",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-session-reliability",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-settlement-receipt-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-shared-documentation-gate",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-skip-progress-and-abandonment",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-skip-transition-confirmation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-source-gates",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-sparse-history-refresh",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-category-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-opponent-presence",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-origin-context",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-receipt-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-retry-selection",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-start-selection-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-stored-result-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-submitted-feedback-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-subscription-daily-fixture",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-successor-draft-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-terminal-hint-confirmation",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-time-rollover",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-timeline-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-timer-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-unacknowledged-timeout-recovery",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-unscored-phase-authority",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-visibility-retirement",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-waiting-selection",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-web-dialog-ownership",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:race-wrong-attempt-evidence",
+      "matches": true
+    },
+    {
+      "taskId": "multiplayer:retained-invitation-creator-recovery",
+      "matches": true
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "builds/jest/index.html",
+      "matches": false
+    },
+    {
+      "file": "builds/facebook/index.html",
+      "matches": true
+    },
+    {
+      "file": "builds/reddit/index.html",
+      "matches": true
+    },
+    {
+      "file": "builds/youtube/index.html",
+      "matches": true
+    },
+    {
+      "file": "builds/netflix/index.html",
+      "matches": true
+    },
+    {
+      "file": "builds/yahoo/index.html",
+      "matches": true
+    },
+    {
+      "file": "build-gamesnacks.zip",
+      "matches": true
+    },
+    {
+      "file": "build-itch.zip",
+      "matches": true
+    },
+    {
+      "file": "artifacts/target-dependencies/jest.json",
+      "matches": false
+    },
+    {
+      "file": "artifacts/target-dependencies/facebook.json",
+      "matches": true
+    },
+    {
+      "file": "artifacts/target-dependencies/reddit.json",
+      "matches": true
+    },
+    {
+      "file": "artifacts/target-dependencies/youtube.json",
+      "matches": true
+    },
+    {
+      "file": "artifacts/target-dependencies/netflix.json",
+      "matches": true
+    },
+    {
+      "file": "artifacts/target-dependencies/yahoo.json",
+      "matches": true
+    },
+    {
+      "file": "artifacts/target-dependencies/gamesnacks.json",
+      "matches": true
+    },
+    {
+      "file": "docs/evidence/platform-only-build-scope.md",
+      "matches": true
+    },
+    {
+      "file": "artifacts/retained-creator-recovery-2026-10-10/browser.json",
+      "matches": true
+    }
+  ],
+  "note": "Hash inspection of prior evidence and changed source only. No tests rerun. Baseline receipts remain historical; source changes require new evidence, not relabelling."
+}

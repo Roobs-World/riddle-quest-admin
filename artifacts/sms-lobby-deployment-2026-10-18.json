@@ -1,0 +1,92 @@
+{
+  "project": "riddle-quest-ec2b2",
+  "functions": [
+    "joinLiveRace",
+    "getLiveRaceChallenge",
+    "listLiveRaceChallenges"
+  ],
+  "runtimeSha256": "a193c45628a351615cea8ee0a12f02b425d7972c704702b8f9173b2af1b31f6e",
+  "compiledCodeVerified": true,
+  "sourceCommit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDirty": true,
+  "testsRun": false,
+  "deploymentExitCode": 0,
+  "deploymentReportedComplete": true,
+  "verifiedFunctions": [
+    {
+      "id": "joinLiveRace",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinLiveRace",
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:17.475963086Z",
+      "runtime": "nodejs22",
+      "revision": "joinliverace-00021-qux",
+      "previousRevision": "joinliverace-00020-zib",
+      "revisionChanged": true,
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "id": "joinLiveRace",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/joinLiveRace",
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:27.253896005Z",
+      "runtime": "nodejs22",
+      "revision": "joinliverace-00021-wej",
+      "previousRevision": "joinliverace-00020-cej",
+      "revisionChanged": true,
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "id": "getLiveRaceChallenge",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLiveRaceChallenge",
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:19.443674658Z",
+      "runtime": "nodejs22",
+      "revision": "getliveracechallenge-00013-sul",
+      "previousRevision": "getliveracechallenge-00012-sit",
+      "revisionChanged": true,
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "id": "getLiveRaceChallenge",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getLiveRaceChallenge",
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:26.462836488Z",
+      "runtime": "nodejs22",
+      "revision": "getliveracechallenge-00013-han",
+      "previousRevision": "getliveracechallenge-00012-bib",
+      "revisionChanged": true,
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "id": "listLiveRaceChallenges",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceChallenges",
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:19.266493260Z",
+      "runtime": "nodejs22",
+      "revision": "listliveracechallenges-00011-xes",
+      "previousRevision": "listliveracechallenges-00010-por",
+      "revisionChanged": true,
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "id": "listLiveRaceChallenges",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceChallenges",
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:26.755977087Z",
+      "runtime": "nodejs22",
+      "revision": "listliveracechallenges-00011-xul",
+      "previousRevision": "listliveracechallenges-00010-rip",
+      "revisionChanged": true,
+      "allTrafficOnLatestRevision": true
+    }
+  ],
+  "verificationPassed": true,
+  "verifiedAt": "2026-10-18T19:10:46.036Z",
+  "verificationErrors": []
+}

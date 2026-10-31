@@ -1,0 +1,39 @@
+{
+  "readAt": "2026-10-24T02:05:50.198684+00:00",
+  "safeAdministrativeCapacityFields": [
+    {
+      "timestamp": "2026-10-17T11:22:26.861705Z",
+      "region": "us-central1",
+      "method": "google.cloud.serverless.internal.InternalServices.CreateInternalService",
+      "requestTopLevelKeys": [],
+      "responseTopLevelKeys": [],
+      "selectedCapacityFields": []
+    },
+    {
+      "timestamp": "2026-10-17T11:22:21.846582Z",
+      "region": "europe-west1",
+      "method": "google.cloud.serverless.internal.InternalServices.CreateInternalService",
+      "requestTopLevelKeys": [],
+      "responseTopLevelKeys": [],
+      "selectedCapacityFields": []
+    },
+    {
+      "timestamp": "2026-10-17T11:21:23.877969Z",
+      "region": "europe-west1",
+      "method": "google.cloud.serverless.internal.InternalServices.CreateInternalService",
+      "requestTopLevelKeys": [],
+      "responseTopLevelKeys": [],
+      "selectedCapacityFields": []
+    },
+    {
+      "timestamp": "2026-10-17T11:21:23.548012Z",
+      "region": "us-central1",
+      "method": "google.cloud.serverless.internal.InternalServices.CreateInternalService",
+      "requestTopLevelKeys": [],
+      "responseTopLevelKeys": [],
+      "selectedCapacityFields": []
+    }
+  ],
+  "requestResponseBodiesNotStored": true,
+  "environmentValuesNotStored": true
+}

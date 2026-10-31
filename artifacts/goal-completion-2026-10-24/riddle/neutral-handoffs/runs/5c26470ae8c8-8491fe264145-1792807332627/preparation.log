@@ -1,0 +1,104 @@
+
+Command pnpm --filter @qwordly/portal build:netflix at 2026-10-24T02:02:12.701Z
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (15.313703ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (2.359136ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (3.955088ms)
+✔ rejects imports between different target owners (1.647009ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.603102ms)
+✔ rejects Devvit imports outside Reddit-owned source (1.127234ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.066068ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.779085ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.033516ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.666712ms)
+✔ aggregates violations in deterministic file and source order (0.785066ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.64242
+Web Target boundary audit passed (345 files, 1494 module references).
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.3 building client environment for netflix...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/netflix/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../builds/netflix/index.html                             0.81 kB │ gzip:  0.40 kB
+../../builds/netflix/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../builds/netflix/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../builds/netflix/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../builds/netflix/assets/core-game-CcqtoK8X.js           2.31 kB │ gzip:  1.01 kB
+../../builds/netflix/assets/playable-pack-en-knKl37MR.js   87.86 kB │ gzip: 47.70 kB
+../../builds/netflix/assets/playable-pack-pt-Dgvv-YuJ.js   90.15 kB │ gzip: 48.92 kB
+../../builds/netflix/assets/playable-pack-nl-bLh2De3e.js   90.54 kB │ gzip: 49.17 kB
+../../builds/netflix/assets/playable-pack-id-BCd3nheU.js   91.21 kB │ gzip: 49.54 kB
+../../builds/netflix/assets/playable-pack-it-MpY6cl8Q.js   91.35 kB │ gzip: 49.58 kB
+../../builds/netflix/assets/playable-pack-es-Cl0WCXwS.js   91.65 kB │ gzip: 49.78 kB
+../../builds/netflix/assets/playable-pack-de-BICKPAPx.js   92.15 kB │ gzip: 50.04 kB
+../../builds/netflix/assets/playable-pack-tr-WIxOpDTi.js   92.54 kB │ gzip: 50.23 kB
+../../builds/netflix/assets/playable-pack-pl-Lzk59NuU.js   92.70 kB │ gzip: 50.33 kB
+../../builds/netflix/assets/playable-pack-fr-Cdka41e8.js   93.56 kB │ gzip: 50.78 kB
+../../builds/netflix/assets/playable-pack-ja-B7L3zLGL.js   94.66 kB │ gzip: 51.41 kB
+../../builds/netflix/assets/playable-pack-vi-Du0f5I1U.js   96.78 kB │ gzip: 52.56 kB
+../../builds/netflix/assets/playable-pack-ko-CHvGDGwf.js   97.36 kB │ gzip: 52.86 kB
+../../builds/netflix/assets/playable-pack-ar-c4FvpzCq.js  102.12 kB │ gzip: 55.44 kB
+../../builds/netflix/assets/index-BHj0CnEY.js             105.62 kB │ gzip: 35.39 kB
+../../builds/netflix/assets/playable-pack-ru-DmssV1x5.js  114.09 kB │ gzip: 61.94 kB
+../../builds/netflix/assets/playable-pack-hi-D9B1_UaL.js  134.49 kB │ gzip: 72.97 kB
+../../builds/netflix/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.29s
+netflix artifact audit passed: 24 files, 1.80 MiB
+
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && NETFLIX_BUILD=1 NODE_ENV=production vite build --mode netflix && pnpm audit:netflix-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+$ node scripts/youtube-content-compile.js --check
+$ node scripts/audit-locales.mjs
+$ node scripts/audit-standalone-artifact.mjs netflix
+
+
+Command zip -q -r /home/craig-beswetherick/Documents/riddle-quest/build-html5.zip . at 2026-10-24T02:02:16.765Z
+
+
+
+Command unzip -Z1 /home/craig-beswetherick/Documents/riddle-quest/build-html5.zip at 2026-10-24T02:02:16.813Z
+assets/
+assets/playable-pack-hi-D9B1_UaL.js
+assets/playable-pack-id-BCd3nheU.js
+assets/index-BHj0CnEY.js
+assets/playable-pack-pt-Dgvv-YuJ.js
+assets/playable-pack-vi-Du0f5I1U.js
+assets/playable-pack-pl-Lzk59NuU.js
+assets/playable-pack-it-MpY6cl8Q.js
+assets/vendor-react-CzolT8tg.js
+assets/index-BzWrKCb1.css
+assets/playable-pack-ko-CHvGDGwf.js
+assets/rolldown-runtime-Czjbc987.js
+assets/playable-pack-es-Cl0WCXwS.js
+assets/playable-pack-nl-bLh2De3e.js
+assets/playable-pack-en-knKl37MR.js
+assets/playable-pack-tr-WIxOpDTi.js
+assets/playable-pack-ru-DmssV1x5.js
+assets/playable-pack-de-BICKPAPx.js
+assets/playable-pack-fr-Cdka41e8.js
+assets/playable-pack-ar-c4FvpzCq.js
+assets/core-game-CcqtoK8X.js
+assets/playable-pack-ja-B7L3zLGL.js
+third-party-licenses.txt
+index.html
+youtube-content-manifest.json
+
+
+
+Command git rev-parse HEAD at 2026-10-24T02:02:16.816Z
+5c26470ae8c8324af50424702b66aa9a0f6b7d37
+
+

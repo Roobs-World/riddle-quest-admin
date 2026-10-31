@@ -3,9 +3,10 @@ import type {JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, 
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {parsePlayerData} from "../platform/playerDataValidation";
 import {isValidNotificationAsset} from "./notifications/inlineAsset";
+import {invokeSdkOperation, type JestSdkBoundary} from "./sdkBoundary";
 
 /** Describes sdk. */
-type Sdk = Record<string, any>;
+type Sdk = JestSdkBoundary;
 /** Defines the player data key value. */
 const PLAYER_DATA_KEY = "riddleQuestPlayerState";
 /** Exact client-writable SDK keys removed after authoritative account deletion. */
@@ -21,7 +22,7 @@ const PLAYER_STATE_KEYS = [
   "jestGuestCompletedRiddles",
   PLAYER_DATA_KEY,
 ] as const;
-/** Defines the longest a platform subscription checkout may block the game UI. */
+/** Bounds subscription cancellation confirmation, which cannot create a new charge. */
 const SUBSCRIPTION_CHECKOUT_TIMEOUT_MS = 30_000;
 /** Bounds provider reads and acknowledgments required for startup purchase recovery. */
 const PURCHASE_RECOVERY_TIMEOUT_MS = 15_000;
@@ -41,20 +42,21 @@ const failure = (error: unknown, context: Record<string, string> = {}): Platform
 
 /** Waits for the independently loaded Jest SDK without delaying the React startup shell. */
 const waitForGlobalJestSdk = (timeoutMs: number): Promise<Sdk> => {
-  /** Provides target behavior. */
-  const target = globalThis as typeof globalThis & {
-    /** Stores jest sdk. */
-    JestSDK?: Sdk;
-  };
-  if (typeof target.JestSDK?.init === "function") return Promise.resolve(target.JestSDK);
+  /** The provider's declaration describes its browser singleton. */
+  const getGlobalSdk = () => typeof JestSDK === "undefined" ? undefined : JestSDK;
+  /** Singleton already present before polling begins. */
+  const sdk = getGlobalSdk();
+  if (typeof sdk?.init === "function") return Promise.resolve(sdk);
 
   return new Promise((resolve, reject) => {
     /** Starts ed at. */
     const startedAt = Date.now();
     /** Provides check behavior. */
     const check = () => {
-      if (typeof target.JestSDK?.init === "function") {
-        resolve(target.JestSDK);
+      /** Singleton observed on this poll, which may have loaded since startup. */
+      const loadedSdk = getGlobalSdk();
+      if (typeof loadedSdk?.init === "function") {
+        resolve(loadedSdk);
         return;
       }
       if (Date.now() - startedAt >= timeoutMs) {
@@ -98,7 +100,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   private sdk: Sdk;
   /** Indicates that initialization must resolve the asynchronously loaded global SDK. */
   private readonly usesGlobalSdk: boolean;
-  /** Stores the subscription checkout timeout. */
+  /** Stores the subscription cancellation confirmation timeout. */
   private readonly subscriptionCheckoutTimeoutMs: number;
   /** Stores the SDK load timeout. */
   private readonly sdkLoadTimeoutMs: number;
@@ -107,7 +109,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    * Creates a Jest SDK adapter with bounded provider waits.
    *
    * @param sdk - Injected SDK for tests, or `undefined` to wait for `globalThis.JestSDK`.
-   * @param subscriptionCheckoutTimeoutMs - Checkout deadline; defaults to 30 seconds.
+   * @param subscriptionCheckoutTimeoutMs - Cancellation confirmation deadline; defaults to 30 seconds.
    * @param sdkLoadTimeoutMs - Global SDK discovery deadline; defaults to 10 seconds.
    */
   constructor(
@@ -121,6 +123,16 @@ export class JestSdkPlatform implements JestPlatformPort {
     this.sdkLoadTimeoutMs = sdkLoadTimeoutMs;
   }
 
+  /** Rejects absent injected modules before an operation is attempted. */
+  private getSdkModule<Key extends "data" | "notifications" | "social" | "referrals" | "payments">(
+    key: Key,
+  ): NonNullable<Sdk[Key]> {
+    /** Requested provider module, narrowed before any method is called. */
+    const module = this.sdk[key];
+    if (!module) throw new Error(`Jest SDK ${key} module is unavailable.`);
+    return module;
+  }
+
   /**
    * Waits for the independently loaded SDK and disables duplicate platform registration reminders.
    *
@@ -129,7 +141,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   async init() {
     try {
       if (this.usesGlobalSdk) this.sdk = await waitForGlobalJestSdk(this.sdkLoadTimeoutMs);
-      await this.sdk.init({autoLoginReminders: false});
+      await invokeSdkOperation(this.sdk, this.sdk.init, {autoLoginReminders: false});
       return success(undefined);
     } catch (error) {
       return failure(error);
@@ -137,11 +149,11 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   /** @returns The current target-scoped player projection directly from Jest. */
   getPlayer() {
-    return this.sdk.getPlayer();
+    return invokeSdkOperation(this.sdk, this.sdk.getPlayer);
   }
   /** @returns The player projection and opaque signed identity envelope for backend exchange. */
   getPlayerSigned() {
-    return this.sdk.getPlayerSigned();
+    return invokeSdkOperation(this.sdk, this.sdk.getPlayerSigned);
   }
   /**
    * Opens Jest login only when the current player is not already registered.
@@ -154,7 +166,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       /** Provides player behavior. */
       const player = this.getPlayer();
       if (player.registered) return success(player);
-      await this.sdk.login(entryPayload ? {entryPayload} : undefined);
+      await invokeSdkOperation(this.sdk, this.sdk.login, entryPayload ? {entryPayload} : undefined);
       return success(this.getPlayer());
     } catch (e) {
       return failure(e);
@@ -169,7 +181,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   showRegistrationOverlay(options: Parameters<JestPlatformPort["showRegistrationOverlay"]>[0]) {
     try {
       /** Provides handle behavior. */
-      const handle = this.sdk.showRegistrationOverlay(options);
+      const handle = invokeSdkOperation(this.sdk, this.sdk.showRegistrationOverlay, options);
       return success({
         loginButtonAction: () => handle.loginButtonAction(),
         closeButtonAction: () => handle.closeButtonAction(),
@@ -196,7 +208,7 @@ export class JestSdkPlatform implements JestPlatformPort {
       registrationPromptDismissedAt:
         typeof data.registrationPromptDismissedAt === "number" ? data.registrationPromptDismissedAt : undefined,
       firstMilestoneMarked: typeof data.firstMilestoneMarked === "boolean" ? data.firstMilestoneMarked : undefined,
-      jestGuestCompletedRiddles: Number.isSafeInteger(data.jestGuestCompletedRiddles) && data.jestGuestCompletedRiddles >= 0
+      jestGuestCompletedRiddles: typeof data.jestGuestCompletedRiddles === "number" && Number.isSafeInteger(data.jestGuestCompletedRiddles) && data.jestGuestCompletedRiddles >= 0
         ? data.jestGuestCompletedRiddles : undefined,
     };
   }
@@ -206,8 +218,10 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @param value - Validated partial preference projection.
    */
   async writePreferences(value: JestPreferences) {
-    this.sdk.data.set(value);
-    await this.sdk.data.flush();
+    /** Provider storage module used to persist preference changes. */
+    const data = this.getSdkModule("data");
+    data.set({...value});
+    await data.flush();
   }
   /**
    * Parses the app-owned versioned snapshot from untrusted SDK storage.
@@ -225,8 +239,10 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @param value - Complete versioned client snapshot; it carries no economy authority.
    */
   async writePlayerData(value: JestPlayerData) {
-    this.sdk.data.set(PLAYER_DATA_KEY, value);
-    await this.sdk.data.flush();
+    /** Provider storage module used to replace the client progress snapshot. */
+    const data = this.getSdkModule("data");
+    data.set(PLAYER_DATA_KEY, value);
+    await data.flush();
   }
   /**
    * Deletes every known app-owned SDK key and flushes after authoritative account deletion.
@@ -235,8 +251,10 @@ export class JestSdkPlatform implements JestPlatformPort {
    * The exact allowlist avoids erasing provider-owned data or keys belonging to another app.
    */
   async clearPlayerState() {
-    PLAYER_STATE_KEYS.forEach((key) => this.sdk.data.delete(key));
-    await this.sdk.data.flush();
+    /** Provider storage module used to erase the app-owned keys. */
+    const data = this.getSdkModule("data");
+    PLAYER_STATE_KEYS.forEach((key) => data.delete(key));
+    await data.flush();
   }
   /** @returns Sanitized provider entry data merged with approved launch-query attribution. */
   getEntryIntent() {
@@ -244,7 +262,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   /** @returns A 128-pixel provider display profile, or `null` when unavailable. */
   async getProfile() {
-    return this.sdk.social.getProfile({avatarSize: 128}) ?? null;
+    return this.getSdkModule("social").getProfile({avatarSize: 128}) ?? null;
   }
   /**
    * Schedules provider notification content for a registered player.
@@ -256,9 +274,9 @@ export class JestSdkPlatform implements JestPlatformPort {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
     try {
       if (input.asset !== undefined && (input.assetReference !== undefined || !isValidNotificationAsset(input.asset))) {
-        throw new Error("INVALID_ARGUMENTS: notification asset must be a PNG, JPEG, or WebP data URL up to 2MB and cannot accompany assetReference");
+        throw new Error("INVALID_ARGUMENTS: notification asset must be a PNG, JPEG, or WebP data URL up to 2MB encoded or an HTTPS URL up to 2048 characters, and cannot accompany assetReference");
       }
-      await this.sdk.notifications.scheduleNotification(input);
+      await this.getSdkModule("notifications").scheduleNotification(input);
       return success(undefined);
     } catch (e) {
       return failure(e);
@@ -273,7 +291,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   async removeNotification(identifier: string) {
     if (!this.getPlayer().registered) return {status: "unavailable", message: "Registration is required"} as const;
     try {
-      await this.sdk.notifications.unscheduleNotification({identifier});
+      await this.getSdkModule("notifications").unscheduleNotification({identifier});
       return success(undefined);
     } catch (e) {
       return failure(e);
@@ -287,7 +305,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   async shareReferral(input: Parameters<JestPlatformPort["shareReferral"]>[0]) {
     try {
       /** Provides result behavior. */
-      const result = await this.sdk.referrals.shareReferralLink(input);
+      const result = await this.getSdkModule("referrals").shareReferralLink(input);
       return result?.canceled ? ({status: "cancelled"} as const) : success(undefined);
     } catch (e) {
       return failure(e);
@@ -297,7 +315,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   async listReferralsSigned() {
     try {
       /** Provides result behavior. */
-      const result = await this.sdk.referrals.listReferrals();
+      const result = await this.getSdkModule("referrals").listReferrals();
       return success(result.referralsSigned);
     } catch (e) {
       return failure(e);
@@ -305,12 +323,14 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   /** Registers or removes the lazy screenshot callback consumed by Jest sharing. */
   setScreenshotProvider(provider: ScreenshotProvider | null) {
-    this.sdk.social.setScreenshotProvider(provider);
+    this.getSdkModule("social").setScreenshotProvider(provider);
   }
   /** @returns Provider-priced consumables for display; no client-side grant is implied. */
   async getProducts() {
     try {
-      return success(await this.sdk.payments.getProducts());
+      /** Provider catalog whose nullable descriptions are normalized for game display. */
+      const products = await this.getSdkModule("payments").getProducts();
+      return success(products.map((product) => ({...product, description: product.description ?? undefined})));
     } catch (e) {
       return failure(e);
     }
@@ -324,7 +344,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   async beginPurchase(productSku: string) {
     try {
       /** Provides result behavior. */
-      const result = await this.sdk.payments.beginPurchase({productSku});
+      const result = await this.getSdkModule("payments").beginPurchase({productSku});
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
         captureBrowserException(new Error(String(result.error)), {component: "jest_sdk", operation: "begin_purchase"});
@@ -344,8 +364,8 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async getIncompletePurchases() {
     try {
-      return success(await withTimeout<any>(
-        this.sdk.payments.getIncompletePurchases(),
+      return success(await withTimeout(
+        this.getSdkModule("payments").getIncompletePurchases(),
         PURCHASE_RECOVERY_TIMEOUT_MS,
         "Jest incomplete purchase read timed out",
       ));
@@ -362,8 +382,8 @@ export class JestSdkPlatform implements JestPlatformPort {
   async completePurchase(purchaseToken: string) {
     try {
       /** Provides result behavior. */
-      const result = await withTimeout<any>(
-        this.sdk.payments.completePurchase({purchaseToken}),
+      const result = await withTimeout(
+        this.getSdkModule("payments").completePurchase({purchaseToken}),
         PURCHASE_RECOVERY_TIMEOUT_MS,
         "Jest purchase completion timed out",
       );
@@ -389,33 +409,29 @@ export class JestSdkPlatform implements JestPlatformPort {
   async getSubscriptions() {
     try {
       /** Provides result behavior. */
-      const result = await this.sdk.payments.getSubscriptions();
+      const result = await this.getSdkModule("payments").getSubscriptions();
       return success({
-        subscriptions: result.subscriptions ?? [],
-        subscriptionsSigned: result.subscriptionsSigned ?? result.signed,
+        subscriptions: result.subscriptions,
+        subscriptionsSigned: result.signed,
       });
     } catch (e) {
       return failure(e);
     }
   }
   /**
-   * Opens a subscription checkout with the constructor-configured deadline.
+   * Opens a subscription checkout and waits until the provider settles it.
    *
    * @param subscriptionSku - Exact provider subscription SKU.
    * @returns Signed subscription data, cancellation, unavailability, or normalized failure.
    *
    * @remarks
-   * The default deadline is 30 seconds. Guest and already-subscribed outcomes are
-   * `unavailable`; an invalid subscription is terminal; timeouts are retryable.
+   * The checkout lock must outlive provider billing, so no local deadline releases it.
+   * Guest and already-subscribed outcomes are `unavailable`; an invalid subscription is terminal.
    */
   async beginSubscription(subscriptionSku: string) {
     try {
       /** Provides result behavior. */
-      const result: any = await withTimeout<any>(
-        this.sdk.payments.beginSubscription({subscriptionSku}),
-        this.subscriptionCheckoutTimeoutMs,
-        "Jest subscription checkout timed out",
-      );
+      const result = await this.getSdkModule("payments").beginSubscription({subscriptionSku});
       if (result?.result === "cancel") return {status: "cancelled"} as const;
       if (result?.result === "error") {
         captureBrowserException(new Error(String(result.error)), {
@@ -440,8 +456,8 @@ export class JestSdkPlatform implements JestPlatformPort {
   async cancelSubscription(subscriptionSku: string): Promise<PlatformResult<void>> {
     try {
       /** Bounds the cancellation confirmation wait. */
-      const result = await withTimeout<any>(
-        this.sdk.payments.cancelSubscription({subscriptionSku}),
+      const result = await withTimeout(
+        this.getSdkModule("payments").cancelSubscription({subscriptionSku}),
         this.subscriptionCheckoutTimeoutMs,
         "Jest subscription cancellation timed out",
       );
@@ -478,7 +494,7 @@ export class JestSdkPlatform implements JestPlatformPort {
   /** @returns The normalized result of the provider's idempotent first-milestone signal. */
   async markFirstMilestone() {
     try {
-      await this.sdk.markFirstMilestone();
+      await invokeSdkOperation(this.sdk, this.sdk.markFirstMilestone);
       return success(undefined);
     } catch (e) {
       return failure(e);
@@ -486,10 +502,10 @@ export class JestSdkPlatform implements JestPlatformPort {
   }
   /** Reports startup progress to Jest on the inclusive 0-100 scale. */
   setLoadingProgress(progress: number) {
-    this.sdk.setLoadingProgress(progress);
+    invokeSdkOperation(this.sdk, this.sdk.setLoadingProgress, progress);
   }
   /** Dismisses the provider loading surface after the game becomes interactive. */
   markGameLoaded() {
-    this.sdk.markGameLoaded();
+    invokeSdkOperation(this.sdk, this.sdk.markGameLoaded);
   }
 }

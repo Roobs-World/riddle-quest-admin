@@ -1,0 +1,7 @@
+1e0e280a7dbe972cbfa7897a6bb5d717
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isSinglePlayerKeyboardLetter = void 0;
+/** Accepts one hosted keyboard letter, including Turkish display variants of ASCII I/i. */
+const isSinglePlayerKeyboardLetter = (value) => typeof value === "string" && value.length === 1 && /^[a-zİı]$/i.test(value);
+exports.isSinglePlayerKeyboardLetter = isSinglePlayerKeyboardLetter;

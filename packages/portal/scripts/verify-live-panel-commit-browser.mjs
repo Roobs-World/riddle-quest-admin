@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.PANEL_COMMIT_REACT_MODE??'development',baseline=process.env.PANEL_COMMIT_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.PANEL_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/live-panel-commit-2026-10-04',mode));
+const output=path.resolve(process.env.PANEL_COMMIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-panel-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-panel-commit-'));let browser,server;const observations=[];
 const components=['LiveRaceInbox','LiveRaceInvitationCard','LiveRaceDirectInvite','LiveRaceSafety'];

@@ -1,0 +1,264 @@
+bb5ae6876c2a2fc3f9678c68d535b1eb
+"use strict";
+
+/* istanbul ignore next */
+function cov_2ilfxj8z2l() {
+  var path = "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveSignals.ts";
+  var hash = "a20c47c8e690c57977fc7daad8bee676cc4dfb82";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveSignals.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 2,
+          column: 62
+        }
+      },
+      "1": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 3,
+          column: 56
+        }
+      },
+      "2": {
+        start: {
+          line: 4,
+          column: 20
+        },
+        end: {
+          line: 4,
+          column: 55
+        }
+      },
+      "3": {
+        start: {
+          line: 5,
+          column: 22
+        },
+        end: {
+          line: 5,
+          column: 44
+        }
+      },
+      "4": {
+        start: {
+          line: 9,
+          column: 21
+        },
+        end: {
+          line: 9,
+          column: 52
+        }
+      },
+      "5": {
+        start: {
+          line: 10,
+          column: 4
+        },
+        end: {
+          line: 12,
+          column: 92
+        }
+      },
+      "6": {
+        start: {
+          line: 11,
+          column: 8
+        },
+        end: {
+          line: 12,
+          column: 92
+        }
+      },
+      "7": {
+        start: {
+          line: 12,
+          column: 12
+        },
+        end: {
+          line: 12,
+          column: 92
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "publishLiveRaceSignals",
+        decl: {
+          start: {
+            line: 7,
+            column: 9
+          },
+          end: {
+            line: 7,
+            column: 31
+          }
+        },
+        loc: {
+          start: {
+            line: 7,
+            column: 133
+          },
+          end: {
+            line: 13,
+            column: 1
+          }
+        },
+        line: 7
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 7,
+            column: 58
+          },
+          end: {
+            line: 7,
+            column: 131
+          }
+        },
+        type: "default-arg",
+        locations: [{
+          start: {
+            line: 7,
+            column: 70
+          },
+          end: {
+            line: 7,
+            column: 131
+          }
+        }],
+        line: 7
+      },
+      "1": {
+        loc: {
+          start: {
+            line: 11,
+            column: 8
+          },
+          end: {
+            line: 12,
+            column: 92
+          }
+        },
+        type: "if",
+        locations: [{
+          start: {
+            line: 11,
+            column: 8
+          },
+          end: {
+            line: 12,
+            column: 92
+          }
+        }, {
+          start: {
+            line: undefined,
+            column: undefined
+          },
+          end: {
+            line: undefined,
+            column: undefined
+          }
+        }],
+        line: 11
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    f: {
+      "0": 0
+    },
+    b: {
+      "0": [0],
+      "1": [0, 0]
+    },
+    inputSourceMap: {
+      file: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveSignals.ts",
+      mappings: ";;AAKA,wDAMC;AAXD,wDAAmD;AACnD,6CAAuC;AAGvC,qFAAqF;AACrF,SAAgB,sBAAsB,CAAC,EAAa,EAAE,WAA0C,EAC9F,OAAmC,EAAE,YAAyC,qBAAS,CAAC,UAAU,CAAC,IAAI,CAAC,GAAG,EAAE,GAAG,CAAC,GAAG,UAAU,CAAC;IAC/H,mFAAmF;IACnF,MAAM,QAAQ,GAAG,IAAA,wBAAU,GAAE,CAAC;IAC9B,KAAK,MAAM,QAAQ,IAAI,OAAO;QAAE,IAAI,QAAQ;YAC1C,WAAW,CAAC,GAAG,CAAC,EAAE,CAAC,GAAG,CAAC,mBAAmB,QAAQ,EAAE,CAAC,EAAE,EAAC,QAAQ,EAAE,SAAS,EAAC,CAAC,CAAC;AAClF,CAAC",
+      names: [],
+      sources: ["/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveSignals.ts"],
+      sourcesContent: ["import {Timestamp} from \"firebase-admin/firestore\";\nimport {randomUUID} from \"node:crypto\";\nimport type {Firestore} from \"./raceSetupService\";\n\n/** Publishes only a wake-up revision atomically with authoritative match changes. */\nexport function publishLiveRaceSignals(db: Firestore, transaction: FirebaseFirestore.Transaction,\n  tickets: readonly (string | null)[], expiresAt: FirebaseFirestore.Timestamp = Timestamp.fromMillis(Date.now() + 7 * 86_400_000)): void {\n  /** One committed revision coalesces both seats without exposing match contents. */\n  const revision = randomUUID();\n  for (const ticketId of tickets) if (ticketId)\n    transaction.set(db.doc(`liveRaceSignals/${ticketId}`), {revision, expiresAt});\n}\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "a20c47c8e690c57977fc7daad8bee676cc4dfb82"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_2ilfxj8z2l = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_2ilfxj8z2l();
+cov_2ilfxj8z2l().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_2ilfxj8z2l().s[1]++;
+exports.publishLiveRaceSignals = publishLiveRaceSignals;
+const firestore_1 =
+/* istanbul ignore next */
+(cov_2ilfxj8z2l().s[2]++, require("firebase-admin/firestore"));
+const node_crypto_1 =
+/* istanbul ignore next */
+(cov_2ilfxj8z2l().s[3]++, require("node:crypto"));
+/** Publishes only a wake-up revision atomically with authoritative match changes. */
+function publishLiveRaceSignals(db, transaction, tickets, expiresAt =
+/* istanbul ignore next */
+(cov_2ilfxj8z2l().b[0][0]++, firestore_1.Timestamp.fromMillis(Date.now() + 7 * 86_400_000))) {
+  /* istanbul ignore next */
+  cov_2ilfxj8z2l().f[0]++;
+  /** One committed revision coalesces both seats without exposing match contents. */
+  const revision =
+  /* istanbul ignore next */
+  (cov_2ilfxj8z2l().s[4]++, (0, node_crypto_1.randomUUID)());
+  /* istanbul ignore next */
+  cov_2ilfxj8z2l().s[5]++;
+  for (const ticketId of tickets) {
+    /* istanbul ignore next */
+    cov_2ilfxj8z2l().s[6]++;
+    if (ticketId) {
+      /* istanbul ignore next */
+      cov_2ilfxj8z2l().b[1][0]++;
+      cov_2ilfxj8z2l().s[7]++;
+      transaction.set(db.doc(`liveRaceSignals/${ticketId}`), {
+        revision,
+        expiresAt
+      });
+    } else
+    /* istanbul ignore next */
+    {
+      cov_2ilfxj8z2l().b[1][1]++;
+    }
+  }
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJleHBvcnRzIiwicHVibGlzaExpdmVSYWNlU2lnbmFscyIsImZpcmVzdG9yZV8xIiwiY292XzJpbGZ4ajh6MmwiLCJzIiwicmVxdWlyZSIsIm5vZGVfY3J5cHRvXzEiLCJkYiIsInRyYW5zYWN0aW9uIiwidGlja2V0cyIsImV4cGlyZXNBdCIsImIiLCJUaW1lc3RhbXAiLCJmcm9tTWlsbGlzIiwiRGF0ZSIsIm5vdyIsImYiLCJyZXZpc2lvbiIsInJhbmRvbVVVSUQiLCJ0aWNrZXRJZCIsInNldCIsImRvYyJdLCJzb3VyY2VzIjpbIi9ob21lL2NyYWlnLWJlc3dldGhlcmljay9Eb2N1bWVudHMvcmlkZGxlLXF1ZXN0L2ZpcmViYXNlLWZ1bmN0aW9ucy9zcmMvcmFjZS9yYWNlTGl2ZVNpZ25hbHMudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHtUaW1lc3RhbXB9IGZyb20gXCJmaXJlYmFzZS1hZG1pbi9maXJlc3RvcmVcIjtcbmltcG9ydCB7cmFuZG9tVVVJRH0gZnJvbSBcIm5vZGU6Y3J5cHRvXCI7XG5pbXBvcnQgdHlwZSB7RmlyZXN0b3JlfSBmcm9tIFwiLi9yYWNlU2V0dXBTZXJ2aWNlXCI7XG5cbi8qKiBQdWJsaXNoZXMgb25seSBhIHdha2UtdXAgcmV2aXNpb24gYXRvbWljYWxseSB3aXRoIGF1dGhvcml0YXRpdmUgbWF0Y2ggY2hhbmdlcy4gKi9cbmV4cG9ydCBmdW5jdGlvbiBwdWJsaXNoTGl2ZVJhY2VTaWduYWxzKGRiOiBGaXJlc3RvcmUsIHRyYW5zYWN0aW9uOiBGaXJlYmFzZUZpcmVzdG9yZS5UcmFuc2FjdGlvbixcbiAgdGlja2V0czogcmVhZG9ubHkgKHN0cmluZyB8IG51bGwpW10sIGV4cGlyZXNBdDogRmlyZWJhc2VGaXJlc3RvcmUuVGltZXN0YW1wID0gVGltZXN0YW1wLmZyb21NaWxsaXMoRGF0ZS5ub3coKSArIDcgKiA4Nl80MDBfMDAwKSk6IHZvaWQge1xuICAvKiogT25lIGNvbW1pdHRlZCByZXZpc2lvbiBjb2FsZXNjZXMgYm90aCBzZWF0cyB3aXRob3V0IGV4cG9zaW5nIG1hdGNoIGNvbnRlbnRzLiAqL1xuICBjb25zdCByZXZpc2lvbiA9IHJhbmRvbVVVSUQoKTtcbiAgZm9yIChjb25zdCB0aWNrZXRJZCBvZiB0aWNrZXRzKSBpZiAodGlja2V0SWQpXG4gICAgdHJhbnNhY3Rpb24uc2V0KGRiLmRvYyhgbGl2ZVJhY2VTaWduYWxzLyR7dGlja2V0SWR9YCksIHtyZXZpc2lvbiwgZXhwaXJlc0F0fSk7XG59XG4iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUtBQSxPQUFBLENBQUFDLHNCQUFBLEdBQUFBLHNCQUFBO0FBTEEsTUFBQUMsV0FBQTtBQUFBO0FBQUEsQ0FBQUMsY0FBQSxHQUFBQyxDQUFBLE9BQUFDLE9BQUE7QUFDQSxNQUFBQyxhQUFBO0FBQUE7QUFBQSxDQUFBSCxjQUFBLEdBQUFDLENBQUEsT0FBQUMsT0FBQTtBQUdBO0FBQ0EsU0FBZ0JKLHNCQUFzQkEsQ0FBQ00sRUFBYSxFQUFFQyxXQUEwQyxFQUM5RkMsT0FBbUMsRUFBRUMsU0FBQTtBQUFBO0FBQUEsQ0FBQVAsY0FBQSxHQUFBUSxDQUFBLFVBQXlDVCxXQUFBLENBQUFVLFNBQVMsQ0FBQ0MsVUFBVSxDQUFDQyxJQUFJLENBQUNDLEdBQUcsRUFBRSxHQUFHLENBQUMsR0FBRyxVQUFVLENBQUM7RUFBQTtFQUFBWixjQUFBLEdBQUFhLENBQUE7RUFDL0g7RUFDQSxNQUFNQyxRQUFRO0VBQUE7RUFBQSxDQUFBZCxjQUFBLEdBQUFDLENBQUEsT0FBRyxJQUFBRSxhQUFBLENBQUFZLFVBQVUsR0FBRTtFQUFDO0VBQUFmLGNBQUEsR0FBQUMsQ0FBQTtFQUM5QixLQUFLLE1BQU1lLFFBQVEsSUFBSVYsT0FBTyxFQUFFO0lBQUE7SUFBQU4sY0FBQSxHQUFBQyxDQUFBO0lBQUEsSUFBSWUsUUFBUSxFQUMxQztNQUFBO01BQUFoQixjQUFBLEdBQUFRLENBQUE7TUFBQVIsY0FBQSxHQUFBQyxDQUFBO01BQUFJLFdBQVcsQ0FBQ1ksR0FBRyxDQUFDYixFQUFFLENBQUNjLEdBQUcsQ0FBQyxtQkFBbUJGLFFBQVEsRUFBRSxDQUFDLEVBQUU7UUFBQ0YsUUFBUTtRQUFFUDtNQUFTLENBQUMsQ0FBQztJQUFBLENBQUM7SUFBQTtJQUFBO01BQUFQLGNBQUEsR0FBQVEsQ0FBQTtJQUFBO0VBQUQ7QUFDakYiLCJpZ25vcmVMaXN0IjpbXX0=

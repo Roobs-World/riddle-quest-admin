@@ -1,0 +1,194 @@
+Emulator temporary directory: /tmp/riddle-quest-emulators-DtYFzq
+i  emulators: Starting emulators: firestore, database, storage
+i  emulators: Detected demo project ID "demo-riddle-quest-routes", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 19851.
+i  database: Database Emulator logging to database-debug.log
+⚠  Unexpected rules runtime error: WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/home/craig-beswetherick/.cache/firebase/emulators/cloud-storage-rules-runtime-v1.1.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+i  Running script: cd /home/craig-beswetherick/Documents/riddle-quest/firebase-functions && node node_modules/jest/bin/jest.js --config jest.production-coverage.config.js --maxWorkers=1 --workerIdleMemoryLimit=1536MB --runTestsByPath src/__tests__/race/facebookLiveContextDelivery.it.test.ts src/__tests__/race/redditLiveReferrals.it.test.ts src/__tests__/race/facebookLiveReferrals.it.test.ts src/__tests__/race/raceAnswerInputShape.it.test.ts src/__tests__/presenceVisibilityReconciliation.it.test.ts src/__tests__/dailyOpenAITimeout.test.ts --json --outputFile=/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/backend/targeted-results.json
+Starting src/__tests__/race/facebookLiveContextDelivery.it.test.ts
+PASS src/__tests__/race/facebookLiveContextDelivery.it.test.ts (16.782 s)
+Starting src/__tests__/race/redditLiveReferrals.it.test.ts
+PASS src/__tests__/race/redditLiveReferrals.it.test.ts (25.063 s)
+Starting src/__tests__/race/facebookLiveReferrals.it.test.ts
+PASS src/__tests__/race/facebookLiveReferrals.it.test.ts (17.666 s)
+Starting src/__tests__/race/raceAnswerInputShape.it.test.ts
+PASS src/__tests__/race/raceAnswerInputShape.it.test.ts (21.61 s)
+  ● Console
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":7,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":5,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":5,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":9,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":6,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":6,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":4,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+    console.warn
+      {"telemetryVersion":1,"disposition":"failed","entryKind":"creator","provider":"jest","locale":"en","failureCode":"failed-precondition","durationMs":7,"severity":"WARNING","message":"Race start command"}
+
+      103 |     !message.includes('"private_key"')
+      104 |   ) {
+    > 105 |     originalConsoleWarn(...args);
+          |     ^
+      106 |   }
+      107 | };
+      108 |
+
+      at Object.console.warn (jest.env.setup.js:105:5)
+      at write (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:64:97)
+      at Object.warn (../node_modules/.pnpm/firebase-functions@7.4.0_firebase-admin@14.5.0_@firebase+app-compat@0.5.18_@firebase+ap_f66c0608483ee33388a97d7e92b30e53/node_modules/firebase-functions/lib/logger/index.js:100:2)
+      at startRaceRunForUser (src/race/raceService.ts:97:12)
+      at src/__tests__/race/raceAnswerInputShape.it.test.ts:89:3
+
+Starting src/__tests__/presenceVisibilityReconciliation.it.test.ts
+PASS src/__tests__/presenceVisibilityReconciliation.it.test.ts
+Starting src/__tests__/dailyOpenAITimeout.test.ts
+PASS src/__tests__/dailyOpenAITimeout.test.ts
+
+Test Suites: 6 passed, 6 total
+Tests:       148 passed, 148 total
+Snapshots:   0 total
+Time:        83.5 s
+Ran all test suites within paths "src/__tests__/race/facebookLiveContextDelivery.it.test.ts", "src/__tests__/race/redditLiveReferrals.it.test.ts", "src/__tests__/race/facebookLiveReferrals.it.test.ts", "src/__tests__/race/raceAnswerInputShape.it.test.ts", "src/__tests__/presenceVisibilityReconciliation.it.test.ts", "src/__tests__/dailyOpenAITimeout.test.ts".
+Test results written to: ../artifacts/jest-route-verification-2026-10-22/backend/targeted-results.json
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  database: Stopping Database Emulator
+i  firestore: Stopping Firestore Emulator
+i  storage: Stopping Storage Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

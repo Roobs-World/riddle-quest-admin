@@ -10,7 +10,7 @@ let job: Record<string, unknown>;
 /** Provides clock behavior. */
 let clock: number;
 /** Provides ref behavior. */
-const ref = {};
+const ref = {get: jest.fn(async () => ({exists: true, data: () => ({...job})}))};
 /** Provides transaction behavior. */
 const transaction = {get: jest.fn(async () => ({data: () => ({...job})})), update: jest.fn((_, values) => Object.assign(job, values))};
 /** Masked reads retain the same canonical snapshot/error injector for each transaction attempt. */
@@ -23,7 +23,7 @@ jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: () => db}}));
 jest.mock("../shared/sentryHandlers", () => ({onScheduleWithSentry: jest.fn()}));
 jest.mock("../shared/sentry", () => ({captureException: capture}));
 jest.mock("../riddles/riddleGeneration", () => ({generateLocalizedClassicRiddlesForLocale: generate}));
-import {processClassicSupplyJob, processClassicSupplyJobs} from "../riddles/classicSupplyWorker";
+import {processClassicSupplyJob, processClassicSupplyJobs, handleClassicSupplyRequest} from "../riddles/classicSupplyWorker";
 
 describe("durable Classic supply worker", () => {
   beforeEach(() => {
@@ -75,6 +75,15 @@ describe("durable Classic supply worker", () => {
     release!();
     expect(await pending).toBe("generated");
     expect(generate).toHaveBeenCalledTimes(1);
+  });
+  it("leaves a failed job unacknowledged until its provider retry can complete", async () => {
+    generate.mockRejectedValueOnce(new Error("provider failure"));
+    await expect(handleClassicSupplyRequest("ar_20")).rejects.toThrow("remains pending");
+    await expect(handleClassicSupplyRequest("ar_20")).rejects.toThrow("remains pending");
+    expect(generate).toHaveBeenCalledTimes(1);
+    clock += 300000;
+    await expect(handleClassicSupplyRequest("ar_20")).resolves.toBeUndefined();
+    expect(job.completed).toBe(true);
   });
   it("backs off provider failures and permits a later retry", async () => {
     generate.mockRejectedValueOnce(new Error("provider failure"));

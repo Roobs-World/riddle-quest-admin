@@ -1,16 +1,13 @@
 # Deployment engagement and performance
 
 The dashboard at `docs/reports/platform-release-readiness` tracks six game targets,
-with separate deployment-level reports, game-wide Jest activity and automatically
-collected backend request performance. Missing gameplay measurements remain
+with separate deployment-level reports, game-wide Jest activity and retained
+backend request performance snapshots. Missing gameplay measurements remain
 unavailable; backend requests must never stand in for players or sessions.
 
-## Automatic cloud collection
+## On-demand cloud collection
 
-`tooling/deployment-monitor` runs as the private Cloud Run service
-`riddle-quest-monitoring` in `riddle-quest-ec2b2/us-central1`. Cloud Scheduler job
-`deployment-monitor-hourly` calls it hourly at minute zero UTC using an OIDC service
-account. It runs independently of the dashboard and this workstation.
+Automatic collection was removed on 16 October 2026. The `deployment-monitor-hourly` Scheduler job is deleted, and the deploy script does not recreate it. The private `riddle-quest-monitoring` Cloud Run service remains available on demand with no reserved minimum instances. Existing reports retain their original collection timestamps; they are not fresh automatic measurements.
 
 Each run discovers current Cloud Run backend revisions and reads the complete prior
 24 hours of request logs. Reports include revisions with traffic and current ready
@@ -45,7 +42,7 @@ session counts or launch timings.
 ## Operate and verify
 
 ```bash
-# Deploy the collector and built dashboard, configure Scheduler, trigger a run.
+# Deploy the on-demand collector and built dashboard without installing a schedule.
 bash tooling/deployment-monitor/deploy.sh
 
 # View the private dashboard with your existing gcloud identity.
@@ -56,9 +53,6 @@ node tooling/deployment-monitor/preview.mjs
 node tooling/deployment-monitor/connect-jest.mjs
 # Open the URL in /tmp/riddle-monitor-jest-authorization-url.txt
 
-# Trigger collection and inspect Scheduler's execution status.
-gcloud scheduler jobs run deployment-monitor-hourly --project riddle-quest-ec2b2 --location us-central1
-gcloud scheduler jobs describe deployment-monitor-hourly --project riddle-quest-ec2b2 --location us-central1
 ```
 
 On this workstation, the installed gcloud exits 120 when its output is redirected
@@ -69,7 +63,7 @@ The local viewer only forwards authenticated reads; it does not schedule collect
 Cloud Run rejects unauthenticated reads and writes. OAuth tokens stay in the private
 bucket, never in dashboard JSON, the repository or logs. The dedicated bucket does
 not grant project viewers object-read access. No email/Slack alerts are configured;
-failures are visible in Scheduler and the dashboard.
+failed manual collections are visible in Cloud Logging and the dashboard.
 
 ## Import reviewed measurements
 
@@ -124,7 +118,7 @@ there is currently no automatic provider release discovery.
 Filters apply to engagement, performance and coverage together, including copied
 data and source inspection. All days remain visible unless filtered. Coverage is
 stale once a reporting day ended more than 48 hours ago. These imported game reports remain a separate workflow. The import command updates
-the local snapshot; the publish command updates the cloud snapshot. Later hourly
+the local snapshot; the publish command updates the cloud snapshot. Later on-demand
 backend and connected Jest collections retain these deployment reports.
 
 The dashboard is an English evidence document; the game's 17 locale bundles are

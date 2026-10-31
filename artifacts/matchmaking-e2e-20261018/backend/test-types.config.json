@@ -1,0 +1,21 @@
+{
+  "extends": "../../../firebase-functions/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../../firebase-functions/src",
+    "noEmit": true,
+    "typeRoots": [
+      "../../../firebase-functions/node_modules/@types"
+    ]
+  },
+  "include": [
+    "../../../firebase-functions/src/__tests__/race/raceLiveStreamAdmission.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLivePublicWait.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLiveSignals.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLiveInvitation.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLive.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLiveDeckCompatibility.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts",
+    "../../../firebase-functions/src/__tests__/race/raceLiveIdentityPayload.it.test.ts"
+  ],
+  "exclude": []
+}

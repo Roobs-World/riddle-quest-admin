@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` Monete`,CONTINUE_BUTTON:`Fantastico`,LEVEL_PREFIX:`Livello `,TITLE:`Sali di livello!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

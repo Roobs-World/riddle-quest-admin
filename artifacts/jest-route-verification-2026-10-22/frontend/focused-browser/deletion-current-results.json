@@ -1,0 +1,19 @@
+{
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/jest-final-artifact",
+  "cases": [
+    {
+      "name": "guest account deletion is unavailable while registration remains offered",
+      "passed": true,
+      "registrationOffered": true,
+      "unsupportedDeletionHidden": true
+    },
+    {
+      "name": "mock account deletion cancels safely then reaches deleted-account screen",
+      "passed": true,
+      "injectedMockOnly": true,
+      "cancelledBeforeDeletionCommand": true,
+      "terminalScreenReached": true
+    }
+  ],
+  "failures": []
+}

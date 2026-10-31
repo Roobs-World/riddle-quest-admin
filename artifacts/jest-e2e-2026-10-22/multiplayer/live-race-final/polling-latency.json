@@ -1,0 +1,5 @@
+{
+  "transport": "injected local HTTP authority; not production latency",
+  "pushEnabled": false,
+  "samples": []
+}

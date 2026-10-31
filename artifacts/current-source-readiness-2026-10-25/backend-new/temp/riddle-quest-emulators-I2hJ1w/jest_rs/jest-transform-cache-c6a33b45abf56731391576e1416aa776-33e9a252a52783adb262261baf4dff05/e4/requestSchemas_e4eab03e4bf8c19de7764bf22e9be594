@@ -1,0 +1,289 @@
+65b3f5b940022c2b524482fec2f88d58
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GetLeaderboardResponseSchema = exports.LeaderboardEntrySchema = exports.GetLeaderboardRequestSchema = exports.LeaderboardTypeSchema = exports.UpdateAvatarResponseSchema = exports.UpdateAvatarRequestSchema = exports.UpdateUsernameRequestSchema = exports.GetHintResponseSchema = exports.GetHintRequestSchema = exports.SpendCoinsResponseSchema = exports.SpendCoinsRequestSchema = exports.SkipRiddleResponseSchema = exports.SkipRiddleRequestSchema = exports.ClassicRiddleBufferResponseSchema = exports.GetCurrentDailyChallengeResponseSchema = exports.DailyChallengeDataSchema = exports.CompleteGameResponseDataSchema = exports.CompleteGameRequestDataSchema = exports.SubmitSinglePlayerGuessResponseDataSchema = exports.SubmitSinglePlayerGuessRequestDataSchema = exports.SubmitGuessResponseDataSchema = exports.SubmitGuessAuthContextSchema = exports.SubmitGuessRequestDataSchema = exports.FeedbackItemSchema = exports.FeedbackColorValueSchema = exports.BasicSuccessMessageResponseSchema = exports.UsernameSchema = exports.USERNAME_RAW_MAX_LENGTH = exports.USERNAME_MAX_LENGTH = exports.USERNAME_MIN_LENGTH = void 0;
+exports.normalizeUsernameDisplay = normalizeUsernameDisplay;
+const singlePlayerInput_1 = require("./singlePlayerInput");
+const zod_1 = require("zod");
+const cloudFunctionsSchemas_1 = require("./cloudFunctionsSchemas");
+/** Minimum number of Unicode code points accepted in a normalized username. */
+exports.USERNAME_MIN_LENGTH = 3;
+/** Maximum number of Unicode code points accepted in a normalized username. */
+exports.USERNAME_MAX_LENGTH = 24;
+/** Maximum untrusted UTF-16 input units processed before Unicode normalization. */
+exports.USERNAME_RAW_MAX_LENGTH = 96;
+/** Normalizes a display username without applying its uniqueness case fold. */
+function normalizeUsernameDisplay(username) {
+    return username.trim().normalize("NFKC");
+}
+/** Validates the shared browser/bridge/callable username boundary. */
+exports.UsernameSchema = zod_1.z
+    .string()
+    .max(exports.USERNAME_RAW_MAX_LENGTH, "Username input is too large.")
+    .refine((username) => !/[\p{Cc}\p{Cf}]/u.test(username), {
+    message: "Username must not contain control or formatting characters.",
+})
+    .transform(normalizeUsernameDisplay)
+    .refine((username) => {
+    /** Provides length behavior. */
+    const length = [...username].length;
+    return length >= exports.USERNAME_MIN_LENGTH && length <= exports.USERNAME_MAX_LENGTH;
+}, { message: `Username must be ${exports.USERNAME_MIN_LENGTH}-${exports.USERNAME_MAX_LENGTH} characters.` })
+    .refine((username) => /^[\p{L}\p{M}\p{N} ._'’-]+$/u.test(username), {
+    message: "Username contains unsupported characters.",
+})
+    .refine((username) => /[\p{L}\p{N}]/u.test(username), {
+    message: "Username must contain a letter or number.",
+});
+/** Validates the function game mode data shape. */
+const FunctionGameModeSchema = zod_1.z.enum(["challenge", "classic"]);
+/** Bounds canonical riddle identifiers accepted by gameplay callables. */
+const RiddleIdSchema = zod_1.z.string().min(1).max(160);
+/** Bounds guesses to the shipped seven-keyboard-slot policy. */
+const PlayableGuessSchema = singlePlayerInput_1.SinglePlayerGuessSchema;
+/** Validates the basic success message response data shape. */
+exports.BasicSuccessMessageResponseSchema = zod_1.z
+    .object({
+    success: zod_1.z.boolean(),
+    message: zod_1.z.string(),
+})
+    .strict();
+/** Validates the feedback color value data shape. */
+exports.FeedbackColorValueSchema = zod_1.z.enum(["green", "yellow", "red"]);
+/** Validates the feedback item data shape. */
+exports.FeedbackItemSchema = zod_1.z
+    .object({
+    letter: zod_1.z.string().length(1),
+    status: exports.FeedbackColorValueSchema,
+})
+    .strict();
+/** Validates the submit guess request data data shape. */
+exports.SubmitGuessRequestDataSchema = zod_1.z
+    .object({
+    guess: PlayableGuessSchema,
+    riddleId: RiddleIdSchema,
+    gameMode: zod_1.z.enum(["challenge", "classic"]),
+    attempts: zod_1.z.number().int().positive().max(6),
+})
+    .strict();
+/** Validates the submit guess auth context data shape. */
+exports.SubmitGuessAuthContextSchema = zod_1.z
+    .object({
+    uid: zod_1.z.string().min(1),
+    isAnonymous: zod_1.z.boolean().optional(),
+})
+    .strict();
+/** Validates the submit guess response data data shape. */
+exports.SubmitGuessResponseDataSchema = zod_1.z
+    .object({
+    feedback: zod_1.z.array(exports.FeedbackItemSchema).max(7),
+    isCorrect: zod_1.z.boolean(),
+    gameOver: zod_1.z.boolean(),
+    coinsEarned: zod_1.z.number().nonnegative().optional(),
+    newlyUnlockedAchievementIds: zod_1.z.array(zod_1.z.string()).optional(),
+    newWinStreak: zod_1.z.number().int().nonnegative().optional(),
+})
+    .strict();
+/** Validates a server-authoritative single-player guess request. */
+exports.SubmitSinglePlayerGuessRequestDataSchema = zod_1.z
+    .object({
+    riddleId: RiddleIdSchema,
+    gameMode: FunctionGameModeSchema,
+    sessionToken: zod_1.z.string().min(20).max(128),
+    guess: PlayableGuessSchema,
+    requestId: zod_1.z.string().min(8).max(128),
+})
+    .strict();
+/** Validates a server-authoritative single-player guess response. */
+exports.SubmitSinglePlayerGuessResponseDataSchema = zod_1.z
+    .object({
+    feedback: zod_1.z.array(exports.FeedbackItemSchema).max(7),
+    attempts: zod_1.z.number().int().positive().max(6),
+    isCorrect: zod_1.z.boolean(),
+    gameOver: zod_1.z.boolean(),
+    canContinue: zod_1.z.boolean().optional(),
+})
+    .strict();
+/** Validates the complete game request data data shape. */
+exports.CompleteGameRequestDataSchema = zod_1.z
+    .object({
+    riddleId: RiddleIdSchema,
+    gameMode: zod_1.z.enum(["challenge", "classic"]),
+    sessionToken: zod_1.z.string().min(20).max(128),
+})
+    .strict();
+/** Validates the complete game response data data shape. */
+exports.CompleteGameResponseDataSchema = zod_1.z
+    .object({
+    attempts: zod_1.z.number().int().positive().max(6),
+    isCorrect: zod_1.z.boolean(),
+    coinsEarned: zod_1.z.number().nonnegative(),
+    newlyUnlockedAchievementIds: zod_1.z.array(zod_1.z.string()),
+    scoreEarned: zod_1.z.number().nonnegative(),
+    xpEarned: zod_1.z.number().nonnegative(),
+    newXp: zod_1.z.number().nonnegative(),
+    newLevel: zod_1.z.number().int().positive(),
+    leveledUp: zod_1.z.boolean(),
+    newWinStreak: zod_1.z.number().int().nonnegative().optional(),
+    rewardBreakdown: zod_1.z
+        .object({
+        baseWinCoins: zod_1.z.number().nonnegative(),
+        levelUpBonus: zod_1.z.number().nonnegative(),
+        dailyStreakBonus: zod_1.z.number().nonnegative(),
+        achievementBonus: zod_1.z.number().nonnegative(),
+        referralBonus: zod_1.z.number().nonnegative().optional(),
+        totalAwarded: zod_1.z.number().nonnegative(),
+        newBalance: zod_1.z.number().nonnegative(),
+    })
+        .optional(),
+})
+    .strict();
+/** Validates the daily challenge data data shape. */
+exports.DailyChallengeDataSchema = zod_1.z
+    .object({
+    date: zod_1.z.string().optional(),
+    questions: zod_1.z.array(cloudFunctionsSchemas_1.DailyChallengeQuestionSchema).max(1),
+    totalQuestions: zod_1.z.number().int().positive().max(1),
+})
+    .strict();
+/** Validates the get current daily challenge response data shape. */
+exports.GetCurrentDailyChallengeResponseSchema = zod_1.z
+    .object({
+    challenge: exports.DailyChallengeDataSchema.optional(),
+    classicIndex: zod_1.z.number().int().positive().optional(),
+    currentQuestion: zod_1.z.number().int().nonnegative().optional(),
+    hasCompletedToday: zod_1.z.boolean().optional(),
+    questionsCompleted: zod_1.z.number().int().nonnegative().optional(),
+    error: zod_1.z.string().optional(),
+})
+    .strict();
+/** The current Classic session and up to three successors anchored to confirmed progress. */
+exports.ClassicRiddleBufferResponseSchema = zod_1.z.object({
+    confirmedClassicIndex: zod_1.z.number().int().positive(),
+    riddles: zod_1.z.array(zod_1.z.object({
+        classicIndex: zod_1.z.number().int().positive(),
+        expiresAtMs: zod_1.z.number().int().positive(),
+        question: cloudFunctionsSchemas_1.DailyChallengeQuestionSchema,
+    }).strict()).max(4),
+}).strict();
+/** Validates the skip riddle request data shape. */
+exports.SkipRiddleRequestSchema = zod_1.z
+    .object({
+    riddleId: RiddleIdSchema,
+    gameMode: FunctionGameModeSchema,
+    sessionToken: zod_1.z.string().min(20).max(128),
+    requestId: zod_1.z.string().min(8).max(128),
+})
+    .strict();
+/** Validates the player progress patch data shape. */
+const PlayerProgressPatchSchema = zod_1.z
+    .object({
+    classicIndex: zod_1.z.number().int().nonnegative().optional(),
+    dailyChallengeIndex: zod_1.z.number().int().nonnegative().optional(),
+    dailyChallengeCurrentQuestion: zod_1.z.number().int().nonnegative().optional(),
+})
+    .strict();
+/** Validates the skip riddle response data shape. */
+exports.SkipRiddleResponseSchema = zod_1.z
+    .object({
+    success: zod_1.z.boolean(),
+    newProgress: PlayerProgressPatchSchema.nullish(),
+    message: zod_1.z.string(),
+    costDeducted: zod_1.z.number().int().nonnegative(),
+    newCoins: zod_1.z.number().int().nonnegative(),
+})
+    .strict();
+/** Validates the spend coins request data shape. */
+exports.SpendCoinsRequestSchema = zod_1.z
+    .object({
+    reason: zod_1.z.literal("continue"),
+    gameMode: zod_1.z.enum(["classic", "challenge"]),
+    riddleId: RiddleIdSchema,
+    sessionToken: zod_1.z.string().min(20).max(128),
+    requestId: zod_1.z.string().min(8).max(128),
+    amount: zod_1.z.number().positive().optional(),
+})
+    .strict();
+/** Validates the spend coins response data shape. */
+exports.SpendCoinsResponseSchema = zod_1.z
+    .object({
+    newCoins: zod_1.z.number().int().nonnegative(),
+})
+    .strict();
+/** Validates the get hint request data shape. */
+exports.GetHintRequestSchema = zod_1.z
+    .object({
+    currentAttempt: zod_1.z
+        .array(singlePlayerInput_1.SinglePlayerAttemptCellSchema)
+        .max(7),
+    riddleId: RiddleIdSchema,
+    gameMode: FunctionGameModeSchema,
+    sessionToken: zod_1.z.string().min(20).max(128),
+    requestId: zod_1.z.string().min(8).max(128),
+})
+    .strict();
+/** Validates the get hint response data shape. */
+exports.GetHintResponseSchema = zod_1.z
+    .object({
+    revealedLetter: zod_1.z.string().length(1),
+    index: zod_1.z.number().int().nonnegative(),
+    coinsCost: zod_1.z.number().int().nonnegative(),
+    newCoins: zod_1.z.number().int().nonnegative().optional(),
+    newlyUnlockedAchievementIds: zod_1.z.array(zod_1.z.string()).optional(),
+})
+    .nullable();
+/** Validates the update username request data shape. */
+exports.UpdateUsernameRequestSchema = zod_1.z
+    .object({
+    username: exports.UsernameSchema,
+})
+    .strict();
+/** Validates the update avatar request data shape. */
+exports.UpdateAvatarRequestSchema = zod_1.z
+    .object({
+    imageDataUrl: zod_1.z
+        .string()
+        .max(700_000)
+        .regex(/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/),
+})
+    .strict();
+/** Validates the update avatar response data shape. */
+exports.UpdateAvatarResponseSchema = zod_1.z
+    .object({
+    success: zod_1.z.literal(true),
+    message: zod_1.z.string().min(1),
+    avatarUrl: zod_1.z.string().url(),
+})
+    .strict();
+/** Validates the leaderboard type data shape. */
+exports.LeaderboardTypeSchema = zod_1.z.enum(["xp", "totalWins", "bestStreak", "multiplayerWins"]);
+/** Validates the get leaderboard request data shape. */
+exports.GetLeaderboardRequestSchema = zod_1.z
+    .object({
+    type: exports.LeaderboardTypeSchema.default("xp"),
+    limit: zod_1.z.number().int().positive().max(100).optional(),
+})
+    .strict()
+    .default({ type: "xp" });
+/** Validates the leaderboard entry data shape. */
+exports.LeaderboardEntrySchema = zod_1.z
+    .object({
+    userId: zod_1.z.string().min(1),
+    username: zod_1.z.string().min(1),
+    avatarUrl: zod_1.z.string().optional(),
+    level: zod_1.z.number().int().positive(),
+    xp: zod_1.z.number().int().nonnegative(),
+    progressScore: zod_1.z.number().nonnegative(),
+    totalWins: zod_1.z.number().int().nonnegative(),
+    multiplayerWins: zod_1.z.number().int().nonnegative().optional(),
+    bestStreak: zod_1.z.number().int().nonnegative(),
+    updatedAt: zod_1.z.number().nonnegative(),
+})
+    .strict();
+/** Validates the get leaderboard response data shape. */
+exports.GetLeaderboardResponseSchema = zod_1.z
+    .object({
+    entries: zod_1.z.array(exports.LeaderboardEntrySchema),
+    requestingUserId: zod_1.z.string().min(1),
+})
+    .strict();

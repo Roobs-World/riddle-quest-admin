@@ -80,6 +80,20 @@ describe("ProfileModalPage", () => {
     expect(html).toContain("Guest");
     expect(html).toContain("profile-avatar-fallback");
     expect(html).toContain("Register or Log In");
+    expect(html).not.toContain("Delete Account");
+    expect(html).not.toContain("profile-danger-zone");
+  });
+
+  it.each([false, true, undefined])("shows account deletion only for permitted registration state %s", platformRegistered => {
+    /** Provider-backed profile reflects the actual Jest registration capability. */
+    const html = renderToString(<ProviderProfileContext.Provider value={{username: "Jest Solver", avatarUrl: null}}>
+      <ProfileModalPage profile={profile} platformRegistered={platformRegistered}
+        onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
+    </ProviderProfileContext.Provider>);
+    expect(html).toContain("Jest Solver");
+    expect(html.includes("Delete Account")).toBe(platformRegistered !== false);
+    expect(html.includes("profile-danger-zone")).toBe(platformRegistered !== false);
+    if (platformRegistered === false) expect(html).toContain("Register or Log In");
   });
 
   it("renders registered identity, progression, and profile destinations", () => {

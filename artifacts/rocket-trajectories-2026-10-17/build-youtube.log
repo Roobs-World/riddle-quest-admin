@@ -1,0 +1,32 @@
+vite v8.3.1 building client environment for youtube...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/youtube/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../builds/youtube/index.html                             0.89 kB │ gzip:  0.44 kB
+../../builds/youtube/third-party-licenses.txt               1.73 kB │ gzip:  0.89 kB
+../../builds/youtube/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../builds/youtube/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../builds/youtube/assets/core-game-CcqtoK8X.js           2.31 kB │ gzip:  1.01 kB
+../../builds/youtube/assets/playable-pack-en-BvbikgOE.js   87.86 kB │ gzip: 47.69 kB
+../../builds/youtube/assets/playable-pack-pt-DQdBOSgf.js   90.15 kB │ gzip: 48.96 kB
+../../builds/youtube/assets/playable-pack-nl-EiCcpNYw.js   90.54 kB │ gzip: 49.17 kB
+../../builds/youtube/assets/playable-pack-id-D3b3D-n7.js   91.21 kB │ gzip: 49.53 kB
+../../builds/youtube/assets/playable-pack-it-DyHaVqZ_.js   91.35 kB │ gzip: 49.60 kB
+../../builds/youtube/assets/playable-pack-es-CFbm2AO7.js   91.65 kB │ gzip: 49.75 kB
+../../builds/youtube/assets/playable-pack-de-lxvz-xcb.js   92.15 kB │ gzip: 50.02 kB
+../../builds/youtube/assets/playable-pack-tr-BRW7hGOh.js   92.54 kB │ gzip: 50.23 kB
+../../builds/youtube/assets/playable-pack-pl-DMNywL3S.js   92.70 kB │ gzip: 50.29 kB
+../../builds/youtube/assets/playable-pack-fr-BHJ5KJkj.js   93.56 kB │ gzip: 50.80 kB
+../../builds/youtube/assets/playable-pack-ja-B0jr2UfB.js   94.66 kB │ gzip: 51.38 kB
+../../builds/youtube/assets/playable-pack-vi-DGpj0ujy.js   96.78 kB │ gzip: 52.55 kB
+../../builds/youtube/assets/playable-pack-ko-BN7xIJ9a.js   97.36 kB │ gzip: 52.88 kB
+../../builds/youtube/assets/playable-pack-ar-DuM6-4s-.js  102.12 kB │ gzip: 55.43 kB
+../../builds/youtube/assets/index-BS-mM77E.js             106.09 kB │ gzip: 35.47 kB
+../../builds/youtube/assets/playable-pack-ru-BoHVlJRP.js  114.09 kB │ gzip: 61.93 kB
+../../builds/youtube/assets/playable-pack-hi-CiGfBymG.js  134.49 kB │ gzip: 72.95 kB
+../../builds/youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.03s
+YouTube artifact audit passed: 24 files, 1.80 MiB total and conservative initial transfer, 16 locale(s)

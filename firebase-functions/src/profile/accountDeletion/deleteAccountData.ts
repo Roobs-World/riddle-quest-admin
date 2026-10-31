@@ -163,6 +163,8 @@ async function anonymizeFacebookReferralSettlements(field: "inviteeUid" | "invit
         ...(typeof data.inviteeCoins === "number" ? {inviteeCoins: data.inviteeCoins} : {}),
         ...(typeof data.inviterCoins === "number" ? {inviterCoins: data.inviterCoins} : {}),
         ...(data.settledAtMs === undefined ? {} : {settledAtMs: data.settledAtMs}),
+        ...(typeof data.completionReceiptId === "string" && /^[0-9a-f]{64}$/.test(data.completionReceiptId)
+          ? {completionReceiptId: data.completionReceiptId} : {}),
       });
     });
     await batch.commit();
@@ -188,6 +190,8 @@ async function anonymizeRedditReferralSettlements(field: "inviteeUid" | "inviter
         ...(typeof data.inviteeCoins === "number" ? {inviteeCoins: data.inviteeCoins} : {}),
         ...(typeof data.inviterCoins === "number" ? {inviterCoins: data.inviterCoins} : {}),
         ...(data.settledAtMs === undefined ? {} : {settledAtMs: data.settledAtMs}),
+        ...(typeof data.completionReceiptId === "string" && /^[0-9a-f]{64}$/.test(data.completionReceiptId)
+          ? {completionReceiptId: data.completionReceiptId} : {}),
       });
     });
     await batch.commit();

@@ -1,0 +1,128 @@
+[
+  {
+    "width": 1280,
+    "craft": [
+      {
+        "name": "Alien saucer 1",
+        "position": [
+          -198.1312122940768,
+          98.52770926792125,
+          -310
+        ],
+        "parts": 6
+      },
+      {
+        "name": "Alien saucer 2",
+        "position": [
+          222.68646205874123,
+          -44.18016266240998,
+          -310
+        ],
+        "parts": 6
+      },
+      {
+        "name": "Alien saucer 3",
+        "position": [
+          77.36292261634412,
+          -156.92275637328882,
+          -310
+        ],
+        "parts": 6
+      },
+      {
+        "name": "ISS",
+        "position": [
+          171.71914179331137,
+          130.7450413353079,
+          -310
+        ],
+        "parts": 38
+      },
+      {
+        "name": "Rocket 1",
+        "position": [
+          -212.84343589513563,
+          -96.5685819946597,
+          -310
+        ],
+        "parts": 8
+      },
+      {
+        "name": "Rocket 2",
+        "position": [
+          185.75876823117383,
+          19.561462064271783,
+          -310
+        ],
+        "parts": 8
+      }
+    ],
+    "paused": true,
+    "resumed": true,
+    "reducedMotion": true,
+    "puzzleCompleted": true
+  },
+  {
+    "width": 390,
+    "craft": [
+      {
+        "name": "Alien saucer 1",
+        "position": [
+          -60.36810374585152,
+          78.84006508855504,
+          -310
+        ],
+        "parts": 6
+      },
+      {
+        "name": "Alien saucer 2",
+        "position": [
+          67.84978140852272,
+          -44.18016266240998,
+          -310
+        ],
+        "parts": 6
+      },
+      {
+        "name": "Alien saucer 3",
+        "position": [
+          23.571515484667348,
+          -156.92275637328882,
+          -310
+        ],
+        "parts": 6
+      },
+      {
+        "name": "ISS",
+        "position": [
+          52.32067601514955,
+          73.47189463169701,
+          -310
+        ],
+        "parts": 38
+      },
+      {
+        "name": "Rocket 1",
+        "position": [
+          -64.85073437429914,
+          -96.5685819946597,
+          -310
+        ],
+        "parts": 8
+      },
+      {
+        "name": "Rocket 2",
+        "position": [
+          56.59837469543578,
+          19.561462064271783,
+          -310
+        ],
+        "parts": 8
+      }
+    ],
+    "paused": true,
+    "resumed": true,
+    "reducedMotion": true,
+    "puzzleCompleted": true
+  }
+]

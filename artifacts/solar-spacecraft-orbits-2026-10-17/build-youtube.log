@@ -1,0 +1,62 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YOUTUBE_BUILD=1 NODE_ENV=production vite build --mode youtube && pnpm audit:youtube-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (13.122859ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.417664ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (4.74607ms)
+✔ rejects imports between different target owners (1.681796ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.630394ms)
+✔ rejects Devvit imports outside Reddit-owned source (0.911136ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.354276ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.875308ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.093061ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.734191ms)
+✔ aggregates violations in deterministic file and source order (1.419008ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.132138
+Web Target boundary audit passed (335 files, 1455 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.1 building client environment for youtube...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/youtube/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../builds/youtube/index.html                             0.89 kB │ gzip:  0.44 kB
+../../builds/youtube/third-party-licenses.txt               1.73 kB │ gzip:  0.89 kB
+../../builds/youtube/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../builds/youtube/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../builds/youtube/assets/core-game-CcqtoK8X.js           2.31 kB │ gzip:  1.01 kB
+../../builds/youtube/assets/playable-pack-en-CjgTrQpR.js   87.86 kB │ gzip: 47.70 kB
+../../builds/youtube/assets/playable-pack-pt-Dk4DtTHB.js   90.15 kB │ gzip: 48.93 kB
+../../builds/youtube/assets/playable-pack-nl-BImaCZAw.js   90.54 kB │ gzip: 49.16 kB
+../../builds/youtube/assets/playable-pack-id-lr1Ud_7c.js   91.21 kB │ gzip: 49.50 kB
+../../builds/youtube/assets/playable-pack-it-D43vmDyV.js   91.35 kB │ gzip: 49.59 kB
+../../builds/youtube/assets/playable-pack-es-CkygwsY5.js   91.65 kB │ gzip: 49.77 kB
+../../builds/youtube/assets/playable-pack-de-BxzK8GVh.js   92.15 kB │ gzip: 50.02 kB
+../../builds/youtube/assets/playable-pack-tr-BrX3O6I7.js   92.54 kB │ gzip: 50.25 kB
+../../builds/youtube/assets/playable-pack-pl-BEY8B2XD.js   92.70 kB │ gzip: 50.32 kB
+../../builds/youtube/assets/playable-pack-fr-lXQCG7Ww.js   93.56 kB │ gzip: 50.80 kB
+../../builds/youtube/assets/playable-pack-ja-D5XT0RV_.js   94.66 kB │ gzip: 51.41 kB
+../../builds/youtube/assets/playable-pack-vi-DEJOPMKr.js   96.78 kB │ gzip: 52.58 kB
+../../builds/youtube/assets/playable-pack-ko-DwGGvymt.js   97.36 kB │ gzip: 52.86 kB
+../../builds/youtube/assets/playable-pack-ar-SZWw-5ZK.js  102.12 kB │ gzip: 55.44 kB
+../../builds/youtube/assets/index-CyT7QlOy.js             106.09 kB │ gzip: 35.47 kB
+../../builds/youtube/assets/playable-pack-ru-CbrLAHgD.js  114.09 kB │ gzip: 61.93 kB
+../../builds/youtube/assets/playable-pack-hi-BPxL5hQw.js  134.49 kB │ gzip: 72.99 kB
+../../builds/youtube/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.11s
+$ node scripts/audit-youtube-artifact.mjs
+YouTube artifact audit passed: 24 files, 1.80 MiB total and conservative initial transfer, 16 locale(s)

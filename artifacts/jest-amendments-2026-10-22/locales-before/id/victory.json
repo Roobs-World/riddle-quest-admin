@@ -1,0 +1,21 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Pencapaian Terbuka!",
+    "COINS_SUFFIX": " Koin",
+    "NEXT_LEVEL_BUTTON": "Level Selanjutnya",
+    "SHARE_TEXT": "Undang teman · masing-masing 100 koin",
+    "REFERRAL_REWARD_MESSAGE": "Daftar melalui undangan saya dan kita berdua mendapat {coins} koin!",
+    "OPEN_INVITE_MESSAGE": "{name} menantangmu bermain Riddle Quest. Daftar melalui undangan ini dan kalian berdua mendapat {coins} koin!",
+    "REFERRAL_REWARD_TITLE": "Seorang teman bergabung!",
+    "TITLE": "PEKERJAAN BAGUS!",
+    "TOTAL_COINS_LABEL": "Total koin",
+    "YOU_WON_TITLE": "ANDA MENANG!",
+    "SHARE_ATTEMPT_PLURAL": "upaya",
+    "SHARE_ATTEMPT_SINGULAR": "percobaan",
+    "SHARE_CLASSIC_MODE_LABEL": "Mode Klasik",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Tantangan Harian",
+    "SHARE_MESSAGE_TEMPLATE": "Saya menyelesaikan Riddle Quest {gameType} hari ini dalam {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nBisakah kamu mengalahkan skorku?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Lihat hasil Riddle Quest saya!",
+    "INVITE_FRIEND": "Undang teman"
+  }
+}

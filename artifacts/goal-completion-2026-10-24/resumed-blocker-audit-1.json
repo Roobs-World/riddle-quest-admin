@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-24 03:31:30 UTC",
+  "previousGoalTurnClassification": "progress",
+  "previousProgress": "Completed the four explicitly approved legacy Firebase dependency deployments and immutable-source/settings verification.",
+  "currentEvidenceChangesNextAction": true,
+  "currentEvidenceChange": "Jest has no running review. A current unpublished draft awaits an explicit release/review-submission decision; waiting for review processing is not an available next action.",
+  "wholeGoalCompletionProven": false,
+  "resumedBlockerAuditNumber": 1,
+  "bee": {
+    "remainingFeedbackItem": "Licensed Nice to Bit You track",
+    "hiveMusicSourceConfigured": false,
+    "currentArtlistPageShowsSignInForm": true,
+    "matchingAudioFilenameFoundInProjectMusicOrDownloads": false,
+    "actualClientLmsAcceptanceOutstanding": true,
+    "sessionHandoffTab": "1499258538"
+  },
+  "portfolio": {
+    "evidence": "/home/craig-beswetherick/Documents/portfolio/output/task-fixes/portfolio-clerk-ui-2026-10-24/blocker-audit-resumed-1-2026-10-24T032956Z.json",
+    "latestActionsRun": "39895074148",
+    "workflowState": "startup_failure; zero jobs/check runs; payment/spending annotation",
+    "protectedHealthApprovalReceived": false,
+    "safeNewDeliveryActionIdentified": false
+  },
+  "riddle": {
+    "evidence": "riddle/final-5c26470ae/jest-current-release-gates-readback.json",
+    "finalBuildReady": true,
+    "finalBuildActive": false,
+    "gamePublished": false,
+    "currentlyRunningReview": false,
+    "releaseActionsExplicitlyRequested": false,
+    "subscriptionFreshnessContractOrProductDecisionOutstanding": true,
+    "safeNewDevelopmentActionIdentified": false
+  },
+  "dashboard": {
+    "serverRespondedHttp200": true,
+    "restoredClosedEphemeralTab": true,
+    "currentTab": "1499258560",
+    "displayedDevelopmentVerified": 192,
+    "displayedVerificationPending": 0,
+    "markedDeliverable": true
+  },
+  "repeatedPassingTestsOrCloudWrites": false
+}

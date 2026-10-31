@@ -1,0 +1,25 @@
+{
+  "label": "final5c-main",
+  "runner": "main",
+  "entrypoint": "artifacts/goal-completion-2026-10-24/riddle/run-main-manifest-checks.mjs",
+  "runnerArguments": [
+    "--output=artifacts/development-checks/goal-20261024-main-final5c-main"
+  ],
+  "evidenceDirectory": "artifacts/development-checks/goal-20261024-main-final5c-main",
+  "indices": [],
+  "selection": "all declared checks for this runner",
+  "supervisorPid": 423882,
+  "startedAt": "2026-10-24T02:03:55.289Z",
+  "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceBefore": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "status": "passed",
+  "inheritedDebugDisabled": true,
+  "maximumRuntimeMinutes": 45,
+  "report": "artifacts/development-checks/goal-20261024-main-final5c-main/report.json",
+  "childPid": 424130,
+  "exitCode": 0,
+  "signal": null,
+  "sourceAfter": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "finishedAt": "2026-10-24T02:07:09.778Z",
+  "sourceStillMatches": true
+}

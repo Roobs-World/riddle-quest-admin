@@ -84,9 +84,9 @@ export async function scheduleEngagementReminders(
   ];
 
   /** Three deterministic cards are reused across D1-D7 and deduplicated by Jest. */
-  const assets = variants.map((variant) => notificationAsset({
+  const assets = await Promise.all(variants.map((variant) => notificationAsset({
     title: copy.gameTitle, body: variant.body, ctaText: variant.cta,
-  }, copy.assetReference));
+  }, copy.assetReference)));
 
   return Promise.all(
     ENGAGEMENT_REMINDER_IDS.map((identifier, index) => {

@@ -1,7 +1,8 @@
 import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
 import {logger} from "firebase-functions/v2";
+import {z} from "zod";
 import {admin} from "../shared/firebaseAdmin";
-import {generateUniqueRiddle} from "../riddles/openaiService";
+import {generateUniqueRiddle, type RiddleReviewFeedback} from "../riddles/openaiService";
 import type {DailyRiddle} from "../validation/firestoreSchemas";
 import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
 import {
@@ -13,12 +14,28 @@ import {
 } from "../riddles/riddleGenerationRepository";
 import {isPlayableSinglePlayerAnswer} from "../gameplay/singlePlayerAnswerPolicy";
 
-/** Maximum model calls spent on one locale in one scheduled run. */
+/** Maximum candidate attempts spent on one locale in one scheduled run. */
 const MAX_DAILY_ATTEMPTS_PER_LOCALE = 3;
-/** Maximum model calls spent across all locales in one scheduled run. */
+/** Maximum candidate attempts spent across all locales in one scheduled run. */
 const MAX_DAILY_ATTEMPTS_PER_RUN = 51;
 /** Locale generation concurrency keeps OpenAI and Firestore pressure bounded. */
 const DAILY_LOCALE_CONCURRENCY = 3;
+
+/** Validates dated content before an existing Daily is reused. */
+const ReusableDailyContentSchema = z.object({
+  challengeKey: z.string(),
+  text: z.string().min(1),
+  answer: z.string(),
+});
+
+/** Checks the date, playable answer and clue before preserving a publication. */
+function hasReusableDailyContent(data: unknown, challengeDate: string): boolean {
+  /** Schema parse result used to decide whether stored content is reusable. */
+  const parsed = ReusableDailyContentSchema.safeParse(data);
+  return parsed.success && parsed.data.challengeKey === challengeDate &&
+    isPlayableSinglePlayerAnswer(parsed.data.answer) &&
+    riddleHasPlayableClue({question: parsed.data.text, answer: parsed.data.answer});
+}
 
 /** Carries content-free diagnostics across the scheduler's error boundary. */
 export class DailyGenerationIncompleteError extends Error {
@@ -47,7 +64,7 @@ function assertDailyDateKey(value: string): string {
 /**
  * Generates immutable localized daily documents for one regional calendar date.
  *
- * The scheduler runs this at regional midnight. A failure never overwrites playable
+ * The scheduler runs this at regional 09:00. A failure never overwrites playable
  * content for another date, and later scheduled retries only fill missing or
  * invalid locale documents.
  */
@@ -84,11 +101,7 @@ export async function generateLocalizedDailyChallengeForDate(
     if (
       existingChallenge.exists &&
       !forceGenerate &&
-      existingData?.challengeKey === challengeDate &&
-      typeof existingData.text === "string" &&
-      existingData.text.length > 0 &&
-      isPlayableSinglePlayerAnswer(existingData.answer) &&
-      riddleHasPlayableClue({question: existingData.text, answer: existingData.answer})
+      hasReusableDailyContent(existingData, challengeDate)
     ) {
       logger.info("Immutable daily challenge already exists.", {locale, challengeDate});
       return;
@@ -104,6 +117,8 @@ export async function generateLocalizedDailyChallengeForDate(
       answer: string;
     }[] = [];
 
+    /** Content-only rejection feedback for the next bounded author attempt. */
+    let previousReview: RiddleReviewFeedback | undefined;
     for (let localeAttempt = 1; localeAttempt <= MAX_DAILY_ATTEMPTS_PER_LOCALE; localeAttempt++) {
       if (totalAttemptCount >= MAX_DAILY_ATTEMPTS_PER_RUN) break;
       totalAttemptCount += 1;
@@ -111,7 +126,15 @@ export async function generateLocalizedDailyChallengeForDate(
       const riddle = await generateUniqueRiddle(
         locale,
         [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
-        {mode: "daily", background: true, excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+        {
+          mode: "daily", difficulty: "medium", background: true,
+          excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)],
+          previousReview,
+          onReviewRejected: (feedback) => {
+            previousReview = feedback;
+            generatedAttempts.push({question: feedback.question, answer: feedback.answer});
+          },
+        },
       );
       if (!riddle) continue;
 
@@ -146,8 +169,15 @@ export async function generateLocalizedDailyChallengeForDate(
         category: "daily",
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
       };
-      await dailyRiddleRef.set(riddleData);
-      logger.info("Generated immutable daily challenge.", {locale, challengeDate, localeAttempt});
+      /** Whether this transaction wrote the generated Daily. */
+      const stored = await dailyRiddleRef.firestore.runTransaction(async (transaction) => {
+        /** Current stored content considered before a non-forced replacement. */
+        const current = await transaction.get(dailyRiddleRef);
+        if (!forceGenerate && current.exists && hasReusableDailyContent(current.data(), challengeDate)) return false;
+        transaction.set(dailyRiddleRef, riddleData);
+        return true;
+      });
+      logger.info(stored ? "Generated immutable daily challenge." : "Immutable daily challenge already exists.", {locale, challengeDate, localeAttempt});
       return;
     }
 

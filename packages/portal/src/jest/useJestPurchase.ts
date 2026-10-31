@@ -38,7 +38,8 @@ export function useJestPurchase({
       if (product?.productType === "subscription" && !subscriptionsEnabled) {
         throw new Error("Subscriptions are not available.");
       }
-      trackEvent("begin_checkout", {
+      /** Records checkout intent only after the requested offer is available. */
+      const trackCheckout = () => trackEvent("begin_checkout", {
         value: product?.price,
         currency: product?.currency,
         items: [
@@ -51,41 +52,53 @@ export function useJestPurchase({
         ],
       });
       if (product?.productType === "subscription") {
-        if (!session.player.registered) throw new Error("Registration is required to subscribe.");
         if (product.subscriptionStatus === "active") {
-          return {success: true, productId, purchaseType: "subscription"};
-        }
-        /** Checks current holdings immediately before checkout. */
-        const catalog = await purchases.getSubscriptions(session.player.playerId, navigator.language);
-        if (catalog.status !== "success") throw new Error(tr("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS"));
-        setProducts((current) => [...catalog.value, ...current.filter((entry) => entry.productType !== "subscription")]);
-        /** Finds the currently purchasable subscription. */
-        const offer = catalog.value.find((entry) => entry.productId === productId);
-        if (!offer || offer.subscriptionStatus === "active") {
           return {success: false, cancelled: true, productId, purchaseType: "subscription"};
         }
+        /** Distinguishes catalog verification failure from a later checkout failure. */
+        let catalogVerified = false;
+        /** Allows cancellation telemetry only when a payable offer was presented. */
+        let checkoutAvailable = false;
         /** Provides subscribed behavior. */
-        const subscribed = await purchases.subscribe(productId, session.player.playerId);
-        if (subscribed.status === "cancelled") {
-          trackFunnel("subscription_cancelled", {productId});
+        const subscribed = await purchases.subscribe(productId, session.player.playerId, {
+          locale: navigator.language,
+          onCatalog: (catalog) => {
+            catalogVerified = true;
+            setProducts((current) => [...catalog, ...current.filter((entry) => entry.productType !== "subscription")]);
+            /** Refreshed offer used to decide whether checkout can proceed. */
+            const offer = catalog.find((entry) => entry.productId === productId);
+            if (offer && offer.subscriptionStatus !== "active") {
+              checkoutAvailable = true;
+              trackCheckout();
+            }
+          },
+        });
+        if (subscribed.status === "cancelled" ||
+          (subscribed.status === "unavailable" && subscribed.message === "guest_not_allowed")) {
+          if (checkoutAvailable) trackFunnel("subscription_cancelled", {productId});
           return {success: false, cancelled: true, productId, purchaseType: "subscription"};
         }
         if (subscribed.status !== "success") {
-          throw new Error(subscribed.message);
+          throw new Error(catalogVerified ? subscribed.message : tr("ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS"));
         }
         setProducts((current) => current
-          .filter((candidate) => candidate.productId === subscribed.value.activeSku ||
-            !subscribed.value.blockedSkus.includes(candidate.productId))
+          .filter((candidate) => candidate.productType !== "subscription" ||
+            candidate.productId === subscribed.value.activeSku)
           .map((candidate) => candidate.productId === subscribed.value.activeSku
             ? {...candidate, subscriptionStatus: "active", trialEligible: false}
             : candidate));
+        if (subscribed.value.recoveredExistingSubscription === true) {
+          return {success: false, cancelled: true, productId, purchaseType: "subscription"};
+        }
         trackFunnel("subscription_completed", {productId});
-        trackPurchase({
-          productId,
-          purchaseType: "subscription",
-          price: product.price,
-          currency: product.currency,
-        });
+        if (subscribed.value.sandbox !== true) {
+          trackPurchase({
+            productId,
+            purchaseType: "subscription",
+            price: product.price,
+            currency: product.currency,
+          });
+        }
         return {
           success: true,
           productId,
@@ -95,6 +108,7 @@ export function useJestPurchase({
             : {}),
         };
       }
+      trackCheckout();
       /** Provides result behavior. */
       const result = await purchases.purchase(productId, session.player.playerId);
       if (result.status === "cancelled") {
@@ -105,12 +119,14 @@ export function useJestPurchase({
         throw new Error(result.message);
       }
       trackFunnel("purchase_completed", {productId});
-      trackPurchase({
-        productId,
-        purchaseType: "consumable",
-        price: product?.price,
-        currency: product?.currency,
-      });
+      if (result.value.sandbox !== true) {
+        trackPurchase({
+          productId,
+          purchaseType: "consumable",
+          price: product?.price,
+          currency: product?.currency,
+        });
+      }
       return {
         success: true,
         productId,

@@ -1,0 +1,73 @@
+{
+  "searchedAt": "2026-10-24T02:17:07.587Z",
+  "question": "Do retained artifacts prove the pre-2026-10-24T01:18:00Z Cloud Run SERVICE-level maximum scale for confirmLiveGuessReceipt in us-central1 or europe-west1?",
+  "regions": [
+    "us-central1",
+    "europe-west1"
+  ],
+  "sourceRestrictions": {
+    "structuredArtifactJsonOnly": true,
+    "rawLogsRead": false,
+    "sourceArchivesRead": false,
+    "apiQueriesPerformed": false
+  },
+  "olderArtifactNameMatches": [
+    {
+      "file": "artifacts/human-wait-backend-deployment-plan-2026-10-18.json",
+      "preparedAt": "2026-10-20T03:11:56.829678+00:00",
+      "completedAt": "2026-10-20T03:20:05.059349+00:00",
+      "identifierPath": "unchangedDeploymentExclusions.3.functions.0",
+      "serviceScalingRecorded": false
+    },
+    {
+      "file": "artifacts/continuation-release-20261020/deployment-plan.json",
+      "preparedAt": "2026-10-20T03:11:56.829678+00:00",
+      "completedAt": "2026-10-20T03:20:05.059349+00:00",
+      "identifierPath": "unchangedDeploymentExclusions.3.functions.0",
+      "serviceScalingRecorded": false
+    }
+  ],
+  "preRolloutFunctionSnapshots": [
+    {
+      "file": "artifacts/goal-completion-2026-10-24/riddle/backend/functions-before.json",
+      "matchingRegionalFunctions": 2,
+      "serviceConfigMaxInstanceCount": "omitted",
+      "inference": "No service-level capacity conclusion follows from this omission"
+    },
+    {
+      "file": "artifacts/goal-completion-2026-10-24/riddle/backend/function-config-before.json",
+      "matchingRegionalFunctions": 2,
+      "serviceConfigMaxInstanceCount": "omitted",
+      "inference": "No service-level capacity conclusion follows from this omission"
+    }
+  ],
+  "postRolloutForensicFilesContainingOldEvents": [
+    {
+      "file": "artifacts/goal-completion-2026-10-24/riddle/backend/confirm-guess-pre-rollout-service-audit.json",
+      "readAt": "2026-10-24T02:04:38.275779+00:00",
+      "eventTimestamps": [
+        "2026-10-17T11:22:26.861705Z",
+        "2026-10-17T11:22:21.846582Z",
+        "2026-10-17T11:21:23.877969Z",
+        "2026-10-17T11:21:23.548012Z"
+      ],
+      "allSelectedScalingAnnotationsEmpty": true,
+      "allRequestResponseServiceScalingNull": true
+    },
+    {
+      "file": "artifacts/goal-completion-2026-10-24/riddle/backend/confirm-guess-pre-rollout-capacity-fields.json",
+      "readAt": "2026-10-24T02:05:50.198684+00:00",
+      "eventTimestamps": [
+        "2026-10-17T11:22:26.861705Z",
+        "2026-10-17T11:22:21.846582Z",
+        "2026-10-17T11:21:23.877969Z",
+        "2026-10-17T11:21:23.548012Z"
+      ],
+      "selectedCapacityFields": []
+    }
+  ],
+  "historicalServiceLevelMaxScale": "not established in either region",
+  "priorServiceLevel20": "unknown",
+  "effectiveCapacityChangeDuringRollout": "unknown",
+  "limitation": "Retained plans identify an excluded function but contain no service-scaling snapshot. Post-rollout queries of old administrative events retain no selected service-scaling payload. Neither current service-level20 nor an omitted old Cloud Functions/revision maximum proves the pre-rollout effective service capacity."
+}

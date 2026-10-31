@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.HOST_COMMIT_REACT_MODE??'development',baseline=process.env.HOST_COMMIT_BASELINE_DIR;
-const output=path.resolve(process.env.HOST_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/host-bridge-commit-2026-10-04',mode));
+const output=path.resolve(process.env.HOST_COMMIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/host-bridge-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/host-commit-'));
 const source=`

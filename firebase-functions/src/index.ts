@@ -9,6 +9,9 @@
  * declarative.
  */
 import {getApps, initializeApp} from "firebase-admin/app";
+import {setGlobalOptions} from "firebase-functions/v2";
+
+setGlobalOptions({minInstances: 0});
 
 // Initialize the Firebase Admin SDK once for all functions in this project.
 if (getApps().length === 0) initializeApp();
@@ -63,7 +66,6 @@ import {
   listFacebookContextBoard,
   recordFacebookContextRun,
 } from "./race/facebookContextCallables";
-import {facebookContextRetentionScheduler} from "./race/facebookContextRetentionScheduler";
 import {getFacebookClientConfiguration} from "./facebook/facebookClientConfigurationCallable";
 import {
   acceptFacebookNotificationPermissionPrompt,
@@ -72,7 +74,6 @@ import {
 import {deleteRedditAccount, exchangeRedditIdentity} from "./reddit/redditEndpoints";
 import {redditStorage} from "./reddit/redditStorageEndpoint";
 import {redditGameplay} from "./reddit/redditGameplayEndpoint";
-import {redditProfileRetentionScheduler} from "./reddit/redditProfileRetentionScheduler";
 import {yahooOAuthCallback, yahooOAuthStart} from "./yahoo/yahooOAuthEndpoints";
 import {
   confirmYahooStripeCheckout,
@@ -94,8 +95,6 @@ export {
   completeGame,
   submitSinglePlayerGuess,
   dailyChallengeScheduler,
-  facebookContextRetentionScheduler,
-  redditProfileRetentionScheduler,
   getLeaderboard,
   listRaceCategories,
   listRaceInbox,
@@ -152,11 +151,9 @@ export {
   yahooStripeWebhook,
 };
 
-export {deliverRaceSettlementEvent, deliverRacePerformanceEvent, settleRaceDeadlines} from "./race/raceSettlementJobs";
-export {reconcileRaceMatchProjections} from "./race/raceProjectionReconciliation";
-export {monitorRaceRecoveryHealth} from "./race/raceRecoveryHealth";
+export {deliverRaceSettlementEvent, deliverRacePerformanceEvent} from "./race/raceSettlementJobs";
 
-export {replenishClassicSupply} from "./riddles/classicSupplyWorker";
+export {replenishClassicSupplyOnDemand, retryClassicSupplyOnDemand} from "./riddles/classicSupplyWorker";
 
 export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/raceLiveCallables";
 export {setLiveRacePushSubscription, deliverLiveRaceChallengePush} from "./race/raceLivePushJobs";

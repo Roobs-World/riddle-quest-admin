@@ -1,6 +1,6 @@
 import type {GameModal, GameSessionState} from "../../gameSession";
 
-/** A single screen in a victory or auxiliary reward celebration. */
+/** A single tab in a victory or auxiliary reward queue. */
 export type FanfareStep =
   | {
       /** Stores kind. */
@@ -15,8 +15,6 @@ export type FanfareStep =
   | {
       /** Stores kind. */
       kind: "level";
-      /** Achievements unlocked by the same completion, listed compactly inside the level-up step. */
-      achievementIds: string[];
     }
   | {
       /** Stores kind. */
@@ -47,37 +45,27 @@ export type FanfareAwardState = Pick<
   "auxiliaryFanfare" | "lastOutcome" | "lastRewards" | "modal" | "profile"
 >;
 
-/**
- * Builds the steps shown between two riddles for a server-authoritative victory reward.
- *
- * A stage transition shows the win result plus at most one extra celebration,
- * so finishing a riddle never becomes a chain of popups. An actual level-up
- * (reported by the authority for this completion) takes the single slot,
- * stands in for the rank change that accompanies it and lists every newly
- * unlocked achievement inline; otherwise the first newly unlocked achievement
- * takes it. Every unlock remains listed in the profile.
- */
+/** Queues every confirmed milestone without requiring another player action. */
 export function createVictoryFanfareSteps(reward: GameSessionState["lastRewards"]): FanfareStep[] {
-  if (!reward) return [];
-  if (reward.leveledUp === true) {
-    return [{kind: "victory"}, {kind: "level", achievementIds: [...reward.newlyUnlockedAchievementIds]}];
+  /** Ordered, deduplicated milestones for this presentation. */
+  const steps: FanfareStep[] = [{kind: "victory"}];
+  if (reward?.leveledUp === true) steps.push({kind: "level"});
+  for (const achievementId of new Set(reward?.newlyUnlockedAchievementIds)) {
+    steps.push({kind: "achievement", achievementId});
   }
-
-  /** First achievement unlocked by this completion, when any. */
-  const achievementId = reward.newlyUnlockedAchievementIds[0];
-  return achievementId ? [{kind: "victory"}, {kind: "achievement", achievementId}] : [{kind: "victory"}];
+  return steps;
 }
 
 /** Builds the ordered celebration steps for a purchase or achievement reward. */
 export function createRewardFanfareSteps(fanfare: GameSessionState["auxiliaryFanfare"]): FanfareStep[] {
   if (!fanfare) return [];
 
-  return [
-    ...(fanfare.kind === "purchase" ? ([{kind: "purchase"}] as FanfareStep[]) : []),
-    ...(fanfare.kind === "referral" ? ([{kind: "referral"}] as FanfareStep[]) : []),
-    ...fanfare.achievementIds.map((achievementId): FanfareStep => ({kind: "achievement", achievementId})),
-    ...(fanfare.kind === "achievement" && fanfare.coinsAwarded > 0 ? ([{kind: "coins"}] as FanfareStep[]) : []),
-  ];
+  /** Ordered, deduplicated milestones for this presentation. */
+  const steps: FanfareStep[] = [];
+  if (fanfare.kind === "purchase" || fanfare.kind === "referral") steps.push({kind: fanfare.kind});
+  for (const achievementId of new Set(fanfare.achievementIds)) steps.push({kind: "achievement", achievementId});
+  if (fanfare.kind === "achievement" && fanfare.coinsAwarded > 0) steps.push({kind: "coins"});
+  return steps;
 }
 
 /** Returns the current step while safely clamping an out-of-range index. */

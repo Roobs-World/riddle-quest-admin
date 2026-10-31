@@ -1,0 +1,57 @@
+{
+  "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "startedAt": "2026-10-24T01:34:35.165Z",
+  "checks": [
+    {
+      "index": 154,
+      "executable": "env",
+      "args": [
+        "PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin",
+        "pnpm",
+        "--dir",
+        "firebase-functions",
+        "exec",
+        "firebase",
+        "emulators:exec",
+        "--only",
+        "firestore",
+        "--project",
+        "demo-riddle-quest-live-seat-browser",
+        "node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:live-pvp-seat-recovery"
+      ],
+      "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "status": "failed",
+      "exitCode": 1,
+      "startedAt": "2026-10-24T01:44:05.235Z",
+      "checkedAt": "2026-10-24T01:44:17.479Z",
+      "log": "artifacts/development-checks/goal-20261024-backend-attempts/154-failed-60546a7870dc5af221fe7bbd1537130cfd89a1cc68061a2512400dfd6a42dec4.log",
+      "sha256": "0b4b09ae8fb406332e55e025300e1a1513b621a7c4e591f5eafe0d33fb676d1d",
+      "artifacts": {},
+      "artifactSnapshots": {},
+      "originalLog": "artifacts/development-checks/goal-20261024-backend-exact/154.log",
+      "redactionProvenance": {
+        "file": "artifacts/goal-completion-2026-10-24/riddle/backend/local-test-log-redactions.json",
+        "method": "Remove only complete inherited Firebase CLI environment-dump lines; retain test commands, assertions, and failure traces.",
+        "redactedAt": "2026-10-24T01:48:53.501965+00:00",
+        "originalRawLogSha256": "60546a7870dc5af221fe7bbd1537130cfd89a1cc68061a2512400dfd6a42dec4",
+        "redactedLogSha256": "0b4b09ae8fb406332e55e025300e1a1513b621a7c4e591f5eafe0d33fb676d1d",
+        "redactedEnvironmentDumpLines": 1,
+        "originalRawLogRemoved": true,
+        "assertionFailureOrPassOutputPreserved": true,
+        "note": "The archived filename retains the original hash as historical identity; sha256 now binds the sanitized log bytes."
+      }
+    }
+  ],
+  "archive": {
+    "capturedAt": "2026-10-24T01:45:24.392Z",
+    "originalReport": "artifacts/development-checks/goal-20261024-backend-exact/report.json",
+    "originalReportSha256": "8ad168553bba66a47b1e8b1e77b3f4c75edf5a21609aa98e0f6e59c3a9957d9b",
+    "originalReportSnapshot": "artifacts/development-checks/goal-20261024-backend-attempts/154-original-report-8ad168553bba66a47b1e8b1e77b3f4c75edf5a21609aa98e0f6e59c3a9957d9b.json",
+    "scope": "Read-only preservation of the initial exact154 failure before an owner rerun"
+  }
+}

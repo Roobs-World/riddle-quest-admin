@@ -1,0 +1,178 @@
+{
+  "passed": true,
+  "groupCount": 8,
+  "localeSelections": 16,
+  "cases": [
+    {
+      "name": "all locale settings and Arabic RTL",
+      "passed": true,
+      "selections": [
+        {
+          "code": "en",
+          "label": "English",
+          "heading": "Settings",
+          "direction": "ltr"
+        },
+        {
+          "code": "es",
+          "label": "Español",
+          "heading": "Configuración",
+          "direction": "ltr"
+        },
+        {
+          "code": "pt",
+          "label": "Português",
+          "heading": "Configurações",
+          "direction": "ltr"
+        },
+        {
+          "code": "fr",
+          "label": "Français",
+          "heading": "Paramètres",
+          "direction": "ltr"
+        },
+        {
+          "code": "de",
+          "label": "Deutsch",
+          "heading": "Einstellungen",
+          "direction": "ltr"
+        },
+        {
+          "code": "ja",
+          "label": "日本語",
+          "heading": "設定",
+          "direction": "ltr"
+        },
+        {
+          "code": "ko",
+          "label": "한국어",
+          "heading": "설정",
+          "direction": "ltr"
+        },
+        {
+          "code": "hi",
+          "label": "हिन्दी",
+          "heading": "सेटिंग्स",
+          "direction": "ltr"
+        },
+        {
+          "code": "ru",
+          "label": "Русский",
+          "heading": "Настройки",
+          "direction": "ltr"
+        },
+        {
+          "code": "tr",
+          "label": "Türkçe",
+          "heading": "Ayarlar",
+          "direction": "ltr"
+        },
+        {
+          "code": "ar",
+          "label": "العربية",
+          "heading": "الإعدادات",
+          "direction": "rtl"
+        },
+        {
+          "code": "id",
+          "label": "Bahasa Indonesia",
+          "heading": "Pengaturan",
+          "direction": "ltr"
+        },
+        {
+          "code": "it",
+          "label": "Italiano",
+          "heading": "Impostazioni",
+          "direction": "ltr"
+        },
+        {
+          "code": "nl",
+          "label": "Nederlands",
+          "heading": "Instellingen",
+          "direction": "ltr"
+        },
+        {
+          "code": "pl",
+          "label": "Polski",
+          "heading": "Ustawienia",
+          "direction": "ltr"
+        },
+        {
+          "code": "vi",
+          "label": "Tiếng Việt",
+          "heading": "Cài đặt",
+          "direction": "ltr"
+        }
+      ],
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+      "sourceReport": "results.json"
+    },
+    {
+      "name": "Third-Party Licenses UI link loads bundled notices",
+      "passed": true,
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 26077,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+      "sourceReport": "results.json"
+    },
+    {
+      "name": "unavailable Daily retains Settings and Help recovery after offline return",
+      "passed": true,
+      "unavailableDailyNeverBecameClassic": true,
+      "settingsAndHelpReachable": true,
+      "expectedOfflineResourceErrors": 16,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+      "sourceReport": "results.json"
+    },
+    {
+      "name": "offline return preserves game and draft",
+      "passed": true,
+      "draftBefore": "PI",
+      "draftAfterReturn": "PIA",
+      "protectedCommandsWhileOffline": 0,
+      "expectedOfflineResourceErrors": 0,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+      "sourceReport": "offline-results.json"
+    },
+    {
+      "name": "offline return preserves settings and draft",
+      "passed": true,
+      "draftBefore": "PI",
+      "draftAfterReturn": "PIA",
+      "protectedCommandsWhileOffline": 0,
+      "expectedOfflineResourceErrors": 0,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+      "sourceReport": "offline-results.json"
+    },
+    {
+      "name": "offline return preserves multiplayer and draft",
+      "passed": true,
+      "draftBefore": "PI",
+      "draftAfterReturn": "PIA",
+      "protectedCommandsWhileOffline": 0,
+      "expectedOfflineResourceErrors": 0,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/browser/jest-artifact",
+      "sourceReport": "multiplayer-offline-results.json"
+    },
+    {
+      "name": "guest account deletion is unavailable while registration remains offered",
+      "passed": true,
+      "registrationOffered": true,
+      "unsupportedDeletionHidden": true,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/jest-final-artifact",
+      "sourceReport": "deletion-current-results.json"
+    },
+    {
+      "name": "mock account deletion cancels safely then reaches deleted-account screen",
+      "passed": true,
+      "injectedMockOnly": true,
+      "cancelledBeforeDeletionCommand": true,
+      "terminalScreenReached": true,
+      "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-route-verification-2026-10-22/jest-final-artifact",
+      "sourceReport": "deletion-current-results.json"
+    }
+  ],
+  "failures": [],
+  "supersededRunsRetained": true
+}

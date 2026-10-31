@@ -1,0 +1,10 @@
+{
+  "snapshot": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-final",
+  "filesCount": 419,
+  "totalBytes": 4717654,
+  "manifestSha256": "0d0ebc9738b221194f387df5566135c7ef5b1322fdd96352164df6d587107d04",
+  "verifiedBeforeAt": "2026-10-22T21:06:55.794022+00:00",
+  "matchesManifestBefore": true,
+  "verifiedAfterAt": "2026-10-22T21:13:00.466348+00:00",
+  "matchesManifestAfter": true
+}

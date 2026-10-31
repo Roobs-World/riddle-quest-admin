@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.OFFLINE_BOUNDARY_REACT_MODE??'development',baseline=process.env.OFFLINE_BOUNDARY_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.OFFLINE_BOUNDARY_REPORT_DIR??path.join(root,'../../artifacts/offline-keyboard-boundary-2026-10-04',mode));
+const output=path.resolve(process.env.OFFLINE_BOUNDARY_REPORT_DIR??path.join(root,'../../builds/test-evidence/offline-keyboard-boundary-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/offline-keyboard-boundary-'));let server,browser;const observations=[];
 try{

@@ -1,0 +1,15 @@
+{
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "activeVersion": {
+    "id": "01a14a2c-a427-7408-999e-f27bb7267e60",
+    "version": "1.0.0-dev.20261017140049.invites",
+    "description": "Fixes Jest friend invitations and makes multiplayer invite buttons consistent across the category screen and lobby.",
+    "isActive": true
+  },
+  "buildStatus": "ready",
+  "isPublished": false,
+  "reviewSubmitted": false,
+  "publicationBlocker": "Review submission requires the Developer Console. Firefox and Chrome tools could not connect, and no CUA browser is available.",
+  "previewUrl": "https://jest.com/g/riddle-q?versionId=01a14a2c-a427-7408-999e-f27bb7267e60",
+  "hostedFilesVerified": 4
+}

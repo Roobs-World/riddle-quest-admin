@@ -1,0 +1,48 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FacebookLiveContextBindingSchema = void 0;
+exports.facebookLiveContextSelection = facebookLiveContextSelection;
+exports.prepareFacebookLiveContext = prepareFacebookLiveContext;
+exports.assertFacebookLiveContextSelection = assertFacebookLiveContextSelection;
+const zod_1 = require("zod");
+const https_1 = require("firebase-functions/v2/https");
+const facebookContextCompetition_1 = require("./facebookContextCompetition");
+const facebookContextService_1 = require("./facebookContextService");
+const facebookSecurity_1 = require("../facebook/facebookSecurity");
+/** Only server-derived board and membership epochs are retained with the live seat. */
+exports.FacebookLiveContextBindingSchema = zod_1.z.object({ contextKey: zod_1.z.string().regex(/^[a-f0-9]{64}$/),
+    createdAtMs: zod_1.z.number().int().nonnegative(), joinedAtMs: zod_1.z.number().int().nonnegative() }).strict();
+/** Validates an optional SDK selector before any provider can enter or recover a seat. */
+function facebookLiveContextSelection(userId, contextId) {
+    if (contextId === undefined)
+        return undefined;
+    if (!(0, facebookSecurity_1.isFacebookFirebaseUid)(userId))
+        throw new https_1.HttpsError("permission-denied", "Facebook context selection unavailable.");
+    return (0, facebookContextCompetition_1.facebookContextKey)(contextId);
+}
+/** Captures current active membership in the same transaction that creates a new live ticket. */
+async function prepareFacebookLiveContext(transaction, db, userId, locale, contextKey, nowMs) {
+    if (contextKey === undefined)
+        return undefined;
+    /** Source clocks and identity are always server-owned, including direct service use. */
+    if (!(0, facebookSecurity_1.isFacebookFirebaseUid)(userId) || !Number.isSafeInteger(nowMs) || nowMs < 0)
+        throw new https_1.HttpsError("permission-denied", "Facebook context selection unavailable.");
+    /** Original board and member epochs prevent later rollover or reactivation from accepting an old score. */
+    const snapshot = await transaction.get(db.doc(`facebookContextCompetitions/${contextKey}`));
+    if (!snapshot.exists)
+        throw new https_1.HttpsError("not-found", "Facebook context selection unavailable.");
+    /** Stored membership is validated independently of the browser's synchronized context result. */
+    const board = (0, facebookContextService_1.parseFacebookContextCompetition)(snapshot.data());
+    /** Only this authenticated owner's active locale membership may bind the score destination. */
+    const member = board.members.find(row => row.userId === userId && row.active);
+    if (board.contextKey !== contextKey || board.locale !== locale || nowMs < board.createdAtMs || nowMs >= board.expiresAtMs ||
+        !member || member.joinedAtMs > nowMs)
+        throw new https_1.HttpsError("failed-precondition", "Facebook context selection unavailable.");
+    return { contextKey, createdAtMs: board.createdAtMs, joinedAtMs: member.joinedAtMs };
+}
+/** Receipt recovery cannot move a retained score to another SDK context. */
+function assertFacebookLiveContextSelection(binding, contextKey) {
+    if (binding?.contextKey !== contextKey)
+        throw new https_1.HttpsError("failed-precondition", "Request belongs to another live context.");
+}
+//# sourceMappingURL=facebookLiveContextBinding.js.map

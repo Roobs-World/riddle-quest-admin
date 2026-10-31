@@ -1,0 +1,7 @@
+
+Test Suites: 320 passed, 320 total
+Tests:       3326 passed, 3326 total
+Snapshots:   0 total
+Time:        8.767 s
+Ran all test suites.
+Test results written to: ../../artifacts/jest-instructions-modal-2026-10-22/frontend/unit-results.json

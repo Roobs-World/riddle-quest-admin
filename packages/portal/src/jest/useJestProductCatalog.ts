@@ -8,7 +8,7 @@ type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promis
 /** Describes track funnel. */
 type TrackFunnel = (eventName: string, params?: Record<string, string | number | boolean>) => void;
 
-/** Loads Jest consumables and registered-player subscriptions into one UI catalog. */
+/** Loads Jest consumables and subscription offers into one UI catalog. */
 export function useJestProductCatalog({
   purchases,
   session,
@@ -49,13 +49,13 @@ export function useJestProductCatalog({
     }
     setCatalogState((current) => ({...current, loading: true}));
     await withPlatformActivity(async () => {
-      /** Provides products behavior. */
-      const products = await purchases.getProducts(navigator.language);
-      /** Provides subscriptions behavior. */
-      const subscriptions =
-        subscriptionsEnabled && session.player.registered
-          ? await purchases.getSubscriptions(session.player.playerId, navigator.language)
-          : ({status: "success", value: []} as const);
+      /** Independent provider catalogs share one background loading lifetime. */
+      const [products, subscriptions] = await Promise.all([
+        purchases.getProducts(navigator.language),
+        subscriptionsEnabled
+          ? purchases.getSubscriptions(session.player.playerId, navigator.language)
+          : Promise.resolve({status: "success", value: []} as const),
+      ]);
       return {products, subscriptions};
     }).then(({products, subscriptions}) => {
       if (request !== generation.current) return;

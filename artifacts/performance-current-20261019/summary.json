@@ -1,0 +1,523 @@
+{
+  "verifiedAt": "2026-10-19T00:57:45.608438+00:00",
+  "productionSourceHashes": "current-production-source-hashes.json",
+  "backendBenchmarks": {
+    "successfulRequests": 40,
+    "runsPerSidePerScenario": 5,
+    "primaryScenario": "forty-last-eligible",
+    "summaries": [
+      {
+        "scenario": "empty",
+        "side": "baseline",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 14.499032,
+          "min": 12.530224999999973,
+          "max": 14.91762399999999
+        },
+        "cpuMs": {
+          "median": 5.727,
+          "min": 4.837,
+          "max": 25.079
+        },
+        "readCalls": {
+          "median": 6,
+          "min": 6,
+          "max": 6
+        },
+        "documentReadAttempts": {
+          "median": 6,
+          "min": 6,
+          "max": 6
+        },
+        "writes": {
+          "median": 2,
+          "min": 2,
+          "max": 2
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "empty",
+        "side": "candidate",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 12.111221,
+          "min": 11.00215099999997,
+          "max": 12.657064999999989
+        },
+        "cpuMs": {
+          "median": 8.638,
+          "min": 4.089,
+          "max": 10.746
+        },
+        "readCalls": {
+          "median": 5,
+          "min": 5,
+          "max": 5
+        },
+        "documentReadAttempts": {
+          "median": 5,
+          "min": 5,
+          "max": 5
+        },
+        "writes": {
+          "median": 2,
+          "min": 2,
+          "max": 2
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "one-rival",
+        "side": "baseline",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 20.826663000000053,
+          "min": 20.080911000000015,
+          "max": 21.58383600000002
+        },
+        "cpuMs": {
+          "median": 13.114,
+          "min": 9.378,
+          "max": 13.56
+        },
+        "readCalls": {
+          "median": 15,
+          "min": 15,
+          "max": 15
+        },
+        "documentReadAttempts": {
+          "median": 15,
+          "min": 15,
+          "max": 15
+        },
+        "writes": {
+          "median": 7,
+          "min": 7,
+          "max": 7
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "one-rival",
+        "side": "candidate",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 19.048245000000065,
+          "min": 18.58621000000005,
+          "max": 20.006049000000075
+        },
+        "cpuMs": {
+          "median": 11.277,
+          "min": 8.573,
+          "max": 17.222
+        },
+        "readCalls": {
+          "median": 11,
+          "min": 11,
+          "max": 11
+        },
+        "documentReadAttempts": {
+          "median": 14,
+          "min": 14,
+          "max": 14
+        },
+        "writes": {
+          "median": 7,
+          "min": 7,
+          "max": 7
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "forty-last-eligible",
+        "side": "baseline",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 61.83099900000002,
+          "min": 51.49940800000013,
+          "max": 92.49014899999997
+        },
+        "cpuMs": {
+          "median": 107.455,
+          "min": 65.373,
+          "max": 146.782
+        },
+        "readCalls": {
+          "median": 210,
+          "min": 210,
+          "max": 210
+        },
+        "documentReadAttempts": {
+          "median": 249,
+          "min": 249,
+          "max": 249
+        },
+        "writes": {
+          "median": 7,
+          "min": 7,
+          "max": 7
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "forty-last-eligible",
+        "side": "candidate",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 30.648159000000078,
+          "min": 26.86953399999993,
+          "max": 37.64067799999998
+        },
+        "cpuMs": {
+          "median": 30.87,
+          "min": 18.024,
+          "max": 57.918
+        },
+        "readCalls": {
+          "median": 11,
+          "min": 11,
+          "max": 11
+        },
+        "documentReadAttempts": {
+          "median": 248,
+          "min": 248,
+          "max": 248
+        },
+        "writes": {
+          "median": 7,
+          "min": 7,
+          "max": 7
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "forty-blocked",
+        "side": "baseline",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 43.72470800000019,
+          "min": 42.23282200000017,
+          "max": 52.41069300000004
+        },
+        "cpuMs": {
+          "median": 52.182,
+          "min": 51.408,
+          "max": 99.898
+        },
+        "readCalls": {
+          "median": 207,
+          "min": 207,
+          "max": 207
+        },
+        "documentReadAttempts": {
+          "median": 246,
+          "min": 246,
+          "max": 246
+        },
+        "writes": {
+          "median": 2,
+          "min": 2,
+          "max": 2
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "scenario": "forty-blocked",
+        "side": "candidate",
+        "successes": 5,
+        "failures": 0,
+        "runs": 5,
+        "elapsedMs": {
+          "median": 22.937429000000066,
+          "min": 21.259422000000086,
+          "max": 34.39339999999993
+        },
+        "cpuMs": {
+          "median": 14.277,
+          "min": 11.507,
+          "max": 25.327
+        },
+        "readCalls": {
+          "median": 8,
+          "min": 8,
+          "max": 8
+        },
+        "documentReadAttempts": {
+          "median": 245,
+          "min": 245,
+          "max": 245
+        },
+        "writes": {
+          "median": 2,
+          "min": 2,
+          "max": 2
+        },
+        "attempts": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        }
+      }
+    ],
+    "evidence": "backend/comparison.json",
+    "scope": "Warm local Firestore emulator, not production latency."
+  },
+  "clientMeasurements": {
+    "conditions": {
+      "releaseBuild": true,
+      "reactCompiler": true,
+      "node": "v24.17.0",
+      "chromium": "153.0.8010.12",
+      "react": "19.3.0",
+      "vite": "8.3.1",
+      "smokeOnly": false,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cpuThrottlingRate": 4,
+      "httpFixtureDelayMs": 20,
+      "scope": "Actual LiveRaceGame release build, local HTTP fixture transport. Isolates client costs; not hosted Jest, Firestore or SMS latency.",
+      "renderMeasurement": "React commit hook, without instrumenting or changing the compiled component source",
+      "signalPaintMeasurement": "Two requestAnimationFrame callbacks after the countdown DOM commit; not a hardware display latency measurement",
+      "baselineSha256": "02adcbea97cb14554ce3efa7ad40a75a61e4783283bd33b43d47bde055564c36",
+      "candidateSha256": "2c5c19dab154d004610c06c16bde966914b6612a236abdbeb22761e3c578cd31",
+      "runOrder": "baseline,candidate alternated5times; profiling pilots excluded"
+    },
+    "summaries": [
+      {
+        "variant": "baseline",
+        "runs": 5,
+        "polls": {
+          "median": 13,
+          "min": 13,
+          "max": 13,
+          "values": [
+            13,
+            13,
+            13,
+            13,
+            13
+          ]
+        },
+        "renders": {
+          "median": 13,
+          "min": 13,
+          "max": 13,
+          "values": [
+            13,
+            13,
+            13,
+            13,
+            13
+          ]
+        },
+        "taskMs": {
+          "median": 197.99600000000004,
+          "min": 184.436,
+          "max": 210.081,
+          "values": [
+            184.436,
+            197.196,
+            197.99600000000004,
+            202.502,
+            210.081
+          ]
+        },
+        "storageReads": {
+          "median": 13,
+          "min": 13,
+          "max": 13,
+          "values": [
+            13,
+            13,
+            13,
+            13,
+            13
+          ]
+        },
+        "storageWrites": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "signalPaintMs": {
+          "median": 53.099999994039536,
+          "min": 50.900000005960464,
+          "max": 61.400000005960464,
+          "values": [
+            50.900000005960464,
+            51.900000005960464,
+            53.099999994039536,
+            57.099999994039536,
+            61.400000005960464
+          ]
+        }
+      },
+      {
+        "variant": "candidate",
+        "runs": 5,
+        "polls": {
+          "median": 3,
+          "min": 3,
+          "max": 3,
+          "values": [
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        "renders": {
+          "median": 3,
+          "min": 3,
+          "max": 3,
+          "values": [
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        "taskMs": {
+          "median": 56.91000000000002,
+          "min": 53.345999999999975,
+          "max": 60.613,
+          "values": [
+            53.345999999999975,
+            54.497000000000014,
+            56.91000000000002,
+            58.55200000000002,
+            60.613
+          ]
+        },
+        "storageReads": {
+          "median": 3,
+          "min": 3,
+          "max": 3,
+          "values": [
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        "storageWrites": {
+          "median": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "signalPaintMs": {
+          "median": 49.79999999701977,
+          "min": 47.70000000298023,
+          "max": 59.5,
+          "values": [
+            47.70000000298023,
+            49.1000000089407,
+            49.79999999701977,
+            54.69999998807907,
+            59.5
+          ]
+        }
+      }
+    ],
+    "evidence": "client/results.json"
+  },
+  "focusedTests": {
+    "totalPassed": 216,
+    "machineReadableResults": [
+      {
+        "scope": "backend",
+        "testsPassed": 94,
+        "evidence": "artifacts/performance-current-20261019/backend/regressions.json"
+      },
+      {
+        "scope": "checkout",
+        "testsPassed": 64,
+        "evidence": "artifacts/performance-current-20261019/release/checkout-unit-results.json"
+      },
+      {
+        "scope": "completion",
+        "testsPassed": 44,
+        "evidence": "artifacts/performance-current-20261019/completion/unit-results.json"
+      }
+    ],
+    "pollingTestsPassed": 14,
+    "pollingEvidence": "client/polling-unit.log"
+  },
+  "browserChecks": {
+    "notificationsScenariosPassed": 13,
+    "completionCollectionChecksPassed": 132,
+    "pollingScheduleChecksPassed": 79,
+    "pollingScheduleDiagnosticSamples": 11
+  },
+  "productionDeploymentAttempted": false,
+  "frontendActivationRequested": false,
+  "hostedJestAndProductionLatencyVerified": false,
+  "documentation": "docs/evidence/current-task-performance-2026-10-19.md",
+  "optionalFrontendLint": {
+    "configured": false,
+    "result": "System ESLint stopped before source checks because this repository only defines a backend ESLint configuration."
+  }
+}

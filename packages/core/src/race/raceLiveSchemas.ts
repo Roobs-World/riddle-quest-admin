@@ -12,6 +12,8 @@ import type {LiveGuessReceiptQuery, LiveGuessReceiptResult} from "./raceLiveRece
  * review requires an opponent within seconds, and the countdown follows it.
  */
 export const LIVE_RACE_WAIT_MS = 6_000;
+/** Resumable public seats share the bounded search before a bot fills an empty pool. */
+export const LIVE_RACE_PLAYER_WAIT_MS = LIVE_RACE_WAIT_MS;
 /** Defines the live race countdown ms value. */
 export const LIVE_RACE_COUNTDOWN_MS = 5_000;
 /** Defines the live race win coins value. */
@@ -23,6 +25,9 @@ export const LiveRaceChallengeIdSchema = z.string().regex(/^live_[a-f0-9]{64}$/)
 /** One authenticated, idempotent queue entry. */
 export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
   requestId: z.string().min(8).max(160), createChallenge: z.boolean().optional(),
+  waitForPlayer: z.literal(true).optional(),
+  /** Reload recovery addresses an existing public seat without creating a replacement. */
+  resumeTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   /** Modern clients durably retire this join intent rather than an unconditionally shared ticket. */
   retirementAware: z.literal(true).optional(),
   /** Precondition only: verified authentication still exclusively selects the account. */
@@ -33,6 +38,8 @@ export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId
   /** Caller-owned terminal ticket; the server resolves the original human opponent. */
   rematchOfTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict()
   .refine(input => !(input.createChallenge && input.challengeId))
+  .refine(input => !input.waitForPlayer || !(input.createChallenge || input.challengeId || input.rematchOfTicketId))
+  .refine(input => !input.resumeTicketId || input.waitForPlayer === true)
   .refine(input => !input.rematchOfTicketId || !(input.createChallenge || input.challengeId));
 /** Commands identify an owned seat and never supply scores or clock values. */
 export const UpdateLiveRaceSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
@@ -47,6 +54,7 @@ export const LiveRacePlayerSchema = z.object({displayName: z.string().min(1).max
   avatarUrl: z.string().url().nullable(), bot: z.boolean(), correctCount: z.number().int().min(0).max(10)}).strict();
 /** Answer-free, viewer-specific live state. */
 export const LiveRaceViewSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
+  waitForPlayer: z.literal(true).optional(),
   phase: z.enum(["searching", "countdown", "racing", "result", "cancelled"]),
   serverNowMs: z.number().int().nonnegative(), searchEndsAtMs: z.number().int().nonnegative(),
   startsAtMs: z.number().int().nonnegative().nullable(), player: LiveRacePlayerSchema,

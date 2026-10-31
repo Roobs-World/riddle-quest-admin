@@ -1,0 +1,73 @@
+{
+  "request": "Wider keyboard box hit areas without interfering with other controls",
+  "productionFiles": {
+    "packages/portal/src/styles.puzzle.css": "aa19d1ee17ceacb9f77239d149bd1dce7d740e34e231f1e69f209e0b166824d8",
+    "packages/portal/src/styles.guidance.css": "86eee9375cb012defd29692df9d242367c09b57f8b8a05bb4279ca56f63ca9e0",
+    "packages/portal/src/styles.race-gameplay.css": "cdb6adc461c6f5dcb6dde24f0c98d0f715bc6d3d483cdaaca5ac0af51c103025"
+  },
+  "beforeSnapshots": {
+    "styles.puzzle.css": "368136597b09fcc9ca26fa47ac60ad7572fafe98169320a12fde5c3b33988de1",
+    "styles.guidance.css": "3fadb8bde56a55cefe5a9db36131cdeee065dea5263a8f647437a677205cd0f9",
+    "keyboard-only.diff": "8782c19d5adc8c78037e5f1e5986f1e692b2a2f258e37c4d68575fd3490df56a",
+    "styles.race-gameplay.css": "b5cd15c8536e76a7b9a1f2ab679f3632135f4a8bb3fc8d8885318b7cd6df72ab"
+  },
+  "beforeSnapshotProvenance": "Reconstructed by reversing the exact task patch while preserving preexisting dirty changes.",
+  "keyboardBrowserTestsAuthorized": true,
+  "keyboardBrowserTestsRun": true,
+  "deploymentOrActivationRequested": false,
+  "compilationPassed": true,
+  "targetBoundaryAuditPassed": true,
+  "localeAuditPassed": true,
+  "licenseAuditPassed": true,
+  "jestConsoleAuditPassed": true,
+  "jestArtifactAuditPassed": true,
+  "w3cHtmlValidationPassed": true,
+  "uploadVersionId": "01a1567e-c03d-712d-b40e-2ef13b822050",
+  "uploadBuildStatus": "ready",
+  "uploadIsActive": false,
+  "staticReview": "static-review.json",
+  "keyboardBrowserTestAuthorization": "User explicitly requested focused keyboard tap checks on 2026-10-20.",
+  "initialProductionFiles": {
+    "packages/portal/src/styles.puzzle.css": "aa19d1ee17ceacb9f77239d149bd1dce7d740e34e231f1e69f209e0b166824d8",
+    "packages/portal/src/styles.guidance.css": "cdc7e5aee94b53ed3d3fd4974407f7e4a54da4c69a57eaf81357e6f155fd8769"
+  },
+  "keyboardBrowserTestsPassed": true,
+  "keyboardBrowserVerification": {
+    "touchCases": 24,
+    "nativeTaps": 2016,
+    "gapTaps": 584,
+    "nativeAdjustedGapTaps": 10,
+    "heldPresses": 24,
+    "browserVersion": "Chromium 153.0.8010.12",
+    "finalCssIsolationChecks": 165,
+    "earlierOfflineChecks": 261,
+    "earlierRetainedQuitDialogCases": 4,
+    "tapEvidence": "tap-checks/observations.json",
+    "isolationEvidence": "isolation/summary.json",
+    "limits": "Local browser fixtures with actual game components and fitters. No hosted provider, backend or physical-device verification.",
+    "answerCellTaps": 360,
+    "finalCssIsolationCases": 10,
+    "allAnswerCellsSeparateFromKeyboard": true
+  },
+  "initialUploadVersionId": "01a15669-f3c6-73df-b2d2-0f8d02e1163c",
+  "uploadReceipt": "artifacts/jest-uploads/keyboard-complete-20261020/upload-receipt.json",
+  "landscapeUtilityCorrection": {
+    "reason": "Real fitted landscape race Backspace narrowed from 42.214 px to 39.221 px in the initial implementation. A 56 CSS px minimum increases it to 43.777 px while letter targets remain larger than the original.",
+    "review": "landscape-utility-review.json",
+    "preFixGeometry": "tap-checks/pre-fix-landscape-diagnosis/"
+  },
+  "finalTaskDiff": {
+    "path": "final-keyboard-only.diff",
+    "sha256": "e070032b7f471b08b8d88a16abc0473096258c678ab5df4d07d7693a23723878"
+  },
+  "initialReleaseParity": "release-parity.json",
+  "correctedReleaseParity": "corrected-release-parity.json",
+  "intermediateUploadVersionId": "01a1567a-cef2-741f-9229-e34a0de69530",
+  "landscapeAnswerGridCorrection": {
+    "reason": "The existing centered, inverse-width race keyboard overlapped adjacent answer cells in landscape. Aligning to logical inline start moves compensation outward while preserving key width and RTL behavior.",
+    "diagnosis": "isolation/layout-parity/diagnosis.json",
+    "preFixTouchEvidence": "tap-checks/pre-board-fix/",
+    "finalVerification": "No key/cell intersections across all 25 cells in all 24 touch cases; 360 editable-cell taps select the intended slot without key/action callbacks."
+  },
+  "finalReleaseParity": "final-release-parity.json"
+}

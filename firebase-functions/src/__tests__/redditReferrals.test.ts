@@ -272,6 +272,30 @@ it("fails closed for invalid clocks, token chronology, establishment state, and 
   ).rejects.toThrow("reddit-referral-binding-conflict");
 });
 
+it("retains the original earning completion and rejects malformed attribution without granting twice", async () => {
+  /** Invitation whose first accepted win may receive one referral payout. */
+  const {fixture, now} = await issuedFixture();
+  await bindRedditReferralToken(inviteeUid, token, now + 1, fixture.db);
+  fixture.documents.set(`users/${inviteeUid}`, {coins: 325, stats: {wins: 1, gamesPlayed: 1}});
+  await expect(settleRedditReferralAfterAuthoritativeWin(inviteeUid, now + 2, fixture.db, "raw-player-identity"))
+    .rejects.toThrow("invalid-reddit-referral-completion-receipt");
+  /** Only an opaque completion receipt can be retained with the payout. */
+  const completionReceiptId = "a".repeat(64);
+  await expect(settleRedditReferralAfterAuthoritativeWin(inviteeUid, now + 2, fixture.db, completionReceiptId))
+    .resolves.toEqual({alreadySettled: false, inviteeCoins: 100, inviterCoins: 100, completionReceiptId});
+  await expect(settleRedditReferralAfterAuthoritativeWin(inviteeUid, now + 3, fixture.db, "b".repeat(64)))
+    .resolves.toEqual({alreadySettled: true, inviteeCoins: 100, inviterCoins: 100, completionReceiptId});
+  /** Existing durable attribution cannot be overwritten by a later request. */
+  const settlementPath = [...fixture.documents.keys()].find(path => path.startsWith("redditReferralSettlements/"));
+  if (!settlementPath) throw new Error("Expected the committed referral settlement");
+  expect(fixture.documents.get(settlementPath)?.completionReceiptId).toBe(completionReceiptId);
+  fixture.documents.set(settlementPath, {...fixture.documents.get(settlementPath), completionReceiptId: "raw-player-identity"});
+  await expect(settleRedditReferralAfterAuthoritativeWin(inviteeUid, now + 4, fixture.db, completionReceiptId))
+    .rejects.toThrow("reddit-referral-settlement-conflict");
+  expect(fixture.documents.get(`users/${inviteeUid}`)?.coins).toBe(425);
+  expect(fixture.documents.get(`users/${inviterUid}`)?.coins).toBe(400);
+});
+
 it("settles both rewards once after the first authoritative win", async () => {
   /** Provides {fixture, now} behavior. */
   const {fixture, now} = await issuedFixture();

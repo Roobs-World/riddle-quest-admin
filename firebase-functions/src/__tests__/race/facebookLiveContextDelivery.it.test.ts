@@ -328,6 +328,8 @@ it.each(["private", "rematch"].flatMap(mode => [0, 1].map(seat => ({mode, seat})
   "captures independent context destinations for $mode invitation winning seat $seat", async ({mode, seat}) => {
     /** Both original owners first settle a real source before a new private journey. */
     const original = await pair();
+    await solve(original[0].ticketId, PLAYERS[0], 1);
+    await solve(original[1].ticketId, PLAYERS[1], 1);
     await updateLiveRaceForUser(PLAYERS[1], {ticketId: original[1].ticketId, action: "leave", requestId: "source-private-forfeit"}, {db, nowMs: START + 8000});
     /** Creator selection is captured before any native share or in-game rematch acceptance. */
     const creator = await joinLiveRaceForUser(PLAYERS[0], {locale: "en", categoryId: "history", requestId: "context-private-creator",
@@ -349,6 +351,8 @@ it.each(["private", "rematch"].flatMap(mode => [0, 1].map(seat => ({mode, seat})
     expect((await contextEntry(seat).get()).data()).toMatchObject({runId: ticketId, adjustedTimeMs: 9000});
     expect((await contextEntry(1 - seat).get()).exists).toBe(false);
     // The prior winner adds clean-run; the prior loser adds first-win and clean-run.
+    expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(before + (seat === 0 ? 75 : 100));
+    await deliverRacePerformance(receipt.id, db, START + 26000);
     expect((await db.doc(`users/${PLAYERS[seat]}`).get()).data()?.coins).toBe(before + (seat === 0 ? 75 : 100));
   },
 );

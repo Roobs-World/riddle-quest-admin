@@ -1,3 +1,16 @@
+import {getConfirmedRiddleWin} from "./ConfirmedRiddleOutcome";
+import type {GameSessionState} from "./gameSessionTypes";
+
+/** Recovered Classic wins need confirmed progression; provisional Classic and duplicate reads remain responsive. */
+export function isCompletionAdvancePending(state: Pick<GameSessionState, "riddle" | "profile" | "guessPending" | "completionAcknowledged">): boolean {
+  if (state.riddle?.gameMode === "challenge") return state.guessPending || !state.completionAcknowledged;
+  if (state.completionAcknowledged || !state.riddle || !getConfirmedRiddleWin(state.riddle)) return false;
+  /** Only exact authority indices can prove that this completed round has a successor. */
+  const current = state.riddle.index, next = state.profile?.classicIndex;
+  return typeof current !== "number" || typeof next !== "number" ||
+    !Number.isSafeInteger(current) || !Number.isSafeInteger(next) || next <= current;
+}
+
 /** Stable identity shared by provisional presentation and authoritative confirmation. */
 export type CompletionIdentity = Readonly<{
   /** Canonical riddle identifier. */ riddleId: string;

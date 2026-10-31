@@ -30,7 +30,7 @@
   position: absolute;
   z-index: -1;
   inset: -8%;
-  background: url("../../../assets/images/home-bg.svg") center / 112% 112% no-repeat;
+  background: url("../../../assets/images/home-bg.svg?no-inline") center / 112% 112% no-repeat;
   opacity: 0.38;
 }
 .riddle-sound-button {
@@ -166,8 +166,7 @@
     filter 130ms ease,
     box-shadow 130ms ease;
 }
-.game-input-actions button:hover:not(:disabled),
-.game-bottom-navigation .multiplayer-navigation-action:hover {
+.game-input-actions button:hover:not(:disabled) {
   filter: brightness(1.05);
   transform: translateY(-2px);
 }
@@ -177,8 +176,7 @@
 .game-input-actions > button:only-child {
   grid-column: 1 / -1;
 }
-.game-input-actions button:active:not(:disabled),
-.game-bottom-navigation .multiplayer-navigation-action:active {
+.game-input-actions button:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
 }
@@ -237,12 +235,6 @@
   background: rgba(64, 31, 64, 0.08);
   transform: translateY(-2px);
 }
-/*
- * The multiplayer entry is the bar's only labelled action, so it uses the
- * game's primary action treatment (Submit in .game-input-actions): shared
- * tokens, radius, display face, shadow, and hover/press motion instead of a
- * bespoke palette.
- */
 .game-bottom-navigation .multiplayer-navigation-action {
   display: inline-flex;
   justify-content: center;
@@ -250,24 +242,9 @@
   gap: 8px;
   min-width: 0;
   padding-inline: clamp(12px, 3vw, 18px);
-  color: var(--play-ink);
-  background: var(--play-gold);
-  border-radius: 18px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
-  font:
-    400 clamp(13px, 3.4vw, 18px)/1 "Poetsen One",
-    "Poppins",
-    sans-serif;
-  transition:
-    transform 130ms ease,
-    filter 130ms ease,
-    box-shadow 130ms ease;
-}
-.game-bottom-navigation .multiplayer-navigation-action:hover {
-  background: var(--play-gold);
-}
-.game-bottom-navigation .multiplayer-navigation-action .native-control-icon {
-  fill: currentColor;
+  color: #401f40;
+  border-radius: 999px;
+  font: 400 clamp(13px, 3.4vw, 18px)/1 var(--rq-font-display);
 }
 .game-bottom-navigation img,
 .game-bottom-navigation .native-navigation-icon {
@@ -293,12 +270,12 @@
   min-width: 0;
   display: flex;
   justify-content: center;
-  gap: clamp(2px, 1.4vw, 10px);
+  gap: 1px;
 }
 .key {
+  flex: 1 1 0;
   min-width: 0;
   padding: 0;
-  width: min(52px, 8vw);
   height: 48px;
   border: 1px solid #ffffff57;
   border-radius: 9px;
@@ -307,17 +284,16 @@
   box-shadow: none;
   font: 700 20px/1 var(--rq-font-body);
   transition:
-    transform 90ms ease,
+    filter 90ms ease,
     background-color 120ms ease;
 }
 .key:hover:not(:disabled) {
-  transform: translateY(-2px);
+  filter: brightness(1.1);
 }
 .key:active:not(:disabled) {
-  transform: translateY(1px) scale(0.96);
+  filter: brightness(0.9);
 }
 .key.utility {
-  width: clamp(44px, 16vw, 62px);
   border-radius: 7px;
   background: #fff;
 }
@@ -328,7 +304,6 @@
 @media (prefers-reduced-motion: reduce) {
   .game-input-actions button,
   .game-bottom-navigation button,
-  .game-bottom-navigation .multiplayer-navigation-action,
   .key {
     transition: none;
   }

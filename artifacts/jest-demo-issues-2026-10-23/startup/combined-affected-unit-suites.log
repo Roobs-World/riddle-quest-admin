@@ -1,0 +1,6 @@
+
+Test Suites: 4 passed, 4 total
+Tests:       95 passed, 95 total
+Snapshots:   0 total
+Time:        0.3 s, estimated 1 s
+Ran all test suites within paths "src/jest/__tests__/startupColdRecovery.test.ts", "src/jest/__tests__/backend.test.ts", "src/jest/__tests__/startup.test.ts", "src/jest/__tests__/purchases.test.ts".

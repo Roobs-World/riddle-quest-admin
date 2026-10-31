@@ -1,0 +1,8 @@
+{
+  "firebase-functions/jest.rules.config.js": "0c2b5aa9cfd366a9156e30f97ad68acf43b1a6bb80873fe0064720ce64d88961",
+  "packages/portal/scripts/verify-live-race-browser.mjs": "3d201bcf4141bc5ec19b2858f6d12f7d99c157e366a295819a83f3adf8a6686a",
+  "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts": "f3cdc24b258d7f0387a28f2c379236ff8e6454a229f626b2986222b74cd1ca4f",
+  "firebase-functions/src/race/raceLiveService.ts": "5a731f2352bbff6ff9d573b80b55008b0d46581158af31a1bd9d861bc7d7d1e0",
+  "packages/portal/src/play/race/LiveRaceGame.tsx": "709b36823b47489ab1207d0519663e7f34e66f4d59e46eceb7b827cbb6104720",
+  "packages/portal/src/play/game/hooks/useGameSessionPersistence.ts": "61c340340bf20f248908e29b664f55006290f5eb07bbfb566127744b0b47678b"
+}

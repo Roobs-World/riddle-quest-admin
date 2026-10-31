@@ -1,0 +1,154 @@
+[
+  {
+    "width": 1280,
+    "bounds": [
+      {
+        "name": "Alien saucer 1",
+        "visible": true,
+        "scale": 0.5,
+        "current": {
+          "width": 15.604737497721814,
+          "height": 8.973489081496997
+        },
+        "previous": {
+          "width": 31.487448869851228,
+          "height": 17.959675761601076
+        },
+        "ratio": 0.4955859575102994
+      },
+      {
+        "name": "Alien saucer 2",
+        "visible": false,
+        "scale": 0.5,
+        "current": {
+          "width": 2184.9464858111123,
+          "height": 953.2670443413936
+        },
+        "previous": {
+          "width": 2184.9464858110837,
+          "height": 953.2670443413925
+        },
+        "ratio": 1.000000000000013
+      },
+      {
+        "name": "Alien saucer 3",
+        "visible": false,
+        "scale": 0.5,
+        "current": {
+          "width": 2184.9464858111123,
+          "height": 953.2670443413936
+        },
+        "previous": {
+          "width": 2184.9464858110837,
+          "height": 953.2670443413925
+        },
+        "ratio": 1.000000000000013
+      },
+      {
+        "name": "Rocket 1",
+        "visible": true,
+        "scale": 0.5,
+        "current": {
+          "width": 15.250129966819035,
+          "height": 10.572544780768217
+        },
+        "previous": {
+          "width": 30.49228358259382,
+          "height": 21.14441274726086
+        },
+        "ratio": 0.5001307929434449
+      },
+      {
+        "name": "Rocket 2",
+        "visible": true,
+        "scale": 0.5,
+        "current": {
+          "width": 13.892128460514925,
+          "height": 16.40301778258548
+        },
+        "previous": {
+          "width": 27.78565345875961,
+          "height": 32.80689772727986
+        },
+        "ratio": 0.49997486944599245
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "bounds": [
+      {
+        "name": "Alien saucer 1",
+        "visible": true,
+        "scale": 0.5,
+        "current": {
+          "width": 15.60473749772181,
+          "height": 8.973489081496997
+        },
+        "previous": {
+          "width": 31.48744886985122,
+          "height": 17.959675761601076
+        },
+        "ratio": 0.4955859575102993
+      },
+      {
+        "name": "Alien saucer 2",
+        "visible": false,
+        "scale": 0.5,
+        "current": {
+          "width": 2184.946485811112,
+          "height": 953.2670443413936
+        },
+        "previous": {
+          "width": 2184.946485811083,
+          "height": 953.2670443413925
+        },
+        "ratio": 1.000000000000013
+      },
+      {
+        "name": "Alien saucer 3",
+        "visible": false,
+        "scale": 0.5,
+        "current": {
+          "width": 2184.946485811112,
+          "height": 953.2670443413936
+        },
+        "previous": {
+          "width": 2184.946485811083,
+          "height": 953.2670443413925
+        },
+        "ratio": 1.000000000000013
+      },
+      {
+        "name": "Rocket 1",
+        "visible": true,
+        "scale": 0.5,
+        "current": {
+          "width": 10.968419367653897,
+          "height": 16.28993834232949
+        },
+        "previous": {
+          "width": 22.017770265582772,
+          "height": 32.56928600031175
+        },
+        "ratio": 0.4981621315578561
+      },
+      {
+        "name": "Rocket 2",
+        "visible": true,
+        "scale": 0.5,
+        "current": {
+          "width": 8.185372277806284,
+          "height": 16.683103866888864
+        },
+        "previous": {
+          "width": 16.374008904415042,
+          "height": 33.366776145321374
+        },
+        "ratio": 0.49990031919423245
+      }
+    ],
+    "errors": []
+  }
+]

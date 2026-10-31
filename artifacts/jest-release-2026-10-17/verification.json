@@ -1,0 +1,126 @@
+{
+  "build": "1.0.0-dev.20261017114313.34c43b31f9cd.401d2cf4",
+  "versionId": "01a149ac-8725-75f5-a1c1-668ebcd89a4b",
+  "previewUrl": "https://jest.com/g/riddle-q?versionId=01a149ac-8725-75f5-a1c1-668ebcd89a4b",
+  "buildStatus": "ready",
+  "active": true,
+  "simulator": {
+    "basicLaunch": {
+      "passed": 20,
+      "total": 20
+    },
+    "recommended": {
+      "passed": 5,
+      "total": 5
+    },
+    "fund": {
+      "passed": 4,
+      "total": 6,
+      "waiting": [
+        "Library asset reference",
+        "Approved library asset"
+      ]
+    },
+    "sdkErrors": 0,
+    "guestRecovery": true,
+    "guestPurchaseAndReload": true,
+    "registration": true,
+    "dailySkipWarningCancelAndClassicSwitch": true,
+    "subscriptionGrantAndReload": true,
+    "subscriptionCancellation": true,
+    "referralSharing": true,
+    "build": "1.0.0-dev.20261017114313.34c43b31f9cd.401d2cf4"
+  },
+  "liveSandboxPayment": {
+    "passed": true,
+    "build": "1.0.0-dev.20261017114313.34c43b31f9cd.401d2cf4",
+    "coinsGranted": 250,
+    "idempotentReplay": true,
+    "purchaseCompleted": true,
+    "reloadedWalletVerified": true
+  },
+  "extendedSuite": "running",
+  "backendDeployment": {
+    "completed": true,
+    "functions": [
+      "joinLiveRace",
+      "updateLiveRace",
+      "retireLiveRaceJoin",
+      "confirmLiveGuessReceipt"
+    ],
+    "regions": [
+      "us-central1",
+      "europe-west1"
+    ],
+    "runtime": "nodejs22",
+    "sourceCommit": "072fdb9e88f31fbc15f9ec1417a39ea6efc63702",
+    "sourceFilesComparedToUploadSnapshot": 518,
+    "sourceDifferences": 0
+  },
+  "liveMultiplayer": {
+    "passed": true,
+    "build": "1.0.0-dev.20261017114313.34c43b31f9cd.401d2cf4",
+    "twoDistinctSandboxUsers": true,
+    "humanMatch": true,
+    "privateHintsVerified": true,
+    "forfeitResultVerified": true,
+    "winnerRewardCoins": 50,
+    "reloadedWalletVerified": true,
+    "previousBuildTenRiddleWinAlsoVerified": true
+  },
+  "sourceCommit": "34c43b31f9cd899ec6b31820769e66a3f0c6cda1",
+  "notificationRequests": {
+    "beforeBytes": 4641131,
+    "afterBytes": 297362,
+    "http413AfterFix": 0,
+    "encoding": "jpeg",
+    "imageDimensions": [
+      900,
+      600
+    ]
+  },
+  "clientCoverage": {
+    "passedSuites": 318,
+    "passedTests": 3264,
+    "gatedBrowserSuites": 19
+  },
+  "crossPlatformBrowserChecks": {
+    "passed": true,
+    "targets": [
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo"
+    ],
+    "redditPackageContractPassed": true
+  },
+  "sourceAndArtifactChecks": {
+    "passed": true,
+    "checks": [
+      "TSDoc",
+      "types",
+      "release scripts",
+      "architecture",
+      "W3C",
+      "Jest upload preflight",
+      "Facebook upload preflight"
+    ],
+    "externalFacebookTransmission": false,
+    "declarationCount": 28246
+  },
+  "liveSandboxSubscription": {
+    "catalogAndSignedEntitlementPassed": true,
+    "reloadPassed": true,
+    "cancellationPassed": false,
+    "providerError": "not_active",
+    "accountsChecked": 3,
+    "fixtureStatus": "All available sandbox subscriptions report active entitlement and cancellation returns not_active; fresh cancellation cannot be confirmed."
+  },
+  "liveDeployedAcceptance": {
+    "passed": true,
+    "build": "1.0.0-dev.20261017114313.34c43b31f9cd.401d2cf4",
+    "liveMatchEntered": true,
+    "notificationErrors": 0
+  }
+}

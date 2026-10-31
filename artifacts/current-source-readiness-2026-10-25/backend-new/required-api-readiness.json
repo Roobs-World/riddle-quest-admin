@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-25T22:43:07.536413+00:00",
+  "requiredApisAlreadyEnabled": {
+    "run.googleapis.com": true,
+    "cloudbuild.googleapis.com": true,
+    "artifactregistry.googleapis.com": true,
+    "cloudfunctions.googleapis.com": true
+  },
+  "apiChangesPerformed": false
+}

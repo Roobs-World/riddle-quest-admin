@@ -1,0 +1,195 @@
+{
+  "scope": "Compiler and static source/dependency audits only. No runtime test suite, browser harness, game upload, activation, live navigation or provider submission.",
+  "sourceBefore": "7f32b30bb8e2162e14b1f025b90bbd37cbfd27366d222a4ef5b674f961a7463c",
+  "sourceAfter": "7f32b30bb8e2162e14b1f025b90bbd37cbfd27366d222a4ef5b674f961a7463c",
+  "sourceStable": true,
+  "checks": [
+    {
+      "id": "tsdoc",
+      "executable": "node",
+      "args": [
+        "scripts/audit-tsdoc.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:44.526Z",
+      "completedAt": "2026-10-25T21:28:45.378Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/tsdoc.log",
+      "sha256": "dd18a10090e9ee0894004c1c04c91e6cf6a23a8abec4b5527a9abc232f0d0e3e"
+    },
+    {
+      "id": "file-sizes",
+      "executable": "node",
+      "args": [
+        "scripts/audit-file-sizes.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:45.378Z",
+      "completedAt": "2026-10-25T21:28:45.451Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/file-sizes.log",
+      "sha256": "8d1a1a8c5cb11c8f040933cffd8c5d67c90a5472ce26ffbdb13596a42f5a7f4e"
+    },
+    {
+      "id": "target-boundaries",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/audit-web-target-boundaries.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:45.451Z",
+      "completedAt": "2026-10-25T21:28:45.795Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/target-boundaries.log",
+      "sha256": "d1a2299b568dd0c1e6d5f37e5b2697f0d2104e839eab82a12d98acae144d4b60"
+    },
+    {
+      "id": "locales",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/audit-locales.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:45.795Z",
+      "completedAt": "2026-10-25T21:28:45.834Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/locales.log",
+      "sha256": "124b174060ab07e80ee1a9a0e9cce5983c45413b99ac39f6c5e4d70e194c3856"
+    },
+    {
+      "id": "core-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/core",
+        "check:types"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:45.835Z",
+      "completedAt": "2026-10-25T21:28:46.256Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/core-types.log",
+      "sha256": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+    },
+    {
+      "id": "portal-types",
+      "executable": "pnpm",
+      "args": [
+        "--filter",
+        "@qwordly/portal",
+        "check:types"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:46.256Z",
+      "completedAt": "2026-10-25T21:28:46.897Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/portal-types.log",
+      "sha256": "ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+    },
+    {
+      "id": "licenses",
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/generate-third-party-licenses.mjs",
+        "--check"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:46.897Z",
+      "completedAt": "2026-10-25T21:28:47.272Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/licenses.log",
+      "sha256": "748e231377b8ed06d52125044ae083a047603d15fb14658ea3dfd897c6e3df2b"
+    },
+    {
+      "id": "security-config",
+      "executable": "node",
+      "args": [
+        "scripts/audit-security-config.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.273Z",
+      "completedAt": "2026-10-25T21:28:47.293Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/security-config.log",
+      "sha256": "7fb74078c149b3a3002e504de4218a6f11f45f259470b97ec3651f4124376e3e"
+    },
+    {
+      "id": "facebook-secrets",
+      "executable": "node",
+      "args": [
+        "scripts/audit-facebook-secret-boundary.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.293Z",
+      "completedAt": "2026-10-25T21:28:47.313Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/facebook-secrets.log",
+      "sha256": "83969441c38c8d8e7e7526ab7c09bbd47734280c0ad3da83bbc98e137a85cbcc"
+    },
+    {
+      "id": "facebook-commerce",
+      "executable": "node",
+      "args": [
+        "scripts/audit-facebook-commerce-activation.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.313Z",
+      "completedAt": "2026-10-25T21:28:47.331Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/facebook-commerce.log",
+      "sha256": "68a261b3ca5977c20b14da2aa99b93b5015b0f904e15523d27b83662f2014380"
+    },
+    {
+      "id": "facebook-profile",
+      "executable": "node",
+      "args": [
+        "scripts/audit-facebook-profile-boundary.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.331Z",
+      "completedAt": "2026-10-25T21:28:47.345Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/facebook-profile.log",
+      "sha256": "518bb459b0cdcf831ca82cf6dc82cf2563b1dc42e11377afd12125c30cab190f"
+    },
+    {
+      "id": "modern-packages",
+      "executable": "node",
+      "args": [
+        "scripts/audit-modern-package-features.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.345Z",
+      "completedAt": "2026-10-25T21:28:47.359Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/modern-packages.log",
+      "sha256": "ceb1785b37b5afb79be570e8fb9527a4dea84207b7de66465c596499b90cd52e"
+    },
+    {
+      "id": "backend-scalability",
+      "executable": "node",
+      "args": [
+        "scripts/audit-backend-scalability.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.359Z",
+      "completedAt": "2026-10-25T21:28:47.372Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-scalability.log",
+      "sha256": "19976f813202d0ae28d251dd8c18bd629260e75fcce96b4a02e186be5dda668e"
+    },
+    {
+      "id": "function-capacity",
+      "executable": "node",
+      "args": [
+        "scripts/audit-function-capacity.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-25T21:28:47.372Z",
+      "completedAt": "2026-10-25T21:28:47.662Z",
+      "log": "artifacts/current-source-readiness-2026-10-25/function-capacity.log",
+      "sha256": "53eb777ac17b6e9b9aaaca71847e2c8da0e09740ee8b395a50211e08d74dca9a"
+    }
+  ]
+}

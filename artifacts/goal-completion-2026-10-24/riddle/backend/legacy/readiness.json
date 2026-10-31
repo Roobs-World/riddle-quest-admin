@@ -1,0 +1,22 @@
+{
+  "runtimeFiles": 513,
+  "runtimeBytesMatchAllFourImmutableSources": true,
+  "onlyManifestAndLockChanged": true,
+  "wrapperBoundaryChecks": 14,
+  "productionDependencyVersions": {
+    "zod": "4.6.7",
+    "firebase-functions": "7.4.0"
+  },
+  "legacySelectors": [
+    "functions:blockLiveRaceOpponent",
+    "functions:reportLiveRaceOpponent",
+    "functions:listLiveRaceHistoryPage"
+  ],
+  "deploymentPerformed": false,
+  "sourceArchiveCount": 4,
+  "environmentValuesOrHashesRecorded": false,
+  "supportedDiscoveryManifestPrepared": true,
+  "runtimeConfigurationPreservationOfflineProof": "preserving-manifest-offline-proof.json",
+  "nullMinMaxResetFieldsOmittedFromApiUpdateMask": true,
+  "actualProductionDeploymentStillHeldForExplicitUserApproval": true
+}

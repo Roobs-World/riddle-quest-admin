@@ -1,0 +1,39 @@
+✔ verified Facebook/itch completion creates reviewed rows and preserves external status (1.204246ms)
+✔ stale, incomplete, failed and duplicate verification cannot claim completion (0.157519ms)
+✔ publication replays safely and retries conflicts against current accepted head (0.298236ms)
+✔ refresh failure remains durable, visible and retryable without losing local evidence (9.419767ms)
+Prepared itch HTML5 handoff build-itch.zip (ebcfd92f20a8f9a9065278c7c0c6fa2f035f1eba81f6ae8a4b865cd1043db94a).
+Prepared newgrounds HTML5 handoff build-newgrounds.zip (ebcfd92f20a8f9a9065278c7c0c6fa2f035f1eba81f6ae8a4b865cd1043db94a).
+✔ one preparation creates many verified handoffs and supports a newly registered destination (13.859314ms)
+Prepared itch HTML5 handoff build-itch.zip (ebcfd92f20a8f9a9065278c7c0c6fa2f035f1eba81f6ae8a4b865cd1043db94a).
+Prepared itch HTML5 handoff build-itch.zip (ebcfd92f20a8f9a9065278c7c0c6fa2f035f1eba81f6ae8a4b865cd1043db94a).
+✔ single destination prepares fresh and changed source cannot be reused (6.69155ms)
+✔ failed preparation removes stale evidence and never writes a destination receipt (0.73218ms)
+✔ distribution targets have distinct immutable artifact names and honest release boundaries (0.820577ms)
+✔ the public interface exposes one isolated canonical command per release target (0.852869ms)
+✔ the root package exposes target releases and one combined release command (4.148674ms)
+✔ target plans preserve distinct external effects (0.30569ms)
+✔ standalone web and PWA destinations cannot dispatch a build through either release interface (0.880531ms)
+✔ the combined release verifies once before running every adapter (1.241016ms)
+✔ the Facebook adapter performs only the local preflight and immutable handoff (0.515298ms)
+✔ dry runs describe a target without invoking its adapter (0.161266ms)
+✔ execution delegates once, plays the produced artifact, then reports the platform handoff (0.361677ms)
+✔ a failed artifact gameplay gate never reports a handoff as ready (0.325408ms)
+✔ the canonical Jest adapter refuses ambient overrides of its fixed activation policy (0.187306ms)
+✔ the CLI rejects extra stages and supports a read-only plan (32.223176ms)
+✔ formatted plans always disclose command, effect, handoff, and runbook (0.107995ms)
+✔ the process adapter forwards termination and awaits child teardown (49.317851ms)
+✔ only matching successful browser evidence verifies current archive (0.532771ms)
+✔ a mismatched archive or manifest cannot claim readiness (0.161276ms)
+✔ verified live receipt updates status, links and action queue (1.031608ms)
+✔ live and submitted outcomes require a server receipt and live requires a listing (0.23703ms)
+✔ refreshing a historical live PWA receipt preserves evidence without reopening build or submission work (0.770062ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.779573
+

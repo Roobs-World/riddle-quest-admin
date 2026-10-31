@@ -1,0 +1,20 @@
+Passed 390px en
+Passed 1280px en
+Passed 320px rtl
+Passed 390px reduced
+Passed 390px late
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The result dialog occupies an earlier frame than its notifications
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-fanfare-tabs-browser.mjs:121:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.17.0

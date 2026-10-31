@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.PROFILE_KEYS_REACT_MODE??'development',baseline=process.env.PROFILE_KEYS_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.PROFILE_KEYS_REPORT_DIR??path.join(root,'../../artifacts/profile-confirmation-keyboard-2026-10-04',mode));
+const output=path.resolve(process.env.PROFILE_KEYS_REPORT_DIR??path.join(root,'../../builds/test-evidence/profile-confirmation-keyboard-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/profile-confirmation-keyboard-'));let server,browser;const observations=[];
 try{

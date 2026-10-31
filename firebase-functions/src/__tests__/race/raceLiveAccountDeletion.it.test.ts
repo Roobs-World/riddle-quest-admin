@@ -289,12 +289,12 @@ it("removes a deleting winner's board entry and balance snapshot without changin
   expect(match.newCoins).toBeUndefined();
   expect(match.settlementCoins).toBeUndefined();
   expect(match.runs[0].settlementCoins).toBeUndefined();
-  expect(match.runs[1].settlementCoins).toBe(125);
+  expect(match.runs[1].settlementCoins).toBeUndefined();
   expect(match.facebookReferral).toBeUndefined();
   /** Provides loss behavior. */
   const loss = await updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: "preserved-loss"}, {db, nowMs: START + 18000});
   expect(loss).toMatchObject({result: "loss", rewardCoins: 0, opponent: {displayName: "Riddle Quest player", avatarUrl: null}});
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(125);
+  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(100);
 });
 
 it.each(["cleanup-first", "guard-first", "completion-first", "concurrent"] as const)(

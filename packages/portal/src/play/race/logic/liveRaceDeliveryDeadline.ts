@@ -2,8 +2,10 @@ import {LiveRaceChallengeSchema, type LiveRaceCapability} from "@qwordly/core/ra
 
 /** Background polling must not hold an interactive player command indefinitely. */
 export const LIVE_RACE_POLL_DEADLINE_MS = 2_000;
-/** Join and accepted mutations retain a longer transport budget before bounded retry. */
+/** Accepted mutations retain a longer transport budget before bounded retry. */
 export const LIVE_RACE_COMMAND_DEADLINE_MS = 10_000;
+/** Joining can include a cold Functions preflight and immutable deck preparation. */
+export const LIVE_RACE_JOIN_DEADLINE_MS = 30_000;
 
 /** Only definitive authority rejections permit retiring an unaccepted player command. */
 export function liveRaceCommandRejected(error: unknown): boolean {
@@ -24,7 +26,9 @@ export async function confirmUnavailableLiveInvitation(failure: unknown, challen
 
 /** Bounds a transport wait without claiming cancellation of its server-side mutation. */
 export function liveRaceDeliveryDeadline<T>(delivery: Promise<T>, poll: boolean,
-  onLateResult?: (value: T) => void, signal?: AbortSignal): Promise<T> {
+  onLateResult?: (value: T) => void, signal?: AbortSignal,
+  /** Entry may opt into its bounded cold-start budget without slowing polls or player commands. */
+  commandDeadlineMs = LIVE_RACE_COMMAND_DEADLINE_MS): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     /** A late receipt uses the caller's ownership policy after this wait has expired. */
     let expired = false;
@@ -56,6 +60,6 @@ export function liveRaceDeliveryDeadline<T>(delivery: Promise<T>, poll: boolean,
       expired = true;
       cleanup();
       reject(new Error("Live race delivery timed out"));
-    }, poll ? LIVE_RACE_POLL_DEADLINE_MS : LIVE_RACE_COMMAND_DEADLINE_MS);
+    }, poll ? LIVE_RACE_POLL_DEADLINE_MS : commandDeadlineMs);
   });
 }

@@ -1,0 +1,86 @@
+diff --git a/packages/portal/scripts/verify-live-race-browser.mjs b/packages/portal/scripts/verify-live-race-browser.mjs
+index ab9dc0329..90f6c62ba 100644
+--- a/packages/portal/scripts/verify-live-race-browser.mjs
++++ b/packages/portal/scripts/verify-live-race-browser.mjs
+@@ -304,25 +304,45 @@ try {
+   assert.equal(await (rivalWins?b:a).locator('.live-race-reward').innerText(),'+50 coins');assert.equal(await (rivalWins?a:b).locator('.live-race-reward').count(),0);
+   assert.equal(await a.evaluate(()=>window.completed),1);assert.equal(await b.evaluate(()=>window.completed),1);
+   assert.equal(await a.locator('.race-gameplay').count(),0);await a.screenshot({path:path.join(output,`victory-${viewport.width}.png`),fullPage:true});
+-  if(authority) assert.deepEqual(await authority.balances(),rivalWins?[100,150]:[150,100]);
++  if(authority) {
++   assert.deepEqual(await authority.balances(),rivalWins?[125,225]:[200,125]);
++   const adminRequire=createRequire(path.resolve(root,'../../firebase-functions/package.json'));
++   const db=adminRequire('firebase-admin/firestore').getFirestore();
++   const profiles=await db.getAll(...['a','b'].map(character=>db.doc(`users/jest_${character.repeat(40)}`)));
++   const achievements=profiles.map(profile=>profile.data().unlockedAchievements.map(entry=>entry.achievementId).sort());
++   assert.deepEqual(achievements,rivalWins?
++    [['race_debut'],['race_clean_run','race_debut','race_first_win']]:
++    [['race_debut','race_first_win'],['race_debut']]);
++  }
+   assert.deepEqual(await a.evaluate(()=>[...new Set(window.bridgeCalls)]),['game:listRaceCategories']);
+   assert.equal(await a.evaluate(()=>window.legacyFindCalls),0);
+   await a.getByRole('button',{name:'Close Race to 10',exact:true}).last().click();
+   await a.getByRole('button',{name:'Start PvP match',exact:true}).waitFor();
+   assert.equal(await a.locator('.race-hub-tabs,.race-inbox,.race-challenge-card').count(),0);
+-  assert.deepEqual(errors,[]);console.log(`Live PvP passed at ${viewport.width}px: intro, lobby identities, countdown, progress, ${authority?'penalty window and adjusted-time settlement':'immediate unpenalized victory'}, and one 50-coin grant.`);
++  assert.deepEqual(errors,[]);console.log(`Live PvP passed at ${viewport.width}px: intro, lobby identities, countdown, progress, ${authority?'penalty window, adjusted-time settlement and exact one-time achievement bonuses':'immediate unpenalized victory'}, and one 50-coin match grant.`);
+   await context.close();
+  }
+  reset();await authority?.reset();const context=await browser.newContext({viewport:{width:390,height:844}});const page=await context.newPage();await page.goto(baseUrl+'/?user=Alice');
+- await page.getByRole('button',{name:'Start PvP match',exact:true}).click();await page.locator('.live-race-self strong').waitFor();if(authority)await authority.expireSearch('Alice');else tickets.get('Alice').created=Date.now()-60000;
+- await page.locator('.live-race-rival strong').waitFor();assert.equal(await page.locator('.live-race-rival strong').innerText(),'Opponent');
+- const assertNeutralOpponent=async()=>assert.doesNotMatch(await page.locator('.race-screen').innerText(),/\bbot\b|🤖/i);
+- await assertNeutralOpponent();
+- await page.screenshot({path:path.join(output,'opponent-countdown-390.png'),fullPage:true});
+- await page.locator('.race-gameplay').waitFor({timeout:15000});
+- assert.match(await page.locator('.race-scoreboard').innerText(),/Opponent/);await assertNeutralOpponent();
+- await page.screenshot({path:path.join(output,'opponent-gameplay-390.png'),fullPage:true});
+- if(!authority){
++ await page.getByRole('button',{name:'Start PvP match',exact:true}).click();await page.locator('.live-race-self strong').waitFor();
++ if(authority){
++  await page.waitForFunction(()=>window.liveSnapshots.at(-1)?.phase==='searching');
++  const ticketId=await page.evaluate(()=>window.liveSnapshots.at(-1).ticketId);
++  await authority.expireSearch('Alice',61000);
++  await page.evaluate(()=>window.dispatchEvent(new Event('online')));
++  await page.waitForFunction(()=>{const view=window.liveSnapshots.at(-1);return view?.phase==='searching'&&view.serverNowMs-(view.searchEndsAtMs-900000)>=60000;});
++  assert.deepEqual(await page.evaluate(()=>{const view=window.liveSnapshots.at(-1);return {ticketId:view.ticketId,phase:view.phase,waitForPlayer:view.waitForPlayer,opponent:view.opponent};}),
++   {ticketId,phase:'searching',waitForPlayer:true,opponent:null});
++  assert.equal(await page.locator('.live-race-rival strong,.race-gameplay').count(),0);
++  await page.screenshot({path:path.join(output,'public-human-wait-390.png'),fullPage:true});
++ }else{
++  tickets.get('Alice').created=Date.now()-60000;
++  await page.locator('.live-race-rival strong').waitFor();assert.equal(await page.locator('.live-race-rival strong').innerText(),'Opponent');
++  const assertNeutralOpponent=async()=>assert.doesNotMatch(await page.locator('.race-screen').innerText(),/\bbot\b|🤖/i);
++  await assertNeutralOpponent();
++  await page.screenshot({path:path.join(output,'opponent-countdown-390.png'),fullPage:true});
++  await page.locator('.race-gameplay').waitFor({timeout:15000});
++  assert.match(await page.locator('.race-scoreboard').innerText(),/Opponent/);await assertNeutralOpponent();
++  await page.screenshot({path:path.join(output,'opponent-gameplay-390.png'),fullPage:true});
+   for(let index=0;index<10;index++){await solve(page);if(index<9)await page.waitForFunction(count=>window.liveSnapshots.at(-1).player.correctCount===count,index+1);}
+   await page.locator('.live-race-victory').waitFor();
+   assert.match(await page.locator('.race-result-score').innerText(),/Opponent/);await assertNeutralOpponent();
+@@ -334,6 +354,6 @@ try {
+  assert.equal(await unavailable.getByRole('button',{name:'Start PvP match',exact:true}).isDisabled(),true);
+  assert.deepEqual(await unavailable.evaluate(()=>[...new Set(window.bridgeCalls)]),['game:listRaceCategories']);await unavailable.close();
+  console.log('Retired links, category selection, PvP-only return navigation and missing live capability passed.');
+- console.log('Bot fallback UI passed at 390px; server deadline advanced through the injected transport.');
++ console.log(authority?'Public human waiting retained its exact seat without a bot after the legacy deadline at 390px.':'Synthetic bot fallback UI passed at 390px; server deadline advanced through the injected transport.');
+  await writeFile(path.join(output,'polling-latency.json'),JSON.stringify({transport:'injected local HTTP authority; not production latency',pushEnabled:push,samples:latency},null,2));
+ }finally{await browser?.close();await authority?.clear();for(const stream of streams.values())stream.end();streams.clear();if(server){server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}await rm(scratch,{recursive:true,force:true});}
+diff --git a/packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts b/packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts
+index 2a05cb950..a6d224823 100644
+--- a/packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts
++++ b/packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts
+@@ -414,10 +414,10 @@ describeBrowser("Jest authentication integration", () => {
+     expect(keyboardCoverage).toBeGreaterThan(0.98);
+     /** Visual styles shared with the main-game keyboard at phone widths. */
+     const multiplayerKeyboardStyle = await creator.page.locator(".race-gameplay .keyboard").evaluate((keyboard) => {
+-      /** First letter key. */
+-      const letterKey = keyboard.querySelector<HTMLElement>(".key:not(.utility)")!;
+       /** Backspace key. */
+       const utilityKey = keyboard.querySelector<HTMLElement>(".key.utility")!;
++      /** A letter in the same row shares Backspace's available flex width. */
++      const letterKey = utilityKey.parentElement!.querySelector<HTMLElement>(".key:not(.utility)")!;
+       /** Rendered letter-key style. */
+       const letterStyle = getComputedStyle(letterKey);
+       return {

@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.STORAGE_REACT_MODE??'development',baseline=process.env.STORAGE_BASELINE_DIR;
-const output=path.resolve(process.env.STORAGE_REPORT_DIR??path.join(root,'../../artifacts/game-storage-queue-2026-10-03',mode));
+const output=path.resolve(process.env.STORAGE_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-storage-queue-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-storage-'));
 const source=`

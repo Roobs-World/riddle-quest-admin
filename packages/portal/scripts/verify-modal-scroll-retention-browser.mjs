@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.MODAL_SCROLL_REACT_MODE??'development',baseline=process.env.MODAL_SCROLL_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.MODAL_SCROLL_REPORT_DIR??path.join(root,'../../artifacts/modal-scroll-retention-2026-10-04',mode));
+const output=path.resolve(process.env.MODAL_SCROLL_REPORT_DIR??path.join(root,'../../builds/test-evidence/modal-scroll-retention-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/modal-scroll-retention-'));let server,browser;const observations=[];
 try{
@@ -38,17 +38,35 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
  else{
  browser=await chromium.launch({headless:true});
  const scenarios=process.env.MODAL_SCROLL_SCENARIOS?.split(',')??['profile-guess','profile-rewards','profile-continuation','profile-cover','profile-switch','settings-guess','settings-work','credits-guess','credits-switch','instructions-guess'];
- for(const [width,height] of process.env.MODAL_SCROLL_QUICK==='1'?[[320,400]]:[[320,400],[390,400],[1280,400]])for(const scenario of scenarios){
+ for(const [width,scrollHeight] of process.env.MODAL_SCROLL_QUICK==='1'?[[320,400]]:[[320,400],[390,400],[1280,400]])for(const scenario of scenarios){
+  const noScroll=scenario==='instructions-guess',height=noScroll?568:scrollHeight;
   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),dialog=page.locator('.game-modal');
   const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(r)))));
   const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
   await page.goto(url);const kind=scenario.split('-')[0],trigger=page.locator('[data-'+kind+']');await trigger.click();await dialog.waitFor();await settle();
   const selector=kind==='instructions'?'.instructions-page':kind==='profile'?'.profile-page':'.game-modal',scroller=page.locator(selector);
+  const checkInstructions=async stage=>{
+   const layout=await scroller.evaluate(el=>{
+    const modal=el.closest('.game-modal'),backdrop=modal.parentElement,action=el.querySelector('.play-primary'),rect=node=>{const b=node.getBoundingClientRect();return {top:b.top,bottom:b.bottom,left:b.left,right:b.right,height:b.height};};
+    const inside=(b,a)=>b.top>=a.top-1&&b.bottom<=a.bottom+1&&b.left>=a.left-1&&b.right<=a.right+1,m=rect(modal),a=rect(action),viewport={top:0,bottom:innerHeight,left:0,right:innerWidth};
+    return {fits:el.scrollHeight<=el.clientHeight+1&&modal.scrollHeight<=modal.clientHeight+1,overflow:getComputedStyle(el).overflowY,positions:[el.scrollTop,modal.scrollTop,backdrop.scrollTop,scrollX,scrollY],actionVisible:!action.disabled&&a.height>=48&&inside(a,m)&&inside(a,viewport)&&action.contains(document.elementFromPoint((a.left+a.right)/2,(a.top+a.bottom)/2)),contentVisible:Array.from(modal.querySelectorAll('h2,h3,p,button')).every(node=>inside(rect(node),m)&&inside(rect(node),viewport)),readable:Array.from(el.querySelectorAll('p')).every(p=>parseFloat(getComputedStyle(p).fontSize)>=16),text:el.textContent};
+   });
+   metric(stage+': all Instructions content fits without scrolling',layout.fits,true);
+   metric(stage+': Instructions retain visible overflow policy',layout.overflow,'visible');
+   metric(stage+': page shell backdrop and document stay at origin',layout.positions,[0,0,0,0,0]);
+   metric(stage+': complete readable content stays inside modal and viewport',layout.contentVisible&&layout.readable,true);
+   metric(stage+': enabled48px final action is visible and reachable',layout.actionVisible,true);
+   const copy=JSON.parse(await readFile(path.join(root,'../../src/locales/en/onboarding.json'),'utf8')).Instructions;
+   metric(stage+': every existing instruction string remains present',['GOAL_DESCRIPTION','COLOR_CLUES_TITLE','COLOR_CORRECT','COLOR_MISPLACED','COLOR_WRONG','TIPS_TITLE','TIPS_DESCRIPTION','GOT_IT_BUTTON'].every(key=>layout.text.includes(copy[key])),true);
+  };
+  if(noScroll){await page.evaluate(()=>document.fonts.ready);await settle();await checkInstructions('before update');}
+
   if(scenario==='profile-cover')await page.keyboard.press('Shift+Tab');
-  const dimensions=await scroller.evaluate(el=>({height:el.clientHeight,content:el.scrollHeight}));metric('real content exceeds its scroll viewport',dimensions.content>dimensions.height,true);
+  const dimensions=await scroller.evaluate(el=>({height:el.clientHeight,content:el.scrollHeight}));if(!noScroll)metric('real content exceeds its scroll viewport',dimensions.content>dimensions.height,true);
   const box=await scroller.boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.wheel(0,scenario==='profile-cover'?-180:180);
-  await page.waitForFunction(selector=>document.querySelector(selector).scrollTop>30,selector);await settle();
-  const before=await scroller.evaluate(el=>el.scrollTop);await dialog.evaluate(el=>{window.modalBefore=el;window.activeBefore=document.activeElement;window.callsBefore=window.probe.scrollCalls.length});metric('native wheel reaches a reading position',before>30,true);
+  if(!noScroll)await page.waitForFunction(selector=>document.querySelector(selector).scrollTop>30,selector);await settle();
+  if(noScroll)await checkInstructions('after native wheel');
+  const before=await scroller.evaluate(el=>el.scrollTop);await dialog.evaluate(el=>{window.modalBefore=el;window.activeBefore=document.activeElement;window.callsBefore=window.probe.scrollCalls.length});if(noScroll)metric('native wheel preserves the non-scrolling origin',before,0);else metric('native wheel reaches a reading position',before>30,true);
   if(process.env.MODAL_SCROLL_NO_UPDATE!=='1'){
    if(scenario.endsWith('work')){for(let i=0;i<32;i++){await page.locator('[data-refresh]').click();await settle();}}
    else if(scenario.endsWith('rewards'))await page.locator('[data-rewards]').click();
@@ -57,7 +75,8 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
    else if(scenario.endsWith('switch')){await page.locator('[data-switch]').click();}
    else await page.locator('[data-refresh]').click();
   }
-  await settle();await writeFile(path.join(output,[scenario,width,height].join('-')+'-trace.json'),JSON.stringify({before,after:await (scenario.endsWith('switch')?dialog:scroller).evaluate(el=>el.scrollTop),sameFocus:await dialog.evaluate(()=>document.activeElement===window.activeBefore),dimensions,scrollCalls:await page.evaluate(()=>window.probe.scrollCalls.slice(window.callsBefore))},null,2));metric('the same committed shell survives the update',await dialog.evaluate(el=>el===window.modalBefore),true);
+  await settle();if(noScroll){await checkInstructions('after update');metric('unrelated update performs no explicit shell or backdrop scroll',await page.evaluate(()=>window.probe.scrollCalls.slice(window.callsBefore).length),0);}
+  await writeFile(path.join(output,[scenario,width,height].join('-')+'-trace.json'),JSON.stringify({before,after:await (scenario.endsWith('switch')?dialog:scroller).evaluate(el=>el.scrollTop),sameFocus:await dialog.evaluate(()=>document.activeElement===window.activeBefore),dimensions,scrollCalls:await page.evaluate(()=>window.probe.scrollCalls.slice(window.callsBefore))},null,2));metric('the same committed shell survives the update',await dialog.evaluate(el=>el===window.modalBefore),true);
   if(scenario.endsWith('switch')&&process.env.MODAL_SCROLL_NO_UPDATE!=='1'){metric('a replacement page begins at the top',await dialog.evaluate(el=>el.scrollTop),0);metric('replacement Instructions starts at its own reading origin',await page.locator('.instructions-page').evaluate(el=>el.scrollTop),0);}
   else metric('the current page retains its native reading position',Math.abs(await scroller.evaluate(el=>el.scrollTop)-before)<1,true);
   if(scenario.endsWith('work'))metric('32 readiness updates perform no explicit scroll reset',await page.evaluate(()=>window.probe.scrollCalls.slice(window.callsBefore).length),0);

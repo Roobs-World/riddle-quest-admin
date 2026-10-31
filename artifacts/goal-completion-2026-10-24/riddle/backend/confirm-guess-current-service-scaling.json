@@ -1,0 +1,38 @@
+{
+  "readAt": "2026-10-24T02:01:46.050144+00:00",
+  "services": [
+    {
+      "region": "us-central1",
+      "serviceScalingAnnotations": {
+        "run.googleapis.com/maxScale": "20"
+      },
+      "currentRevisionScalingAnnotations": {
+        "autoscaling.knative.dev/maxScale": "20"
+      },
+      "traffic": [
+        {
+          "latestRevision": true,
+          "percent": 100,
+          "revisionName": "confirmliveguessreceipt-00002-hok"
+        }
+      ]
+    },
+    {
+      "region": "europe-west1",
+      "serviceScalingAnnotations": {
+        "run.googleapis.com/maxScale": "20"
+      },
+      "currentRevisionScalingAnnotations": {
+        "autoscaling.knative.dev/maxScale": "20"
+      },
+      "traffic": [
+        {
+          "latestRevision": true,
+          "percent": 100,
+          "revisionName": "confirmliveguessreceipt-00002-fec"
+        }
+      ]
+    }
+  ],
+  "environmentValuesOrUnrelatedAnnotationsRecorded": false
+}

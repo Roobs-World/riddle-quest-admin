@@ -1,0 +1,34 @@
+[
+  {
+    "file": "lib/facebook/facebookReferrals.js",
+    "syntaxTreeIdentical": false
+  },
+  {
+    "file": "lib/gameplay/completeGameLogic.js",
+    "syntaxTreeIdentical": false
+  },
+  {
+    "file": "lib/profile/accountDeletion/deleteAccountData.js",
+    "syntaxTreeIdentical": false
+  },
+  {
+    "file": "lib/race/raceLiveInvitation.js",
+    "syntaxTreeIdentical": true
+  },
+  {
+    "file": "lib/race/raceLiveQueue.js",
+    "syntaxTreeIdentical": true
+  },
+  {
+    "file": "lib/race/raceLiveService.js",
+    "syntaxTreeIdentical": true
+  },
+  {
+    "file": "lib/race/raceLiveStream.js",
+    "syntaxTreeIdentical": true
+  },
+  {
+    "file": "lib/reddit/redditReferrals.js",
+    "syntaxTreeIdentical": false
+  }
+]

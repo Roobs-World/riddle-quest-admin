@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Video ansehen für einen weiteren Versuch",
     "COIN_EXTRA_GO_BUTTON": "{coins} Muenzen fuer einen extra Versuch",
-    "EXTRA_GO_PROMPT": "Keine Versuche mehr. Hol dir einen extra Versuch oder ueberspringe dieses Raetsel.",
     "OPEN_SHOP_BUTTON": "Shop oeffnen",
     "OUT_OF_ATTEMPTS": "Keine Versuche mehr.",
     "SKIP_LEVEL_PREFIX": "Verwende ",

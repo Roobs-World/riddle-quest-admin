@@ -1,0 +1,141 @@
+Starting src/__tests__/race/raceLive.it.test.ts
+PASS src/__tests__/race/raceLive.it.test.ts (23.442 s)
+Starting src/__tests__/race/raceLiveRematch.it.test.ts
+PASS src/__tests__/race/raceLiveRematch.it.test.ts (9.55 s)
+Starting src/__tests__/race/liveRaceSafety.it.test.ts
+FAIL src/__tests__/race/liveRaceSafety.it.test.ts
+  ● routes signed Reddit safety through strict shared callables and deletion leases
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● authorizes both facebook human seats, preserves report replay/cap and revokes presence on block
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● authorizes both reddit human seats, preserves report replay/cap and revokes presence on block
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● rejects stranger live-target reports without queue writes
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● rejects deleted live-target reports without queue writes
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● rejects expired live-target reports without queue writes
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● rejects corrupt-seat live-target reports without queue writes
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● rejects cross-provider live-target reports without queue writes
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+  ● rejects bot targeting and replaying a report id against a different retained match
+
+    Isolated loopback demo emulators required
+
+      30 | beforeAll(() => {
+      31 |   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "") ||
+    > 32 |     !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? "")) throw new Error("Isolated loopback demo emulators required");
+         |                                                                                          ^
+      33 |   app = initializeApp({projectId: PROJECT, databaseURL: `https://${PROJECT}-default-rtdb.firebaseio.com`}, "live-safety-fixture");
+      34 |   db = getFirestore(app); database = getDatabase(app);
+      35 | });
+
+      at Object.<anonymous> (src/__tests__/race/liveRaceSafety.it.test.ts:32:90)
+
+Starting src/__tests__/race/raceLiveInvitation.it.test.ts
+PASS src/__tests__/race/raceLiveInvitation.it.test.ts (11.549 s)
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       9 failed, 74 passed, 83 total
+Snapshots:   0 total
+Time:        44.894 s
+Ran all test suites within paths "src/__tests__/race/raceLive.it.test.ts", "src/__tests__/race/raceLiveInvitation.it.test.ts", "src/__tests__/race/liveRaceSafety.it.test.ts", "src/__tests__/race/raceLiveRematch.it.test.ts".
+Test results written to: ../artifacts/jest-e2e-2026-10-22/multiplayer/authority-boundary-results.json

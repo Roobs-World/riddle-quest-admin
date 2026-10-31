@@ -14,3 +14,9 @@ it("preserves incoming Race destinations while checking Daily for solo play", ()
   expect(session.initialRaceInbox).toBe(true);
   expect(session.initialGameMode).toBe("challenge");
 });
+
+it("makes multiplayer available in every supported Jest language", () => {
+  /** Hosted session whose locale policy must admit every supported game language. */
+  const session = createJestHostedPlaySession({hostServices: createFakeHostServices()});
+  expect(session.raceLocalePolicy).toBe("all");
+});

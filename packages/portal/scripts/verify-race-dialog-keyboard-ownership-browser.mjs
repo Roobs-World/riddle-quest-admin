@@ -11,7 +11,7 @@ import {chromium} from "@playwright/test";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/race-dialog-keyboard-ownership-"));
-const output = path.resolve(root, "../../artifacts/race-dialog-keyboard-ownership");
+const output = path.resolve(process.env.RACE_DIALOG_KEYBOARD_REPORT_DIR ?? path.join(root, "../../artifacts/race-dialog-keyboard-ownership"));
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';

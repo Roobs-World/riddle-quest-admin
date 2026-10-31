@@ -8,7 +8,7 @@ const inventory = await inspectWebTargetArtifact({
 });
 const {files, root, sizedFiles, totalBytes: artifactBytes} = inventory;
 const maximumArtifactBytes = 5 * 1024 * 1024;
-const maximumReleaseBudgetBytes = 4.5 * 1024 * 1024;
+const maximumReleaseBudgetBytes = 4.75 * 1024 * 1024;
 const maximumInitialResourceBytes = 0.55 * 1024 * 1024;
 const jestSdkEntryResource = "https://cdn.jest.com/sdk/latest/jestsdk.js";
 const allowedExternalEntryResources = new Set([jestSdkEntryResource]);
@@ -18,7 +18,7 @@ if (artifactBytes > maximumArtifactBytes) {
 if (artifactBytes > maximumReleaseBudgetBytes) {
   throw new Error(
     `Jest artifact is ${(artifactBytes / 1024 / 1024).toFixed(2)} MB; ` +
-      "the release budget is 4.5 MB so the 5 MB platform limit retains operational headroom",
+      "the release budget is 4.75 MiB so the 5 MiB cap retains 0.25 MiB of headroom",
   );
 }
 

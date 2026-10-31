@@ -72,7 +72,7 @@ beforeEach(async () => {
   for (const owner of [A, B]) batch.set(db.doc(`users/${owner}`), {username: owner === A ? "Alice" : "Bob", coins: 500}); await batch.commit();
 });
 afterEach(async () => {await Promise.allSettled([...ownedReads]); expect(ownedReads.size).toBe(0);});
-afterAll(async () => {await clear(); await Promise.allSettled([...ownedReads]); await deleteApp(app);});
+afterAll(async () => {await clear(); await Promise.allSettled([...ownedReads]); await db.terminate(); await deleteApp(app);});
 
 it.each(["public", "private", "matched"])("superseded %s cleanup preserves the recovered canonical ticket", async kind => {
   /** The original join has committed even if its client receipt is still delayed. */
@@ -111,7 +111,16 @@ it("closed original joins cannot follow a newly allocated account pointer", asyn
   expect((await db.doc(`liveRacePlayers/${requestDocumentId(A, "active-live-race")}`).get()).data()?.ticketId).toBe(replacement.ticketId);
 });
 it.each([false, true])("retirement replay does not duplicate signals or rewards (matched=%s)", async matched => {
-  await join(); if (matched) await join(B, "rival-owned-join", NOW + 1);
+  /** Original owned join retired once in either searching or matched state. */
+  const original = await join();
+  if (matched) {
+    /** Human opponent paired with the original join before retirement. */
+    const rival = await join(B, "rival-owned-join", NOW + 1);
+    /** Canonical opponent question answered to establish reward eligibility. */
+    const riddle = (await db.doc(`liveRaceMatches/${original.ticketId}`).get()).data()!.runs[1].riddles[0];
+    await updateLiveRaceForUser(B, {ticketId: rival.ticketId, action: "guess", requestId: "retirement-rival-played",
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: NOW + 6000});
+  }
   expect(await retire(A, FIRST, NOW + 7000)).toEqual({status: "retired"});
   /** The existing settlement authority may grant the rival exactly once after an active forfeit. */
   const before = await state(), marker = await liveJoinIntentRef(db, A, FIRST).get();

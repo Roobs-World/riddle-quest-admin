@@ -6,6 +6,7 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {promisify} from "node:util";
 import {developmentSourceDigest} from "../../../scripts/release/development-source-digest.mjs";
+import {targetDependencyEvidencePath} from "../webTargetDependencies.ts";
 
 const portal = fileURLToPath(new URL("..", import.meta.url));
 const repository = path.resolve(portal, "../..");
@@ -14,8 +15,7 @@ const cacheKey = createHash("sha256").update(repository).update(sourceDigest).di
 const cache = path.join(tmpdir(), `riddle-quest-retained-race-${cacheKey}`);
 const directory = path.join(cache, "dist");
 const receiptFile = path.join(cache, "receipt.json");
-const inventoryKey = createHash("sha256").update(directory).digest("hex");
-const inventoryFile = path.join(repository, "artifacts/target-dependencies/custom", inventoryKey, "jest.json");
+const inventoryFile = targetDependencyEvidencePath("jest", directory);
 const sha = bytes => createHash("sha256").update(bytes).digest("hex");
 
 async function verifyInventory() {

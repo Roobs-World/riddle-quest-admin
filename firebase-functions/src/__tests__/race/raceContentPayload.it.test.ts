@@ -78,6 +78,7 @@ it("preserves the exact deterministic deck and content version from the unprojec
   /** Independently loaded full records establish the expected order, answers, difficulty and content version. */
   const expected = buildDeterministicRaceDeck(await fullRecords(), {locale: "en", categoryId: "history", seed: "projection-parity"});
   expect(buildDeterministicRaceDeck(await loadEligibleContent(db, "en", "history"), {locale: "en", categoryId: "history", seed: "projection-parity"})).toEqual(expected);
+  expect(buildDeterministicRaceDeck(await loadEligibleContent(db, "en"), {locale: "en", categoryId: "history", seed: "projection-parity"})).toEqual(expected);
   expect(expected.riddles).toHaveLength(15);
   expect(expected.riddles.filter(riddle => riddle.difficultyBand === "easy")).toHaveLength(10);
   expect(expected.riddles.filter(riddle => riddle.difficultyBand === "medium")).toHaveLength(5);

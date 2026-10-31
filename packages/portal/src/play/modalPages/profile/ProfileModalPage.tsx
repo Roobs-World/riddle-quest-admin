@@ -269,7 +269,7 @@ export function ProfileModalPage({
       </div>
       <LiveRacePushConsent />
       {subscriptionControls}
-      <div className="profile-danger-zone">
+      {platformRegistered !== false && <div className="profile-danger-zone">
         <button
           ref={deleteTriggerRef}
           type="button"
@@ -278,8 +278,8 @@ export function ProfileModalPage({
         >
           {tr("Profile.DELETE_ACCOUNT_BUTTON")}
         </button>
-      </div>
-      {deleteConfirmationOpen ? (
+      </div>}
+      {platformRegistered !== false && deleteConfirmationOpen ? (
         <div className="profile-delete-backdrop">
           <section
             ref={deleteDialogRef}

@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.SAVE_NOTICE_REACT_MODE??'development',baseline=process.env.SAVE_NOTICE_BASELINE_DIR;
-const output=path.resolve(process.env.SAVE_NOTICE_REPORT_DIR??path.join(root,'../../artifacts/game-save-notice-2026-10-03',mode));
+const output=path.resolve(process.env.SAVE_NOTICE_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-save-notice-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/save-notice-'));
 const source=`
@@ -27,11 +27,11 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;const fixtureLocale=new URL(location.href).searchParams.get('locale')??'en';window.copy=()=>({message:tr('GameScreenAlerts.PROGRESS_UNSAVED_MESSAGE'),retry:tr('CommonButtons.RETRY')});
-window.probe={saves:[],guesses:0,completions:0,errors:[],unhandled:[]};
+window.probe={saves:[],guesses:0,completions:0,hostedIdentities:[],errors:[],unhandled:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 applyPlayerPreferences({locale:fixtureLocale,muted:true,reducedMotion:true,onboardingComplete:true});
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
-const service=createFakeHostServices();let freshProfile=null;const services={...service,auth:{subscribe:listener=>service.auth.subscribe(snapshot=>listener(freshProfile?{...snapshot,profile:freshProfile}:snapshot))},loadProfile:async()=>freshProfile??await service.loadProfile(),submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
+const service=createFakeHostServices();let freshProfile=null;const services={...service,auth:{subscribe:listener=>service.auth.subscribe(snapshot=>{const user=snapshot.user?{...snapshot.user,uid:player.playerId==='jest-player'?snapshot.user.uid:'firebase-'+player.playerId}:null;window.probe.hostedIdentities.push({playerId:player.playerId,uid:user?.uid??null});listener({...snapshot,user,...(freshProfile?{profile:freshProfile}:{})});})},loadProfile:async()=>freshProfile??await service.loadProfile(),submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
 
 window.storageProbe={writes:[],preferenceWrites:[],flushes:0,failures:[],initializations:0,failDraft:0,failPreferences:0,failClear:0};let release,released=false,lastOperation,releaseNext;const heldFlush=new Promise(r=>release=r);let holdNext=false;
 let player={playerId:'jest-player',registered:new URL(location.href).searchParams.has('registered')};const stores=new Map(),durable=new Map();
@@ -100,6 +100,7 @@ if(!id.endsWith('/useJestPlayerStateWrites.ts'))return;let code=await readFile(i
    metric('riddle draft survives visible failure',await page.evaluate(()=>window.draft()),'PIAN');
    if(scenario==='replacement') {
     await page.evaluate(()=>{window.storageProbe.failDraft=0;window.restart(true);});await page.locator('[data-host-epoch="1"]').waitFor();await page.clock.runFor(20);await settleQueues(page);
+   metric('hosted identity follows the replacement target player',await page.evaluate(()=>window.probe.hostedIdentities.at(-1)),{playerId:'other-player',uid:'firebase-other-player'});
     metric('retired prompt clears for replacement player',await page.locator('.player-save-notice').count(),0);
     metric('old answer never crosses target identity',await page.evaluate(()=>window.draft()),'');
    } else if(scenario==='offline') {

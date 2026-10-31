@@ -1,6 +1,7 @@
 import {Component, useEffect, useId, useLayoutEffect, useRef, type ErrorInfo, type ReactNode} from "react";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {tr} from "./i18n";
+import type {GameSessionState} from "./gameSession";
 import {ContinueModalPage, type ContinueModalPageProps} from "./modalPages/commerce/ContinueActions";
 import {HintModalPage, SkipModalPage, type CoinActionModalPageProps} from "./modalPages/commerce/GameplayCoinActions";
 import "../styles.surface-recovery.css";
@@ -51,10 +52,12 @@ export function GameSurfaceRecovery({onClose, closeBlocked = false, onNext, next
   nextBlocked?: boolean;
   /** Reuses the original server-authoritative Continue/Skip controls when needed. */
   continuation?: ContinueModalPageProps;
-  /** Existing hint and classic Skip confirmations survive failure of the full modal module. */
+  /** Existing hint and Skip confirmations survive failure of the full modal module. */
   coinAction?: CoinActionModalPageProps & {
     /** Chooses the existing localized action and authoritative price. */
     kind: "hint" | "skip";
+    /** Selects a paid Classic skip or a Daily mode-change warning. */
+    gameMode: GameSessionState["gameMode"];
   };
 }) {
   /** Stable localized heading reference avoids collisions with provider dialogs. */

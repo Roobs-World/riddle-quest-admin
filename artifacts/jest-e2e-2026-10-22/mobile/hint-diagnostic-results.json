@@ -1,0 +1,30 @@
+{
+  "startedAt": "2026-10-22T20:31:30.717Z",
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-instructions-modal-2026-10-22/jest-artifact",
+  "scope": "Immutable Jest artifact; injected mock provider; no real provider writes",
+  "cases": [
+    {
+      "name": "diagnose hint reload timing",
+      "passed": true,
+      "observations": [
+        {
+          "settleMs": 0,
+          "coinsBefore": 275,
+          "coinsAfter": 300,
+          "draftAfter": "P\nI\nA"
+        },
+        {
+          "settleMs": 1000,
+          "coinsBefore": 275,
+          "coinsAfter": 300,
+          "draftAfter": "P\nI\nA"
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "artifactFiles": 419,
+  "artifactBytes": 4717648,
+  "artifactUnchanged": true,
+  "finishedAt": "2026-10-22T20:31:38.661Z"
+}

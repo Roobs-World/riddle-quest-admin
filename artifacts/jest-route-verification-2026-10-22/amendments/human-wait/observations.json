@@ -1,0 +1,233 @@
+[
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "pending",
+    "check": "pending join has no human-wait copy",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "pending",
+    "check": "acknowledged human seat has readable explanation",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "pending",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "public",
+    "check": "acknowledged human seat has readable explanation",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "public",
+    "check": "error hides human-wait copy",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "public",
+    "check": "recovery restores copy and countdown removes it",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "public",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "private",
+    "check": "human-wait copy absent",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "private",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "legacy",
+    "check": "human-wait copy absent",
+    "passed": true
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "scenario": "legacy",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending",
+    "check": "pending join has no human-wait copy",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending",
+    "check": "acknowledged human seat has readable explanation",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "pending",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "public",
+    "check": "acknowledged human seat has readable explanation",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "public",
+    "check": "error hides human-wait copy",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "public",
+    "check": "recovery restores copy and countdown removes it",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "public",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "private",
+    "check": "human-wait copy absent",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "private",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "legacy",
+    "check": "human-wait copy absent",
+    "passed": true
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "scenario": "legacy",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending",
+    "check": "pending join has no human-wait copy",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending",
+    "check": "acknowledged human seat has readable explanation",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "pending",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "public",
+    "check": "acknowledged human seat has readable explanation",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "public",
+    "check": "error hides human-wait copy",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "public",
+    "check": "recovery restores copy and countdown removes it",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "public",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "private",
+    "check": "human-wait copy absent",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "private",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "legacy",
+    "check": "human-wait copy absent",
+    "passed": true
+  },
+  {
+    "width": 1280,
+    "height": 844,
+    "scenario": "legacy",
+    "check": "Close returns and cancels original owned intent",
+    "passed": true
+  }
+]

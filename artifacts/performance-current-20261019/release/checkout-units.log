@@ -1,0 +1,7 @@
+
+Test Suites: 3 passed, 3 total
+Tests:       64 passed, 64 total
+Snapshots:   0 total
+Time:        0.344 s
+Ran all test suites within paths "src/jest/__tests__/purchases.test.ts", "src/jest/__tests__/useJestPurchase.test.ts", "src/jest/__tests__/useJestProductCatalog.test.ts".
+Test results written to: ../../artifacts/performance-current-20261019/release/checkout-unit-results.json

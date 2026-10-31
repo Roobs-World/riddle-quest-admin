@@ -1,0 +1,61 @@
+FAIL src/play/__tests__/terminalPaidLiveness.test.ts
+  ● retains a settlement route for terminal win with held charge=true
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"payload": {"amount": 50, "gameMode": "classic", "reason": "continue", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}, "requestId": "continue-held-terminal", "type": "game:spendCoins"}
+
+    Number of calls: 0
+
+      49 |   expect(stateRef.current.lastOutcome?.kind).toBe(kind);expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+      50 |   expect(Boolean(storage.read(scope)?.coinAction)||stateRef.current.pendingCoinSpend===null).toBe(true);
+    > 51 |   if(holdCharge){expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
+         |                                                                                                  ^
+      52 |     now=26000;for(const interval of intervals)interval();expect(post.mock.calls.filter(call=>call[0].requestId===record.coinAction!.requestId)).toHaveLength(2);
+      53 |     expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);
+      54 |     expect(recovery.handleQueuedGuessResult({type:'host:operationResult',requestId:record.coinAction!.requestId,payload:{operation:'spendCoins',ok:false,errorKind:'rejected',error:'Fixture rejection'}})).toBe(false);
+
+      at src/play/__tests__/terminalPaidLiveness.test.ts:51:98
+
+  ● retains a settlement route for terminal loss with held charge=true
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"payload": {"amount": 50, "gameMode": "classic", "reason": "continue", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}, "requestId": "continue-held-terminal", "type": "game:spendCoins"}
+
+    Number of calls: 0
+
+      49 |   expect(stateRef.current.lastOutcome?.kind).toBe(kind);expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+      50 |   expect(Boolean(storage.read(scope)?.coinAction)||stateRef.current.pendingCoinSpend===null).toBe(true);
+    > 51 |   if(holdCharge){expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
+         |                                                                                                  ^
+      52 |     now=26000;for(const interval of intervals)interval();expect(post.mock.calls.filter(call=>call[0].requestId===record.coinAction!.requestId)).toHaveLength(2);
+      53 |     expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);
+      54 |     expect(recovery.handleQueuedGuessResult({type:'host:operationResult',requestId:record.coinAction!.requestId,payload:{operation:'spendCoins',ok:false,errorKind:'rejected',error:'Fixture rejection'}})).toBe(false);
+
+      at src/play/__tests__/terminalPaidLiveness.test.ts:51:98
+
+  ● retains a settlement route for terminal win with held charge=true
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"payload": {"amount": 50, "gameMode": "classic", "reason": "continue", "riddleId": "classic-1", "sessionToken": "00000000-0000-4000-8000-000000000001"}, "requestId": "continue-held-terminal", "type": "game:spendCoins"}
+
+    Number of calls: 0
+
+      49 |   expect(stateRef.current.lastOutcome?.kind).toBe(kind);expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
+      50 |   expect(Boolean(storage.read(scope)?.coinAction)||stateRef.current.pendingCoinSpend===null).toBe(true);
+    > 51 |   if(holdCharge){expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
+         |                                                                                                  ^
+      52 |     now=26000;for(const interval of intervals)interval();expect(post.mock.calls.filter(call=>call[0].requestId===record.coinAction!.requestId)).toHaveLength(2);
+      53 |     expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);
+      54 |     expect(recovery.handleQueuedGuessResult({type:'host:operationResult',requestId:record.coinAction!.requestId,payload:{operation:'spendCoins',ok:false,errorKind:'rejected',error:'Fixture rejection'}})).toBe(false);
+
+      at src/play/__tests__/terminalPaidLiveness.test.ts:51:98
+
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       3 failed, 30 passed, 33 total
+Snapshots:   0 total
+Time:        0.321 s, estimated 1 s
+Ran all test suites within paths "src/play/__tests__/terminalPaidReceiptPresentation.test.ts", "src/play/__tests__/skipPreviewOwnership.test.ts", "src/play/__tests__/terminalPaidLiveness.test.ts", "src/play/__tests__/skipSuccessorOwnership.test.ts".

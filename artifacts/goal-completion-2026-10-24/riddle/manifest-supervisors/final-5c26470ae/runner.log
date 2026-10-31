@@ -1,0 +1,243 @@
+Start 18: node packages/portal/scripts/verify-race-event-aggregate-browser.mjs
+passed 18: packages/portal/scripts/verify-race-event-aggregate-browser.mjs
+Start 20: node packages/portal/scripts/verify-race-rule-ownership-browser.mjs
+passed 20: packages/portal/scripts/verify-race-rule-ownership-browser.mjs
+Start 21: node packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs
+passed 21: packages/portal/scripts/verify-race-checkpoint-isolation-browser.mjs
+Start 22: node packages/portal/scripts/verify-race-timeout-recovery-browser.mjs
+passed 22: packages/portal/scripts/verify-race-timeout-recovery-browser.mjs
+Start 23: node packages/portal/scripts/verify-race-startup-recovery-browser.mjs
+passed 23: packages/portal/scripts/verify-race-startup-recovery-browser.mjs
+Start 24: node packages/portal/scripts/verify-race-outcome-isolation-browser.mjs
+passed 24: packages/portal/scripts/verify-race-outcome-isolation-browser.mjs
+Start 25: node packages/portal/scripts/verify-race-command-ownership-browser.mjs
+passed 25: packages/portal/scripts/verify-race-command-ownership-browser.mjs
+Start 26: node packages/portal/scripts/verify-race-pending-input-browser.mjs
+passed 26: packages/portal/scripts/verify-race-pending-input-browser.mjs
+Start 27: node packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs
+passed 27: packages/portal/scripts/verify-race-known-answer-feedback-browser.mjs
+Start 28: node packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs
+passed 28: packages/portal/scripts/verify-race-known-answer-reveals-browser.mjs
+Start 29: node packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs
+passed 29: packages/portal/scripts/verify-race-answer-free-checkpoints-browser.mjs
+Start 30: node packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs
+passed 30: packages/portal/scripts/verify-race-paid-draft-checkpoints-browser.mjs
+Start 32: node packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs
+passed 32: packages/portal/scripts/verify-race-provider-record-recovery-browser.mjs
+Start 33: node packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs
+passed 33: packages/portal/scripts/verify-race-provider-record-timeout-browser.mjs
+Start 34: node packages/portal/scripts/verify-race-hub-navigation-browser.mjs
+passed 34: packages/portal/scripts/verify-race-hub-navigation-browser.mjs
+Start 35: node packages/portal/scripts/verify-race-provider-capability-browser.mjs
+passed 35: packages/portal/scripts/verify-race-provider-capability-browser.mjs
+Start 36: node packages/portal/scripts/verify-race-draft-reload-browser.mjs
+passed 36: packages/portal/scripts/verify-race-draft-reload-browser.mjs
+Start 39: node packages/portal/scripts/verify-race-abandoned-entry-browser.mjs
+passed 39: packages/portal/scripts/verify-race-abandoned-entry-browser.mjs
+Start 40: node packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs
+passed 40: packages/portal/scripts/verify-race-provider-confirmed-outcome-browser.mjs
+Start 41: node packages/portal/scripts/verify-race-keyboard-activation-browser.mjs
+passed 41: packages/portal/scripts/verify-race-keyboard-activation-browser.mjs
+Start 42: node packages/portal/scripts/verify-race-draft-cleanup-browser.mjs
+passed 42: packages/portal/scripts/verify-race-draft-cleanup-browser.mjs
+Start 43: node packages/portal/scripts/verify-race-overlay-ownership-browser.mjs
+passed 43: packages/portal/scripts/verify-race-overlay-ownership-browser.mjs
+Start 44: node packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs
+passed 44: packages/portal/scripts/verify-race-dialog-keyboard-ownership-browser.mjs
+Start 45: node packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs
+passed 45: packages/portal/scripts/verify-race-quit-focus-recovery-browser.mjs
+Start 46: node packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs
+passed 46: packages/portal/scripts/verify-race-quit-focus-containment-browser.mjs
+Start 47: node packages/portal/scripts/verify-race-resume-selection-browser.mjs
+passed 47: packages/portal/scripts/verify-race-resume-selection-browser.mjs
+Start 48: node packages/portal/scripts/verify-race-resume-read-observation-browser.mjs
+passed 48: packages/portal/scripts/verify-race-resume-read-observation-browser.mjs
+Start 49: node packages/portal/scripts/verify-race-search-journal-observation-browser.mjs
+passed 49: packages/portal/scripts/verify-race-search-journal-observation-browser.mjs
+Start 50: node packages/portal/scripts/verify-race-analytics-delivery-browser.mjs
+passed 50: packages/portal/scripts/verify-race-analytics-delivery-browser.mjs
+Start 51: node packages/portal/scripts/verify-race-offline-delivery-browser.mjs
+passed 51: packages/portal/scripts/verify-race-offline-delivery-browser.mjs
+Start 52: node packages/portal/scripts/verify-race-profile-refresh-browser.mjs
+passed 52: packages/portal/scripts/verify-race-profile-refresh-browser.mjs
+Start 53: node packages/portal/scripts/verify-race-prefetch-browser.mjs
+passed 53: packages/portal/scripts/verify-race-prefetch-browser.mjs
+Start 54: node packages/portal/scripts/verify-race-rendered-entry-browser.mjs
+passed 54: packages/portal/scripts/verify-race-rendered-entry-browser.mjs
+Start 55: node packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs
+passed 55: packages/portal/scripts/verify-race-provider-rendered-cache-browser.mjs
+Start 56: node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs
+passed 56: packages/portal/scripts/verify-race-dialog-adapter-browser.mjs
+Start 57: env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-prefetch-browser.mjs
+passed 57: packages/portal/scripts/verify-race-prefetch-browser.mjs
+Start 58: env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-profile-refresh-browser.mjs
+passed 58: packages/portal/scripts/verify-race-profile-refresh-browser.mjs
+Start 59: env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-dialog-adapter-browser.mjs
+passed 59: packages/portal/scripts/verify-race-dialog-adapter-browser.mjs
+Start 60: node packages/portal/scripts/verify-race-session-resources-browser.mjs
+passed 60: packages/portal/scripts/verify-race-session-resources-browser.mjs
+Start 61: node packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs
+passed 61: packages/portal/scripts/verify-race-matchmaking-removal-browser.mjs
+Start 62: node packages/portal/scripts/verify-race-discovery-provider-browser.mjs
+passed 62: packages/portal/scripts/verify-race-discovery-provider-browser.mjs
+Start 63: node packages/portal/scripts/verify-race-discovery-browser.mjs
+passed 63: packages/portal/scripts/verify-race-discovery-browser.mjs
+Start 64: node packages/portal/scripts/verify-race-discovery-callback-browser.mjs
+passed 64: packages/portal/scripts/verify-race-discovery-callback-browser.mjs
+Start 65: node packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs
+passed 65: packages/portal/scripts/verify-race-discovery-cancellation-browser.mjs
+Start 66: node packages/portal/scripts/verify-race-retired-search-browser.mjs
+passed 66: packages/portal/scripts/verify-race-retired-search-browser.mjs
+Start 67: node packages/portal/scripts/verify-race-retirement-journal-browser.mjs
+passed 67: packages/portal/scripts/verify-race-retirement-journal-browser.mjs
+Start 68: node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs
+passed 68: packages/portal/scripts/verify-race-visibility-retirement-browser.mjs
+Start 69: env RACE_REACT_DEVELOPMENT=1 node packages/portal/scripts/verify-race-visibility-retirement-browser.mjs
+passed 69: packages/portal/scripts/verify-race-visibility-retirement-browser.mjs
+Start 71: node packages/portal/scripts/verify-race-existing-attempt-browser.mjs
+passed 71: packages/portal/scripts/verify-race-existing-attempt-browser.mjs
+Start 72: node packages/portal/scripts/verify-race-private-entry-browser.mjs
+passed 72: packages/portal/scripts/verify-race-private-entry-browser.mjs
+Start 73: node packages/portal/scripts/verify-race-existing-opponent-browser.mjs
+passed 73: packages/portal/scripts/verify-race-existing-opponent-browser.mjs
+Start 74: node packages/portal/scripts/verify-race-private-creator-browser.mjs
+passed 74: packages/portal/scripts/verify-race-private-creator-browser.mjs
+Start 75: node packages/portal/scripts/verify-race-entry-effect-browser.mjs
+passed 75: packages/portal/scripts/verify-race-entry-effect-browser.mjs
+Start 76: node packages/portal/scripts/verify-race-waiting-selection-browser.mjs
+passed 76: packages/portal/scripts/verify-race-waiting-selection-browser.mjs
+Start 77: node packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs
+passed 77: packages/portal/scripts/verify-race-cancellation-receipt-browser.mjs
+Start 78: node packages/portal/scripts/verify-race-start-selection-browser.mjs
+passed 78: packages/portal/scripts/verify-race-start-selection-browser.mjs
+Start 79: node packages/portal/scripts/verify-race-provider-start-browser.mjs
+passed 79: packages/portal/scripts/verify-race-provider-start-browser.mjs
+Start 80: node packages/portal/scripts/verify-race-start-category-browser.mjs
+passed 80: packages/portal/scripts/verify-race-start-category-browser.mjs
+Start 81: node packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs
+passed 81: packages/portal/scripts/verify-race-entry-run-handoff-browser.mjs
+Start 82: node packages/portal/scripts/verify-race-start-origin-browser.mjs
+passed 82: packages/portal/scripts/verify-race-start-origin-browser.mjs
+Start 83: node packages/portal/scripts/verify-race-start-opponent-browser.mjs
+passed 83: packages/portal/scripts/verify-race-start-opponent-browser.mjs
+Start 85: node packages/portal/scripts/verify-race-creator-opponent-browser.mjs
+passed 85: packages/portal/scripts/verify-race-creator-opponent-browser.mjs
+Start 86: node packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs
+passed 86: packages/portal/scripts/verify-race-hint-reveal-evidence-browser.mjs
+Start 87: node packages/portal/scripts/verify-race-safety-selection-browser.mjs
+passed 87: packages/portal/scripts/verify-race-safety-selection-browser.mjs
+Start 88: node packages/portal/scripts/verify-race-countdown-clock-browser.mjs
+passed 88: packages/portal/scripts/verify-race-countdown-clock-browser.mjs
+Start 89: node packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs
+passed 89: packages/portal/scripts/verify-race-discovery-retry-policy-browser.mjs
+Start 90: node packages/portal/scripts/verify-race-resolver-failure-browser.mjs
+passed 90: packages/portal/scripts/verify-race-resolver-failure-browser.mjs
+Start 91: node packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs
+passed 91: packages/portal/scripts/verify-race-cold-search-retirement-browser.mjs
+Start 92: node packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs
+passed 92: packages/portal/scripts/verify-race-cold-search-catalog-browser.mjs
+Start 93: node packages/portal/scripts/verify-race-catalog-retry-browser.mjs
+passed 93: packages/portal/scripts/verify-race-catalog-retry-browser.mjs
+Start 94: node packages/portal/scripts/verify-race-resolver-reentry-browser.mjs
+passed 94: packages/portal/scripts/verify-race-resolver-reentry-browser.mjs
+Start 95: node packages/portal/scripts/verify-race-provider-observation-browser.mjs
+passed 95: packages/portal/scripts/verify-race-provider-observation-browser.mjs
+Start 96: node packages/portal/scripts/verify-race-authority-observation-browser.mjs
+passed 96: packages/portal/scripts/verify-race-authority-observation-browser.mjs
+Start 97: node packages/portal/scripts/verify-race-timer-ownership-browser.mjs
+passed 97: packages/portal/scripts/verify-race-timer-ownership-browser.mjs
+Start 98: node packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs
+passed 98: packages/portal/scripts/verify-race-loader-tail-ownership-browser.mjs
+Start 99: node packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs
+passed 99: packages/portal/scripts/verify-race-delivery-expiry-ownership-browser.mjs
+Start 100: node packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs
+passed 100: packages/portal/scripts/verify-race-start-receipt-ownership-browser.mjs
+Start 101: node packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs
+passed 101: packages/portal/scripts/verify-race-recovery-clock-ownership-browser.mjs
+Start 102: node packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs
+passed 102: packages/portal/scripts/verify-race-reset-clock-ownership-browser.mjs
+Start 103: node packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs
+passed 103: packages/portal/scripts/verify-race-authority-clock-ownership-browser.mjs
+Start 104: node packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs
+passed 104: packages/portal/scripts/verify-race-restored-attempt-rows-browser.mjs
+Start 105: node packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs
+passed 105: packages/portal/scripts/verify-race-projected-attempt-rows-browser.mjs
+Start 106: node packages/portal/scripts/verify-race-history-integration-browser.mjs
+passed 106: packages/portal/scripts/verify-race-history-integration-browser.mjs
+Start 107: node packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs
+passed 107: packages/portal/scripts/verify-race-reddit-history-opt-in-browser.mjs
+Start 108: node packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs
+passed 108: packages/portal/scripts/verify-race-keyboard-feedback-strength-browser.mjs
+Start 109: node packages/portal/scripts/verify-race-time-rollover-browser.mjs
+passed 109: packages/portal/scripts/verify-race-time-rollover-browser.mjs
+Start 110: node packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs
+passed 110: packages/portal/scripts/verify-race-harness-feedback-parity-browser.mjs
+Start 111: node packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs
+passed 111: packages/portal/scripts/verify-race-harness-delayed-receipts-browser.mjs
+Start 112: node packages/portal/scripts/audit-race-history-continuity-browser.mjs
+passed 112: packages/portal/scripts/audit-race-history-continuity-browser.mjs
+Start 115: node packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs
+passed 115: packages/portal/scripts/verify-race-history-ledger-prototype-browser.mjs
+Start 117: node packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs
+passed 117: packages/portal/scripts/verify-race-history-prototype-retained-browser.mjs
+Start 119: node packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs
+passed 119: packages/portal/scripts/verify-race-hint-concurrent-history-browser.mjs
+Start 120: node packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs
+passed 120: packages/portal/scripts/verify-race-guess-concurrent-history-browser.mjs
+Start 121: node packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs
+passed 121: packages/portal/scripts/verify-race-confirmed-guess-retention-browser.mjs
+Start 122: node packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs
+passed 122: packages/portal/scripts/verify-race-sparse-history-refresh-browser.mjs
+Start 123: node packages/portal/scripts/verify-race-history-normalization-browser.mjs
+passed 123: packages/portal/scripts/verify-race-history-normalization-browser.mjs
+Start 124: node packages/portal/scripts/verify-race-history-progression-browser.mjs
+passed 124: packages/portal/scripts/verify-race-history-progression-browser.mjs
+Start 125: node packages/portal/scripts/verify-race-attempt-budget-browser.mjs
+passed 125: packages/portal/scripts/verify-race-attempt-budget-browser.mjs
+Start 126: node packages/portal/scripts/verify-race-cleanup-browser.mjs
+passed 126: packages/portal/scripts/verify-race-cleanup-browser.mjs
+Start 127: node packages/portal/scripts/verify-race-clock-browser.mjs
+passed 127: packages/portal/scripts/verify-race-clock-browser.mjs
+Start 128: node packages/portal/scripts/verify-race-dispatch-browser.mjs
+passed 128: packages/portal/scripts/verify-race-dispatch-browser.mjs
+Start 129: node packages/portal/scripts/verify-race-event-history-browser.mjs
+passed 129: packages/portal/scripts/verify-race-event-history-browser.mjs
+Start 130: node packages/portal/scripts/verify-race-fallback-browser.mjs
+passed 130: packages/portal/scripts/verify-race-fallback-browser.mjs
+Start 131: node packages/portal/scripts/verify-race-guess-evidence-browser.mjs
+passed 131: packages/portal/scripts/verify-race-guess-evidence-browser.mjs
+Start 132: node packages/portal/scripts/verify-race-guess-feedback-browser.mjs
+passed 132: packages/portal/scripts/verify-race-guess-feedback-browser.mjs
+Start 133: node packages/portal/scripts/verify-race-hints-browser.mjs
+passed 133: packages/portal/scripts/verify-race-hints-browser.mjs
+Start 134: node packages/portal/scripts/verify-race-live-progress-browser.mjs
+passed 134: packages/portal/scripts/verify-race-live-progress-browser.mjs
+Start 135: node packages/portal/scripts/verify-race-loader-browser.mjs
+passed 135: packages/portal/scripts/verify-race-loader-browser.mjs
+Start 136: node packages/portal/scripts/verify-race-locale-browser.mjs
+passed 136: packages/portal/scripts/verify-race-locale-browser.mjs
+Start 137: node packages/portal/scripts/verify-race-paid-evidence-browser.mjs
+passed 137: packages/portal/scripts/verify-race-paid-evidence-browser.mjs
+Start 138: node packages/portal/scripts/verify-race-private-snapshot-browser.mjs
+passed 138: packages/portal/scripts/verify-race-private-snapshot-browser.mjs
+Start 139: node packages/portal/scripts/verify-race-readiness-browser.mjs
+passed 139: packages/portal/scripts/verify-race-readiness-browser.mjs
+Start 140: node packages/portal/scripts/verify-race-reentry-browser.mjs
+passed 140: packages/portal/scripts/verify-race-reentry-browser.mjs
+Start 141: node packages/portal/scripts/verify-race-storage-browser.mjs
+passed 141: packages/portal/scripts/verify-race-storage-browser.mjs
+Start 142: node packages/portal/scripts/verify-race-tick-browser.mjs
+passed 142: packages/portal/scripts/verify-race-tick-browser.mjs
+Start 143: node packages/portal/scripts/verify-race-unscored-browser.mjs
+passed 143: packages/portal/scripts/verify-race-unscored-browser.mjs
+Start 144: node packages/portal/scripts/verify-race-wrong-attempt-browser.mjs
+passed 144: packages/portal/scripts/verify-race-wrong-attempt-browser.mjs
+Start 145: node packages/portal/scripts/verify-race-history-scoring-browser.mjs
+passed 145: packages/portal/scripts/verify-race-history-scoring-browser.mjs
+Start 146: node packages/portal/scripts/verify-race-history-graphemes-browser.mjs
+passed 146: packages/portal/scripts/verify-race-history-graphemes-browser.mjs
+Start 147: node packages/portal/scripts/verify-race-history-whitespace-browser.mjs
+passed 147: packages/portal/scripts/verify-race-history-whitespace-browser.mjs
+Start 172: node packages/portal/scripts/verify-race-resume-hint-ownership-browser.mjs
+passed 172: packages/portal/scripts/verify-race-resume-hint-ownership-browser.mjs
+{"selected":121,"completed":121,"failed":[],"sourceStillMatches":true,"report":"artifacts/development-checks/goal-20261024-standalone-final-5c26470ae/report.json"}

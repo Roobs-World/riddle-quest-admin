@@ -1,0 +1,6 @@
+{
+  "packages/portal/src/jest/backend.ts": "f8473a884e229229586831751982ccbc0df593f6bbe4aaa4810036d2701fbaee",
+  "packages/portal/src/jest/__tests__/backend.test.ts": "2a9dc486ddf4c232e860f246ce6859d944e9dc68903bb50ad5585b051ad38a65",
+  "packages/portal/src/jest/__tests__/startupColdRecovery.test.ts": "df2b6c79bbce085c0ed424bd20ecd72377dd6c9f0616a11a00588967ed9829a2",
+  "packages/portal/scripts/verify-jest-purchase-recovery-browser.mjs": "af046b0c085482400ec3c5851d89f9885c6282f0513dc99dc3cc401f1dd55cb7"
+}

@@ -1,0 +1,184 @@
+{
+  "uniqueTests": 28,
+  "passed": 28,
+  "failed": 0,
+  "initialRun": {
+    "passed": 27,
+    "failed": 1
+  },
+  "targetedRerun": {
+    "executed": 1,
+    "passed": 1,
+    "intentionallyFilteredOut": 18
+  },
+  "tests": [
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration renders the preloaded next riddle before a delayed skip response returns",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers lost hint and skip confirmations by resuming the current race",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration confirms an automatic skip once after the fifth incorrect guess",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration merges guess confirmation hints and recovers an invalid reveal without losing successor typing",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration confirms the result when a hint penalty or final skip ends the challenger race",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration restores successor typing after a lost or malformed guess confirmation",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers a completely lost hint response after the delivery deadline",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration rejects inconsistent hint confirmations and recovers authoritative reveals",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration preserves the player's draft through projected and confirmed hints",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration preserves solving time when hint and skip confirmations belong to another run",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration publishes a completed score before reusable Jest invites reach recipients",
+      "status": "passed",
+      "evidence": "retained-race-targeted-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration shows an opponent win immediately and keeps category navigation ahead of delayed outcome work",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration replays an opponent skip milestone after the player's penalty clock advances",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers lost publication confirmations without creating another challenge",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration shows a completed creator result while authoritative completion work continues in the background",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers a guess rejected after the ghost deadline without exposing a retry dead-end",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration keeps the immediate result visible and retries failed background reconciliation",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration acknowledges close during a delayed start and abandons the created run before exiting",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers rejected race preparation without creating a second run",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers lost quit confirmations during preparation and active play",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
+      "test": "Jest authentication integration confirms quitting an active race and abandons it with no result",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration renders typed invitation waiting and cancellation for an opaque creator entry",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration recovers a waiting invitation from a local pointer after reloading without an incoming link",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration consumes an unavailable challenge on Close so Multiplayer reopens the normal lobby",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration reopens a completed recipient challenge to its result without a second start",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration opens a public creator entry as recorded and routes Check results to Activity",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration retains public recipient acceptance without exposing creator controls",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    },
+    {
+      "file": "packages/portal/src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts",
+      "test": "Jest authentication integration suspends typed invitation polling while hidden and refreshes on visible recovery",
+      "status": "passed",
+      "evidence": "retained-race-results.json"
+    }
+  ]
+}

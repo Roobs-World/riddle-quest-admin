@@ -2,7 +2,6 @@ import {randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
-import {onScheduleWithSentry} from "../shared/sentryHandlers";
 import {migrateRaceArchitecturePage, reconcileRaceChallenge, type RaceMigrationReport} from "./raceArchitectureMigration";
 import type {Firestore} from "./raceSetupService";
 
@@ -118,8 +117,3 @@ export async function processRaceProjectionReconciliation(db: Firestore = admin.
     throw error;
   }
 }
-
-/** Periodic bounded repair remains idle until maintenance is explicitly enabled. */
-export const reconcileRaceMatchProjections = onScheduleWithSentry("reconcileRaceMatchProjections", {
-  schedule: "every 5 minutes", timeZone: "UTC", region: "us-central1", timeoutSeconds: 120,
-}, async () => {await processRaceProjectionReconciliation();});

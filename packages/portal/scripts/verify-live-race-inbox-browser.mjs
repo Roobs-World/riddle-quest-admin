@@ -11,7 +11,7 @@ const component=path.join(root,'src/play/race/components/LiveRaceInbox.tsx');
 const baseline=process.env.LIVE_INBOX_BASELINE_SOURCE;
 const reactMode=process.env.LIVE_INBOX_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
-const output=path.resolve(process.env.LIVE_INBOX_REPORT_DIR??path.join(root,'../../artifacts/game-live-inbox-2026-10-03',reactMode==='production'?'production':''));
+const output=path.resolve(process.env.LIVE_INBOX_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-live-inbox-2026-10-03',reactMode==='production'?'production':''));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-inbox-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

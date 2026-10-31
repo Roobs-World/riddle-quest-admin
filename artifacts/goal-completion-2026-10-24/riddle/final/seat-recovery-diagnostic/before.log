@@ -1,0 +1,24 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    225,
++   100
+-   125
+  ]
+
+    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.cache/goal-seat-recovery-20261024/probe.mjs:104:85
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [ 225, 100 ],
+  expected: [ 225, 125 ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.1

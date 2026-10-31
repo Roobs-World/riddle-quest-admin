@@ -1,0 +1,33 @@
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-live-seat-browser", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: python3 /tmp/riddle-goal-seat-diagnostic-inner-20261024.py
+{
+  "recordedAt": "2026-10-24T01:51:38.522605+00:00",
+  "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "rootVerifierSha256": "9120eb8fbaa0b97ff7bb6e84ac4a5d8915b2a208607df5b6e4c4df558d17e954",
+  "privateProbeSha256": "3ab194d01ca7ba9842ae28d277fb3f0ff0f33b0a72c811727aa18c4caacef209",
+  "runs": [
+    {
+      "mode": "before",
+      "exitCode": 1,
+      "logSha256": "9444f7c87d6d4d570ba51b16af1e2880536cf540072e5c4707c57ed68b056ae8"
+    },
+    {
+      "mode": "after",
+      "exitCode": 0,
+      "logSha256": "e69725320a2d65b5234be8c2484d9763509d153ea2f5e5091c078c190814a859"
+    }
+  ],
+  "beforeFixtureDemonstratesIdleBobNoReward": true,
+  "correctedFixtureBothViewportsPass": true,
+  "runtimeSourceChanged": false
+}
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

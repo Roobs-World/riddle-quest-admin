@@ -1,0 +1,69 @@
+{
+  "recordedAt": "2026-10-24T01:47:48.612068+00:00",
+  "affectedLogs": [
+    {
+      "path": "artifacts/goal-completion-2026-10-24/riddle/backend/authority.log",
+      "bytes": 538263,
+      "credentialOrCapabilityVariableNames": [
+        "OPENAI_API_KEY",
+        "SNAP_COOKIE"
+      ],
+      "credentialLocationVariableNames": [
+        "GPG_AGENT_INFO",
+        "SSH_AUTH_SOCK",
+        "XAUTHORITY"
+      ]
+    },
+    {
+      "path": "artifacts/goal-completion-2026-10-24/riddle/backend/race-coverage.log",
+      "bytes": 18127921,
+      "credentialOrCapabilityVariableNames": [
+        "OPENAI_API_KEY",
+        "SNAP_COOKIE"
+      ],
+      "credentialLocationVariableNames": [
+        "GPG_AGENT_INFO",
+        "SSH_AUTH_SOCK",
+        "XAUTHORITY"
+      ]
+    },
+    {
+      "path": "artifacts/development-checks/goal-20261024-backend-exact/013.log",
+      "bytes": 18082016,
+      "credentialOrCapabilityVariableNames": [
+        "SNAP_COOKIE"
+      ],
+      "credentialLocationVariableNames": [
+        "GPG_AGENT_INFO",
+        "SSH_AUTH_SOCK",
+        "XAUTHORITY"
+      ]
+    },
+    {
+      "path": "artifacts/development-checks/goal-20261024-backend-exact/154.log",
+      "bytes": 21526,
+      "credentialOrCapabilityVariableNames": [
+        "SNAP_COOKIE"
+      ],
+      "credentialLocationVariableNames": [
+        "GPG_AGENT_INFO",
+        "SSH_AUTH_SOCK",
+        "XAUTHORITY"
+      ]
+    },
+    {
+      "path": "artifacts/development-checks/goal-20261024-backend-attempts/154-failed-60546a7870dc5af221fe7bbd1537130cfd89a1cc68061a2512400dfd6a42dec4.log",
+      "bytes": 21526,
+      "credentialOrCapabilityVariableNames": [
+        "SNAP_COOKIE"
+      ],
+      "credentialLocationVariableNames": [
+        "GPG_AGENT_INFO",
+        "SSH_AUTH_SOCK",
+        "XAUTHORITY"
+      ]
+    }
+  ],
+  "pending180LogParentMode": "0700",
+  "valuesRecorded": false
+}

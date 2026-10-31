@@ -1,0 +1,8 @@
+{
+  "path": "firebase-functions/src/__tests__/race/raceLiveObservation.test.ts",
+  "beforeSha256": "810fae1a0d8b01a07e1a54dc2cc4825889dc90c5e5a0302cf4cba375f06a651d",
+  "afterSha256": "122f5d10be09b367939b573ffa35d5e864c6424a5edb5790dde5217db63f878d",
+  "reason": "Public waiting polls now revalidate account identity and restore their queue seat. The lock-free observation unit fake omitted getAll and the legitimate owner profile/unchanged queue fixtures. Original lease and write assertions are preserved. The fixture also used 30 frozen questions, while the canonical complete live deck has 15; it now uses RACE_DECK_SIZE.",
+  "implementationChanged": false,
+  "originalExpectationsPreserved": true
+}

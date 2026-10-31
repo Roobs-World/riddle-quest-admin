@@ -1,0 +1,97 @@
+{
+  "taskId": "architecture:build-evidence-isolation:source-638b7f643862",
+  "targets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo",
+    "gamesnacks",
+    "itch"
+  ],
+  "work": "Keep dependency inventories independent across custom and canonical outputs; publish evidence only after writing and final postprocessing; reject late build failures and generate-only runs without leaving successful inventories.",
+  "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+  "completedAt": "2026-10-25T23:39:05.166Z",
+  "trigger": "local current-source revalidation",
+  "requiredChecks": [
+    "architecture-contracts",
+    "portal-types",
+    "canonical-artifact-inventories",
+    "tested-archive-digests"
+  ],
+  "checks": [
+    {
+      "id": "architecture-contracts",
+      "status": "passed",
+      "evidence": "pnpm test:architecture; current-source check at 2026-10-25T23:15:14.570Z; output artifacts/development-checks/current-source-20261025/000.log SHA-256 015dffe9a662870d33c9538f92ce9e5393383455f5959ebfd8ae4d2d00f46b39"
+    },
+    {
+      "id": "portal-types",
+      "status": "passed",
+      "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-25T23:14:54.182Z; output artifacts/development-checks/current-source-20261025/001.log SHA-256 ab646e00fb71275c24255754a1c5d8dd9f190d43b01e6674db5cf0e37ccf13c6"
+    },
+    {
+      "id": "canonical-artifact-inventories",
+      "status": "passed",
+      "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-25T23:15:15.234Z; output artifacts/development-checks/current-source-20261025/002.log SHA-256 247370a3c50c37912b681ccfd1737f9c49da9b89d2cf718597b3ceab7ff1f552"
+    },
+    {
+      "id": "tested-archive-digests",
+      "status": "passed",
+      "evidence": "node scripts/release/verify-packaged-game-evidence.mjs; current-source check at 2026-10-25T23:15:03.137Z; output artifacts/development-checks/current-source-20261025/003.log SHA-256 edd4e15e0d33b83eca8e085845ea4e86c3da60109aff18fd6787310e125bd0b7"
+    }
+  ],
+  "remainingGates": [
+    "Merge the workflow into main to enable automatic accepted-revision CI updates.",
+    "Provider submission, review and publication require separate receipts."
+  ],
+  "nextAction": "Review and merge the build evidence improvements, then follow the existing platform submission gates.",
+  "artifacts": [
+    {
+      "target": "jest",
+      "file": "builds/jest/index.html",
+      "sha256": "fc600200f623b98011a054c1ecdd193f7d2518c36fbb3770884c4874cef30096"
+    },
+    {
+      "target": "facebook",
+      "file": "builds/facebook/index.html",
+      "sha256": "d663223f79cf197c0618363b9b2628fc7d383de0ab98142b69c35917e3f89146"
+    },
+    {
+      "target": "reddit",
+      "file": "builds/reddit/index.html",
+      "sha256": "74d3eda95517355c989832e25d98c18e953db58af45595d5399e38747ab32915"
+    },
+    {
+      "target": "youtube",
+      "file": "builds/youtube/index.html",
+      "sha256": "7c195f3bcd718424a5c20b4f307999f936e729b4715067ce537de27e071b223e"
+    },
+    {
+      "target": "netflix",
+      "file": "builds/netflix/index.html",
+      "sha256": "e32689cd826a6c14788d7279a2f8c260e28a72a1d3cde17b8aea12a694baacbb"
+    },
+    {
+      "target": "yahoo",
+      "file": "builds/yahoo/index.html",
+      "sha256": "bfe10dc00a4710bb507ad781af4143b6e6121a4dd32898acfd8727973606ff67"
+    },
+    {
+      "target": "gamesnacks",
+      "file": "build-gamesnacks.zip",
+      "sha256": "3cb6497cdd3dea7e8da75b4e8b94ddfa092363e8f6466abb5a17867ea26b4ac9"
+    },
+    {
+      "target": "itch",
+      "file": "build-itch.zip",
+      "sha256": "3f3f83f5be37558cb78d12ab8ea7c92fa5e44f3b14dc0420c3f53f5a8135becc"
+    }
+  ],
+  "revalidation": {
+    "taskId": "architecture:build-evidence-isolation",
+    "declarationSha256": "57b6b79472d46b5d3eb88b0c4d249fa6a0bea83d21d7256c59fcc33089afa67e"
+  }
+}

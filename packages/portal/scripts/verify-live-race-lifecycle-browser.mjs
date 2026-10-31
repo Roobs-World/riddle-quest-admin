@@ -19,6 +19,8 @@ import React from 'react'; import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
+import {LIVE_RACE_JOIN_DEADLINE_MS} from ${JSON.stringify(path.join(root,"src/play/race/logic/liveRaceDeliveryDeadline.ts"))};
+window.liveJoinDeadlineMs=LIVE_RACE_JOIN_DEADLINE_MS;
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';
 window.deliveryCalls=[];window.joinReleases=[];
 const call=async(action,input)=>{
@@ -92,7 +94,7 @@ try {
    await a.goto(baseUrl+'/?user=Alice'+(fault==='joined'?'':'&fault=join'));await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
    if(fault==='joined')await a.locator('.live-race-self strong').waitFor();else await a.waitForFunction(()=>window.joinHeld);
    assert.ok(tickets.has('Alice'),'Join must establish the owned server seat');
-   if(fault==='expired-join')await a.waitForFunction(()=>window.deliveryCalls.filter(item=>item.action==='join').length>=2,null,{timeout:15000});
+   if(fault==='expired-join')await a.waitForFunction(()=>window.deliveryCalls.filter(item=>item.action==='join').length>=2,null,{timeout:await a.evaluate(()=>window.liveJoinDeadlineMs+5000)});
    await a.evaluate(()=>{window.unmountLive();if(window.releaseJoin)window.releaseJoin();});
    const until=Date.now()+3000;while(tickets.has('Alice') && Date.now()<until)await new Promise(resolve=>setTimeout(resolve,25));
    assert.equal(tickets.has('Alice'),false,'Retired lobby must release its server seat: '+fault);

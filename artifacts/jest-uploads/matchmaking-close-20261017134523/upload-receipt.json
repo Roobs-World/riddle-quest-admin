@@ -1,0 +1,25 @@
+{
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "version": "1.0.0-dev.20261017134523.5953e42483c7",
+  "sourceCommit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDirty": true,
+  "archivePath": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-uploads/matchmaking-close-20261017134523/build.zip",
+  "archiveSha256": "5953e42483c750d426d80e11716d72801fbfe0c4035d7e1493fa61524212981a",
+  "archiveBytes": 2868750,
+  "files": 415,
+  "activationRequested": false,
+  "change": "Close promptly retires the original matchmaking request without affecting a newer match.",
+  "uploadState": "accepted",
+  "uploadStartedAt": "2026-10-17T13:45:40.358777+00:00",
+  "uploadHttpStatus": "202",
+  "uploadExitCode": 0,
+  "uploadResponse": {
+    "versionId": "01a14a1c-7499-7149-975e-f944c49fdbc6",
+    "buildStatus": "processing"
+  },
+  "versionId": "01a14a1c-7499-7149-975e-f944c49fdbc6",
+  "buildStatus": "ready",
+  "isActive": false,
+  "previewUrl": "https://jest.com/g/riddle-q?versionId=01a14a1c-7499-7149-975e-f944c49fdbc6"
+}

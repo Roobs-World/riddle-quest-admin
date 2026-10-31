@@ -1,0 +1,59 @@
+$ pnpm check:target-boundaries && pnpm check:youtube-content:release && pnpm check:locales && NODE_ENV=production tsc -b && YAHOO_BUILD=1 NODE_ENV=production vite build --mode yahoo && pnpm audit:yahoo-artifact
+$ node --test --test-isolation=none scripts/web-target-boundaries.test.mjs && node scripts/audit-web-target-boundaries.mjs
+✔ allows target-local edges, target-to-shared edges, and the real shop adapter seam (19.268754ms)
+✔ excludes __tests__, src/test, and *.test.* files from the production graph (3.573868ms)
+✔ rejects shared-to-target imports across every supported TypeScript module syntax (7.305867ms)
+✔ rejects imports between different target owners (2.190799ms)
+✔ rejects the legacy platform entry while allowing the shop adapter (0.733719ms)
+✔ rejects Devvit imports outside Reddit-owned source (2.381119ms)
+✔ rejects direct Firebase and Sentry imports from Reddit and YouTube (1.442442ms)
+✔ fails closed when a missing relative path lexically enters target-owned source (0.910935ms)
+✔ handles extensions and index modules with TypeScript-compatible resolution (1.308508ms)
+✔ rejects non-literal dynamic imports and require calls because ownership is unknowable (0.71284ms)
+✔ aggregates violations in deterministic file and source order (0.785417ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.035718
+Web Target boundary audit passed (345 files, 1492 module references).
+$ pnpm --dir ../../firebase-functions youtube:content:audit
+[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+$ node scripts/youtube-content-compile.js --check
+YouTube content ready: youtube-content-v1-c9d7fda289aaeb84; 16 locales; 180 riddles per locale
+$ node scripts/audit-locales.mjs
+Locale audit passed: 16 locales × 23 namespaces, complete keys/placeholders, no translation-token debris, and no removed Jest-incompatible feature keys
+vite v8.3.3 building client environment for yahoo...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+✗ Build failed in 1.11s
+error during build:
+Build failed with 1 error:
+
+[plugin riddle-quest-target-dependencies]
+Error: Command failed: pnpm --filter @qwordly/portal licenses list --json
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execFileSync (node:child_process:961:15)
+    at readLicenseInventory (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1792631228035-a377f8b59202c8.mjs:1100:17)
+    at createNotice (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1792631228035-a377f8b59202c8.mjs:1136:20)
+    at PluginContextImpl.generateBundle (file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/node_modules/.vite-temp/vite.config.ts.timestamp-1792631228035-a377f8b59202c8.mjs:1318:19)
+    at PluginContextImpl.handler (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.3_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:34919:13)
+    at plugin (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/rolldown@1.2.11/node_modules/rolldown/dist/shared/bindingify-input-options-XrReX_BJ.mjs:1711:17)
+    at file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/rolldown@1.2.11/node_modules/rolldown/dist/shared/bindingify-input-options-XrReX_BJ.mjs:1932:21
+    at plugin.<computed> (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/rolldown@1.2.11/node_modules/rolldown/dist/shared/bindingify-input-options-XrReX_BJ.mjs:2130:18)
+    at aggregateBindingErrorsIntoJsError (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/rolldown@1.2.11/node_modules/rolldown/dist/shared/error-C7pxws0W.mjs:48:18)
+    at unwrapBindingResult (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/rolldown@1.2.11/node_modules/rolldown/dist/shared/error-C7pxws0W.mjs:18:128)
+    at #build (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/rolldown@1.2.11/node_modules/rolldown/dist/shared/rolldown-CgWItHdG.mjs:133:34)
+    at async buildEnvironment (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.3_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:34660:66)
+    at async Object.build (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.3_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:35081:19)
+    at async Object.buildApp (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.3_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:35078:153)
+    at async CAC.<anonymous> (file:///home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/vite@8.3.3_@types+node@26.6.3_@vitejs+devtools@0.7.6_yaml@2.9.1/node_modules/vite/dist/node/cli.js:780:3) {
+  errors: [Getter/Setter]
+}
+[ELIFECYCLE] Command failed with exit code 1.

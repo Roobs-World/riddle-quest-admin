@@ -1,0 +1,41 @@
+{
+  "index": 150,
+  "executable": "node",
+  "args": [
+    "packages/portal/scripts/verify-live-race-browser.mjs"
+  ],
+  "tasks": [
+    "multiplayer:live-pvp-delivery-recovery",
+    "multiplayer:live-pvp-lifecycle-recovery",
+    "multiplayer:live-pvp-seat-recovery"
+  ],
+  "sourceBefore": "540e3c542a46cbe5149287348fd6c8dbd2803a1381632b6731e1a16ddc8828e5",
+  "sourceAfter": "540e3c542a46cbe5149287348fd6c8dbd2803a1381632b6731e1a16ddc8828e5",
+  "status": "passed",
+  "exitCode": 0,
+  "startedAt": "2026-10-25T22:50:35.031Z",
+  "checkedAt": "2026-10-25T22:51:12.697Z",
+  "log": "artifacts/current-source-readiness-2026-10-25/matrix/150.log",
+  "sha256": "4b2dca0e303b9aeac7978e226e5a7ede4a8c5b891cf521487dc3bdf7b6fc5c21",
+  "artifacts": {},
+  "artifactSnapshots": {},
+  "executedArgs": [
+    "packages/portal/scripts/verify-live-race-browser.mjs"
+  ],
+  "sourceStillMatches": true,
+  "artifactsObservedAt": "2026-10-25T22:51:12.697Z",
+  "provenance": {
+    "kind": "current-exact-execution",
+    "baselineReport": "artifacts/development-checks/goal-20261024-receipts-final5c-local-receipts/checks-report-snapshot.json"
+  },
+  "environment": {
+    "SENTRY_UPLOAD_SOURCEMAPS": "false",
+    "RIDDLE_LOCAL_VERIFICATION": "1",
+    "RIDDLE_MATRIX_GENERATION": "next",
+    "NODE_OPTIONS": "--require=/tmp/riddle-silent-browser.cjs",
+    "silentGuardSha256": "29b7fec07cb7ded9bbdd0a253e198e3243dcb644018ef919c8793a9febf8d0c9",
+    "silentFixtureSha256": "50ac614914e4616e7ce2d3a62485577704692777771a6f0a26ea605a39fe48ab",
+    "jestSetupBridgeSha256": "ff38ee97be56941990468b05cb5fe5004e0bb4a5cb1a0fc43669cf505e7bd4c2",
+    "sharedFixtureAdapterSha256": "c3efeb19c7582245ebb3919ac495c8a6a5ff80ebbff30e4b78631beade33e5fc"
+  }
+}

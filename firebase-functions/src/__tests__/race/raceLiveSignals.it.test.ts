@@ -30,7 +30,7 @@ beforeEach(async () => {
   });
   await batch.commit();
 });
-afterAll(async () => {await environment?.cleanup();});
+afterAll(async () => {await environment?.cleanup(); await db.terminate();});
 /** Creates public seats using real transactional matchmaking. */
 async function pair() {
   /** Provides now ms behavior. */
@@ -52,6 +52,10 @@ it("keeps revisions, match contents, enumeration and writes server-only", async 
   await assertFails(getDoc(doc(client, `liveRaceSignals/${b.ticketId}`)));
   await assertFails(getDocs(collection(client, "liveRaceSignals")));
   await assertFails(setDoc(own, {revision: "forged"}));
+  /** Account stream-admission document that browser security rules must keep private. */
+  const admission = doc(client, `users/${A}/liveRaceStreamAdmissions/current`);
+  await assertFails(getDoc(admission));
+  await assertFails(setDoc(admission, {leases: []}));
   await assertFails(getDoc(doc(client, `liveRaceMatches/${a.ticketId}`)));
   await assertFails(getDoc(doc(client, `liveRaceTickets/${a.ticketId}`)));
   await assertFails(getDoc(doc(environment.unauthenticatedContext().firestore(), own.path)));

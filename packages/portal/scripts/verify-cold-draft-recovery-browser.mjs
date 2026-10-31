@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.COLD_DRAFT_REACT_MODE??'development';
-const output=path.resolve(process.env.COLD_DRAFT_REPORT_DIR??path.join(root,'../../artifacts/cold-draft-recovery-2026-10-03',mode));
+const output=path.resolve(process.env.COLD_DRAFT_REPORT_DIR??path.join(root,'../../builds/test-evidence/cold-draft-recovery-2026-10-03',mode));
 const baseline=process.env.COLD_DRAFT_BASELINE_DIR;
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/cold-draft-'));let server,browser;

@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 
-// Verify multiplayer owns its dialog and restores pending guidance or achievements on close.
+// Verify multiplayer owns its dialog and restores deferred guidance or nonblocking achievement tabs on close.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/race-overlay-ownership-"));
@@ -74,18 +74,26 @@ try {
     assert.equal(await page.getByRole('dialog').count(),1,'Multiplayer must be the only presented dialog');
     assert.equal(await page.locator('.guidance-backdrop').count(),0,'Onboarding must wait behind multiplayer');
     assert.equal(await page.locator('.game-modal').count(),0,'Reward fanfare must wait behind multiplayer');
+    assert.equal(await page.locator('.fanfare-tabs').count(),0,'Achievement tabs must wait behind multiplayer');
     await page.locator('.race-close').focus();await page.keyboard.press('Tab');
     assert.equal(await page.evaluate(()=>!!document.activeElement?.closest('.race-screen')),true);
     await page.locator('.race-close').click();await page.locator('.race-screen').waitFor({state:'detached'});
-    if(mode==='onboarding')await page.locator('.onboarding-card').waitFor({state:'visible'});
-    else await page.locator('.game-modal .achievement-unlock').waitFor({state:'visible'});
-    assert.equal(await page.getByRole('dialog').count(),1,'Deferred overlay must resume alone after multiplayer closes');
-    await page.waitForFunction(mode=>!!document.activeElement?.closest(mode==='onboarding'?'.onboarding-card':'.game-modal'),mode);
-    await page.keyboard.press('Tab');assert.equal(await page.evaluate(mode=>!!document.activeElement?.closest(mode==='onboarding'?'.onboarding-card':'.game-modal'),mode),true);
+    if(mode==='onboarding'){
+      await page.locator('.onboarding-card').waitFor({state:'visible'});
+      assert.equal(await page.getByRole('dialog').count(),1,'Deferred guidance must resume alone after multiplayer closes');
+      await page.waitForFunction(()=>!!document.activeElement?.closest('.onboarding-card'));
+      await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>!!document.activeElement?.closest('.onboarding-card')),true);
+    }else{
+      await page.locator('.fanfare-tab.current[data-kind="achievement"][role="status"]').waitFor({state:'visible'});
+      assert.equal(await page.getByRole('dialog').count(),0,'Achievement tabs must not block play after multiplayer closes');
+      assert.equal(await page.locator('.game-modal').count(),0,'A reward must not restore the retired blocking modal');
+      await page.getByRole('button',{name:'Q',exact:true}).click();
+      await page.waitForFunction(()=>window.frameState.currentLetters[0]==='Q');
+    }
     assert.equal(await page.getByRole('alert').count(),0);assert.deepEqual(errors,[]);
     assert.equal(await page.evaluate(()=>window.commands.filter(command=>['game:startRace','game:submitRaceGuess','game:abandonRace'].includes(command.type)).length),0);
     await page.screenshot({path:path.join(output,mode+'-'+viewport.width+'.png'),fullPage:true});
-    console.log('Overlay ownership passed: '+mode+' at '+viewport.width+'px; one modal, race focus, deferred presentation restored.');await context.close();
+    console.log('Overlay ownership passed: '+mode+' at '+viewport.width+'px; race dialog ownership and deferred '+(mode==='onboarding'?'guidance focus':'nonblocking achievement with playable keyboard')+' verified.');await context.close();
   }
 } finally {
   await browser?.close();

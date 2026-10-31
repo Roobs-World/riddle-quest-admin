@@ -1,0 +1,14 @@
+347b1c9e87c269dfd974a76438711fd1
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AcceptedGuessesSchema = void 0;
+const zod_1 = require("zod");
+const graphemes_1 = require("../game/graphemes");
+/** Public feedback for guesses already accepted by the authoritative session. */
+exports.AcceptedGuessesSchema = zod_1.z.array(zod_1.z.object({
+    attempt: zod_1.z.number().int().positive().max(6),
+    feedback: zod_1.z.array(zod_1.z.object({
+        letter: zod_1.z.string().min(1).max(32).refine((letter) => (0, graphemes_1.splitGraphemes)(letter).length === 1),
+        status: zod_1.z.enum(["green", "yellow", "red"]),
+    }).strict()).min(1).max(7),
+}).strict()).max(6).refine((guesses) => guesses.every((guess, index) => guess.attempt === index + 1));

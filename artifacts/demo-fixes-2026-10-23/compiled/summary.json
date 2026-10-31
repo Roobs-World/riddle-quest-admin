@@ -1,0 +1,16 @@
+{
+  "exitCode": 0,
+  "elapsedSeconds": 315.837,
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/demo-fixes-2026-10-23/jest-artifact",
+  "artifactFiles": 419,
+  "artifactHashesUnchanged": true,
+  "sourceHashesUnchanged": true,
+  "sharedScreenshotPathsRestored": 12,
+  "counts": {
+    "numPassedTestSuites": 8,
+    "numFailedTestSuites": 0,
+    "numPassedTests": 79,
+    "numFailedTests": 0,
+    "numPendingTests": 0
+  }
+}

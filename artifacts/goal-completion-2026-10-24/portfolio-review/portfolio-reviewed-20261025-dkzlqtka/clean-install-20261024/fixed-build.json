@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-24T23:47:32.113896+00:00",
+  "finishedAt": "2026-10-24T23:48:00.252577+00:00",
+  "exitCode": 1,
+  "command": [
+    "pnpm",
+    "build"
+  ],
+  "developmentKeysOnly": true,
+  "productionCredentialsUsed": false,
+  "localDummyDatabaseOnly": true,
+  "remoteMediaAndTelemetryAbsent": true,
+  "envFilesCreated": false,
+  "sourceBefore": "c04cf468a4e44b49a0b592432e64a23a0367af7c62f267de823da4f35c867e22",
+  "sourceAfter": "c04cf468a4e44b49a0b592432e64a23a0367af7c62f267de823da4f35c867e22",
+  "sourceStable": true,
+  "logSha256": "95abe6fadb4f8b202311d18781a9eefa85455c66e44dce5f3c28062076bde69d"
+}

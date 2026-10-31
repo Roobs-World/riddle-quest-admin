@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.LIVE_POLL_REACT_MODE??'development',baseline=process.env.LIVE_POLL_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.LIVE_POLL_REPORT_DIR??path.join(root,'../../artifacts/live-poll-retirement-2026-10-04',mode));
+const output=path.resolve(process.env.LIVE_POLL_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-poll-retirement-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-poll-retirement-'));let browser,server;const observations=[];
 try{

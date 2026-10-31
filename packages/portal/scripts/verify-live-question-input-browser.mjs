@@ -11,7 +11,7 @@ const {RACE_RULES,LiveRaceViewSchema}=require('@qwordly/core/race');
 const {computeFeedback}=require('@qwordly/core/game');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_QUESTION_REACT_MODE??'development';
-const output=path.resolve(process.env.LIVE_QUESTION_REPORT_DIR??path.join(root,'../../artifacts/live-question-input-2026-10-03',mode));
+const output=path.resolve(process.env.LIVE_QUESTION_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-question-input-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-question-input-'));
 let browser,server,baseUrl;let tickets=new Map(),started=null;const observations=[];

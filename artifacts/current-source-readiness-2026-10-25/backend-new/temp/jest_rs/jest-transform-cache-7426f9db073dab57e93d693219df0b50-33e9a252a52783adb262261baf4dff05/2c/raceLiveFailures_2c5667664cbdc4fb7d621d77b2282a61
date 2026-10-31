@@ -1,0 +1,293 @@
+86370eb88d536a6544fd1e2635cb0fe7
+"use strict";
+
+/* istanbul ignore next */
+function cov_mhf66zeir() {
+  var path = "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveFailures.ts";
+  var hash = "913f2ab0bde07f03422784d862ad2d73d0f716d6";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveFailures.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 2,
+          column: 62
+        }
+      },
+      "1": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 3,
+          column: 56
+        }
+      },
+      "2": {
+        start: {
+          line: 4,
+          column: 16
+        },
+        end: {
+          line: 4,
+          column: 54
+        }
+      },
+      "3": {
+        start: {
+          line: 8,
+          column: 21
+        },
+        end: {
+          line: 9,
+          column: 103
+        }
+      },
+      "4": {
+        start: {
+          line: 11,
+          column: 17
+        },
+        end: {
+          line: 11,
+          column: 120
+        }
+      },
+      "5": {
+        start: {
+          line: 12,
+          column: 4
+        },
+        end: {
+          line: 12,
+          column: 96
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "liveRaceGatewayFailure",
+        decl: {
+          start: {
+            line: 6,
+            column: 9
+          },
+          end: {
+            line: 6,
+            column: 31
+          }
+        },
+        loc: {
+          start: {
+            line: 6,
+            column: 39
+          },
+          end: {
+            line: 13,
+            column: 1
+          }
+        },
+        line: 6
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 11,
+            column: 17
+          },
+          end: {
+            line: 11,
+            column: 120
+          }
+        },
+        type: "cond-expr",
+        locations: [{
+          start: {
+            line: 11,
+            column: 94
+          },
+          end: {
+            line: 11,
+            column: 104
+          }
+        }, {
+          start: {
+            line: 11,
+            column: 107
+          },
+          end: {
+            line: 11,
+            column: 120
+          }
+        }],
+        line: 11
+      },
+      "1": {
+        loc: {
+          start: {
+            line: 11,
+            column: 17
+          },
+          end: {
+            line: 11,
+            column: 91
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 11,
+            column: 17
+          },
+          end: {
+            line: 11,
+            column: 52
+          }
+        }, {
+          start: {
+            line: 11,
+            column: 56
+          },
+          end: {
+            line: 11,
+            column: 91
+          }
+        }],
+        line: 11
+      },
+      "2": {
+        loc: {
+          start: {
+            line: 12,
+            column: 21
+          },
+          end: {
+            line: 12,
+            column: 42
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 12,
+            column: 21
+          },
+          end: {
+            line: 12,
+            column: 35
+          }
+        }, {
+          start: {
+            line: 12,
+            column: 39
+          },
+          end: {
+            line: 12,
+            column: 42
+          }
+        }],
+        line: 12
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    f: {
+      "0": 0
+    },
+    b: {
+      "0": [0, 0],
+      "1": [0, 0],
+      "2": [0, 0]
+    },
+    inputSourceMap: {
+      file: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveFailures.ts",
+      mappings: ";;AAGA,wDAOC;AAVD,uDAAuD;AAEvD,kGAAkG;AAClG,SAAgB,sBAAsB,CAAC,KAAc;IACnD,4FAA4F;IAC5F,MAAM,QAAQ,GAA2B,EAAC,kBAAkB,EAAE,GAAG,EAAE,qBAAqB,EAAE,GAAG;QAC3F,WAAW,EAAE,GAAG,EAAE,mBAAmB,EAAE,GAAG,EAAE,iBAAiB,EAAE,GAAG,EAAE,oBAAoB,EAAE,GAAG,EAAC,CAAC;IACjG,4EAA4E;IAC5E,MAAM,IAAI,GAAG,KAAK,YAAY,kBAAU,IAAI,MAAM,CAAC,MAAM,CAAC,QAAQ,EAAE,KAAK,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC,CAAC,aAAa,CAAC;IAC7G,OAAO,EAAC,MAAM,EAAE,QAAQ,CAAC,IAAI,CAAC,IAAI,GAAG,EAAE,IAAI,EAAE,EAAC,KAAK,EAAE,0BAA0B,EAAE,IAAI,EAAC,EAAC,CAAC;AAC1F,CAAC",
+      names: [],
+      sources: ["/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLiveFailures.ts"],
+      sourcesContent: ["import {HttpsError} from \"firebase-functions/v2/https\";\n\n/** Serializes only trusted error categories, without answers, identities or exception details. */\nexport function liveRaceGatewayFailure(error: unknown) {\n  /** Public HTTP categories have the same meaning as the authenticated callable rejection. */\n  const statuses: Record<string, number> = {\"invalid-argument\": 400, \"failed-precondition\": 409,\n    \"not-found\": 404, \"permission-denied\": 403, \"unauthenticated\": 401, \"resource-exhausted\": 429};\n  /** Unrecognized failures retain uncertain delivery and remain retryable. */\n  const code = error instanceof HttpsError && Object.hasOwn(statuses, error.code) ? error.code : \"unavailable\";\n  return {status: statuses[code] ?? 503, body: {error: \"live-race-request-failed\", code}};\n}\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "913f2ab0bde07f03422784d862ad2d73d0f716d6"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_mhf66zeir = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_mhf66zeir();
+cov_mhf66zeir().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_mhf66zeir().s[1]++;
+exports.liveRaceGatewayFailure = liveRaceGatewayFailure;
+const https_1 =
+/* istanbul ignore next */
+(cov_mhf66zeir().s[2]++, require("firebase-functions/v2/https"));
+/** Serializes only trusted error categories, without answers, identities or exception details. */
+function liveRaceGatewayFailure(error) {
+  /* istanbul ignore next */
+  cov_mhf66zeir().f[0]++;
+  /** Public HTTP categories have the same meaning as the authenticated callable rejection. */
+  const statuses =
+  /* istanbul ignore next */
+  (cov_mhf66zeir().s[3]++, {
+    "invalid-argument": 400,
+    "failed-precondition": 409,
+    "not-found": 404,
+    "permission-denied": 403,
+    "unauthenticated": 401,
+    "resource-exhausted": 429
+  });
+  /** Unrecognized failures retain uncertain delivery and remain retryable. */
+  const code =
+  /* istanbul ignore next */
+  (cov_mhf66zeir().s[4]++, 
+  /* istanbul ignore next */
+  (cov_mhf66zeir().b[1][0]++, error instanceof https_1.HttpsError) &&
+  /* istanbul ignore next */
+  (cov_mhf66zeir().b[1][1]++, Object.hasOwn(statuses, error.code)) ?
+  /* istanbul ignore next */
+  (cov_mhf66zeir().b[0][0]++, error.code) :
+  /* istanbul ignore next */
+  (cov_mhf66zeir().b[0][1]++, "unavailable"));
+  /* istanbul ignore next */
+  cov_mhf66zeir().s[5]++;
+  return {
+    status: 
+    /* istanbul ignore next */
+    (cov_mhf66zeir().b[2][0]++, statuses[code]) ??
+    /* istanbul ignore next */
+    (cov_mhf66zeir().b[2][1]++, 503),
+    body: {
+      error: "live-race-request-failed",
+      code
+    }
+  };
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJleHBvcnRzIiwibGl2ZVJhY2VHYXRld2F5RmFpbHVyZSIsImh0dHBzXzEiLCJjb3ZfbWhmNjZ6ZWlyIiwicyIsInJlcXVpcmUiLCJlcnJvciIsImYiLCJzdGF0dXNlcyIsImNvZGUiLCJiIiwiSHR0cHNFcnJvciIsIk9iamVjdCIsImhhc093biIsInN0YXR1cyIsImJvZHkiXSwic291cmNlcyI6WyIvaG9tZS9jcmFpZy1iZXN3ZXRoZXJpY2svRG9jdW1lbnRzL3JpZGRsZS1xdWVzdC9maXJlYmFzZS1mdW5jdGlvbnMvc3JjL3JhY2UvcmFjZUxpdmVGYWlsdXJlcy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQge0h0dHBzRXJyb3J9IGZyb20gXCJmaXJlYmFzZS1mdW5jdGlvbnMvdjIvaHR0cHNcIjtcblxuLyoqIFNlcmlhbGl6ZXMgb25seSB0cnVzdGVkIGVycm9yIGNhdGVnb3JpZXMsIHdpdGhvdXQgYW5zd2VycywgaWRlbnRpdGllcyBvciBleGNlcHRpb24gZGV0YWlscy4gKi9cbmV4cG9ydCBmdW5jdGlvbiBsaXZlUmFjZUdhdGV3YXlGYWlsdXJlKGVycm9yOiB1bmtub3duKSB7XG4gIC8qKiBQdWJsaWMgSFRUUCBjYXRlZ29yaWVzIGhhdmUgdGhlIHNhbWUgbWVhbmluZyBhcyB0aGUgYXV0aGVudGljYXRlZCBjYWxsYWJsZSByZWplY3Rpb24uICovXG4gIGNvbnN0IHN0YXR1c2VzOiBSZWNvcmQ8c3RyaW5nLCBudW1iZXI+ID0ge1wiaW52YWxpZC1hcmd1bWVudFwiOiA0MDAsIFwiZmFpbGVkLXByZWNvbmRpdGlvblwiOiA0MDksXG4gICAgXCJub3QtZm91bmRcIjogNDA0LCBcInBlcm1pc3Npb24tZGVuaWVkXCI6IDQwMywgXCJ1bmF1dGhlbnRpY2F0ZWRcIjogNDAxLCBcInJlc291cmNlLWV4aGF1c3RlZFwiOiA0Mjl9O1xuICAvKiogVW5yZWNvZ25pemVkIGZhaWx1cmVzIHJldGFpbiB1bmNlcnRhaW4gZGVsaXZlcnkgYW5kIHJlbWFpbiByZXRyeWFibGUuICovXG4gIGNvbnN0IGNvZGUgPSBlcnJvciBpbnN0YW5jZW9mIEh0dHBzRXJyb3IgJiYgT2JqZWN0Lmhhc093bihzdGF0dXNlcywgZXJyb3IuY29kZSkgPyBlcnJvci5jb2RlIDogXCJ1bmF2YWlsYWJsZVwiO1xuICByZXR1cm4ge3N0YXR1czogc3RhdHVzZXNbY29kZV0gPz8gNTAzLCBib2R5OiB7ZXJyb3I6IFwibGl2ZS1yYWNlLXJlcXVlc3QtZmFpbGVkXCIsIGNvZGV9fTtcbn1cbiJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBR0FBLE9BQUEsQ0FBQUMsc0JBQUEsR0FBQUEsc0JBQUE7QUFIQSxNQUFBQyxPQUFBO0FBQUE7QUFBQSxDQUFBQyxhQUFBLEdBQUFDLENBQUEsT0FBQUMsT0FBQTtBQUVBO0FBQ0EsU0FBZ0JKLHNCQUFzQkEsQ0FBQ0ssS0FBYztFQUFBO0VBQUFILGFBQUEsR0FBQUksQ0FBQTtFQUNuRDtFQUNBLE1BQU1DLFFBQVE7RUFBQTtFQUFBLENBQUFMLGFBQUEsR0FBQUMsQ0FBQSxPQUEyQjtJQUFDLGtCQUFrQixFQUFFLEdBQUc7SUFBRSxxQkFBcUIsRUFBRSxHQUFHO0lBQzNGLFdBQVcsRUFBRSxHQUFHO0lBQUUsbUJBQW1CLEVBQUUsR0FBRztJQUFFLGlCQUFpQixFQUFFLEdBQUc7SUFBRSxvQkFBb0IsRUFBRTtFQUFHLENBQUM7RUFDaEc7RUFDQSxNQUFNSyxJQUFJO0VBQUE7RUFBQSxDQUFBTixhQUFBLEdBQUFDLENBQUE7RUFBRztFQUFBLENBQUFELGFBQUEsR0FBQU8sQ0FBQSxVQUFBSixLQUFLLFlBQVlKLE9BQUEsQ0FBQVMsVUFBVTtFQUFBO0VBQUEsQ0FBQVIsYUFBQSxHQUFBTyxDQUFBLFVBQUlFLE1BQU0sQ0FBQ0MsTUFBTSxDQUFDTCxRQUFRLEVBQUVGLEtBQUssQ0FBQ0csSUFBSSxDQUFDO0VBQUE7RUFBQSxDQUFBTixhQUFBLEdBQUFPLENBQUEsVUFBR0osS0FBSyxDQUFDRyxJQUFJO0VBQUE7RUFBQSxDQUFBTixhQUFBLEdBQUFPLENBQUEsVUFBRyxhQUFhO0VBQUM7RUFBQVAsYUFBQSxHQUFBQyxDQUFBO0VBQzdHLE9BQU87SUFBQ1UsTUFBTTtJQUFFO0lBQUEsQ0FBQVgsYUFBQSxHQUFBTyxDQUFBLFVBQUFGLFFBQVEsQ0FBQ0MsSUFBSSxDQUFDO0lBQUE7SUFBQSxDQUFBTixhQUFBLEdBQUFPLENBQUEsVUFBSSxHQUFHO0lBQUVLLElBQUksRUFBRTtNQUFDVCxLQUFLLEVBQUUsMEJBQTBCO01BQUVHO0lBQUk7RUFBQyxDQUFDO0FBQ3pGIiwiaWdub3JlTGlzdCI6W119

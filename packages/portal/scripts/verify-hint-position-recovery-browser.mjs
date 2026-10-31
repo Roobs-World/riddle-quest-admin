@@ -8,7 +8,7 @@ import {chromium,firefox} from '@playwright/test';
 
 // Supporting regression: real keyboard events through the whole solo game.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const evidence = path.resolve(process.env.HINT_POSITION_REPORT_DIR??path.join(root,'../../artifacts/hint-position-recovery-2026-10-08/permanent',process.env.HINT_POSITION_REACT_MODE??'development'));
+const evidence = path.resolve(process.env.HINT_POSITION_REPORT_DIR??path.join(root,'../../builds/test-evidence/hint-position-recovery-2026-10-08/permanent',process.env.HINT_POSITION_REACT_MODE??'development'));
 await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
 await mkdir(evidence, {recursive: true});
 const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/solo-keyboard-input-'));

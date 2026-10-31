@@ -1,0 +1,7 @@
+
+Test Suites: 40 passed, 40 total
+Tests:       436 passed, 436 total
+Snapshots:   0 total
+Time:        1.423 s
+Ran all test suites.
+Test results written to: ../../artifacts/jest-route-verification-2026-10-22/backend/core-results.json

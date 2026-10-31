@@ -1,0 +1,27 @@
+[
+  {
+    "stage": "cancellation-browser",
+    "exitCode": 0,
+    "seconds": 33.847,
+    "command": [
+      "node",
+      "scripts/verify-live-race-cancellation-browser.mjs"
+    ],
+    "environment": {
+      "LIVE_RACE_REPORT_DIR": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/multiplayer/cancellation"
+    }
+  },
+  {
+    "stage": "rematch-owner-browser",
+    "exitCode": 0,
+    "seconds": 13.029,
+    "command": [
+      "node",
+      "scripts/verify-live-rematch-owner-browser.mjs"
+    ],
+    "environment": {
+      "LIVE_REMATCH_REPORT_DIR": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/multiplayer/rematch-owner",
+      "LIVE_REMATCH_MODE": "production"
+    }
+  }
+]

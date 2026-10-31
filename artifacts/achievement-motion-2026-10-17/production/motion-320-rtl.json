@@ -1,0 +1,156 @@
+[
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-enter",
+    "kind": "victory",
+    "title": "لقد فزت!",
+    "time": 89.70000000111759
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "level",
+    "title": "المستوى 3",
+    "time": 89.70000000111759
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-enter",
+    "kind": "victory",
+    "title": "لقد فزت!",
+    "time": 321.2000000011176
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "level",
+    "title": "المستوى 3",
+    "time": 321.2000000011176
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "victory",
+    "title": "لقد فزت!",
+    "time": 1353.5999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-promote",
+    "kind": "level",
+    "title": "المستوى 3",
+    "time": 1353.5999999996275
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "victory",
+    "title": "لقد فزت!",
+    "time": 1587
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-promote",
+    "kind": "level",
+    "title": "المستوى 3",
+    "time": 1587
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "الفوز الأول",
+    "time": 1620.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "الفوز الأول",
+    "time": 1853.5999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "level",
+    "title": "المستوى 3",
+    "time": 2620.2000000011176
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "الفوز الأول",
+    "time": 2620.2000000011176
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "level",
+    "title": "المستوى 3",
+    "time": 2853.5999999996275
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "الفوز الأول",
+    "time": 2853.5999999996275
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "من المحاولة الأولى",
+    "time": 2886.9000000003725
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-queue",
+    "kind": "achievement",
+    "title": "من المحاولة الأولى",
+    "time": 3120.2000000011176
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "الفوز الأول",
+    "time": 3886.9000000003725
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "من المحاولة الأولى",
+    "time": 3887.2000000011176
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "الفوز الأول",
+    "time": 4120.300000000745
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-promote",
+    "kind": "achievement",
+    "title": "من المحاولة الأولى",
+    "time": 4120.300000000745
+  },
+  {
+    "type": "animationstart",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "من المحاولة الأولى",
+    "time": 5153.5
+  },
+  {
+    "type": "animationend",
+    "name": "fanfare-tab-exit",
+    "kind": "achievement",
+    "title": "من المحاولة الأولى",
+    "time": 5387
+  }
+]

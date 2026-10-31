@@ -1,0 +1,21 @@
+Known answer feedback UI passed: 1280px both canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 1280px both changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 1280px prompt canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 1280px prompt changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 1280px deck canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 1280px deck changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 1280px public-edit canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 1280px public-edit changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 1280px legacy canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 1280px legacy changed; accepted compatible confirmation.
+Known answer feedback UI passed: 390px both canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 390px both changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 390px prompt canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 390px prompt changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 390px deck canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 390px deck changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 390px public-edit canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 390px public-edit changed; rejected and recovered with one guess mutation.
+Known answer feedback UI passed: 390px legacy canonical; accepted compatible confirmation.
+Known answer feedback UI passed: 390px legacy changed; accepted compatible confirmation.
+

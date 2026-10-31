@@ -1,0 +1,7 @@
+
+Test Suites: 6 passed, 6 total
+Tests:       60 passed, 60 total
+Snapshots:   0 total
+Time:        32.28 s
+Ran all test suites within paths "src/__tests__/race/raceLivePublicWait.it.test.ts", "src/__tests__/race/raceLiveInvitation.it.test.ts", "src/__tests__/race/raceLiveCreatorRecovery.it.test.ts", "src/__tests__/race/raceLiveSignals.it.test.ts", "src/__tests__/race/raceLiveStreamAdmission.it.test.ts", "src/__tests__/race/raceLiveStreamingCallables.test.ts".
+Test results written to: ../artifacts/matchmaking-e2e-20261018/backend/focused-rerun-results.json

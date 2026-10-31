@@ -42,17 +42,21 @@ export type GuidanceOverlayProps = {
   suspended?: boolean;
   /** Guidance must not advertise coin actions absent from the host's economy capability. */
   economyAvailable?: boolean;
+  /** Matches whether the header renders its coin-shop control. */
+  commerceAvailable?: boolean;
+  /** Matches whether the game renders its multiplayer control. */
+  multiplayerAvailable?: boolean;
 };
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
-export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false, economyAvailable = true}: GuidanceOverlayProps) {
+export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false, economyAvailable = true, commerceAvailable = state.products.length > 0, multiplayerAvailable = false}: GuidanceOverlayProps) {
   /** Committed catalog identity refreshes the active translated tooltip. */
   const locale = useLocale();
   /** Provides r id. */
   const userId = state.user?.uid;
+  /** Earned progression unlocks coin-shop guidance after the player has tried a full round. */
+  const hasWon = (state.profile?.totalWins ?? state.profile?.wins ?? 0) > 0;
   /** Completion releases this view even when browser storage rejects its marker; accounts have separate owners. */
   const seenMarkers = useMemo(() => new GuidanceSeenMarkers(), [userId]);
-  /** Provider checkout availability also controls purchase guidance. */
-  const commerceAvailable = state.products.length > 0;
   /** Provides [onboarding step, set onboarding step] behavior. */
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
   /** Provides [welcome only, set welcome only] behavior. */
@@ -228,11 +232,11 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       return;
     }
     if (!hasSeenTooltipTour(seenMarkers, "gameTour", userId)) {
-      setSequence(getGameTour(state.gameMode, commerceAvailable, economyAvailable));
+      setSequence(getGameTour(state.gameMode, commerceAvailable, economyAvailable, multiplayerAvailable, hasWon));
       setSequenceName("gameTour");
       setSequenceIndex(0);
     }
-  }, [commerceAvailable, economyAvailable, onboardingStep, seenMarkers, sequence.length, state.gameMode, state.riddle, userId]);
+  }, [commerceAvailable, economyAvailable, hasWon, multiplayerAvailable, onboardingStep, seenMarkers, sequence.length, state.gameMode, state.riddle, userId]);
 
   useEffect(() => {
     if (
@@ -373,9 +377,13 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       return null;
     }
     /** Provides [title, body] behavior. */
+    if (activeTooltip === "gameSkip" && state.gameMode === "challenge") {
+      return {title: tr("GameScreenAlerts.DAILY_SKIP_MODAL_TITLE"), body: tr("GameScreenAlerts.DAILY_SKIP_MESSAGE")};
+    }
+    /** Translated title and body keys for the selected contextual tooltip. */
     const [title, body] = TOOLTIP_KEYS[activeTooltip];
     return {title: tr(title), body: tr(body)};
-  }, [activeTooltip, locale]);
+  }, [activeTooltip, locale, state.gameMode]);
   /** Provides finish sequence behavior. */
   const finishSequence = () => {
     if (sequenceName?.startsWith("contextual:")) {
@@ -434,6 +442,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       sequenceLength={sequence.length}
       targetRect={targetRect}
       onAdvance={() => {
+        seenMarkers.markSeen("local", createGuidanceStorageKey(`tooltipSeen:${activeTooltip}`, userId));
         if (sequenceIndex + 1 >= sequence.length) {
           finishSequence();
         } else {

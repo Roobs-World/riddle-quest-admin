@@ -1,0 +1,92 @@
+{
+  "window_start_utc": "2026-10-22T21:20:00Z",
+  "window_end_utc": "2026-10-22T21:45:21.558136Z",
+  "queries": {
+    "run_quotas_v1beta1": {
+      "status": 200,
+      "metric_count": 28,
+      "metric_names": [
+        "run.googleapis.com/active_revisions",
+        "run.googleapis.com/ai_studio_custom_urls",
+        "run.googleapis.com/cpu_allocation",
+        "run.googleapis.com/custom_urls",
+        "run.googleapis.com/ephemeral_disk_allocation",
+        "run.googleapis.com/inlined_source_deploy",
+        "run.googleapis.com/inlined_source_deploy_regional",
+        "run.googleapis.com/instance_limit_with_direct_vpc_egress_regional",
+        "run.googleapis.com/instances",
+        "run.googleapis.com/jobs",
+        "run.googleapis.com/max_per_instance_ephemeral_disk",
+        "run.googleapis.com/max_regions",
+        "run.googleapis.com/mem_allocation",
+        "run.googleapis.com/nvidia_l4_gpu_allocation",
+        "run.googleapis.com/nvidia_l4_gpu_allocation_no_zonal_redundancy",
+        "run.googleapis.com/nvidia_rtx_pro_6000_gpu_allocation",
+        "run.googleapis.com/nvidia_rtx_pro_6000_gpu_allocation_no_zonal_redundancy",
+        "run.googleapis.com/read_regional",
+        "run.googleapis.com/run_job_regional",
+        "run.googleapis.com/running_executions",
+        "run.googleapis.com/services",
+        "run.googleapis.com/source_deploy_bytes",
+        "run.googleapis.com/source_deploy_bytes_regional",
+        "run.googleapis.com/source_upload",
+        "run.googleapis.com/source_upload_regional",
+        "run.googleapis.com/tags",
+        "run.googleapis.com/worker-pools",
+        "run.googleapis.com/write_regional"
+      ],
+      "next_page": false
+    },
+    "functions_quotas_v1beta1": {
+      "status": 200,
+      "metric_count": 8,
+      "metric_names": [
+        "cloudfunctions.googleapis.com/build_time",
+        "cloudfunctions.googleapis.com/cpu_allocation",
+        "cloudfunctions.googleapis.com/mem_allocation",
+        "cloudfunctions.googleapis.com/read_requests",
+        "cloudfunctions.googleapis.com/test_call_requests",
+        "cloudfunctions.googleapis.com/v2_read_requests_regional",
+        "cloudfunctions.googleapis.com/v2_write_requests_regional",
+        "cloudfunctions.googleapis.com/write_requests"
+      ],
+      "next_page": false
+    },
+    "run_usage_any_location": {
+      "status": 200,
+      "series_count": 0,
+      "point_count": 0,
+      "next_page": false
+    },
+    "instance_count": {
+      "status": 200,
+      "series_count": 6,
+      "point_count": 68,
+      "next_page": false
+    },
+    "instance_count_descriptor": {
+      "status": 400,
+      "error_status": "INVALID_ARGUMENT"
+    },
+    "cpu_allocated": {
+      "status": 200,
+      "series_count": 3,
+      "point_count": 32,
+      "next_page": false
+    },
+    "cpu_allocated_descriptor": {
+      "status": 400,
+      "error_status": "INVALID_ARGUMENT"
+    },
+    "memory_allocated": {
+      "status": 200,
+      "series_count": 3,
+      "point_count": 33,
+      "next_page": false
+    },
+    "memory_allocated_descriptor": {
+      "status": 400,
+      "error_status": "INVALID_ARGUMENT"
+    }
+  }
+}

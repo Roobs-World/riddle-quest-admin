@@ -1,0 +1,34 @@
+{
+  "clientDate": "2026-10-21",
+  "status": "verifying-firefox-console-session",
+  "technicalReleaseReady": true,
+  "allTesterPrerequisitesVerified": false,
+  "activeVersionId": "01a1567e-c03d-712d-b40e-2ef13b822050",
+  "pinnedTestUrl": "https://jest.com/g/riddle-q?versionId=01a1567e-c03d-712d-b40e-2ef13b822050",
+  "gamePublished": false,
+  "regionalFunctionInstancesHealthy": 16,
+  "currentRegionalDailyLocalesPlayable": 16,
+  "currentRegionalChallengeDates": [
+    "2026-10-20",
+    "2026-10-21"
+  ],
+  "userReportedConsoleSignIn": true,
+  "sandboxAccountsVerified": false,
+  "sandboxAccountsKnownAbsent": false,
+  "requiredNextStep": "Inspect the existing signed-in Firefox Console session and prepare dedicated Sandbox Users.",
+  "userClarificationPending": false,
+  "hostedGameplayTestsRun": false,
+  "runtimeCodeChanged": false,
+  "newDeploymentsOrUploads": false,
+  "messagesSentOrPurchasesMade": false,
+  "publicationOrReviewChanged": false,
+  "evidence": {
+    "release": "artifacts/testing-readiness-20261021/release-readback.json",
+    "backend": "artifacts/testing-readiness-20261021/backend/backend-readiness.json",
+    "console": "artifacts/testing-readiness-20261021/frontend/console-access.json",
+    "priorHostedAssets": "artifacts/testing-readiness-20261020/hosted-content/readback.json",
+    "handoff": "docs/testing/hosted-testing-handoff-2026-10-21.md"
+  },
+  "userReportedSignedInBrowser": "firefox",
+  "chromeSessionAuthenticated": false
+}

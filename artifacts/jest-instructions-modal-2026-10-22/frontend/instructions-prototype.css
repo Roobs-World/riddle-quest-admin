@@ -1,0 +1,41 @@
+.game-modal-backdrop:has(.modal-instructions) {
+  padding: 12px;
+  overflow: visible;
+}
+.game-modal.modal-instructions {
+  max-height: calc(100dvh - 24px);
+  grid-template-rows: auto auto;
+  gap: 10px;
+  padding: 16px;
+  overflow: visible;
+}
+.modal-instructions .instructions-page {
+  min-height: 0;
+  gap: 8px;
+  overflow: visible;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.instructions-page > p,
+.instructions-page > h3 {
+  margin: 0;
+}
+.instructions-page > h3 {
+  font-size: 18px;
+  line-height: 1.25;
+}
+.instructions-page > p:has(.clue) {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  text-align: start;
+}
+.instructions-page .clue {
+  margin: 0;
+  justify-self: center;
+}
+.instructions-page > .play-primary {
+  min-height: 48px;
+  margin-top: 4px;
+}

@@ -1,0 +1,21 @@
+  console.log
+    Route sweep ?harness=jest: 89 routes, 21 distinct screens, 0 unvisited
+
+      at src/play/__tests__/routeSweep.jest-playwright.test.ts:298:13
+
+  console.log
+    Route sweep ?harness=jest&dailyCompleted=1: 81 routes, 20 distinct screens, 0 unvisited
+
+      at src/play/__tests__/routeSweep.jest-playwright.test.ts:298:13
+
+  console.log
+    Route sweep ?harness=race&dailyCompleted=1: 167 routes, 36 distinct screens, 0 unvisited
+
+      at src/play/__tests__/routeSweep.jest-playwright.test.ts:298:13
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        1353.645 s
+Ran all test suites within paths "src/play/__tests__/routeSweep.jest-playwright.test.ts".
+Test results written to: ../../artifacts/jest-e2e-2026-10-22/browser-journal/route-sweep-results.json

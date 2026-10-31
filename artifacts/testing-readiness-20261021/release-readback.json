@@ -1,0 +1,37 @@
+{
+  "checkedOn": "2026-10-21",
+  "scope": "Official Jest API configuration readback only. No game launch or test execution.",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "activeVersionId": "01a1567e-c03d-712d-b40e-2ef13b822050",
+  "activeVersion": {
+    "id": "01a1567e-c03d-712d-b40e-2ef13b822050",
+    "version": "1.0.0-dev.20261020-keyboard-complete.mvfvxio4",
+    "isActive": true,
+    "description": "Wider keyboard hit areas, stationary press feedback, landscape Backspace minimum and separation from answer cells. Focused native touch and control isolation checks passed. Uploaded inactive.",
+    "shareNotesWithPlayers": false,
+    "fileSizeBytes": 4716429,
+    "activatedAt": "2026-10-20T03:18:04.864Z",
+    "deactivatedAt": null,
+    "createdAt": "2026-10-19T23:28:29.757Z",
+    "previewUrl": "/g/riddle-q?versionId=01a1567e-c03d-712d-b40e-2ef13b822050",
+    "hostingMode": "bundled",
+    "selfHostedUrl": null,
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "sdkCompatibility": {
+      "engine": null,
+      "detectedVersion": null,
+      "latestVersion": null,
+      "breakingChangeVersion": null,
+      "status": "not_applicable",
+      "message": "No engine SDK version was detected for this build.",
+      "changelogUrl": null
+    }
+  },
+  "gamePublished": false,
+  "publishedRevisionPresent": false,
+  "inReviewRevisionPresent": false,
+  "activeVersionMatchesPriorRelease": true,
+  "buildReady": true,
+  "priorAssetReadback": "artifacts/testing-readiness-20261020/hosted-content/readback.json"
+}

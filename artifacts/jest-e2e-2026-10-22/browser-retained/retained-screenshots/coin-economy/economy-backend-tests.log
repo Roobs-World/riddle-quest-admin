@@ -1,0 +1,6 @@
+
+Test Suites: 9 passed, 9 total
+Tests:       156 passed, 156 total
+Snapshots:   0 total
+Time:        1.579 s, estimated 2 s
+Ran all test suites matching src/__tests__/openaiService.test.ts|src/__tests__/riddleGeneration.test.ts|src/__tests__/dailyRiddleGeneration.test.ts|src/__tests__/completeGameSecurity.test.ts|src/__tests__/completeGameTransaction.test.ts|src/__tests__/singlePlayerSessionTransactions.test.ts|src/__tests__/singlePlayerSession.test.ts|src/__tests__/gameLogic.test.ts|src/__tests__/singlePlayerLoadRequest.test.ts.

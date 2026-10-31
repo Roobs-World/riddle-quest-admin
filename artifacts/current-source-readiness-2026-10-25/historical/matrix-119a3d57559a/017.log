@@ -1,0 +1,18 @@
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 14h ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1
++
+Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+Done in 573ms using pnpm v11.21.0
+$ cross-env NODE_ENV=test jest --config jest.config.js --runInBand
+
+Test Suites: 40 passed, 40 total
+Tests:       436 passed, 436 total
+Snapshots:   0 total
+Time:        1.156 s
+Ran all test suites.

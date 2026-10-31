@@ -1,0 +1,60 @@
+{
+  "observedAt": "2026-10-24T23:50:29.160042+00:00",
+  "commit": "55f5fd32f4bbe48ac4db2ba7fda20b8740bbf108",
+  "runs": [
+    {
+      "id": 40144313225,
+      "workflow_id": 223127356,
+      "path": "BuildFailed",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "startup_failure",
+      "html_url": "https://github.com/Grindhead/Portfolio/actions/runs/40144313225",
+      "created_at": "2026-10-24T23:49:53Z",
+      "updated_at": "2026-10-24T23:49:53Z",
+      "check_suite_id": 108809298065
+    },
+    {
+      "id": 40144310205,
+      "workflow_id": 223127356,
+      "path": "BuildFailed",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "startup_failure",
+      "html_url": "https://github.com/Grindhead/Portfolio/actions/runs/40144310205",
+      "created_at": "2026-10-24T23:49:50Z",
+      "updated_at": "2026-10-24T23:49:50Z",
+      "check_suite_id": 108809290096
+    }
+  ],
+  "checkRuns": [
+    {
+      "id": 121022387003,
+      "name": "Vercel Preview Comments",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Grindhead/Portfolio/runs/121022387003",
+      "details_url": "https://vercel.com/github"
+    },
+    {
+      "id": 121022298458,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Grindhead/Portfolio/runs/121022298458",
+      "details_url": "https://dashboard.gitguardian.com"
+    }
+  ],
+  "statusState": "failure",
+  "statuses": [
+    {
+      "id": 57182942004,
+      "context": "Vercel",
+      "state": "failure",
+      "description": "Deployment has failed \u2014 run this Vercel CLI command: npx vercel inspect dpl_ERhEzjRCgHUbTbbPgWvgSr1W7c6n --logs",
+      "target_url": "https://vercel.com/craig-beswethericks-projects-d44935d2/portfolio/ERhEzjRCgHUbTbbPgWvgSr1W7c6n",
+      "created_at": "2026-10-24T23:50:20Z",
+      "updated_at": "2026-10-24T23:50:20Z"
+    }
+  ]
+}

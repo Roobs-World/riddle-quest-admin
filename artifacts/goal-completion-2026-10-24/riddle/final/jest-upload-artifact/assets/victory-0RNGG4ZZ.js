@@ -1,0 +1,7 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={ACHIEVEMENT_UNLOCKED:`Erfolg freigeschaltet!`,COINS_SUFFIX:` Münzen`,NEXT_LEVEL_BUTTON:`Nächstes Level`,SHARE_TEXT:`Freund einladen · je 100 Münzen`,REFERRAL_REWARD_MESSAGE:`Registriere dich über meine Einladung und wir erhalten beide {coins} Münzen!`,OPEN_INVITE_MESSAGE:`{name} fordert dich zu Riddle Quest heraus. Registriere dich über diese Einladung und ihr erhaltet beide {coins} Münzen!`,REFERRAL_REWARD_TITLE:`Ein Freund ist dabei!`,TITLE:`NETTER JOB!`,TOTAL_COINS_LABEL:`Münzen insgesamt`,YOU_WON_TITLE:`SIE HABEN GEWONNEN!`,SHARE_ATTEMPT_PLURAL:`Versuche`,SHARE_ATTEMPT_SINGULAR:`Versuch`,SHARE_CLASSIC_MODE_LABEL:`Klassischer Modus`,SHARE_DAILY_CHALLENGE_LABEL:`Tägliche Herausforderung`,SHARE_MESSAGE_TEMPLATE:`Ich habe das heutige Riddle Quest {gameType} in {attempts} gelöst {attemptLabel}!
+
+{emojiGrid}
+
+Kannst du meine Punktzahl übertreffen?
+
+#Riddle Quest #WordPuzzle #BrainGame`,SHARE_RESULT_TITLE:`Sehen Sie sich mein Riddle Quest-Ergebnis an!`,INVITE_FRIEND:`Freund einladen`,REWARD_CLASSIC:`Klassisches Rätsel`,REWARD_DAILY:`Tagesrätsel`,REWARD_LEVEL_BONUS:`Levelaufstiegsbonus`,REWARD_STREAK_BONUS:`Serienbonus`,REWARD_ACHIEVEMENT_BONUS:`Erfolgsbonus`,REWARD_REFERRAL_BONUS:`Einladungsbonus`},n={VictoryModal:t}})))()}r();export{n as default};

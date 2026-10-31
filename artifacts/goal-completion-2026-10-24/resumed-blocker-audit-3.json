@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-10-24 03:45:22 UTC",
+  "resumedBlockerAuditNumber": 3,
+  "previousGoalTurnClassification": "progress",
+  "previousProgress": "One actual safe diagnostic established the current GitHub Actions account payments/spending block.",
+  "currentGoalTurnClassification": "no progress",
+  "blockedAuditThresholdMet": true,
+  "sameBlockingConditionsPersistAcrossResumedAudits": [
+    1,
+    2,
+    3
+  ],
+  "wholeGoalCompletionProven": false,
+  "meaningfulIndependentActionAvailable": false,
+  "liveVerificationOrDeliveryJobWaiting": false,
+  "bee": {
+    "matchingNamedLocalAudioCandidates": 0,
+    "existingMusicFileStillUnidentified": true,
+    "hiveMusicSourceStillNull": true,
+    "artlistSignInButtons": 2,
+    "currentLicensedFileOrSignedInSessionAvailable": false,
+    "connectedCheckAt": "2026-10-24 03:43:57 UTC",
+    "driveNewAssetCandidates": 0,
+    "gmailNewAudioAttachmentCandidates": 0,
+    "userTrackIdentityOrAccessReplyReceived": false
+  },
+  "portfolio": {
+    "currentReadbackAt": "2026-10-24 03:43:47 UTC",
+    "actualDiagnosticRunId": 40059187521,
+    "actualDiagnosticState": "completed/startup_failure",
+    "actualDiagnosticAttempt": 1,
+    "actualDiagnosticJobs": 0,
+    "verifiedFreshCause": "Account payments failed or spending limit needs to be increased.",
+    "automaticFailureMarker": {
+      "runId": 40059189478,
+      "workflowId": 223127356,
+      "path": "BuildFailed",
+      "event": "workflow_run",
+      "state": "startup_failure",
+      "jobs": 0,
+      "actualDeploymentWorkflow": false
+    },
+    "newLiveHandles": [],
+    "productionDeploymentsSinceDiagnostic": 0,
+    "canonicalDeploymentId": "dpl_B5ca2VsdMDTn4aJKWgTL51mpmdtz",
+    "protectedHealthApprovalReceived": false,
+    "diagnosticRetried": false
+  },
+  "riddle": {
+    "identityConfirmedAt": "2026-10-24T03:44:10.375Z",
+    "head": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "indexEmpty": true,
+    "finalIdentityStillMatches": true,
+    "explicitReleaseOrReviewRequestReceived": false,
+    "currentlyRunningReview": false
+  },
+  "requiredOwnerOrExternalActions": [
+    "Provide or identify the licensed requested music file, or sign in to Artlist",
+    "Resolve the current GitHub payments/spending block",
+    "Separately approve the protected Portfolio health request; verify CI credentials through authorised delivery",
+    "Complete actual client-course LMS acceptance",
+    "Give an explicit Jest release/review decision and resolve the subscription freshness contract/product gate"
+  ],
+  "protectedHealthOrDeploymentActionsPerformedThisAudit": 0
+}

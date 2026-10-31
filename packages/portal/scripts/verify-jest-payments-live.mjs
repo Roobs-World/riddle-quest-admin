@@ -94,7 +94,7 @@ try {
   }, productSku);
   await page.getByText(/Sandbox mode\. You won't be charged for this purchase\./i)
     .waitFor({state: "visible", timeout: 15_000});
-  await page.getByRole("button", {name: /get with jest (?:balance|wallet)/i}).click({timeout: 5_000});
+  await page.getByRole("button", {name: /get with jest (?:balance|wallet|credits)/i}).click({timeout: 5_000});
   const purchase = await game.evaluate(readJestSandboxCheckout);
   assertSandboxJestCheckout(purchase, productSku);
 

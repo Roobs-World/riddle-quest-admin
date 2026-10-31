@@ -148,6 +148,8 @@ export type PlatformPreferences = {
  * internally inconsistent snapshots.
  */
 export type SavedGame = {
+  /** Optional client draft ordering; absent in older snapshots. */
+  draftRevision?: import("../play/draftCheckpointRevision").DraftCheckpointRevision;
   /** Storage schema discriminator for safe future migration. */
   schemaVersion: 1;
   /** Unix epoch milliseconds when this snapshot was assembled. */

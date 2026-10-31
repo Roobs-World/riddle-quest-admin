@@ -1,0 +1,20 @@
+--- before/firebase-functions/src/race/raceLiveQueue.ts
++++ after/firebase-functions/src/race/raceLiveQueue.ts
+@@ -46,7 +46,6 @@
+   }> {
+   if (ticket.privateChallenge || ticket.cancelled || ticket.matchId || liveRaceSearchEndsAtMs(ticket) <= nowMs)
+     throw new HttpsError("failed-precondition", "This public lobby is unavailable.");
+-  assertLiveRaceDeckCompatible(ticket.run);
+   /** Shared queue document for the provider, language and category pool. */
+   const queueRef = db.doc(`liveRaceQueues/${ticket.pool}`);
+   /** Current queue contents and the recovering account's active-seat pointer. */
+@@ -54,6 +53,9 @@
+     newTicket ? undefined : ownerPointer ?? transaction.get(db.doc(`liveRacePlayers/${requestDocumentId(ticket.userId, "active-live-race")}`))]);
+   if (!ownerProfile.exists || !newTicket && ownPointer?.data()?.ticketId !== ticketId)
+     throw new HttpsError("failed-precondition", "Another live journey owns this account.");
++  if (newTicket) assertLiveRaceDeckCompatible(ticket.run);
++  else if (!isLiveRaceDeckCompatible(ticket.run))
++    return {match: undefined, matchExpiresAt: undefined, commit: () => undefined};
+   /** Untrusted stored queue identifiers before format and size checks. */
+   const storedIds: unknown = queue.data()?.tickets;
+   /** Distinct bounded ticket identifiers excluding the current owned seat. */

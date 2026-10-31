@@ -1,0 +1,106 @@
+[
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "host balance survives the old checkpoint",
+    "actual": 325,
+    "expected": 325
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "valid or required journal survives cold startup",
+    "actual": true,
+    "expected": true
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only matching unsubmitted input is restored",
+    "actual": "CL",
+    "expected": "CL"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "no unexpected paid spend",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "recovery creates no completion",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only required held guess is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only required held hint is delivered",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "only required deliveries own a retry interval",
+    "actual": 0,
+    "expected": 0
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "matching draft selection is restored",
+    "actual": "true",
+    "expected": "true"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "native typing continues only the displayed session",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "same-session edited draft survives a true reload",
+    "actual": "CLO",
+    "expected": "CLO"
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "no browser errors",
+    "actual": [],
+    "expected": []
+  },
+  {
+    "width": 390,
+    "height": 568,
+    "variant": "classicSame",
+    "name": "no unhandled rejection",
+    "actual": [],
+    "expected": []
+  }
+]

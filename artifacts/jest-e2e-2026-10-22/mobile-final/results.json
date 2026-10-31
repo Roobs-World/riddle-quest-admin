@@ -1,0 +1,153 @@
+{
+  "startedAt": "2026-10-22T21:07:06.021Z",
+  "artifact": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/jest-artifact-final",
+  "scope": "Immutable Jest artifact; injected mock provider; no real provider writes",
+  "cases": [
+    {
+      "name": "touch viewport soak and modal keyboard isolation",
+      "passed": true,
+      "resizeCycles": 3,
+      "observations": [
+        {
+          "cycle": 0,
+          "width": 320,
+          "height": 568,
+          "documentWidth": 320,
+          "client": 527,
+          "scroll": 527,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 0,
+          "width": 402,
+          "height": 682,
+          "documentWidth": 402,
+          "client": 470,
+          "scroll": 470,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 0,
+          "width": 390,
+          "height": 844,
+          "documentWidth": 390,
+          "client": 470,
+          "scroll": 470,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 0,
+          "width": 844,
+          "height": 390,
+          "documentWidth": 844,
+          "client": 364,
+          "scroll": 364,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 1,
+          "width": 320,
+          "height": 568,
+          "documentWidth": 320,
+          "client": 527,
+          "scroll": 527,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 1,
+          "width": 402,
+          "height": 682,
+          "documentWidth": 402,
+          "client": 470,
+          "scroll": 470,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 1,
+          "width": 390,
+          "height": 844,
+          "documentWidth": 390,
+          "client": 470,
+          "scroll": 470,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 1,
+          "width": 844,
+          "height": 390,
+          "documentWidth": 844,
+          "client": 364,
+          "scroll": 364,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 2,
+          "width": 320,
+          "height": 568,
+          "documentWidth": 320,
+          "client": 527,
+          "scroll": 527,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 2,
+          "width": 402,
+          "height": 682,
+          "documentWidth": 402,
+          "client": 470,
+          "scroll": 470,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 2,
+          "width": 390,
+          "height": 844,
+          "documentWidth": 390,
+          "client": 470,
+          "scroll": 470,
+          "buttonHeight": 48
+        },
+        {
+          "cycle": 2,
+          "width": 844,
+          "height": 390,
+          "documentWidth": 844,
+          "client": 364,
+          "scroll": 364,
+          "buttonHeight": 48
+        }
+      ],
+      "preservedDraftAfterDialogs": "PI",
+      "playableDraftAfterReturn": "PIA"
+    },
+    {
+      "name": "offline Help keyboard return then durable draft reload",
+      "passed": true,
+      "draftAfterOfflineAndReload": "PI",
+      "cursorAfterReload": 2,
+      "resumedAnswer": "PIANO",
+      "victoryReachable": true,
+      "expectedOfflineResourceErrors": 0
+    },
+    {
+      "name": "exhausted attempts stay blocked during purchase reward and paid sixth wins",
+      "passed": true,
+      "initialCoins": 300,
+      "purchaseGrant": 250,
+      "continueCost": 50,
+      "paidGuesses": 6,
+      "unchangedExhaustedRowsDuringReward": true,
+      "successorPlayable": true
+    }
+  ],
+  "failures": [
+    {
+      "name": "hint lock survives reload then paid Skip loads a playable successor",
+      "message": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('.guess-board .guess-row').first()\nExpected: \"PIA\"\nReceived: \"PI\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('.guess-board .guess-row').first() with timeout 5000ms\n  - waiting for locator('.guess-board .guess-row').first()\n    14 × locator resolved to <div class=\"guess-row\">…</div>\n       - unexpected value \"PI\"\n\n    at captureRawStack (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)\n    at callMatcherAsStep (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)\n    at Object.toHaveText (/home/craig-beswetherick/Documents/riddle-quest/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)\n    at /home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/mobile-final/verify-mobile-lifecycle.mjs:232:25\n    at async check (/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/mobile-final/verify-mobile-lifecycle.mjs:115:21)\n    at async file:///home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/mobile-final/verify-mobile-lifecycle.mjs:218:3"
+    }
+  ],
+  "artifactFiles": 419,
+  "artifactBytes": 4717654,
+  "artifactUnchanged": true,
+  "finishedAt": "2026-10-22T21:07:24.226Z"
+}

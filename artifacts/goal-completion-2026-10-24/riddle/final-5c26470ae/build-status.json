@@ -1,0 +1,98 @@
+{
+  "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "startedAt": "2026-10-24T02:03:02.458260+00:00",
+  "complete": true,
+  "sourceMapUpload": false,
+  "results": [
+    {
+      "name": "all-target-builds",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 37.783,
+      "log": "all-target-builds.log"
+    },
+    {
+      "name": "reddit-full-build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/reddit-app",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 8.698,
+      "log": "reddit-full-build.log"
+    },
+    {
+      "name": "security",
+      "command": [
+        "pnpm",
+        "check:security"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.888,
+      "log": "security.log"
+    },
+    {
+      "name": "scalability",
+      "command": [
+        "pnpm",
+        "check:scalability"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.701,
+      "log": "scalability.log"
+    },
+    {
+      "name": "file-sizes",
+      "command": [
+        "pnpm",
+        "check:file-sizes"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.429,
+      "log": "file-sizes.log"
+    },
+    {
+      "name": "tsdoc",
+      "command": [
+        "pnpm",
+        "check:tsdoc"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.881,
+      "log": "tsdoc.log"
+    },
+    {
+      "name": "architecture",
+      "command": [
+        "pnpm",
+        "test:architecture"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 25.061,
+      "log": "architecture.log"
+    },
+    {
+      "name": "final-target-inventories",
+      "command": [
+        "node",
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.347,
+      "log": "final-target-inventories.log"
+    }
+  ],
+  "completedAt": "2026-10-24T02:04:18.248628+00:00",
+  "finalJestArtifactFiles": 419,
+  "finalJestBytesMatchPreFreezeLocalCandidate": true,
+  "changedJestFilesVersusPreFreezeLocalCandidate": [],
+  "sourceDigestAfter": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "sourceHashesUnchanged": true
+}

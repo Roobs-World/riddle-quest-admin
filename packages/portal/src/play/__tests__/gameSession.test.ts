@@ -3,6 +3,7 @@ import type {BridgeRiddle} from "@qwordly/core/bridge";
 import type {SavedGame} from "../../platform/types";
 import {
   createInitialGameSession,
+  canEditCurrentGuess,
   gameSessionReducer,
   getCurrentGuessValue,
   type GameSessionAction,
@@ -51,6 +52,49 @@ const resolveGuess = (
   });
 
 describe("game session reducer", () => {
+  it.each([null, "reward", "shop", "victory"] as const)(
+    "allows answer input beneath automatic rewards but respects blocking dialogs (%s)", modal => {
+      /** Loaded puzzle whose editing policy follows its active surface. */
+      const state = {...reduce(createInitialGameSession(), {type: "loadRiddle", riddle}), modal};
+      expect(canEditCurrentGuess(state)).toBe(modal === null || modal === "reward");
+      expect(reduce(state, {type: "typeLetter", letter: "P"}).currentLetters[0]).toBe(
+        modal === null || modal === "reward" ? "P" : "",
+      );
+    },
+  );
+  it("keeps a purchase reward from unlocking an exhausted attempt until Continue is granted", () => {
+    /** Issued question stopped at its unpaid Continue boundary. */
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: {
+      ...riddle, attemptsUsed: 5, awaitingContinue: true, evaluation: {answer: "piano", locale: "en"},
+    }});
+    state = reduce(state, {type: "openModal", modal: "shop"});
+    state = reduce(state, {type: "showAuxiliaryFanfare", fanfare: {
+      id: "purchase-at-continue", kind: "purchase", coinsAwarded: 250, totalCoins: 500, achievementIds: [],
+    }});
+    expect(state.modal).toBe("reward");
+    expect(canEditCurrentGuess(state)).toBe(false);
+    expect(reduce(state, {type: "typeLetter", letter: "P"}).currentLetters).toEqual(["", "", "", "", ""]);
+    /** A retained full draft cannot bypass the same attempt boundary through submission. */
+    const blocked = reduce({...state, currentLetters: [..."PIANO"]}, {type: "guessRequested"});
+    expect(blocked.engineSnapshot?.attemptsUsed).toBe(5);
+    expect(blocked.lastOutcome).toBeNull();
+    expect(blocked.guessPending).toBe(false);
+
+    state = reduce(state, {type: "closeModal"});
+    expect(state.modal).toBe("continue");
+    state = reduce(state, {type: "continueGranted"});
+    expect(canEditCurrentGuess(state)).toBe(true);
+    for (const letter of "PIANO") state = reduce(state, {type: "typeLetter", letter});
+    state = reduce(state, {type: "guessRequested"});
+    expect(state.modal).toBe("victory");
+    expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "win", attempts: 6}));
+    expect(state.guessPending).toBe(true);
+    state = reduce(state, {type: "guessResolved", attempts: 6, isCorrect: true, gameOver: true, canContinue: false,
+      feedback: {guess: [..."piano"], feedback: ["green", "green", "green", "green", "green"]}});
+    expect(state.guesses).toHaveLength(1);
+    expect(state.guessPending).toBe(false);
+    expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "win", attempts: 6}));
+  });
   it.each(["profile", "settings", "instructions", "credits", "about", "statistics",
     "achievements", "ranks", "leaderboard", "shop", "treasure", "username"] as const)(
     "keeps %s open when journal restoration or rollback replaces gameplay", (modal) => {
@@ -415,13 +459,18 @@ describe("game session reducer", () => {
     })).toBe(state);
   });
 
-  it("does not open the skip modal for a daily riddle", () => {
+  it("opens and cancels the Daily Skip warning without changing its riddle", () => {
     /** Provides daily riddle behavior. */
     const dailyRiddle = {...riddle, riddleId: "daily-1", gameMode: "challenge" as const};
     /** Provides state behavior. */
     const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle: dailyRiddle});
 
-    expect(reduce(state, {type: "openModal", modal: "skip"})).toBe(state);
+    /** Opening a warning retains the original Daily session for cancellation. */
+    const warning = reduce(state, {type: "openModal", modal: "skip"});
+    expect(warning.modal).toBe("skip");
+    expect(warning.gameMode).toBe("challenge");
+    expect(warning.riddle).toBe(state.riddle);
+    expect(reduce(warning, {type: "closeModal"})).toEqual(state);
   });
 
   it("ignores incomplete submissions without showing an error", () => {
@@ -791,7 +840,7 @@ describe("game session reducer", () => {
     const achievement = "daily_completed";
     /** Provides profile behavior. */
     const profile = {
-      coins: 5, level: 1, xp: 10, winStreak: 0, gamesPlayed: 1, wins: 1,
+      username: "Guest", coins: 5, level: 1, xp: 10, winStreak: 0, gamesPlayed: 1, wins: 1,
       achievements: [achievement], classicIndex: 0,
     };
     /** Provides state behavior. */
@@ -803,6 +852,23 @@ describe("game session reducer", () => {
   });
 });
 
+
+it.each([false, true])("restores receipt metadata only when its persisted coin components remain valid (%s)", malformed => {
+  /** Current authority-issued question owns the presentation being recovered. */
+  const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+  /** Recovery captures exactly the fields retained by the pending-play journal. */
+  const base: PendingGuessState = {currentLetters: state.currentLetters, activeSlotIndex: state.activeSlotIndex,
+    guesses: state.guesses, engineSnapshot: state.engineSnapshot, modal: state.modal, lastOutcome: state.lastOutcome,
+    completionAcknowledged: state.completionAcknowledged, letterStates: state.letterStates, profile: state.profile,
+    optimisticAchievementIds: state.optimisticAchievementIds,
+    lastRewards: {coinsEarned: 25, newlyUnlockedAchievementIds: [], rewardBreakdown: {baseWinCoins: 25,
+      levelUpBonus: 0, dailyStreakBonus: 0, achievementBonus: 0, totalAwarded: 25,
+      newBalance: malformed ? Number.MAX_SAFE_INTEGER + 1 : 325}}};
+  /** The production journal recovery path rejects invalid metadata before it reaches the modal. */
+  const restored = reduce(state, {type: "restoreQueuedGuesses", base, guesses: [], draft: ["P", "", "", "", ""]});
+  expect(restored.currentLetters).toEqual(["P", "", "", "", ""]);
+  expect(restored.lastRewards?.rewardBreakdown?.baseWinCoins ?? null).toBe(malformed ? null : 25);
+});
 
 it("returns from commerce to an unspent Continue boundary, but not a resolved loss or paid continue", () => {
   /** Reducer state after applying the canonical content and gameplay transitions. */

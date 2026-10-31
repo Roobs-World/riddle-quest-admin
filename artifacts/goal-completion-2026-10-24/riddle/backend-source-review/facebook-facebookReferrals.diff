@@ -1,0 +1,52 @@
+--- deployed/facebook/facebookReferrals
++++ current/facebook/facebookReferrals
+@@ -257,11 +257,14 @@
+     });
+ }
+ /** Settles the two-sided reward once, after the invitee has a server-recorded first win. */
+-async function settleFacebookReferralAfterAuthoritativeWin(inviteeUid, now = Date.now(), db = firebaseAdmin_1.admin.firestore()) {
++async function settleFacebookReferralAfterAuthoritativeWin(inviteeUid, now = Date.now(), db = firebaseAdmin_1.admin.firestore(), completionReceiptId) {
+     if (!(0, facebookFeatureFlags_1.isFacebookFeatureEnabled)("referrals") || !(0, facebookSecurity_1.isFacebookFirebaseUid)(inviteeUid)) {
+         return { alreadySettled: false, inviteeCoins: 0, inviterCoins: 0 };
+     }
+     requireClock(now);
++    if (completionReceiptId !== undefined && !/^[0-9a-f]{64}$/.test(completionReceiptId)) {
++        throw new Error("invalid-facebook-referral-completion-receipt");
++    }
+     /** Provides binding ref behavior. */
+     const bindingRef = db.collection("facebookReferralBindings").doc(inviteeUid);
+     /** Sets tlement ref. */
+@@ -293,15 +296,20 @@
+             const inviteeCoins = requireNonNegativeInteger("settlement-invitee-coins", data.inviteeCoins);
+             /** Provides inviter coins behavior. */
+             const inviterCoins = requireNonNegativeInteger("settlement-inviter-coins", data.inviterCoins);
++            /** Persisted attribution is immutable; a later caller cannot claim an older grant. */
++            const settledCompletionReceiptId = data.completionReceiptId;
+             requireStoredClock("settlement-settled-at", data.settledAtMs);
+             if (inviteeCoins !== exports.FACEBOOK_REFERRAL_REWARD_COINS ||
+-                (inviterCoins !== 0 && inviterCoins !== exports.FACEBOOK_REFERRAL_REWARD_COINS)) {
++                (inviterCoins !== 0 && inviterCoins !== exports.FACEBOOK_REFERRAL_REWARD_COINS) ||
++                (settledCompletionReceiptId !== undefined &&
++                    (typeof settledCompletionReceiptId !== "string" || !/^[0-9a-f]{64}$/.test(settledCompletionReceiptId)))) {
+                 throw new Error("facebook-referral-settlement-conflict");
+             }
+             return {
+                 alreadySettled: true,
+                 inviteeCoins,
+                 inviterCoins,
++                ...(settledCompletionReceiptId !== undefined ? { completionReceiptId: settledCompletionReceiptId } : {}),
+             };
+         }
+         (0, jestAccountDeletion_1.assertJestAccountActive)(inviteeDeletion);
+@@ -369,8 +377,10 @@
+             inviteeCoins: exports.FACEBOOK_REFERRAL_REWARD_COINS,
+             inviterCoins,
+             settledAtMs: now,
++            ...(completionReceiptId !== undefined ? { completionReceiptId } : {}),
+         });
+-        return { alreadySettled: false, inviteeCoins: exports.FACEBOOK_REFERRAL_REWARD_COINS, inviterCoins };
++        return { alreadySettled: false, inviteeCoins: exports.FACEBOOK_REFERRAL_REWARD_COINS, inviterCoins,
++            ...(completionReceiptId !== undefined ? { completionReceiptId } : {}) };
+     });
+ }
+ //# sourceMappingURL=facebookReferrals.js.map

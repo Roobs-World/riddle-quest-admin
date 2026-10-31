@@ -1,0 +1,119 @@
+{
+  "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "startedAt": "2026-10-24T01:18:43.549Z",
+  "checks": [
+    {
+      "index": 150,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-live-race-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:live-pvp-delivery-recovery",
+        "multiplayer:live-pvp-lifecycle-recovery",
+        "multiplayer:live-pvp-seat-recovery"
+      ],
+      "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:18:43.960Z",
+      "checkedAt": "2026-10-24T01:19:16.872Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/150.log",
+      "sha256": "454581966f489151b9148d285f494716069890d3a8603b85662ae48737977673",
+      "artifacts": {},
+      "artifactSnapshots": {}
+    },
+    {
+      "index": 151,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-live-race-delivery-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:live-pvp-delivery-recovery",
+        "multiplayer:live-pvp-lifecycle-recovery",
+        "multiplayer:live-pvp-seat-recovery"
+      ],
+      "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:19:17.448Z",
+      "checkedAt": "2026-10-24T01:20:18.816Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/151.log",
+      "sha256": "07d50b20cf57b0b9b223335c85a7f98227573c9a1e3c8725b1087fd8eb4c55f0",
+      "artifacts": {},
+      "artifactSnapshots": {}
+    },
+    {
+      "index": 153,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-live-race-lifecycle-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:live-pvp-lifecycle-recovery",
+        "multiplayer:live-pvp-seat-recovery"
+      ],
+      "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:20:19.049Z",
+      "checkedAt": "2026-10-24T01:21:08.290Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/153.log",
+      "sha256": "9cbf979880c27585ea765fa0b32710c3c5450a5b82744022929e9ce2a3b7c996",
+      "artifacts": {},
+      "artifactSnapshots": {}
+    },
+    {
+      "index": 170,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-retained-start-quit-publication-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:race-publication-recovery",
+        "multiplayer:race-start-recovery"
+      ],
+      "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:21:08.649Z",
+      "checkedAt": "2026-10-24T01:21:54.550Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/170.log",
+      "sha256": "4d289a0dd4f470efd64f3559f755a2ca366aca32cbe273e966043f05f518648b",
+      "artifacts": {},
+      "artifactSnapshots": {}
+    },
+    {
+      "index": 178,
+      "executable": "node",
+      "args": [
+        "packages/portal/scripts/verify-retained-creator-recovery-browser.mjs"
+      ],
+      "tasks": [
+        "multiplayer:retained-invitation-creator-recovery"
+      ],
+      "sourceBefore": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "sourceAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "status": "passed",
+      "exitCode": 0,
+      "startedAt": "2026-10-24T01:21:55.168Z",
+      "checkedAt": "2026-10-24T01:21:57.750Z",
+      "log": "artifacts/development-checks/goal-20261024-main-browser/178.log",
+      "sha256": "9a8ab41b6976cfbc217fda3c21802d23fa1b7ed474bd8086246858e7c75d604f",
+      "artifacts": {
+        "artifacts/retained-creator-recovery-2026-10-10/browser.json": "e82a2f43b57184428bb798811e4b1a1dfb05a17a4a62d84c72f58b7a84cbeb3f"
+      },
+      "artifactSnapshots": {
+        "artifacts/retained-creator-recovery-2026-10-10/browser.json": "artifacts/development-checks/goal-20261024-main-browser/178-artifacts/artifacts/retained-creator-recovery-2026-10-10/browser.json"
+      }
+    }
+  ],
+  "completedAt": "2026-10-24T01:21:57.750Z",
+  "sourceStillMatches": true
+}

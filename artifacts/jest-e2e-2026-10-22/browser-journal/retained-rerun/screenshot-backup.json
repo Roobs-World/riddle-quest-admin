@@ -1,0 +1,77 @@
+{
+  "directory": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec",
+  "paths": [
+    {
+      "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/daily-skip-warning",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/0",
+      "existed": true,
+      "directory": true
+    },
+    {
+      "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/coin-economy",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/1",
+      "existed": true,
+      "directory": true
+    },
+    {
+      "path": "/tmp/profile-tour-stats.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/2",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-solo.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/3",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-multiplayer-unavailable.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/4",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/riddle-leaderboard-clipped.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/5",
+      "existed": false,
+      "directory": false
+    },
+    {
+      "path": "/tmp/riddle-leaderboard-fixed.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/6",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-victory.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/7",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-loss.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/8",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/jest-feedback-profile.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/9",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/riddle-settings-subscription.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/10",
+      "existed": true,
+      "directory": false
+    },
+    {
+      "path": "/tmp/riddle-subscription-cancelled.png",
+      "backup": "/tmp/riddle-e2e-journal-rerun-prior-q9wvfmec/11",
+      "existed": true,
+      "directory": false
+    }
+  ]
+}

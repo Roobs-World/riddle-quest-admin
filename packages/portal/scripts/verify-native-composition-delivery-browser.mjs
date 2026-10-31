@@ -12,7 +12,7 @@ const {computeFeedback}=require('@qwordly/core/game');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.COMPOSITION_DELIVERY_REACT_MODE??'development';
 const fixture=path.join(root,'../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json');
-const output=path.resolve(process.env.COMPOSITION_DELIVERY_REPORT_DIR??path.join(root,'../../artifacts/native-composition-delivery-2026-10-04',mode));
+const output=path.resolve(process.env.COMPOSITION_DELIVERY_REPORT_DIR??path.join(root,'../../builds/test-evidence/native-composition-delivery-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/native-composition-delivery-'));
 let browser,server,baseUrl;let tickets=new Map(),started=null;const observations=[];

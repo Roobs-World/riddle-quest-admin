@@ -1,0 +1,88 @@
+$ pnpm db:generate && next build --webpack
+$ prisma generate
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 7.9.1 -> 8.0.0-rc.27                  │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+✔ Generated Prisma Client (v7.9.1) to ./generated/prisma in 80ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+
+▲ Next.js 16.4.2 (webpack)
+✓ Running next.config.js took 139ms
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+- Experiments (use with caution):
+  · clientTraceMetadata
+
+  Creating an optimized production build ...
+[@sentry/nextjs - Node.js] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+[@sentry/nextjs - Node.js] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[@sentry/nextjs - Node.js] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[@sentry/nextjs - Edge] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+[@sentry/nextjs - Edge] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[@sentry/nextjs - Edge] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[@sentry/nextjs - Client] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+[@sentry/nextjs - Client] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[@sentry/nextjs - Client] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+✓ Compiled successfully in 21.4s
+  Running TypeScript ...
+  Finished TypeScript in 4.2s ...
+  Collecting page data using 7 workers ...
+Error [PrismaClientKnownRequestError]: 
+Invalid `prisma.post.findMany()` invocation:
+
+
+Can't reach database server at 127.0.0.1:65419
+    at fh.handleRequestError (webpack://portfolio/generated/prisma/runtime/client.js:69:8286)
+    at fh.handleAndLogRequestError (webpack://portfolio/generated/prisma/runtime/client.js:69:7581)
+    at fh.request (webpack://portfolio/generated/prisma/runtime/client.js:69:7288)
+    at async e (webpack://portfolio/generated/prisma/runtime/client.js:103:6862)
+    at async q (webpack://portfolio/src/lib/content.ts:140:19)
+    at async s (webpack://portfolio/src/app/blog/tags/[tag]/page.tsx:16:17)
+  67 | ...
+  68 | ...
+> 69 | ...rorFormat==="pretty",message:l})),l=this.sanitizeMessage(l),t.code){let u=s?{modelName:s,...t.meta}:t.meta;throw new x.PrismaClientKnownRequestError(l,{code:t.code,clientVersion:this.client._clientVersion,meta:u,batchRequestIdx...
+     |                                                                                                                     ^
+  70 | ...
+  71 | ...
+  72 | ... {
+  code: 'P1001',
+  meta: {
+    modelName: 'Post',
+    driverAdapterError: Error [DriverAdapterError]: DatabaseNotReachable
+        at async a.interpretNode (webpack://portfolio/generated/prisma/runtime/client.js:15:44895)
+        at async a.interpretNode (webpack://portfolio/generated/prisma/runtime/client.js:15:44018)
+        at async a.interpretNode (webpack://portfolio/generated/prisma/runtime/client.js:15:46559)
+        at async a.run (webpack://portfolio/generated/prisma/runtime/client.js:15:43609)
+        at async a.execute (webpack://portfolio/generated/prisma/runtime/client.js:61:815)
+        at async eN.request (webpack://portfolio/generated/prisma/runtime/client.js:62:2421)
+      13 | ...
+      14 | ...
+    > 15 | ...e:i}}case"query":{let n=Kn(t.args,r.scope,r.generators,this.#a()),i;for(let o of n){let s=Aa(o,r.sqlCommenter),a=await this.#u(s,r.queryable,()=>r.queryable.queryRaw(Xn(s)).catch(l=>t.args.type==="rawSql"?En(l):We(l)));i===void...
+         |                                                                                                                     ^
+      16 | ...
+      17 | ...
+      18 | ... {
+      [cause]: [Object]
+    }
+  },
+  clientVersion: '7.9.1'
+}
+
+> Build error occurred
+Error: Failed to collect page data for /blog/tags/[tag]
+    at ignore-listed frames {
+  type: 'Error'
+}
+[ELIFECYCLE] Command failed with exit code 1.

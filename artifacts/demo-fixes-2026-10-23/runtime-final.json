@@ -1,0 +1,1853 @@
+{
+  "files": [
+    {
+      "path": "packages/portal/src/FatalErrorBoundary.tsx",
+      "bytes": 1485,
+      "sha256": "bc98a9534b6800a2e8235580c937b153b4235522c7375c321fefed831b99dd81"
+    },
+    {
+      "path": "packages/portal/src/analytics/events.ts",
+      "bytes": 8979,
+      "sha256": "4df0417dd12ae4a922e97d63f9d8da3c2906d02414346458fcba19ace9797cb2"
+    },
+    {
+      "path": "packages/portal/src/developmentFirstRun.ts",
+      "bytes": 1180,
+      "sha256": "7a9104c60af08665ae836af65c1ad9281209578e9aed95fe6a05d07bd187d42a"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookAdsCapability.ts",
+      "bytes": 5948,
+      "sha256": "f5717e6d8d62c8de54eecb07334a22ecf995af1f27af3359c0452da3d36eb7b8"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookCapabilityPolicy.ts",
+      "bytes": 2244,
+      "sha256": "8efedc514623ee846c0d38f703892c088b3bcc3b976dfd34a206e9c1a0e0e974"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookCommerceCapability.ts",
+      "bytes": 7399,
+      "sha256": "3beb75ad2c1f5e2b6bce5dc8b1aa5c855e32729fa4fcbe338ba8cb63067b49c3"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookFirebaseAppCheck.ts",
+      "bytes": 1844,
+      "sha256": "66a98ae646f9a27d1bd263bfc77e2c39f27a96b0733e6a944fbec5bdccdc4652"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookInterstitialPolicy.ts",
+      "bytes": 2177,
+      "sha256": "110c8229a5b699157556736b0dc38d60aeba1b23b06762b055ecbf6174544159"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookLiveRaceSharing.ts",
+      "bytes": 3732,
+      "sha256": "c9f2588455ee54b4ec2a3b15d2fac51e384ccd9376059a03d2c4ec14398e00ad"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookNotificationCapability.ts",
+      "bytes": 2967,
+      "sha256": "63c75fe5c158ab644425fe99ec9cc203980c9859cd55e0cb76e5855592470b40"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookNotificationPromptCoordinator.ts",
+      "bytes": 5172,
+      "sha256": "bc5bc0a731385e9271e1a2c8e4b012f4de6a917cdf2e44c0f2a49f39c6b32f8d"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookNotificationPromptPolicy.ts",
+      "bytes": 1704,
+      "sha256": "ec87a01d21fb0982571f2bf9deb744c195f8fc21c111e0159bccc9c3b394d5b4"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookOverlayCapability.ts",
+      "bytes": 5810,
+      "sha256": "62ecc0e67cdd8b9c7831deb51fe5af52c926381c71e0bbd2163032ed9fa7a586"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookPlatformBootstrap.ts",
+      "bytes": 11945,
+      "sha256": "e7fc6f0375a50e39341857324391c87fad09b1af28b752a46fa99fb0e102c5aa"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookPlatformEntry.tsx",
+      "bytes": 32464,
+      "sha256": "91d89023ac9a100aef11cb05b76680a2bf50b0025d63df0db6a58108796099c9"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookPurchaseRecovery.ts",
+      "bytes": 5028,
+      "sha256": "be93a35ac436f30bafaff60659372638bed032baf3d5ef36403efd5710446b41"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookRaceEntry.tsx",
+      "bytes": 1047,
+      "sha256": "ed9ca6f598fcc83c7e77d1394c4eea44be9b3cf80fbed6ea2cd8cd761a0094f7"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookReferralSharing.ts",
+      "bytes": 6802,
+      "sha256": "22dc4eb34d134624a61e9d20f247784a2c27754394f6825df423b89e58070f1b"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookRewardedContinue.ts",
+      "bytes": 3335,
+      "sha256": "fbf0d4ca77870c43669fbdfbe1240fd0253f51891f9b8bcbc3b5b8d157aa3a49"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookSdkDialogGate.ts",
+      "bytes": 744,
+      "sha256": "76338ce615c3f1893dca944fe549f80096f297a1b5916111b94b1a99e38b007b"
+    },
+    {
+      "path": "packages/portal/src/facebook/FacebookTournamentPresentation.ts",
+      "bytes": 15696,
+      "sha256": "463f0f029677919a59fc9d25c0bc2546420a84e8b0e02846a5be758d66898e72"
+    },
+    {
+      "path": "packages/portal/src/facebook/analytics.ts",
+      "bytes": 1218,
+      "sha256": "abf246c5cbc7d0318823134546cbf83d2236c609be3162073520ba1a74a68435"
+    },
+    {
+      "path": "packages/portal/src/facebook/authenticate.ts",
+      "bytes": 3755,
+      "sha256": "82c06c1d1e63724dc8b38b9ed9303c5f0198194fff11bca9860289f0c3110820"
+    },
+    {
+      "path": "packages/portal/src/facebook/backend.ts",
+      "bytes": 7165,
+      "sha256": "28d1968bb9ab6d780f770716c19303bb87d7a73fcd395f34d2b39a3f66dbfac8"
+    },
+    {
+      "path": "packages/portal/src/facebook/contextBoard.ts",
+      "bytes": 2792,
+      "sha256": "68d4f569076a840b6ab737b7d43069185f1ecd69348ce9932c4302822ec1ab68"
+    },
+    {
+      "path": "packages/portal/src/facebook/contextChallenges.ts",
+      "bytes": 7687,
+      "sha256": "34ec73060d3d15bc3a53efda4de51ba1a003ae723ea916e0702a132d693fd498"
+    },
+    {
+      "path": "packages/portal/src/facebook/contexts.ts",
+      "bytes": 10776,
+      "sha256": "d3f3ff92d4ed363fe8d9ae6dce5371b9096391f1ebec526e93348a62ed8783fe"
+    },
+    {
+      "path": "packages/portal/src/facebook/createFacebookLifecycle.ts",
+      "bytes": 2283,
+      "sha256": "7c494cbcd211f4b1fcae72fb527ff95c4003700e323f84c413f2f469aa95ce6f"
+    },
+    {
+      "path": "packages/portal/src/facebook/credentialExchange.ts",
+      "bytes": 814,
+      "sha256": "c5f5e8cae80d1357cf7d46ddc13c6ba560d740aee601eb2016fc4249f9f0484b"
+    },
+    {
+      "path": "packages/portal/src/facebook/defaultBackend.ts",
+      "bytes": 389,
+      "sha256": "739eaaebc04284feb0e497bc8bc7135773cf2d9e9034528f2c390c50de8349f8"
+    },
+    {
+      "path": "packages/portal/src/facebook/facebookCallableResponses.ts",
+      "bytes": 10368,
+      "sha256": "a798b66a18df1b780a67408dc35a7eb6f5a65c7549683343e7f0e8b0745c7915"
+    },
+    {
+      "path": "packages/portal/src/facebook/facebookTournamentEntry.ts",
+      "bytes": 1597,
+      "sha256": "97ba4ec1b2ff4104b35288d9f9d393c873f5ffba289470a8153c776cbeb46a13"
+    },
+    {
+      "path": "packages/portal/src/facebook/fbinstant.ts",
+      "bytes": 11171,
+      "sha256": "1329b650db3462541e1519fa58f137add61ce0c74dc5cff2b2111e6f2f6497da"
+    },
+    {
+      "path": "packages/portal/src/facebook/firebaseClient.ts",
+      "bytes": 5397,
+      "sha256": "0da5d86f57eb4bc84a426bb79be8c66711e838f00b7d966266ede6472bff84a3"
+    },
+    {
+      "path": "packages/portal/src/facebook/liveContextMatchmaking.ts",
+      "bytes": 3200,
+      "sha256": "d1948a39080f31170442563caf81acc7f87a78ec61ab9d905013095f754a5e15"
+    },
+    {
+      "path": "packages/portal/src/facebook/main.tsx",
+      "bytes": 980,
+      "sha256": "887005f525508bc87fce32f339f318433cdc87314cc2d3fbadc8b9d0ddaeb2b8"
+    },
+    {
+      "path": "packages/portal/src/facebook/referrals.ts",
+      "bytes": 4632,
+      "sha256": "bba4591ba874b2546a12bed9365b3924f417e87d193b6be0e69e77c60826bd3a"
+    },
+    {
+      "path": "packages/portal/src/facebook/settleFacebookPause.ts",
+      "bytes": 1735,
+      "sha256": "9c715034c49b1742da8dd801809fdb1ea8213403015ace6d359a555db8f71d60"
+    },
+    {
+      "path": "packages/portal/src/firebase.ts",
+      "bytes": 21180,
+      "sha256": "546f5b6f88165ea9cdb1ecdac6daaf94c1024384251ee84acc4337032405ebd2"
+    },
+    {
+      "path": "packages/portal/src/firebaseEnvironment.ts",
+      "bytes": 1017,
+      "sha256": "6ae42d87b3dfbc33bb592e4f1e99859261f32d6ee714d19fbe2826abae1a486a"
+    },
+    {
+      "path": "packages/portal/src/gamesnacks/GameSnacksSdkPort.ts",
+      "bytes": 2557,
+      "sha256": "3c1267314d586b3d1f8cbf75d1bc8ce6c029b1ac96db0509b5fd0d8e5c4c4200"
+    },
+    {
+      "path": "packages/portal/src/gamesnacks/main.tsx",
+      "bytes": 492,
+      "sha256": "e8f6f4315a5b7bfaf779bbbf12d224586ccee7bc913d7085f02ca9a806a0e422"
+    },
+    {
+      "path": "packages/portal/src/input/useGuessGlyphFit.ts",
+      "bytes": 4487,
+      "sha256": "84091941e8a8855f66366197230e2671e7169000debf669f5acf6c9103c0223a"
+    },
+    {
+      "path": "packages/portal/src/input/useNativeAnswerBackspace.ts",
+      "bytes": 2285,
+      "sha256": "01144d81e15230c9285ae92bc316763f4979d9ac99a182348b63e93befbb26a2"
+    },
+    {
+      "path": "packages/portal/src/jest/JestFirebaseAppCheck.ts",
+      "bytes": 2619,
+      "sha256": "400b9a0958071416a878d7aa86b9da90a8eb632deae4b3b8a269154b204d9d82"
+    },
+    {
+      "path": "packages/portal/src/jest/JestHostedPlaySession.ts",
+      "bytes": 347,
+      "sha256": "14a973dad81018a5af187039ee8649720875a97ff6c99cbe8063d1128a928501"
+    },
+    {
+      "path": "packages/portal/src/jest/JestPlayApp.tsx",
+      "bytes": 29546,
+      "sha256": "2eb0b6023615222a252d2ef390fe07149c22b751e4ba172929510aeac7f713c4"
+    },
+    {
+      "path": "packages/portal/src/jest/JestProfileSubscriptions.tsx",
+      "bytes": 1678,
+      "sha256": "34849dc01224bac2490282a002fba562a2581db21d463bdb50d4e5933248f270"
+    },
+    {
+      "path": "packages/portal/src/jest/JestSdkPlatform.ts",
+      "bytes": 21522,
+      "sha256": "ee1844075008767dd63eb44b6531721213d9bb4922def44b4006ee0c5ede4999"
+    },
+    {
+      "path": "packages/portal/src/jest/JestSessionViews.tsx",
+      "bytes": 3381,
+      "sha256": "8dbcf1f4b063e6aea5f8327b736fe4eab39b033178897f23830ba5e964e9d53c"
+    },
+    {
+      "path": "packages/portal/src/jest/MockJestPlatform.ts",
+      "bytes": 9068,
+      "sha256": "ace7a93210011e42eba88c3abcac99a1a8a85449874be38a0adf7d2e26d51fcd"
+    },
+    {
+      "path": "packages/portal/src/jest/accountDeletionCleanup.ts",
+      "bytes": 16241,
+      "sha256": "daf264cc71499d14d5b65cbb4743e4ef137efebb72856c7bbf462351af63a0b6"
+    },
+    {
+      "path": "packages/portal/src/jest/backend.ts",
+      "bytes": 9627,
+      "sha256": "f8473a884e229229586831751982ccbc0df593f6bbe4aaa4810036d2701fbaee"
+    },
+    {
+      "path": "packages/portal/src/jest/clearJestFirebaseAuthentication.ts",
+      "bytes": 335,
+      "sha256": "9b9332e27cf3b1e9e443919ee217d38f0856ebef53320dfdcdfa7e014ec979f6"
+    },
+    {
+      "path": "packages/portal/src/jest/commitJestStartupSession.ts",
+      "bytes": 4310,
+      "sha256": "1d12392a00d67657158862eba67c0760a3d9306a245f2abd5177df83348b7778"
+    },
+    {
+      "path": "packages/portal/src/jest/createJestBackend.ts",
+      "bytes": 3959,
+      "sha256": "c940b5a4e2ef5d0dd2db6f0176b3a2c79a593ca3c55cfc7f0aba15e5fc015a80"
+    },
+    {
+      "path": "packages/portal/src/jest/entryIntent.ts",
+      "bytes": 2538,
+      "sha256": "64178554a0816b8b2387ff126fbb9572ee00cec0d7660bb088773b2b424720d6"
+    },
+    {
+      "path": "packages/portal/src/jest/main.tsx",
+      "bytes": 965,
+      "sha256": "863529de5fb9171bedd757fdc966652aa1d36a2fef1ec21ed439c635660858f6"
+    },
+    {
+      "path": "packages/portal/src/jest/milestone.ts",
+      "bytes": 2839,
+      "sha256": "cebc5ba7209273cb83eb7b0207dd5ba5c3bf6bbc6f2e6183c447b6400f3e5dde"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/copy.ts",
+      "bytes": 4625,
+      "sha256": "0a231ede89a42c641e4ddb393c279c1304fbd80f21f0c4cbfd484e870ac29c83"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/engagement.ts",
+      "bytes": 5002,
+      "sha256": "7d34822102f6396fba1cd46e8c9e9c6ee9ecb5514fcc67c2172797f12bfe36bf"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/firebaseCopy.ts",
+      "bytes": 621,
+      "sha256": "55176f07976ea52d7f791a97ee97704c2a8fba39a1b543d89d1e758514d5021c"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/inlineAsset.ts",
+      "bytes": 1909,
+      "sha256": "36f3d812dbe569f6297c595343912bcde8326bce292353995b2e0927c4520898"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/liveChallengePush.ts",
+      "bytes": 3398,
+      "sha256": "7815fa687d0952226cddaa8b1715c011d45285bb774aa2cb369ff1a2f4a16b98"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/liveChallengePushWorker.js",
+      "bytes": 1592,
+      "sha256": "995cb8735e8b2c6fb57879ccd7cc2ca26718894ddff00bcebefd3d8fd4587a2b"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/notificationCard.ts",
+      "bytes": 2877,
+      "sha256": "e259f5c26ee3e8cf0f5bde6b70e25f4512896755b2215b86b9e1e504e8015482"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/operationGate.ts",
+      "bytes": 4472,
+      "sha256": "f2c06d5ab778f1351ed2926e667c8ce74737f6dda0d7f9115b459ff6fa1504ea"
+    },
+    {
+      "path": "packages/portal/src/jest/notifications/useJestNotifications.ts",
+      "bytes": 7548,
+      "sha256": "c1d760e6fff1d68115edb8217db004cea1ec4276d1c0c310b9321a735a3818fe"
+    },
+    {
+      "path": "packages/portal/src/jest/purchases.ts",
+      "bytes": 11267,
+      "sha256": "1ff5d215a7aa3da138ecd2ccc4a4be937a81bf8232a49a75f0ecf708b56d57a7"
+    },
+    {
+      "path": "packages/portal/src/jest/reconcileJestPlayerProjection.ts",
+      "bytes": 1136,
+      "sha256": "d3fc96598da2533994d3e26c8a359f155b5b2f35dfeea00f4bda6b31378d9384"
+    },
+    {
+      "path": "packages/portal/src/jest/registrationAttribution.ts",
+      "bytes": 1388,
+      "sha256": "0e7af7d7629bf1f2c691419d3f9605371a4c3f77929579b1fbacd66bb6664637"
+    },
+    {
+      "path": "packages/portal/src/jest/runtimeMode.ts",
+      "bytes": 1754,
+      "sha256": "ab914248e51843afffcbceada8fb2a93f8d7236ffb4200785dbf5a9e15229eda"
+    },
+    {
+      "path": "packages/portal/src/jest/sdkBoundary.ts",
+      "bytes": 2041,
+      "sha256": "75e87031e2b409e3bff6cfe77ec91b86e2b7d2682741b47989ebf13e39d08d4c"
+    },
+    {
+      "path": "packages/portal/src/jest/sharing/captureGameScreenshot.ts",
+      "bytes": 1568,
+      "sha256": "8c8e3cb8a48d0e80168a5977900dea9481087f8cf02be708709dd023971a29d8"
+    },
+    {
+      "path": "packages/portal/src/jest/sharing/referralReferences.ts",
+      "bytes": 1626,
+      "sha256": "34c440c4e401dc78b78aa8192bb1d737fddddf5cbc6244cf33196ab9d0881113"
+    },
+    {
+      "path": "packages/portal/src/jest/sharing/screenshots.ts",
+      "bytes": 1199,
+      "sha256": "0c2cbbdcedaf99f0f003323795fc4685651c90c71ad1af3ec974e5a35e5dde56"
+    },
+    {
+      "path": "packages/portal/src/jest/sharing/useJestSharing.ts",
+      "bytes": 15864,
+      "sha256": "8c017d680994f7ff8638c9eac7e890d66998a6d69595fbb28e81d6d503adcd28"
+    },
+    {
+      "path": "packages/portal/src/jest/startup.ts",
+      "bytes": 12394,
+      "sha256": "d3722787faf37d15d288ed2b26d7cab49805904d10a5f638429dff7958772296"
+    },
+    {
+      "path": "packages/portal/src/jest/startupRiddlePreload.ts",
+      "bytes": 2521,
+      "sha256": "3d48ccdd937038a593ceffaa2d0e04cc874122097af5678231affc27528b7aab"
+    },
+    {
+      "path": "packages/portal/src/jest/styles.css",
+      "bytes": 894,
+      "sha256": "07aae7bf28bb9b199bd34e2e27c4e041024267d09987190efec302e26818f4d5"
+    },
+    {
+      "path": "packages/portal/src/jest/subscriptionCheckout.ts",
+      "bytes": 4727,
+      "sha256": "13d39634e5234a221f142eee60e56f4e0cb5cc113108f8e9dedfa49ee2016f55"
+    },
+    {
+      "path": "packages/portal/src/jest/types.ts",
+      "bytes": 16302,
+      "sha256": "8c9d5b9286721ffee5e1401cd3d6cbcb1efe05a7b9978bf4dda6eca23e41babb"
+    },
+    {
+      "path": "packages/portal/src/jest/useAccountDeletionQuiescence.ts",
+      "bytes": 1382,
+      "sha256": "4df81feae316f471fd214a720365d91c2a439f862888c10284dba54d29ce6d26"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestPlatformOperations.ts",
+      "bytes": 4375,
+      "sha256": "64c222547517790e2adb36799cf1b598d527f706bccec4167750fbccebff9117"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestPlayerStateWrites.ts",
+      "bytes": 13248,
+      "sha256": "255224dbb96edaa3ab07d1f0a33c0c76f57f8ccc062a44114e03cded2488da6d"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestPresence.ts",
+      "bytes": 5860,
+      "sha256": "a7dd2e395dbc4328e8e78ceff3b607f220d61e0320ee086a321cbacc8637457e"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestProductCatalog.ts",
+      "bytes": 4666,
+      "sha256": "bed8c408ac596f5cd0177f679eaf85777cb88320de30d53d2c44576b0e648a43"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestPurchase.ts",
+      "bytes": 5904,
+      "sha256": "c745802fe24a03a5d4f8de4b54d0ea49ad5504b45089f95d71a380f9c1f9592d"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestRegistration.ts",
+      "bytes": 11835,
+      "sha256": "e5c0f1ce28eaf6b29b89c22737e28e4df12e676418a1a1870d25aae6de482569"
+    },
+    {
+      "path": "packages/portal/src/jest/useJestRegistrationDialogFocus.ts",
+      "bytes": 2524,
+      "sha256": "97506b91280e823853aec3c9ae2731a13ae103e590300a825c3c4374f40039d2"
+    },
+    {
+      "path": "packages/portal/src/observability/appCheckDiagnostics.ts",
+      "bytes": 1653,
+      "sha256": "80349c04e7355b79379d9c44c3ad2163a90743378acebfa99361d42d07de5b32"
+    },
+    {
+      "path": "packages/portal/src/observability/browserErrorReporter.ts",
+      "bytes": 1806,
+      "sha256": "fbe0addfe7e9ed0531382b4dd3f2d10704987ab117e3f4d2fe0bc8ad3225bfc5"
+    },
+    {
+      "path": "packages/portal/src/observability/sentry.ts",
+      "bytes": 3617,
+      "sha256": "1565e84040c9336a1b2d7b8e0a3b05709a2eba607110404757295484ffa25d6d"
+    },
+    {
+      "path": "packages/portal/src/observability/sentryEnvironment.ts",
+      "bytes": 5344,
+      "sha256": "0af51f5813974906af0d73f10dab611c43f918f4386d91dddc26e694355d8322"
+    },
+    {
+      "path": "packages/portal/src/observability/sentryPrivacy.ts",
+      "bytes": 5278,
+      "sha256": "2cf655e74f19993464e0bfb3f9af4f619679e4355940226ca561077e518a22be"
+    },
+    {
+      "path": "packages/portal/src/observability/telemetryRuntime.ts",
+      "bytes": 1598,
+      "sha256": "bf78eed499c7cbb47f2538b7911aa3d0fcb9bbf51319be704a80652f349fdb8f"
+    },
+    {
+      "path": "packages/portal/src/platform/PlayerProjectionPersistence.ts",
+      "bytes": 8145,
+      "sha256": "c66dd67cd7c226654408c8f18ab80493b11844c7bc8d8c9ea37d1328dc7b0a73"
+    },
+    {
+      "path": "packages/portal/src/platform/PlayerSaveRecovery.ts",
+      "bytes": 4818,
+      "sha256": "55b050b7380b029f2975696c2cf58699d9722eb291edb2bee949cf1a39c9514c"
+    },
+    {
+      "path": "packages/portal/src/platform/browserStorage.ts",
+      "bytes": 2148,
+      "sha256": "a2799218e2367240caceb42d5c0570ef8337e9817d8b097cc755df8e5eb45817"
+    },
+    {
+      "path": "packages/portal/src/platform/playerData.ts",
+      "bytes": 436,
+      "sha256": "f2a26e9baa0811871801c0239ec81074befb2fbae9d0e0f5869ee66dcb9bf182"
+    },
+    {
+      "path": "packages/portal/src/platform/playerDataValidation.ts",
+      "bytes": 7872,
+      "sha256": "4a52cf8982e02ecaeea81d142014b21d41480c9f720b82f83a7c3b779c7a6816"
+    },
+    {
+      "path": "packages/portal/src/platform/raceMatchmakingFailure.ts",
+      "bytes": 610,
+      "sha256": "f0b0121ddc0fdc3725c59422ca5199752dddd9f2c7db03094aeb619506f223fa"
+    },
+    {
+      "path": "packages/portal/src/platform/startupWarmup.ts",
+      "bytes": 3221,
+      "sha256": "b5719fc2e6535245ec8846ab2aaefc93ee0eb5be047cccedd052aa944a9c1498"
+    },
+    {
+      "path": "packages/portal/src/platform/types.ts",
+      "bytes": 23388,
+      "sha256": "fbdeeb63585bd6ffbc74491a2caec946df4fd8b40adaf065c93f47132ee742f8"
+    },
+    {
+      "path": "packages/portal/src/platform/usePlayerProjectionRecovery.ts",
+      "bytes": 2712,
+      "sha256": "ff549a648dda6b0ebfe15c9ad8675b3360727d680bc837e0f8ea068346376964"
+    },
+    {
+      "path": "packages/portal/src/platform/webTargetEnvironment.ts",
+      "bytes": 175,
+      "sha256": "6e98d84755a40b063920c970c6fc09e5f02586adf31490ecc5778f3f3adff7ba"
+    },
+    {
+      "path": "packages/portal/src/play/BridgeStartupRecovery.tsx",
+      "bytes": 1789,
+      "sha256": "10c736f40c7287961718eda8038a7955f98c587d50790f624d70df4cb859dad3"
+    },
+    {
+      "path": "packages/portal/src/play/CoinFlight.tsx",
+      "bytes": 4755,
+      "sha256": "f185987971d3e646dbdc9c8e424854fe459e10224d8bda635f458358cb513444"
+    },
+    {
+      "path": "packages/portal/src/play/ConfirmedRiddleOutcome.ts",
+      "bytes": 2838,
+      "sha256": "155f542f81507b0e1a78e040c6c7493ecf643fa0a7a5230392eec8a7cd7eef79"
+    },
+    {
+      "path": "packages/portal/src/play/DecorativeSolarSystem.tsx",
+      "bytes": 1993,
+      "sha256": "7900e5823cdcf353e46a96b609ad232a18fada4b946ee72749ce9720baf12b29"
+    },
+    {
+      "path": "packages/portal/src/play/GameFrameApp.tsx",
+      "bytes": 26928,
+      "sha256": "7c732404464c12705879f7d780ae5ba3a10e2a4a4c9a1296065b0f1dd54cdf65"
+    },
+    {
+      "path": "packages/portal/src/play/GameFrameControls.tsx",
+      "bytes": 13419,
+      "sha256": "8a6f6436559c96487ae6faad2dfa087293ebbd6b958e7a15d62d58a320d9c743"
+    },
+    {
+      "path": "packages/portal/src/play/GameModalPages.tsx",
+      "bytes": 6271,
+      "sha256": "8921516a1bfcd702cfff38321f3ecf7b6743c1730220a266213959fc276231fd"
+    },
+    {
+      "path": "packages/portal/src/play/GameModalView.tsx",
+      "bytes": 13690,
+      "sha256": "cf42eec733e572b9b27f73fa942259896adbccfc91be2d8f219026a62f540a6c"
+    },
+    {
+      "path": "packages/portal/src/play/GameSessionCheckpoints.ts",
+      "bytes": 8017,
+      "sha256": "50f5a2b9893c97439d4f795aa387a56ed17e5b21e465244644da329680eb0660"
+    },
+    {
+      "path": "packages/portal/src/play/GameSurfaceRecovery.tsx",
+      "bytes": 6651,
+      "sha256": "f079fe3ec500339d8a19b4c94e994b1e477f5b92eae73527d3bd973c4cb0d75c"
+    },
+    {
+      "path": "packages/portal/src/play/HostAuthorityModules.ts",
+      "bytes": 2808,
+      "sha256": "05affc22558ea598be334830c6a5045ba5dafacbfd34586866742d9f0370b0f8"
+    },
+    {
+      "path": "packages/portal/src/play/HostedPlaySession.ts",
+      "bytes": 9121,
+      "sha256": "60ea26f9c279ad36061858e0e7b5950e5ad21c3f4134a1b8e72a6cb314397144"
+    },
+    {
+      "path": "packages/portal/src/play/LocalAccountDeletionGate.ts",
+      "bytes": 4693,
+      "sha256": "a1208a77614835f27114bc7a68faae35a448c08a58286dc9fa04510c6f4bf03a"
+    },
+    {
+      "path": "packages/portal/src/play/PlayHostApp.tsx",
+      "bytes": 19301,
+      "sha256": "fcf3daf450c64de55e859b35302580b034e5bdb58cc552297f8350442a90479c"
+    },
+    {
+      "path": "packages/portal/src/play/PlayerSaveRecoveryLayout.tsx",
+      "bytes": 2061,
+      "sha256": "2dff994d54da9f4caaaa68e51305054da703f2224975813775a05b345fbd07b3"
+    },
+    {
+      "path": "packages/portal/src/play/ProviderProfileContext.tsx",
+      "bytes": 694,
+      "sha256": "0d52b2dfe91771591b625c45e0c9146d438220dedecea50111a72a8aacff9116"
+    },
+    {
+      "path": "packages/portal/src/play/RankIcon.tsx",
+      "bytes": 483,
+      "sha256": "e563281c035ab2a899510b5b91455a613bb887f7246b4bccde4460e118c6e936"
+    },
+    {
+      "path": "packages/portal/src/play/RankedAvatar.css",
+      "bytes": 1502,
+      "sha256": "4c132055bfcefa620b27e6a4c9df1231adbdd6f203e960799b9ae003586fe10a"
+    },
+    {
+      "path": "packages/portal/src/play/RankedAvatar.tsx",
+      "bytes": 3247,
+      "sha256": "702516764e141727b7021e9cb6e0c541fc0d172514aad78bc55fad93ea5a46dd"
+    },
+    {
+      "path": "packages/portal/src/play/SolarSystem.tsx",
+      "bytes": 27180,
+      "sha256": "9e3d7150e792395fca70201adc2a9892ce10e1af02386dccb7ea963471b977e3"
+    },
+    {
+      "path": "packages/portal/src/play/SpinningWheelLoader.tsx",
+      "bytes": 1749,
+      "sha256": "5ef8f968070558e7889c2e8c872bc62b80cadc896f1b64f868a83029c2e33602"
+    },
+    {
+      "path": "packages/portal/src/play/accountDeletionServiceGate.ts",
+      "bytes": 2086,
+      "sha256": "815db9d3fe9bb8d1884668cbb23f6aada728336f87751237bdfd1c778c384137"
+    },
+    {
+      "path": "packages/portal/src/play/achievementMilestones.ts",
+      "bytes": 748,
+      "sha256": "16daa5c84a295f21d4a3ba8d1d85bc2149bd29614fe3aa966e81cde9a4106594"
+    },
+    {
+      "path": "packages/portal/src/play/achievementTypes.ts",
+      "bytes": 2584,
+      "sha256": "b5c1305c770ad85d0f21cf141bb9eafed555d01903fb3b90bebe901d6a05b800"
+    },
+    {
+      "path": "packages/portal/src/play/achievements.ts",
+      "bytes": 11728,
+      "sha256": "ca82f5648e52014f8804297dedfffc15a68c9057695ba82e52b1df9cc833f971"
+    },
+    {
+      "path": "packages/portal/src/play/answerCell.ts",
+      "bytes": 465,
+      "sha256": "f8577199fdbffa8e471439140e2dffa6da6fc71dc712f63dea521bc1235568c7"
+    },
+    {
+      "path": "packages/portal/src/play/avatarImage.ts",
+      "bytes": 2881,
+      "sha256": "917c363770c49fab10179a4ca46e7fd28a229b4c018e9f57df7cdb4e6bd69635"
+    },
+    {
+      "path": "packages/portal/src/play/bridgeRouter.ts",
+      "bytes": 14446,
+      "sha256": "748ee58968d9eda04d72f4240e783d3883698517c99e214ae01ce2bab101ea1e"
+    },
+    {
+      "path": "packages/portal/src/play/completionPresentation.ts",
+      "bytes": 1813,
+      "sha256": "5ef1791f37ff145ba7e7a52f2f8b937d37dbd538f62b3a0de48ffd3d7132eba8"
+    },
+    {
+      "path": "packages/portal/src/play/completionRewardBreakdown.ts",
+      "bytes": 2202,
+      "sha256": "94d11b3f3286e65b3c2a35bf4fbf4aec9e1b039b5b1286d92f1ddea161865de3"
+    },
+    {
+      "path": "packages/portal/src/play/fakeServices.ts",
+      "bytes": 16682,
+      "sha256": "de7929be707f33ea29ab48f3428de0c9b22344bdcdc1d87c381a290ddc05b5bc"
+    },
+    {
+      "path": "packages/portal/src/play/firebaseLiveRaceSignals.ts",
+      "bytes": 4449,
+      "sha256": "091d572cfc1ea773eafe7b94b256d0860dd892c6dba68651c224ff94a055628f"
+    },
+    {
+      "path": "packages/portal/src/play/firebaseRaceMatchmaking.ts",
+      "bytes": 6587,
+      "sha256": "0660522f66b0b78e1c86d04a117b5bc0883bd4eb5ac32972bc37e52ee3de67df"
+    },
+    {
+      "path": "packages/portal/src/play/firebaseServices.ts",
+      "bytes": 22016,
+      "sha256": "3bd08e1e58f9084edd27618b01164343ae593092ca69f83a8872a133ea2aa9d8"
+    },
+    {
+      "path": "packages/portal/src/play/game/decorativeAnimation.ts",
+      "bytes": 2789,
+      "sha256": "f2237d045c863829e143995d1d2bfb85812fd100dfb11138a5bea059a35be371"
+    },
+    {
+      "path": "packages/portal/src/play/game/decorativeCanvas.ts",
+      "bytes": 5296,
+      "sha256": "a23574bed9f8bdf666bc62c259fbc8c8db14f3de78cf22cf21d93cd454e469f8"
+    },
+    {
+      "path": "packages/portal/src/play/game/decorativeInitialization.ts",
+      "bytes": 1531,
+      "sha256": "2c3a6420536fa309e9e1a594d0077ecf6e8d3d82ef338a4fcf6a6ff077a48c3d"
+    },
+    {
+      "path": "packages/portal/src/play/game/decorativeResources.ts",
+      "bytes": 1899,
+      "sha256": "67bcb2daf1f2733a8143c056d7335c12bdcc7a5f6fde109d989a7d4cd4b11a76"
+    },
+    {
+      "path": "packages/portal/src/play/game/decorativeRestoration.ts",
+      "bytes": 2173,
+      "sha256": "a0df7aa97ab2f0f085320660dc24676bddf74ce93afb3e51ffb9cbe6bf44323d"
+    },
+    {
+      "path": "packages/portal/src/play/game/decorativeSizing.ts",
+      "bytes": 2434,
+      "sha256": "9d30ccfbefc790fb317848af5b0971fd91d4e3267244f0cb82c038cd461795fc"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/index.ts",
+      "bytes": 652,
+      "sha256": "18679d45af98d527557f3ec193dbc18b0acdcfc97c62d5174eb3548a935cf245"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useAnswerKeyboard.ts",
+      "bytes": 2766,
+      "sha256": "6e354db0c8e6b85f8dcf5a0161fa7df948dd09c31c8c674eced3998e8b6b335a"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useAttemptRecovery.ts",
+      "bytes": 5959,
+      "sha256": "463e4c87990497e7f3c88e61b583a7822762e80ed6f1e9aa9a27de77b5b04349"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useClassicQuestionPreparation.ts",
+      "bytes": 3123,
+      "sha256": "af905760efb644ae4accfea1b9c5f0eb6388b5ac525d2e01ce830e74f7bdaab8"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useCompletionDelivery.ts",
+      "bytes": 5923,
+      "sha256": "cfb14bbaf1410cec74dd4f46b13a72e3cdb0a38afd6e23ec08170a60429bce2c"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useGameAudio.ts",
+      "bytes": 2366,
+      "sha256": "af1f9fda0c9a2db405b994c68f161bb7bf04c897d3b435933d9061e5d262228d"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts",
+      "bytes": 7203,
+      "sha256": "00a0f36dfad77e8a7c578e4c62a522f3c84046f630197381e7704872a5947deb"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useGameOperations.ts",
+      "bytes": 4928,
+      "sha256": "86b338620a75ffc7cc63aea56d5a22958a1bac8542dd9d352d79b0200c9bf8b2"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useGameSessionPersistence.ts",
+      "bytes": 5311,
+      "sha256": "a5e2a68c4cdff9b021f16729cdbc04e5bf348b262a3d620cb5c2ef33901667a4"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useGameSurfaces.ts",
+      "bytes": 2613,
+      "sha256": "beb6c5ea4a1f61d679493a87a7e3d78d2e6d47cff2650bddc572d192c124530f"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useOfflineDialog.ts",
+      "bytes": 2270,
+      "sha256": "af74a1796b86f2abc12b6a0843604b065d7d2f983dff8bbc18a3f9411f62421e"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts",
+      "bytes": 62131,
+      "sha256": "2424d1f083a5a17645a30aa11d81623ad90ac15309cbeed635c5097439525c0b"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useReferralReward.ts",
+      "bytes": 2740,
+      "sha256": "c798f4898d51d2e6836dd6e4f022913b2d6b24b79e139b0d3e80b473e8ea30a7"
+    },
+    {
+      "path": "packages/portal/src/play/game/hooks/useViewportFit.ts",
+      "bytes": 3666,
+      "sha256": "8bdbbbbfa44f81b426ad65b5860f91529902fa3522d0080709801cbee49c09b9"
+    },
+    {
+      "path": "packages/portal/src/play/game/layoutReady.ts",
+      "bytes": 650,
+      "sha256": "7b63e2dda02ddcf5d30f2a6a337f7693dc448ead22a179a470e7ad0d15a7eedf"
+    },
+    {
+      "path": "packages/portal/src/play/gameSession.ts",
+      "bytes": 51296,
+      "sha256": "41abecc5d9b1af75b2192dce761acb19d860e81c5972f4bcccebb2bb4dd98e50"
+    },
+    {
+      "path": "packages/portal/src/play/gameSessionTypes.ts",
+      "bytes": 14958,
+      "sha256": "0140dab66fdb39e970f228d5f8d091d74f14314a6557ffdbbc95c82bce29a5f4"
+    },
+    {
+      "path": "packages/portal/src/play/gameplayAuthorityDelivery.ts",
+      "bytes": 2289,
+      "sha256": "34f325413e1655b56f6a1af7fab357d87c5144809eb4470c02f2f575c8a57be7"
+    },
+    {
+      "path": "packages/portal/src/play/guidance/GuidanceOverlay.tsx",
+      "bytes": 18214,
+      "sha256": "e142b400f0edff5697377ded9f6548450a150403d080409af62b76a77684cad8"
+    },
+    {
+      "path": "packages/portal/src/play/guidance/GuidanceSeenMarkers.ts",
+      "bytes": 861,
+      "sha256": "e253bd8f53a4dc8a0f235c14e74845866a165122ee88abef87dbe15dd6764905"
+    },
+    {
+      "path": "packages/portal/src/play/guidance/OnboardingOverlay.tsx",
+      "bytes": 2729,
+      "sha256": "a5e29a0f7f34efbe0a4973dd7a977116fbc7af57e6fd0db96b1c72fc7e3f68df"
+    },
+    {
+      "path": "packages/portal/src/play/guidance/TooltipOverlay.tsx",
+      "bytes": 3998,
+      "sha256": "dce55998c47b2dd589fbd524774270fd130478b6b9bb40a999e02834ae8ef18a"
+    },
+    {
+      "path": "packages/portal/src/play/guidance/guidanceConfig.ts",
+      "bytes": 11157,
+      "sha256": "504447d1cae88543a9f9e6ebf8c652799994e6670b5f9689b762a3fd0be9ce03"
+    },
+    {
+      "path": "packages/portal/src/play/hintPreview.ts",
+      "bytes": 1782,
+      "sha256": "52d01f088080cac1d0fb10e9de55b8a19e2ee517c0e7ed58248640af729cd9d3"
+    },
+    {
+      "path": "packages/portal/src/play/hostCompletionEffects.ts",
+      "bytes": 3237,
+      "sha256": "96f3267c35f653088f0b085fb0fd15a171d16a347d8eee6acf82d359b1cc51e1"
+    },
+    {
+      "path": "packages/portal/src/play/hostMessageHandlers.ts",
+      "bytes": 23459,
+      "sha256": "3524ae03edc4c662e25d742d545ab51225bff2afc063acd334359f8fd42af762"
+    },
+    {
+      "path": "packages/portal/src/play/hostRaceResultEffects.ts",
+      "bytes": 442,
+      "sha256": "90354ee37a3a97593f9ff2edd3b58649bf6cd11eb4a71cebf30f4e46aa717030"
+    },
+    {
+      "path": "packages/portal/src/play/i18n.ts",
+      "bytes": 14082,
+      "sha256": "4fc5c6e3090e79ff32bc5ce19500c03a8ba7ab98dcca4f1ecf9f034c4d50b91f"
+    },
+    {
+      "path": "packages/portal/src/play/journalWriter.ts",
+      "bytes": 7165,
+      "sha256": "4606907b6e6c5ac451966b4b04491c4936286a8a053a14fa8a2b7e35ea35d086"
+    },
+    {
+      "path": "packages/portal/src/play/loadOptionalSkipPreview.ts",
+      "bytes": 2862,
+      "sha256": "4a0cf1b3886c5d42cfa13de5f5d13867e428c6b8b9b9b264f9aaca5a4cfbe054"
+    },
+    {
+      "path": "packages/portal/src/play/localBridge.ts",
+      "bytes": 402,
+      "sha256": "a34c5cf914cd14dafe17e0e91527af40b42537680c9dc08c776b9b6dca91bfae"
+    },
+    {
+      "path": "packages/portal/src/play/localeModules.ts",
+      "bytes": 1034,
+      "sha256": "57cd110bc1e44de341279e13f7e10f85aa0ebed51f47b0d0b1d6bf9da5cae58c"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/CoinActionModalPages.tsx",
+      "bytes": 1448,
+      "sha256": "250f8a21aab05c9c158f529cae4d7f91cc046c4eca543a1c76a357ce6425088d"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/ContinueActions.tsx",
+      "bytes": 3750,
+      "sha256": "dfae6faafc45d66dd4dd4aa75f28c796f354e8a5536b318d187ae5817c33629a"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/GameplayCoinActions.tsx",
+      "bytes": 4320,
+      "sha256": "b5896235536b04b7acd709e1173da0516072efab8d784bf447b4e2f17dd062b6"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/ShopModalPage.tsx",
+      "bytes": 7209,
+      "sha256": "a4743efc436adf8e87c80298ac6ec99dbf836f0e83986fe73306b6514c503ee8"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/ShopSubscriptionContext.ts",
+      "bytes": 772,
+      "sha256": "b9a110bf24f61f7aed9c60c38664fac3994190c7a6d80c3832181c92694d09b4"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/commerceCosts.ts",
+      "bytes": 371,
+      "sha256": "9ad257adaf4ea25a360f85af8a60c5b60918f9507aafc67fdde9bb5247c1de9e"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/commerce/useSubscriptionManagement.ts",
+      "bytes": 3197,
+      "sha256": "992241644af6684f4479b373faf8a1a1037a7c531c1f1a071bf7009fb179d256"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/fanfare/CoinAwardSequence.tsx",
+      "bytes": 1485,
+      "sha256": "db1738cd4749f702eb5960e2fcbd5284ee61cbeef5dbd1c073ec3a5606bb96e4"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/fanfare/FanfareModalContent.tsx",
+      "bytes": 3169,
+      "sha256": "62baa58ab684d40edc39750bd2f970d1eb53fdb30d7bfd32722c39b1beaa4671"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/fanfare/FanfareTabs.tsx",
+      "bytes": 6761,
+      "sha256": "47403d6be978a1685ed0e326c04d293f0cfe5d62d20bc4e460fd4e7e63f537a0"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/fanfare/VictoryModalContent.tsx",
+      "bytes": 6235,
+      "sha256": "a815d35d5c66a244b8cea414b3a886ba221979c8b1bd51970107574533dbdcb3"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/fanfare/fanfareSequence.ts",
+      "bytes": 3594,
+      "sha256": "4d4ea3952fe09f0629f6da03ab3fab751bd65c82af55c5e14aa51dd5dfe8bb01"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/information/InformationModalPages.tsx",
+      "bytes": 3822,
+      "sha256": "a3cb2354dff6ff1f60bd03b862647c48de2b0fd8f705535e1c16e6256b270ec1"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/leaderboard/LeaderboardModalPage.tsx",
+      "bytes": 5412,
+      "sha256": "3b92703c37a6b6419d217791006def12b088a9c6734a043fca9e172b3f089fe1"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/leaderboard/leaderboardPagination.ts",
+      "bytes": 1427,
+      "sha256": "4c01582e19b5bec82c46f398c4c29ce5064806d717fa30dd0cf1d58b21820f6c"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/ProfileModalPage.tsx",
+      "bytes": 13377,
+      "sha256": "5d351f153a2890d3d65ed854e9343e5e3d2e294f7486c67093d54d6399b50a24"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/ProfileStatsModalPages.tsx",
+      "bytes": 8712,
+      "sha256": "ec2d37045a82a89ae0f5bbd24f6b2ce0d2c50b0452b9129dfce9dbb778302da7"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/ProfileSubscriptionContext.ts",
+      "bytes": 246,
+      "sha256": "1a285f1f60615ce16066b9e3352905db61a6682cedaa3959e110ceb044f0f100"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/UsernameModalPage.tsx",
+      "bytes": 1765,
+      "sha256": "30fc5a93cf5c270162cae107872a3b23f80bb3a5eb08873238b4ad07f01575da"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/profileProgress.ts",
+      "bytes": 1618,
+      "sha256": "a70ce79d9863e238938b35683a04f3a3c85efb27fe38b92fd4610f1f9e57aeb8"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/profileStats.ts",
+      "bytes": 1546,
+      "sha256": "d4dd952693d3d7fa9b69ffd66edcf53a4568ae29d03c4675a1736c3c0774f004"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/profile/usernameForm.ts",
+      "bytes": 572,
+      "sha256": "026ada562ed8e034bc12b263576446e2e65cefc6e4a71a46ab7e5aaf6d7f8139"
+    },
+    {
+      "path": "packages/portal/src/play/modalPages/settings/SettingsModalPage.tsx",
+      "bytes": 3086,
+      "sha256": "a98d2d342ab5283108a98fbf0609eb50f3f13ced4bc5536383fe6b9d3c1e7950"
+    },
+    {
+      "path": "packages/portal/src/play/paidSettlement.ts",
+      "bytes": 4105,
+      "sha256": "810edb96630d0f44380fad5a680784928c21b3b4f64890ff50676b7f15fe23dc"
+    },
+    {
+      "path": "packages/portal/src/play/pendingGuessJournal.ts",
+      "bytes": 14148,
+      "sha256": "676f8600fbe88955e2eccc147d40253a696c80c96ccf525f88a2f52ac460eb4a"
+    },
+    {
+      "path": "packages/portal/src/play/pendingPlayJournalDiagnostics.ts",
+      "bytes": 823,
+      "sha256": "9686cec855ecb968d9d57c3a00302b3e741d86a7fde3b539af42b0bf94918d60"
+    },
+    {
+      "path": "packages/portal/src/play/performance/mobileCapabilities.ts",
+      "bytes": 2620,
+      "sha256": "8250c8808266d7643128d429c2f4e8efa5c0f00b5094cb46ac074986b5aa6e97"
+    },
+    {
+      "path": "packages/portal/src/play/playerPreferences.ts",
+      "bytes": 14186,
+      "sha256": "86819536055cd32032174cd1afe0d9e351dc1a7311bd3de0e57e355cb8aa7c24"
+    },
+    {
+      "path": "packages/portal/src/play/predictCompletionAchievements.ts",
+      "bytes": 4351,
+      "sha256": "f635a5d7ea68446a6c3dc0889918581b9424ef41e75dfe032b58878d1abbef42"
+    },
+    {
+      "path": "packages/portal/src/play/preloadGameModals.ts",
+      "bytes": 537,
+      "sha256": "f66576c5eb0a637eea9379618fd29cd84a1f9106b69453ad0d218395a4369ae7"
+    },
+    {
+      "path": "packages/portal/src/play/prepareIssuedSuccessor.ts",
+      "bytes": 3775,
+      "sha256": "7de03564c4a47645008f69dc4f87057b873aae8d11ad52f3fffbb8bdb43501a0"
+    },
+    {
+      "path": "packages/portal/src/play/profileMapper.ts",
+      "bytes": 3523,
+      "sha256": "779ae1c7f7de3bb85cb1100563d05af2445e585a70e5acb8e889adcd802d5e92"
+    },
+    {
+      "path": "packages/portal/src/play/race/LiveRaceGame.tsx",
+      "bytes": 39324,
+      "sha256": "709b36823b47489ab1207d0519663e7f34e66f4d59e46eceb7b827cbb6104720"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceContextBoard.tsx",
+      "bytes": 8666,
+      "sha256": "ae3edb373b866606e1a35c9f827bb4e2fdc78c86521249c809bdb44b6d7b16a0"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceOwnedAuthority.ts",
+      "bytes": 2338,
+      "sha256": "83946fe0d2e7ea0c31d23fd07357a0eba493e183f43cd00b5b883203a0a8914e"
+    },
+    {
+      "path": "packages/portal/src/play/race/RacePlay.ts",
+      "bytes": 21186,
+      "sha256": "13c4b4b149417ba7704ba8af81aaa19559d5d486292cfc1fea346c9d27a69517"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceProviderViews.ts",
+      "bytes": 11805,
+      "sha256": "e5f4329937128f9f58e0b965fa10dc821dc400d4261d05e9a630cbf5573decc3"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceSession.ts",
+      "bytes": 61731,
+      "sha256": "afc11400a05d422652d572ab0e45166418bd3c8e24a153e2b541fa889d2d693f"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceSession.types.ts",
+      "bytes": 6281,
+      "sha256": "cab31a233a361dbeaaed9f9f4fb0223ba59223ea50fba4030f85179dd05d2ee4"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceSessionAuthority.ts",
+      "bytes": 34324,
+      "sha256": "6efc5808aa3c974e5788b389ecf5860bb01a0a6a51d3bd66675fced7dda435a9"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTo10Game.tsx",
+      "bytes": 14838,
+      "sha256": "9887baf6adc743dfa8e24d5bd26a556652eb27f30302e4317badb5599e361b72"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTo10Game.types.ts",
+      "bytes": 1945,
+      "sha256": "579e2c8d67939e69025788d5d132899ab9e635d5f98842b663ea41c54d7936fd"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTo10View.tsx",
+      "bytes": 14947,
+      "sha256": "c809c9c8f31e6c4de19fe4bde59d045927f29b21a147dc09448a26567ba196f6"
+    },
+    {
+      "path": "packages/portal/src/play/race/RaceTournamentEntry.tsx",
+      "bytes": 19641,
+      "sha256": "2000c5f0e143a776ead06708441d9afd3fe39aa90886d023e211f539ba4247c0"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceDirectInvite.tsx",
+      "bytes": 6452,
+      "sha256": "7fdb69170da880d8298c147ad5a33587ddfde7530cf819503e216df196cab6bb"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceElapsedTime.tsx",
+      "bytes": 2383,
+      "sha256": "f079362ce27608ca82d84a242358fa4eb18c384a66a4a19380c8bd1499e74b0c"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceFriendLobby.css",
+      "bytes": 3268,
+      "sha256": "dce1683c92235ef8c39dd79d61ebfee6f748c85c671672a0a326bdd4f49cb1e6"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceFriendLobby.tsx",
+      "bytes": 3106,
+      "sha256": "81f97e04a5d082604d9e6926b91d446a677c2b2169cc2f6c5f2f421acdca769b"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceHistory.tsx",
+      "bytes": 5910,
+      "sha256": "3e0e9d59f0355b08c57e4b90ef24f3a3cdbd185acf386631f84901520d7b1098"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceIdentity.tsx",
+      "bytes": 629,
+      "sha256": "9e1de3d95005baa2b305a36443a583465f15c855b47693e24b869a03f2a3553b"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceInbox.tsx",
+      "bytes": 4918,
+      "sha256": "29be040222763b1dcf984bb9339d0d408ec13651b977cc5dae1289c1434cd278"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceInvitationCard.tsx",
+      "bytes": 6966,
+      "sha256": "1b4b4d6a51c58049fa1d3e2548c1c1f6117ea98178f1056354ec6eaeec80a2b0"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceInviteShare.tsx",
+      "bytes": 4340,
+      "sha256": "79b092be09afe2c8bed6ca8e229a9d12317a0b338cd1f273e51a97e935dc0f0c"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRacePushConsent.css",
+      "bytes": 807,
+      "sha256": "43fa95392809db995436a7e94599fd4d1793af04961bbf6a9c0cad10ca884745"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRacePushConsent.tsx",
+      "bytes": 1239,
+      "sha256": "fbc1d5d73ea677842d26e4d74e5314c361c64f82355690eaf0e341fda5b58064"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceSafety.tsx",
+      "bytes": 8258,
+      "sha256": "e5a0033ed65a1133fb4f78ce78a04ea6dc72e6801b466db10441be1b6754423a"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/LiveRaceSearchWheel.tsx",
+      "bytes": 1657,
+      "sha256": "09a5c332b1e62ef6a907fab03ccb08ab4adc5a613e318a7023a7af0c0d1193d8"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/NativeAnswerInput.tsx",
+      "bytes": 3633,
+      "sha256": "c29719814361161cc706238b100f72508e9156b251e6b461e59d227a42f1b4fa"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/PlatformPlayerOverlay.tsx",
+      "bytes": 4037,
+      "sha256": "989f01249a2773376828b1cd35dcacd2be4f4cddca2778a599bf8456f6de6332"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceCategoryIcon.tsx",
+      "bytes": 1187,
+      "sha256": "b102b49da421b7ca445f0ad4cff44ee871b8078a403de0419843ecabd8efa4b7"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceCountdown.tsx",
+      "bytes": 1716,
+      "sha256": "940f30681cdef25f157c3cb347a474b068765805e8733d1482010987d7e393b6"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceGameplay.tsx",
+      "bytes": 6394,
+      "sha256": "b78158f87e2066bc837884076fb17224d803a7f842cbbee9e9667e0a435e976a"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceHeader.tsx",
+      "bytes": 2604,
+      "sha256": "daffb3a20282a68e7500ae56ce1871451b83cf9ea1022d81ad49111a48ccf791"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceHubTabs.tsx",
+      "bytes": 3527,
+      "sha256": "122bc5b24749b943fda86f0ead09f76d19481aa49f02f26b3b9de417d4dcb471"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceLobbyPanels.tsx",
+      "bytes": 11602,
+      "sha256": "57490a5fcc50f701f370fd3b9eb0983fc8f0b9a556fc099dffc6882d17c0fd29"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceQuitDialog.tsx",
+      "bytes": 1492,
+      "sha256": "ad039fa968ffbbef184560225d5fff488a101d8e60bc60316c09c3f8fdfe03ea"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceResultPanel.tsx",
+      "bytes": 4027,
+      "sha256": "427c4ec5cea6b12989b4d71d15f279c423603f85c403523c5bc281e287aa5f3b"
+    },
+    {
+      "path": "packages/portal/src/play/race/components/RaceScoreboard.tsx",
+      "bytes": 3876,
+      "sha256": "ade47e43f7e7fac0f7566f2203a58f0938293ec5eb45f3df00c4a99ae2e92288"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/index.ts",
+      "bytes": 172,
+      "sha256": "c44610f07bf386ba5876d4fdc369f6a5f6336c8df35ba7bbb2f0b3749581f4ef"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useLiveRaceDraft.ts",
+      "bytes": 1168,
+      "sha256": "fc35abb67b39a3c0ce4293da696f5c68aca58c9a549a4ab4ac127f771490a9b7"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useLiveRaceSignals.ts",
+      "bytes": 1620,
+      "sha256": "520e395a4977178a86db35b119e5ad9d88637eeccf30c39c9cd7b74e232da854"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useRaceAnswerEditor.ts",
+      "bytes": 960,
+      "sha256": "3dbdf927638561684b91520cf8e7e653eb7cf096605c7fd9ce620a06a112b390"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useRaceDialogFocus.ts",
+      "bytes": 4846,
+      "sha256": "6ac25a03472724cbabd55993804d2310b21f62721fad46b2a96d91a86f567a3f"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useRaceGameplayFit.ts",
+      "bytes": 4154,
+      "sha256": "57debe33ce7ff7932dd251092faaa1f8bf57b213bc92d540a58b034c54d3a77c"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useRaceRuntimeEffects.ts",
+      "bytes": 613,
+      "sha256": "78f7e0532f2ab7c9b35954484a66039bea39965a92e1cb540e333c8db75d1aca"
+    },
+    {
+      "path": "packages/portal/src/play/race/hooks/useRaceSession.ts",
+      "bytes": 2424,
+      "sha256": "b61594557ad0bfc51b85a2d194648b439aaf1e28c77b900229c5096595ad8284"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/activeRaceStorage.ts",
+      "bytes": 3682,
+      "sha256": "4ec0712c6d7656a73a0794211a27868bf0420148c8c4f1b6fed9b4c2f7c346a7"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceDeliveryDeadline.ts",
+      "bytes": 3106,
+      "sha256": "18ee3022b4a2105265a1850c50b24c41bd402077ab8d4dcfbed3ae6b63cf677e"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceDraft.ts",
+      "bytes": 3622,
+      "sha256": "f8d5054744f83aeb82da58a77917f4e3690587f7c8d8b3350f8477966727b611"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceDraftCheckpoint.ts",
+      "bytes": 4328,
+      "sha256": "515af956b2ef833b223cfc482acd0981a9e2598e41fc99787a18ceae5de5c92f"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceDraftStorage.ts",
+      "bytes": 6784,
+      "sha256": "a2e7a2332c68216fb99f36aec8c79059767b1581baaec3dbd9ce21a0f41cd765"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceLobbyHint.ts",
+      "bytes": 1461,
+      "sha256": "ee596e5304a74c9741dc2b4db2c65dafab9dada4f31765fa2beefd6a09c1f47f"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceLobbyStorage.ts",
+      "bytes": 3523,
+      "sha256": "93607845c2158e793d7fc823985b82681dfd6daa4e9f008c2d1716d7dfbe51de"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRacePolling.ts",
+      "bytes": 853,
+      "sha256": "2c5c19dab154d004610c06c16bde966914b6612a236abdbeb22761e3c578cd31"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/liveRaceRetirement.ts",
+      "bytes": 4987,
+      "sha256": "b62ccacb251267742c21e01a603a9e94be7db80033a1f973e17f626a1f29458d"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceAnalytics.ts",
+      "bytes": 992,
+      "sha256": "37065a436059daf3d3ac5317617fe910e9d9c38e4de3709f188fee6079693d50"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceBoardAttempts.ts",
+      "bytes": 562,
+      "sha256": "c3b92b69ce1762d0e55664d6c3f19e94ccc65ec554e16a6574fab8e64a4384e0"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceConfirmedHistory.ts",
+      "bytes": 5122,
+      "sha256": "0004e7e9aa9101a86575b6e5ab7028681f76794afe9fc3465e22316db223bd96"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceCountdown.ts",
+      "bytes": 1314,
+      "sha256": "50ddae975e360419bf833f8a5b9ea52e8a3dc1b64739b70d2d3cb60baf99a12e"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceDiscoveryRecovery.ts",
+      "bytes": 3215,
+      "sha256": "248e540c7bbc19e6d3fb0b595d50cb331cb7206a8a0915588b99f690bafe7183"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceDraftStorage.ts",
+      "bytes": 15237,
+      "sha256": "9ea833e12b6e13bb7dfabd1f07306a63d0668ed4a6511b3815f2a095ff617551"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceEntrySelection.ts",
+      "bytes": 5376,
+      "sha256": "aa3b506da879d332d8e853f5d49c521394f834bb1305de869a95347277b08240"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceFeatureFlag.ts",
+      "bytes": 1419,
+      "sha256": "8073038ded259099e14b2f5dce18ee64d58d469b34081d7b583472f3029ee0f0"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceGuessHistory.ts",
+      "bytes": 2480,
+      "sha256": "418cc9a99d7084a49308e2aaa6471c40dd9de83bc5f2fa74dc864f7b4caf41e0"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceHintHistory.ts",
+      "bytes": 1126,
+      "sha256": "0dc37eb638285e237b244bffc5c1bb4662984a1b09b590f0640bbb05f0fe42d5"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceInitialState.ts",
+      "bytes": 2950,
+      "sha256": "21cac0cea28faff0743f519cb32625775c76900f90666b9cf9bba3d063cb059b"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceInput.ts",
+      "bytes": 5107,
+      "sha256": "4ee171f2ad75c4656dec5437b9c0466c06b526f370b5ac81912f5dff3c035c99"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceMatchDiscovery.ts",
+      "bytes": 4904,
+      "sha256": "003cbace81ebdf228fe4dc88f8467eab0f922934aea12888e251e55b52a870b2"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceOperations.ts",
+      "bytes": 1111,
+      "sha256": "afad3aa7683e3a1fbde81e47bce190e6e224e98913d5b0cd2366bab072ac62c0"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceOptionalStorage.ts",
+      "bytes": 2184,
+      "sha256": "2e7c569125e21601bb0099db5e6a1d38b0f6c0753cfe202beea991bfb9102954"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/racePlayback.ts",
+      "bytes": 662,
+      "sha256": "f219c7d9875e52fd8742edbfc3f52502eed3327d67bde1c279e453a2ef238076"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/racePresentation.ts",
+      "bytes": 10216,
+      "sha256": "bb8b9f341818b7b280bbc3c0d2cf8b840f263db7d80df413d5c6c91489e3e9c8"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceRecoveryStorage.ts",
+      "bytes": 3570,
+      "sha256": "4502993bc19d5920c2f241c279794e3ade9dce400d0acf435439f9c0fd691276"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceRequestSelection.ts",
+      "bytes": 2422,
+      "sha256": "2a4647964ae6082611507be4c8edbe10e3636081ff214bc37bf83d60a6ffb35f"
+    },
+    {
+      "path": "packages/portal/src/play/race/logic/raceStartDelivery.ts",
+      "bytes": 909,
+      "sha256": "5a2f755adb98acd03cade25a7a91741a431e0ebb3d44607e415459a0983f8ebe"
+    },
+    {
+      "path": "packages/portal/src/play/race/raceAchievementDefinitions.ts",
+      "bytes": 2706,
+      "sha256": "1859dc2197034fc8c08c1118dfd7f9dd0f3de48bea804764cf1548c0b304e5c1"
+    },
+    {
+      "path": "packages/portal/src/play/race/testing/fakeRaceServices.ts",
+      "bytes": 34825,
+      "sha256": "d6a84a9467ce2aa025bd01cf99cc7841583f1fd60b3c12a4309519c6faaa7214"
+    },
+    {
+      "path": "packages/portal/src/play/rankArtwork.ts",
+      "bytes": 8541,
+      "sha256": "bf67a764bfadb96f3335400a4ae3240e08ecb7379dd228c44e24a81c8f35ad5e"
+    },
+    {
+      "path": "packages/portal/src/play/ranks.ts",
+      "bytes": 8484,
+      "sha256": "7c1c008b2dca821c2807f584abcb8b7ee3b6b33b841ff3bfb908e07a2bc870e2"
+    },
+    {
+      "path": "packages/portal/src/play/readPendingGuessJournal.ts",
+      "bytes": 6169,
+      "sha256": "2433a62cc9b9494f0c5f2acde42a015222fec613ed545283cb44604b20147c76"
+    },
+    {
+      "path": "packages/portal/src/play/requestIds.ts",
+      "bytes": 283,
+      "sha256": "b9394442cc1dd008c27ab74115cdfc88887eae7b25b13b84a8700e7f8f4d9581"
+    },
+    {
+      "path": "packages/portal/src/play/riddleLoadDeadline.ts",
+      "bytes": 1684,
+      "sha256": "ca40cac4787f8e9980db51dae347739c1f548ced7a71d711d7a5e4119a3c1457"
+    },
+    {
+      "path": "packages/portal/src/play/riddleResponse.ts",
+      "bytes": 1232,
+      "sha256": "62343728bdcefc90b55ed6c70d88acc10ef97ca7ec928b955120c8b45a59f33c"
+    },
+    {
+      "path": "packages/portal/src/play/services.ts",
+      "bytes": 9578,
+      "sha256": "9e3b2864ec36bf3c1b327c44728c19da2e0022a18e0cd9f9c7bfe2b44beaa5ed"
+    },
+    {
+      "path": "packages/portal/src/play/sharing/PushConsentContext.ts",
+      "bytes": 2015,
+      "sha256": "ea305c5582dbcbc5788edc61da25226402f53fe029e72a1ee85ecede0de23646"
+    },
+    {
+      "path": "packages/portal/src/play/sharing/ReferralSharingCapability.tsx",
+      "bytes": 3609,
+      "sha256": "7289f88b9469a00a43ec0cac452defc3bd6ae41c490707637f399900ef3b1b64"
+    },
+    {
+      "path": "packages/portal/src/play/sharing/shareImages.ts",
+      "bytes": 1500,
+      "sha256": "32c9fbb7d898ac382ae5ad9b65de08eca0f84176db4db35f999ff9c6b51e33a2"
+    },
+    {
+      "path": "packages/portal/src/play/solarAtmospheres.ts",
+      "bytes": 1061,
+      "sha256": "87eb2aafce06b9495823ec1bff02423996ee1f10c605e0791deb8b27ee8d6957"
+    },
+    {
+      "path": "packages/portal/src/play/solarConfig.ts",
+      "bytes": 4902,
+      "sha256": "37e616d893164b50cc8408a119f9cf6de2d614e0cb274556506ecc404e912f32"
+    },
+    {
+      "path": "packages/portal/src/play/solarGravity.ts",
+      "bytes": 3453,
+      "sha256": "e2005ae68f1d2ecfbd159adb6c20e46a6731fc8b765ae9f32ab7a1fccd110305"
+    },
+    {
+      "path": "packages/portal/src/play/solarMotion.ts",
+      "bytes": 2887,
+      "sha256": "c8755672f4a383ee7aa734472baa21a7f299c2f1d577161e470e96e6435d7955"
+    },
+    {
+      "path": "packages/portal/src/play/solarRocketMotion.ts",
+      "bytes": 9093,
+      "sha256": "f1472cf370aa7abc6b3267b62a483e0dd8ea53422317c03a76e3b18c08941907"
+    },
+    {
+      "path": "packages/portal/src/play/solarSpacecraft.ts",
+      "bytes": 11831,
+      "sha256": "0a5dfc1d136e446a05b8624a7be70e2b7d139b02d30f6a9f140eb8798ca48b7c"
+    },
+    {
+      "path": "packages/portal/src/play/types.ts",
+      "bytes": 12228,
+      "sha256": "ea0e50959f6e631db0a95b5a94ffdd3c0c584a99203c2ed787343622509af0be"
+    },
+    {
+      "path": "packages/portal/src/play/useGameMessageRouter.ts",
+      "bytes": 15339,
+      "sha256": "44e4d8a6958fdd2f4e96170c519676e16de01539e673458d521c2565676e58ad"
+    },
+    {
+      "path": "packages/portal/src/play/useGameSurfaceCoordination.ts",
+      "bytes": 6172,
+      "sha256": "dca25eecf4d865ff7c70a41d6c56ade72b69c59d457c45d22d45036851a120c2"
+    },
+    {
+      "path": "packages/portal/src/play/useHostAuthSession.ts",
+      "bytes": 7231,
+      "sha256": "7b2db454ff3c67ccecc11020892957a3101493eede8159401e77b2ba610f3554"
+    },
+    {
+      "path": "packages/portal/src/play/useHostBridgeLifecycle.ts",
+      "bytes": 8232,
+      "sha256": "e93689e0778117ba2b646b1fa215fa085ea90cc726df9558a781d34976a3d78b"
+    },
+    {
+      "path": "packages/portal/src/play/useHostNotice.ts",
+      "bytes": 1580,
+      "sha256": "1222ad24af9f6fa325b0e182e6eb2be13fda1866afdd165a03aaf58b9a58c14f"
+    },
+    {
+      "path": "packages/portal/src/play/useHostOperations.ts",
+      "bytes": 4219,
+      "sha256": "d5c9c07ab5ddad7fad995000b3c3cc3f13c1888d76efc1f681eb6e2e1fed7f18"
+    },
+    {
+      "path": "packages/portal/src/play/useHostRaceCoordination.ts",
+      "bytes": 9282,
+      "sha256": "663a2fa8bf5f0812d432272b7c1ea4e9a4498b54c73f43697d9be78c019b8f3a"
+    },
+    {
+      "path": "packages/portal/src/play/useHostRiddleLifecycle.ts",
+      "bytes": 25461,
+      "sha256": "50f19469e858f13f4a3ed43ae5f746c400cb2932fbd0c24e1981787f9be0158c"
+    },
+    {
+      "path": "packages/portal/src/play/useOnlineStatus.ts",
+      "bytes": 1201,
+      "sha256": "86e99f08c17df3ee5a8190291f27a08f50ed8a34e1a971c202bb3ac0c644bd18"
+    },
+    {
+      "path": "packages/portal/src/playable/LocalSoloAuthority.contract.ts",
+      "bytes": 1816,
+      "sha256": "6e64d8dbd65859438f8843f22b8b2eb89d2577973b7578097805439e18350999"
+    },
+    {
+      "path": "packages/portal/src/playable/LocalSoloAuthority.ts",
+      "bytes": 23006,
+      "sha256": "645d6b774fb5e0855f974047bf0d0aa8f7dc980c02a2f7e5d08a4f43c94c073d"
+    },
+    {
+      "path": "packages/portal/src/playable/YouTubeNativeAnswerInput.tsx",
+      "bytes": 4067,
+      "sha256": "946b8620e4f8571301f54e9f2e8a39319daf002c3c9cec38a0c378042bf6664f"
+    },
+    {
+      "path": "packages/portal/src/playable/YouTubePlayableApp.tsx",
+      "bytes": 19925,
+      "sha256": "a1e15e8e07e05e9ce0d3dac54962f80dc1bcde1f81a4388b21380cb2adfb72b6"
+    },
+    {
+      "path": "packages/portal/src/playable/YouTubePlayableViews.tsx",
+      "bytes": 2797,
+      "sha256": "fdbd3157a8ee45487c1fa463ba4e61b5dd071a2572f1cea8bf49c714ea16e74d"
+    },
+    {
+      "path": "packages/portal/src/playable/YouTubeSaveGate.ts",
+      "bytes": 3338,
+      "sha256": "aabf2d8fcdf6cdcdaffb7c9325251ddd851316067904757d84710533a20d3deb"
+    },
+    {
+      "path": "packages/portal/src/playable/achievements.ts",
+      "bytes": 5829,
+      "sha256": "d2271058733cbfce15a2b2603854c728c05ecc1d099bd11f766741ba7d858259"
+    },
+    {
+      "path": "packages/portal/src/playable/content.ts",
+      "bytes": 9207,
+      "sha256": "0c9bc018eca74114f3e8997aa52afe66709b7443f9868046c6989dfe72923415"
+    },
+    {
+      "path": "packages/portal/src/playable/economy.ts",
+      "bytes": 2734,
+      "sha256": "932a394eaceba8a3f46e4e29b89fcbf5e73281fafacb282afd60fbf9db2efc5e"
+    },
+    {
+      "path": "packages/portal/src/playable/generated/youtube-content-v1.json",
+      "bytes": 971978,
+      "sha256": "0c78fe40c02afe2ff4937632e658c701a4c1963bd9972d0f4d762dda33f4d020"
+    },
+    {
+      "path": "packages/portal/src/playable/i18n.ts",
+      "bytes": 36069,
+      "sha256": "0477c0c6c1bdc750babec0c1dcf91d82355f9576036a1631bfe618ba89890cda"
+    },
+    {
+      "path": "packages/portal/src/playable/input.ts",
+      "bytes": 3778,
+      "sha256": "f88c287a9c3bc0f80ebddd3638e855e083eff47f9bf0801db9f40fe09e409153"
+    },
+    {
+      "path": "packages/portal/src/playable/limits.ts",
+      "bytes": 141,
+      "sha256": "26d0e12c51c439879f5791fc1bb3a7d7cbcd1a61b41f4762cb0a137e63c2a3a7"
+    },
+    {
+      "path": "packages/portal/src/playable/localSoloGameRules.ts",
+      "bytes": 9282,
+      "sha256": "178c18e832cc4330fc19c23bb7cd021d49ee8e3d549d94137e6314f940894697"
+    },
+    {
+      "path": "packages/portal/src/playable/save.ts",
+      "bytes": 16176,
+      "sha256": "dcc3fe082a19c0efec0eb361b7128e56e3ee960cd58d9a63ecb2a07732d1fc69"
+    },
+    {
+      "path": "packages/portal/src/playable/styles.css",
+      "bytes": 9043,
+      "sha256": "26cc377a516a8bdb88e13f42194d39be1d3bd6f52c225a25132c82b690ad3b0e"
+    },
+    {
+      "path": "packages/portal/src/playable/types.ts",
+      "bytes": 6384,
+      "sha256": "00bdb41410d0bb039cedd7914445a8e28c50a865c21b41c1ae12fff1d6b3997c"
+    },
+    {
+      "path": "packages/portal/src/playable/useYouTubePlayableBoot.ts",
+      "bytes": 15239,
+      "sha256": "6eaf61a34609c12ec39b271d20467bdb54156908c394dec947f2a714fbb80569"
+    },
+    {
+      "path": "packages/portal/src/playable/useYouTubeReadySession.ts",
+      "bytes": 4234,
+      "sha256": "8e7b6b4a86582691c289cd55b41d2e9ac273522c49bf2379dafda09c3fc4bd32"
+    },
+    {
+      "path": "packages/portal/src/presence/FirebasePresenceTransport.ts",
+      "bytes": 2177,
+      "sha256": "f7ecab6a75eff2e8e6ae551cd007cee25e0f206064d067ab6af900e570fd638f"
+    },
+    {
+      "path": "packages/portal/src/presence/PlatformPresenceSession.ts",
+      "bytes": 4919,
+      "sha256": "8aa0ebd86d417c1fc5ededfac64926da61790605190aa52bafe9b4099c5285f7"
+    },
+    {
+      "path": "packages/portal/src/presence/activityPresence.ts",
+      "bytes": 491,
+      "sha256": "e74af2999dc1ad360d5b23b2bf5dc32ead5a50aa7798539a7f3edbbdbb02714f"
+    },
+    {
+      "path": "packages/portal/src/presence/reconcilePresenceOptIn.ts",
+      "bytes": 643,
+      "sha256": "82a94e13a36ec01d7aa7a0e02107b5511431db3390434936b3c21a3ddbbacf7d"
+    },
+    {
+      "path": "packages/portal/src/presence/startOptionalPresence.ts",
+      "bytes": 665,
+      "sha256": "1c06d489bac01442e8eed448c522f9fba834b147c812278a9750733a134f397c"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditGuestHostServices.ts",
+      "bytes": 12694,
+      "sha256": "df3283b7c56f273598bee2935d46b6e9f8a242029d10c06500db70beb80c9017"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditHostServices.ts",
+      "bytes": 19572,
+      "sha256": "c9c4eaefcae044251fa51e197bf910baaab0074d2e240c5174bd1b7ef47cda7e"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditPlatformBootstrap.ts",
+      "bytes": 24965,
+      "sha256": "8316372637f5d589567193e4bf47ea2c0759ade2966d33d66f0891f64ff53c42"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditPlatformEntry.tsx",
+      "bytes": 13719,
+      "sha256": "0000652237f84741e0171638b44f21649f70520373e85592e841cdf7a53bed6b"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditPollingPresence.ts",
+      "bytes": 5376,
+      "sha256": "ebc6a0375e49dd6956f509bbe564a861a07557df6bfbf36e53d38aa7d0027e55"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditRaceEntry.tsx",
+      "bytes": 850,
+      "sha256": "73862e673ad08d1b4d57483efcde77272693783d1fe86f263ea75cefd8e2197a"
+    },
+    {
+      "path": "packages/portal/src/reddit/RedditShopModalPage.tsx",
+      "bytes": 1876,
+      "sha256": "bbafb6c9cab024da2b0ab9baafda531bd53cf857213817107cbde8afdba68b36"
+    },
+    {
+      "path": "packages/portal/src/reddit/inline.ts",
+      "bytes": 1992,
+      "sha256": "97efc639cfef27ccb5ff843cca8839dd0305c7af01214cc2aac260db052f9de8"
+    },
+    {
+      "path": "packages/portal/src/reddit/localeNamespace.ts",
+      "bytes": 1009,
+      "sha256": "f378bae5efe2cd7322218ae8be38b6e8067ce86f278e8452c02c0a1d0edef8ad"
+    },
+    {
+      "path": "packages/portal/src/reddit/main.tsx",
+      "bytes": 408,
+      "sha256": "1db326cbad595ca262355a2e170bbb6eb7ee29572232833c2190f89cbe3c8548"
+    },
+    {
+      "path": "packages/portal/src/reddit/redditGatewayDeadline.ts",
+      "bytes": 1247,
+      "sha256": "5dd25294f1a9f1e9ae0b9b0f31106e13c49b74a3d0b4ea2224c824ee698cc5d1"
+    },
+    {
+      "path": "packages/portal/src/standalone/main.tsx",
+      "bytes": 667,
+      "sha256": "af0ee849ded413b7319d53cb434fe0dfc9577631f1ae69c945cb70498a946edf"
+    },
+    {
+      "path": "packages/portal/src/standalone/standaloneSdk.ts",
+      "bytes": 1336,
+      "sha256": "1d490019c62ced6651b3406064a5e79e3949940be5172856da721be2757fcb0a"
+    },
+    {
+      "path": "packages/portal/src/styles.account.css",
+      "bytes": 11449,
+      "sha256": "da1f51422290d2678e709285363dee30d0eb831dd4e84bd26a322c9f0023d3dd"
+    },
+    {
+      "path": "packages/portal/src/styles.coin-flight.css",
+      "bytes": 868,
+      "sha256": "928034c905e415d404d0ebbe468fc43db36ad713bb4d088f2592ef74e0ac7e56"
+    },
+    {
+      "path": "packages/portal/src/styles.css",
+      "bytes": 168,
+      "sha256": "f17e89d2640aeedf0e566e433fc9c978628fa122dda6f3627f958804487ba566"
+    },
+    {
+      "path": "packages/portal/src/styles.fanfare-tabs.css",
+      "bytes": 3594,
+      "sha256": "61a2a42515be34b91c0537ed98333e98dc835c11d615a632c1eee6dbdb6f182f"
+    },
+    {
+      "path": "packages/portal/src/styles.foundation.css",
+      "bytes": 5752,
+      "sha256": "e386e51d878aea1e460fa9352cb210be95f2accc2850449c7cdd4644e52a652e"
+    },
+    {
+      "path": "packages/portal/src/styles.game-shell.css",
+      "bytes": 6066,
+      "sha256": "14402cfe988a0df1bf548770b25cda9b15851fbbd1288eb82ae6d4462c0e332c"
+    },
+    {
+      "path": "packages/portal/src/styles.guidance.css",
+      "bytes": 15828,
+      "sha256": "86eee9375cb012defd29692df9d242367c09b57f8b8a05bb4279ca56f63ca9e0"
+    },
+    {
+      "path": "packages/portal/src/styles.modal-commerce.css",
+      "bytes": 4111,
+      "sha256": "f5ceb91870c01749437c99faa83a493d46f0dac16d67e618034cc086a1a11fd4"
+    },
+    {
+      "path": "packages/portal/src/styles.modal-rewards.css",
+      "bytes": 1562,
+      "sha256": "92623155e0cf2f5cad731e49b0e21c47a9bb163dacd156eaa92d0eee4a49560f"
+    },
+    {
+      "path": "packages/portal/src/styles.modal-shell.css",
+      "bytes": 6180,
+      "sha256": "4fd47112e983581f1661d345a2d455322e61c5f1a9e16497bf8f47f2ddc42962"
+    },
+    {
+      "path": "packages/portal/src/styles.profile-details.css",
+      "bytes": 2466,
+      "sha256": "49eeeaee87618ecb70698079add84749e1d992147cec472213711f3a5e19c05f"
+    },
+    {
+      "path": "packages/portal/src/styles.puzzle.css",
+      "bytes": 7015,
+      "sha256": "aa19d1ee17ceacb9f77239d149bd1dce7d740e34e231f1e69f209e0b166824d8"
+    },
+    {
+      "path": "packages/portal/src/styles.race-gameplay.css",
+      "bytes": 13860,
+      "sha256": "cdb6adc461c6f5dcb6dde24f0c98d0f715bc6d3d483cdaaca5ac0af51c103025"
+    },
+    {
+      "path": "packages/portal/src/styles.race-lobby.css",
+      "bytes": 17809,
+      "sha256": "971335f92d57ee5fa4daca0f4ca808bd286af5564085bbf66ff9e3ceaddc4ae0"
+    },
+    {
+      "path": "packages/portal/src/styles.shared-ui.css",
+      "bytes": 4162,
+      "sha256": "c14e60b23ecb8f2a56ab97bc782f654ced15270937da10ad89a8ece147002a7c"
+    },
+    {
+      "path": "packages/portal/src/styles.surface-recovery.css",
+      "bytes": 773,
+      "sha256": "f1621e6c41e27b5080866395767b6a3a191240a8ae0bcf0957fa2b9820eb44a9"
+    },
+    {
+      "path": "packages/portal/src/styles.victory.css",
+      "bytes": 4317,
+      "sha256": "cfa920d692f795aad5b8a266401213d1510331d274a9a98fa8ee244f54771060"
+    },
+    {
+      "path": "packages/portal/src/testHarness.ts",
+      "bytes": 1338,
+      "sha256": "b5b6b2d5109b789fab40410c9b45e2d84436f27bb58b1fd90127c03e1b6d84d3"
+    },
+    {
+      "path": "packages/portal/src/vite-env.d.ts",
+      "bytes": 642,
+      "sha256": "ae697b1130a93b347a7ce123c4499bf72042ace760b9c3c72adb310d20e0daee"
+    },
+    {
+      "path": "packages/portal/src/youtube/main.tsx",
+      "bytes": 515,
+      "sha256": "81645f0f33fc0044c1443f90b740a1b4dc1efb45e7e3ccbb0289be5c7df4d921"
+    },
+    {
+      "path": "packages/portal/src/youtube/sdk.ts",
+      "bytes": 3812,
+      "sha256": "874b06e3d565269edf25c2490940130b815bd973f1f08b681df88becec1c797d"
+    }
+  ],
+  "changedFromUploadedBuild": [
+    "packages/portal/src/jest/backend.ts",
+    "packages/portal/src/jest/purchases.ts"
+  ]
+}

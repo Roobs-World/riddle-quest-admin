@@ -1,0 +1,5 @@
+jest 1280px: sender reload, native challenge payload, dismissal/failure retry, SMS-link entry into the original private lobby and shared gameplay passed.
+jest 1280px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+jest 390px: sender reload, native challenge payload, dismissal/failure retry, SMS-link entry into the original private lobby and shared gameplay passed.
+jest 390px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.
+Unsupported native invitation hosts omit the friend challenge action.

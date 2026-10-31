@@ -1,0 +1,188 @@
+[
+  {
+    "width": 390,
+    "locale": "en",
+    "state": {
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(64, 31, 64)",
+      "shadow": "none",
+      "radius": "999px",
+      "font": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+      "iconFill": "rgb(64, 31, 64)",
+      "iconWidth": "24px",
+      "settingsBackground": "rgba(0, 0, 0, 0)",
+      "settingsIconFill": "rgb(64, 31, 64)",
+      "settingsIconWidth": "24px",
+      "rect": {
+        "x": 130.5,
+        "y": 793,
+        "width": 129,
+        "height": 48
+      },
+      "nav": {
+        "x": 8,
+        "y": 790,
+        "width": 374,
+        "height": 54
+      }
+    },
+    "hovered": "rgba(64, 31, 64, 0.08)",
+    "keyboardOpenClose": true,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "locale": "ar",
+    "state": {
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(64, 31, 64)",
+      "shadow": "none",
+      "radius": "999px",
+      "font": "\"Noto Sans Arabic\", \"Geeza Pro\", Tahoma, Arial, sans-serif",
+      "iconFill": "rgb(64, 31, 64)",
+      "iconWidth": "24px",
+      "settingsBackground": "rgba(0, 0, 0, 0)",
+      "settingsIconFill": "rgb(64, 31, 64)",
+      "settingsIconWidth": "24px",
+      "rect": {
+        "x": 129,
+        "y": 793,
+        "width": 131.984375,
+        "height": 48
+      },
+      "nav": {
+        "x": 8,
+        "y": 790,
+        "width": 374,
+        "height": 54
+      }
+    },
+    "hovered": "rgba(64, 31, 64, 0.08)",
+    "keyboardOpenClose": true,
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "locale": "en",
+    "state": {
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(64, 31, 64)",
+      "shadow": "none",
+      "radius": "999px",
+      "font": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+      "iconFill": "rgb(64, 31, 64)",
+      "iconWidth": "24px",
+      "settingsBackground": "rgba(0, 0, 0, 0)",
+      "settingsIconFill": "rgb(64, 31, 64)",
+      "settingsIconWidth": "24px",
+      "rect": {
+        "x": 556,
+        "y": 844,
+        "width": 168,
+        "height": 48
+      },
+      "nav": {
+        "x": 260,
+        "y": 836,
+        "width": 760,
+        "height": 64
+      }
+    },
+    "hovered": "rgba(64, 31, 64, 0.08)",
+    "keyboardOpenClose": true,
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "locale": "ar",
+    "state": {
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(64, 31, 64)",
+      "shadow": "none",
+      "radius": "999px",
+      "font": "\"Noto Sans Arabic\", \"Geeza Pro\", Tahoma, Arial, sans-serif",
+      "iconFill": "rgb(64, 31, 64)",
+      "iconWidth": "24px",
+      "settingsBackground": "rgba(0, 0, 0, 0)",
+      "settingsIconFill": "rgb(64, 31, 64)",
+      "settingsIconWidth": "24px",
+      "rect": {
+        "x": 554.390625,
+        "y": 844,
+        "width": 171.21875,
+        "height": 48
+      },
+      "nav": {
+        "x": 260,
+        "y": 836,
+        "width": 760,
+        "height": 64
+      }
+    },
+    "hovered": "rgba(64, 31, 64, 0.08)",
+    "keyboardOpenClose": true,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "locale": "en",
+    "state": {
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(64, 31, 64)",
+      "shadow": "none",
+      "radius": "999px",
+      "font": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+      "iconFill": "rgb(64, 31, 64)",
+      "iconWidth": "24px",
+      "settingsBackground": "rgba(0, 0, 0, 0)",
+      "settingsIconFill": "rgb(64, 31, 64)",
+      "settingsIconWidth": "24px",
+      "rect": {
+        "x": 95.5,
+        "y": 793,
+        "width": 129,
+        "height": 48
+      },
+      "nav": {
+        "x": 8,
+        "y": 790,
+        "width": 304,
+        "height": 54
+      }
+    },
+    "hovered": "rgba(64, 31, 64, 0.08)",
+    "keyboardOpenClose": true,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "locale": "ar",
+    "state": {
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(64, 31, 64)",
+      "shadow": "none",
+      "radius": "999px",
+      "font": "\"Noto Sans Arabic\", \"Geeza Pro\", Tahoma, Arial, sans-serif",
+      "iconFill": "rgb(64, 31, 64)",
+      "iconWidth": "24px",
+      "settingsBackground": "rgba(0, 0, 0, 0)",
+      "settingsIconFill": "rgb(64, 31, 64)",
+      "settingsIconWidth": "24px",
+      "rect": {
+        "x": 94.71875,
+        "y": 793,
+        "width": 130.546875,
+        "height": 48
+      },
+      "nav": {
+        "x": 8,
+        "y": 790,
+        "width": 304,
+        "height": 54
+      }
+    },
+    "hovered": "rgba(64, 31, 64, 0.08)",
+    "keyboardOpenClose": true,
+    "errors": []
+  }
+]

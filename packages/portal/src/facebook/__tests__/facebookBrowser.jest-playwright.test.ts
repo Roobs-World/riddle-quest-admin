@@ -643,7 +643,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       // A provider with disabled checkout must never advertise purchasing in its tour.
       await successPage.locator('.tooltip-backdrop[data-tooltip-id="gameHint"]').waitFor();
       expect(await successPage.locator('[data-tooltip="gameCoins"]').count()).toBe(0);
-      for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+      for (const id of ["gameHint", "submitAnswer", "gameSkip", "gameMultiplayer"]) {
         /** Current tour step whose acknowledgement advances the provider-safe guidance. */
         const tooltip = successPage.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
         await tooltip.waitFor();

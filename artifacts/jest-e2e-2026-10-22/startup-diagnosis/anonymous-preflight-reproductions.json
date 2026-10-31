@@ -1,0 +1,74 @@
+[
+  {
+    "target": "cloudfunctions.net",
+    "method": "OPTIONS",
+    "approved_origin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "signed_payload_sent": false,
+    "total_seconds": 0.224931,
+    "headers": [
+      "HTTP/2 500 ",
+      "date: Thu, 22 Oct 2026 21:34:58 GMT",
+      "content-type: text/html; charset=UTF-8",
+      "server: Google Frontend"
+    ],
+    "body": "\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>500 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered an error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"
+  },
+  {
+    "target": "a.run.app",
+    "method": "OPTIONS",
+    "approved_origin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "signed_payload_sent": false,
+    "total_seconds": 0.492373,
+    "headers": [
+      "HTTP/2 500 ",
+      "date: Thu, 22 Oct 2026 21:35:25 GMT",
+      "content-type: text/html; charset=UTF-8",
+      "server: Google Frontend"
+    ],
+    "body": "\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>500 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered an error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"
+  },
+  {
+    "target": "cloudfunctions.net",
+    "method": "OPTIONS",
+    "approved_origin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "signed_payload_sent": false,
+    "total_seconds": 0.22829,
+    "headers": [
+      "HTTP/2 500 ",
+      "date: Thu, 22 Oct 2026 21:39:28 GMT",
+      "content-type: text/html; charset=UTF-8",
+      "server: Google Frontend"
+    ],
+    "body": "\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>500 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered an error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"
+  },
+  {
+    "target": "cloudfunctions.net/syncJestSubscriptions",
+    "method": "OPTIONS",
+    "approved_origin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "signed_payload_sent": false,
+    "total_seconds": 0.218285,
+    "headers": [
+      "HTTP/2 500 ",
+      "date: Thu, 22 Oct 2026 21:40:23 GMT",
+      "content-type: text/html; charset=UTF-8",
+      "server: Google Frontend"
+    ],
+    "body": "\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>500 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered an error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"
+  },
+  {
+    "target": "cloudfunctions.net/exchangeJestIdentity",
+    "method": "OPTIONS",
+    "origin_header_sent": false,
+    "preflight_headers_sent": false,
+    "signed_payload_sent": false,
+    "request_body_sent": false,
+    "total_seconds": 0.352682,
+    "headers": [
+      "HTTP/2 500 ",
+      "date: Thu, 22 Oct 2026 21:43:13 GMT",
+      "content-type: text/html; charset=UTF-8",
+      "server: Google Frontend"
+    ],
+    "body": "\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>500 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered an error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"
+  }
+]

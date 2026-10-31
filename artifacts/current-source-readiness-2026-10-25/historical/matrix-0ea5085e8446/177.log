@@ -1,0 +1,12 @@
+✔ binds tracked, untracked and deleted source while excluding derived evidence (15.19674ms)
+✔ hashes link identity, tolerates missing targets and never follows external directories (5.772653ms)
+✔ large excluded archive inventories cannot exhaust Git source output (226.729952ms)
+✔ dashboard synchronization leaves game evidence stable while API and authored code changes invalidate it (9.345238ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 290.214241

@@ -1,0 +1,21 @@
+{
+  "VictoryModal": {
+    "ACHIEVEMENT_UNLOCKED": "Achievement Unlocked!",
+    "COINS_SUFFIX": " Coins",
+    "NEXT_LEVEL_BUTTON": "Next Level",
+    "SHARE_TEXT": "Invite a friend · 100 coins each",
+    "REFERRAL_REWARD_MESSAGE": "Register through my invite and we both earn {coins} coins!",
+    "OPEN_INVITE_MESSAGE": "{name} challenged you to Riddle Quest. Register through this invite and you both earn {coins} coins!",
+    "REFERRAL_REWARD_TITLE": "A friend joined!",
+    "TITLE": "NICE JOB!",
+    "TOTAL_COINS_LABEL": "Total coins",
+    "YOU_WON_TITLE": "YOU WON!",
+    "SHARE_ATTEMPT_PLURAL": "attempts",
+    "SHARE_ATTEMPT_SINGULAR": "attempt",
+    "SHARE_CLASSIC_MODE_LABEL": "Classic Mode",
+    "SHARE_DAILY_CHALLENGE_LABEL": "Daily Challenge",
+    "SHARE_MESSAGE_TEMPLATE": "I solved today's Riddle Quest {gameType} in {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nCan you beat my score?\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_RESULT_TITLE": "Check out my Riddle Quest result!",
+    "INVITE_FRIEND": "Invite a friend"
+  }
+}

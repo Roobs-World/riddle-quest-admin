@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "kind": "jest-gated-artifact",
+  "gatedAt": "2026-10-21T23:55:09.859Z",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "buildVersion": "1.0.0-dev.20261022-routes",
+  "activationRequested": false,
+  "source": {
+    "commit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+    "dirty": true
+  },
+  "archive": {
+    "file": "riddle-quest-jest-verified.zip",
+    "bytes": 2875281,
+    "sha256": "d9b9d584d274a46786a99a6141bbef41a5984e782c1c6128c86c7dad57908d2d",
+    "entries": 421
+  }
+}

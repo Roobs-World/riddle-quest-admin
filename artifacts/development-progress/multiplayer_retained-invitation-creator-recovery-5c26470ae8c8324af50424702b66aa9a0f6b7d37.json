@@ -1,0 +1,105 @@
+{
+  "completion": {
+    "taskId": "multiplayer:retained-invitation-creator-recovery",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks"
+    ],
+    "work": "Preserve authenticated creator cancellation for a valid retained invitation reservation when recorded clues, rules or ghost events are malformed. Negotiate privacy-safe creator recovery facts explicitly, preserve old unnegotiated response shapes, and retain cancellation lifecycle on cold reload. Enforce deletion, block, locale and ownership checks before recovery. Keep cancellation bound to the privately accepted invitation, idempotent under retries and repeated clicks, without recipient claims, balance changes, new runs or attempts. Verify the retained controller and panel on desktop and mobile. The current LiveRaceEntry flow and unrelated historical acceptance gates remain outside this scoped correction.",
+    "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "completedAt": "2026-10-24T02:33:46.435Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "source-digest-regressions",
+      "core-unit-regressions",
+      "portal-unit-regressions",
+      "retained-creator-panel-browser",
+      "portal-types",
+      "documented-declarations",
+      "source-size-boundaries",
+      "node22-backend-lint-build",
+      "node22-demo-race-coverage",
+      "seven-isolated-platform-builds",
+      "reddit-client-server-build"
+    ],
+    "checks": [
+      {
+        "id": "source-digest-regressions",
+        "status": "passed",
+        "evidence": "node --test scripts/release/development-source-digest.test.mjs; current-source check at 2026-10-24T02:04:13.639Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-177-5b97d61b5a18b60220c6bec3b4b20a58b7305c3bf102707841926b18059da42a.log SHA-256 5b97d61b5a18b60220c6bec3b4b20a58b7305c3bf102707841926b18059da42a"
+      },
+      {
+        "id": "core-unit-regressions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/core test --runInBand; current-source check at 2026-10-24T02:03:18.594Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-017-5ed5c443335c2cdc4709f95a4aa0654bc3ce9206b339c5a2baf7cd9033a5d390.log SHA-256 5ed5c443335c2cdc4709f95a4aa0654bc3ce9206b339c5a2baf7cd9033a5d390"
+      },
+      {
+        "id": "portal-unit-regressions",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal test --runInBand; current-source check at 2026-10-24T02:03:40.065Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-038-da970e55e1d79c60fca9cae69611fdc2012c5a243ab6744c385edffc7281e89e.log SHA-256 da970e55e1d79c60fca9cae69611fdc2012c5a243ab6744c385edffc7281e89e"
+      },
+      {
+        "id": "retained-creator-panel-browser",
+        "status": "passed",
+        "evidence": "node packages/portal/scripts/verify-retained-creator-recovery-browser.mjs; current-source check at 2026-10-24T02:07:09.309Z; output artifacts/development-checks/goal-20261024-main-final5c-main/178.log SHA-256 a2ef39c3d4acb5db327e06666cbbc4bdc012cc21a4ddb5496d7fa99ab7e1383b"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-24T02:05:43.046Z; output artifacts/development-checks/goal-20261024-final5c-artifact-checks/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-001-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-011-a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770.log SHA-256 a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770"
+      },
+      {
+        "id": "source-size-boundaries",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-010-0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee.log SHA-256 0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee"
+      },
+      {
+        "id": "node22-backend-lint-build",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions lint; current-source check at 2026-10-24T02:04:20.916Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-179-802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616.log SHA-256 802df8724c163640d017a2c1bc8e81e7b6c28d60d2fe77b111627bb2ca004616"
+      },
+      {
+        "id": "node22-demo-race-coverage",
+        "status": "passed",
+        "evidence": "env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIREBASE_PROJECT_ID=demo-riddle-quest-multiplayer OPENAI_API_KEY=test-openai-api-key pnpm --dir firebase-functions test:race:coverage; current-source check at 2026-10-24T02:24:50.926Z; output artifacts/development-checks/goal-20261024-backend-final5c-backend/180.log SHA-256 7fe9a652f9ec601bb16d002b0ad7072d5684a6e2130658b4d1682a5439c9c4a0"
+      },
+      {
+        "id": "seven-isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-007-faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5.log SHA-256 faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5"
+      },
+      {
+        "id": "reddit-client-server-build",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/reddit-app build; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-181-639812ad862462ff75306319e485d9bde729419d0bfe1ed93fc1d526a2f16768.log SHA-256 639812ad862462ff75306319e485d9bde729419d0bfe1ed93fc1d526a2f16768"
+      }
+    ],
+    "remainingGates": [
+      "Publish backend and client changes through their separately authorized release paths.",
+      "Provider acceptance and the broader retained multiplayer and YouTube release requirements still require their own complete evidence."
+    ],
+    "nextAction": "Review the source-bound local receipt, publish through the authorized release paths, and refresh the private central operations register.",
+    "artifacts": [
+      {
+        "file": "artifacts/retained-creator-recovery-2026-10-10/browser.json",
+        "label": "Eight retained-panel browser outcomes",
+        "target": "jest",
+        "checkId": "retained-creator-panel-browser",
+        "sha256": "5ee68bb9378796e3b3335d14188f4961b8d84ccf431ff1b84056469f9e71e037"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

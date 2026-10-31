@@ -1,0 +1,25 @@
+{
+  "id": "01a16583-80fa-760e-9771-4b82d849bf15",
+  "version": "1.0.0-dev.20261022-e2e-journal",
+  "isActive": false,
+  "description": "E2E verified draft recovery journal: immediate reload, hinted letters, wallet authority and startup recovery. Full final artifact validation in progress",
+  "shareNotesWithPlayers": false,
+  "fileSizeBytes": 4718293,
+  "activatedAt": null,
+  "deactivatedAt": null,
+  "createdAt": "2026-10-22T21:27:59.482Z",
+  "previewUrl": "/g/riddle-q?versionId=01a16583-80fa-760e-9771-4b82d849bf15",
+  "hostingMode": "bundled",
+  "selfHostedUrl": null,
+  "buildStatus": "ready",
+  "buildProcessingError": null,
+  "sdkCompatibility": {
+    "engine": null,
+    "detectedVersion": null,
+    "latestVersion": null,
+    "breakingChangeVersion": null,
+    "status": "not_applicable",
+    "message": "No engine SDK version was detected for this build.",
+    "changelogUrl": null
+  }
+}

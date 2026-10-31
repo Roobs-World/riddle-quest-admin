@@ -1,0 +1,477 @@
+{
+  "project": "riddle-quest-ec2b2",
+  "phase": "before",
+  "readAt": "2026-10-20T03:10:26.765033+00:00",
+  "expectedExportCount": 10,
+  "expectedRegionalInstanceCount": 16,
+  "functions": [
+    {
+      "id": "joinLiveRace",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/joinLiveRace",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:17.475963086Z",
+      "runtime": "nodejs22",
+      "revision": "joinliverace-00021-qux",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/c2d32307-6ec6-4cc0-b6d9-f5218d214515",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792350517881233",
+            "object": "joinLiveRace/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792350517881233",
+            "object": "joinLiveRace/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "3f30bb78cfb4250fa89f4225e16657bbbb5e42d8de9c57e3ebfd37ac510bb465"
+    },
+    {
+      "id": "joinLiveRace",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/joinLiveRace",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:27.253896005Z",
+      "runtime": "nodejs22",
+      "revision": "joinliverace-00021-wej",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/europe-west1/builds/80045b18-686f-41f7-b754-8850feeda2d8",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792350518726409",
+            "object": "joinLiveRace/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792350518726409",
+            "object": "joinLiveRace/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "c2154bc80e0ebf46948f354834d428eb034a0f1d539e5b55263a0d5889dd7e5f"
+    },
+    {
+      "id": "updateLiveRace",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/updateLiveRace",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-17T11:22:54.794882723Z",
+      "runtime": "nodejs22",
+      "revision": "updateliverace-00022-wuz",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/65531c45-dab7-4814-956b-5c23c2aac455",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792236156682690",
+            "object": "updateLiveRace/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792236156682690",
+            "object": "updateLiveRace/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "d5a7b16ac66e7bad40ba7b15ce6e3304eb82bb8d390a600f18d4328d8e887cb7"
+    },
+    {
+      "id": "updateLiveRace",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/updateLiveRace",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-17T11:22:40.793116024Z",
+      "runtime": "nodejs22",
+      "revision": "updateliverace-00022-teg",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/europe-west1/builds/7bc78de3-5ac5-4324-8bcc-6995421ac5ab",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792236146349164",
+            "object": "updateLiveRace/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792236146349164",
+            "object": "updateLiveRace/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "ce6287bec1b2616971324e02f00bb22ba38e66a3162f7bcb480b4d3539055308"
+    },
+    {
+      "id": "retireLiveRaceJoin",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retireLiveRaceJoin",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-17T11:22:54.090739462Z",
+      "runtime": "nodejs22",
+      "revision": "retireliveracejoin-00004-zup",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/65531c45-dab7-4814-956b-5c23c2aac455",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792236157259722",
+            "object": "retireLiveRaceJoin/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792236157259722",
+            "object": "retireLiveRaceJoin/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "e7c2d10de03b400f06f7b380a753ff6203e10928a27179f91f6b84b4edb4e574"
+    },
+    {
+      "id": "retireLiveRaceJoin",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/retireLiveRaceJoin",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-17T11:22:43.290393609Z",
+      "runtime": "nodejs22",
+      "revision": "retireliveracejoin-00004-dak",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/europe-west1/builds/7bc78de3-5ac5-4324-8bcc-6995421ac5ab",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792236146393786",
+            "object": "retireLiveRaceJoin/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792236146393786",
+            "object": "retireLiveRaceJoin/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "b5ef5153348cd10e7faa0833b95bd4ec679a140b9636fe8ef4f3e16b6478812c"
+    },
+    {
+      "id": "getLiveRaceChallenge",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/getLiveRaceChallenge",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:19.443674658Z",
+      "runtime": "nodejs22",
+      "revision": "getliveracechallenge-00013-sul",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/c2d32307-6ec6-4cc0-b6d9-f5218d214515",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792350605019394",
+            "object": "getLiveRaceChallenge/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792350605019394",
+            "object": "getLiveRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "f2c2df24352b1b1e7aae4f7b4ec68d52794468574fcaef2ec4323a0cfb87447b"
+    },
+    {
+      "id": "getLiveRaceChallenge",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/getLiveRaceChallenge",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:26.462836488Z",
+      "runtime": "nodejs22",
+      "revision": "getliveracechallenge-00013-han",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/europe-west1/builds/80045b18-686f-41f7-b754-8850feeda2d8",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792350611725573",
+            "object": "getLiveRaceChallenge/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792350611725573",
+            "object": "getLiveRaceChallenge/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "21e282327e41605396456e9f2acb5d4d9669a1437eebc5ec6b6ca5b66cdd82e5"
+    },
+    {
+      "id": "listLiveRaceChallenges",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceChallenges",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:19.266493260Z",
+      "runtime": "nodejs22",
+      "revision": "listliveracechallenges-00011-xes",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/c2d32307-6ec6-4cc0-b6d9-f5218d214515",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792350605331866",
+            "object": "listLiveRaceChallenges/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792350605331866",
+            "object": "listLiveRaceChallenges/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "0076a9a768cf4903886d1b656c1d9a1a2f668bc777dfa65ad1152bc1d91e9f2c"
+    },
+    {
+      "id": "listLiveRaceChallenges",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceChallenges",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-18T19:10:26.755977087Z",
+      "runtime": "nodejs22",
+      "revision": "listliveracechallenges-00011-xul",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/europe-west1/builds/80045b18-686f-41f7-b754-8850feeda2d8",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792350614129886",
+            "object": "listLiveRaceChallenges/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792350614129886",
+            "object": "listLiveRaceChallenges/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "802cd09cb0892de7a2c458a49bef519b3711400dd0200177460254e3a9043dbe"
+    },
+    {
+      "id": "startRaceRun",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/startRaceRun",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-16T04:30:02.927940964Z",
+      "runtime": "nodejs22",
+      "revision": "startracerun-00056-xij",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/e3fb3b8c-85c7-4dd8-bc5e-6bdf4cfdbc0c",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792124874243495",
+            "object": "startRaceRun/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792124874243495",
+            "object": "startRaceRun/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "dada7f92ca8bff50a75f5f141ed697276b9579be6570cdf58776de50c10a00ee"
+    },
+    {
+      "id": "startRaceRun",
+      "region": "europe-west1",
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/startRaceRun",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-16T04:24:04.135980705Z",
+      "runtime": "nodejs22",
+      "revision": "startracerun-00026-xut",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/europe-west1/builds/d1266826-cc2a-4928-bc64-d3cdc8a50e30",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792124551281683",
+            "object": "startRaceRun/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792124551281683",
+            "object": "startRaceRun/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "a14b7396c1d87f9398a29de572e42e27fb9708971956b9b964db26d4b1275c19"
+    },
+    {
+      "id": "redditGameplay",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/redditGameplay",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-16T04:33:57.069908500Z",
+      "runtime": "nodejs22",
+      "revision": "redditgameplay-00043-hik",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/0e61821a-ee8f-4556-b5b0-2189a537d8e1",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792125217110397",
+            "object": "redditGameplay/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792125217110397",
+            "object": "redditGameplay/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "1cc7549c153ed582f675a4c836bbbeee78201e855a7d98bc70e1a1c1a1ba2612"
+    },
+    {
+      "id": "dailyChallengeScheduler",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/dailyChallengeScheduler",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-16T04:31:27.121268131Z",
+      "runtime": "nodejs22",
+      "revision": "dailychallengescheduler-00051-rar",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/2cfe4321-5a9d-40c9-a468-f7a6b7250e45",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792124988906522",
+            "object": "dailyChallengeScheduler/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792124988906522",
+            "object": "dailyChallengeScheduler/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "230813c88841f990e9913d96411f271bc0f04db74cd8d13d0d80962d86dc1e46"
+    },
+    {
+      "id": "replenishClassicSupplyOnDemand",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/replenishClassicSupplyOnDemand",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-16T04:31:25.175561929Z",
+      "runtime": "nodejs22",
+      "revision": "replenishclassicsupplyondemand-00001-neq",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/ab04bbeb-489b-4711-a7e5-24b71a420818",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792124988432127",
+            "object": "replenishClassicSupplyOnDemand/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792124988432127",
+            "object": "replenishClassicSupplyOnDemand/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "4fdd523556856dd00c36d4623d12f8b56a140f65b1563dd4648d2eec9771e88e"
+    },
+    {
+      "id": "retryClassicSupplyOnDemand",
+      "region": "us-central1",
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/retryClassicSupplyOnDemand",
+      "readSucceeded": true,
+      "state": "ACTIVE",
+      "updateTime": "2026-10-16T04:34:18.143205175Z",
+      "runtime": "nodejs22",
+      "revision": "retryclassicsupplyondemand-00001-bil",
+      "allTrafficOnLatestRevision": true,
+      "sourceProvenance": {
+        "build": "projects/329028367192/locations/us-central1/builds/0e61821a-ee8f-4556-b5b0-2189a537d8e1",
+        "source": {
+          "storageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792125150984507",
+            "object": "retryClassicSupplyOnDemand/function-source.zip"
+          }
+        },
+        "sourceProvenance": {
+          "resolvedStorageSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792125150984507",
+            "object": "retryClassicSupplyOnDemand/function-source.zip"
+          }
+        }
+      },
+      "sourceProvenanceSha256": "1bbddb87212233b83a406c4499d3cf17bd3c96ad581487cd97bcf90f1625834c"
+    }
+  ],
+  "verificationPassed": true,
+  "errors": [],
+  "sourceFingerprintMeaning": "SHA-256 of sanitized Cloud Functions build/source provenance metadata, not a deployed code-content digest.",
+  "collectionScope": "Read-only gcloud functions describe for exactly the listed 16 instances; selected metadata excludes environment and secret settings."
+}

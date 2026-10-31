@@ -1,0 +1,22 @@
+{
+  "createdAt": "2026-10-25T23:28:53.195645+00:00",
+  "status": "prepared-not-uploaded",
+  "buildVersion": "1.0.0-dev.20261025-maintenance-638b7f643862",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "activationRequested": false,
+  "sourceCommit": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceDirty": true,
+  "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+  "sourceSnapshotSha256": "eb12efa199c62dc88f6717050b295d47fc2f829d40786e30d1fa8b484a6b9c53",
+  "archiveSha256": "478e3383649b7c2123dd6b001d3e789460250a46acc2d6763fe25c299dd0eb0c",
+  "archiveBytes": 2940775,
+  "archiveEntries": 421,
+  "regularFiles": 419,
+  "allExtractedBytesMatchTestedCanonicalBuild": true,
+  "artifactFileManifestSha256": "be2fe270f31d57b733c7c871e5fa9c4ca87fc2303a89503093f5b3a3d7dccad7",
+  "preflightLogSha256": "554f87d2ead27724eb085154efe5c36b5ce8a6aaeb017fee1eefcc1511737b01",
+  "manualActiveVersionId": "01a17226-db08-708f-86a1-6733b1fe4824",
+  "indexSha256BeforeDelivery": "286f108cf3571cae2c1835b7d7376586c513280590ca09d6765014d557e62f33",
+  "branchBeforeDelivery": "jest",
+  "gate": "Full final182-command and192-receipt proof required before transmission. Exact dirty-worktree provenance approved; no clean snapshot claim."
+}

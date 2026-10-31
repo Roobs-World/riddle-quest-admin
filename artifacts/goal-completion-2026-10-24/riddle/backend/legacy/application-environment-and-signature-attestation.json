@@ -1,0 +1,39 @@
+{
+  "comparedAt": "2026-10-24T03:27:16.787523+00:00",
+  "environmentValuesOrValueHashesRecorded": false,
+  "allFourApplicationEnvironmentMapsMatchPreparedArchive": true,
+  "instances": [
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "liveApplicationEnvironmentExactlyMatchesPreparedArchiveMap": true,
+      "applicationKeyCount": 17,
+      "providerSignatureTypeMatchesStandardHttpDefault": true,
+      "immutableSourceEnvironmentFileCount": 0
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "liveApplicationEnvironmentExactlyMatchesPreparedArchiveMap": true,
+      "applicationKeyCount": 17,
+      "providerSignatureTypeMatchesStandardHttpDefault": true,
+      "immutableSourceEnvironmentFileCount": 0
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "liveApplicationEnvironmentExactlyMatchesPreparedArchiveMap": true,
+      "applicationKeyCount": 17,
+      "providerSignatureTypeMatchesStandardHttpDefault": true,
+      "immutableSourceEnvironmentFileCount": 0
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "liveApplicationEnvironmentExactlyMatchesPreparedArchiveMap": true,
+      "applicationKeyCount": 17,
+      "providerSignatureTypeMatchesStandardHttpDefault": true,
+      "immutableSourceEnvironmentFileCount": 0
+    }
+  ],
+  "immutableSourceEnvironmentFilesExcludedByPreparedFirebaseConfig": true,
+  "archiveEnvironmentComparisonNotClaimedBecauseFilesAreExcluded": true,
+  "officialRuntimeEnvironmentReference": "https://cloud.google.com/functions/docs/configuring/env-var",
+  "officialFrameworkDefaultReference": "https://github.com/GoogleCloudPlatform/functions-framework"
+}

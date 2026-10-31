@@ -1,0 +1,53 @@
+{
+  "uploadedVersion": {
+    "id": "01a16b8c-895e-71aa-8205-466517c50aa5",
+    "version": "1.0.0-dev.20261024013519.cb9e3356e6ea.97028e0a",
+    "isActive": false,
+    "description": null,
+    "shareNotesWithPlayers": false,
+    "fileSizeBytes": 4718560,
+    "activatedAt": null,
+    "deactivatedAt": null,
+    "createdAt": "2026-10-24T01:35:34.750Z",
+    "previewUrl": "/g/riddle-q?versionId=01a16b8c-895e-71aa-8205-466517c50aa5",
+    "hostingMode": "bundled",
+    "selfHostedUrl": null,
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "sdkCompatibility": {
+      "engine": null,
+      "detectedVersion": null,
+      "latestVersion": null,
+      "breakingChangeVersion": null,
+      "status": "not_applicable",
+      "message": "No engine SDK version was detected for this build.",
+      "changelogUrl": null
+    }
+  },
+  "unchangedActiveVersion": {
+    "id": "01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "version": "1.0.0-dev.20261023-demo-fixes",
+    "isActive": true,
+    "description": "Fix healthy cold-start timeouts and show server-confirmed coins even when Jest purchase confirmation fails. Frozen source: 3,349 unit tests pass. Exact package: 79 retained browser checks plus 3 purchase cases pass. All 20 Simulator launch checks pass. Hosted recovery and no-scroll Help verified.",
+    "shareNotesWithPlayers": false,
+    "fileSizeBytes": 4718419,
+    "activatedAt": "2026-10-23T04:51:42.742Z",
+    "deactivatedAt": null,
+    "createdAt": "2026-10-23T04:41:38.467Z",
+    "previewUrl": "/g/riddle-q?versionId=01a16710-85a3-70b5-b5c1-41c9165f5a01",
+    "hostingMode": "bundled",
+    "selfHostedUrl": null,
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "sdkCompatibility": {
+      "engine": null,
+      "detectedVersion": null,
+      "latestVersion": null,
+      "breakingChangeVersion": null,
+      "status": "not_applicable",
+      "message": "No engine SDK version was detected for this build.",
+      "changelogUrl": null
+    }
+  },
+  "evidenceRecordedAt": "2026-10-24T01:35:56.469531+00:00"
+}

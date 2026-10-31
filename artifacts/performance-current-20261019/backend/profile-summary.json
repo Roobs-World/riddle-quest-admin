@@ -1,0 +1,16 @@
+{
+  "file": "CPU.20261019.014257.569954.0.001.cpuprofile",
+  "timedWindowMs": 96.15802299999996,
+  "profileSampleMs": {
+    "grpcHttp2": 19.94,
+    "firestore": 4.539,
+    "protobufLong": 5.2940000000000005,
+    "deckGraphemes": 6.333,
+    "idle": 21.099000000000004,
+    "gc": 2.962,
+    "other": 35.076
+  },
+  "sdkReadCalls": 210,
+  "documentReadAttempts": 249,
+  "readCompletionCount": 210
+}

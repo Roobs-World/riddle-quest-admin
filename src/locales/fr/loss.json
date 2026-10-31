@@ -2,7 +2,6 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Regarde une vidéo pour obtenir un essai supplémentaire",
     "COIN_EXTRA_GO_BUTTON": "{coins} pieces pour un essai supplementaire",
-    "EXTRA_GO_PROMPT": "Plus d essais. Obtenez un essai supplementaire ou passez cette enigme.",
     "OPEN_SHOP_BUTTON": "Ouvrir la boutique",
     "OUT_OF_ATTEMPTS": "Plus d essais.",
     "SKIP_LEVEL_PREFIX": "Utiliser ",

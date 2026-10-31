@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-24T23:38:56.733020+00:00",
+  "deploymentId": "dpl_FHDUx5rmDEMhRGC83NFYkpCB33Rx",
+  "commit": "480ac243fdd67640f4f4ca223a2af389708a06db",
+  "readOnly": true,
+  "cliExitCode": 1,
+  "matchedErrorLines": 1,
+  "installErrorExcerpt": [
+    "2026-10-24T23:36:31.718Z  . postinstall: Done",
+    "2026-10-24T23:36:31.832Z  [ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: core-js@3.47.0",
+    "2026-10-24T23:36:31.832Z  ",
+    "2026-10-24T23:36:31.832Z  Run \"pnpm approve-builds\" to pick which dependencies should be allowed to run scripts.",
+    "2026-10-24T23:36:31.936Z  Error: [BUILD_UTILS_SPAWN_1] Command \"pnpm install --frozen-lockfile\" exited with 1",
+    "status\t\u25cf Error"
+  ],
+  "buildConfigurationChanged": false
+}

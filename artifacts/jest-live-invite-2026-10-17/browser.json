@@ -1,0 +1,54 @@
+[
+  {
+    "width": 390,
+    "registered": false,
+    "outcomes": [
+      "cancelled",
+      "error",
+      "success"
+    ],
+    "immediateSdkCall": true,
+    "immutableInvites": true,
+    "recipientJoinedOriginalLobby": true,
+    "accountDeletionBlocked": true
+  },
+  {
+    "width": 390,
+    "registered": true,
+    "outcomes": [
+      "cancelled",
+      "error",
+      "success"
+    ],
+    "immediateSdkCall": true,
+    "immutableInvites": true,
+    "recipientJoinedOriginalLobby": true,
+    "accountDeletionBlocked": true
+  },
+  {
+    "width": 1280,
+    "registered": false,
+    "outcomes": [
+      "cancelled",
+      "error",
+      "success"
+    ],
+    "immediateSdkCall": true,
+    "immutableInvites": true,
+    "recipientJoinedOriginalLobby": true,
+    "accountDeletionBlocked": true
+  },
+  {
+    "width": 1280,
+    "registered": true,
+    "outcomes": [
+      "cancelled",
+      "error",
+      "success"
+    ],
+    "immediateSdkCall": true,
+    "immutableInvites": true,
+    "recipientJoinedOriginalLobby": true,
+    "accountDeletionBlocked": true
+  }
+]

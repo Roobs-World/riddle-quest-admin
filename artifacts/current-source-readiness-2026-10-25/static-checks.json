@@ -1,0 +1,56 @@
+{
+  "completedAt": "2026-10-26T00:01:36.276Z",
+  "status": "verified-and-delivered-inactive",
+  "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+  "sourceCommit": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "sourceDirty": true,
+  "canonicalCommands": 182,
+  "separatePrerequisites": [
+    {
+      "index": 182,
+      "scope": "45 packaged gameplay flows"
+    },
+    {
+      "index": 183,
+      "scope": "5 compiled Continue journeys"
+    }
+  ],
+  "canonicalTasks": 192,
+  "canonicalTaskTargetRows": 1341,
+  "originalReceiptBytesPreserved": true,
+  "originalTaskIdsAndRemainingGatesPreserved": true,
+  "priorDashboardRowsAndProviderQueriesPreserved": true,
+  "checksReport": "artifacts/development-checks/current-source-20261025/checks-report.json",
+  "checksReportSha256": "bef08251685942f362b0454de32f7470d2ffad693424fb8389cafae91b8e65fe",
+  "receiptReport": "artifacts/development-checks/current-source-20261025/receipt-report.json",
+  "receiptReportSha256": "be7215e7f2b4192b91a93e91a0cd4ddcdba1547204deb664f2e0ff5cf78b3c6b",
+  "sourceSnapshotSha256": "eb12efa199c62dc88f6717050b295d47fc2f829d40786e30d1fa8b484a6b9c53",
+  "candidateVersionId": "01a17581-56b0-702b-b4e5-2c2ab072109b",
+  "candidateVersion": "1.0.0-dev.20261025-maintenance-638b7f643862",
+  "candidateBuildStatus": "ready",
+  "candidateIsActive": false,
+  "uploadApprovalResolved": true,
+  "uploadApprovalReceipt": "upload/approval-resolved.json",
+  "manualHostedFilesCompared": 419,
+  "manualHostedFileHashesPreserved": true,
+  "archiveSha256": "478e3383649b7c2123dd6b001d3e789460250a46acc2d6763fe25c299dd0eb0c",
+  "hostedFilesCompared": 419,
+  "hostedContinueJourneys": 5,
+  "manualActiveVersionId": "01a17226-db08-708f-86a1-6733b1fe4824",
+  "manualActiveVersionPreserved": true,
+  "branchAndIndexPreserved": true,
+  "isPublished": false,
+  "inReviewRevision": null,
+  "publishedRevision": null,
+  "backendDeliveredTargets": 5,
+  "compiledBackendRuntimeFiles": 243,
+  "backendDeliverySha256": "a3b38d5ebd8078916874a2d00002d6dd809713b00c9f4a8d42b7a7973e722833",
+  "coverageLimits": {
+    "portalUnitPassed": 3354,
+    "portalUnitBrowserGatedSkipped": 129,
+    "portalUnitPassedSuites": 321,
+    "portalUnitBrowserGatedSkippedSuites": 19,
+    "note": "Separate required browser selections passed. Their command count does not establish execution of every skipped unit-discovered case; repeated selections are not summed as unique coverage."
+  },
+  "publicationHold": "No review submission, activation or publication requested or performed. Provider/manual/monetization/distribution gates remain exactly as declared."
+}

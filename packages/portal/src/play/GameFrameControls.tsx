@@ -112,7 +112,7 @@ export function HintIcon() {
 /** Provides multiplayer icon behavior. */
 export function MultiplayerIcon() {
   return (
-    <svg className="native-control-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className="native-navigation-icon" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM15.8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2.5 19.5c0-3.2 2.7-5.8 6-5.8s6 2.6 6 5.8v.5h-12v-.5ZM14.2 13.2c3.9-.8 7.3 2 7.3 5.8v1h-5v-.5c0-2.5-.9-4.7-2.3-6.3Z" />
     </svg>
   );
@@ -236,11 +236,14 @@ export function ControlledGuessBoard({
 export function GuessBoard({
   state,
   dispatch,
+  disabled = false,
 }: {
   /** Stores state. */
   state: GameSessionState; /** Stores dispatch. */
   /** Stores dispatch. */
   dispatch: GameDispatch;
+  /** Prevents answer edits until the hosted checkpoint writer is ready. */
+  disabled?: boolean;
 }) {
   if (!state.riddle) return null;
   return (
@@ -250,7 +253,7 @@ export function GuessBoard({
       activeSlotIndex={state.activeSlotIndex}
       hintRevealedIndices={state.hintRevealedIndices}
       guesses={state.guesses}
-      disabled={!canEditCurrentGuess(state)}
+      disabled={disabled || !canEditCurrentGuess(state)}
       onSelectSlot={(index) => dispatch({type: "selectSlot", index})}
     />
   );
@@ -307,12 +310,15 @@ export function ControlledKeyboard({
 export function Keyboard({
   state,
   dispatch,
+  disabled = false,
   playFeedback,
 }: {
   /** Stores state. */
   state: GameSessionState; /** Stores dispatch. */
   /** Stores dispatch. */
   dispatch: GameDispatch;
+  /** Prevents answer edits until the hosted checkpoint writer is ready. */
+  disabled?: boolean;
   /** Stores play feedback. */
   playFeedback: (kind: "key" | "delete" | "submit" | "win" | "loss") => void;
 }) {
@@ -320,7 +326,7 @@ export function Keyboard({
     <ControlledKeyboard
       locale={state.riddle?.evaluation?.locale ?? state.locale}
       letterStates={state.letterStates}
-      disabled={!canEditCurrentGuess(state)}
+      disabled={disabled || !canEditCurrentGuess(state)}
       onLetter={(letter) => {
         playFeedback("key");
         dispatch({type: "typeLetter", letter});

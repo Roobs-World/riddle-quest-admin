@@ -1,0 +1,90 @@
+{
+  "copiedAt": "2026-10-25T22:49:53.153897+00:00",
+  "sourceArchive": "artifacts/current-source-readiness-2026-10-25/historical/matrix-119a3d57559a",
+  "receiptBytesModified": false,
+  "logBytesModified": false,
+  "all9PriorProofFieldsAndLogHashesMatch": true,
+  "entries": [
+    {
+      "index": 12,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/012.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/012.json",
+      "receiptSha256": "4c0f6503f41f7a19612bffe87fa8466724529555c444e18ba9053c9911553414",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/012.log",
+      "logSha256": "e1e8f5e63bfe3ce4b80530435dfbd25c3550b8408f8e7dd03b2291dc4f824482"
+    },
+    {
+      "index": 13,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/013.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/013.json",
+      "receiptSha256": "7c1568f4da991ab9adcde5811744f9b81f060d39d2752025353985d7b5ffe236",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/013.log",
+      "logSha256": "c891a36b75e8185e02f65a40039edf2d0beeb947c65ef34295690fca5fc57737"
+    },
+    {
+      "index": 14,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/014.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/014.json",
+      "receiptSha256": "40cc9d2a50db1ce7d837b8fd3926cba19429a2503a7e0b8cb1ca6bb221118b97",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/014.log",
+      "logSha256": "90bd2e50dea341b68cabca7d4d57acd59a77b331a3a4d019a0dbdd000aa11f98"
+    },
+    {
+      "index": 16,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/016.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/016.json",
+      "receiptSha256": "c31b2ca39a704729b6a91201883848e7124bcbcb1f387a6376257a3c0cf30f43",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/016.log",
+      "logSha256": "516f8e9a207722d0a3666dd11efa74c3b1eeb78e6999ddaeeab232cddd800d01"
+    },
+    {
+      "index": 31,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/031.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/031.json",
+      "receiptSha256": "16ae6ec040a46609f7b852ad17f5871834a8a701ca4d8f7682d819db5713c37b",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/031.log",
+      "logSha256": "3acd60150c5fa31cbf4c8297dd0a21ba046c54ebd95fa4cf50dd53ca74f51819"
+    },
+    {
+      "index": 70,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/070.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/070.json",
+      "receiptSha256": "bffa9095011314f8e26957cee39ffafda400dba20a311291e4b353c0f62d7fb2",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/070.log",
+      "logSha256": "cf3d0e5665f8298577b7462c76875d51c53e09bebe42f37e58ab63dc684067e7"
+    },
+    {
+      "index": 154,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/154.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/154.json",
+      "receiptSha256": "1d11d2f0fb3a03e62f2adefc3b947a85f1b02b398efc8e888b4d6112e0130391",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/154.log",
+      "logSha256": "8fe0b45ca906ec0bfbb17426b96fdb4127985619bbe15b7b3137500dec068850"
+    },
+    {
+      "index": 179,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/179.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/179.json",
+      "receiptSha256": "d4aa82f51d804092a7f30cb1e8123958e9507348c4ddbc454b666097e3a03036",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/179.log",
+      "logSha256": "8967fe5fbd6afec3ef5873f03799089188320edf1f95e61ca1107f2908538d28"
+    },
+    {
+      "index": 180,
+      "executedSourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "originalReceiptLogPointer": "artifacts/current-source-readiness-2026-10-25/matrix/180.log",
+      "immutableReceipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/180.json",
+      "receiptSha256": "821b17e20493a26f550be33633e1099d784b98035d7874e3357a45f7cbddc48c",
+      "immutableLog": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/180.log",
+      "logSha256": "a0c38016d97c424b96f0aae7dac6745cd14c06e76e3eef023be649a4adb69d08"
+    }
+  ]
+}

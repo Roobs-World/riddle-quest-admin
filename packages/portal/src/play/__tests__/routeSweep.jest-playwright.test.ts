@@ -1,7 +1,7 @@
 import {afterAll, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {createServer, type Server} from "node:http";
-import {readFile} from "node:fs/promises";
+import {appendFile, readFile} from "node:fs/promises";
 import path from "node:path";
 import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 
@@ -11,6 +11,8 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 const DEPTH_OVERRIDE = process.env.PORTAL_ROUTE_SWEEP_DEPTH ? Number(process.env.PORTAL_ROUTE_SWEEP_DEPTH) : undefined;
 /** Upper bound on distinct routes per entry point, so a UI explosion fails loudly instead of hanging. */
 const MAX_ROUTES = Number(process.env.PORTAL_ROUTE_SWEEP_MAX_ROUTES ?? "400");
+/** Optional run-owned evidence path exposes completed routes before Jest flushes its buffered console. */
+const PROGRESS_FILE = process.env.PORTAL_ROUTE_SWEEP_PROGRESS_FILE;
 jest.setTimeout(45 * 60_000);
 
 /** Answer entry is gameplay, not navigation; the gameplay suites type and submit answers. */
@@ -223,6 +225,8 @@ describeBrowser("every player route", () => {
       /** Route under test. */
       const route = queue.shift()!;
       visited += 1;
+      /** Only problems from this route belong in its immediate progress and screenshot evidence. */
+      const problemStart = problems.length;
       /** Isolated storage so every route starts as a fresh player. */
       const context = await browser.newContext({viewport: {width: 390, height: 844}});
       await context.route("https://cdn.jest.com/**", (request) =>
@@ -282,6 +286,12 @@ describeBrowser("every player route", () => {
       } catch (error) {
         problems.push(`${describeRoute(route)}: ${phase}: ${(error as Error).message.split("\n")[0]}${errors.length ? `; ${errors.join(" | ")}` : ""}`);
       } finally {
+        if (PROGRESS_FILE) {
+          if (problems.length > problemStart) await page.screenshot({path: path.join(path.dirname(PROGRESS_FILE),
+            `route-failure-${query.includes("race") ? "multiplayer" : query.includes("dailyCompleted") ? "classic" : "daily"}-${visited}.png`)}).catch(() => undefined);
+          await appendFile(PROGRESS_FILE, JSON.stringify({query, visited, expanded: expanded.size, queued: queue.length,
+            route: describeRoute(route), phase, problems: problems.slice(problemStart), at: new Date().toISOString()}) + "\n");
+        }
         await context.close();
       }
     }

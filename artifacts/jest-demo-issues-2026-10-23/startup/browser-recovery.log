@@ -1,0 +1,11 @@
+PASS cold 390px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS timeout 390px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS rejected 390px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS sdk-read 390px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS sdk-complete 390px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS cold 1280px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS timeout 1280px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS rejected 1280px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS sdk-read 1280px: real app startup/recovery, original token retained, no unexpected browser errors.
+PASS sdk-complete 1280px: real app startup/recovery, original token retained, no unexpected browser errors.
+EVIDENCE /home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-demo-issues-2026-10-23/startup/browser-recovery

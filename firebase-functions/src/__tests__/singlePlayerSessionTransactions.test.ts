@@ -273,8 +273,8 @@ describe("single-player session transactions", () => {
     expect(mockDocuments.get(userPath)?.unlockedAchievements).toEqual([{achievementId, unlockedAt: 1}]);
   });
 
-  it("accepts a Tokyo Daily hint only before its bound locale midnight", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T15:01:00Z"));
+  it("accepts a Tokyo Daily hint only before its bound locale 09:00 rollover", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T00:01:00Z"));
     try {
       mockDocuments.set(sessionPath(), baseSession({gameMode: "challenge", locale: "ja", riddleId: "daily-2026-08-12", challengeDate: "2026-08-12", completionKey: "challenge:2026-08-12"}));
       /** Correlated hint request bound to the Tokyo Daily session and original receipt. */
@@ -282,7 +282,7 @@ describe("single-player session transactions", () => {
       expect(await purchaseAuthoritativeHint(USER_ID, request)).toMatchObject({newCoins: 275});
       // Receipt replay remains free after rollover; a fresh spend must still fail closed.
       mockDocuments.set(sessionPath(), baseSession({gameMode: "challenge", locale: "ja", riddleId: "daily-2026-08-12", challengeDate: "2026-08-12", completionKey: "challenge:2026-08-12", expiresAt: {toDate: () => new Date("2026-08-14T00:00:00Z")} as never}));
-      jest.setSystemTime(new Date("2026-08-12T15:01:00Z"));
+      jest.setSystemTime(new Date("2026-08-13T00:01:00Z"));
       await expect(purchaseAuthoritativeHint(USER_ID, {...request, requestId: "tokyo-hint-0002"})).rejects.toThrow("no longer current");
       expect(mockDocuments.get(userPath)?.coins).toBe(275);
     } finally { jest.useRealTimers(); }

@@ -1,0 +1,60 @@
+{
+  "target": "jest",
+  "sourceCommit": "e1b5038b800e920b1b88207ca95ad5ac1ecd748f",
+  "archiveSha256": "953222deb4a0ad1dc63b8f44c1e18ceab7aa40b34082bf56e179d4332ce52863",
+  "testsSkippedByUserRequest": true,
+  "builtTargets": [
+    "jest",
+    "facebook",
+    "reddit",
+    "youtube",
+    "netflix",
+    "yahoo"
+  ],
+  "visualPreview": {
+    "viewports": [
+      1280,
+      390
+    ],
+    "earthLaunchesObservedAtActiveSeconds": [
+      0,
+      24,
+      48
+    ],
+    "browserErrors": 0,
+    "sceneErrors": 0,
+    "allDisplayedPlanetsContributeGravity": true
+  },
+  "model": "Illustrative restricted-body simulation in the compressed display geometry. NASA/JPL GM ratios and SpaceX MVac thrust are sourced; initial conditions and playback scaling are assumptions.",
+  "sources": [
+    "https://ssd.jpl.nasa.gov/astro_par.html",
+    "https://science.nasa.gov/learn/basics-of-space-flight/primer/",
+    "https://www.spacex.com/assets/media/falcon-users-guide-2025-05-09.pdf"
+  ],
+  "url": "https://jest.com/g/riddle-q?versionId=01a14a02-36d4-7259-b32d-0c1ddd046bf1",
+  "authoritativeVersion": {
+    "id": "01a14a02-36d4-7259-b32d-0c1ddd046bf1",
+    "version": "1.0.0-dev.20261017131628.e1b5038b800e.36a7bff4",
+    "isActive": true,
+    "description": null,
+    "shareNotesWithPlayers": false,
+    "fileSizeBytes": 4702227,
+    "activatedAt": "2026-10-17T13:17:10.559Z",
+    "deactivatedAt": null,
+    "createdAt": "2026-10-17T13:17:01.524Z",
+    "previewUrl": "/g/riddle-q?versionId=01a14a02-36d4-7259-b32d-0c1ddd046bf1",
+    "hostingMode": "bundled",
+    "selfHostedUrl": null,
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "sdkCompatibility": {
+      "engine": null,
+      "detectedVersion": null,
+      "latestVersion": null,
+      "breakingChangeVersion": null,
+      "status": "not_applicable",
+      "message": "No engine SDK version was detected for this build.",
+      "changelogUrl": null
+    }
+  }
+}

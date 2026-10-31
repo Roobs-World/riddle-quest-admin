@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "allJoinsElapsedMs": 3540.190791,
+  "transactionAttempts": 15,
+  "checks": {
+    "allJoinsSucceeded": true,
+    "eightOwnedTickets": true,
+    "fourHumanMatches": true,
+    "eachPlayerMatchedOnce": true,
+    "everyTicketAssigned": true,
+    "balancesUnchanged": true
+  }
+}

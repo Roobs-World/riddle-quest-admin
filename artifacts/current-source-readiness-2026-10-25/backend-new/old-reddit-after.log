@@ -1,0 +1,7 @@
+
+Test Suites: 2 passed, 2 total
+Tests:       91 skipped, 8 passed, 99 total
+Snapshots:   0 total
+Time:        2.287 s
+Ran all test suites within paths "src/__tests__/race/raceAnswerInputShape.it.test.ts", "src/__tests__/race/raceLiveDeckCompatibility.it.test.ts".
+Test results written to: ../artifacts/current-source-readiness-2026-10-25/backend-new/old-reddit-after-results.json

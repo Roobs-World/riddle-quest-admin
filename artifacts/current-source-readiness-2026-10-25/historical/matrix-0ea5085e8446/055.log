@@ -1,0 +1,57 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments cached at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-success at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-failure at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox cached at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-success at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-failure at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments cached at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-success at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-failure at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox cached at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-success at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-failure at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments cached at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-success at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-failure at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox cached at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-success at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-failure at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments cached at 390px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-success at 390px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: tournaments pending-failure at 390px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox cached at 390px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-success at 390px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider rendered cache passed: inbox pending-failure at 390px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider replacement preserves active input at 1280px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider replacement preserves active input at 390px, strict=false.
+[riddle-silent-guard] context isolated before navigation
+Provider replacement preserves active input at 1280px, strict=true.
+[riddle-silent-guard] context isolated before navigation
+Provider replacement preserves active input at 390px, strict=true.

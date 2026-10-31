@@ -218,6 +218,20 @@ function validateGeneratedRiddle(generatedRiddle: GeneratedRiddle): [string, str
   return [validation.data.question, validation.data.answer];
 }
 
+/** A rejected candidate can guide a bounded retry without weakening its review. */
+export type RiddleReviewFeedback = {
+  /** Candidate clue rejected by the independent reviewer. */
+  question: string;
+  /** Candidate answer rejected by the independent reviewer. */
+  answer: string;
+  /** Difficulty band assigned by the independent reviewer. */
+  difficulty: RiddleReview["difficulty"];
+  /** Content review flags and requested difficulty check guiding a retry. */
+  failedChecks: Readonly<Omit<RiddleReview, "issues" | "difficulty"> & {
+  /** Whether the independent difficulty matches the requested band. */
+  difficultyMatch: boolean}>;
+};
+
 /** Context shared by the author and independent editor. */
 export type RiddleGenerationOptions = {
   /** Durable supply workers can spend longer per model request without delaying gameplay. */
@@ -230,6 +244,10 @@ export type RiddleGenerationOptions = {
   difficulty?: "easy" | "medium";
   /** Stores excluded questions. */
   excludedQuestions?: string[];
+  /** Content-only rejection feedback for the next bounded author attempt. */
+  previousReview?: RiddleReviewFeedback;
+  /** Receives a quality rejection without changing independent review input. */
+  onReviewRejected?: (feedback: RiddleReviewFeedback) => void;
 };
 
 /** Offline bank authoring can wait longer without extending player-facing supply deadlines. */
@@ -394,21 +412,24 @@ async function reviewGeneratedRiddle(
   }
 
   if (!reviewPassed(review, options)) {
+    /** Content review flags and requested difficulty check guiding a retry. */
+    const failedChecks = {
+      clueSupportsAnswer: !review.clueSupportsAnswer,
+      singleBestAnswer: !review.singleBestAnswer,
+      factuallySound: !review.factuallySound,
+      naturalLanguage: !review.naturalLanguage,
+      fairForCasualPlayers: !review.fairForCasualPlayers,
+      noAnswerSpoiler: !review.noAnswerSpoiler,
+      categoryMatch: !review.categoryMatch,
+      difficultyMatch:
+        !(review.difficulty === "easy" || review.difficulty === "medium") ||
+        Boolean(options.difficulty && review.difficulty !== options.difficulty),
+    };
     functions.logger.warn("Generated riddle was rejected by quality review.", {
       issueCount: review.issues.length,
-      failedChecks: {
-        clueSupportsAnswer: !review.clueSupportsAnswer,
-        singleBestAnswer: !review.singleBestAnswer,
-        factuallySound: !review.factuallySound,
-        naturalLanguage: !review.naturalLanguage,
-        fairForCasualPlayers: !review.fairForCasualPlayers,
-        noAnswerSpoiler: !review.noAnswerSpoiler,
-        categoryMatch: !review.categoryMatch,
-        difficultyMatch:
-          !(review.difficulty === "easy" || review.difficulty === "medium") ||
-          Boolean(options.difficulty && review.difficulty !== options.difficulty),
-      },
+      failedChecks,
     });
+    options.onReviewRejected?.({question, answer, difficulty: review.difficulty, failedChecks});
     return null;
   }
 
@@ -470,7 +491,13 @@ export async function generateUniqueRiddle(
               "- Keep it engaging and suitable for casual players of all ages.\n" +
               "- Make it original in wording and angle, without sacrificing clarity or fairness." +
               answerExclusionPrompt +
-              `\n- Do not repeat or lightly paraphrase these previous questions: ${JSON.stringify(options.excludedQuestions?.slice(-40) ?? [])}.`,
+              `\n- Do not repeat or lightly paraphrase these previous questions: ${JSON.stringify(options.excludedQuestions?.slice(-40) ?? [])}.` +
+              (options.previousReview
+                ? "\nAn earlier candidate failed independent review. Choose a different answer and clue, improve the failed checks, and keep the required difficulty unchanged. " +
+                  "When difficultyMatch is true and the reviewed difficulty was easy, replace a direct definition or a list of familiar features with one inference combining two concrete facts. " +
+                  "When the reviewed difficulty was hard, remove specialist knowledge or extra deductions. " +
+                  `Earlier review: ${JSON.stringify({difficulty: options.previousReview.difficulty, failedChecks: options.previousReview.failedChecks})}`
+                : ""),
             prompt_cache_key: "riddlequest-riddle-generation-v2",
             store: false,
             text: {format: zodTextFormat(OpenAIGeneratedRiddleSchema, "generated_riddle"), verbosity: "low"},

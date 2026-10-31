@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_WAKE_REACT_MODE??'development';assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.LIVE_WAKE_REPORT_DIR??path.join(root,'../../artifacts/live-recovery-wakeups-2026-10-05',mode));
+const output=path.resolve(process.env.LIVE_WAKE_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-recovery-wakeups-2026-10-05',mode));
 const baseline=process.env.LIVE_WAKE_BASELINE_DIR;
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-recovery-wakeups-'));const observations=[];let browser,server;

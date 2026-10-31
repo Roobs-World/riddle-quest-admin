@@ -1,0 +1,37 @@
+{
+  "index": 172,
+  "executable": "node",
+  "args": [
+    "packages/portal/scripts/verify-race-resume-hint-ownership-browser.mjs"
+  ],
+  "tasks": [
+    "multiplayer:race-resume-hint-ownership"
+  ],
+  "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+  "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+  "status": "passed",
+  "exitCode": 0,
+  "startedAt": "2026-10-25T22:34:42.758Z",
+  "checkedAt": "2026-10-25T22:34:44.377Z",
+  "log": "artifacts/current-source-readiness-2026-10-25/matrix/172.log",
+  "sha256": "79abfec1ecaa92b49866929b9d831117c4280051cafd3cc7e94e3934db179882",
+  "artifacts": {},
+  "artifactSnapshots": {},
+  "executedArgs": [
+    "packages/portal/scripts/verify-race-resume-hint-ownership-browser.mjs"
+  ],
+  "sourceStillMatches": true,
+  "artifactsObservedAt": "2026-10-25T22:34:44.377Z",
+  "provenance": {
+    "kind": "current-exact-execution",
+    "baselineReport": "artifacts/development-checks/goal-20261024-receipts-final5c-local-receipts/checks-report-snapshot.json"
+  },
+  "environment": {
+    "SENTRY_UPLOAD_SOURCEMAPS": "false",
+    "RIDDLE_LOCAL_VERIFICATION": "1",
+    "RIDDLE_MATRIX_GENERATION": "next",
+    "NODE_OPTIONS": "--require=/tmp/riddle-silent-browser.cjs",
+    "silentGuardSha256": "1aab069efec77c4bd45866185431328c400ceacf7e4527e4dc61deea1e8524dc",
+    "silentFixtureSha256": "50ac614914e4616e7ce2d3a62485577704692777771a6f0a26ea605a39fe48ab"
+  }
+}

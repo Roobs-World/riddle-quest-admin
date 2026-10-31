@@ -1,0 +1,92 @@
+{
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "snapshotDirectory": "/tmp/riddle-quest-jest-instructions-hdx5uca5",
+  "snapshotCommit": "db9454dde00b44c64902828ac2c0e3e740447039",
+  "sourceCommit": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+  "sourceDirty": true,
+  "version": "1.0.0-dev.20261017143639.instructions",
+  "directory": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-uploads/initial-instructions-20261017",
+  "testsRun": false,
+  "sourceFiles": [
+    {
+      "path": "packages/portal/src/play/guidance/guidanceConfig.ts",
+      "sha256": "0fab15ef1236bc1974c0dc4188d2710cb0ee8cf398a19f2c9702cb8a4fba9140"
+    },
+    {
+      "path": "packages/portal/src/play/guidance/GuidanceOverlay.tsx",
+      "sha256": "b547ccb24c020203bb572d8010e11847ab186b3d4a6dec958c79b1642514e576"
+    },
+    {
+      "path": "packages/portal/src/play/GameFrameApp.tsx",
+      "sha256": "8c8c1608a94c8d25f05f5393221f314ab559becd7f6be7515ab316f9609ad75b"
+    },
+    {
+      "path": "src/locales/ar/tooltips.json",
+      "sha256": "5b6da094b227cbd086c7eb96069b7b99f057bc3981addea7c9f51cd72b1e31ab"
+    },
+    {
+      "path": "src/locales/de/tooltips.json",
+      "sha256": "90d8201e80804c5d2076e8838146bc9c974bfadb2e30392c6459eba96c7dca4a"
+    },
+    {
+      "path": "src/locales/en/tooltips.json",
+      "sha256": "837edefe28cb6f45be885d8f651e0f46ad130697234ace5748f08166ff85c3d2"
+    },
+    {
+      "path": "src/locales/es/tooltips.json",
+      "sha256": "7ff7f24b12dcd5c5f708d9f29d1456c874e2749d63d9ef02a99d9572b32fd820"
+    },
+    {
+      "path": "src/locales/fr/tooltips.json",
+      "sha256": "70e6867a338e649b0fb22871376f1ce10359787ab418e1da9bcc14a47ae66b8f"
+    },
+    {
+      "path": "src/locales/hi/tooltips.json",
+      "sha256": "1d309676dfc133262454dc6827018331c043c49b1df197eff6fe3514561714b3"
+    },
+    {
+      "path": "src/locales/id/tooltips.json",
+      "sha256": "3498dd516a8a9a1d0dee57f82bc09edf5e613b1d2b661a9c06ccd9389f46c5f8"
+    },
+    {
+      "path": "src/locales/it/tooltips.json",
+      "sha256": "2c521f3585c04d87af43fd0180a833ab586b2cb569ce9097f6b66b2aa00d0e01"
+    },
+    {
+      "path": "src/locales/ja/tooltips.json",
+      "sha256": "de537d994643c44894f10f2fc0d862226ad75e44cb3dd1c35484c279252f34b3"
+    },
+    {
+      "path": "src/locales/ko/tooltips.json",
+      "sha256": "fe02382a2fdf15b5ca7dc28f2f6a51db1838621738f64ede45fe1c2175f39279"
+    },
+    {
+      "path": "src/locales/nl/tooltips.json",
+      "sha256": "f6a4c4cea603f41fc5c9ff77afa13f9e534b94bacc72541ffdb2065a3be417ca"
+    },
+    {
+      "path": "src/locales/pl/tooltips.json",
+      "sha256": "bbeabaf715ffe76fea65bde9b3ac26104e8fdc3f9ff9f083a72118f341c0df5a"
+    },
+    {
+      "path": "src/locales/pt/tooltips.json",
+      "sha256": "b184c12cd969153d096f0a88c64a6f9432987070facbc915c69d0f082efe23dd"
+    },
+    {
+      "path": "src/locales/ru/tooltips.json",
+      "sha256": "e40ed3bb536d7f11f5d24651bd84724d70939855c0141a5feee2c83b29c99b11"
+    },
+    {
+      "path": "src/locales/tr/tooltips.json",
+      "sha256": "cfdb7a85350d2bc4f430e63e92aa09728a3e668bc84fff0ef3c69a6492d3cf6f"
+    },
+    {
+      "path": "src/locales/vi/tooltips.json",
+      "sha256": "965d40a7bb6346d65179e7e31c6abcb14d0abf2826b4bff518d96ed49e74654b"
+    }
+  ],
+  "archiveSha256": "407f463e7c5c5e1d1bf0aae55432fd3b5641616d85821d658b4968d3531d08ab",
+  "archiveBytes": 2871723,
+  "archiveEntries": 415
+}

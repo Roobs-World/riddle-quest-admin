@@ -1,0 +1,49 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "mode": "after",
+  "balances": [
+    225,
+    125
+  ],
+  "stats": [
+    {
+      "multiplayerWins": 1,
+      "multiplayerGamesPlayed": 1
+    },
+    {
+      "multiplayerWins": 0,
+      "multiplayerGamesPlayed": 1
+    }
+  ],
+  "badges": [
+    [
+      "race_debut",
+      "race_first_win",
+      "race_clean_run"
+    ],
+    [
+      "race_debut"
+    ]
+  ],
+  "match": {
+    "winner": 0,
+    "rewardCoins": 50,
+    "runs": [
+      {
+        "correctCount": 10,
+        "correctEvents": 10,
+        "status": "completed",
+        "settlementCoins": 225
+      },
+      {
+        "correctCount": 1,
+        "correctEvents": 1,
+        "status": "active",
+        "settlementCoins": 125
+      }
+    ]
+  }
+}

@@ -155,7 +155,7 @@ jest.mock("firebase-admin", () => {
           (documentPath?: string): MockDocumentReference<T> =>
             ({
               get:
-                /^localizedRiddles\/[^/]+\/riddles$/.test(collectionPath) && documentPath === "current"
+                /^localizedRiddles\/[^/]+\/riddles$/.test(collectionPath) && documentPath?.startsWith("daily-")
                   ? mockAdminFirestoreGet
                   : jest
                       .fn<() => Promise<MockDocumentSnapshot<T>>>()
@@ -273,7 +273,7 @@ const createCurrentDailyRiddleDoc = (
     timestamp: unknown;
   }> = {},
 ) => ({
-  riddleId: "current",
+  riddleId: "daily-2023-01-01",
   text: "Question 1?",
   answer: "answer",
   timestamp: createTimestampMock("2023-01-01T10:00:00.000Z"),
@@ -425,7 +425,7 @@ describe("Daily Challenge Functions", () => {
         date: "2023-01-01",
         questions: [
           {
-            riddleId: "current",
+            riddleId: "daily-2023-01-01",
             text: "Question 1?",
             ...(includeEvaluation ? {evaluation: {answer: "answer", locale: "en"}} : {}),
             answerLength: 6,
@@ -551,7 +551,7 @@ describe("Daily Challenge Functions", () => {
       /** Provides mock player behavior. */
       const mockPlayer = {
         ...getDefaultPlayer(mockUserId),
-        lastDailyChallengeCompletedAt: createTimestampMock("2023-01-01T06:00:00.000Z"),
+        lastDailyChallengeCompletedAt: createTimestampMock("2023-01-01T09:30:00.000Z"),
         progress: {
           classicIndex: 0,
           dailyChallengeIndex: 0,
@@ -726,14 +726,29 @@ describe("Daily Challenge Functions", () => {
       await expect(getCurrentDailyChallenge(mockRequest)).rejects.toMatchObject({code: "not-found"});
     });
 
-    it("issues Tokyo's new Daily date before UTC rollover", async () => {
-      jest.setSystemTime(new Date("2023-01-01T15:01:00Z"));
+    it.each(["challengeDate", "challengeKey", "question", "answer", "riddles"])("rejects caller-supplied Daily field %s", async field => {
+      await expect(getCurrentDailyChallenge({auth: {uid: "daily-owner"}, data: {locale: "en", [field]: "arbitrary"}}))
+        .rejects.toMatchObject({code: "invalid-argument"});
+      expect(mockGetUser).not.toHaveBeenCalled();
+      expect(mockEnsureAuthoritativeSession).not.toHaveBeenCalled();
+    });
+
+    it.each([{riddleId: "daily-replacement"}, {locale: "fr"}])("rejects a dated document with mismatched canonical identity %#", async mismatch => {
+      mockGetUser.mockResolvedValue(getDefaultPlayer("daily-owner"));
+      mockAdminFirestoreGet.mockResolvedValue({exists: true, data: () => ({...createCurrentDailyRiddleDoc(), ...mismatch})});
+      await expect(getCurrentDailyChallenge({auth: {uid: "daily-owner"}, data: {locale: "en"}}))
+        .rejects.toMatchObject({code: "failed-precondition"});
+      expect(mockEnsureAuthoritativeSession).not.toHaveBeenCalled();
+    });
+
+    it("issues Tokyo's new Daily date at regional 09:00", async () => {
+      jest.setSystemTime(new Date("2023-01-02T00:01:00Z"));
       mockGetUser.mockResolvedValue(getDefaultPlayer("tokyoMidnight"));
-      mockAdminFirestoreGet.mockResolvedValue({exists: true, data: () => ({...createCurrentDailyRiddleDoc(), challengeKey: "2023-01-02"})});
+      mockAdminFirestoreGet.mockResolvedValue({exists: true, data: () => ({...createCurrentDailyRiddleDoc(), riddleId: "daily-2023-01-02", challengeKey: "2023-01-02"})});
       /** Authority response proving Tokyo Daily selection follows its local date. */
       const result = await getCurrentDailyChallenge({auth: {uid: "tokyoMidnight"}, data: {locale: "ja"}});
       expect(result.challenge?.date).toBe("2023-01-02");
-      expect(mockEnsureAuthoritativeSession).toHaveBeenCalledWith("tokyoMidnight", "challenge", "current", "ja", expect.any(String), "challenge:2023-01-02", "answer", {challengeDate: "2023-01-02"});
+      expect(mockEnsureAuthoritativeSession).toHaveBeenCalledWith("tokyoMidnight", "challenge", "daily-2023-01-02", "ja", expect.any(String), "challenge:2023-01-02", "answer", {challengeDate: "2023-01-02"});
     });
 
     it("binds a requested non-English locale into the private play session", async () => {
@@ -761,7 +776,7 @@ describe("Daily Challenge Functions", () => {
       expect(mockEnsureAuthoritativeSession).toHaveBeenCalledWith(
         mockUserId,
         "challenge",
-        "current",
+        "daily-2023-01-01",
         "fr",
         expect.any(String),
         "challenge:2023-01-01",
@@ -866,7 +881,7 @@ describe("Daily Challenge Functions", () => {
       const result = await getCurrentDailyChallenge({auth: {uid: mockUserId}} as CallableRequest<unknown>);
 
       expect(mockCompleteAuthoritativeGame).toHaveBeenCalledWith(
-        {riddleId: "current", gameMode: "challenge", sessionToken: SESSION_TOKEN},
+        {riddleId: "daily-2023-01-01", gameMode: "challenge", sessionToken: SESSION_TOKEN},
         expect.objectContaining({uid: mockUserId}),
       );
       expect(result).toMatchObject({hasCompletedToday: true, error: "Today's daily challenge is already complete."});

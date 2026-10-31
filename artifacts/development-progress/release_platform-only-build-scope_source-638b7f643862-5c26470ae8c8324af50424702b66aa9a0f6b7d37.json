@@ -1,0 +1,84 @@
+{
+  "completion": {
+    "taskId": "release:platform-only-build-scope:source-638b7f643862",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks",
+      "itch"
+    ],
+    "work": "Exclude standalone web and all PWA build/release paths; retain named HTML5 platform handoffs and historical dashboard receipts with durable scope exclusions.",
+    "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+    "completedAt": "2026-10-25T23:39:05.166Z",
+    "trigger": "local current-source revalidation",
+    "requiredChecks": [
+      "release-contracts",
+      "dashboard-content",
+      "isolated-target-builds",
+      "target-dependency-evidence",
+      "release-target-integrity",
+      "file-sizes",
+      "documentation"
+    ],
+    "checks": [
+      {
+        "id": "release-contracts",
+        "status": "passed",
+        "evidence": "node --test scripts/release/platform-releases.test.mjs scripts/release/package-html5-platform.test.mjs scripts/release/html5-handoff-preparation.test.mjs scripts/release/development-progress.test.mjs scripts/release/record-release-automation.test.mjs scripts/release/refresh-submission-dashboard.test.mjs; current-source check at 2026-10-25T23:15:52.409Z; output artifacts/development-checks/current-source-20261025/155.log SHA-256 667e769baef4b95497f7400a0dce3250f467428687ee6c86f5f94bbb8da3dd4f"
+      },
+      {
+        "id": "dashboard-content",
+        "status": "passed",
+        "evidence": "node --test docs/reports/platform-release-readiness/tests/release-dashboard-content.test.mjs; current-source check at 2026-10-25T23:15:53.122Z; output artifacts/development-checks/current-source-20261025/156.log SHA-256 366c6b5dfd1bd11ad8feb3e83e2b7b9c4d295c4ec2b2e6dd72dbc85cdf9f35a7"
+      },
+      {
+        "id": "isolated-target-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-25T23:13:07.829Z; output artifacts/development-checks/current-source-20261025/007.log SHA-256 e64cfaaa740a4cfd0c82ce5dc3a14279035ba3f28354890fd813cc1f55c96710"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-25T23:15:15.234Z; output artifacts/development-checks/current-source-20261025/002.log SHA-256 247370a3c50c37912b681ccfd1737f9c49da9b89d2cf718597b3ceab7ff1f552"
+      },
+      {
+        "id": "release-target-integrity",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-release-target-e2e.mjs; current-source check at 2026-10-25T23:15:21.352Z; output artifacts/development-checks/current-source-20261025/005.log SHA-256 79bcf255dbdbc59e4d1899f5e919211c022aa1298412a481ef54f56b98acfcdd"
+      },
+      {
+        "id": "file-sizes",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-25T23:02:57.104Z; output artifacts/development-checks/current-source-20261025/010.log SHA-256 c043a6408621a375d61ca4b84a8fb317afdf4fa2eeb05485d2b409b626c59bf6"
+      },
+      {
+        "id": "documentation",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-25T23:02:58.600Z; output artifacts/development-checks/current-source-20261025/011.log SHA-256 14c709fe95f4adbbe9899111963dbe1cf3227abf8a6164b21d281bc43402d1da"
+      }
+    ],
+    "remainingGates": [
+      "Provider publication and existing deployment/listing changes remain separate from build scope.",
+      "The broader multiplayer reliability goal remains active."
+    ],
+    "nextAction": "Continue multiplayer reliability improvements for supported HTML5 platform targets.",
+    "artifacts": [
+      {
+        "target": "itch",
+        "file": "docs/evidence/platform-only-build-scope.md",
+        "sha256": "f69737a42b436897b1204a8656734720ee78f5c82f41e32c90e831e4eeb7bc2a"
+      }
+    ],
+    "revalidation": {
+      "taskId": "release:platform-only-build-scope",
+      "declarationSha256": "a67781756558bcb99bc2ba181b9815545cabd86934551371bae83ba69143e22d"
+    }
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

@@ -9,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_SIGNAL_REACT_MODE??'development',baseline=process.env.LIVE_SIGNAL_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.LIVE_SIGNAL_REPORT_DIR??path.join(root,'../../artifacts/live-signal-failures-2026-10-04',mode));
+const output=path.resolve(process.env.LIVE_SIGNAL_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-signal-failures-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-signal-failures-'));let browser,server;const observations=[];
 try{

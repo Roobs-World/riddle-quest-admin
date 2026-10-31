@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "दैनिक चुनौती",
     "SHARE_MESSAGE_TEMPLATE": "मैंने आज के Riddle Quest {gameType} को हल किया {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nक्या तुम मेरा स्कोर हरा सकते हो?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "मेरा Riddle Quest परिणाम देखें!",
-    "INVITE_FRIEND": "दोस्त को आमंत्रित करें"
+    "INVITE_FRIEND": "दोस्त को आमंत्रित करें",
+    "REWARD_CLASSIC": "क्लासिक पहेली",
+    "REWARD_DAILY": "दैनिक पहेली",
+    "REWARD_LEVEL_BONUS": "स्तर बढ़ने का बोनस",
+    "REWARD_STREAK_BONUS": "लगातार जीत का बोनस",
+    "REWARD_ACHIEVEMENT_BONUS": "उपलब्धि बोनस",
+    "REWARD_REFERRAL_BONUS": "आमंत्रण बोनस"
   }
 }

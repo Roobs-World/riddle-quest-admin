@@ -20,11 +20,20 @@ import {parseClassicLoadIndex, parseSinglePlayerResumeFields} from "../gameplay/
 import {reconcilePreviousDailyBinding} from "./dailyRolloverRecovery";
 import {recoverPendingAuthoritativeCompletion} from "../gameplay/singlePlayerTerminalRecovery";
 import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
+import {z} from "zod";
+import {validateCallableRequest} from "../validation/callableValidation";
 
 /** Defines the daily challenge question count value. */
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
-/** Defines the current daily riddle doc id value. */
-const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
+/** Daily callers select a language or resume an issued session, never supply content or a date. */
+const DailyChallengeLoadSchema = z.object({
+  locale: z.enum(SUPPORTED_LOCALES).optional(),
+  sessionToken: z.string().min(20).max(128).optional(),
+  riddleId: z.string().min(1).max(160).optional(),
+  includeEvaluation: z.boolean().optional(),
+  includeHintRecovery: z.boolean().optional(),
+  includeGuessRecovery: z.boolean().optional(),
+}).strict();
 
 /** Parses only trusted Firestore session timestamps. */
 const trustedSessionDate = (value: unknown): Date | undefined => {
@@ -37,7 +46,7 @@ const trustedSessionDate = (value: unknown): Date | undefined => {
 };
 
 /**
- * Ensures a usable "current" daily challenge document exists for today.
+ * Loads only the server-selected dated document for the active language.
  *
  * @returns Fresh challenge snapshot plus today's regional date string.
  */
@@ -56,9 +65,7 @@ async function getFreshDailyChallengeDoc(locale: string = "en"): Promise<{
   /** Provides dated daily challenge doc behavior. */
   const datedDailyChallengeDoc = await localizedRiddleCollection.doc(`daily-${todayDateString}`).get();
   /** Provides daily challenge doc behavior. */
-  const dailyChallengeDoc = datedDailyChallengeDoc.exists
-    ? datedDailyChallengeDoc
-    : await localizedRiddleCollection.doc(CURRENT_DAILY_RIDDLE_DOC_ID).get();
+  const dailyChallengeDoc = datedDailyChallengeDoc;
 
   return {dailyChallengeDoc, todayDateString};
 }
@@ -72,39 +79,22 @@ export const getCurrentDailyChallenge = onCallWithSentry(
   "getCurrentDailyChallenge",
   gameplayInteractiveCallableOptions,
   async (
-    request: CallableRequest<{
-      /** Stores locale. */
-      locale?: unknown;
-      /** Stores session token. */
-      sessionToken?: unknown;
-      /** Opts into preloaded feedback without changing legacy response shapes. */
-      includeEvaluation?: boolean;
-      /** Opts in to purchased hint recovery without changing older client responses. */
-      includeHintRecovery?: boolean;
-      /** Opts in to authoritative accepted guess recovery. */
-      includeGuessRecovery?: boolean;
-      /** Stores riddle id. */
-      riddleId?: unknown;
-    }>,
+    request: CallableRequest<unknown>,
   ): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The user must be authenticated to load the daily challenge.");
       }
+      /** Validated locale, response flags and paired recovery identifiers. */
+      const input = validateCallableRequest(DailyChallengeLoadSchema, request.data ?? {}, "getCurrentDailyChallenge");
       /** Provides locale behavior. */
       let locale = "en";
       /** Provides authenticated user behavior. */
       let authenticatedUser: Awaited<ReturnType<typeof getUser>>;
       authenticatedUser = await getUser(request.auth.uid);
       if (!authenticatedUser) throw new HttpsError("not-found", "User data not found.");
-      if (request.data?.locale !== undefined) {
-        if (
-          typeof request.data.locale !== "string" ||
-          !SUPPORTED_LOCALES.includes(request.data.locale as (typeof SUPPORTED_LOCALES)[number])
-        ) {
-          throw new HttpsError("invalid-argument", "A supported locale is required.");
-        }
-        locale = request.data.locale;
+      if (input.locale !== undefined) {
+        locale = input.locale;
       } else if (
         authenticatedUser.preferredLanguage &&
         SUPPORTED_LOCALES.includes(authenticatedUser.preferredLanguage as (typeof SUPPORTED_LOCALES)[number])
@@ -113,7 +103,7 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       }
 
       /** Provides resume behavior. */
-      const resume = parseSinglePlayerResumeFields(request.data);
+      const resume = parseSinglePlayerResumeFields(input);
       /** Provides today date string behavior. */
       const todayDateString = getDailyDate(locale);
       if (resume) {
@@ -220,7 +210,10 @@ export const getCurrentDailyChallenge = onCallWithSentry(
       challengeDate = canonicalChallengeDate;
 
       /** Provides riddle id behavior. */
-      const riddleId = allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID;
+      const riddleId = `daily-${todayDateString}`;
+      if (allData.riddleId !== riddleId || (allData.locale !== undefined && allData.locale !== locale)) {
+        throw new HttpsError("failed-precondition", "Daily content does not match its server-selected date and language.");
+      }
       /** Provides canonical riddle behavior. */
       const canonicalRiddle = {
         ...allData,
@@ -288,9 +281,9 @@ export const getCurrentDailyChallenge = onCallWithSentry(
         challengeDate,
         sessionToken,
         activeSession,
-        request.data?.includeEvaluation === true,
-        request.data?.includeHintRecovery === true,
-        request.data?.includeGuessRecovery === true,
+        input.includeEvaluation === true,
+        input.includeHintRecovery === true,
+        input.includeGuessRecovery === true,
       );
 
       /** Provides current question behavior. */

@@ -1,0 +1,110 @@
+{
+  "checkedAt": "2026-10-25T22:35:28.302Z",
+  "passed": true,
+  "immutableOldServiceStateAndCorePreserved": true,
+  "runs": [
+    {
+      "label": "before",
+      "exitCode": 1,
+      "command": [
+        "pnpm",
+        "exec",
+        "jest",
+        "--config",
+        "/var/tmp/riddle-backend-surgical-20261025/jest-modern-before.config.cjs",
+        "--runInBand",
+        "--runTestsByPath",
+        "/var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs",
+        "--json",
+        "--outputFile=/home/craig-beswetherick/Documents/riddle-quest/artifacts/current-source-readiness-2026-10-25/backend-new/old-reddit-modern-before-results.json"
+      ],
+      "testsPassed": 0,
+      "testsFailed": 2,
+      "testsFiltered": 0,
+      "suites": 1,
+      "moduleProof": {
+        "compiledServiceModuleLoaded": true,
+        "resolvedService": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/lib/race/raceLiveService.js",
+        "resolvedQueue": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/lib/race/raceLiveQueue.js",
+        "resolvedCoreRace": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/race/index.js",
+        "pinnedCoreResolution": {
+          "@qwordly/core/contentProtection": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/contentProtection.js",
+          "@qwordly/core/game": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/game/index.js",
+          "@qwordly/core/pricing": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/pricing/index.js",
+          "@qwordly/core/pricing/catalog": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/pricing/catalog.js",
+          "@qwordly/core/pricing/facebookCatalog": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/pricing/facebookCatalog.js",
+          "@qwordly/core/race": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/race/index.js",
+          "@qwordly/core/referrals": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/referrals/index.js",
+          "@qwordly/core/validation": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/validation/index.js",
+          "@qwordly/core/validation/acceptedGuesses": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/validation/acceptedGuesses.js",
+          "@qwordly/core/validation/dailyCalendar": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/validation/dailyCalendar.js",
+          "@qwordly/core/validation/profanity": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/validation/profanity.js",
+          "@qwordly/core/validation/requestSchemas": "/var/tmp/riddle-backend-surgical-20261025/reddit-before-exec/packages/core/dist/validation/requestSchemas.js"
+        },
+        "moduleSha256": {
+          "service": "53e47de8189af8af752c69bb0e61b5d9e1d2a9301214a600d19772eab562d48f",
+          "state": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+          "coreSchema": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+          "queue": "94c2298c138a4964b3ff043d60b807777a63381d490b71fd6463eef27131e8d9"
+        },
+        "publicWaitMs": 6000,
+        "playerWaitMs": 900000,
+        "joinFunctionType": "function",
+        "updateFunctionType": "function"
+      },
+      "logSha256": "a2ffc1bce3f658ad9f7524dfe31d715a77ba8dfae9f9850ac6dd9a71be041cc1"
+    },
+    {
+      "label": "after",
+      "exitCode": 0,
+      "command": [
+        "pnpm",
+        "exec",
+        "jest",
+        "--config",
+        "/var/tmp/riddle-backend-surgical-20261025/jest-modern-after.config.cjs",
+        "--runInBand",
+        "--runTestsByPath",
+        "/var/tmp/riddle-backend-surgical-20261025/old-reddit-resumable.test.cjs",
+        "--json",
+        "--outputFile=/home/craig-beswetherick/Documents/riddle-quest/artifacts/current-source-readiness-2026-10-25/backend-new/old-reddit-modern-after-results.json"
+      ],
+      "testsPassed": 2,
+      "testsFailed": 0,
+      "testsFiltered": 0,
+      "suites": 1,
+      "moduleProof": {
+        "compiledServiceModuleLoaded": true,
+        "resolvedService": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/lib/race/raceLiveService.js",
+        "resolvedQueue": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/lib/race/raceLiveQueue.js",
+        "resolvedCoreRace": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/race/index.js",
+        "pinnedCoreResolution": {
+          "@qwordly/core/contentProtection": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/contentProtection.js",
+          "@qwordly/core/game": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/game/index.js",
+          "@qwordly/core/pricing": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/pricing/index.js",
+          "@qwordly/core/pricing/catalog": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/pricing/catalog.js",
+          "@qwordly/core/pricing/facebookCatalog": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/pricing/facebookCatalog.js",
+          "@qwordly/core/race": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/race/index.js",
+          "@qwordly/core/referrals": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/referrals/index.js",
+          "@qwordly/core/validation": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/validation/index.js",
+          "@qwordly/core/validation/acceptedGuesses": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/validation/acceptedGuesses.js",
+          "@qwordly/core/validation/dailyCalendar": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/validation/dailyCalendar.js",
+          "@qwordly/core/validation/profanity": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/validation/profanity.js",
+          "@qwordly/core/validation/requestSchemas": "/var/tmp/riddle-backend-surgical-20261025/reddit-after-exec/packages/core/dist/validation/requestSchemas.js"
+        },
+        "moduleSha256": {
+          "service": "53e47de8189af8af752c69bb0e61b5d9e1d2a9301214a600d19772eab562d48f",
+          "state": "aac648e1a8c949ed40de07f59e01dfd9d88f41002d496138d273b63751456d94",
+          "coreSchema": "c186fca917cae2ab32ab6de2c468601dbb2569664388e92449dfd33c47d3e3ce",
+          "queue": "400b672f443d35df1236d26a90552c18ad68667ea0808cea42f83150c74f79b2"
+        },
+        "publicWaitMs": 6000,
+        "playerWaitMs": 900000,
+        "joinFunctionType": "function",
+        "updateFunctionType": "function"
+      },
+      "logSha256": "4a3d4c4f1fbb667ab6f0259b310eec07b48de80870590a35ea5f443b3c81ca1e"
+    }
+  ],
+  "noProductionOperations": true
+}

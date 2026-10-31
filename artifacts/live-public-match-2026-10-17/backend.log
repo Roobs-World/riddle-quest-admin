@@ -1,0 +1,63 @@
+Emulator temporary directory: /tmp/riddle-quest-emulators-ubPvBi
+i  emulators: Starting emulators: firestore
+i  emulators: Detected demo project ID "demo-riddle-quest-public-match", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator was started in standard edition.
+✔  firestore: Firestore Emulator UI websocket is running on 28550.
+i  Running script: pnpm --dir firebase-functions exec jest --config jest.rules.config.js --runInBand src/__tests__/race/raceLive.it.test.ts --testNamePattern='pairs two live seats|withholds both players'
+Starting src/__tests__/race/raceLive.it.test.ts
+PASS src/__tests__/race/raceLive.it.test.ts
+  ✓ pairs two live seats with shared riddles, usernames, avatars and a five-second countdown (613 ms)
+  ✓ withholds both players' first prompt until the shared server start (3475 ms)
+  ○ skipped observes an unchanged human match without rewriting shared state
+  ○ skipped keeps unchanged bot observations read-only and never rewinds its server score
+  ○ skipped accepts one answer amid concurrent polls without losing scores or duplicating rewards
+  ○ skipped ends both players immediately on the tenth solved riddle and grants 50 coins once
+  ○ skipped grants eligible live race badges exactly once alongside terminal statistics
+  ○ skipped retains existing badge receipts across a new match and only grants its win reward
+  ○ skipped does not backfill or pay an already settled legacy result
+  ○ skipped serializes simultaneous finishes into one winner and one grant
+  ○ skipped seats a bot within seconds of an unanswered search and then starts a five-second countdown
+  ○ skipped replays queue joins and final guesses without duplicate seats or rewards
+  ○ skipped rejects another account's ticket and excludes blocked or cancelled players
+  ○ skipped keeps provider, language and category pools separate while pairing eligible waiting players
+  ○ skipped settles an active block privacy boundary without awarding a forfeit win
+  ○ skipped settles an active delete privacy boundary without awarding a forfeit win
+  ○ skipped cancels a countdown without paying a win and rewards an in-game forfeit only once
+  ○ skipped counts skips toward race progress and restores the same question on reload
+  ○ skipped resets question state after skip and settles the tenth completed riddle once
+  ○ skipped resets question state after exhaust and settles the tenth completed riddle once
+  ○ skipped lets the rival beat ten rapid skips, including after the finisher reloads and closes
+  ○ skipped lets a later unassisted finish beat an earlier hinted finish
+  ○ skipped adds hint time without blocking the next live action
+  ○ skipped adds skip time after skip while immediately allowing hint, submit and skip
+  ○ skipped adds skip time after exhaust while immediately allowing hint, submit and skip
+  ○ skipped scores wrong answers on the server and advances after exhausting attempts
+  ○ skipped recovers an expired search on reload and grants a bot victory once
+  ○ skipped keeps human matching and a simultaneous deadline poll exclusive
+  ○ skipped recovers searching and matched seats from their immutable decks when the catalog is unavailable
+  ○ skipped recovers live progress and a settled result without rereading the current content catalog
+  ○ skipped keeps bot progress and rejoined phase monotonic across older clock samples
+  ○ skipped does not turn an in-game forfeit back into a countdown cancellation
+  ○ skipped admits reordered guesses after already accepted live progress without rewinding their event clocks
+  ○ skipped preserves a searching seat heartbeat when an older poll arrives afterward
+  ○ skipped derives a safe bot clock floor for records without an observation marker
+  ○ skipped does not count a cancelled countdown as a played match
+  ○ skipped records both participants once on a started forfeit
+  ○ skipped counts a timed-out human draw once without awarding a win reward
+  ○ skipped rejects invalid or overflowing totals before recording any settlement grant: {"stats.multiplayerGamesPlayed":-1}
+  ○ skipped rejects invalid or overflowing totals before recording any settlement grant: {"stats.multiplayerWins":-1}
+  ○ skipped rejects invalid or overflowing totals before recording any settlement grant: {"coins":-1}
+  ○ skipped rejects invalid or overflowing totals before recording any settlement grant: {"coins":9007199254740991}
+  ○ skipped rejects invalid or overflowing totals before recording any settlement grant: {"stats.multiplayerGamesPlayed":9007199254740991}
+
+Test Suites: 1 passed, 1 total
+Tests:       41 skipped, 2 passed, 43 total
+Snapshots:   0 total
+Time:        4.682 s
+Ran all test suites matching src/__tests__/race/raceLive.it.test.ts with tests matching "pairs two live seats|withholds both players".
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

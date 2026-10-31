@@ -1,0 +1,280 @@
+2121e7dc3c75a1b1a72e62377831e533
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseFacebookContextCompetition = exports.FACEBOOK_CONTEXT_HISTORY_RETENTION_MS = exports.FACEBOOK_CONTEXT_MEMBER_LIMIT = void 0;
+exports.joinFacebookContextCompetition = joinFacebookContextCompetition;
+exports.leaveFacebookContextCompetition = leaveFacebookContextCompetition;
+exports.removeUserFromFacebookContextCompetitions = removeUserFromFacebookContextCompetitions;
+const https_1 = require("firebase-functions/v2/https");
+const race_1 = require("@qwordly/core/race");
+const firebaseAdmin_1 = require("../shared/firebaseAdmin");
+const facebookSecurity_1 = require("../facebook/facebookSecurity");
+const facebookContextCompetition_1 = require("./facebookContextCompetition");
+/** Defines the facebook context member limit value. */
+exports.FACEBOOK_CONTEXT_MEMBER_LIMIT = 50;
+/** Defines the facebook context deletion page size value. */
+const FACEBOOK_CONTEXT_DELETION_PAGE_SIZE = 100;
+var facebookContextCompetition_2 = require("./facebookContextCompetition");
+Object.defineProperty(exports, "FACEBOOK_CONTEXT_HISTORY_RETENTION_MS", { enumerable: true, get: function () { return facebookContextCompetition_2.FACEBOOK_CONTEXT_HISTORY_RETENTION_MS; } });
+/** Parses facebook context competition. */
+const parseFacebookContextCompetition = (value) => {
+    if (!value ||
+        typeof value.contextKey !== "string" ||
+        !/^[a-f0-9]{64}$/.test(value.contextKey) ||
+        (value.contextType !== "THREAD" && value.contextType !== "GROUP") ||
+        !race_1.RaceLocaleSchema.safeParse(value.locale).success ||
+        typeof value.hostUserId !== "string" ||
+        !Array.isArray(value.members) ||
+        !Number.isSafeInteger(value.createdAtMs) ||
+        value.createdAtMs < 0 ||
+        !Number.isSafeInteger(value.expiresAtMs) ||
+        value.expiresAtMs !== value.createdAtMs + facebookContextCompetition_1.FACEBOOK_CONTEXT_BOARD_DURATION_MS ||
+        value.expiresAtMs > facebookContextCompetition_1.FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS - facebookContextCompetition_1.FACEBOOK_CONTEXT_HISTORY_RETENTION_MS)
+        throw new https_1.HttpsError("data-loss", "Facebook context record is invalid.");
+    /** Provides members behavior. */
+    const members = value.members.map((member) => {
+        if (typeof member !== "object" ||
+            member === null ||
+            typeof member.userId !== "string" ||
+            !Number.isSafeInteger(member.joinedAtMs) ||
+            typeof member.active !== "boolean")
+            throw new https_1.HttpsError("data-loss", "Facebook context membership is invalid.");
+        /** Parses d. */
+        const parsed = member;
+        if (!(0, facebookSecurity_1.isFacebookFirebaseUid)(parsed.userId)) {
+            throw new https_1.HttpsError("data-loss", "Facebook context membership identity is invalid.");
+        }
+        if (parsed.joinedAtMs < value.createdAtMs || parsed.joinedAtMs >= value.expiresAtMs) {
+            throw new https_1.HttpsError("data-loss", "Facebook context membership time is invalid.");
+        }
+        return parsed;
+    });
+    if (!(0, facebookSecurity_1.isFacebookFirebaseUid)(value.hostUserId)) {
+        throw new https_1.HttpsError("data-loss", "Facebook context host identity is invalid.");
+    }
+    if (members.length < 1 || members.length > exports.FACEBOOK_CONTEXT_MEMBER_LIMIT) {
+        throw new https_1.HttpsError("data-loss", "Facebook context membership count is invalid.");
+    }
+    if (new Set(members.map(({ userId }) => userId)).size !== members.length) {
+        throw new https_1.HttpsError("data-loss", "Facebook context membership identities are duplicated.");
+    }
+    /** Provides active members behavior. */
+    const activeMembers = members
+        .filter(({ active }) => active)
+        .sort((left, right) => left.joinedAtMs - right.joinedAtMs || left.userId.localeCompare(right.userId));
+    if (activeMembers.length === 0 || activeMembers[0].userId !== value.hostUserId) {
+        throw new https_1.HttpsError("data-loss", "Facebook context host election is invalid.");
+    }
+    return {
+        contextKey: value.contextKey,
+        contextType: value.contextType,
+        locale: value.locale,
+        hostUserId: value.hostUserId,
+        members,
+        createdAtMs: value.createdAtMs,
+        expiresAtMs: value.expiresAtMs,
+    };
+};
+exports.parseFacebookContextCompetition = parseFacebookContextCompetition;
+/** Asserts facebook user. */
+const assertFacebookUser = (userId) => {
+    if (!(0, facebookSecurity_1.isFacebookFirebaseUid)(userId))
+        throw new https_1.HttpsError("permission-denied", "Facebook identity is required.");
+};
+/** Joins/creates one context and establishes rivals only among independently joined active members. */
+async function joinFacebookContextCompetition(input, db = firebaseAdmin_1.admin.firestore()) {
+    assertFacebookUser(input.userId);
+    /** Provides now ms behavior. */
+    const nowMs = input.nowMs ?? Date.now();
+    if (!Number.isSafeInteger(nowMs) ||
+        nowMs < 0 ||
+        nowMs >
+            facebookContextCompetition_1.FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS - facebookContextCompetition_1.FACEBOOK_CONTEXT_BOARD_DURATION_MS - facebookContextCompetition_1.FACEBOOK_CONTEXT_HISTORY_RETENTION_MS) {
+        throw new https_1.HttpsError("invalid-argument", "Facebook context time is invalid.");
+    }
+    /** Provides context key behavior. */
+    const contextKey = (0, facebookContextCompetition_1.facebookContextKey)(input.contextId);
+    /** Provides context ref behavior. */
+    const contextRef = db.collection("facebookContextCompetitions").doc(contextKey);
+    return db.runTransaction(async (transaction) => {
+        /** Provides snapshot behavior. */
+        const snapshot = await transaction.get(contextRef);
+        /** Provides current behavior. */
+        const current = snapshot.exists ? (0, exports.parseFacebookContextCompetition)(snapshot.data()) : undefined;
+        if (current && current.contextKey !== contextKey) {
+            throw new https_1.HttpsError("data-loss", "Facebook context record key is invalid.");
+        }
+        /** Provides expired behavior. */
+        const expired = current !== undefined && nowMs >= current.expiresAtMs;
+        if (current && !expired && current.contextType !== input.contextType) {
+            throw new https_1.HttpsError("failed-precondition", "Facebook context type changed unexpectedly.");
+        }
+        if (current && expired) {
+            transaction.set(db.doc(`facebookContextCompetitionHistory/${contextKey}_${current.createdAtMs}`), {
+                contextKey,
+                contextType: current.contextType,
+                locale: current.locale,
+                startsAtMs: current.createdAtMs,
+                endsAtMs: current.expiresAtMs,
+                participantCount: current.members.length,
+                archivedAtMs: nowMs,
+                rewardsEnabled: false,
+                expiresAt: firebaseAdmin_1.admin.firestore.Timestamp.fromMillis(current.expiresAtMs + facebookContextCompetition_1.FACEBOOK_CONTEXT_HISTORY_RETENTION_MS),
+            }, { merge: false });
+            for (const member of current.members) {
+                transaction.delete(db.doc(`facebookContextCompetitions/${contextKey}/entries/${member.userId}`));
+            }
+        }
+        /** Provides reactivating behavior. */
+        const reactivating = current !== undefined &&
+            !expired &&
+            current.members.some((member) => member.userId === input.userId && !member.active);
+        /** Provides competition behavior. */
+        const competition = current && !expired
+            ? (0, facebookContextCompetition_1.updateFacebookContextCompetition)(current, {
+                kind: "join",
+                userId: input.userId,
+                locale: input.locale,
+                nowMs,
+            })
+            : (0, facebookContextCompetition_1.createFacebookContextCompetition)({ ...input, nowMs });
+        if (competition.members.length > exports.FACEBOOK_CONTEXT_MEMBER_LIMIT) {
+            throw new https_1.HttpsError("resource-exhausted", "Facebook context member limit reached.");
+        }
+        transaction.set(contextRef, {
+            ...competition,
+            memberIds: competition.members.map(({ userId }) => userId),
+            expiresAt: firebaseAdmin_1.admin.firestore.Timestamp.fromMillis(competition.expiresAtMs),
+        });
+        if (reactivating) {
+            transaction.delete(db.doc(`facebookContextCompetitions/${contextKey}/entries/${input.userId}`));
+        }
+        for (const member of competition.members) {
+            if (!member.active || member.userId === input.userId)
+                continue;
+            transaction.set(db.doc(`users/${input.userId}/knownRivals/${member.userId}`), {
+                targetUserId: member.userId,
+                source: "facebook_context",
+                contextKey,
+                establishedAtMs: nowMs,
+            }, { merge: true });
+            transaction.set(db.doc(`users/${member.userId}/knownRivals/${input.userId}`), {
+                targetUserId: input.userId,
+                source: "facebook_context",
+                contextKey,
+                establishedAtMs: nowMs,
+            }, { merge: true });
+        }
+        return competition;
+    });
+}
+/** Leaves one active context membership and deterministically fails over the host. */
+async function leaveFacebookContextCompetition(input, db = firebaseAdmin_1.admin.firestore()) {
+    assertFacebookUser(input.userId);
+    /** Provides now ms behavior. */
+    const nowMs = input.nowMs ?? Date.now();
+    if (!Number.isSafeInteger(nowMs) ||
+        nowMs < 0 ||
+        nowMs >
+            facebookContextCompetition_1.FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS - facebookContextCompetition_1.FACEBOOK_CONTEXT_BOARD_DURATION_MS - facebookContextCompetition_1.FACEBOOK_CONTEXT_HISTORY_RETENTION_MS) {
+        throw new https_1.HttpsError("invalid-argument", "Facebook context time is invalid.");
+    }
+    /** Provides context ref behavior. */
+    const contextRef = db.collection("facebookContextCompetitions").doc((0, facebookContextCompetition_1.facebookContextKey)(input.contextId));
+    return db.runTransaction(async (transaction) => {
+        /** Provides snapshot behavior. */
+        const snapshot = await transaction.get(contextRef);
+        if (!snapshot.exists)
+            throw new https_1.HttpsError("not-found", "Facebook context competition was not found.");
+        /** Provides current behavior. */
+        const current = (0, exports.parseFacebookContextCompetition)(snapshot.data());
+        if (current.contextKey !== contextRef.id) {
+            throw new https_1.HttpsError("data-loss", "Facebook context record key is invalid.");
+        }
+        if (nowMs < current.createdAtMs) {
+            throw new https_1.HttpsError("failed-precondition", "Facebook context competition has not started.");
+        }
+        if (nowMs >= current.expiresAtMs) {
+            throw new https_1.HttpsError("failed-precondition", "Facebook context competition has expired.");
+        }
+        /** Provides leaving behavior. */
+        const leaving = current.members.find(({ userId }) => userId === input.userId);
+        if (!leaving?.active)
+            throw new https_1.HttpsError("failed-precondition", "Player is not active in this context.");
+        if (current.members.filter(({ active }) => active).length === 1) {
+            for (const member of current.members) {
+                transaction.delete(db.doc(`facebookContextCompetitions/${current.contextKey}/entries/${member.userId}`));
+            }
+            transaction.delete(contextRef);
+            return null;
+        }
+        /** Provides competition behavior. */
+        const competition = (0, facebookContextCompetition_1.updateFacebookContextCompetition)(current, {
+            kind: "leave",
+            userId: input.userId,
+            nowMs,
+        });
+        transaction.set(contextRef, {
+            ...competition,
+            memberIds: competition.members.map(({ userId }) => userId),
+            expiresAt: firebaseAdmin_1.admin.firestore.Timestamp.fromMillis(competition.expiresAtMs),
+        });
+        return competition;
+    });
+}
+/**
+ * Removes every trace of one player from context membership during account deletion.
+ *
+ * Context IDs never need to be recovered: the server-owned `memberIds` projection
+ * provides the deletion index. Empty competitions are deleted; otherwise the
+ * earliest active remaining member becomes host. Querying from the beginning on
+ * every page is intentional because each successful transaction removes the UID
+ * from the indexed array.
+ */
+async function removeUserFromFacebookContextCompetitions(userId, db = firebaseAdmin_1.admin.firestore()) {
+    if (!(0, facebookSecurity_1.isFacebookFirebaseUid)(userId))
+        return;
+    while (true) {
+        /** Provides snapshot behavior. */
+        const snapshot = await db
+            .collection("facebookContextCompetitions")
+            .where("memberIds", "array-contains", userId)
+            .limit(FACEBOOK_CONTEXT_DELETION_PAGE_SIZE)
+            .get();
+        if (snapshot.empty)
+            return;
+        await Promise.all(snapshot.docs.map((document) => db.runTransaction(async (transaction) => {
+            /** Provides current snapshot behavior. */
+            const currentSnapshot = await transaction.get(document.ref);
+            if (!currentSnapshot.exists)
+                return;
+            /** Provides current behavior. */
+            const current = (0, exports.parseFacebookContextCompetition)(currentSnapshot.data());
+            if (current.contextKey !== document.ref.id) {
+                throw new https_1.HttpsError("data-loss", "Facebook context record key is invalid.");
+            }
+            /** Provides members behavior. */
+            const members = current.members.filter((member) => member.userId !== userId);
+            /** Provides active behavior. */
+            const active = members.filter((member) => member.active);
+            if (active.length === 0) {
+                for (const member of current.members) {
+                    transaction.delete(db.doc(`facebookContextCompetitions/${current.contextKey}/entries/${member.userId}`));
+                }
+                transaction.delete(document.ref);
+                return;
+            }
+            transaction.delete(db.doc(`facebookContextCompetitions/${current.contextKey}/entries/${userId}`));
+            /** Provides host user id behavior. */
+            const hostUserId = [...active].sort((left, right) => left.joinedAtMs - right.joinedAtMs || left.userId.localeCompare(right.userId))[0].userId;
+            transaction.set(document.ref, {
+                ...current,
+                hostUserId,
+                members,
+                memberIds: members.map((member) => member.userId),
+                expiresAt: firebaseAdmin_1.admin.firestore.Timestamp.fromMillis(current.expiresAtMs),
+            });
+        })));
+    }
+}
+//# sourceMappingURL=facebookContextService.js.map

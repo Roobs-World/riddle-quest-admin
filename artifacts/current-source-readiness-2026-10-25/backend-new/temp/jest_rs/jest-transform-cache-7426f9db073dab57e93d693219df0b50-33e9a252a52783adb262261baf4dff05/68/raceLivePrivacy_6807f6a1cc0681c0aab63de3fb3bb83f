@@ -1,0 +1,89 @@
+0524fd5b570eb97391d9f11f422c0034
+"use strict";
+
+/* istanbul ignore next */
+function cov_vk0i05wdl() {
+  var path = "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLivePrivacy.ts";
+  var hash = "ade87f8684c107b984b9d71c117c25fa4c19882f";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLivePrivacy.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 2,
+          column: 62
+        }
+      },
+      "1": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 3,
+          column: 43
+        }
+      },
+      "2": {
+        start: {
+          line: 5,
+          column: 0
+        },
+        end: {
+          line: 5,
+          column: 58
+        }
+      }
+    },
+    fnMap: {},
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0
+    },
+    f: {},
+    b: {},
+    inputSourceMap: {
+      file: "/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLivePrivacy.ts",
+      mappings: ";;;AAAA,8FAA8F;AACjF,QAAA,yBAAyB,GAAG,qBAAqB,CAAC",
+      names: [],
+      sources: ["/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/src/race/raceLivePrivacy.ts"],
+      sourcesContent: ["/** Neutral server-only marker replaces deleted account identity; it is not a provider UID. */\nexport const DELETED_LIVE_RACE_USER_ID = \"deleted-live-player\";\n"],
+      version: 3
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "ade87f8684c107b984b9d71c117c25fa4c19882f"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_vk0i05wdl = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_vk0i05wdl();
+cov_vk0i05wdl().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_vk0i05wdl().s[1]++;
+exports.DELETED_LIVE_RACE_USER_ID = void 0;
+/** Neutral server-only marker replaces deleted account identity; it is not a provider UID. */
+/* istanbul ignore next */
+cov_vk0i05wdl().s[2]++;
+exports.DELETED_LIVE_RACE_USER_ID = "deleted-live-player";
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfdmswaTA1d2RsIiwicyIsImV4cG9ydHMiLCJERUxFVEVEX0xJVkVfUkFDRV9VU0VSX0lEIl0sInNvdXJjZXMiOlsiL2hvbWUvY3JhaWctYmVzd2V0aGVyaWNrL0RvY3VtZW50cy9yaWRkbGUtcXVlc3QvZmlyZWJhc2UtZnVuY3Rpb25zL3NyYy9yYWNlL3JhY2VMaXZlUHJpdmFjeS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvKiogTmV1dHJhbCBzZXJ2ZXItb25seSBtYXJrZXIgcmVwbGFjZXMgZGVsZXRlZCBhY2NvdW50IGlkZW50aXR5OyBpdCBpcyBub3QgYSBwcm92aWRlciBVSUQuICovXG5leHBvcnQgY29uc3QgREVMRVRFRF9MSVZFX1JBQ0VfVVNFUl9JRCA9IFwiZGVsZXRlZC1saXZlLXBsYXllclwiO1xuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBO0FBQUE7QUFBQUEsYUFBQSxHQUFBQyxDQUFBO0FBQ2FDLE9BQUEsQ0FBQUMseUJBQXlCLEdBQUcscUJBQXFCIiwiaWdub3JlTGlzdCI6W119

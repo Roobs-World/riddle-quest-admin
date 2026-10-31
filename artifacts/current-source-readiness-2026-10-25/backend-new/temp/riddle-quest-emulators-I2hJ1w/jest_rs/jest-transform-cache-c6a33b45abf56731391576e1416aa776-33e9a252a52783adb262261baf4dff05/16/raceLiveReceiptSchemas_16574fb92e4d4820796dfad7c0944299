@@ -1,0 +1,16 @@
+ab48e43d1cbb368901509cfd680c7359
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LiveGuessReceiptResultSchema = exports.LiveGuessReceiptQuerySchema = void 0;
+const zod_1 = require("zod");
+const raceDefinitionSchemas_1 = require("./raceDefinitionSchemas");
+/** Bounded locator for one historical accepted attempt; never a command or account selector. */
+exports.LiveGuessReceiptQuerySchema = zod_1.z.object({
+    ticketId: zod_1.z.string().regex(/^[a-f0-9]{64}$/),
+    requestId: zod_1.z.string().min(8).max(160),
+    riddleId: zod_1.z.string().min(1).max(160),
+    position: zod_1.z.number().int().min(0).max(raceDefinitionSchemas_1.RACE_DECK_SIZE - 1),
+    guessesUsedBefore: zod_1.z.number().int().min(0).max(raceDefinitionSchemas_1.RACE_MAX_GUESSES_PER_RIDDLE - 2),
+}).strict();
+/** A missing or legacy proof cannot authorize ambiguous local draft recovery. */
+exports.LiveGuessReceiptResultSchema = zod_1.z.object({ status: zod_1.z.enum(["accepted", "unconfirmed"]) }).strict();

@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` Pièces`,CONTINUE_BUTTON:`Génial`,LEVEL_PREFIX:`Niveau `,TITLE:`Niveau supérieur\xA0!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

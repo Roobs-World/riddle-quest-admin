@@ -12,6 +12,8 @@ export function createFirebaseRaceMatchmaking(
     liveHistory?: boolean;
     /** Only explicitly enabled targets may initiate a ticket-bound human rematch. */
     liveRematch?: boolean;
+    /** Enables the game's username form when the target needs direct invitations. */
+    directInvites?: boolean;
   } = {},
 ): MatchmakingCapability {
   return {
@@ -75,8 +77,12 @@ export function createFirebaseRaceMatchmaking(
       }).catch(() => {if (active) onStatus(false);});
       return () => {active = false; unsubscribe?.();};
     },
-    /** Persists an addressed invitation with one durable notification receipt. */
-    async sendChallenge(input) {return (await (await import("../firebase")).sendLiveRaceChallenge(input)).data;},
+    ...(options.directInvites ? {
+      /** Persists an addressed invitation with one durable notification receipt. */
+      async sendChallenge(input: Parameters<NonNullable<import("@qwordly/core/race").LiveRaceCapability["sendChallenge"]>>[0]) {
+        return (await (await import("../firebase")).sendLiveRaceChallenge(input)).data;
+      },
+    } : {}),
     /** Loads the authenticated recipient's direct invitation notices. */
     async inbox() {return (await (await import("../firebase")).listLiveRaceChallenges({})).data;},
     /** Validates an SDK invitation before showing the acceptance action. */

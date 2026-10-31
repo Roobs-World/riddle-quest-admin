@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-24T01:12:56.052Z",
+  "scope": "Local read-only test subprocess execution",
+  "attempts": [
+    {
+      "sessionId": 96337,
+      "commands": "remaining manifest indices starting at0",
+      "outcome": "interrupted during sandbox signal-forwarding test; no passing receipt recorded"
+    },
+    {
+      "sessionId": 2284,
+      "commands": "cheap manifest indices starting1; stopped during6",
+      "outcome": "completed rows retained in cheap source report; interrupted signal-forwarding test"
+    },
+    {
+      "sessionId": 91640,
+      "command": [
+        "timeout",
+        "-k",
+        "2s",
+        "15s",
+        "node",
+        "--test",
+        "--test-name-pattern=the process adapter forwards",
+        "scripts/release/platform-releases.test.mjs"
+      ],
+      "exitCode": 124
+    },
+    {
+      "sessionId": 99132,
+      "command": [
+        "timeout",
+        "-k",
+        "2s",
+        "10s",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-name-pattern=the process adapter forwards",
+        "scripts/release/platform-releases.test.mjs"
+      ],
+      "exitCode": 124
+    }
+  ],
+  "successfulDiagnostic": {
+    "sandbox": "require_escalated",
+    "exitCode": 0,
+    "test": "the process adapter forwards termination and awaits child teardown",
+    "testDurationMs": 49.507068,
+    "totalDurationMs": 75.030099
+  },
+  "cleanup": "Only descendants of the two owned run-remaining-manifest-checks.mjs processes were stopped. Application/test source was not modified."
+}

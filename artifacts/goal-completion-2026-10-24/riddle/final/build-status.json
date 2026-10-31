@@ -1,0 +1,100 @@
+{
+  "sourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "startedAt": "2026-10-24T01:18:48.823487+00:00",
+  "complete": true,
+  "sourceMapUpload": false,
+  "results": [
+    {
+      "name": "all-target-builds",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/portal",
+        "build:all-targets"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 35.593,
+      "log": "all-target-builds.log"
+    },
+    {
+      "name": "reddit-full-build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@qwordly/reddit-app",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 7.369,
+      "log": "reddit-full-build.log"
+    },
+    {
+      "name": "security",
+      "command": [
+        "pnpm",
+        "check:security"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.709,
+      "log": "security.log"
+    },
+    {
+      "name": "scalability",
+      "command": [
+        "pnpm",
+        "check:scalability"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.535,
+      "log": "scalability.log"
+    },
+    {
+      "name": "file-sizes",
+      "command": [
+        "pnpm",
+        "check:file-sizes"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.422,
+      "log": "file-sizes.log"
+    },
+    {
+      "name": "tsdoc",
+      "command": [
+        "pnpm",
+        "check:tsdoc"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.464,
+      "log": "tsdoc.log"
+    },
+    {
+      "name": "architecture",
+      "command": [
+        "pnpm",
+        "test:architecture"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 22.188,
+      "log": "architecture.log"
+    },
+    {
+      "name": "final-target-inventories",
+      "command": [
+        "node",
+        "scripts/release/verify-target-dependency-evidence.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.096,
+      "log": "final-target-inventories.log"
+    }
+  ],
+  "completedAt": "2026-10-24T01:19:57.200521+00:00",
+  "finalJestArtifactFiles": 419,
+  "sourceDigestAfter": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+  "sourceHashesUnchanged": true,
+  "finalJestBytesMatchPreFreezeLocalCandidate": true,
+  "changedJestFilesVersusPreFreezeLocalCandidate": [],
+  "comparisonLocalCandidate": "artifacts/goal-completion-2026-10-24/riddle/jest-current",
+  "comparisonIsProviderUploadedVersion": false
+}

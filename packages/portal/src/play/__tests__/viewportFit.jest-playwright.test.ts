@@ -3,14 +3,16 @@ import {chromium} from "@playwright/test";
 import {createServer} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 
 /** Exercises the real fitting hook and CSS across short phone viewports. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 describeBrowser("phone viewport fitting", () => {
   it("settles without alternating clue wrapping or clipping navigation", async () => {
     /** Serves the built Jest artifact for supplementary layout regression coverage. */
-    const root = path.resolve(__dirname, "../../../../../builds/jest");
+    const root = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.resolve(__dirname, "../../../../../builds/jest");
     /** Serves the selected layout artifact without external SDK traffic. */
     const server = createServer(async (request, response) => {
       /** Resolves the requested bundled asset. */
@@ -51,9 +53,9 @@ describeBrowser("phone viewport fitting", () => {
         /** Creates an isolated guest layout at each fixed phone size. */
         const page = await browser.newPage({viewport: {width, height}, isMobile: true, hasTouch: true});
         await page.route("https://cdn.jest.com/**", route => route.fulfill({status: 200, body: ""}));
+        await installCompletedMockGameTour(page);
         await page.addInitScript(() => {
           Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
-          localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
           localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest", "seen");
           sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         });

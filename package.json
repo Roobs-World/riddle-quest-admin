@@ -12,7 +12,7 @@
     "build:web": "pnpm check:security && pnpm check:facebook-secrets && pnpm check:facebook-profile-boundary && pnpm check:facebook-commerce-activation && pnpm --filter @qwordly/portal build:web && pnpm --filter @qwordly/reddit-app build:package:from-client",
     "check:braces-security": "node scripts/braces-security-patch.test.mjs",
     "check:security": "pnpm check:braces-security && node --test scripts/image-size-security-patch.test.mjs scripts/ci-security.test.mjs && node scripts/audit-security-config.mjs && node scripts/ci-security.mjs",
-    "check:scalability": "node scripts/audit-backend-scalability.mjs",
+    "check:scalability": "node scripts/audit-function-capacity.mjs && node scripts/audit-backend-scalability.mjs",
     "check:modern-packages": "node scripts/audit-modern-package-features.mjs",
     "check:tsdoc": "node scripts/audit-tsdoc.mjs",
     "check:file-sizes": "node --test scripts/source-size-metric.test.mjs && node scripts/audit-file-sizes.mjs",

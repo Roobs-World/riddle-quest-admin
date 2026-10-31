@@ -1,6 +1,7 @@
 import type {BridgeRiddle} from "@qwordly/core/bridge";
 import {isSinglePlayerKeyboardLetter} from "@qwordly/core/game";
 import type {PendingGuessJournal, PendingPlayStorage} from "./pendingGuessJournal";
+import {parseDraftCheckpointRevision} from "./draftCheckpointRevision";
 
 /** Checks whether an unknown value is a plain record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -92,6 +93,19 @@ export function readPendingGuessJournal(scope: string, storage?: PendingPlayStor
       )
     )
       return null;
+    journal.draftRevision = parseDraftCheckpointRevision(journal.draftRevision);
+    journal.base.draftRevision = parseDraftCheckpointRevision(journal.base.draftRevision);
+    for (const segment of journal.successors) {
+      segment.draftRevision = parseDraftCheckpointRevision(segment.draftRevision);
+      segment.base.draftRevision = parseDraftCheckpointRevision(segment.base.draftRevision);
+    }
+    for (const riddle of [journal.riddle, ...journal.successors.map(segment => segment.riddle)]) {
+      /** Optional cached hints cannot invalidate required pending deliveries. */
+      const hints: unknown = riddle.revealedHints;
+      if (hints !== undefined && (!Array.isArray(hints) || hints.length > riddle.answerLength || !hints.every((hint: unknown) =>
+        isRecord(hint) && Number.isInteger(hint.index) && Number(hint.index) >= 0 && Number(hint.index) < riddle.answerLength &&
+        typeof hint.letter === "string" && isSinglePlayerKeyboardLetter(hint.letter)))) delete riddle.revealedHints;
+    }
     if (journal.skipPreview !== undefined) {
       /** Optional ownership never invalidates an otherwise recoverable paid request. */
       const preview = journal.skipPreview;

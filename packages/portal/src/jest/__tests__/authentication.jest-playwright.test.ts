@@ -164,19 +164,31 @@ describeBrowser("Jest authentication integration", () => {
     await verifyShortJestPreview((await openHarness(browser, {registered: true})).page);
   });
 
-  it("localizes game-owned Shop copy in Arabic and preserves provider descriptions", async () => {
+  it("localizes Arabic coin-pack value without redundant descriptions", async () => {
     /** Isolated browser context and captured page errors for this player pathway. */
-    const {page} = await openHarness(browser, {registered: true, scenario: "localized-coin-catalog"});
+    const {page, pageErrors} = await openHarness(browser, {registered: true, scenario: "localized-coin-catalog"});
     await enterRegisteredGame(page);
     await page.getByRole("button", {name: "Settings", exact: true}).click();
     await page.getByRole("combobox", {name: "Language", exact: true}).selectOption("ar");
     await page.getByRole("button", {name: "شراء العملات المعدنية", exact: true}).first().click();
     await page.getByText("أفضل قيمة", {exact: true}).waitFor();
-    await page.getByText("أضف 7,000 عملة إلى رصيدك.", {exact: true}).waitFor();
-    await page.getByText("للمبتدئين", {exact: true}).waitFor();
-    await page.getByText("Provider custom description", {exact: true}).waitFor();
+    /** The two provider consumables keep their issued names, grants and prices. */
+    const cards = page.locator(".game-shop-grid article:not(.shop-subscription-card)");
+    expect(await cards.count()).toBe(2);
+    expect(await cards.locator(".shop-product-name").allTextContents()).toEqual(["coin pack 6", "coin pack 1"]);
+    expect(await cards.locator(".shop-product-amount").allTextContents()).toEqual(["7,000 عملات معدنية", "250 عملات معدنية"]);
+    expect((await cards.getByRole("button").allTextContents()).map(text => text.match(/\$\d+\.\d{2}/gu))).toEqual([["$49.99"], ["$1.79"]]);
+    expect(await cards.locator("em").allTextContents()).toEqual(["أفضل قيمة", "للمبتدئين"]);
+    expect(await cards.locator(".shop-product-description").allTextContents()).toEqual([
+      "حتى 280 تلميحًا أو 140 محاولة إضافية.", "حتى 10 تلميحًا أو 5 محاولة إضافية.",
+    ]);
+    expect(await page.getByText("أضف 7,000 عملة إلى رصيدك.", {exact: true}).count()).toBe(0);
+    expect(await page.getByText("Provider custom description", {exact: true}).count()).toBe(0);
+    expect(await page.locator(".shop-subscription-card .shop-product-description").allTextContents()).toEqual(["Premium membership"]);
     expect(await page.getByText("BEST VALUE", {exact: true}).count()).toBe(0);
+    expect(await page.locator("html").getAttribute("lang")).toBe("ar");
     expect(await page.locator("html").getAttribute("dir")).toBe("rtl");
+    expect(pageErrors).toEqual([]);
   });
 
   it("refreshes subscription changes, hides active purchase buttons, and cancels renewal from Profile", async () => {
@@ -365,17 +377,13 @@ describeBrowser("Jest authentication integration", () => {
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator(".modal-victory").waitFor();
     await page.locator(".modal-victory .coin-award").waitFor();
-    /** Provides fanfare steps behavior. */
-    const fanfareSteps: string[] = [];
-    for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
-      fanfareSteps.push(await page.locator(".modal-victory").innerText());
-      expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
-      await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".reward-continue")?.disabled);
-      await page.locator(".reward-continue").click();
-    }
-    expect(fanfareSteps[0]).toContain("NICE JOB!");
-    expect(fanfareSteps.filter((value) => value.includes("NICE JOB!"))).toHaveLength(1);
-    expect(fanfareSteps.some((value) => value.includes("Achievement Unlocked!"))).toBe(true);
+    expect(await page.locator(".modal-victory").innerText()).toContain("NICE JOB!");
+    await page.locator('.fanfare-tab.current[data-kind="achievement"]').waitFor();
+    expect(await page.locator('.fanfare-tab.current[data-kind="achievement"]').innerText()).toContain("New Achievement");
+    expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+    await page.waitForFunction(() => Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")));
+    await page.locator(".reward-continue").click();
+    await page.locator(".modal-victory").waitFor({state: "detached"});
     for (let step = 0; step < 5; step += 1) {
       await page.waitForFunction(() => Boolean(document.querySelector(".tooltip-backdrop, .jest-registration-dialog")));
       if (await page.locator(".jest-registration-dialog").count()) break;
@@ -642,7 +650,7 @@ describeBrowser("Jest authentication integration", () => {
           identifier: "riddle-quest-d1-v3",
           scheduledInDays: 1,
           priority: "medium",
-          asset: expect.stringMatching(/^data:image\/png;base64,/),
+          asset: expect.stringMatching(/^data:image\/(?:png|jpeg|webp);base64,/),
           entryPayload: expect.objectContaining({
             gameMode: "challenge",
             reference: "notification_d1_v4",
@@ -888,8 +896,11 @@ describeBrowser("Jest authentication integration", () => {
       scenario: "referral-reward",
       playerId: "viral-creator",
     });
-    await rewardedCreator.page.getByRole("heading", {name: /a friend joined/i}).waitFor({timeout: 15_000});
-    expect(await rewardedCreator.page.locator(".game-modal").innerText()).toContain("+100");
+    /** The inviter's confirmed reward is announced without an extra dialog. */
+    const inviterReward = rewardedCreator.page.locator('.fanfare-tab.current[data-kind="referral"]');
+    await inviterReward.waitFor({timeout: 15_000});
+    expect(await inviterReward.innerText()).toMatch(/a friend joined/i);
+    expect(await inviterReward.innerText()).toContain("+100");
     await rewardedCreator.context.close();
   });
 
@@ -912,8 +923,12 @@ describeBrowser("Jest authentication integration", () => {
   it("surfaces a server-authoritative referral reward in the game", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true, scenario: "referral-reward"});
-    await page.getByRole("heading", {name: /a friend joined/i}).waitFor({timeout: 15_000});
-    expect(await page.locator(".game-modal").innerText()).toContain("+100");
+    /** The signed referral receipt appears in a nonmodal, automatic tab. */
+    const reward = page.locator('.fanfare-tab.current[data-kind="referral"]');
+    await reward.waitFor({timeout: 15_000});
+    expect(await reward.innerText()).toMatch(/a friend joined/i);
+    expect(await reward.innerText()).toContain("+100");
+    expect(await page.locator(".modal-reward").count()).toBe(0);
     await context.close();
   });
 
@@ -930,9 +945,12 @@ describeBrowser("Jest authentication integration", () => {
     const daily = [...new Map(schedules.filter((item) => item.identifier?.startsWith("riddle-quest-d")).map((item) => [item.identifier, item])).values()];
     expect(new Set(daily.map((item) => item.asset)).size).toBe(3);
     expect(daily.map((item) => item.scheduledInDays)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    // Jest batches the seven SDK calls into one request; individually valid
+    // 2MB cards can still make that entire request fail with HTTP 413.
+    expect(Buffer.byteLength(JSON.stringify(daily), "utf8")).toBeLessThan(1024 * 1024);
     for (const item of schedules) {
       expect(item.assetReference).toBeUndefined();
-      expect(item.asset).toMatch(/^data:image\/png;base64,/);
+      expect(item.asset).toMatch(/^data:image\/(?:png|jpeg|webp);base64,/);
       /** Decoded payload size is checked independently of the production validator. */
       const data = Buffer.from(item.asset!.split(",")[1], "base64");
       expect(data.length).toBeLessThanOrEqual(2 * 1024 * 1024);
@@ -952,7 +970,9 @@ describeBrowser("Jest authentication integration", () => {
       const directory = process.env.JEST_NOTIFICATION_IMAGE_REPORT_DIR;
       await mkdir(directory, {recursive: true});
       for (const [index, item] of [...daily.slice(0, 3), race].entries()) {
-        await writeFile(path.join(directory, `notification-${index + 1}.png`), Buffer.from(item.asset!.split(",")[1], "base64"));
+        /** Artifact extension follows the actual browser encoding. */
+        const extension = item.asset!.startsWith("data:image/jpeg;") ? "jpg" : item.asset!.startsWith("data:image/webp;") ? "webp" : "png";
+        await writeFile(path.join(directory, `notification-${index + 1}.${extension}`), Buffer.from(item.asset!.split(",")[1], "base64"));
       }
     }
     await context.close();
@@ -994,7 +1014,7 @@ describeBrowser("Jest authentication integration", () => {
       expect.objectContaining({
         identifier: "race_to_10_results_v1",
         scheduledInDays: 1,
-        asset: expect.stringMatching(/^data:image\/png;base64,/),
+        asset: expect.stringMatching(/^data:image\/(?:png|jpeg|webp);base64,/),
         entryPayload: expect.objectContaining({
           challengeId: "race-challenge-42",
           challengeDestination: "inbox",
@@ -1304,7 +1324,13 @@ describeBrowser("Jest authentication integration", () => {
     });
     await verifyRetryableStartupScreen(page, message, pageErrors, scenario === "init-timeout" ? 35_000 : 15_000);
     if (scenario === "identity-failure") {
-      expect((await getHarnessState(page)).calls).not.toContain("sdk.payments.getIncompletePurchases");
+      /** Empty purchase recovery may be read before identity fails, without completing purchases or exposing play. */
+      const state = await getHarnessState(page);
+      expect(state.calls.filter(call => call === "sdk.payments.getIncompletePurchases")).toHaveLength(1);
+      expect(state.calls).not.toContain("sdk.payments.completePurchase");
+      expect(state.firebaseTokens).toEqual([]);
+      expect(state.backendExchanges).toHaveLength(1);
+      expect(await page.locator(".game-app").count()).toBe(0);
     }
     await context.close();
   });

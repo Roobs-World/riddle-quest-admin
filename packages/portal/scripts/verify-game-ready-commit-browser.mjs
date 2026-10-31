@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.READY_COMMIT_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
 const baseline=process.env.READY_COMMIT_BASELINE_DIR;
-const output=path.resolve(process.env.READY_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/game-ready-commit-2026-10-04',mode));
+const output=path.resolve(process.env.READY_COMMIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-ready-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/ready-commit-'));
 const component=path.join(root,'src/play/game/hooks/useGameBridgeLifecycle.ts');

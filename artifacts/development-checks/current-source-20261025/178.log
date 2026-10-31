@@ -1,0 +1,10 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+[riddle-silent-guard] context isolated before navigation
+{"verifiedAt":"2026-10-25T23:29:30.261Z","scope":"Retained recorded controller and panel only; current LiveRaceEntry is unchanged.","outcomes":[{"width":1280,"kind":"creator","cancellation":true,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":1280,"kind":"legacy","cancellation":false,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":1280,"kind":"recipient","cancellation":false,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":1280,"kind":"blocked","cancellation":false,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":390,"kind":"creator","cancellation":true,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":390,"kind":"legacy","cancellation":false,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":390,"kind":"recipient","cancellation":false,"noRecordedStart":true,"errors":0,"externalRequests":0},{"width":390,"kind":"blocked","cancellation":false,"noRecordedStart":true,"errors":0,"externalRequests":0}]}

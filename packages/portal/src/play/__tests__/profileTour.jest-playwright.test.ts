@@ -1,4 +1,4 @@
-import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 import {afterAll, beforeAll, describe, it} from "@jest/globals";
 import {chromium, expect, type Browser, type Page} from "@playwright/test";
 import {createServer, type Server} from "node:http";
@@ -57,10 +57,10 @@ describeBrowser("profile walkthrough", () => {
   });
   /** Opens the actual profile with only its first-run tour still unseen. */
   const openProfile = async (page: Page) => {
+    await installCompletedMockGameTour(page);
     await page.addInitScript(() => {
       Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
       localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-      localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
       sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
     });
     await page.goto(`${origin}/?harness=jest`);
@@ -198,10 +198,10 @@ describeBrowser("profile walkthrough", () => {
     // The SDK is injected by this mock harness; avoid an unrelated external startup request.
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await page.goto(`${origin}/?harness=jest`);

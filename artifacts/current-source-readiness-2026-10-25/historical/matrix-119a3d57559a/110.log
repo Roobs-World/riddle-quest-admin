@@ -1,0 +1,13 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Harness feedback parity passed: legacy cold at 1280px.
+Harness feedback parity passed: legacy reload at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Harness feedback parity passed: history cold at 1280px.
+Harness feedback parity passed: history reload at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Harness feedback parity passed: legacy cold at 390px.
+Harness feedback parity passed: legacy reload at 390px.
+[riddle-silent-guard] context isolated before navigation
+Harness feedback parity passed: history cold at 390px.
+Harness feedback parity passed: history reload at 390px.

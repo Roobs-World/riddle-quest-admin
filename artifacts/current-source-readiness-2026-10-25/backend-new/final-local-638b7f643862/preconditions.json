@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-25T23:14:06.365206+00:00",
+  "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+  "ports": {
+    "8099": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    },
+    "18199": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    },
+    "19000": {
+      "connectEx": 111,
+      "acceptingTcpConnections": false
+    }
+  },
+  "guardSha256": {
+    "/tmp/riddle-silent-browser.cjs": "29b7fec07cb7ded9bbdd0a253e198e3243dcb644018ef919c8793a9febf8d0c9",
+    "/tmp/riddle-jest-silent-setup.cjs": "ff38ee97be56941990468b05cb5fe5004e0bb4a5cb1a0fc43669cf505e7bd4c2",
+    "/tmp/riddle-shared-silent-audio.cjs": "c3efeb19c7582245ebb3919ac495c8a6a5ff80ebbff30e4b78631beade33e5fc",
+    "/home/craig-beswetherick/Documents/BeeHive/tests/helpers/silent-audio.js": "50ac614914e4616e7ce2d3a62485577704692777771a6f0a26ea605a39fe48ab"
+  },
+  "node": "/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin/node",
+  "javaHome": "/home/craig-beswetherick/android-studio/jbr",
+  "retainedExactIndex": 31,
+  "ownedIndexes": [
+    14,
+    16,
+    179,
+    12,
+    13,
+    70,
+    154,
+    180
+  ],
+  "scope": "Local user-authorized verification only. No source or production changes."
+}

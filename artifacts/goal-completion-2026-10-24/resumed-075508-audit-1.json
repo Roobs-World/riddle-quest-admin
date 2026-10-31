@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-10-24 08:00:52 UTC",
+  "observedResumptionActivatedAt": "2026-10-24T07:55:08Z",
+  "resumedAuditNumber": 1,
+  "previousGoalTurnClassification": "no progress",
+  "currentGoalTurnClassification": "no progress",
+  "wholeGoalComplete": false,
+  "authorityAccepted": true,
+  "healthApprovalHoldResolved": true,
+  "newInputOrIndependentProductActionAvailable": false,
+  "bee": {
+    "newLocalAudioSince0614UTC": 0,
+    "requestedFilenameCandidates": 0,
+    "connectedSearchAt": "2026-10-24T07:56:02Z",
+    "driveCandidates": 0,
+    "gmailAudioCandidates": 0,
+    "artlistReloadConfirmedSignedOut": true,
+    "signInFormPrepared": true,
+    "accountEntryPresent": false,
+    "comparableRetainedPublicFileHashesMatched": 8,
+    "changedComparableFiles": [],
+    "bothScormZipHashesMatched": true,
+    "coverageLimit": "The retained receipt lacks a comparable original 52-file source map; no full-current-input/backend identity claim is made."
+  },
+  "portfolio": {
+    "currentMetadataAt": "2026-10-24T07:56:57Z",
+    "paymentProblemWarningPresent": true,
+    "newActionsRunsSince0614UTC": 0,
+    "newQueuedOrRunningHandles": [],
+    "registeredSelfHostedRunners": 0,
+    "lastDirectRunnerEligibilityTest": "2026-10-24T06:10:00Z",
+    "lastDiagnosticRunId": 40069110496,
+    "lastDiagnosticState": "startup_failure",
+    "lastDiagnosticJobs": 0,
+    "newProductionDeployments": 0,
+    "canonicalDeploymentUnchanged": true,
+    "final363SourceFilesStillMatch": true,
+    "changedSourceFiles": 0,
+    "diagnosticOrHealthRepeated": false
+  },
+  "riddle": {
+    "currentIdentityAndProviderCheckAt": "2026-10-24T07:56:10.951Z",
+    "finalHeadAndSourceDigestStillMatch": true,
+    "indexEmpty": true,
+    "finalBuildReady": true,
+    "finalBuildActive": false,
+    "gamePublished": false,
+    "inReviewRevisionId": null,
+    "explicitPrivateActivationChoiceRequested": true,
+    "activationReplyReceived": false,
+    "activationRuleSource": "AGENTS.md:13",
+    "activationRule": "Activate a build, publish the game, or submit it for review only when explicitly requested.",
+    "proposedActivationKeepsGameUnpublished": true,
+    "activationPublicationOrReviewActionPerformed": false
+  },
+  "remainingInputs": [
+    "Requested track file/identity or signed-in Artlist session",
+    "GitHub account payment/spending recovery",
+    "Private Jest activation choice",
+    "Other client LMS and provider/subscription release gates retained in completion audit"
+  ]
+}

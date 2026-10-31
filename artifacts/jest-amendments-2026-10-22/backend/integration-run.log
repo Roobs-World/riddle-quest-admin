@@ -1,0 +1,24 @@
+i  emulators: Starting emulators: firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: firestore"}}
+i  emulators: Detected demo project ID "demo-rq-attribution", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-rq-attribution\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
+Starting src/__tests__/race/raceSettlement.it.test.ts
+PASS src/__tests__/race/raceSettlement.it.test.ts (50.444 s)
+Starting src/__tests__/race/redditLiveReferrals.it.test.ts
+PASS src/__tests__/race/redditLiveReferrals.it.test.ts (24.66 s)
+Starting src/__tests__/race/facebookLiveReferrals.it.test.ts
+PASS src/__tests__/race/facebookLiveReferrals.it.test.ts (16.693 s)
+Starting src/__tests__/singlePlayerAtomicRepair.it.test.ts
+PASS src/__tests__/singlePlayerAtomicRepair.it.test.ts (29.519 s)
+Starting src/__tests__/facebookReferralRetention.it.test.ts
+PASS src/__tests__/facebookReferralRetention.it.test.ts
+Starting src/__tests__/facebookReferrals.it.test.ts
+PASS src/__tests__/facebookReferrals.it.test.ts
+Starting src/__tests__/redditReferrals.it.test.ts
+PASS src/__tests__/redditReferrals.it.test.ts
+Test Suites: 7 passed, 7 total
+Tests:       137 passed, 137 total
+Snapshots:   0 total
+Time:        129.249 s
+Ran all test suites within paths "src/__tests__/facebookReferrals.it.test.ts", "src/__tests__/redditReferrals.it.test.ts", "src/__tests__/facebookReferralRetention.it.test.ts", "src/__tests__/race/facebookLiveReferrals.it.test.ts", "src/__tests__/race/redditLiveReferrals.it.test.ts", "src/__tests__/race/raceSettlement.it.test.ts", "src/__tests__/singlePlayerAtomicRepair.it.test.ts".
+Test results written to: ../../../../../tmp/riddle-referral-attribution-emulator.json
+✔  Script exited successfully (code 0) 
+i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}

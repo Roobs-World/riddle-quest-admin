@@ -1,0 +1,75 @@
+{
+  "completion": {
+    "taskId": "release:jest-build-activation-publication-hold",
+    "targets": [
+      "jest"
+    ],
+    "work": "Allow Jest build activation while holding game publication, review submission and listing visibility changes; preserve explicit inactive releases, immutable artifact and credential safeguards. Record Firebase Functions deployment authorization separately from Jest game publication.",
+    "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "completedAt": "2026-10-24T02:29:47.314Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "jest-build-activation-with-publication-hold-contract",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations"
+    ],
+    "checks": [
+      {
+        "id": "jest-build-activation-with-publication-hold-contract",
+        "status": "passed",
+        "evidence": "node --test packages/portal/scripts/jest-upload-artifact.test.mjs scripts/release/platform-releases.test.mjs; current-source check at 2026-10-24T02:02:45.924Z; output artifacts/development-checks/goal-20261024-final5c-cheap/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-006-914aa0d77ddc830dfbb752276fcb72f9d5b0ac9c4431b6efca8d806724400aa2.log SHA-256 914aa0d77ddc830dfbb752276fcb72f9d5b0ac9c4431b6efca8d806724400aa2"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-007-faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5.log SHA-256 faa91c6405e707b3d435397580c7c8f25308a6a3bcb53daede0b87bc6edec4b5"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-002-4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c.log SHA-256 4fa8083c92825391803db626eedc2e29842e871eda1180f76c1c02953f8dfd1c"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-008-7a81b13c947b5d213469c10c7f9b568eae775ea672d37f7157c04a40ea05aee6.log SHA-256 7a81b13c947b5d213469c10c7f9b568eae775ea672d37f7157c04a40ea05aee6"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-009-7b3afb7836602e696ca81c01d4e980e302d988e27ce63adfbaf9a5a513e31b21.log SHA-256 7b3afb7836602e696ca81c01d4e980e302d988e27ce63adfbaf9a5a513e31b21"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-010-0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee.log SHA-256 0a3ceb3d58d8a881408262bf05bc9b6579d7c14b6b5a524004cf1ed4687a85ee"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-24T02:04:18.248628+00:00; output artifacts/development-checks/goal-20261024-final-build-import-8491fe264145-5c26470ae8c8/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e-011-a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770.log SHA-256 a5e5cdb32a1d359d29622edf82656cb1f6662d47448313cc484a38bba334b770"
+      }
+    ],
+    "remainingGates": [
+      "Jest game publication, review submission and listing visibility changes remain held.",
+      "Jest build activation and Firebase Functions deployment are permitted; actual external actions require their own verified deployment/build receipts.",
+      "The comprehensive multiplayer reliability goal remains active."
+    ],
+    "nextAction": "Continue multiplayer reliability work; use build activation when needed and keep Jest game publication held.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "e988ab1ad24e11705973e94eece37f955cd5ab11be025d8965c7576f4baeb47e"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

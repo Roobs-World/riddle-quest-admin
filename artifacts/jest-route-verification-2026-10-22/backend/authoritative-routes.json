@@ -1,0 +1,699 @@
+{
+  "publicMatchmaking": {
+    "passed": true,
+    "suites": [
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLive.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "observes an unchanged human match without rewriting shared state",
+            "status": "passed"
+          },
+          {
+            "name": "keeps unchanged bot observations read-only and never rewinds its server score",
+            "status": "passed"
+          },
+          {
+            "name": "accepts one answer amid concurrent polls without losing scores or duplicating rewards",
+            "status": "passed"
+          },
+          {
+            "name": "pairs two live seats with shared riddles, usernames, avatars and a five-second countdown",
+            "status": "passed"
+          },
+          {
+            "name": "withholds both players' first prompt until the shared server start",
+            "status": "passed"
+          },
+          {
+            "name": "ends both players immediately on the tenth solved riddle and grants 50 coins once",
+            "status": "passed"
+          },
+          {
+            "name": "grants eligible live race badges exactly once alongside terminal statistics",
+            "status": "passed"
+          },
+          {
+            "name": "retains existing badge receipts across a new match and only grants its win reward",
+            "status": "passed"
+          },
+          {
+            "name": "does not backfill or pay an already settled legacy result",
+            "status": "passed"
+          },
+          {
+            "name": "serializes simultaneous finishes into one winner and one grant",
+            "status": "passed"
+          },
+          {
+            "name": "seats a bot within seconds of an unanswered search and then starts a five-second countdown",
+            "status": "passed"
+          },
+          {
+            "name": "replays queue joins and final guesses without duplicate seats or rewards",
+            "status": "passed"
+          },
+          {
+            "name": "rejects another account's ticket and excludes blocked or cancelled players",
+            "status": "passed"
+          },
+          {
+            "name": "keeps provider, language and category pools separate while pairing eligible waiting players",
+            "status": "passed"
+          },
+          {
+            "name": "settles an active block privacy boundary without awarding a forfeit win",
+            "status": "passed"
+          },
+          {
+            "name": "settles an active delete privacy boundary without awarding a forfeit win",
+            "status": "passed"
+          },
+          {
+            "name": "cancels a countdown without paying a win and rewards an in-game forfeit only once",
+            "status": "passed"
+          },
+          {
+            "name": "counts skips toward race progress and restores the same question on reload",
+            "status": "passed"
+          },
+          {
+            "name": "resets question state after skip and settles the tenth completed riddle once",
+            "status": "passed"
+          },
+          {
+            "name": "resets question state after exhaust and settles the tenth completed riddle once",
+            "status": "passed"
+          },
+          {
+            "name": "lets the rival beat ten rapid skips, including after the finisher reloads and closes",
+            "status": "passed"
+          },
+          {
+            "name": "lets a later unassisted finish beat an earlier hinted finish",
+            "status": "passed"
+          },
+          {
+            "name": "adds hint time without blocking the next live action",
+            "status": "passed"
+          },
+          {
+            "name": "adds skip time after skip while immediately allowing hint, submit and skip",
+            "status": "passed"
+          },
+          {
+            "name": "adds skip time after exhaust while immediately allowing hint, submit and skip",
+            "status": "passed"
+          },
+          {
+            "name": "scores wrong answers on the server and advances after exhausting attempts",
+            "status": "passed"
+          },
+          {
+            "name": "recovers an expired search on reload and grants a bot victory once",
+            "status": "passed"
+          },
+          {
+            "name": "keeps human matching and a simultaneous deadline poll exclusive",
+            "status": "passed"
+          },
+          {
+            "name": "recovers searching and matched seats from their immutable decks when the catalog is unavailable",
+            "status": "passed"
+          },
+          {
+            "name": "recovers live progress and a settled result without rereading the current content catalog",
+            "status": "passed"
+          },
+          {
+            "name": "keeps bot progress and rejoined phase monotonic across older clock samples",
+            "status": "passed"
+          },
+          {
+            "name": "does not turn an in-game forfeit back into a countdown cancellation",
+            "status": "passed"
+          },
+          {
+            "name": "admits reordered guesses after already accepted live progress without rewinding their event clocks",
+            "status": "passed"
+          },
+          {
+            "name": "preserves a searching seat heartbeat when an older poll arrives afterward",
+            "status": "passed"
+          },
+          {
+            "name": "derives a safe bot clock floor for records without an observation marker",
+            "status": "passed"
+          },
+          {
+            "name": "does not count a cancelled countdown as a played match",
+            "status": "passed"
+          },
+          {
+            "name": "records both participants once on a started forfeit",
+            "status": "passed"
+          },
+          {
+            "name": "counts a timed-out human draw once without awarding a win reward",
+            "status": "passed"
+          },
+          {
+            "name": "rejects invalid or overflowing totals before recording any settlement grant: {\"stats.multiplayerGamesPlayed\":-1}",
+            "status": "passed"
+          },
+          {
+            "name": "rejects invalid or overflowing totals before recording any settlement grant: {\"stats.multiplayerWins\":-1}",
+            "status": "passed"
+          },
+          {
+            "name": "rejects invalid or overflowing totals before recording any settlement grant: {\"coins\":-1}",
+            "status": "passed"
+          },
+          {
+            "name": "rejects invalid or overflowing totals before recording any settlement grant: {\"coins\":9007199254740991}",
+            "status": "passed"
+          },
+          {
+            "name": "rejects invalid or overflowing totals before recording any settlement grant: {\"stats.multiplayerGamesPlayed\":9007199254740991}",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLivePublicWait.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "waits beyond the legacy bot deadline and accepts a later real player",
+            "status": "passed"
+          },
+          {
+            "name": "lets an upgraded client finish its canonical legacy public seat without changing its bot deadline",
+            "status": "passed"
+          },
+          {
+            "name": "lets two existing waiters pair when a backgrounded player returns after pruning",
+            "status": "passed"
+          },
+          {
+            "name": "recovers a pruned queue seat without a new join or replacement deck",
+            "status": "passed"
+          },
+          {
+            "name": "expires a modern wait without a bot and cannot revive it through exact resume",
+            "status": "passed"
+          },
+          {
+            "name": "does not resume a replaced account pointer or create a replacement ticket",
+            "status": "passed"
+          },
+          {
+            "name": "rejects another player's exact resume without changing either account or creating a seat",
+            "status": "passed"
+          },
+          {
+            "name": "atomically pairs distinct players during concurrent joins and duplicate delivery",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a blocked seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a reverse-blocked seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a private seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a expired seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a noncanonical seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a missing-profile seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "does not select a deleted seat left in the public queue",
+            "status": "passed"
+          },
+          {
+            "name": "rejects missing assigned matches rather than falling back to a bot",
+            "status": "passed"
+          },
+          {
+            "name": "allows a fresh search after a dead pointer without reviving an exact historical join",
+            "status": "passed"
+          },
+          {
+            "name": "treats TTL-expired tickets and matches as unavailable before their documents disappear",
+            "status": "passed"
+          },
+          {
+            "name": "rejects a retained assigned match whose TTL expired without changing its result or allocating a replacement",
+            "status": "passed"
+          },
+          {
+            "name": "settles a zero-play forfeit without rewards or statistics and allocates no terminal no-op receipts",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "superseded public cleanup preserves the recovered canonical ticket",
+            "status": "passed"
+          },
+          {
+            "name": "superseded private cleanup preserves the recovered canonical ticket",
+            "status": "passed"
+          },
+          {
+            "name": "superseded matched cleanup preserves the recovered canonical ticket",
+            "status": "passed"
+          },
+          {
+            "name": "an old join retry cannot reclaim a newer accepted seat",
+            "status": "passed"
+          },
+          {
+            "name": "retirement before join publication prevents late creation and replay",
+            "status": "passed"
+          },
+          {
+            "name": "closed original joins cannot follow a newly allocated account pointer",
+            "status": "passed"
+          },
+          {
+            "name": "retirement replay does not duplicate signals or rewards (matched=false)",
+            "status": "passed"
+          },
+          {
+            "name": "retirement replay does not duplicate signals or rewards (matched=true)",
+            "status": "passed"
+          },
+          {
+            "name": "authentication replacement fails before writing either account",
+            "status": "passed"
+          },
+          {
+            "name": "same request text under another account cannot select the original seat",
+            "status": "passed"
+          },
+          {
+            "name": "a failed conditional leave remains recoverable after the durable marker commits",
+            "status": "passed"
+          },
+          {
+            "name": "new recovery after a failed leave supersedes its later retry",
+            "status": "passed"
+          },
+          {
+            "name": "original selectors are immutable under a stable tracked request",
+            "status": "passed"
+          },
+          {
+            "name": "malformed retained deck cannot block an owned unpaired retirement",
+            "status": "passed"
+          },
+          {
+            "name": "accepted invitation recovery preserves the newer recipient claim",
+            "status": "passed"
+          },
+          {
+            "name": "a pinned intent with a missing original ticket cannot create another game",
+            "status": "passed"
+          },
+          {
+            "name": "deleted accounts cannot publish retirement markers",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "privateInvitations": {
+    "passed": true,
+    "suites": [
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLiveRematch.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "keeps ordinary Jest live play working while rejecting the Facebook/Reddit rematch extension",
+            "status": "passed"
+          },
+          {
+            "name": "reserves facebook rematch only for the prior human and recovers concurrent retries once",
+            "status": "passed"
+          },
+          {
+            "name": "reserves reddit rematch only for the prior human and recovers concurrent retries once",
+            "status": "passed"
+          },
+          {
+            "name": "lets the losing facebook seat rematch and revalidates safety before acceptance",
+            "status": "passed"
+          },
+          {
+            "name": "lets the losing reddit seat rematch and revalidates safety before acceptance",
+            "status": "passed"
+          },
+          {
+            "name": "rejects blocked rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects reverse-blocked rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects owner-deleted rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects peer-deleted rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects peer-missing rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects expired rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects future rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects unsettled rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects corrupt rematch authority before creating a new seat, inbox or rate receipt",
+            "status": "passed"
+          },
+          {
+            "name": "rejects foreign sources, changed content, exhausted shared quota and an unavailable bot",
+            "status": "passed"
+          },
+          {
+            "name": "binds lost-response receipts to one source and rejects changed replay even after invitation expiry",
+            "status": "passed"
+          },
+          {
+            "name": "refreshes game-owned rematch identity and omits a missing recipient account",
+            "status": "passed"
+          },
+          {
+            "name": "uses the real signed Reddit join/inbox/preview boundaries with strict public receipts and deletion leases",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLiveInvitation.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "previews without joining and reserves exactly one rival in the original lobby",
+            "status": "passed"
+          },
+          {
+            "name": "recovers a lost acceptance response without resetting the countdown or creating another seat",
+            "status": "passed"
+          },
+          {
+            "name": "limits an accepted SMS invitation preview to its creator and recipient",
+            "status": "passed"
+          },
+          {
+            "name": "keeps private invitations out of public searches and bot fallback",
+            "status": "passed"
+          },
+          {
+            "name": "recovers the creator's exact waiting lobby from its shared link without reserving a rival",
+            "status": "passed"
+          },
+          {
+            "name": "recovers the creator's existing unfinished match after the original invite deadline",
+            "status": "passed"
+          },
+          {
+            "name": "cannot create or renew a creator lobby from an expired shared link",
+            "status": "passed"
+          },
+          {
+            "name": "cannot create or renew a creator lobby from an cancelled shared link",
+            "status": "passed"
+          },
+          {
+            "name": "cannot replace a newer creator seat with an old shared link or an unrelated join intent",
+            "status": "passed"
+          },
+          {
+            "name": "requires the creator's original category and language when resuming their shared link",
+            "status": "passed"
+          },
+          {
+            "name": "rejects cross-provider, expired, cancelled, offline and blocked invitations",
+            "status": "passed"
+          },
+          {
+            "name": "cannot replace an active public seat or reuse an unrelated join request id",
+            "status": "passed"
+          },
+          {
+            "name": "allows fresh searches and acceptances after an unattended private invitation expires",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLiveCreatorRecovery.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "preserves current live creator cleanup with malformed space content",
+            "status": "passed"
+          },
+          {
+            "name": "preserves current live creator cleanup with malformed answer content",
+            "status": "passed"
+          },
+          {
+            "name": "preserves current live creator cleanup with malformed clue content",
+            "status": "passed"
+          },
+          {
+            "name": "preserves current live creator cleanup with malformed canonical content",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "safetyAndPrivacy": {
+    "passed": true,
+    "suites": [
+      {
+        "file": "firebase-functions/src/__tests__/race/liveRaceSafety.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "routes signed Reddit safety through strict shared callables and deletion leases",
+            "status": "passed"
+          },
+          {
+            "name": "authorizes both facebook human seats, preserves report replay/cap and revokes presence on block",
+            "status": "passed"
+          },
+          {
+            "name": "authorizes both reddit human seats, preserves report replay/cap and revokes presence on block",
+            "status": "passed"
+          },
+          {
+            "name": "rejects stranger live-target reports without queue writes",
+            "status": "passed"
+          },
+          {
+            "name": "rejects deleted live-target reports without queue writes",
+            "status": "passed"
+          },
+          {
+            "name": "rejects expired live-target reports without queue writes",
+            "status": "passed"
+          },
+          {
+            "name": "rejects corrupt-seat live-target reports without queue writes",
+            "status": "passed"
+          },
+          {
+            "name": "rejects cross-provider live-target reports without queue writes",
+            "status": "passed"
+          },
+          {
+            "name": "rejects bot targeting and replaying a report id against a different retained match",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLiveIdentityPayload.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "loads only public identity for a public join",
+            "status": "passed"
+          },
+          {
+            "name": "loads only public identity for a private join",
+            "status": "passed"
+          },
+          {
+            "name": "loads only public identity for a reconnect join",
+            "status": "passed"
+          },
+          {
+            "name": "loads bounded identity for a modern player-wait search",
+            "status": "passed"
+          },
+          {
+            "name": "loads bounded identity for a modern player-wait reconnect",
+            "status": "passed"
+          },
+          {
+            "name": "loads bounded identity for a modern player-wait pair",
+            "status": "passed"
+          },
+          {
+            "name": "loads bounded creator/viewer identity for invitation preview",
+            "status": "passed"
+          },
+          {
+            "name": "loads bounded creator/viewer identity for invitation accept",
+            "status": "passed"
+          },
+          {
+            "name": "loads bounded creator/viewer identity for invitation accepted-recovery",
+            "status": "passed"
+          },
+          {
+            "name": "preserves an existing fieldless profile for private join false",
+            "status": "passed"
+          },
+          {
+            "name": "preserves an existing fieldless profile for private join true",
+            "status": "passed"
+          },
+          {
+            "name": "captures fresh identity after an actual SDK join transaction abort",
+            "status": "passed"
+          },
+          {
+            "name": "captures fresh identity after an actual SDK accept transaction abort",
+            "status": "passed"
+          },
+          {
+            "name": "rejects a missing account before publishing a new live seat",
+            "status": "passed"
+          },
+          {
+            "name": "rejects a deleted account before publishing a new live seat",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceLiveStreamAdmission.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "atomically caps concurrent account streams at two and admits a replacement after abort cleanup",
+            "status": "passed"
+          },
+          {
+            "name": "releases a closed transport without deleting another live lease",
+            "status": "passed"
+          },
+          {
+            "name": "releases a failed transport without deleting another live lease",
+            "status": "passed"
+          },
+          {
+            "name": "prunes an expired crashed lease and preserves the original surviving lease",
+            "status": "passed"
+          },
+          {
+            "name": "keeps a replacement lease when an older stream performs delayed cleanup",
+            "status": "passed"
+          },
+          {
+            "name": "releases its admitted slot when attaching the first real SDK listener fails",
+            "status": "passed"
+          },
+          {
+            "name": "releases admission when the owned ticket lifetime bounds the stream",
+            "status": "passed"
+          },
+          {
+            "name": "allocates no lease for an already aborted connection or malformed existing ledger",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/race/raceRules.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "Race to 10 Firestore trust boundary allows the Admin test context to seed authoritative state",
+            "status": "passed"
+          },
+          {
+            "name": "Race to 10 Firestore trust boundary denies authenticated clients access to source answers and every race collection",
+            "status": "passed"
+          },
+          {
+            "name": "Race to 10 Firestore trust boundary denies unauthenticated clients too",
+            "status": "passed"
+          },
+          {
+            "name": "Race to 10 Firestore trust boundary allows a player to read but never directly mutate their authoritative profile",
+            "status": "passed"
+          },
+          {
+            "name": "Race to 10 Firestore trust boundary prevents one authenticated player from reading another player's profile",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "file": "firebase-functions/src/__tests__/socialSafety.it.test.ts",
+        "passed": true,
+        "tests": [
+          {
+            "name": "serializes report idempotency and the daily cap under concurrency",
+            "status": "passed"
+          },
+          {
+            "name": "writes an immediate block only for the established rival",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  }
+}

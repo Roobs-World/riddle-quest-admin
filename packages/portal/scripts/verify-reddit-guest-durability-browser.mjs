@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.GUEST_DURABILITY_REACT_MODE??'development';
 const baseline=process.env.GUEST_DURABILITY_BASELINE_DIR;
 const coldOnly=process.env.GUEST_DURABILITY_COLD_ONLY==='1';
-const output=path.resolve(process.env.GUEST_DURABILITY_REPORT_DIR??path.join(root,'../../artifacts/reddit-guest-durability-2026-10-03',mode));
+const output=path.resolve(process.env.GUEST_DURABILITY_REPORT_DIR??path.join(root,'../../builds/test-evidence/reddit-guest-durability-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/reddit-guest-'));
 const observations=[];let browser,server;
@@ -64,6 +64,7 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
   page.on('pageerror',e=>observations.push({width,fault,recovery,name:'page error',actual:String(e),expected:null}));
   await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
   await page.waitForFunction(()=>window.durable()?.playerData?.profile!=null);
+  await page.locator('.keyboard .key:not(:disabled)').first().waitFor();
   await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pi');
   await page.waitForFunction(()=>window.durable()?.playerData?.activeGame?.currentLetters.join('')==='PI');
   const sessions=await page.evaluate(()=>window.probe.sessions);
@@ -87,9 +88,20 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
   if(!baseline){
    await page.locator('.player-save-notice').waitFor({state:'hidden'});
    metric('recovery does not restart provider initialization',await page.evaluate(()=>window.probe.sessions),sessions);
+   if(width===390&&fault==='blocked'&&recovery==='auto'){
+    const replacement=await browser.newContext({viewport:{width,height:844},storageState:await context.storageState()});
+    const coldPage=await replacement.newPage();
+    try{
+     await coldPage.goto(url);await coldPage.waitForFunction(()=>window.draft()==='PIAN');
+     await coldPage.locator('.keyboard .key:not(:disabled)').first().waitFor();
+     metric('cold copied storage keeps the newer provider draft without pagehide',await coldPage.evaluate(()=>window.draft()),'PIAN');
+     metric('cold recovery keeps the saved input cursor',await coldPage.evaluate(()=>window.durable().playerData.activeGame.activeSlotIndex),4);
+    }finally{await replacement.close();}
+   }
    await page.reload();await page.waitForFunction(()=>window.draft()==='PIAN');
    metric('reload restores the saved draft',await page.evaluate(()=>window.draft()),'PIAN');
    metric('reload restores the saved preference',await page.evaluate(()=>window.durable().preferences.highContrast),true);
+   await page.locator('.keyboard .key:not(:disabled)').first().waitFor();
    await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('o');await page.keyboard.press('Enter');
    await page.waitForFunction(()=>window.durable().playerData.activeGame===null&&window.durable().playerData.profile.gamesPlayed===1);
    metric('one accepted guess completes once',await page.evaluate(()=>({games:window.durable().playerData.profile.gamesPlayed,wins:window.durable().playerData.profile.wins})),{games:1,wins:1});
@@ -111,6 +123,7 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
    if(await welcome.isVisible())await welcome.click();else if(await tour.isVisible())await tour.click();else break;
    await page.waitForTimeout(50);
   }
+  await page.locator('.keyboard .key:not(:disabled)').first().waitFor();
   await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.evaluate(()=>window.preference());await page.waitForTimeout(50);
   metric('guest play starts with unavailable storage',await page.evaluate(()=>window.draft()),'PIAN');
   metric('cold failed progress has no durability acknowledgement',await page.evaluate(()=>window.durable().playerData),null);
@@ -129,6 +142,7 @@ await import(${JSON.stringify(path.join(root,'src/reddit/main.tsx'))});
   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();
   const metric=(name,actual,expected)=>{observations.push({locale,width,height,recovery:'localized-layout',name,actual,expected});assert.deepEqual(actual,expected,name+':'+locale+':'+height);};
   await page.goto(url+'?locale='+locale);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
+  await page.locator('.keyboard .key:not(:disabled)').first().waitFor();
   await page.evaluate(()=>{document.activeElement?.blur();window.setFault('quota');});await page.keyboard.type('pian');
   await page.locator('.player-save-notice button').waitFor();await page.waitForTimeout(150);
   const layout=await page.evaluate(()=>{const button=document.querySelector('.player-save-notice button'),r=button.getBoundingClientRect();const banner=document.querySelector('.reddit-guest-banner').getBoundingClientRect(),notice=document.querySelector('.player-save-notice').getBoundingClientRect();const controls=Array.from(document.querySelectorAll('.keyboard .key,.game-input-actions button,.game-bottom-navigation button'));return {language:document.documentElement.lang,reachable:button.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)),separate:notice.top>=banner.bottom,minKeyHeight:Math.min(...Array.from(document.querySelectorAll('.keyboard .key')).map(k=>k.getBoundingClientRect().height)),controlsFit:controls.every(c=>{const r=c.getBoundingClientRect();return r.left>=-1&&r.right<=innerWidth+1&&r.top>=0&&r.bottom<=innerHeight+1;}),scrollHeight:document.documentElement.scrollHeight,body:document.body.innerText};});

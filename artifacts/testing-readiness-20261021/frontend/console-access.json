@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-21T06:37:27.126Z",
+  "clientDate": "2026-10-21",
+  "task": "Resume tester access setup after the user's sign-in reply.",
+  "status": "awaiting-authenticated-connected-console-session",
+  "signInReportedByUser": true,
+  "connectedSessionAuthenticated": false,
+  "inventoryLimit": "The full CUA inventory covers enabled connected browser surfaces. It cannot prove whether a separate unconnected browser/profile/window contains the user's successful sign-in.",
+  "console": {
+    "expectedService": "Jest Developer Console",
+    "publicEntry": "https://jest.com/developers",
+    "browserProvider": "Chrome extension",
+    "browserId": "2",
+    "browserProfile": "craig",
+    "retainedTabId": "1499258133",
+    "observedPage": "Sign in",
+    "signInHeadingVisible": true,
+    "emailControlEnabled": true,
+    "continueControlEnabled": true,
+    "authenticatedConsoleVisible": false,
+    "teamSelectorVisible": false,
+    "sandboxUsersVisible": false,
+    "handoffMarked": true
+  },
+  "checksPerformed": [
+    "Restored CUA browser documentation before resuming.",
+    "The earlier browser1 binding was unavailable. Refreshed full browser inventory and rebound the same retained tab in Chrome2/profilecraig.",
+    "Inspected all enabled browser surfaces. Only Chrome2/profilecraig was connected, and its only Jest tab was the retained login/Developer Portal tab.",
+    "Followed the visible Go back to homepage link to the Developer Portal, then the visible Open Developer Console link.",
+    "The normal Console entry returned to Sign in with enabled E-Mail and Continue controls, rather than opening an authenticated team or Sandbox Users page."
+  ],
+  "expectedApp": {
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "slug": "riddle-q",
+    "teamAndGameSelectedInUi": false
+  },
+  "sandboxAccountReadiness": {
+    "existingAccountsVerified": false,
+    "existingAccountCount": null,
+    "existingNames": null,
+    "creationFormReached": false,
+    "requiredCreationFields": null,
+    "accountsCreated": 0,
+    "accountsResetOrDeleted": 0,
+    "generatedLoginLinks": 0,
+    "modelLimitation": "Official documentation describes Console-created sandbox users, but the actual current form and existing user list remain inaccessible on the connected signed-out browser. No inference that accounts are absent is made."
+  },
+  "security": {
+    "credentialsEntered": false,
+    "otpRequestedOrSubmitted": false,
+    "messagesOrSmsSent": false,
+    "purchasesOrGrants": false,
+    "publicationOrReviewChanges": false,
+    "sourceChanges": false,
+    "gameplayOrBrowserHarnessesRun": false,
+    "privateLoginLinksOrTokensStored": false,
+    "authFlowParametersStored": false,
+    "unrelatedBrowserTabsStored": false
+  },
+  "remainingPrerequisite": {
+    "ownerAction": "Complete Jest Developer Console sign-in in the connected Chrome profilecraig and retained Jest testing tab, or connect the browser/profile where the successful sign-in occurred.",
+    "afterAuthenticated": "Inspect Sandbox Users, verify correct team ownership, then safely reuse or create up to three dedicated QA A/B/C sandbox accounts only if the observed form requires no real-person contacts, messages, legal acceptance or charges. Retrieve private login links directly in the Console; do not place them in repository evidence.",
+    "notNeeded": "No password, OTP or generated login link should be sent in chat."
+  },
+  "officialReferences": [
+    {
+      "url": "https://docs.jest.com/dev-console/sandbox-users",
+      "supports": "Create Sandbox User and Generate Login Link UI steps, with reset limitations."
+    },
+    {
+      "url": "https://docs.jest.com/testing/sandbox",
+      "supports": "Real logged-in sandbox accounts for unpublished uploaded builds, separate sessions, up to three users per developer and sandbox payments."
+    }
+  ],
+  "priorProviderEvidence": "artifacts/testing-readiness-20261020/frontend/provider-readiness.json",
+  "readinessClaim": "The connected-browser tester-access gap remains unresolved. This follow-up did not re-run build, backend or gameplay verification and does not claim all testing is ready."
+}

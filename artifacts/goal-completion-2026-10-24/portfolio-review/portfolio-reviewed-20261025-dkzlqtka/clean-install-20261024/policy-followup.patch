@@ -1,0 +1,58 @@
+diff --git a/docs/evidence/portfolio-reviewed-source-2026-10-25.md b/docs/evidence/portfolio-reviewed-source-2026-10-25.md
+index c4cd0357a7379b2930ed84f9b5f1b8919e8e7c57..a58004269cb8e75c5167dab3e6192e5579cbe09b 100644
+--- a/docs/evidence/portfolio-reviewed-source-2026-10-25.md
++++ b/docs/evidence/portfolio-reviewed-source-2026-10-25.md
+@@ -1,13 +1,13 @@
+ # Retained Portfolio verification and local candidate provenance
+ 
+-## Scope and source identity
++## Historical baseline: commit 480ac243
+ 
+-This review package carries an already verified source snapshot into an isolated local branch. It does not claim fresh branch tests, hosted CI acceptance or a new deployment.
++Commit `480ac243fdd67640f4f4ca223a2af389708a06db` packaged the already verified source snapshot described below. These baseline results are dated local evidence, not hosted CI acceptance or a production deployment. The later policy-only follow-up has a separate digest and verification scope below.
+ 
+-- Final collected verification inputs: **363**, SHA-256 `1bac467e7aa095995aaab7f8f776b83e783589e06d1a84b604345f22ef49fd83`.
++- Baseline collected verification inputs: **363**, SHA-256 `1bac467e7aa095995aaab7f8f776b83e783589e06d1a84b604345f22ef49fd83`.
+ - Local source HEAD: `130686f829331bfc603ba128582cdac1361984aa`; confirmed remote base: `230a82d20a3a5d748b590ddceade064a6319bcec`.
+ - Existing progress commits `4e82914cbdfe76504d5c456118fe07b5deb05691` and `130686f829331bfc603ba128582cdac1361984aa` are retained, not newly authored by this packaging step.
+-- All 363 collected working-tree and staged-tree inputs match the retained manifest exactly, including its path set. This is the original collector’s defined scope, not an exhaustive inventory of every application/build input. Documentation packaging and editor settings are outside that manifest.
++- At that baseline commit, all 363 collected working-tree and staged-tree inputs matched the retained manifest exactly, including its path set. This is the original collector’s defined scope, not an exhaustive inventory of every application/build input. Documentation packaging and editor settings are outside that manifest.
+ - Original checkout, index, refs, status, verified inputs and requested context/editor files are preserved. These are local preservation checks, not public Git metadata dumps.
+ 
+ ## Carried verification from 24 October 2026
+@@ -38,12 +38,22 @@ Raw output, screenshots, traces, authentication state and private environment fi
+ 
+ ## Local packaging checks and patch-data boundary
+ 
+-The candidate’s fresh whole-repository formatter check passes using the existing pinned toolchain, without installing dependencies or rerunning application tests/build. The editor JSON parses identically to HEAD.
++The baseline packaging’s fresh whole-repository formatter check passed using the existing pinned toolchain, without installing dependencies or rerunning application tests/build. The editor JSON parses identically to HEAD.
+ 
+ The original raw cached `git diff --check` returns **2**, with exactly six `space before tab in indent` findings at lines 6, 7, 8, 11, 12 and 13 of `patches/@clerk__ui@1.41.2.patch`. Each is a literal unified-diff context marker followed by the vendor’s tab indentation; the tested patch bytes remain unchanged.
+ 
+ Every other staged path uses strict default whitespace checking. Only that generated patch is checked separately with per-invocation `core.whitespace=-space-before-tab`; other whitespace rules remain enabled. Local assertions bind every exception to those context markers. Patch parsing and reverse dry-run checks use a copied installed patched module without modifying the installed package. No global or repository whitespace configuration is weakened. This is a documented patch-data boundary, not an unqualified raw whitespace pass.
+ 
++## Follow-up: explicit core-js postinstall policy
++
++The automatic feature Preview for commit `480ac243` stopped at frozen dependency installation: pnpm 11.9.0 reported `ERR_PNPM_IGNORED_BUILDS` for `core-js@3.47.0`. An isolated install with an empty store, no project environment files and no project credentials reproduced that exact failure after Prisma generation. pnpm added an unresolved policy placeholder to its local workspace file during that failed install; that generated state remains only in the local diagnostic receipts.
++
++The follow-up adds only `core-js: false` to `allowBuilds`. The package's pinned postinstall prints a support message and maintains a temporary banner cache; it generates no runtime files. The explicit denial skips that unnecessary script while preserving pnpm's strict handling of every unreviewed dependency script. No dependency version, lockfile, workflow, Preview resource or credential setting changes. See the official [pnpm 11 build policy](https://pnpm.io/blog/releases/11.0) and [core-js postinstall documentation](https://core-js.io/docs/usage#postinstall-message).
++
++The policy-inclusive snapshot has the same **363 collected paths**, SHA-256 `c04cf468a4e44b49a0b592432e64a23a0367af7c62f267de823da4f35c867e22`. Only `pnpm-workspace.yaml` differs from the baseline collected inputs; the other 362 inputs, including the dependency lockfile, are byte-identical. This is a new snapshot, not exact equality to the historical `1bac467...` digest.
++
++A second frozen install from a fresh empty store and dependency directory passed, left the lockfile unchanged and preserved the policy-inclusive source digest. A fresh local build used existing guarded Clerk development keys and local dummy database settings: compilation succeeded, then static blog-tag data collection failed with Prisma `P1001` because that dummy database had no running service. No production credentials, remote media or telemetry were supplied. This is an observed local fixture limitation; no fresh successful build, unit run or browser run is claimed for the policy-inclusive snapshot. The earlier application results remain the dated baseline above. Both changed files pass the fresh pinned formatter check.
++
+ ## Deployment and current gates
+ 
+ The owner-authorized canonical protected-health check returned HTTP 200 with database and storage OK at `2026-10-24T04:44:25.543Z`, revision `130686f829331bfc603ba128582cdac1361984aa`. This verifies the existing canonical deployment only; the new candidate is not deployed, and its hosted CI, staged readiness and promotion acceptance remain pending.
+diff --git a/pnpm-workspace.yaml b/pnpm-workspace.yaml
+index ee3a37c561ac20198df6d89556b9e25d7998ae46..acca90b1e9aa98bc1e81d49b9c6f58e85fd5f6f9 100644
+--- a/pnpm-workspace.yaml
++++ b/pnpm-workspace.yaml
+@@ -5,6 +5,7 @@ allowBuilds:
+   "@clerk/shared": true
+   "@prisma/engines": true
+   "@sentry/cli": true
++  core-js: false
+   esbuild: true
+   msgpackr-extract: true
+   msw: true

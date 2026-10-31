@@ -1,0 +1,11 @@
+Starting src/__tests__/race/raceLivePublicWait.it.test.ts
+PASS src/__tests__/race/raceLivePublicWait.it.test.ts (7.248 s)
+Starting src/__tests__/race/raceLiveStreamAdmission.it.test.ts
+PASS src/__tests__/race/raceLiveStreamAdmission.it.test.ts (8.814 s)
+
+Test Suites: 2 passed, 2 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        16.187 s
+Ran all test suites within paths "src/__tests__/race/raceLivePublicWait.it.test.ts", "src/__tests__/race/raceLiveStreamAdmission.it.test.ts".
+Test results written to: ../artifacts/jest-e2e-2026-10-22/multiplayer/restored-integration-results.json

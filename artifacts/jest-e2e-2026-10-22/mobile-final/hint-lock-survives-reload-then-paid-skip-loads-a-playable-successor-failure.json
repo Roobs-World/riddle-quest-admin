@@ -1,0 +1,20 @@
+{
+  "body": "Classic\n300\nWhat has keys but cannot open doors?\nP\nI\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nHint\nSUBMIT\nSkip\nMultiplayer",
+  "commands": [
+    {
+      "type": "game:ready",
+      "payload": {
+        "protocolVersion": 1,
+        "surface": "html5"
+      }
+    },
+    {
+      "type": "game:resize",
+      "payload": {
+        "width": 320,
+        "height": 568
+      }
+    }
+  ],
+  "errors": []
+}

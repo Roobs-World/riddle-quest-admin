@@ -9,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const component=path.join(root,'src/play/race/components/LiveRaceInviteShare.tsx');
 const baseline=process.env.LIVE_NATIVE_INVITE_BASELINE_SOURCE;
-const output=path.resolve(process.env.LIVE_NATIVE_INVITE_REPORT_DIR??path.join(root,'../../artifacts/game-native-invite-2026-10-03'));
+const output=path.resolve(process.env.LIVE_NATIVE_INVITE_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-native-invite-2026-10-03'));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/native-invite-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

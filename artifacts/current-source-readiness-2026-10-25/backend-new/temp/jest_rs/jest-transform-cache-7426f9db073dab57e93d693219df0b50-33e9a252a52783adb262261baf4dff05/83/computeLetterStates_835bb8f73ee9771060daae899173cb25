@@ -1,0 +1,37 @@
+e8af7ff779865149b9c5345b2be7fdbf
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.computeLetterStates = computeLetterStates;
+/** Keyboard-state precedence: a stronger observation never regresses. */
+const PRIORITY = { green: 3, yellow: 2, red: 1 };
+/**
+ * Collapses scored guesses into the strongest known feedback for each keyboard key.
+ *
+ * @param guesses - Submitted guesses and their positionally aligned feedback.
+ * @returns A new record keyed by JavaScript-lowercased guess symbols. When a symbol
+ * appears more than once, `green` takes precedence over `yellow`, which takes
+ * precedence over `red`.
+ *
+ * @remarks
+ * The function does not mutate its inputs. Each `guess` element is expected to
+ * have a corresponding `feedback` element; malformed, unaligned arrays are not
+ * validated at runtime.
+ */
+function computeLetterStates(guesses) {
+    /** Provides states behavior. */
+    const states = {};
+    for (const { guess, feedback } of guesses) {
+        for (let i = 0; i < guess.length; i++) {
+            /** Provides letter behavior. */
+            const letter = guess[i].toLowerCase();
+            /** Provides incoming behavior. */
+            const incoming = feedback[i];
+            /** Provides existing behavior. */
+            const existing = states[letter];
+            if (!existing || PRIORITY[incoming] > PRIORITY[existing]) {
+                states[letter] = incoming;
+            }
+        }
+    }
+    return states;
+}

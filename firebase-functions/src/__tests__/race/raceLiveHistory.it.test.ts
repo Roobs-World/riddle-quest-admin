@@ -48,6 +48,14 @@ async function completed(provider: "facebook" | "reddit", suffix = "first", nowM
   const a = await joinLiveRaceForUser(ids[0], {locale, categoryId: "history", requestId: `history-a-${suffix}`}, {db, nowMs});
   /** Real matching selects the already waiting creator. */
   const b = await joinLiveRaceForUser(ids[1], {locale, categoryId: "history", requestId: `history-b-${suffix}`}, {db, nowMs: nowMs + 1000});
+  /** Canonical shared match that supplies each participant's first issued question. */
+  const paired = (await db.doc(`liveRaceMatches/${a.ticketId}`).get()).data()!;
+  for (const [seat, view] of [a, b].entries()) {
+    /** First owned question answered before creating the retained terminal history. */
+    const riddle = paired.runs[seat].riddles[0];
+    await updateLiveRaceForUser(ids[seat], {ticketId: view.ticketId, action: "guess", requestId: `history-played-${suffix}-${seat}`,
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: nowMs + 7000});
+  }
   await updateLiveRaceForUser(ids[1], {ticketId: b.ticketId, action: "leave", requestId: `history-leave-${suffix}`}, {db, nowMs: nowMs + 8000});
   return {ids, seats: [a, b]};
 }

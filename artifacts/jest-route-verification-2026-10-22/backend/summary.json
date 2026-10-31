@@ -1,0 +1,1686 @@
+{
+  "date": "2026-10-22",
+  "success": true,
+  "core": {
+    "success": true,
+    "suites": 40,
+    "passedSuites": 40,
+    "failedSuites": 0,
+    "tests": 436,
+    "passedTests": 436,
+    "failedTests": 0,
+    "pendingTests": 0
+  },
+  "initialFirebaseRun": {
+    "success": false,
+    "suites": 235,
+    "passedSuites": 229,
+    "failedSuites": 6,
+    "tests": 3160,
+    "passedTests": 3149,
+    "failedTests": 11,
+    "pendingTests": 0
+  },
+  "targetedFirebaseRerun": {
+    "success": true,
+    "suites": 6,
+    "passedSuites": 6,
+    "failedSuites": 0,
+    "tests": 148,
+    "passedTests": 148,
+    "failedTests": 0,
+    "pendingTests": 0
+  },
+  "finalFirebaseCoverage": {
+    "success": true,
+    "suites": 235,
+    "passedSuites": 235,
+    "failedSuites": 0,
+    "tests": 3160,
+    "passedTests": 3160,
+    "failedTests": 0,
+    "pendingTests": 0
+  },
+  "combination": "The six targeted suite results replace their matching initial suite results by exact test-file path; unchanged passing suites are retained once. No tests are double-counted.",
+  "fixtureRepairs": [
+    "firebase-functions/src/__tests__/race/facebookLiveContextDelivery.it.test.ts",
+    "firebase-functions/src/__tests__/race/facebookLiveReferrals.it.test.ts",
+    "firebase-functions/src/__tests__/race/redditLiveReferrals.it.test.ts",
+    "firebase-functions/src/__tests__/race/raceAnswerInputShape.it.test.ts",
+    "firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts"
+  ],
+  "productionLogicChanged": false,
+  "localEmulatorsStopped": true,
+  "blockedPrerequisites": [],
+  "limits": [
+    "Provider identity and billing handler checks use synthetic signed fixtures and emulator state; this run makes no real charges or production account grants.",
+    "Route group counts overlap because some endpoint and security suites cover more than one route."
+  ],
+  "routes": [
+    {
+      "route": "Jest identity and account lifecycle",
+      "passed": true,
+      "suites": 7,
+      "tests": 94,
+      "files": [
+        "firebase-functions/src/__tests__/jestEndpoints.test.ts",
+        "firebase-functions/src/__tests__/jestAccountOperationLease.test.ts",
+        "firebase-functions/src/__tests__/jestSecurity.test.ts",
+        "firebase-functions/src/__tests__/jestDeletedAuthUser.test.ts",
+        "firebase-functions/src/__tests__/jestAccountOperationLease.it.test.ts",
+        "firebase-functions/src/__tests__/jestUser.test.ts",
+        "firebase-functions/src/__tests__/jestAccountDeletion.test.ts"
+      ]
+    },
+    {
+      "route": "Jest purchases, subscriptions and referral endpoints",
+      "passed": true,
+      "suites": 3,
+      "tests": 89,
+      "files": [
+        "firebase-functions/src/__tests__/jestEndpoints.test.ts",
+        "firebase-functions/src/__tests__/jestPurchaseEndpoint.test.ts",
+        "firebase-functions/src/__tests__/jestSecurity.test.ts"
+      ]
+    },
+    {
+      "route": "Classic and Daily play, hints, skips and completion",
+      "passed": true,
+      "suites": 29,
+      "tests": 273,
+      "files": [
+        "firebase-functions/src/__tests__/dailyChallenge.test.ts",
+        "firebase-functions/src/__tests__/completeGameTransaction.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts",
+        "firebase-functions/src/__tests__/classicBufferIssuedState.it.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerLoadIssuedState.it.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerAtomicRepair.it.test.ts",
+        "firebase-functions/src/__tests__/classicSupplyTransactionPayload.it.test.ts",
+        "firebase-functions/src/__tests__/classicSupplyPayload.it.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerSession.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerSkipContext.it.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerHintLocale.it.test.ts",
+        "firebase-functions/src/__tests__/classicSupplyWorker.test.ts",
+        "firebase-functions/src/__tests__/classicRiddleBufferIssuanceLatency.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerLoadIssuanceLatency.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerSkipPreparationLatency.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerContentPreparationLatency.test.ts",
+        "firebase-functions/src/__tests__/classicRiddleBufferLatency.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerCompletionRepairLatency.test.ts",
+        "firebase-functions/src/__tests__/dailyRiddleGeneration.test.ts",
+        "firebase-functions/src/__tests__/dailyScheduler.test.ts",
+        "firebase-functions/src/__tests__/completeGameSecurity.test.ts",
+        "firebase-functions/src/__tests__/completeGameCallable.test.ts",
+        "firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts",
+        "firebase-functions/src/__tests__/dailyChallengeProgress.test.ts",
+        "firebase-functions/src/__tests__/getHint.test.ts",
+        "firebase-functions/src/__tests__/dailyRolloverRecovery.test.ts",
+        "firebase-functions/src/__tests__/dailyStreak.test.ts",
+        "firebase-functions/src/__tests__/gameplayDeploymentOptions.test.ts",
+        "firebase-functions/src/__tests__/singlePlayerLoadRequest.test.ts"
+      ]
+    },
+    {
+      "route": "Multiplayer, invitations, results and reward delivery",
+      "passed": true,
+      "suites": 118,
+      "tests": 1937,
+      "files": [
+        "firebase-functions/src/__tests__/race/raceArchitectureMigration.it.test.ts",
+        "firebase-functions/src/__tests__/redditMatchmaking.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceService.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLive.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceSettlement.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceEntryCompatibility.it.test.ts",
+        "firebase-functions/src/__tests__/race/facebookLiveContextDelivery.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveAccountDeletion.it.test.ts",
+        "firebase-functions/src/__tests__/race/redditLiveReferrals.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceEngine.test.ts",
+        "firebase-functions/src/__tests__/race/facebookLiveReferrals.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveDeckCompatibility.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceAnswerInputShape.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveRematch.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLivePush.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceReadService.test.ts",
+        "firebase-functions/src/__tests__/race/redditTournament.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceBot.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceResponseAcceptance.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceDeliveryQueue.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLivePublicWait.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceRequestBinding.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceInvitation.it.test.ts",
+        "firebase-functions/src/__tests__/race/redditLiveTournamentDelivery.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceCallables.test.ts",
+        "firebase-functions/src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts",
+        "firebase-functions/src/__tests__/race/liveRaceSafety.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveHistory.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveInvitation.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveSignals.it.test.ts",
+        "firebase-functions/src/__tests__/race/facebookContextService.test.ts",
+        "firebase-functions/src/__tests__/race/raceRollout.test.ts",
+        "firebase-functions/src/__tests__/race/raceSettlementAuthority.it.test.ts",
+        "firebase-functions/src/__tests__/race/facebookContextBoard.it.test.ts",
+        "firebase-functions/src/__tests__/race/facebookTournament.test.ts",
+        "firebase-functions/src/__tests__/race/raceRecordingCompatibility.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceRecordingInputShape.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveIdentityPayload.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchPerformance.test.ts",
+        "firebase-functions/src/__tests__/race/facebookContextBoard.test.ts",
+        "firebase-functions/src/__tests__/race/raceTranslationValidation.test.ts",
+        "firebase-functions/src/__tests__/race/raceContent.test.ts",
+        "firebase-functions/src/__tests__/race/raceRequestBinding.test.ts",
+        "firebase-functions/src/__tests__/race/raceContentPayload.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchReadMeter.test.ts",
+        "firebase-functions/src/__tests__/race/raceService.test.ts",
+        "firebase-functions/src/__tests__/race/facebookTournament.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceRewardAcceptance.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveStreamAdmission.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceCommandOrdering.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceUnicodeCells.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceTimelineAuthority.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchCalibration.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveGuessReceipt.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceReadinessExpiry.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchCalibration.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveLatency.test.ts",
+        "firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts",
+        "firebase-functions/src/__tests__/race/racePrivacy.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchPolicy.test.ts",
+        "firebase-functions/src/__tests__/race/raceReadinessClock.it.test.ts",
+        "firebase-functions/src/__tests__/race/racePoolValidationWork.test.ts",
+        "firebase-functions/src/__tests__/race/raceAnswerCompatibility.it.test.ts",
+        "firebase-functions/src/__tests__/race/racePromptCompatibility.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceReceiptProjection.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceStoredRecords.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveObservation.test.ts",
+        "firebase-functions/src/__tests__/race/raceTranslationGenerator.test.ts",
+        "firebase-functions/src/__tests__/race/redditTournament.test.ts",
+        "firebase-functions/src/__tests__/race/raceRules.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveCreatorRecovery.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceTimelineAuthority.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceStoredResults.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchGateway.test.ts",
+        "firebase-functions/src/__tests__/race/raceDeckSnapshot.test.ts",
+        "firebase-functions/src/__tests__/race/racePositionAuthority.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceAchievements.test.ts",
+        "firebase-functions/src/__tests__/race/raceBot.test.ts",
+        "firebase-functions/src/__tests__/race/facebookContextCallables.test.ts",
+        "firebase-functions/src/__tests__/race/racePoolValidationWork.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceGuessReceipt.it.test.ts",
+        "firebase-functions/src/__tests__/race/facebookContextCompetition.test.ts",
+        "firebase-functions/src/__tests__/race/raceStoredPosition.test.ts",
+        "firebase-functions/src/__tests__/race/raceContentAuthoring.test.ts",
+        "firebase-functions/src/__tests__/race/raceReceiptProgress.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceAnswerInputShape.test.ts",
+        "firebase-functions/src/__tests__/race/raceReceiptProgress.test.ts",
+        "firebase-functions/src/__tests__/race/raceRunMutationClock.test.ts",
+        "firebase-functions/src/__tests__/race/facebookTournamentCallable.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveScoring.test.ts",
+        "firebase-functions/src/__tests__/race/raceMutationReadBudget.test.ts",
+        "firebase-functions/src/__tests__/race/raceTransactionReads.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceReceiptClock.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchFreshness.test.ts",
+        "firebase-functions/src/__tests__/race/raceMatchOfferRecord.test.ts",
+        "firebase-functions/src/__tests__/race/raceDeliveryRecords.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveStreamingCallables.test.ts",
+        "firebase-functions/src/__tests__/race/raceFilteredPool.test.ts",
+        "firebase-functions/src/__tests__/race/raceTranslationImport.test.ts",
+        "firebase-functions/src/__tests__/race/raceStoredSettlement.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveRetirementCallables.test.ts",
+        "firebase-functions/src/__tests__/race/raceUnscoredAuthority.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceContentImport.test.ts",
+        "firebase-functions/src/__tests__/redditMatchmaking.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveGuessReceiptCallables.test.ts",
+        "firebase-functions/src/__tests__/race/facebookContextService.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceDeckCompatibilityWork.test.ts",
+        "firebase-functions/src/__tests__/race/raceCandidateSearchLatency.test.ts",
+        "firebase-functions/src/__tests__/race/raceReadinessClock.test.ts",
+        "firebase-functions/src/__tests__/race/raceAnalyticsPersistence.it.test.ts",
+        "firebase-functions/src/__tests__/race/raceEventDelivery.test.ts",
+        "firebase-functions/src/__tests__/race/raceStoredUnscored.test.ts",
+        "firebase-functions/src/__tests__/race/raceInvitationRecord.test.ts",
+        "firebase-functions/src/__tests__/race/raceLiveFailures.test.ts"
+      ]
+    },
+    {
+      "route": "Profiles, leaderboards, presence and social safety",
+      "passed": true,
+      "suites": 16,
+      "tests": 151,
+      "files": [
+        "firebase-functions/src/__tests__/leaderboard.test.ts",
+        "firebase-functions/src/__tests__/profile.test.ts",
+        "firebase-functions/src/__tests__/presenceVisibility.it.test.ts",
+        "firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts",
+        "firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts",
+        "firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts",
+        "firebase-functions/src/__tests__/socialSafety.test.ts",
+        "firebase-functions/src/__tests__/usernameReservationMigration.test.ts",
+        "firebase-functions/src/__tests__/leaderboardCurrentProfile.it.test.ts",
+        "firebase-functions/src/__tests__/usernameRules.it.test.ts",
+        "firebase-functions/src/__tests__/presenceVisibility.test.ts",
+        "firebase-functions/src/__tests__/socialSafety.it.test.ts",
+        "firebase-functions/src/__tests__/socialSafetyCallables.test.ts",
+        "firebase-functions/src/__tests__/presenceConsentCallable.test.ts",
+        "firebase-functions/src/__tests__/presenceAggregation.test.ts",
+        "firebase-functions/src/__tests__/avatarUpload.test.ts"
+      ]
+    }
+  ],
+  "suiteResults": [
+    {
+      "file": "firebase-functions/src/__tests__/dailyChallenge.test.ts",
+      "status": "passed",
+      "tests": 39,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceArchitectureMigration.it.test.ts",
+      "status": "passed",
+      "tests": 80,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditMatchmaking.it.test.ts",
+      "status": "passed",
+      "tests": 43,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceService.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/firestoreService.test.ts",
+      "status": "passed",
+      "tests": 50,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLive.it.test.ts",
+      "status": "passed",
+      "tests": 43,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceSettlement.it.test.ts",
+      "status": "passed",
+      "tests": 65,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/riddleGeneration.test.ts",
+      "status": "passed",
+      "tests": 44,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/completeGameTransaction.test.ts",
+      "status": "passed",
+      "tests": 34,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/leaderboard.test.ts",
+      "status": "passed",
+      "tests": 37,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/deleteAccount.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceEntryCompatibility.it.test.ts",
+      "status": "passed",
+      "tests": 90,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts",
+      "status": "passed",
+      "tests": 27,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/openaiService.test.ts",
+      "status": "passed",
+      "tests": 44,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookLiveContextDelivery.it.test.ts",
+      "status": "passed",
+      "tests": 30,
+      "source": "targeted-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveAccountDeletion.it.test.ts",
+      "status": "passed",
+      "tests": 28,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/redditLiveReferrals.it.test.ts",
+      "status": "passed",
+      "tests": 29,
+      "source": "targeted-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceEngine.test.ts",
+      "status": "passed",
+      "tests": 33,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/profile.test.ts",
+      "status": "passed",
+      "tests": 24,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookLiveReferrals.it.test.ts",
+      "status": "passed",
+      "tests": 23,
+      "source": "targeted-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveDeckCompatibility.it.test.ts",
+      "status": "passed",
+      "tests": 42,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookCommerceLedger.test.ts",
+      "status": "passed",
+      "tests": 27,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestEndpoints.test.ts",
+      "status": "passed",
+      "tests": 49,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceAnswerInputShape.it.test.ts",
+      "status": "passed",
+      "tests": 57,
+      "source": "targeted-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveRematch.it.test.ts",
+      "status": "passed",
+      "tests": 18,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditGatewayReplay.it.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLivePush.it.test.ts",
+      "status": "passed",
+      "tests": 21,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/requestSchemas.test.ts",
+      "status": "passed",
+      "tests": 26,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditReferrals.test.ts",
+      "status": "passed",
+      "tests": 19,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReadService.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/redditTournament.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceBot.it.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceResponseAcceptance.it.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceDeliveryQueue.it.test.ts",
+      "status": "passed",
+      "tests": 37,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLivePublicWait.it.test.ts",
+      "status": "passed",
+      "tests": 20,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookReferrals.test.ts",
+      "status": "passed",
+      "tests": 14,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRequestBinding.it.test.ts",
+      "status": "passed",
+      "tests": 22,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceInvitation.it.test.ts",
+      "status": "passed",
+      "tests": 16,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookEndpoints.test.ts",
+      "status": "passed",
+      "tests": 17,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/redditLiveTournamentDelivery.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceCallables.test.ts",
+      "status": "passed",
+      "tests": 105,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/presenceVisibility.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts",
+      "status": "passed",
+      "tests": 31,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts",
+      "status": "passed",
+      "tests": 17,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/liveRaceSafety.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveHistory.it.test.ts",
+      "status": "passed",
+      "tests": 15,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveInvitation.it.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookNotificationTransport.test.ts",
+      "status": "passed",
+      "tests": 26,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveSignals.it.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookContextService.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRollout.test.ts",
+      "status": "passed",
+      "tests": 19,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestPurchaseEndpoint.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookNotificationDispatch.it.test.ts",
+      "status": "passed",
+      "tests": 12,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceSettlementAuthority.it.test.ts",
+      "status": "passed",
+      "tests": 19,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/classicBufferIssuedState.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookContextBoard.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookTournament.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRecordingCompatibility.it.test.ts",
+      "status": "passed",
+      "tests": 20,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRecordingInputShape.it.test.ts",
+      "status": "passed",
+      "tests": 20,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveIdentityPayload.it.test.ts",
+      "status": "passed",
+      "tests": 15,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/presenceVisibilityReconciliation.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "targeted-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchPerformance.test.ts",
+      "status": "passed",
+      "tests": 15,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerLoadIssuedState.it.test.ts",
+      "status": "passed",
+      "tests": 14,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookContextBoard.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/achievements.test.ts",
+      "status": "passed",
+      "tests": 55,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceTranslationValidation.test.ts",
+      "status": "passed",
+      "tests": 16,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceContent.test.ts",
+      "status": "passed",
+      "tests": 27,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/yahooOAuthEndpoints.test.ts",
+      "status": "passed",
+      "tests": 18,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRequestBinding.test.ts",
+      "status": "passed",
+      "tests": 22,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceContentPayload.it.test.ts",
+      "status": "passed",
+      "tests": 21,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookIdentityNonce.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchReadMeter.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceService.test.ts",
+      "status": "passed",
+      "tests": 28,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/presenceVisibilityOrdering.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookTournament.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRewardAcceptance.it.test.ts",
+      "status": "passed",
+      "tests": 18,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveStreamAdmission.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerAtomicRepair.it.test.ts",
+      "status": "passed",
+      "tests": 14,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceCommandOrdering.it.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceUnicodeCells.it.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/classicSupplyTransactionPayload.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceTimelineAuthority.test.ts",
+      "status": "passed",
+      "tests": 22,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchCalibration.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveSettlementLatency.test.ts",
+      "status": "passed",
+      "tests": 15,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/classicSupplyPayload.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/leaderboardAtomicRefresh.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookContextRetention.it.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerSession.test.ts",
+      "status": "passed",
+      "tests": 12,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditProfileRetention.it.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/socialSafety.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveGuessReceipt.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerSkipContext.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookIdentityNonceRetention.it.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/databaseRules.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReadinessExpiry.it.test.ts",
+      "status": "passed",
+      "tests": 24,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchCalibration.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditLiveGuessReceiptGateway.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/usernameReservationMigration.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveLatency.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceUnicodeAnswers.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/leaderboardCurrentProfile.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceInvitationCreatorRecovery.it.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditSecurity.test.ts",
+      "status": "passed",
+      "tests": 20,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/racePrivacy.test.ts",
+      "status": "passed",
+      "tests": 21,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/riddleSupply.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchPolicy.test.ts",
+      "status": "passed",
+      "tests": 15,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookAccountDeletion.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/sentryHandlers.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReadinessClock.it.test.ts",
+      "status": "passed",
+      "tests": 18,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/racePoolValidationWork.test.ts",
+      "status": "passed",
+      "tests": 17,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/gameLogic.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceAnswerCompatibility.it.test.ts",
+      "status": "passed",
+      "tests": 14,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/racePromptCompatibility.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReceiptProjection.it.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceStoredRecords.test.ts",
+      "status": "passed",
+      "tests": 55,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditSocialProfile.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveObservation.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceTranslationGenerator.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookSecurity.test.ts",
+      "status": "passed",
+      "tests": 18,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestAccountOperationLease.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/redditTournament.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRules.it.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveCreatorRecovery.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookClientConfiguration.test.ts",
+      "status": "passed",
+      "tests": 22,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookReferralRetention.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/usernameRules.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerHintLocale.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/presenceVisibility.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/classicSupplyWorker.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/classicRiddleBufferIssuanceLatency.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceTimelineAuthority.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceStoredResults.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerLoadIssuanceLatency.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchGateway.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditCommerceLedger.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/index.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditAccountDeletion.it.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditEndpoints.test.ts",
+      "status": "passed",
+      "tests": 12,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/yahooStripeLedger.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceDeckSnapshot.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerSkipPreparationLatency.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/racePositionAuthority.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditLiveRetirementGateway.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceAchievements.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerContentPreparationLatency.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceBot.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/classicRiddleBufferLatency.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookContextCallables.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/racePoolValidationWork.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/socialSafety.it.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceGuessReceipt.it.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerCompletionRepairLatency.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/dailyRiddleGeneration.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookContextCompetition.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceStoredPosition.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestSecurity.test.ts",
+      "status": "passed",
+      "tests": 30,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceContentAuthoring.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReceiptProgress.it.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceAnswerInputShape.test.ts",
+      "status": "passed",
+      "tests": 28,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/socialSafetyCallables.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditPresence.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReceiptProgress.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceRunMutationClock.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/dailyScheduler.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookTournamentCallable.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookCommerceLedger.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditPresence.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveScoring.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMutationReadBudget.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceTransactionReads.it.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestDeletedAuthUser.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReceiptClock.it.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchFreshness.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/presenceConsentCallable.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/sentrySecurity.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceMatchOfferRecord.test.ts",
+      "status": "passed",
+      "tests": 32,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/completeGameSecurity.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookNotificationPromptCallables.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookNotificationPrompts.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/completeGameCallable.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/dailyOpenAITimeout.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "targeted-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceDeliveryRecords.test.ts",
+      "status": "passed",
+      "tests": 41,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveStreamingCallables.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/presenceAggregation.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookIdentityNonce.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceFilteredPool.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceTranslationImport.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookReferrals.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceStoredSettlement.test.ts",
+      "status": "passed",
+      "tests": 12,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditReferrals.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveRetirementCallables.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookRewardedContinueCallable.test.ts",
+      "status": "passed",
+      "tests": 10,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceUnscoredAuthority.it.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookReferralCallables.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditCommerceLedger.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/localizedClassicIndex.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceContentImport.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/dailyChallengeProgress.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/getHint.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditLiveRaceProfile.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/dailyRolloverRecovery.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/firestoreSchemas.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditMatchmaking.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveGuessReceiptCallables.test.ts",
+      "status": "passed",
+      "tests": 8,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/callableValidation.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/facebookContextService.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditFeatureFlags.test.ts",
+      "status": "passed",
+      "tests": 4,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/constants.test.ts",
+      "status": "passed",
+      "tests": 17,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceDeckCompatibilityWork.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/firestoreIndexes.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookNotificationPrompts.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/avatarUpload.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestAccountOperationLease.it.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceCandidateSearchLatency.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/dailyStreak.test.ts",
+      "status": "passed",
+      "tests": 12,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceReadinessClock.test.ts",
+      "status": "passed",
+      "tests": 11,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookCustomAuthClaims.test.ts",
+      "status": "passed",
+      "tests": 6,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceAnalyticsPersistence.it.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceEventDelivery.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditStorageEndpoint.test.ts",
+      "status": "passed",
+      "tests": 15,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestUser.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/gameplayDeploymentOptions.test.ts",
+      "status": "passed",
+      "tests": 5,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/callablePreflightCache.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceStoredUnscored.test.ts",
+      "status": "passed",
+      "tests": 14,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/privacyMigrationScripts.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/callableSecurity.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceInvitationRecord.test.ts",
+      "status": "passed",
+      "tests": 13,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/storageRules.it.test.ts",
+      "status": "passed",
+      "tests": 2,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/singlePlayerLoadRequest.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/facebookFeatureFlags.test.ts",
+      "status": "passed",
+      "tests": 3,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/race/raceLiveFailures.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/jestAccountDeletion.test.ts",
+      "status": "passed",
+      "tests": 1,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/redditGameplayEndpoint.test.ts",
+      "status": "passed",
+      "tests": 9,
+      "source": "functions-results.json"
+    },
+    {
+      "file": "firebase-functions/src/__tests__/riddleQuality.test.ts",
+      "status": "passed",
+      "tests": 7,
+      "source": "functions-results.json"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const before=process.env.BRIDGE_DISPATCH_BASELINE_DIR;
 const reactMode=process.env.BRIDGE_DISPATCH_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
-const output=path.resolve(process.env.BRIDGE_DISPATCH_REPORT_DIR??path.join(root,'../../artifacts/bridge-dispatch-ownership-2026-10-03',reactMode==='production'?'production':''));
+const output=path.resolve(process.env.BRIDGE_DISPATCH_REPORT_DIR??path.join(root,'../../builds/test-evidence/bridge-dispatch-ownership-2026-10-03',reactMode==='production'?'production':''));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/bridge-dispatch-'));
 const sources=['src/play/bridgeRouter.ts','src/play/useHostBridgeLifecycle.ts','src/play/game/hooks/useGameBridgeLifecycle.ts','src/play/useGameMessageRouter.ts','src/play/useHostNotice.ts'].map(file=>path.join(root,file));

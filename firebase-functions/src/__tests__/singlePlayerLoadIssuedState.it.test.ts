@@ -39,7 +39,7 @@ const issue = (mode: Mode) => ensureAuthoritativeSession(OWNER, mode, riddle(mod
   getSinglePlayerCompletionKey(mode, mode === "classic" ? 1 : day), "piano", mode === "classic" ? {classicIndex: 1} : {challengeDate: day});
 /** Real callable wrappers validate requests/responses and hold account-operation leases. */
 const load = (mode: Mode, token?: string) => (mode === "classic" ? getCurrentClassicRiddle : getCurrentDailyChallenge).run({auth: {uid: OWNER, token: {}},
-  data: {locale: "en", includeClassicIndex: true, includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true,
+  data: {locale: "en", ...(mode === "classic" ? {includeClassicIndex: true} : {}), includeEvaluation: true, includeHintRecovery: true, includeGuessRecovery: true,
     ...(token ? {sessionToken: token, riddleId: riddle(mode).riddleId} : {})}} as never);
 /** Observer forwards original SDK reads and counts only standalone private-session fetches. */
 async function observedLoad(mode: Mode, token?: string) {

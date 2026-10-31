@@ -1,0 +1,202 @@
+{
+  "url": "http://127.0.0.1:42399/",
+  "body": "كلاسيكي\n300\nWhat has keys but no locks?\nQ\nW\nE\nR\nT\nY\nU\nI\nO\nP\nA\nS\nD\nF\nG\nH\nJ\nK\nL\nZ\nX\nC\nV\nB\nN\nM\nتلميح\nيُقدِّم\nتخطي\nمتعدد اللاعبين\nPVP مباشر\nسباق إلى 10\n300\n×\nردهة الأصدقاء\n1/2\n👤\nRedditSolver\nانضم\nالخصم\n\nفي انتظار قبول صديقك. تنتهي صلاحية هذه الدعوة بعد 15 دقيقة.",
+  "requests": [
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.access",
+      "body": "{\"locale\":\"en\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.access",
+      "body": "{\"locale\":\"en\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.categories",
+      "body": "{\"locale\":\"ar\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.inbox",
+      "body": "{}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.join",
+      "body": "{\"locale\":\"ar\",\"categoryId\":\"mixed\",\"requestId\":\"live-join-b4b82a6d-2d32-4339-8107-b07a8b285f7f\",\"retirementAware\":true,\"expectedOwnerId\":\"reddit-account\",\"waitForPlayer\":true}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.join",
+      "body": "{\"locale\":\"ar\",\"categoryId\":\"mixed\",\"requestId\":\"live-join-b4b82a6d-2d32-4339-8107-b07a8b285f7f\",\"retirementAware\":true,\"expectedOwnerId\":\"reddit-account\",\"waitForPlayer\":true}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"action\":\"poll\",\"requestId\":\"live-poll-4966c587-66de-436d-91fb-8ee25d0457b0\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"action\":\"poll\",\"requestId\":\"live-poll-1e4a1c0e-4a4f-428b-a5df-de89da2ce9d9\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"action\":\"poll\",\"requestId\":\"live-poll-b9c9568a-6117-4514-9cda-1650f4712c38\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"action\":\"poll\",\"requestId\":\"live-poll-91845e71-7ca8-46c8-bf9c-86b295622e44\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.retire",
+      "body": "{\"requestId\":\"live-join-b4b82a6d-2d32-4339-8107-b07a8b285f7f\",\"expectedOwnerId\":\"reddit-account\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.inbox",
+      "body": "{}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.join",
+      "body": "{\"locale\":\"ar\",\"categoryId\":\"mixed\",\"requestId\":\"live-join-14619c82-0aae-4a7e-82df-a4bc3773916a\",\"retirementAware\":true,\"expectedOwnerId\":\"reddit-account\",\"waitForPlayer\":true}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.retire",
+      "body": "{\"requestId\":\"live-join-14619c82-0aae-4a7e-82df-a4bc3773916a\",\"expectedOwnerId\":\"reddit-account\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.inbox",
+      "body": "{}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.inbox",
+      "body": "{}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.history",
+      "body": "{\"locale\":\"ar\",\"limit\":20}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.history",
+      "body": "{\"locale\":\"ar\",\"limit\":20}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.join",
+      "body": "{\"locale\":\"ar\",\"categoryId\":\"history\",\"requestId\":\"live-join-6f7b0fe1-dfff-463e-a1d5-0921b9db7bc1\",\"rematchOfTicketId\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"retirementAware\":true,\"expectedOwnerId\":\"reddit-account\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.join",
+      "body": "{\"locale\":\"ar\",\"categoryId\":\"history\",\"requestId\":\"live-join-6f7b0fe1-dfff-463e-a1d5-0921b9db7bc1\",\"rematchOfTicketId\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"retirementAware\":true,\"expectedOwnerId\":\"reddit-account\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-ad0e5f7e-fc5e-468d-88ec-2175b9babb87\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-5513a385-0c21-4e39-a520-a057f1ab6f37\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-abdba87a-9aef-4245-bb5d-7217dc2faabe\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-95cb4217-3643-4634-a002-32ecf32f00f7\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-a92dfd2d-590d-411e-aec6-547bd6db0fd2\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-717e2a57-444f-4b79-8824-85244379c660\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-3c0c841c-3865-4d07-a979-e52c88999ef8\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-27544481-dc81-4a33-8ba2-59b506981384\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-1486d950-175f-438f-b961-6123f0068418\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-3b4eb70f-1108-4945-833f-29c6609c12af\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-ea5b519b-6176-4218-9bd4-282ab41d3094\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-2f496c14-4d69-40ed-8929-94a23657ebe3\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-a3182789-8bcd-401f-914f-952898f8a706\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-7b5f799b-12ee-4fea-af53-79135bf92d91\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-262bf88e-0492-4825-ac2b-f5e1b8596b8c\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-e9fa26b5-b6b4-44c7-984b-3c8fab03d3fe\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-de0694ce-8729-4ff4-9be9-158a8fb494f0\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-685c00da-bbeb-44f9-8c19-e34cc819eace\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-7e3bd9e9-961e-4ada-971d-14612048bc9a\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-20d1d71a-ed72-45f7-8620-e6580fcbaad0\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-8a108258-550a-4582-b058-e39421d1cee9\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-c45ff901-c061-4299-a7a5-2c772ac80a14\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-87037267-1f5b-48a6-a747-c0db484219b3\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-e4e8718a-7332-4b96-93a2-1e5d0efca372\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-1c54caf4-5eec-4f3a-9e27-30ecec5d724e\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-7e09cff7-d8f9-4461-a667-a8bc851718c7\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-30b1f7b0-9ef4-4db6-85f2-6300fd5a07df\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-f2bf641b-d6ef-4016-bfc8-5ddaa19c327b\"}"
+    },
+    {
+      "url": "http://127.0.0.1:42399/api/game/race.live.update",
+      "body": "{\"ticketId\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"action\":\"poll\",\"requestId\":\"live-poll-9427ae21-8ac2-41a2-a35d-8997e5d91b75\"}"
+    }
+  ]
+}

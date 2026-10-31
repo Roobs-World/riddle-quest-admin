@@ -1,0 +1,133 @@
+{
+  "checked_at_utc": "2026-10-22T21:40:23Z",
+  "project_lifecycle": "ACTIVE",
+  "project_billing_enabled": true,
+  "billing_account_spend_cap": "Root UI checked linked paid account, Budgets & caps: existing budgets show Spend cap status Not applicable; no suspended or spend-cap banner in Billing or Run overview. Alert overruns are not enforced caps.",
+  "services": {
+    "exchangejestidentity": {
+      "revision": "exchangejestidentity-00053-wor",
+      "ready": true,
+      "traffic_percent": 100,
+      "updated_utc": "2026-10-18T12:31:49.677920286Z"
+    },
+    "grantjestpurchase": {
+      "revision": "grantjestpurchase-00051-num",
+      "ready": true,
+      "traffic_percent": 100
+    }
+  },
+  "runtime_service_account_disabled": false,
+  "runtime_secret_accessor_binding": "Present, unconditional",
+  "bound_secret_version_2_state": "ENABLED",
+  "cloud_run_service_agent_role": "Present, unconditional",
+  "cloud_functions_service_agent_roles": "Present, unconditional",
+  "artifact_registry_service_agent_role": "Present, unconditional",
+  "managed_service_agent_disabled_status": "Unknown: iam.serviceAccounts.get denied on Google-owned agents",
+  "public_run_invoker": "allUsers binding present",
+  "ingress": "ALLOW_ALL",
+  "max_instances": 20,
+  "concurrency": 80,
+  "timeout_seconds": 60,
+  "cpu": "1",
+  "memory": "256Mi",
+  "system_or_application_logs_during_failures": "None for these two services since 21:25 UTC",
+  "policy_denial_audit_events": "None returned for 20:25 UTC onward",
+  "personalized_service_health": "API not enabled; no API was enabled",
+  "artifact_registry_image_reference_lookup": "Missing on both failing services and healthy control; expected to be harmless to serving revisions because Cloud Run imports and retains serving images",
+  "no_configuration_or_deployment_changes": true,
+  "same_configuration_as_previously_healthy_control": {
+    "runtime_service_account": true,
+    "secret_version": true,
+    "resource_limits": true,
+    "startup_probe": true,
+    "concurrency": true
+  },
+  "subscription_control": {
+    "last_successful_post": "2026-10-22T21:05:16.225398Z",
+    "successful_posts_2100_2105": 32,
+    "anonymous_preflight_current_status": 500,
+    "current_health": "Failing; earlier successes do not overlap the outage",
+    "anonymous_preflight_utc": "2026-10-22T21:40:23Z"
+  },
+  "cors_differential": {
+    "originless_status": 500,
+    "originless_seconds": 0.352682,
+    "same_google_frontend_html": true,
+    "expected_originless_application_status": 403,
+    "expected_approved_origin_application_status": 204,
+    "deployed_public_environment": {
+      "JEST_GAME_ID": "019faa68-f3ec-755d-9ab5-c887fb426801",
+      "JEST_GAME_ORIGIN": "https://jest.com"
+    },
+    "generated_approved_build_origin": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+    "on_request_cors_option": "Not set by source jestHttpOptions; manual strict CORS boundary owns it",
+    "result": "Failure also occurs without any Origin or Access-Control-Request headers; origin-specific behavior is not required to reproduce it."
+  },
+  "regional_quota_assessment": {
+    "quota_region": "us-central1",
+    "quota_snapshot_utc": "2026-10-22T21:45\u201321:46Z",
+    "cpu_limit_milli_vcpu": 200000,
+    "cpu_limit_vcpu": 200,
+    "memory_limit_bytes": 429496729600,
+    "memory_limit_gib": 400,
+    "services_reporting_same_cpu_memory_limits": [
+      "run.googleapis.com",
+      "cloudfunctions.googleapis.com"
+    ],
+    "metrics": {
+      "instance_count": {
+        "sample_count": 54,
+        "maximum_reported_value": 0.0,
+        "first_reported_utc": "2026-10-22T21:30:00Z",
+        "last_reported_utc": "2026-10-22T21:45:00Z",
+        "returned_service_names": [
+          "exchangejestidentity",
+          "grantjestpurchase",
+          "syncjestsubscriptions"
+        ]
+      },
+      "cpu_allocated": {
+        "sample_count": 26,
+        "maximum_reported_value": 0.0,
+        "first_reported_utc": "2026-10-22T21:29:00Z",
+        "last_reported_utc": "2026-10-22T21:44:00Z",
+        "returned_service_names": [
+          "exchangejestidentity",
+          "grantjestpurchase",
+          "syncjestsubscriptions"
+        ]
+      },
+      "memory_allocated": {
+        "sample_count": 27,
+        "maximum_reported_value": 0.0,
+        "first_reported_utc": "2026-10-22T21:30:00Z",
+        "last_reported_utc": "2026-10-22T21:45:00Z",
+        "returned_service_names": [
+          "exchangejestidentity",
+          "grantjestpurchase",
+          "syncjestsubscriptions"
+        ]
+      }
+    },
+    "allocation_time_units": {
+      "cpu": "CPU-seconds (DELTA)",
+      "memory": "GiB-seconds (DELTA)"
+    },
+    "direct_quota_rate_usage": "Only release of 1000 milli-vCPU and 268435456 bytes at 21:20\u201321:21 UTC; no positive CPU/memory allocation event returned afterward. These are net changes, not absolute utilization.",
+    "quota_exceeded_series_returned": 0,
+    "direct_quota_allocation_usage_series_returned": 0,
+    "instance_quota_metadata_limit": "run.googleapis.com/instances default bucket says 100; us-central1 bucket omits effectiveLimit. No autoscaled-functions regional instance limit is inferred from this separate metric. Per-service max20 is not a regional usage measure.",
+    "conclusion": "No observed regional running-resource saturation and no substantiated need to raise quotas. Provider-internal allocation/capacity failure remains possible.",
+    "limits": [
+      "Minute-sampled Monitoring data has ingestion delay; latest observed samples were 21:44\u201321:45 UTC in the 21:45\u201321:46 snapshot.",
+      "Missing data was not interpreted as zero; zero applies only to returned samples.",
+      "Net quota-rate usage is a change metric and does not establish an absolute current utilization gauge.",
+      "Telemetry cannot rule out unobserved subminute spikes, unexported allocation reservations, or provider regional resource unavailability despite available quota."
+    ],
+    "primary_references": [
+      "https://docs.cloud.google.com/run/quotas",
+      "https://docs.cloud.google.com/functions/quotas"
+    ],
+    "no_api_enable_install_or_capacity_mutation": true
+  }
+}

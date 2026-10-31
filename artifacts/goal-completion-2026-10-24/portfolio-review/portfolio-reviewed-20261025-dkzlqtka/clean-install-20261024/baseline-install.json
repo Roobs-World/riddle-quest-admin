@@ -1,0 +1,22 @@
+{
+  "phase": "baseline",
+  "startedAt": "2026-10-24T23:45:07.059102+00:00",
+  "finishedAt": "2026-10-24T23:45:44.723662+00:00",
+  "exitCode": 1,
+  "command": [
+    "pnpm",
+    "install",
+    "--frozen-lockfile",
+    "--store-dir",
+    "/tmp/portfolio-reviewed-20261025-dkzlqtka/state/clean-store-baseline"
+  ],
+  "credentialFreeEnvironment": true,
+  "projectEnvironmentFilesAbsent": true,
+  "unchangedTrackedExampleOnly": true,
+  "freshNodeModulesAndStore": true,
+  "sourceBefore": "1bac467e7aa095995aaab7f8f776b83e783589e06d1a84b604345f22ef49fd83",
+  "sourceAfter": "18fc46ca47ccf38d7b65583b8ed83eb61a301574bf8b06bcc7be3db044a26fa2",
+  "sourceChanged": true,
+  "lockUnchanged": true,
+  "logSha256": "75c80ac7e451242694ca88a605cb0cc6d12257e0d3a08962dfa746ae1f968c52"
+}

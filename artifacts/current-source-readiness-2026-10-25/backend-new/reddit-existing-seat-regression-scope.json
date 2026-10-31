@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-25T22:19:09.835149+00:00",
+  "deployedRedditRevision": "redditgameplay-00045-yac",
+  "immutableSource": {
+    "bucket": "gcf-v2-sources-329028367192-us-central1",
+    "generation": "1792804884381307",
+    "object": "redditGameplay/function-source.zip"
+  },
+  "deployedRedditQueueCallsites": [
+    {
+      "enclosingFunction": "joinLiveRaceForUser",
+      "line": 135,
+      "newTicketExplicitTrue": false
+    },
+    {
+      "enclosingFunction": "joinLiveRaceForUser",
+      "line": 187,
+      "newTicketExplicitTrue": true
+    },
+    {
+      "enclosingFunction": "evaluateLiveRaceUpdate",
+      "line": 352,
+      "newTicketExplicitTrue": false
+    }
+  ],
+  "currentCallableQueueCallsites": [
+    {
+      "enclosingFunction": "joinLiveRaceForUser",
+      "line": 135,
+      "newTicketExplicitTrue": false
+    },
+    {
+      "enclosingFunction": "joinLiveRaceForUser",
+      "line": 189,
+      "newTicketExplicitTrue": true
+    },
+    {
+      "enclosingFunction": "evaluateLiveRaceUpdate",
+      "line": 354,
+      "newTicketExplicitTrue": false
+    }
+  ],
+  "olderRedditHasExistingSeatQueueRecoveryPath": true,
+  "deploymentDecision": "The same existing-seat recovery regression IS present in the older Reddit service. Do not deploy the full current bundle there: it has three unrelated runtime-file differences and changed package inputs. A separate function-specific bundle must preserve its exact immutable deployed source and change only lib/race/raceLiveQueue.js after root review.",
+  "rawSourceRetained": false
+}

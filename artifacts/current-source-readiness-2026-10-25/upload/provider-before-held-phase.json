@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-10-25T23:39:42.644Z",
+  "phase": "immediately-before-inactive-maintenance-upload",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionCount": 333,
+  "activeVersions": [
+    {
+      "id": "01a17226-db08-708f-86a1-6733b1fe4824",
+      "version": "1.0.0-dev.20261025-review-complete",
+      "isActive": true,
+      "buildStatus": "ready",
+      "activatedAt": "2026-10-25T08:22:21.826Z",
+      "deactivatedAt": null
+    }
+  ],
+  "isPublished": false,
+  "publishedRevision": null,
+  "inReviewRevision": null,
+  "draftActiveVersionId": "01a17226-db08-708f-86a1-6733b1fe4824",
+  "actionsPerformed": [
+    "get_game_details",
+    "list_game_versions"
+  ],
+  "noReviewSubmissionActivationOrPublication": true
+}

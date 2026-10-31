@@ -1,0 +1,32 @@
+vite v8.3.1 building client environment for yahoo...
+transforming...
+✓ 65 modules transformed.
+rendering chunks...
+computing gzip size...
+../../builds/yahoo/youtube-content-manifest.json          0.48 kB │ gzip:  0.29 kB
+../../builds/yahoo/index.html                             0.81 kB │ gzip:  0.41 kB
+../../builds/yahoo/third-party-licenses.txt               1.79 kB │ gzip:  0.90 kB
+../../builds/yahoo/assets/index-BzWrKCb1.css              7.12 kB │ gzip:  2.36 kB
+../../builds/yahoo/assets/rolldown-runtime-Czjbc987.js    0.17 kB │ gzip:  0.14 kB
+../../builds/yahoo/assets/core-game-CcqtoK8X.js           2.31 kB │ gzip:  1.01 kB
+../../builds/yahoo/assets/playable-pack-en-BwdOvQGd.js   87.86 kB │ gzip: 47.70 kB
+../../builds/yahoo/assets/playable-pack-pt-CqGOAZPR.js   90.15 kB │ gzip: 48.94 kB
+../../builds/yahoo/assets/playable-pack-nl-1jxnAt-V.js   90.54 kB │ gzip: 49.17 kB
+../../builds/yahoo/assets/playable-pack-id-C1BO8dlk.js   91.21 kB │ gzip: 49.54 kB
+../../builds/yahoo/assets/playable-pack-it-cBIDG7Oz.js   91.35 kB │ gzip: 49.58 kB
+../../builds/yahoo/assets/playable-pack-es-DU0qHCik.js   91.65 kB │ gzip: 49.76 kB
+../../builds/yahoo/assets/playable-pack-de-DD7X5YHK.js   92.15 kB │ gzip: 50.03 kB
+../../builds/yahoo/assets/playable-pack-tr-Q1ql-YbE.js   92.54 kB │ gzip: 50.21 kB
+../../builds/yahoo/assets/playable-pack-pl-DmTFEF2_.js   92.70 kB │ gzip: 50.34 kB
+../../builds/yahoo/assets/playable-pack-fr-Cvn-ZjJd.js   93.56 kB │ gzip: 50.78 kB
+../../builds/yahoo/assets/playable-pack-ja-C391H_d7.js   94.66 kB │ gzip: 51.38 kB
+../../builds/yahoo/assets/playable-pack-vi-iHV9n1vb.js   96.78 kB │ gzip: 52.52 kB
+../../builds/yahoo/assets/playable-pack-ko-D7tNQold.js   97.36 kB │ gzip: 52.87 kB
+../../builds/yahoo/assets/playable-pack-ar-2KJq2DPb.js  102.12 kB │ gzip: 55.47 kB
+../../builds/yahoo/assets/index-BVfAA3qX.js             105.44 kB │ gzip: 35.31 kB
+../../builds/yahoo/assets/playable-pack-ru-ASMhxOXL.js  114.09 kB │ gzip: 61.93 kB
+../../builds/yahoo/assets/playable-pack-hi-Bq3lHGM2.js  134.49 kB │ gzip: 72.97 kB
+../../builds/yahoo/assets/vendor-react-CzolT8tg.js      218.95 kB │ gzip: 68.34 kB
+
+✓ built in 1.08s
+yahoo artifact audit passed: 24 files, 1.80 MiB

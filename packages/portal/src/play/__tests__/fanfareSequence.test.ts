@@ -24,7 +24,7 @@ function createAwardState(overrides: Partial<FanfareAwardState> = {}): FanfareAw
 
 describe("fanfare sequence", () => {
   it("builds victory steps in display order", () => {
-    expect(createVictoryFanfareSteps(null)).toEqual([]);
+    expect(createVictoryFanfareSteps(null)).toEqual([{kind: "victory"}]);
     expect(
       createVictoryFanfareSteps({
         coinsEarned: 10,
@@ -44,7 +44,7 @@ describe("fanfare sequence", () => {
         newLevel: 2,
         newlyUnlockedAchievementIds: [],
       }),
-    ).toEqual([{kind: "victory"}, {kind: "level", achievementIds: []}]);
+    ).toEqual([{kind: "victory"}, {kind: "level"}]);
   });
 
   it("shows level-up only on an actual level-up", () => {
@@ -66,7 +66,7 @@ describe("fanfare sequence", () => {
     ).toEqual([{kind: "victory"}]);
   });
 
-  it("limits a stage transition to the win result plus one celebration", () => {
+  it("queues every milestone in order without dropping achievements", () => {
     /** Every follow-up candidate fires on the same completion. */
     const crowdedReward = {
       coinsEarned: 125,
@@ -74,18 +74,22 @@ describe("fanfare sequence", () => {
       newLevel: 3,
       newlyUnlockedAchievementIds: ["first_win", "perfect_guess", "classic_perfect"],
     };
-    // Level-up takes the single slot and carries every unlock so none is silently dropped.
     expect(createVictoryFanfareSteps(crowdedReward)).toEqual([
       {kind: "victory"},
-      {kind: "level", achievementIds: ["first_win", "perfect_guess", "classic_perfect"]},
+      {kind: "level"},
+      {kind: "achievement", achievementId: "first_win"},
+      {kind: "achievement", achievementId: "perfect_guess"},
+      {kind: "achievement", achievementId: "classic_perfect"},
     ]);
     expect(createVictoryFanfareSteps({...crowdedReward, leveledUp: false})).toEqual([
       {kind: "victory"},
       {kind: "achievement", achievementId: "first_win"},
+      {kind: "achievement", achievementId: "perfect_guess"},
+      {kind: "achievement", achievementId: "classic_perfect"},
     ]);
   });
 
-  it("surfaces First Win inside the level-up the server reports for a first win", () => {
+  it("queues First Win after the level-up the server reports for a first win", () => {
     expect(
       createVictoryFanfareSteps({
         coinsEarned: 10,
@@ -93,7 +97,7 @@ describe("fanfare sequence", () => {
         newLevel: 2,
         newlyUnlockedAchievementIds: ["first_win"],
       }),
-    ).toEqual([{kind: "victory"}, {kind: "level", achievementIds: ["first_win"]}]);
+    ).toEqual([{kind: "victory"}, {kind: "level"}, {kind: "achievement", achievementId: "first_win"}]);
   });
 
   it("builds purchase and achievement reward steps", () => {
@@ -129,10 +133,10 @@ describe("fanfare sequence", () => {
 
   it("clamps active sequence indices", () => {
     /** Provides steps behavior. */
-    const steps: FanfareStep[] = [{kind: "victory"}, {kind: "level", achievementIds: []}];
+    const steps: FanfareStep[] = [{kind: "victory"}, {kind: "level"}];
     expect(getActiveFanfareStep([], 0)).toBeUndefined();
     expect(getActiveFanfareStep(steps, -4)).toEqual({kind: "victory"});
-    expect(getActiveFanfareStep(steps, 9)).toEqual({kind: "level", achievementIds: []});
+    expect(getActiveFanfareStep(steps, 9)).toEqual({kind: "level"});
   });
 
   it("resolves victory and auxiliary coin awards", () => {

@@ -14,7 +14,7 @@ export const scheduledTaskHandler = async (context: ScheduledEvent) => {
   const dispatchedAt = new Date();
   /** Provides scheduled at behavior. */
   const scheduledAt = context.scheduleTime ? new Date(context.scheduleTime) : dispatchedAt;
-  // Preserve delayed midnight retries without advancing regional clocks on manual runs.
+  // Preserve delayed regional retries without advancing regional clocks on manual runs.
   /** Provides now behavior. */
   const now = scheduledAt > dispatchedAt ? dispatchedAt : scheduledAt;
   /** Supported locales grouped by the regional Daily date they currently require. */
@@ -55,14 +55,14 @@ export const scheduledTaskHandler = async (context: ScheduledEvent) => {
   }
 };
 
-/**
- * Starts generation at each regional midnight, with half-hour repairs for the
- * first three local hours. India’s half-hour offset and DST use the shared IANA clocks.
- */
+/** Dispatches regional 09:00 slots, including Indian half-hours and European DST. */
 export const dailyChallengeScheduler = onScheduleWithSentry(
   "dailyChallengeScheduler",
   {
-    schedule: "0,30 * * * *",
+    schedule: "0,30 0,2,3,6-9 * * *",
+    minInstances: 0,
+    retryCount: 2,
+    minBackoffSeconds: 60,
     timeZone: "UTC",
     timeoutSeconds: 900,
     memory: "512MiB",

@@ -8,7 +8,7 @@ import {chromium} from "@playwright/test";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const adapterPath = path.join(root, "src/play/firebaseServices.ts");
-const output = path.resolve(process.env.GAMEPLAY_RECEIPT_REPORT_DIR ?? path.join(root, "../../artifacts/game-authority-2026-10-03"));
+const output = path.resolve(process.env.GAMEPLAY_RECEIPT_REPORT_DIR ?? path.join(root, "../../builds/test-evidence/game-authority-2026-10-03"));
 const baseline = process.env.GAMEPLAY_RECEIPT_BASELINE_SOURCE;
 const contentBaseline = process.env.GAMEPLAY_CONTENT_BASELINE_SOURCE;
 const paidBaseline = process.env.GAMEPLAY_PAID_BASELINE_SOURCE;

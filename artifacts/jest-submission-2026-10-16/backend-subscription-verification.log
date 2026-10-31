@@ -1,0 +1,13 @@
+
+file:///tmp/rq-jest-backend-subscription-live.mjs:144
+      throw new Error("Jest did not resolve the subscription checkout within 30 seconds after Subscribe was clicked.");
+            ^
+
+Error: Jest did not resolve the subscription checkout within 30 seconds after Subscribe was clicked.
+    at file:///tmp/rq-jest-backend-subscription-live.mjs:144:13
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:472:9)
+    at async file:///tmp/rq-jest-backend-subscription-live.mjs:139:5
+
+Node.js v24.17.0
+

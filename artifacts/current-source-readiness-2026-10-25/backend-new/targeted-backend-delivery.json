@@ -1,0 +1,880 @@
+{
+  "startedAt": "2026-10-25T22:59:06.830332+00:00",
+  "status": "verified-complete",
+  "targets": [
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "startedAt": "2026-10-25T22:59:16.950159+00:00",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "safeBefore": {
+        "function": "updateLiveRace",
+        "region": "europe-west1",
+        "state": "ACTIVE",
+        "revision": "updateliverace-00025-fos",
+        "rollbackSource": {
+          "bucket": "gcf-v2-sources-329028367192-europe-west1",
+          "generation": "1792884735876710",
+          "object": "updateLiveRace/function-source.zip"
+        },
+        "runtimeAndScaling": {
+          "maxInstanceCount": 20,
+          "minInstanceCount": null,
+          "availableMemory": "256Mi",
+          "availableCpu": "1",
+          "timeoutSeconds": 60,
+          "maxInstanceRequestConcurrency": 80,
+          "allTrafficOnLatestRevision": true
+        },
+        "runtime": "nodejs22",
+        "runtimeConfigExcludingEnvironmentAndSecretsSha256": "7e5172d202be72c55a10168d33ec009238c0e2480a65c01933edf29bfab5d458",
+        "buildConfigExcludingSourceAndEnvironmentSha256": "d188bb30bb9068df2130391fd30d9fefd249121fd91d2bca6b94dadec2c39a26",
+        "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+        "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+        "environmentVariableCount": 28,
+        "buildEnvironmentVariableCount": 1,
+        "secretEnvironmentBindingCount": 0,
+        "secretVolumeCount": 0,
+        "buildSelectorPresent": true,
+        "buildSelectorExactlyEmpty": true,
+        "rawEnvironmentOrSecretValuesRecorded": false
+      },
+      "status": "verified",
+      "verification": {
+        "safeAfter": {
+          "function": "updateLiveRace",
+          "region": "europe-west1",
+          "state": "ACTIVE",
+          "revision": "updateliverace-00026-dut",
+          "rollbackSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792969167285279",
+            "object": "updateLiveRace/function-source.zip"
+          },
+          "runtimeAndScaling": {
+            "maxInstanceCount": 20,
+            "minInstanceCount": null,
+            "availableMemory": "256Mi",
+            "availableCpu": "1",
+            "timeoutSeconds": 60,
+            "maxInstanceRequestConcurrency": 80,
+            "allTrafficOnLatestRevision": true
+          },
+          "runtime": "nodejs22",
+          "runtimeConfigExcludingEnvironmentAndSecretsSha256": "7e5172d202be72c55a10168d33ec009238c0e2480a65c01933edf29bfab5d458",
+          "buildConfigExcludingSourceAndEnvironmentSha256": "d188bb30bb9068df2130391fd30d9fefd249121fd91d2bca6b94dadec2c39a26",
+          "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+          "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+          "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+          "environmentVariableCount": 28,
+          "buildEnvironmentVariableCount": 1,
+          "secretEnvironmentBindingCount": 0,
+          "secretVolumeCount": 0,
+          "buildSelectorPresent": true,
+          "buildSelectorExactlyEmpty": true,
+          "rawEnvironmentOrSecretValuesRecorded": false
+        },
+        "configurationEquality": {
+          "function": "updateLiveRace",
+          "region": "europe-west1",
+          "privateConfigPreserved": {
+            "environment": true,
+            "buildEnvironment": true,
+            "secretEnvironment": true,
+            "secretVolumes": true
+          },
+          "nonSourceConfigPreserved": {
+            "runtime": true,
+            "runtimeAndScaling": true,
+            "runtimeConfigExcludingEnvironmentAndSecretsSha256": true,
+            "buildConfigExcludingSourceAndEnvironmentSha256": true,
+            "triggerConfigSha256": true,
+            "labelsSha256": true,
+            "cloudRunIamPolicySha256": true
+          }
+        },
+        "cloudRun": {
+          "runtime": {
+            "serviceScaling": {
+              "run.googleapis.com/maxScale": "20"
+            },
+            "templateScaling": {
+              "autoscaling.knative.dev/maxScale": "20",
+              "run.googleapis.com/startup-cpu-boost": "true"
+            },
+            "concurrency": 80,
+            "timeout": 60,
+            "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+            "containerResources": [
+              {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "256Mi"
+                }
+              }
+            ]
+          },
+          "latestReadyRevision": "updateliverace-00026-dut",
+          "ready": true,
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100,
+              "revisionName": "updateliverace-00026-dut"
+            }
+          ]
+        },
+        "revisionReadyAndHealthy": true,
+        "immutableSource": {
+          "source": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792969167285279",
+            "object": "updateLiveRace/function-source.zip"
+          },
+          "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+          "filesCompared": 1019,
+          "allMatch": true,
+          "build": "projects/329028367192/locations/europe-west1/builds/9afd19bf-f056-44ad-9312-4fca764d0898",
+          "buildStatus": "SUCCESS",
+          "temporaryArchiveRemoved": true
+        }
+      },
+      "completedAt": "2026-10-25T23:01:39.573200+00:00"
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "startedAt": "2026-10-25T23:01:40.560119+00:00",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "safeBefore": {
+        "function": "joinLiveRace",
+        "region": "europe-west1",
+        "state": "ACTIVE",
+        "revision": "joinliverace-00024-bap",
+        "rollbackSource": {
+          "bucket": "gcf-v2-sources-329028367192-europe-west1",
+          "generation": "1792884674845614",
+          "object": "joinLiveRace/function-source.zip"
+        },
+        "runtimeAndScaling": {
+          "maxInstanceCount": 20,
+          "minInstanceCount": null,
+          "availableMemory": "256Mi",
+          "availableCpu": "1",
+          "timeoutSeconds": 60,
+          "maxInstanceRequestConcurrency": 80,
+          "allTrafficOnLatestRevision": true
+        },
+        "runtime": "nodejs22",
+        "runtimeConfigExcludingEnvironmentAndSecretsSha256": "f0cdbc3e0fe010b92d9242d1a8bb762d190d6080cf88cbb8aa75d816d758a8c5",
+        "buildConfigExcludingSourceAndEnvironmentSha256": "ea9aaa1a794207f87b36e229b7b6336e85c5543708b136eedcf683be150e4ddc",
+        "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+        "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+        "environmentVariableCount": 27,
+        "buildEnvironmentVariableCount": 1,
+        "secretEnvironmentBindingCount": 0,
+        "secretVolumeCount": 0,
+        "buildSelectorPresent": true,
+        "buildSelectorExactlyEmpty": true,
+        "rawEnvironmentOrSecretValuesRecorded": false
+      },
+      "status": "verified",
+      "verification": {
+        "safeAfter": {
+          "function": "joinLiveRace",
+          "region": "europe-west1",
+          "state": "ACTIVE",
+          "revision": "joinliverace-00025-gax",
+          "rollbackSource": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792969309620235",
+            "object": "joinLiveRace/function-source.zip"
+          },
+          "runtimeAndScaling": {
+            "maxInstanceCount": 20,
+            "minInstanceCount": null,
+            "availableMemory": "256Mi",
+            "availableCpu": "1",
+            "timeoutSeconds": 60,
+            "maxInstanceRequestConcurrency": 80,
+            "allTrafficOnLatestRevision": true
+          },
+          "runtime": "nodejs22",
+          "runtimeConfigExcludingEnvironmentAndSecretsSha256": "f0cdbc3e0fe010b92d9242d1a8bb762d190d6080cf88cbb8aa75d816d758a8c5",
+          "buildConfigExcludingSourceAndEnvironmentSha256": "ea9aaa1a794207f87b36e229b7b6336e85c5543708b136eedcf683be150e4ddc",
+          "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+          "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+          "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+          "environmentVariableCount": 27,
+          "buildEnvironmentVariableCount": 1,
+          "secretEnvironmentBindingCount": 0,
+          "secretVolumeCount": 0,
+          "buildSelectorPresent": true,
+          "buildSelectorExactlyEmpty": true,
+          "rawEnvironmentOrSecretValuesRecorded": false
+        },
+        "configurationEquality": {
+          "function": "joinLiveRace",
+          "region": "europe-west1",
+          "privateConfigPreserved": {
+            "environment": true,
+            "buildEnvironment": true,
+            "secretEnvironment": true,
+            "secretVolumes": true
+          },
+          "nonSourceConfigPreserved": {
+            "runtime": true,
+            "runtimeAndScaling": true,
+            "runtimeConfigExcludingEnvironmentAndSecretsSha256": true,
+            "buildConfigExcludingSourceAndEnvironmentSha256": true,
+            "triggerConfigSha256": true,
+            "labelsSha256": true,
+            "cloudRunIamPolicySha256": true
+          }
+        },
+        "cloudRun": {
+          "runtime": {
+            "serviceScaling": {
+              "run.googleapis.com/maxScale": "20"
+            },
+            "templateScaling": {
+              "autoscaling.knative.dev/maxScale": "20",
+              "run.googleapis.com/startup-cpu-boost": "true"
+            },
+            "concurrency": 80,
+            "timeout": 60,
+            "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+            "containerResources": [
+              {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "256Mi"
+                }
+              }
+            ]
+          },
+          "latestReadyRevision": "joinliverace-00025-gax",
+          "ready": true,
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100,
+              "revisionName": "joinliverace-00025-gax"
+            }
+          ]
+        },
+        "revisionReadyAndHealthy": true,
+        "immutableSource": {
+          "source": {
+            "bucket": "gcf-v2-sources-329028367192-europe-west1",
+            "generation": "1792969309620235",
+            "object": "joinLiveRace/function-source.zip"
+          },
+          "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+          "filesCompared": 1019,
+          "allMatch": true,
+          "build": "projects/329028367192/locations/europe-west1/builds/536fa9ea-4640-4150-9da9-46e005701a78",
+          "buildStatus": "SUCCESS",
+          "temporaryArchiveRemoved": true
+        }
+      },
+      "completedAt": "2026-10-25T23:03:19.210801+00:00"
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "startedAt": "2026-10-25T23:03:20.586141+00:00",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "safeBefore": {
+        "function": "updateLiveRace",
+        "region": "us-central1",
+        "state": "ACTIVE",
+        "revision": "updateliverace-00025-moj",
+        "rollbackSource": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1792884727188960",
+          "object": "updateLiveRace/function-source.zip"
+        },
+        "runtimeAndScaling": {
+          "maxInstanceCount": 20,
+          "minInstanceCount": null,
+          "availableMemory": "256Mi",
+          "availableCpu": "1",
+          "timeoutSeconds": 60,
+          "maxInstanceRequestConcurrency": 80,
+          "allTrafficOnLatestRevision": true
+        },
+        "runtime": "nodejs22",
+        "runtimeConfigExcludingEnvironmentAndSecretsSha256": "2d2cf5e22195b577c2fb126054b9e474e44357f96ed13d9e7f2002584d3a9189",
+        "buildConfigExcludingSourceAndEnvironmentSha256": "39ba84b504f33ca1005fa7324d5ffca3cc5f251781cffb2b965c663a6a249c03",
+        "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+        "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+        "environmentVariableCount": 28,
+        "buildEnvironmentVariableCount": 1,
+        "secretEnvironmentBindingCount": 0,
+        "secretVolumeCount": 0,
+        "buildSelectorPresent": true,
+        "buildSelectorExactlyEmpty": true,
+        "rawEnvironmentOrSecretValuesRecorded": false
+      },
+      "status": "verified",
+      "verification": {
+        "safeAfter": {
+          "function": "updateLiveRace",
+          "region": "us-central1",
+          "state": "ACTIVE",
+          "revision": "updateliverace-00026-xav",
+          "rollbackSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792969412594096",
+            "object": "updateLiveRace/function-source.zip"
+          },
+          "runtimeAndScaling": {
+            "maxInstanceCount": 20,
+            "minInstanceCount": null,
+            "availableMemory": "256Mi",
+            "availableCpu": "1",
+            "timeoutSeconds": 60,
+            "maxInstanceRequestConcurrency": 80,
+            "allTrafficOnLatestRevision": true
+          },
+          "runtime": "nodejs22",
+          "runtimeConfigExcludingEnvironmentAndSecretsSha256": "2d2cf5e22195b577c2fb126054b9e474e44357f96ed13d9e7f2002584d3a9189",
+          "buildConfigExcludingSourceAndEnvironmentSha256": "39ba84b504f33ca1005fa7324d5ffca3cc5f251781cffb2b965c663a6a249c03",
+          "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+          "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+          "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+          "environmentVariableCount": 28,
+          "buildEnvironmentVariableCount": 1,
+          "secretEnvironmentBindingCount": 0,
+          "secretVolumeCount": 0,
+          "buildSelectorPresent": true,
+          "buildSelectorExactlyEmpty": true,
+          "rawEnvironmentOrSecretValuesRecorded": false
+        },
+        "configurationEquality": {
+          "function": "updateLiveRace",
+          "region": "us-central1",
+          "privateConfigPreserved": {
+            "environment": true,
+            "buildEnvironment": true,
+            "secretEnvironment": true,
+            "secretVolumes": true
+          },
+          "nonSourceConfigPreserved": {
+            "runtime": true,
+            "runtimeAndScaling": true,
+            "runtimeConfigExcludingEnvironmentAndSecretsSha256": true,
+            "buildConfigExcludingSourceAndEnvironmentSha256": true,
+            "triggerConfigSha256": true,
+            "labelsSha256": true,
+            "cloudRunIamPolicySha256": true
+          }
+        },
+        "cloudRun": {
+          "runtime": {
+            "serviceScaling": {
+              "run.googleapis.com/maxScale": "20"
+            },
+            "templateScaling": {
+              "autoscaling.knative.dev/maxScale": "20",
+              "run.googleapis.com/startup-cpu-boost": "true"
+            },
+            "concurrency": 80,
+            "timeout": 60,
+            "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+            "containerResources": [
+              {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "256Mi"
+                }
+              }
+            ]
+          },
+          "latestReadyRevision": "updateliverace-00026-xav",
+          "ready": true,
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100,
+              "revisionName": "updateliverace-00026-xav"
+            }
+          ]
+        },
+        "revisionReadyAndHealthy": true,
+        "immutableSource": {
+          "source": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792969412594096",
+            "object": "updateLiveRace/function-source.zip"
+          },
+          "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+          "filesCompared": 1019,
+          "allMatch": true,
+          "build": "projects/329028367192/locations/us-central1/builds/eb787336-c6b3-4568-950c-f269a98d4251",
+          "buildStatus": "SUCCESS",
+          "temporaryArchiveRemoved": true
+        }
+      },
+      "completedAt": "2026-10-25T23:05:14.789213+00:00"
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "startedAt": "2026-10-25T23:05:16.226284+00:00",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "safeBefore": {
+        "function": "joinLiveRace",
+        "region": "us-central1",
+        "state": "ACTIVE",
+        "revision": "joinliverace-00024-mad",
+        "rollbackSource": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1792884673238751",
+          "object": "joinLiveRace/function-source.zip"
+        },
+        "runtimeAndScaling": {
+          "maxInstanceCount": 20,
+          "minInstanceCount": null,
+          "availableMemory": "256Mi",
+          "availableCpu": "1",
+          "timeoutSeconds": 60,
+          "maxInstanceRequestConcurrency": 80,
+          "allTrafficOnLatestRevision": true
+        },
+        "runtime": "nodejs22",
+        "runtimeConfigExcludingEnvironmentAndSecretsSha256": "ebde7b3bde819f989c65a85ddbf72bec9a5555f7408e32417fae2cea44710179",
+        "buildConfigExcludingSourceAndEnvironmentSha256": "58aee81760b2ac22eb76adbde4a55db55307f1307545d6bf8618d9057c1369ab",
+        "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+        "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+        "environmentVariableCount": 27,
+        "buildEnvironmentVariableCount": 1,
+        "secretEnvironmentBindingCount": 0,
+        "secretVolumeCount": 0,
+        "buildSelectorPresent": true,
+        "buildSelectorExactlyEmpty": true,
+        "rawEnvironmentOrSecretValuesRecorded": false
+      },
+      "status": "verified",
+      "verification": {
+        "safeAfter": {
+          "function": "joinLiveRace",
+          "region": "us-central1",
+          "state": "ACTIVE",
+          "revision": "joinliverace-00025-pip",
+          "rollbackSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792969528420695",
+            "object": "joinLiveRace/function-source.zip"
+          },
+          "runtimeAndScaling": {
+            "maxInstanceCount": 20,
+            "minInstanceCount": null,
+            "availableMemory": "256Mi",
+            "availableCpu": "1",
+            "timeoutSeconds": 60,
+            "maxInstanceRequestConcurrency": 80,
+            "allTrafficOnLatestRevision": true
+          },
+          "runtime": "nodejs22",
+          "runtimeConfigExcludingEnvironmentAndSecretsSha256": "ebde7b3bde819f989c65a85ddbf72bec9a5555f7408e32417fae2cea44710179",
+          "buildConfigExcludingSourceAndEnvironmentSha256": "58aee81760b2ac22eb76adbde4a55db55307f1307545d6bf8618d9057c1369ab",
+          "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+          "labelsSha256": "20236a64fc6036762144104282b8b5eab30927f87c837e5d705ce5cf7017b6fc",
+          "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+          "environmentVariableCount": 27,
+          "buildEnvironmentVariableCount": 1,
+          "secretEnvironmentBindingCount": 0,
+          "secretVolumeCount": 0,
+          "buildSelectorPresent": true,
+          "buildSelectorExactlyEmpty": true,
+          "rawEnvironmentOrSecretValuesRecorded": false
+        },
+        "configurationEquality": {
+          "function": "joinLiveRace",
+          "region": "us-central1",
+          "privateConfigPreserved": {
+            "environment": true,
+            "buildEnvironment": true,
+            "secretEnvironment": true,
+            "secretVolumes": true
+          },
+          "nonSourceConfigPreserved": {
+            "runtime": true,
+            "runtimeAndScaling": true,
+            "runtimeConfigExcludingEnvironmentAndSecretsSha256": true,
+            "buildConfigExcludingSourceAndEnvironmentSha256": true,
+            "triggerConfigSha256": true,
+            "labelsSha256": true,
+            "cloudRunIamPolicySha256": true
+          }
+        },
+        "cloudRun": {
+          "runtime": {
+            "serviceScaling": {
+              "run.googleapis.com/maxScale": "20"
+            },
+            "templateScaling": {
+              "autoscaling.knative.dev/maxScale": "20",
+              "run.googleapis.com/startup-cpu-boost": "true"
+            },
+            "concurrency": 80,
+            "timeout": 60,
+            "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+            "containerResources": [
+              {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "256Mi"
+                }
+              }
+            ]
+          },
+          "latestReadyRevision": "joinliverace-00025-pip",
+          "ready": true,
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100,
+              "revisionName": "joinliverace-00025-pip"
+            }
+          ]
+        },
+        "revisionReadyAndHealthy": true,
+        "immutableSource": {
+          "source": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792969528420695",
+            "object": "joinLiveRace/function-source.zip"
+          },
+          "archiveSha256": "075b49aad32217fcc1b9800ac7ec7fa69db8f7b0b479a572c060cd33ca3cecfb",
+          "filesCompared": 1019,
+          "allMatch": true,
+          "build": "projects/329028367192/locations/us-central1/builds/25f204dd-39cc-4fc4-9491-c067dcdb7805",
+          "buildStatus": "SUCCESS",
+          "temporaryArchiveRemoved": true
+        }
+      },
+      "completedAt": "2026-10-25T23:07:18.402639+00:00"
+    },
+    {
+      "function": "redditGameplay",
+      "region": "us-central1",
+      "startedAt": "2026-10-25T23:07:19.663137+00:00",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "redditGameplay",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/reddit-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "redditGameplay",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/reddit-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "safeBefore": {
+        "function": "redditGameplay",
+        "region": "us-central1",
+        "state": "ACTIVE",
+        "revision": "redditgameplay-00045-yac",
+        "rollbackSource": {
+          "bucket": "gcf-v2-sources-329028367192-us-central1",
+          "generation": "1792804884381307",
+          "object": "redditGameplay/function-source.zip"
+        },
+        "runtimeAndScaling": {
+          "maxInstanceCount": 20,
+          "minInstanceCount": null,
+          "availableMemory": "256Mi",
+          "availableCpu": "1",
+          "timeoutSeconds": 60,
+          "maxInstanceRequestConcurrency": 80,
+          "allTrafficOnLatestRevision": true
+        },
+        "runtime": "nodejs22",
+        "runtimeConfigExcludingEnvironmentAndSecretsSha256": "dd3b329b1eb93c90a5f91716efb63bd394aa2101f1cb92eb1edf6f7b7adf7286",
+        "buildConfigExcludingSourceAndEnvironmentSha256": "d2cfaf8840853dce2928daf1e8fd3c65b4397c69344421d7078e94d738b12150",
+        "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "labelsSha256": "93a71953576b69f4a9edfd1efdf6f534cfda6e75e58b5e42952b4b16774127f9",
+        "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+        "environmentVariableCount": 28,
+        "buildEnvironmentVariableCount": 1,
+        "secretEnvironmentBindingCount": 2,
+        "secretVolumeCount": 0,
+        "buildSelectorPresent": true,
+        "buildSelectorExactlyEmpty": true,
+        "rawEnvironmentOrSecretValuesRecorded": false
+      },
+      "status": "verified",
+      "verification": {
+        "safeAfter": {
+          "function": "redditGameplay",
+          "region": "us-central1",
+          "state": "ACTIVE",
+          "revision": "redditgameplay-00046-zuh",
+          "rollbackSource": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792969651404715",
+            "object": "redditGameplay/function-source.zip"
+          },
+          "runtimeAndScaling": {
+            "maxInstanceCount": 20,
+            "minInstanceCount": null,
+            "availableMemory": "256Mi",
+            "availableCpu": "1",
+            "timeoutSeconds": 60,
+            "maxInstanceRequestConcurrency": 80,
+            "allTrafficOnLatestRevision": true
+          },
+          "runtime": "nodejs22",
+          "runtimeConfigExcludingEnvironmentAndSecretsSha256": "dd3b329b1eb93c90a5f91716efb63bd394aa2101f1cb92eb1edf6f7b7adf7286",
+          "buildConfigExcludingSourceAndEnvironmentSha256": "d2cfaf8840853dce2928daf1e8fd3c65b4397c69344421d7078e94d738b12150",
+          "triggerConfigSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+          "labelsSha256": "93a71953576b69f4a9edfd1efdf6f534cfda6e75e58b5e42952b4b16774127f9",
+          "cloudRunIamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+          "environmentVariableCount": 28,
+          "buildEnvironmentVariableCount": 1,
+          "secretEnvironmentBindingCount": 2,
+          "secretVolumeCount": 0,
+          "buildSelectorPresent": true,
+          "buildSelectorExactlyEmpty": true,
+          "rawEnvironmentOrSecretValuesRecorded": false
+        },
+        "configurationEquality": {
+          "function": "redditGameplay",
+          "region": "us-central1",
+          "privateConfigPreserved": {
+            "environment": true,
+            "buildEnvironment": true,
+            "secretEnvironment": true,
+            "secretVolumes": true
+          },
+          "nonSourceConfigPreserved": {
+            "runtime": true,
+            "runtimeAndScaling": true,
+            "runtimeConfigExcludingEnvironmentAndSecretsSha256": true,
+            "buildConfigExcludingSourceAndEnvironmentSha256": true,
+            "triggerConfigSha256": true,
+            "labelsSha256": true,
+            "cloudRunIamPolicySha256": true
+          }
+        },
+        "cloudRun": {
+          "runtime": {
+            "serviceScaling": {
+              "run.googleapis.com/maxScale": "20"
+            },
+            "templateScaling": {
+              "autoscaling.knative.dev/maxScale": "20",
+              "run.googleapis.com/startup-cpu-boost": "true"
+            },
+            "concurrency": 80,
+            "timeout": 60,
+            "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+            "containerResources": [
+              {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "256Mi"
+                }
+              }
+            ]
+          },
+          "latestReadyRevision": "redditgameplay-00046-zuh",
+          "ready": true,
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100,
+              "revisionName": "redditgameplay-00046-zuh"
+            }
+          ]
+        },
+        "revisionReadyAndHealthy": true,
+        "immutableSource": {
+          "source": {
+            "bucket": "gcf-v2-sources-329028367192-us-central1",
+            "generation": "1792969651404715",
+            "object": "redditGameplay/function-source.zip"
+          },
+          "archiveSha256": "97980528bd4ba37b8adcfdee423b2d09a40571a4c9916a9ce95720c8c85265c7",
+          "filesCompared": 535,
+          "allMatch": true,
+          "build": "projects/329028367192/locations/us-central1/builds/f66b7477-553d-4877-9952-71ae3e035101",
+          "buildStatus": "SUCCESS",
+          "temporaryArchiveRemoved": true
+        }
+      },
+      "completedAt": "2026-10-25T23:08:59.499961+00:00"
+    }
+  ],
+  "gamePublicationChanged": false,
+  "rawCliOrEnvironmentValuesPersisted": false,
+  "canonicalRuntimeFilesRehashed": 243,
+  "inventoryBeforeCount": 120,
+  "completedAt": "2026-10-25T23:08:59.500616+00:00",
+  "inventoryAfterCount": 120,
+  "allFiveVerifiedBeforeAdvancing": true,
+  "unselectedFunctionsUnchanged": true,
+  "safeOriginalRollbackStagesRetained": true
+}

@@ -1,0 +1,41 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account at 1280px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: reordered at 1280px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: unmount at 1280px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: pre-render at 1280px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account-return at 1280px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account at 390px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: reordered at 390px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: unmount at 390px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: pre-render at 390px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account-return at 390px, strict=false, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account at 1280px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: reordered at 1280px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: unmount at 1280px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: pre-render at 1280px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account-return at 1280px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account at 390px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: reordered at 390px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: unmount at 390px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: pre-render at 390px, strict=true, runtime=development.
+[riddle-silent-guard] context isolated before navigation
+Profile refresh ownership passed: account-return at 390px, strict=true, runtime=development.

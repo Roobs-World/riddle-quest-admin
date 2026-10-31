@@ -1,5 +1,5 @@
 import {getApps, initializeApp} from "firebase-admin/app";
-import {getFirestore} from "firebase-admin/firestore";
+import {DocumentSnapshot, getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser} from "../../race/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
 import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
@@ -36,7 +36,7 @@ beforeEach(async () => {
     avatarUrl: "https://example.invalid/avatar.png", coins: 550, privateBlob: "x".repeat(100_000)}));
   await batch.commit();
 });
-afterAll(clear);
+afterAll(async () => {await clear(); await db.terminate();});
 /** New joins and reconnects share the original server entry point. */
 const join = (uid = A, requestId = "payload-public-join", createChallenge = false, challengeId?: string) => joinLiveRaceForUser(uid,
   {locale: "en", categoryId: "history", requestId, ...(createChallenge ? {createChallenge} : {}), ...(challengeId ? {challengeId} : {})}, {db, nowMs: NOW});
@@ -55,23 +55,31 @@ async function observed<T>(operation: () => Promise<T>) {
   /** Actual SDK callback owns locks, snapshots, retries and commits. */
   const original = db.runTransaction.bind(db);
   /** Reads preserve SDK existence metadata and data access without fabricating any snapshots. */
-  const record = (snapshot: FirebaseFirestore.DocumentSnapshot) => {
+  const record = (snapshot: FirebaseFirestore.DocumentSnapshot<unknown>) => {
+    /** Decoded snapshot data used to measure loaded profile fields and bytes. */
+    const data = snapshot.data();
     if (/^users\/[^/]+$/.test(snapshot.ref.path)) reads.push({path: snapshot.ref.path,
-      bytes: Buffer.byteLength(JSON.stringify(snapshot.data() ?? null)), fields: Object.keys(snapshot.data() ?? {}).sort()});
+      bytes: Buffer.byteLength(JSON.stringify(data ?? null)), fields: data && typeof data === "object" ? Object.keys(data).sort() : []});
   };
   /** Every production transaction method remains forwarded to its real SDK implementation. */
   const spy = jest.spyOn(db, "runTransaction").mockImplementation((callback, options) => original(async transaction => {
-    /** Restore per-attempt wrappers before the SDK reuses a transaction object. */
-    const get = transaction.get.bind(transaction), getAll = transaction.getAll.bind(transaction);
-    transaction.get = async (...args: Parameters<typeof get>) => {
-      /** These live-join callbacks read only document references inside the transaction. */
-      const snapshot = await get(...args); record(snapshot as FirebaseFirestore.DocumentSnapshot); return snapshot;
-    };
-    transaction.getAll = async (...args: Parameters<typeof getAll>) => {
-      /** Original SDK applies masks and preserves existence independently of selected fields. */
-      const snapshots = await getAll(...args); snapshots.forEach(record); return snapshots;
-    };
-    try {return await callback(transaction);} finally {transaction.get = get; transaction.getAll = getAll;}
+    /** Proxy that records profile reads while preserving the real SDK transaction. */
+    const observedTransaction = new Proxy(transaction, {
+      /** Forwards transaction methods and observes returned document snapshots. */
+      get(target, key) {
+      /** Original SDK property resolved against the real transaction instance. */
+      const member = Reflect.get(target, key, target);
+      if (typeof member !== "function") return member;
+      if (key === "get" || key === "getAll") return async (...args: unknown[]) => {
+        /** Actual SDK read result inspected without fabricating snapshots. */
+        const result: unknown = await Reflect.apply(member, target, args);
+        if (result instanceof DocumentSnapshot) record(result);
+        else if (Array.isArray(result)) for (const snapshot of result) if (snapshot instanceof DocumentSnapshot) record(snapshot);
+        return result;
+      };
+      return member.bind(target);
+    }});
+    return callback(observedTransaction);
   }, options));
   try {return {result: await operation(), reads};} finally {spy.mockRestore();}
 }
@@ -92,13 +100,36 @@ it.each(["public", "private", "reconnect"] as const)("loads only public identity
   expect((await db.doc(`users/${A}`).get()).data()).toEqual(before);
 });
 
+it.each(["search", "reconnect", "pair"] as const)("loads bounded identity for a modern player-wait %s", async kind => {
+  /** Production player-wait join with optional exact-ticket recovery. */
+  const waitingJoin = (uid: string, requestId: string, resumeTicketId?: string) => joinLiveRaceForUser(uid,
+    {locale: "en", categoryId: "history", requestId, waitForPlayer: true, retirementAware: true,
+      ...(resumeTicketId ? {resumeTicketId} : {})}, {db, nowMs: NOW});
+  /** Existing owned lobby for reconnect and pairing scenarios. */
+  const original = kind === "search" ? undefined : await waitingJoin(A, "modern-payload-original");
+  /** Current joining account, distinct from the waiting opponent during pairing. */
+  const uid = kind === "pair" ? B : A;
+  /** Account snapshot used to prove matchmaking does not alter account data. */
+  const before = (await db.doc(`users/${uid}`).get()).data();
+  /** Production response and captured profile reads for this join scenario. */
+  const {result, reads} = await observed(() => waitingJoin(uid, "modern-payload-observed", kind === "reconnect" ? original?.ticketId : undefined));
+  expectIdentityOnly(reads);
+  expect(reads).toHaveLength(kind === "pair" ? 2 : 1);
+  expect(reads.filter(read => read.path === `users/${uid}`)).toHaveLength(1);
+  expect(result).toMatchObject({phase: kind === "pair" ? "countdown" : "searching", waitForPlayer: true,
+    player: {displayName: kind === "pair" ? "Bob" : "Alice"}});
+  if (kind === "reconnect") expect(result.ticketId).toBe(original?.ticketId);
+  if (kind === "pair") expect(result.opponent).toMatchObject({displayName: "Alice", bot: false});
+  expect((await db.doc(`users/${uid}`).get()).data()).toEqual(before);
+});
+
 it.each(["preview", "accept", "accepted-recovery"] as const)("loads bounded creator/viewer identity for invitation %s", async kind => {
   /** Genuine reserved creator state includes the original immutable catalog and retention deadline. */
   const lobby = await reserve();
   if (kind === "accepted-recovery") await join(B, "payload-accept", false, lobby.challengeId);
   /** Only the final observed preview/acceptance contributes to profile read counts. */
-  const {result, reads} = await observed(() => kind === "preview"
-    ? getLiveRaceChallengeForUser(B, lobby.challengeId!, {db, nowMs: NOW}) : join(B, "payload-accept", false, lobby.challengeId));
+  const {result, reads} = await observed(async () => kind === "preview"
+    ? await getLiveRaceChallengeForUser(B, lobby.challengeId!, {db, nowMs: NOW}) : await join(B, "payload-accept", false, lobby.challengeId));
   if (process.env.LIVE_JOIN_PROFILE_TRACE) console.info(JSON.stringify({kind, reads}));
   expectIdentityOnly(reads); expect(reads).toHaveLength(2);
   expect(reads.filter(read => read.path === `users/${B}`)).toHaveLength(1);

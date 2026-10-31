@@ -148,16 +148,19 @@ pnpm --filter @qwordly/portal test:jest-subscription:live
 
 This is a direct SDK sandbox gate. The gate requires Jest's **Sandbox User** checkout marker before it clicks Subscribe, verifies
 the signed active entitlement through `syncJestSubscriptions`, reloads the active game to prove restoration, and confirms platform
-cancellation. The uploaded Simulator build exposes the configured subscription to registered players so the launch checklist can
-exercise `getSubscriptions()` and `beginSubscription()`. The adapter's 30-second retryable timeout contains an unsettled provider
-call and reports a retryable failure without inventing an entitlement.
+cancellation. The uploaded Simulator build exposes the configured subscription to guests and registered players so the launch checklist can
+exercise `getSubscriptions()` and `beginSubscription()`. Checkout holds a per-player cross-tab lock until Jest returns the
+actual success, cancellation, or error outcome. A timer cannot release that lock while payment might still complete. Browsers
+without cross-tab locking cannot start subscription checkout. Jest owns the guest signup gate; `guest_not_allowed`
+closes checkout without an additional game-owned registration prompt. Sandbox transactions and restored subscriptions do not
+produce revenue analytics.
 
 The current CDN SDK exposes `getSubscriptions`, `beginSubscription`, `cancelSubscription`, and `claimRetentionOffer` in localhost
 mock mode. Its bundled debug menu does not currently expose the documented subscription outcome controls, however, and direct mock
 start/cancel calls return `cancel`. Keep the deterministic repository mocks for success and error coverage, and use the live sandbox
 gate for provider behavior rather than treating the localhost mock as proof of checkout configuration.
 
-`build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces a 4.5 MB internal release budget beneath the 5 MB platform limit, local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
+`build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces a 4.75 MiB internal release budget beneath the 5 MiB artifact cap, retaining 0.25 MiB of headroom for the actual-screen capture renderer. The renderer is lazy-loaded only for screenshot requests and the 0.55 MiB initial-resource budget remains unchanged. The audit also checks local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
 
 ## Jest testing modes
 
@@ -363,7 +366,7 @@ Owner access to `https://jest.com/developers` is required:
 
 3. Copy the manifest's exact listing values into the Console, select its logo and hero from the Asset Library, select Manual
    loading mode, and confirm the game is Approved and Public. The validator is read-only and never changes Console state.
-4. Create the six consumable SKUs and monthly subscription SKU in the manifest. Registered players must read their signed
+4. Create the six consumable SKUs and monthly subscription SKU in the manifest. All players must read their signed
    subscription entitlement before the shop renders, and an active subscription must never be offered again.
 5. Keep the approved notification image reference aligned with `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`.
 6. Create at least two sandbox players. The manifest currently lists no separate onboarding games; referral links enter Riddle Quest directly.
@@ -374,10 +377,10 @@ Owner access to `https://jest.com/developers` is required:
 
 - Identity: guest and registered startup; dismissal and cancellation; stable player ID; invalid and stale token rejection.
 - Loading: every manual phase advances; no 15-second timeout; retry works; overlay closes only when input is enabled.
-- Analytics: every authoritative win calls `markFirstMilestone()`; Jest deduplicates the signal per session; registration and attribution events contain no personal data.
+- Analytics: `markGameLoaded()` reports actual readiness; registration and attribution events contain no personal data. Jest's current SDK deprecates `markFirstMilestone()` as a no-op, so use the game's events for win analytics.
 - Notifications: D1-D7 engagement and Race-to-10 reminder replacement/removal; registered-only behavior; Daily Cosmic Riddle and race-inbox payload return.
 - Payments: success, cancellation, internal error, invalid SKU/token, timeout, interruption before completion, and multi-page recovery.
-- Subscriptions: signed entitlement sync, inactive offer, successful or cancelled checkout, active offer suppression, restoration, and cancellation.
+- Subscriptions: signed entitlement sync, guest-visible offers and Jest-owned signup gating, successful or cancelled checkout, active offer suppression, restoration, and cancellation.
 - Referrals: canceled victory, profile, and Race-to-10 shares; result links remain in the normal game; race links open the exact challenge; first-entry attribution; both players receive 100 coins; duplicate, cross-campaign duplicate, self, tampered, and unrelated-reference rejection.
 - Layout/input: keyboard, pointer, and touch in portrait and landscape; background/foreground; audio unlock; offline restart.
 - Stability: lower-end iOS Safari and Android Chrome cold/warm launch plus a 10-minute foreground/background soak.
@@ -385,6 +388,8 @@ Owner access to `https://jest.com/developers` is required:
 Retain screenshots, recordings, event IDs, and device traces with the relevant release or incident evidence. Do not commit authenticated browser state, private player data, or secrets.
 
 ## Jest Games Fund readiness
+
+Jest multiplayer friend invitations use the [Referrals API](https://docs.jest.com/sdk/referrals). Select a category and choose **Challenge a friend** to reserve a private lobby, then choose **Challenge a friend** in the lobby to open Jest's share dialog with the message and exact challenge link. The SDK call runs directly in the click handler after a synchronous account-deletion check. Each share has its own reference so a later lobby cannot replace an earlier invitation. Dismissing the dialog keeps the lobby available for another attempt; a provider failure shows the translated retry notice. The player chooses the recipient and messaging destination in the platform dialog. SDK success does not prove SMS delivery. Run `pnpm --filter @qwordly/portal test:jest-live-invite:browser` for the injected guest, registered-player, retry, and recipient-entry journeys. Confirm actual messaging delivery separately with two Jest sandbox users before publication.
 
 - **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
 - **Notifications:** registered players receive a fuzzy D1-D7 series early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.

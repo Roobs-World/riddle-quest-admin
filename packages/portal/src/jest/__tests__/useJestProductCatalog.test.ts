@@ -53,9 +53,7 @@ const session = (registered: boolean): JestSession => ({
 const flushCatalogLoad = async () => {
   expect(mockEffects).toHaveLength(1);
   mockEffects[0]();
-  await Promise.resolve();
-  await Promise.resolve();
-  await Promise.resolve();
+  await new Promise((resolve) => setTimeout(resolve, 0));
 };
 
 /** Creates harness. */
@@ -92,6 +90,30 @@ beforeEach(() => {
 });
 
 describe("useJestProductCatalog", () => {
+  it("starts both independent catalogs while consumables remain pending", async () => {
+    /** Consumable offer returned only after the delayed product request resolves. */
+    const consumable = product("coins-250", "consumable");
+    /** Subscription offer available while the independent consumable request is pending. */
+    const subscription = product("premium", "subscription");
+    /** Catalog request controls and refresh action from the real hook fixture. */
+    const {getProducts, getSubscriptions, state} = createHarness(session(true), true);
+    /** Releases the delayed consumable catalog after both provider requests have started. */
+    let finishProducts: ((value: Awaited<ReturnType<JestPurchaseCoordinator["getProducts"]>>) => void) | undefined;
+    getProducts.mockImplementation(() => new Promise((resolve) => {finishProducts = resolve;}));
+    getSubscriptions.mockResolvedValue({status: "success", value: [subscription]});
+
+    /** Combined catalog refresh awaiting the delayed consumable response. */
+    const refresh = state[2]();
+    expect(getProducts).toHaveBeenCalledTimes(1);
+    expect(getSubscriptions).toHaveBeenCalledTimes(1);
+    expect(mockSetProducts).not.toHaveBeenCalled();
+    if (!finishProducts) throw new Error("Product request did not start");
+    finishProducts({status: "success", value: [consumable]});
+    await refresh;
+    expect(mockSetProducts).toHaveBeenLastCalledWith([subscription, consumable]);
+    expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: false});
+  });
+
   it("keeps an empty catalog until a Jest session exists", async () => {
     /** Provides {get products, state, with platform activity} behavior. */
     const {getProducts, state, withPlatformActivity} = createHarness(null);
@@ -103,7 +125,7 @@ describe("useJestProductCatalog", () => {
     expect(mockSetProducts).not.toHaveBeenCalled();
   });
 
-  it("loads subscriptions before consumables for a registered player", async () => {
+  it("presents subscriptions before consumables for a registered player", async () => {
     /** Provides consumable behavior. */
     const consumable = product("coins-250", "consumable");
     /** Provides subscription behavior. */
@@ -135,17 +157,20 @@ describe("useJestProductCatalog", () => {
     expect(mockSetProducts).toHaveBeenCalledWith([consumable]);
   });
 
-  it("does not request subscription data for a guest", async () => {
+  it("offers subscriptions to guests alongside consumables", async () => {
     /** Provides consumable behavior. */
     const consumable = product("coins-250", "consumable");
+    /** Inactive subscription offer that remains visible to a guest player. */
+    const subscription = product("premium-monthly", "subscription");
     /** Provides {get products, get subscriptions} behavior. */
-    const {getProducts, getSubscriptions} = createHarness(session(false));
+    const {getProducts, getSubscriptions} = createHarness(session(false), true);
     getProducts.mockResolvedValue({status: "success", value: [consumable]});
+    getSubscriptions.mockResolvedValue({status: "success", value: [subscription]});
 
     await flushCatalogLoad();
 
-    expect(getSubscriptions).not.toHaveBeenCalled();
-    expect(mockSetProducts).toHaveBeenCalledWith([consumable]);
+    expect(getSubscriptions).toHaveBeenCalledWith("player-1", expect.any(String));
+    expect(mockSetProducts).toHaveBeenCalledWith([subscription, consumable]);
   });
 
   it("reports product and subscription failures independently", async () => {

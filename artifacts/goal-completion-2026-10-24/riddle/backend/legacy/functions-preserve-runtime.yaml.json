@@ -1,0 +1,48 @@
+{
+  "specVersion": "v1alpha1",
+  "endpoints": {
+    "blockLiveRaceOpponent": {
+      "timeoutSeconds": 60,
+      "platform": "gcfv2",
+      "labels": {},
+      "callableTrigger": {},
+      "entryPoint": "blockLiveRaceOpponent",
+      "region": [
+        "us-central1"
+      ],
+      "availableMemoryMb": 256,
+      "concurrency": 80,
+      "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "ingressSettings": "ALLOW_ALL"
+    },
+    "reportLiveRaceOpponent": {
+      "timeoutSeconds": 60,
+      "platform": "gcfv2",
+      "labels": {},
+      "callableTrigger": {},
+      "entryPoint": "reportLiveRaceOpponent",
+      "region": [
+        "us-central1"
+      ],
+      "availableMemoryMb": 256,
+      "concurrency": 80,
+      "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "ingressSettings": "ALLOW_ALL"
+    },
+    "listLiveRaceHistoryPage": {
+      "timeoutSeconds": 60,
+      "platform": "gcfv2",
+      "region": [
+        "europe-west1",
+        "us-central1"
+      ],
+      "labels": {},
+      "callableTrigger": {},
+      "entryPoint": "listLiveRaceHistoryPage",
+      "availableMemoryMb": 256,
+      "concurrency": 80,
+      "serviceAccount": "329028367192-compute@developer.gserviceaccount.com",
+      "ingressSettings": "ALLOW_ALL"
+    }
+  }
+}

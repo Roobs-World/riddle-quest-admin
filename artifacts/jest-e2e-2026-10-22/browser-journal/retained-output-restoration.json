@@ -1,0 +1,59 @@
+{
+  "restoredReservedPaths": [
+    {
+      "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/daily-skip-warning",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/daily-skip-warning",
+      "restored": true
+    },
+    {
+      "path": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/coin-economy",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/coin-economy",
+      "restored": true
+    },
+    {
+      "path": "/tmp/profile-tour-stats.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/profile-tour-stats.png",
+      "restored": true
+    },
+    {
+      "path": "/tmp/jest-feedback-solo.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/jest-feedback-solo.png",
+      "restored": true
+    },
+    {
+      "path": "/tmp/jest-feedback-multiplayer-unavailable.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/jest-feedback-multiplayer-unavailable.png",
+      "restored": true
+    },
+    {
+      "path": "/tmp/riddle-leaderboard-clipped.png",
+      "output": null,
+      "restored": true
+    },
+    {
+      "path": "/tmp/riddle-leaderboard-fixed.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/riddle-leaderboard-fixed.png",
+      "restored": true
+    },
+    {
+      "path": "/tmp/jest-feedback-victory.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/jest-feedback-victory.png",
+      "restored": true
+    },
+    {
+      "path": "/tmp/jest-feedback-loss.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/jest-feedback-loss.png",
+      "restored": true
+    },
+    {
+      "path": "/tmp/jest-feedback-profile.png",
+      "output": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-e2e-2026-10-22/browser-journal/retained-screenshots/jest-feedback-profile.png",
+      "restored": true
+    }
+  ],
+  "additionalGeneratedAuthCaptures": [
+    "riddle-settings-subscription.png",
+    "riddle-subscription-cancelled.png"
+  ],
+  "additionalCapturesNote": "These generated temp outputs were archived; they were not among the ten reserved shared paths."
+}

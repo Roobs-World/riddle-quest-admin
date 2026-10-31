@@ -1,0 +1,22 @@
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {lstat,readFile,readlink,writeFile,copyFile,mkdir} from 'node:fs/promises';
+import {developmentSourceDigest,developmentSourcePathspecs} from '/home/craig-beswetherick/Documents/riddle-quest/scripts/release/development-source-digest.mjs';
+const root='/home/craig-beswetherick/Documents/riddle-quest';
+const output=root+'/artifacts/current-source-readiness-2026-10-25';
+const sourceBefore=await developmentSourceDigest(root);
+const files=execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--',...developmentSourcePathspecs],{cwd:root,maxBuffer:32*1024*1024}).toString().split('\0').filter(Boolean).sort();
+const sha=x=>createHash('sha256').update(x).digest('hex');
+const sourceFiles=[];
+for(const file of files){try{const stat=await lstat(root+'/'+file);const bytes=stat.isSymbolicLink()?'symlink:'+await readlink(root+'/'+file):await readFile(root+'/'+file);sourceFiles.push({path:file,sha256:sha(bytes),...(stat.isSymbolicLink()?{symlink:await readlink(root+'/'+file)}:{})});}catch(error){if(error.code!=='ENOENT')throw error;sourceFiles.push({path:file,deleted:true,sha256:sha('deleted')});}}
+const sourceAfter=await developmentSourceDigest(root);
+const prior=JSON.parse(await readFile(root+'/artifacts/goal-completion-2026-10-24/riddle/final-5c26470ae/upload-source-snapshot.json'));
+const old=new Map(prior.sourceFiles.map(x=>[x.path,{...x,sha256:x.link?sha('symlink:'+x.link):x.sha256}])),current=new Map(sourceFiles.map(x=>[x.path,x]));
+const delta=[...new Set([...old.keys(),...current.keys()])].sort().filter(path=>old.get(path)?.sha256!==current.get(path)?.sha256).map(path=>({path,before:old.get(path)?.sha256??null,after:current.get(path)?.sha256??null}));
+await writeFile(output+'/current-source-snapshot.json',JSON.stringify({createdAt:new Date().toISOString(),revision:execFileSync('git',['rev-parse','HEAD'],{cwd:root}).toString().trim(),sourceBefore,sourceAfter,sourceStable:sourceBefore===sourceAfter,fileCount:sourceFiles.length,sourceFiles},null,2)+'\n');
+await writeFile(output+'/source-delta.json',JSON.stringify({baselineSourceDigest:prior.originalSourceDigest,currentSourceDigest:sourceAfter,changedPaths:delta.length,files:delta},null,2)+'\n');
+await mkdir(output+'/source-tools',{recursive:true});
+for(const file of ['riddle-current-matrix.mjs','riddle-silent-browser.cjs','riddle-snapshot-current.mjs'])await copyFile('/tmp/'+file,output+'/source-tools/'+file);
+await copyFile('/tmp/portfolio-three-project-sync-20261025/riddle-final-client-extraction-review.json',output+'/final-client-extraction-review.json');
+await copyFile('/tmp/portfolio-three-project-sync-20261025/riddle-local-revalidation-plan.json',output+'/matrix-plan.json');
+console.log(JSON.stringify({sourceDigest:sourceAfter,sourceStable:sourceBefore===sourceAfter,files:sourceFiles.length,changedPaths:delta.length}));

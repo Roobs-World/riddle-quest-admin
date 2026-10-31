@@ -1,0 +1,7 @@
+
+Test Suites: 8 passed, 8 total
+Tests:       136 passed, 136 total
+Snapshots:   0 total
+Time:        8.403 s
+Ran all test suites within paths "src/__tests__/completeGameTransaction.test.ts", "src/__tests__/completeGameCallable.test.ts", "src/__tests__/facebookReferrals.test.ts", "src/__tests__/redditReferrals.test.ts", "src/__tests__/deleteAccount.test.ts", "src/__tests__/dailyChallenge.test.ts", "src/__tests__/singlePlayerContentPreparationLatency.test.ts", "src/__tests__/singlePlayerCompletionRepairLatency.test.ts".
+Test results written to: ../../../../../tmp/riddle-referral-attribution-unit-final.json

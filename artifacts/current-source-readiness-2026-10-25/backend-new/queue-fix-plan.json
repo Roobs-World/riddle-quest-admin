@@ -1,0 +1,13 @@
+{
+  "source": "firebase-functions/src/race/raceLiveQueue.ts",
+  "beforeSha256": "7677973653d3a04469c46d211459d4d0a95eaaa4f9610af04b02e6e3bea26403",
+  "proposedSha256": "71070db3534cabb6b5e76d1e29785306264a1eae4958c2d2e7ce0a5f7daad67a",
+  "specificIncompatibilityClassifier": "isLiveRaceDeckCompatible catches only HttpsError data-loss; unrelated errors propagate",
+  "originalRegressionTestsUnchanged": [
+    "raceAnswerInputShape.it.test.ts",
+    "raceLiveDeckCompatibility.it.test.ts"
+  ],
+  "productionDeploymentHeld": true,
+  "appliedSha256": "71070db3534cabb6b5e76d1e29785306264a1eae4958c2d2e7ce0a5f7daad67a",
+  "sourceMutationBoundaryConfirmed": true
+}

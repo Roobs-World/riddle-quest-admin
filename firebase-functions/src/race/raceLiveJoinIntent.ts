@@ -21,7 +21,8 @@ export async function readLiveJoinIntent(db: Firestore, transaction: FirebaseFir
   const ref = liveJoinIntentRef(db, userId, input.requestId);
   /** A first accepted command binds all selectors, including the target-owned context. */
   const binding = createHash("sha256").update(JSON.stringify([input.locale, input.categoryId, Boolean(input.createChallenge),
-    input.challengeId ?? null, input.rematchOfTicketId ?? null, input.facebookContextId ?? null])).digest("hex");
+    input.challengeId ?? null, input.rematchOfTicketId ?? null, input.facebookContextId ?? null,
+    ...(input.waitForPlayer ? [true, input.resumeTicketId ?? null] : [])])).digest("hex");
   /** Fresh SDK snapshot is never cached across Firestore retries. */
   const record = (await transaction.get(ref)).data() as LiveJoinIntent | undefined;
   if (record?.retired) throw new HttpsError("failed-precondition", "This live join was retired.");

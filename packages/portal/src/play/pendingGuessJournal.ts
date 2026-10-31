@@ -1,3 +1,4 @@
+import type {PendingPlayRecoveryAdapters} from "./pendingPlayRecoveryTypes";
 import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
 import type {Feedback} from "@qwordly/core/game";
 import {splitGraphemes} from "@qwordly/core/game";
@@ -33,6 +34,8 @@ export type QueuedGuess = {
 };
 /** Versioned client record of unconfirmed guesses for one issued question. */
 export type PendingGuessJournal = {
+  /** Optional ordering shared with the matching provider checkpoint. */
+  draftRevision?: import("./draftCheckpointRevision").DraftCheckpointRevision;
   /** The version retained for safe pending-play recovery. */
   version: 1;
   /** The scope retained for safe pending-play recovery. */
@@ -49,6 +52,8 @@ export type PendingGuessJournal = {
     /** Last confirmed state within that question. */ base: PendingGuessState;
     /** Unsubmitted letters. */ draft: string[];
     /** Selected slot within the unsubmitted draft. */ draftActiveSlotIndex?: number;
+    /** Ordering belongs to this independently issued successor. */
+    draftRevision?: import("./draftCheckpointRevision").DraftCheckpointRevision;
   }>;
   /** The queue retained for safe pending-play recovery. */
   queue: QueuedGuess[];
@@ -107,7 +112,7 @@ export function reconcileConfirmedPendingPlay(journal: PendingGuessJournal, ridd
     (journal.coinAction && !segments.some(segment => sameRound(journal.coinAction!.payload, segment)))) return journal;
   /** The first issued successor becomes the durable root without modifying the original journal. */
   const next = journal.successors[0]!;
-  return {...journal, ...next, draftActiveSlotIndex: next.draftActiveSlotIndex,
+  return {...journal, ...next, draftActiveSlotIndex: next.draftActiveSlotIndex, draftRevision: next.draftRevision,
     confirmedClassicIndex: Math.max(journal.confirmedClassicIndex, riddle.index! + 1),
     successors: journal.successors.slice(1),
     queue: journal.queue.filter((_item, index) => positions[index] !== 0),
@@ -115,7 +120,8 @@ export function reconcileConfirmedPendingPlay(journal: PendingGuessJournal, ridd
 }
 /** Keeps only valid, unsubmitted letters for the rejected root question; every dependent delivery is retired. */
 export function createRejectedPlayDraft(journal: PendingGuessJournal,
-  current: Pick<GameSessionState, "riddle" | "engineSnapshot" | "currentLetters" | "activeSlotIndex">): PendingGuessJournal | null {
+  current: Pick<GameSessionState, "riddle" | "engineSnapshot" | "currentLetters" | "activeSlotIndex"> &
+    Partial<Pick<GameSessionState, "draftRevision">>): PendingGuessJournal | null {
   if (!Number.isInteger(journal.riddle.answerLength) || journal.riddle.answerLength < 1 || journal.riddle.answerLength > 7) return null;
   /** Current input is usable only while the exact rejected question remains editable. */
   const sameQuestion = current.riddle?.sessionToken === journal.riddle.sessionToken &&
@@ -128,6 +134,7 @@ export function createRejectedPlayDraft(journal: PendingGuessJournal,
   /** A legacy or invalid selection falls back to the reducer's first editable slot. */
   const selected = sameQuestion ? current.activeSlotIndex : journal.draftActiveSlotIndex;
   return {...journal,queue: [],successors: [],coinAction: undefined,draft: [...draft],
+    draftRevision: sameQuestion ? current.draftRevision : journal.draftRevision,
     draftActiveSlotIndex: selected !== undefined && Number.isInteger(selected) && selected >= 0 && selected < draft.length ? selected : undefined};
 }
 /** The provider UID changes with account generation except on Reddit. */
@@ -236,3 +243,47 @@ export function createPendingPlayRecoveryStorage(storage: PendingPlayStorage) {
   };
 }
 
+
+/** A paid Skip owns only the next Classic index while its origin or optional preview remains current. */
+export const ownsSkipSuccessor = (origin: BridgeRiddle, target: BridgeRiddle, current: BridgeRiddle | null) =>
+  origin.gameMode === "classic" && origin.index !== undefined && target.gameMode === "classic" &&
+  target.index === origin.index + 1 && target.sessionToken !== origin.sessionToken &&
+  Boolean(current && current.gameMode === "classic" &&
+    (current.sessionToken === origin.sessionToken || current.index === origin.index + 1));
+
+/** Browser implementation keeps global access behind the recovery seam. */
+export const browserAdapters: PendingPlayRecoveryAdapters = {
+  journal: createPendingPlayRecoveryStorage({
+    getItem: (key) => localStorage.getItem(key),
+    setItem: (key, value) => localStorage.setItem(key, value),
+    removeItem: (key) => localStorage.removeItem(key),
+  }),
+  clock: {
+    now: Date.now,
+    setTimeout: (callback, delay) => window.setTimeout(callback, delay),
+    clearTimeout: (timer) => window.clearTimeout(timer),
+    setInterval: (callback, delay) => window.setInterval(callback, delay),
+    clearInterval: (timer) => window.clearInterval(timer),
+  },
+};
+
+/** Captures only fields needed to restore one issued question. */
+export const capturePendingBase = (state: GameSessionState): PendingGuessState => ({
+  draftRevision: state.draftRevision,
+  currentLetters: [...state.currentLetters],
+  activeSlotIndex: state.activeSlotIndex,
+  guesses: [...state.guesses],
+  engineSnapshot: state.engineSnapshot,
+  modal: state.modal,
+  lastOutcome: state.lastOutcome,
+  completionAcknowledged: state.completionAcknowledged,
+  letterStates: {...state.letterStates},
+  profile: state.profile,
+  lastRewards: state.lastRewards,
+  optimisticAchievementIds: [...state.optimisticAchievementIds],
+});
+/** Finds the checkpoint for an issued session retained in the journal. */
+export const findSegment = (journal: PendingGuessJournal, sessionToken: string) =>
+  journal.riddle.sessionToken === sessionToken
+    ? {riddle: journal.riddle, base: journal.base, draft: journal.draft, draftActiveSlotIndex: journal.draftActiveSlotIndex, draftRevision: journal.draftRevision, first: true as const}
+    : journal.successors.find((segment) => segment.riddle.sessionToken === sessionToken);

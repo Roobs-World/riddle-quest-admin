@@ -40,13 +40,4 @@ gcloud run deploy "$monitor_service" --project "$monitor_project" --region "$mon
 gcloud run services add-iam-policy-binding "$monitor_service" --project "$monitor_project" --region "$monitor_region" \
   --member="serviceAccount:$monitor_account" --role=roles/run.invoker --format=none
 monitor_url="$(gcloud run services describe "$monitor_service" --project "$monitor_project" --region "$monitor_region" --format='value(status.url)')"
-monitor_operation=create
-if gcloud scheduler jobs describe deployment-monitor-hourly --project "$monitor_project" --location "$monitor_region" >/dev/null 2>&1; then
-  monitor_operation=update
-fi
-gcloud scheduler jobs "$monitor_operation" http deployment-monitor-hourly --project "$monitor_project" --location "$monitor_region" \
-  --schedule='0 * * * *' --time-zone=UTC --uri="$monitor_url/api/collect" --http-method=POST \
-  --oidc-service-account-email="$monitor_account" --oidc-token-audience="$monitor_url" \
-  --attempt-deadline=180s --max-retry-attempts=2 --min-backoff=60s --quiet
-gcloud scheduler jobs run deployment-monitor-hourly --project "$monitor_project" --location "$monitor_region"
-printf 'Monitor deployed at %s. Verify the Scheduler execution and stored snapshot before declaring activation.\n' "$monitor_url"
+printf 'On-demand monitor deployed at %s. No scheduled collection is installed.\n' "$monitor_url"

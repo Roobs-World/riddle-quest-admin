@@ -30,7 +30,7 @@ export async function verifyRewardedContinue(page: Page, origin: string): Promis
   await page.locator(".onboarding-card-welcome .play-primary").click();
   await page.locator(".onboarding-clues").waitFor();
   await page.locator(".onboarding-card .play-primary").click();
-  for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+  for (const id of ["gameHint", "submitAnswer", "gameSkip", "gameMultiplayer"]) {
     /** Existing onboarding prompt dismissed before exercising the loss controls. */
     const tooltip = page.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
     await tooltip.waitFor();

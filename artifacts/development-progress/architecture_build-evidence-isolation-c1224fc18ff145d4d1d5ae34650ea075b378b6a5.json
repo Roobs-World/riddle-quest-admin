@@ -1,0 +1,97 @@
+{
+  "completion": {
+    "taskId": "architecture:build-evidence-isolation",
+    "targets": [
+      "jest",
+      "facebook",
+      "reddit",
+      "youtube",
+      "netflix",
+      "yahoo",
+      "gamesnacks",
+      "itch"
+    ],
+    "work": "Keep dependency inventories independent across custom and canonical outputs; publish evidence only after writing and final postprocessing; reject late build failures and generate-only runs without leaving successful inventories.",
+    "revision": "c1224fc18ff145d4d1d5ae34650ea075b378b6a5",
+    "sourceDigest": "5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb",
+    "completedAt": "2026-10-13T08:16:25.175Z",
+    "trigger": "local verified handoff",
+    "requiredChecks": [
+      "architecture-contracts",
+      "portal-types",
+      "canonical-artifact-inventories",
+      "tested-archive-digests"
+    ],
+    "checks": [
+      {
+        "id": "architecture-contracts",
+        "status": "passed",
+        "evidence": "pnpm test:architecture; current-source check at 2026-10-13T07:26:17.804Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-025cdf5551644bed091a54b48fdb8efc81b6835f7e77080bd9230393b5ce3928-6dea6b74971a4f67e635d17bec45fea7a8334bd64d0a39cd9985feeb7e46a43a.log SHA-256 6dea6b74971a4f67e635d17bec45fea7a8334bd64d0a39cd9985feeb7e46a43a"
+      },
+      {
+        "id": "portal-types",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal check:types; current-source check at 2026-10-13T07:26:18.681Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-74207d8bc53625a852316fa02bbb9515c61780db6c166b2652464e0f40dd4850-8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c.log SHA-256 8a3c10267e89be10a79f309dfe5c2343ce82a7932fd3fa00211c99f39976722c"
+      },
+      {
+        "id": "canonical-artifact-inventories",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-13T07:47:18.637Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-cfac8be0fedf23c855548a6e87fe1406f7354948b22ba69ea68e8be5ea7bf146-e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe.log SHA-256 e572406092458ad238506b52f40aa25fc74c5a40c02db76113a857d21505cebe"
+      },
+      {
+        "id": "tested-archive-digests",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-packaged-game-evidence.mjs; current-source check at 2026-10-13T08:15:23.369Z; output artifacts/development-checks/5e462d7fe595a8a1b13b6ba663fcc00a5cd2d5415aae9027d7c64a493b3852fb-ef057106ab8ab8a8cd980f61dbb14d3d82776930d9b2265d9fdc74db907b0f2c-73c6621ab76ba2a13085dceb3ea9aca3f54eaf0e72a6bdc501d3ffa2f5fa234c.log SHA-256 73c6621ab76ba2a13085dceb3ea9aca3f54eaf0e72a6bdc501d3ffa2f5fa234c"
+      }
+    ],
+    "remainingGates": [
+      "Merge the workflow into main to enable automatic accepted-revision CI updates.",
+      "Provider submission, review and publication require separate receipts."
+    ],
+    "nextAction": "Review and merge the build evidence improvements, then follow the existing platform submission gates.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "builds/jest/index.html",
+        "sha256": "3e0c944fad3faf9b342512e7c1f32bde2938a3dc86a2ac7274d75b80534c85ec"
+      },
+      {
+        "target": "facebook",
+        "file": "builds/facebook/index.html",
+        "sha256": "723c09b81621a87e8f43270a9d10a7b4b74eb7648b1855c67061b6ba5eb076cc"
+      },
+      {
+        "target": "reddit",
+        "file": "builds/reddit/index.html",
+        "sha256": "fb5f864a2ed68a27fdb18131fd31953f5f7eefefd7cbfb20e02fcdcca1037ab0"
+      },
+      {
+        "target": "youtube",
+        "file": "builds/youtube/index.html",
+        "sha256": "b7b2eca80100a3e32e72fa06fdf3970f1a06b95531d2d1fdfb5ff4a4b2d0e415"
+      },
+      {
+        "target": "netflix",
+        "file": "builds/netflix/index.html",
+        "sha256": "eeba00fa4a0b0d49c2340c7acc3aec644187a3acc688632b1e5c908160bf49d8"
+      },
+      {
+        "target": "yahoo",
+        "file": "builds/yahoo/index.html",
+        "sha256": "f105a925eb19bab71600e3e7ef2893474f96d425443b9c0d073c05f8e19c5e67"
+      },
+      {
+        "target": "gamesnacks",
+        "file": "build-gamesnacks.zip",
+        "sha256": "0bb75da1b1af37cd340c4b502377f66b728f0f4ba680f854a5af462d2488c912"
+      },
+      {
+        "target": "itch",
+        "file": "build-itch.zip",
+        "sha256": "bab74e11358935ab37fca3fb781f1045fce9bccc8d622c8d92e88e9e04f88038"
+      }
+    ]
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

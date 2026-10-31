@@ -1,0 +1,9 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Analytics delivery isolation passed: sync at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Analytics delivery isolation passed: sync at 390px.
+[riddle-silent-guard] context isolated before navigation
+Analytics delivery isolation passed: async at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Analytics delivery isolation passed: async at 390px.

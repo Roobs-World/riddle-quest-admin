@@ -1,0 +1,30 @@
+0009a424fc8fba5f79a09fa6495ebccc
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.containsProfanity = containsProfanity;
+exports.validateUsernameForProfanity = validateUsernameForProfanity;
+const profanityWords_1 = require("./profanityWords");
+/** Defines the boundary only profanity words value. */
+const BOUNDARY_ONLY_PROFANITY_WORDS = new Set(["anal", "anus", "tit", "tits"]);
+/** Provides contains profanity behavior. */
+function containsProfanity(username) {
+    if (!username || typeof username !== "string") {
+        return false;
+    }
+    /** Provides clean username behavior. */
+    const cleanUsername = username.toLowerCase().trim();
+    return profanityWords_1.PROFANE_WORDS.some((word) => {
+        /** Provides exact match behavior. */
+        const exactMatch = new RegExp(`\\b${word}\\b`, "i").test(cleanUsername);
+        /** Provides substring match behavior. */
+        const substringMatch = BOUNDARY_ONLY_PROFANITY_WORDS.has(word) ? false : cleanUsername.includes(word);
+        return exactMatch || substringMatch;
+    });
+}
+/** Validates username for profanity. */
+function validateUsernameForProfanity(username) {
+    if (containsProfanity(username)) {
+        return "Username contains inappropriate language. Please choose a different username.";
+    }
+    return "";
+}

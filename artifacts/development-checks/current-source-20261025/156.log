@@ -1,0 +1,19 @@
+✔ the release dashboard reports every target and a concrete output (0.756964ms)
+✔ the provider evidence table renders the output column (0.116741ms)
+✔ the dashboard tracks additional HTML5 distribution submissions (0.176054ms)
+✔ dashboard integration metrics match reviewed rows (0.150926ms)
+✔ the primary release table contains every canonical platform target (0.121971ms)
+✔ every canonical target has a playable link and deployment administration route (0.244934ms)
+✔ the dashboard exposes the latest release automation receipt (0.117022ms)
+✔ the dashboard provides one source-backed manual checklist covering every release platform (0.140807ms)
+✔ the dashboard reports IAP and advertising policy for every release platform (0.22684ms)
+✔ the dashboard uses source-owned shadcn primitives for operational UI (3.593876ms)
+✔ the dashboard publishes its desktop, mobile and output-coverage E2E results (0.130607ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 217.65765

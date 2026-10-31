@@ -58,7 +58,6 @@ export function ContinueModalPage({
   );
   return (
     <div className="modal-actions continue-actions">
-      <p>{tr("LossModal.EXTRA_GO_PROMPT")}</p>
       <div className="continue-balance">
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>

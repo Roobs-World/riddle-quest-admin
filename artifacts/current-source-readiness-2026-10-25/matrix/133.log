@@ -1,0 +1,9 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Hint UI passed: 1280px, padded; invalid adapter hints ignored, canonical resume/replacement hint preserved.
+[riddle-silent-guard] context isolated before navigation
+Hint UI passed: 1280px, cleanup; invalid adapter hints ignored, canonical resume/replacement hint preserved.
+[riddle-silent-guard] context isolated before navigation
+Hint UI passed: 390px, padded; invalid adapter hints ignored, canonical resume/replacement hint preserved.
+[riddle-silent-guard] context isolated before navigation
+Hint UI passed: 390px, cleanup; invalid adapter hints ignored, canonical resume/replacement hint preserved.

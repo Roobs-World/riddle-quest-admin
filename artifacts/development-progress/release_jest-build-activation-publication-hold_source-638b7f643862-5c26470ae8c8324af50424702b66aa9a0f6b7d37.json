@@ -1,0 +1,79 @@
+{
+  "completion": {
+    "taskId": "release:jest-build-activation-publication-hold:source-638b7f643862",
+    "targets": [
+      "jest"
+    ],
+    "work": "Allow Jest build activation while holding game publication, review submission and listing visibility changes; preserve explicit inactive releases, immutable artifact and credential safeguards. Record Firebase Functions deployment authorization separately from Jest game publication.",
+    "revision": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "638b7f64386297df7d547de3cba867f0c9c07fedd2b75989b0fc6cc7c7ea8619",
+    "completedAt": "2026-10-25T23:39:05.166Z",
+    "trigger": "local current-source revalidation",
+    "requiredChecks": [
+      "jest-build-activation-with-publication-hold-contract",
+      "isolated-platform-builds",
+      "target-dependency-evidence",
+      "security",
+      "scalability",
+      "file-size-limits",
+      "documented-declarations"
+    ],
+    "checks": [
+      {
+        "id": "jest-build-activation-with-publication-hold-contract",
+        "status": "passed",
+        "evidence": "node --test packages/portal/scripts/jest-upload-artifact.test.mjs scripts/release/platform-releases.test.mjs; current-source check at 2026-10-25T23:15:21.929Z; output artifacts/development-checks/current-source-20261025/006.log SHA-256 663ca9ef46eedbb5bfabe91c4ad5b12d3f2830e3a1516f70156809a2e67b8bf8"
+      },
+      {
+        "id": "isolated-platform-builds",
+        "status": "passed",
+        "evidence": "pnpm --filter @qwordly/portal build:all-targets; current-source check at 2026-10-25T23:13:07.829Z; output artifacts/development-checks/current-source-20261025/007.log SHA-256 e64cfaaa740a4cfd0c82ce5dc3a14279035ba3f28354890fd813cc1f55c96710"
+      },
+      {
+        "id": "target-dependency-evidence",
+        "status": "passed",
+        "evidence": "node scripts/release/verify-target-dependency-evidence.mjs; current-source check at 2026-10-25T23:15:15.234Z; output artifacts/development-checks/current-source-20261025/002.log SHA-256 247370a3c50c37912b681ccfd1737f9c49da9b89d2cf718597b3ceab7ff1f552"
+      },
+      {
+        "id": "security",
+        "status": "passed",
+        "evidence": "pnpm check:security; current-source check at 2026-10-25T23:15:23.000Z; output artifacts/development-checks/current-source-20261025/008.log SHA-256 8db01774f924185ef54e1051186c62af6c75c5a4e4641cd40dd23e2b40509712"
+      },
+      {
+        "id": "scalability",
+        "status": "passed",
+        "evidence": "pnpm check:scalability; current-source check at 2026-10-25T23:15:23.891Z; output artifacts/development-checks/current-source-20261025/009.log SHA-256 7b3afb7836602e696ca81c01d4e980e302d988e27ce63adfbaf9a5a513e31b21"
+      },
+      {
+        "id": "file-size-limits",
+        "status": "passed",
+        "evidence": "pnpm check:file-sizes; current-source check at 2026-10-25T23:02:57.104Z; output artifacts/development-checks/current-source-20261025/010.log SHA-256 c043a6408621a375d61ca4b84a8fb317afdf4fa2eeb05485d2b409b626c59bf6"
+      },
+      {
+        "id": "documented-declarations",
+        "status": "passed",
+        "evidence": "pnpm check:tsdoc; current-source check at 2026-10-25T23:02:58.600Z; output artifacts/development-checks/current-source-20261025/011.log SHA-256 14c709fe95f4adbbe9899111963dbe1cf3227abf8a6164b21d281bc43402d1da"
+      }
+    ],
+    "remainingGates": [
+      "Jest game publication, review submission and listing visibility changes remain held.",
+      "Jest build activation and Firebase Functions deployment are permitted; actual external actions require their own verified deployment/build receipts.",
+      "The comprehensive multiplayer reliability goal remains active."
+    ],
+    "nextAction": "Continue multiplayer reliability work; use build activation when needed and keep Jest game publication held.",
+    "artifacts": [
+      {
+        "target": "jest",
+        "file": "artifacts/target-dependencies/jest.json",
+        "checkId": "isolated-platform-builds",
+        "sha256": "b6f0e886321e571342935c76939a81b1df963b9f146bad7e03b1df7a21572a9a"
+      }
+    ],
+    "revalidation": {
+      "taskId": "release:jest-build-activation-publication-hold",
+      "declarationSha256": "79f3b9f46eb1f31a6d88832a3912fdbfc92fc33b5f0c7fe93adabdf61b9c8bc4"
+    }
+  },
+  "sync": "local",
+  "nextAction": "Publish accepted-revision receipt to the existing dashboard."
+}

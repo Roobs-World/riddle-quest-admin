@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-10-24 06:15:09 UTC",
+  "postOwnershipAuditNumber": 3,
+  "previousGoalTurnClassification": "no progress",
+  "currentGoalTurnClassification": "no progress",
+  "wholeGoalCompletionProven": false,
+  "blockedAuditThresholdMet": true,
+  "sameInputsMissingAcrossPostOwnershipAudits": [
+    1,
+    2,
+    3
+  ],
+  "userAuthorityAndRightsAccepted": true,
+  "ownershipOrLicenseProofRequired": false,
+  "portfolioHealthApprovalHoldResolved": true,
+  "portfolioHealthEvidence": "portfolio-protected-health-2026-10-24.json",
+  "newSafeIndependentActionAvailable": false,
+  "liveHandleToWaitOn": false,
+  "music": {
+    "localCheckAt": "2026-10-24T06:14:05.409035+00:00",
+    "newAudioSince0610UTC": 0,
+    "requestedFilenameCandidates": 0,
+    "hiveMusicSourceStillNull": true,
+    "artlistSignInButtons": 2,
+    "credentialFormEntryPresent": false,
+    "currentActualRequestedFileOrSignedInSessionAvailable": false,
+    "connectedSearchAt": "2026-10-24 06:14:05 UTC",
+    "driveCandidates": 0,
+    "gmailAudioAttachmentCandidates": 0,
+    "humanFileIdentificationOrSessionReplyReceived": false
+  },
+  "portfolio": {
+    "currentReadbackAt": "2026-10-24 06:14 UTC",
+    "diagnosticRunId": 40069110496,
+    "state": "startup_failure",
+    "attempt": 1,
+    "jobs": 0,
+    "freshAccountPaymentOrSpendingFailureConfirmed": true,
+    "newQueuedOrRunningHandles": [],
+    "registeredSelfHostedRunners": 0,
+    "newProductionDeployment": false,
+    "canonicalDeploymentId": "dpl_B5ca2VsdMDTn4aJKWgTL51mpmdtz",
+    "canonicalRevision": "130686f829331bfc603ba128582cdac1361984aa"
+  },
+  "riddle": {
+    "identityAndProviderReadbackAt": "2026-10-24 06:14:11 UTC",
+    "head": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+    "sourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "indexEmpty": true,
+    "finalSourceStillMatches": true,
+    "finalBuildId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+    "finalBuildReady": true,
+    "finalBuildActive": false,
+    "gamePublished": false,
+    "inReviewRevisionId": null,
+    "draftStatus": "draft",
+    "submittedForReviewAt": null,
+    "newReleaseInstructionReceived": false
+  },
+  "immediateOwnerInputsNeeded": [
+    "The requested audio file/its identity or a signed-in Artlist account",
+    "Resolution of GitHub's account payment/spending failure"
+  ],
+  "otherRemainingGates": [
+    "CI credential verification during authorised successful delivery",
+    "Actual client-course LMS acceptance",
+    "Explicit Jest release/review decision and subscription freshness resolution"
+  ],
+  "repeatedTestsOrDiagnosticOrHealthOrDeploymentActionsThisAudit": false
+}

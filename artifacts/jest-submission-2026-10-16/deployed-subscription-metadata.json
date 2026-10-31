@@ -1,0 +1,11 @@
+{
+  "buildConfig": {
+    "runtime": "nodejs22"
+  },
+  "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/syncJestSubscriptions",
+  "serviceConfig": {
+    "uri": "https://syncjestsubscriptions-h5dplxxwha-uc.a.run.app"
+  },
+  "state": "ACTIVE",
+  "updateTime": "2026-10-16T07:22:37.005035370Z"
+}

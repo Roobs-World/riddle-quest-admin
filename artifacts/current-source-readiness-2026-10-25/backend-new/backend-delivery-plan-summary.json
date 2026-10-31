@@ -1,0 +1,539 @@
+{
+  "preparedAt": "2026-10-25T22:40:46.742344+00:00",
+  "status": "verified-complete",
+  "authority": "Existing backend completion authority documented in docs/evidence/continuation-release-2026-10-20.md; game publishing/activation/review hold remains separate.",
+  "project": "riddle-quest-ec2b2",
+  "sourceFix": {
+    "path": "firebase-functions/src/race/raceLiveQueue.ts",
+    "beforeSha256": "7677973653d3a04469c46d211459d4d0a95eaaa4f9610af04b02e6e3bea26403",
+    "afterSha256": "71070db3534cabb6b5e76d1e29785306264a1eae4958c2d2e7ce0a5f7daad67a",
+    "diff": "raceLiveQueue.fix.diff",
+    "originalAssertionsPreserved": true
+  },
+  "targets": [
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "sourceStage": "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "expectedRuntime": "nodejs22",
+      "expectedMaxInstances": 20,
+      "expectedMinInstances": null,
+      "omittedMinMeansDefaultZero": true,
+      "expectedMemory": "256Mi",
+      "expectedTimeoutSeconds": 60,
+      "expectedConcurrency": 80,
+      "previousRevision": "updateliverace-00025-fos",
+      "immutableRollbackSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1792884735876710",
+        "object": "updateLiveRace/function-source.zip"
+      },
+      "runtimeConfigSha256": "7e5172d202be72c55a10168d33ec009238c0e2480a65c01933edf29bfab5d458",
+      "buildConfigSha256": "d188bb30bb9068df2130391fd30d9fefd249121fd91d2bca6b94dadec2c39a26",
+      "iamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "verifyAfterEachBeforeNext": true
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "sourceStage": "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "expectedRuntime": "nodejs22",
+      "expectedMaxInstances": 20,
+      "expectedMinInstances": null,
+      "omittedMinMeansDefaultZero": true,
+      "expectedMemory": "256Mi",
+      "expectedTimeoutSeconds": 60,
+      "expectedConcurrency": 80,
+      "previousRevision": "joinliverace-00024-bap",
+      "immutableRollbackSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1792884674845614",
+        "object": "joinLiveRace/function-source.zip"
+      },
+      "runtimeConfigSha256": "f0cdbc3e0fe010b92d9242d1a8bb762d190d6080cf88cbb8aa75d816d758a8c5",
+      "buildConfigSha256": "ea9aaa1a794207f87b36e229b7b6336e85c5543708b136eedcf683be150e4ddc",
+      "iamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "europe-west1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "verifyAfterEachBeforeNext": true
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "sourceStage": "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "expectedRuntime": "nodejs22",
+      "expectedMaxInstances": 20,
+      "expectedMinInstances": null,
+      "omittedMinMeansDefaultZero": true,
+      "expectedMemory": "256Mi",
+      "expectedTimeoutSeconds": 60,
+      "expectedConcurrency": 80,
+      "previousRevision": "updateliverace-00025-moj",
+      "immutableRollbackSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1792884727188960",
+        "object": "updateLiveRace/function-source.zip"
+      },
+      "runtimeConfigSha256": "2d2cf5e22195b577c2fb126054b9e474e44357f96ed13d9e7f2002584d3a9189",
+      "buildConfigSha256": "39ba84b504f33ca1005fa7324d5ffca3cc5f251781cffb2b965c663a6a249c03",
+      "iamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "updateLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "verifyAfterEachBeforeNext": true
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "sourceStage": "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "expectedRuntime": "nodejs22",
+      "expectedMaxInstances": 20,
+      "expectedMinInstances": null,
+      "omittedMinMeansDefaultZero": true,
+      "expectedMemory": "256Mi",
+      "expectedTimeoutSeconds": 60,
+      "expectedConcurrency": 80,
+      "previousRevision": "joinliverace-00024-mad",
+      "immutableRollbackSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1792884673238751",
+        "object": "joinLiveRace/function-source.zip"
+      },
+      "runtimeConfigSha256": "ebde7b3bde819f989c65a85ddbf72bec9a5555f7408e32417fae2cea44710179",
+      "buildConfigSha256": "58aee81760b2ac22eb76adbde4a55db55307f1307545d6bf8618d9057c1369ab",
+      "iamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "joinLiveRace",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/callables-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "verifyAfterEachBeforeNext": true
+    },
+    {
+      "function": "redditGameplay",
+      "region": "us-central1",
+      "sourceStage": "/var/tmp/riddle-backend-surgical-20261025/reddit-candidate",
+      "command": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "redditGameplay",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/reddit-candidate",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "expectedRuntime": "nodejs22",
+      "expectedMaxInstances": 20,
+      "expectedMinInstances": null,
+      "omittedMinMeansDefaultZero": true,
+      "expectedMemory": "256Mi",
+      "expectedTimeoutSeconds": 60,
+      "expectedConcurrency": 80,
+      "previousRevision": "redditgameplay-00045-yac",
+      "immutableRollbackSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1792804884381307",
+        "object": "redditGameplay/function-source.zip"
+      },
+      "runtimeConfigSha256": "dd3b329b1eb93c90a5f91716efb63bd394aa2101f1cb92eb1edf6f7b7adf7286",
+      "buildConfigSha256": "d2cfaf8840853dce2928daf1e8fd3c65b4397c69344421d7078e94d738b12150",
+      "iamPolicySha256": "b9a6087bad291d0bb96d7e1784d459b1521d258707c63f93933d3148c60391cb",
+      "rollbackCommand": [
+        "gcloud",
+        "functions",
+        "deploy",
+        "redditGameplay",
+        "--gen2",
+        "--project",
+        "riddle-quest-ec2b2",
+        "--region",
+        "us-central1",
+        "--source",
+        "/var/tmp/riddle-backend-surgical-20261025/reddit-before",
+        "--quiet",
+        "--ignore-file",
+        "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+        "--format=json(name,state,updateTime,buildConfig.build,serviceConfig.revision)"
+      ],
+      "verifyAfterEachBeforeNext": true
+    }
+  ],
+  "candidates": {
+    "fourCallables": {
+      "safeFiles": 1019,
+      "changedFiles": [
+        {
+          "path": "src/race/raceLiveQueue.ts",
+          "oldSha256": "7677973653d3a04469c46d211459d4d0a95eaaa4f9610af04b02e6e3bea26403",
+          "newSha256": "71070db3534cabb6b5e76d1e29785306264a1eae4958c2d2e7ce0a5f7daad67a"
+        },
+        {
+          "path": "lib/race/raceLiveQueue.js",
+          "oldSha256": "94c2298c138a4964b3ff043d60b807777a63381d490b71fd6463eef27131e8d9",
+          "newSha256": "400b672f443d35df1236d26a90552c18ad68667ea0808cea42f83150c74f79b2"
+        },
+        {
+          "path": "lib/race/raceLiveQueue.js.map",
+          "oldSha256": "d94b0fd73bcbc510735a809a58d88a8f0a3321fed689dc2cc1827d234689481e",
+          "newSha256": "eb5f28d99a6be3419c40101b567e34afcf0ad9197de23997a64fe5ad4e400acc"
+        }
+      ],
+      "all243RuntimeFilesMatchCanonical": true,
+      "originalPackageLockAndBuildInputsPreserved": true,
+      "manifest": "callables-isolated-candidate.json"
+    },
+    "reddit": {
+      "safeFiles": 535,
+      "changedFiles": [
+        {
+          "path": "lib/race/raceLiveQueue.js",
+          "oldSha256": "94c2298c138a4964b3ff043d60b807777a63381d490b71fd6463eef27131e8d9",
+          "newSha256": "400b672f443d35df1236d26a90552c18ad68667ea0808cea42f83150c74f79b2"
+        },
+        {
+          "path": "lib/race/raceLiveQueue.js.map",
+          "oldSha256": "d94b0fd73bcbc510735a809a58d88a8f0a3321fed689dc2cc1827d234689481e",
+          "newSha256": "eb5f28d99a6be3419c40101b567e34afcf0ad9197de23997a64fe5ad4e400acc"
+        }
+      ],
+      "originalPackageLockAndBuildInputsPreserved": true,
+      "unrelatedOldRuntimeFilesPreserved": [
+        "lib/race/raceLiveService.js",
+        "lib/race/raceLiveState.js",
+        "packages/core/dist/race/raceLiveSchemas.js"
+      ],
+      "manifest": "reddit-isolated-candidate.json"
+    }
+  },
+  "nativeProof": {
+    "currentSourceEightRegressionsPassed": 8,
+    "currentSourcePublicAndRelatedPassed": 93,
+    "fullCoverageSuitesPassed": 118,
+    "fullCoverageTestsPassed": 1937,
+    "oldRedditLegacyCasesBeforePassed": 8,
+    "oldRedditLegacyCasesAfterPassed": 8,
+    "oldRedditResumablePollResumeBeforeFailed": 2,
+    "oldRedditResumablePollResumeAfterPassed": 2,
+    "oldRedditResumableWaitMs": 900000,
+    "oldRedditClosureAndCorePinned": true,
+    "nuance": "Older Reddit regression is reproduced only for retained waitForPlayer=true 15-minute resumable seats. Its original8 legacy6-second cases were already green and remain compatibility proof."
+  },
+  "exactBackendGates": [
+    {
+      "index": 12,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/012.log",
+      "sha256": "e1e8f5e63bfe3ce4b80530435dfbd25c3550b8408f8e7dd03b2291dc4f824482",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/012.json",
+      "receiptSha256": "4c0f6503f41f7a19612bffe87fa8466724529555c444e18ba9053c9911553414"
+    },
+    {
+      "index": 13,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/013.log",
+      "sha256": "c891a36b75e8185e02f65a40039edf2d0beeb947c65ef34295690fca5fc57737",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/013.json",
+      "receiptSha256": "7c1568f4da991ab9adcde5811744f9b81f060d39d2752025353985d7b5ffe236"
+    },
+    {
+      "index": 14,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/014.log",
+      "sha256": "90bd2e50dea341b68cabca7d4d57acd59a77b331a3a4d019a0dbdd000aa11f98",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/014.json",
+      "receiptSha256": "40cc9d2a50db1ce7d837b8fd3926cba19429a2503a7e0b8cb1ca6bb221118b97"
+    },
+    {
+      "index": 16,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/016.log",
+      "sha256": "516f8e9a207722d0a3666dd11efa74c3b1eeb78e6999ddaeeab232cddd800d01",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/016.json",
+      "receiptSha256": "c31b2ca39a704729b6a91201883848e7124bcbcb1f387a6376257a3c0cf30f43"
+    },
+    {
+      "index": 31,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/031.log",
+      "sha256": "3acd60150c5fa31cbf4c8297dd0a21ba046c54ebd95fa4cf50dd53ca74f51819",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/031.json",
+      "receiptSha256": "16ae6ec040a46609f7b852ad17f5871834a8a701ca4d8f7682d819db5713c37b"
+    },
+    {
+      "index": 70,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/070.log",
+      "sha256": "cf3d0e5665f8298577b7462c76875d51c53e09bebe42f37e58ab63dc684067e7",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/070.json",
+      "receiptSha256": "bffa9095011314f8e26957cee39ffafda400dba20a311291e4b353c0f62d7fb2"
+    },
+    {
+      "index": 154,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/154.log",
+      "sha256": "8fe0b45ca906ec0bfbb17426b96fdb4127985619bbe15b7b3137500dec068850",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/154.json",
+      "receiptSha256": "1d11d2f0fb3a03e62f2adefc3b947a85f1b02b398efc8e888b4d6112e0130391"
+    },
+    {
+      "index": 179,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/179.log",
+      "sha256": "8967fe5fbd6afec3ef5873f03799089188320edf1f95e61ca1107f2908538d28",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/179.json",
+      "receiptSha256": "d4aa82f51d804092a7f30cb1e8123958e9507348c4ddbc454b666097e3a03036"
+    },
+    {
+      "index": 180,
+      "status": "passed",
+      "exitCode": 0,
+      "sourceBefore": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceAfter": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
+      "sourceStillMatches": true,
+      "log": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/180.log",
+      "sha256": "a0c38016d97c424b96f0aae7dac6745cd14c06e76e3eef023be649a4adb69d08",
+      "receipt": "artifacts/current-source-readiness-2026-10-25/backend-new/verified-gates-119a3d/180.json",
+      "receiptSha256": "821b17e20493a26f550be33633e1099d784b98035d7874e3357a45f7cbddc48c"
+    }
+  ],
+  "canonicalGuards": {
+    "validate:deploy-env": "passed; canonical-deploy-guards.log includes function capacity audit",
+    "test:deploy-scripts": "passed; canonical-deploy-script-tests.log",
+    "noGuardOrBuildScriptModified": true
+  },
+  "preservation": {
+    "officialDeployDocumentation": "https://docs.cloud.google.com/sdk/gcloud/reference/functions/deploy",
+    "officialBuildScriptDocumentation": "https://docs.cloud.google.com/docs/buildpacks/nodejs",
+    "installedSdkSource": "/snap/google-cloud-cli/515/lib/googlecloudsdk/command_lib/functions/v2/deploy/command.py",
+    "installedSdkSourceSha256": "97def7be8a0861868eab08f5d3a18ebf91e4e33cb662ac5a5591df251a1fa3bd",
+    "serviceEnvAndSecretMaskLines": [
+      344,
+      380,
+      418,
+      423
+    ],
+    "buildEnvMaskLines": [
+      795,
+      818
+    ],
+    "explicitIamFlagLines": [
+      1401,
+      1434
+    ],
+    "sourceOnlyCliFlags": true,
+    "omittedRuntimeScalingEnvSecretTriggerAndIamFlags": true,
+    "allExistingBuildSelectorsExactlyEmpty": true,
+    "redditExistingEmptyGcpBuildPreserved": true,
+    "noEnvOrCredentialFilesExtracted": true,
+    "rawAuthenticatedArchivesRemoved": true,
+    "snapshotAndComparisonHelper": "read-config-preservation.py",
+    "safeBeforeSnapshots": "config-preservation-before-safe.json",
+    "privateConfigComparison": "Deployment process must retain before/after environment maps and secret bindings only in memory and emit equality booleans; never values or their hashes.",
+    "canonicalGuardReason": "Connector lacks explicit project/isolated source selection. CLI uses exact project/target/source; canonical deploy-env/capacity/operator guards still run unchanged. Surgical bundles avoid shipping unrelated older Reddit code changes.",
+    "externalIgnoreUploadProof": "external-ignore-upload-proof.json",
+    "externalEmptyIgnoreFile": "/var/tmp/riddle-backend-surgical-20261025/empty-upload.gcloudignore",
+    "deployOutputProjection": "json(name,state,updateTime,buildConfig.build,serviceConfig.revision)",
+    "rawCliOutputPersisted": false
+  },
+  "preRolloutRequirements": [
+    "All9 exact backend entries passed; recheck243 compiled hashes against final-compiled-runtime-hashes.json",
+    "Recheck immutable live source generations and safe config/IAM hashes before any write",
+    "Verify required existing Cloud APIs enabled; do not enable APIs or modify IAM",
+    "Verify candidate asset hashes, no symlinks/private environment/credentials, and unchanged package/lock/build selectors",
+    "Root reviews and approves concrete narrow delivery"
+  ],
+  "postRolloutRequirements": [
+    "Exactly5 selected existing regional instances update; full function inventory and every unselected revision/source remain unchanged",
+    "All selected functions ACTIVE, build succeeded, latest revision ready, all traffic on latest",
+    "Full non-source runtime/build configuration, app/build environment and secret bindings, trigger and IAM preserved; include underlying Cloud Run service/revision scaling limits",
+    "Each deployed immutable archive matches its candidate safe asset manifest; only expected queue TS/JS/map deltas from its own baseline",
+    "Read-only authentication/health probes only; no production gameplay, account mutation, notification, purchase or game publication"
+  ],
+  "fullClientMatrixClaimedComplete": false,
+  "productionDeploymentPerformed": true,
+  "rollbackPreflightProof": "rollback-preflight-proof.json",
+  "failureRule": "Deploy strictly in listed order. After EACH target, verify readiness, all config/environment/secret/trigger/IAM/scaling predicates and immutable candidate hashes. Any deployment failure or mismatch immediately runs ONLY that target's byte-verified safe-original rollback command, then verifies original runtime bytes and configuration/IAM again. Never start the next target until rollback is verified; stop and report if rollback cannot be fully verified. Do not attempt unrelated config/IAM/billing/rule changes.",
+  "approvalReadyProof": "backend-approval-ready-proof.json",
+  "all243RuntimeHashesRecheckedAt": "2026-10-25T22:47:25.484022+00:00",
+  "compiledRuntimeAggregateSha256": "29097229762be875831063d9f37dbc036930ed1582949e014a0c7af16738b767",
+  "requiredApiReadiness": "required-api-readiness.json",
+  "safeDeploymentLoggingEnvironment": {
+    "DEBUG": "",
+    "CLOUDSDK_CORE_LOG_HTTP": "false",
+    "CLOUDSDK_CORE_DISABLE_FILE_LOGGING": "true"
+  },
+  "immutableGateEvidence": "verified-gates-119a3d/relocation-index.json",
+  "freshClosureEvidence": "backend-process-closure-final.json",
+  "gateLogRelocationOnly": true,
+  "rollbackStagesRetainedThroughManualAcceptance": true,
+  "liveRolloutEvidence": "targeted-backend-delivery.json",
+  "completedAt": "2026-10-25T23:08:59.500616+00:00",
+  "completionSummary": "backend-delivery-completed-summary.json",
+  "immutableRevisionPrivateParityEvidence": "immutable-revision-private-config-parity.json"
+}

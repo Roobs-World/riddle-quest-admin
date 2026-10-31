@@ -1,0 +1,29 @@
+[riddle-silent-guard] muted chromium launch
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: none at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: early at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: new-intent at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: same-intent at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: empty at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: hidden-ready at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: valid at 1280px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: none at 390px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: early at 390px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: new-intent at 390px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: same-intent at 390px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: empty at 390px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: hidden-ready at 390px.
+[riddle-silent-guard] context isolated before navigation
+Discovery retry policy passed: valid at 390px.

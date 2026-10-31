@@ -13,7 +13,7 @@ const baseline=process.env.GAME_BRIDGE_ERRORS_BASELINE_SOURCE;
 const reporterBaseline=process.env.GAME_BRIDGE_REPORTER_BASELINE_SOURCE;
 const reactMode=process.env.GAME_BRIDGE_ERRORS_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
-const output=path.resolve(process.env.GAME_BRIDGE_ERRORS_REPORT_DIR??path.join(root,'../../artifacts/game-bridge-errors-2026-10-03',reactMode==='production'?'production':''));
+const output=path.resolve(process.env.GAME_BRIDGE_ERRORS_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-bridge-errors-2026-10-03',reactMode==='production'?'production':''));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-bridge-errors-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

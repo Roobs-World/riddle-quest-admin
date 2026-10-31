@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "デイリーチャレンジ",
     "SHARE_MESSAGE_TEMPLATE": "今日のRiddle Quest {gameType}を{attempts}で解決しました{attemptLabel}!\n\n{emojiGrid}\n\n私のスコアを上回ることができますか？\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Riddle Quest の結果を確認してください。",
-    "INVITE_FRIEND": "友達を招待"
+    "INVITE_FRIEND": "友達を招待",
+    "REWARD_CLASSIC": "クラシックなぞなぞ",
+    "REWARD_DAILY": "毎日のなぞなぞ",
+    "REWARD_LEVEL_BONUS": "レベルアップボーナス",
+    "REWARD_STREAK_BONUS": "連続ボーナス",
+    "REWARD_ACHIEVEMENT_BONUS": "実績ボーナス",
+    "REWARD_REFERRAL_BONUS": "招待ボーナス"
   }
 }

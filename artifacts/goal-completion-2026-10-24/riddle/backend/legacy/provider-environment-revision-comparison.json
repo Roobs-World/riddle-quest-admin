@@ -1,0 +1,61 @@
+{
+  "capturedAt": "2026-10-24T03:25:43.074389+00:00",
+  "revisionEnvironmentMapsComparedPrivately": true,
+  "environmentValuesOrHashesRecorded": false,
+  "instances": [
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/blockLiveRaceOpponent",
+      "oldRevision": "blockliveraceopponent-00001-lor",
+      "newRevision": "blockliveraceopponent-00002-kug",
+      "oldRevisionEnvironmentKeyCount": 23,
+      "newRevisionEnvironmentKeyCount": 23,
+      "oldRevisionKeyCountMatchesBeforeCF": true,
+      "newRevisionEnvironmentExactlyMatchesCurrentCF": true,
+      "addedEnvironmentKeyNames": [],
+      "removedEnvironmentKeyNames": [],
+      "changedExistingEnvironmentKeyNames": [],
+      "allExistingEnvironmentValuesUnchanged": true
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/europe-west1/functions/listLiveRaceHistoryPage",
+      "oldRevision": "listliveracehistorypage-00001-yaf",
+      "newRevision": "listliveracehistorypage-00002-doh",
+      "oldRevisionEnvironmentKeyCount": 23,
+      "newRevisionEnvironmentKeyCount": 23,
+      "oldRevisionKeyCountMatchesBeforeCF": true,
+      "newRevisionEnvironmentExactlyMatchesCurrentCF": true,
+      "addedEnvironmentKeyNames": [],
+      "removedEnvironmentKeyNames": [],
+      "changedExistingEnvironmentKeyNames": [],
+      "allExistingEnvironmentValuesUnchanged": true
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/listLiveRaceHistoryPage",
+      "oldRevision": "listliveracehistorypage-00001-zuq",
+      "newRevision": "listliveracehistorypage-00002-xaj",
+      "oldRevisionEnvironmentKeyCount": 23,
+      "newRevisionEnvironmentKeyCount": 24,
+      "oldRevisionKeyCountMatchesBeforeCF": true,
+      "newRevisionEnvironmentExactlyMatchesCurrentCF": true,
+      "addedEnvironmentKeyNames": [
+        "FUNCTION_SIGNATURE_TYPE"
+      ],
+      "removedEnvironmentKeyNames": [],
+      "changedExistingEnvironmentKeyNames": [],
+      "allExistingEnvironmentValuesUnchanged": true
+    },
+    {
+      "name": "projects/riddle-quest-ec2b2/locations/us-central1/functions/reportLiveRaceOpponent",
+      "oldRevision": "reportliveraceopponent-00001-muw",
+      "newRevision": "reportliveraceopponent-00002-mib",
+      "oldRevisionEnvironmentKeyCount": 24,
+      "newRevisionEnvironmentKeyCount": 24,
+      "oldRevisionKeyCountMatchesBeforeCF": true,
+      "newRevisionEnvironmentExactlyMatchesCurrentCF": true,
+      "addedEnvironmentKeyNames": [],
+      "removedEnvironmentKeyNames": [],
+      "changedExistingEnvironmentKeyNames": [],
+      "allExistingEnvironmentValuesUnchanged": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "builtAt": "2026-10-24T02:36:06.141Z",
+  "command": "Data plugin1.0.11 data-app.mjs build --project-dir existing localproject --separate-data",
+  "publication": false,
+  "buildKind": "separate-data-v1",
+  "htmlSha256": "1c62ae6b104cc18c89136965613c48b263471df963b5dcbe7c98065028c9b486",
+  "htmlBytes": 2891256,
+  "snapshotSha256": "98f6e7647088cd3870bba4b5722f0efd6f732af12eacc384e2fcc9bbb39cbe23",
+  "snapshotBytes": 135028778,
+  "currentSourceDataMatchesSnapshot": true,
+  "sourceAfter": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "indexEmpty": true,
+  "temporaryBuildDirectories": [],
+  "localUrl": "http://127.0.0.1:41831/",
+  "renderStatus": "passed",
+  "renderReview": "artifacts/goal-completion-2026-10-24/riddle/local-dashboard-preview/render-review.json"
+}

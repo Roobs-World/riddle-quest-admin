@@ -1,0 +1,31 @@
+{
+  "verifiedAt": "2026-10-18T19:51:14Z",
+  "verificationSource": "Jest list_game_versions, limit 4",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "build": {
+    "id": "01a15091-26c9-743e-b867-c6c18f78ea28",
+    "version": "1.0.0-dev.20261018-daily-classic.mve8q8x5",
+    "buildStatus": "ready",
+    "isActive": false,
+    "buildProcessingError": null,
+    "createdAt": "2026-10-18T19:50:52.361Z",
+    "previewUrl": "https://jest.com/g/riddle-q?versionId=01a15091-26c9-743e-b867-c6c18f78ea28",
+    "reportedFileSizeBytes": 4715268
+  },
+  "localUploadZip": {
+    "path": "packages/portal/build.zip",
+    "sha256": "df7ec807b74cd4e261b69a5c0e26294d6bb68b7eb317975f45bd0e96825e9304",
+    "sizeBytes": 2874848
+  },
+  "activeBuild": {
+    "id": "01a15052-3421-7521-9513-070facc7e3a1",
+    "version": "1.0.0-dev.20261018-lobby-privacy.mve69njn",
+    "isActive": true,
+    "buildStatus": "ready",
+    "activatedAt": "2026-10-18T19:11:07.027Z"
+  },
+  "activationPerformed": false,
+  "testsRun": false,
+  "browserChecksRun": false
+}

@@ -5,6 +5,7 @@ import {
   type ScoredGuess,
 } from "@qwordly/core/game";
 import type {PlayerData, SavedGame} from "./types";
+import {parseDraftCheckpointRevision} from "../play/draftCheckpointRevision";
 
 /** Defines the max saved guesses value. */
 const MAX_SAVED_GUESSES = 6;
@@ -142,9 +143,12 @@ export const parseSavedGame = (value: unknown): SavedGame | null => {
       isCorrect: outcome.isCorrect,
     };
   }
+  /** Malformed optional ordering does not discard valid saved progress. */
+  const draftRevision = parseDraftCheckpointRevision(value.draftRevision);
   return {
     schemaVersion: 1,
     savedAt: value.savedAt as number,
+    ...(draftRevision ? {draftRevision} : {}),
     riddleId: value.riddleId,
     sessionToken: value.sessionToken,
     gameMode: value.gameMode,

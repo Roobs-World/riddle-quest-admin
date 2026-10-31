@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0-dev.20261022-review-final",
+  "archive": "/home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-amendments-2026-10-22/riddle-quest-review-final.zip",
+  "archiveBytes": 2876588,
+  "sha256": "e724f5e3e9c58ba1d82d95b2a172d64fdd5e15ff03fd023b029db11ef97cb181",
+  "filesCount": 419,
+  "totalBytes": 4717161,
+  "initialResourceBytes": 576162,
+  "zipMatchesSnapshot": true,
+  "checkedAt": "2026-10-22T01:22:40.674412+00:00",
+  "versionId": "01a1612e-d6e3-722d-b9a3-1df25e9dc43f",
+  "buildStatus": "ready",
+  "buildProcessingError": null,
+  "draftSelected": true,
+  "submitted": false,
+  "approved": false,
+  "isPublished": false,
+  "activeInReviewVersionId": "01a160e4-07d9-7408-936a-bb5f0adc8733",
+  "allArtifactHashesUnchanged": true,
+  "tests": {
+    "portalFreshFull": 3326,
+    "backendTargeted": 273,
+    "compiledBrowserRetained": 75,
+    "compiledBrowserFocused": 17,
+    "targetBuilds": 7,
+    "redditPackageServer": 51
+  },
+  "approvedImages": 23,
+  "backendDeployed": false,
+  "hostedFinalPreviewVerified": true,
+  "blockingCondition": "Browser Use holds review Simulator before document load; launch checks and update submission remain incomplete",
+  "testUrl": "https://jest.com/g/riddle-q?versionId=01a1612e-d6e3-722d-b9a3-1df25e9dc43f"
+}

@@ -1,0 +1,127 @@
+{
+  "recordedAt": "2026-10-24T02:11:17.011491+00:00",
+  "finalOriginalHead": "5c26470ae8c8324af50424702b66aa9a0f6b7d37",
+  "finalSourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+  "finalVersionId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+  "priorTestedVersionId": "01a16b8c-895e-71aa-8205-466517c50aa5",
+  "fileCount": 419,
+  "rawByteIdenticalFiles": 400,
+  "rewrittenOrRenamedFiles": 19,
+  "exactFilenameMapping": {
+    "assets/JestFirebaseAppCheck-CP77GGK-.js": "assets/JestFirebaseAppCheck-begS9Quu.js",
+    "assets/liveChallengePush-BaPmLg2s.js": "assets/liveChallengePush-DX3F1HZ3.js",
+    "assets/firebaseServices-C3C5G9nD.js": "assets/firebaseServices-DVnuQXiQ.js",
+    "assets/fakeServices-DYDd7sOX.js": "assets/fakeServices-BXk0C0YZ.js",
+    "assets/jest-BLhGWk6j.js": "assets/jest-URdvcWgP.js",
+    "assets/firebase-CdAq-6p_.js": "assets/firebase-DhZyJplt.js",
+    "assets/GameModalView-CuUcbymh.js": "assets/GameModalView-wl3Rriz-.js",
+    "assets/FirebasePresenceTransport-CoekscK7.js": "assets/FirebasePresenceTransport-Bi-ZvV10.js",
+    "assets/sentry-DXye3suV.js": "assets/sentry-pHo1bjNa.js",
+    "assets/SolarSystem-axYlFsLk.js": "assets/SolarSystem-sMRNFJ-k.js",
+    "index.html": "index.html",
+    "assets/loadOptionalSkipPreview-BytkYiIi.js": "assets/loadOptionalSkipPreview-CRBrR1RQ.js",
+    "assets/subscriptionCheckout-DrjxFtm6.js": "assets/subscriptionCheckout-CK5ZvPft.js",
+    "assets/firebaseCopy-BFcaBd_w.js": "assets/firebaseCopy-BnwSOueM.js",
+    "assets/index-C22IHid0.js": "assets/index-wY-ReGV4.js",
+    "assets/firebaseLiveRaceSignals-DjjgXSdp.js": "assets/firebaseLiveRaceSignals-BHqNpxjX.js",
+    "assets/prepareIssuedSuccessor-Crous9-0.js": "assets/prepareIssuedSuccessor-Bt6dehkZ.js",
+    "assets/validation-B2z4dznO.js": "assets/validation-B8yKqkVd.js",
+    "assets/RaceTo10Game-Dr1INiUW.js": "assets/RaceTo10Game-BWJ_DXEi.js"
+  },
+  "onlySourceDelta": [
+    "packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs"
+  ],
+  "onlyRuntimeValueDelta": {
+    "previousLiteral": "`riddle-quest@1.0.0-dev.20261024013519.cb9e3356e6ea.97028e0a`",
+    "finalLiteral": "`riddle-quest@1.0.0-dev.20261024020836.27e4f179021a.2588cf21`",
+    "occurrencesEach": 1,
+    "uses": [
+      {
+        "file": "packages/portal/src/firebaseEnvironment.ts",
+        "line": 12,
+        "use": "VITE_SENTRY_RELEASE into sentryRelease configuration"
+      },
+      {
+        "file": "packages/portal/src/observability/sentryEnvironment.ts",
+        "line": 71,
+        "use": "Pass release to optional browser-error reporter initialization"
+      },
+      {
+        "file": "packages/portal/src/observability/sentry.ts",
+        "line": 52,
+        "use": "Sentry.init release metadata; no gameplay/entitlement/control-flow use"
+      }
+    ]
+  },
+  "allOtherGameBytesEqualAfterExactKnownReplacements": true,
+  "allReviewedDeployedBackendRuntimeFilesStillByteIdentical": true,
+  "backendCompiledRuntimeSha256": "55ea3cc5e5af6dffe09331289be65ffe47d60c209cebe34bbcb2d58c5bb51abc",
+  "priorFunctionalEvidenceExplicitlyCarried": [
+    {
+      "receipt": "artifacts/goal-completion-2026-10-24/riddle/final/route-matrix-status.json",
+      "receiptSha256": "f7c717a21f95b63cd82f2d3cb9707d2e15d1bfc97abefd818f0351e2ab1393eb",
+      "executedAgainstVersionId": "01a16b8c-895e-71aa-8205-466517c50aa5",
+      "executionSourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+      "counts": {
+        "numPassedTestSuites": 1,
+        "numFailedTestSuites": 0,
+        "numPassedTests": 3,
+        "numFailedTests": 0,
+        "numPendingTests": 0
+      },
+      "newExecutionForFinalArtifact": false,
+      "carryReason": "All game bytes equivalent after the exact known reporting release tag and corresponding import filename changes; only verification-script source changed."
+    }
+  ],
+  "freshFinalArtifactChecks": "Provider CDN identity and local startup/asset/keyboard checks are separate current-artifact executions.",
+  "platformBoundaryScope": "Provider SDK mocked in local browser suites; backend transactions use demo emulators; no claim of real checkout, callbacks, or subscription freshness.",
+  "unpackedBytes": 4718560,
+  "releaseBudgetBytes": 4718592,
+  "headroomBytes": 32,
+  "freshFinalArtifactEvidence": [
+    {
+      "file": "artifacts/goal-completion-2026-10-24/riddle/final-5c26470ae/jest-provider-content-hashes.json",
+      "sha256": "41aa9b67c8ec43cc5639ddd49c38b27ec5f8fe5153446ce9e10f6c732322a662",
+      "versionId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+      "result": "419/419 provider-served file hashes match uploaded ZIP"
+    },
+    {
+      "file": "artifacts/goal-completion-2026-10-24/riddle/final-5c26470ae/uploaded-asset-browser-results.json",
+      "sha256": "33240ad5e6016ec371a01b6b18a6c0fb6191ab0ed4e63ab545250435ee819ba9",
+      "versionId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+      "result": "Three fresh viewports: startup, real coin/visible-image decoding, keyboard input, zero page errors/404s"
+    }
+  ],
+  "freshFinalArtifactEvidenceRecordedAt": "2026-10-24T02:19:39.590643+00:00",
+  "priorBaselineBrowserEvidence": {
+    "receipt": "artifacts/goal-completion-2026-10-24/riddle/final/browser-acceptance-status.json",
+    "receiptSha256": "1052208e6ff07f64cb28adc779a83e554853c16c0e802eac03d9984b77f4354d",
+    "executedAgainstVersionId": "01a16b8c-895e-71aa-8205-466517c50aa5",
+    "executionSourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
+    "counts": {
+      "numPassedTestSuites": 8,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 79,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    },
+    "newExecutionForFinalArtifact": false,
+    "carryReason": "All game bytes equivalent after the exact known reporting release tag and corresponding import filename changes; only verification-script source changed.",
+    "subsequentlySupersededByFreshFinalArtifactRun": true
+  },
+  "freshFinalArtifactBehaviorEvidence": {
+    "receipt": "artifacts/goal-completion-2026-10-24/riddle/final-5c26470ae/browser-acceptance-status.json",
+    "receiptSha256": "866cf3b8ed96ae27c3c03d0a0a224f206b4d6e6416c955c7286808295a3118de",
+    "executedAgainstVersionId": "01a16bab-1ab2-769f-9640-062af485a1ef",
+    "executionSourceDigest": "8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e",
+    "counts": {
+      "numPassedTestSuites": 8,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 79,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    },
+    "actualNewExecutionForFinalArtifact": true
+  },
+  "updatedAt": "2026-10-24T02:30:32.971062+00:00"
+}

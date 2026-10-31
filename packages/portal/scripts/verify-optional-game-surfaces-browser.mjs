@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const reactMode=process.env.OPTIONAL_SURFACES_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
 const baseline=process.env.OPTIONAL_SURFACES_BASELINE_DIR;
-const output=path.resolve(process.env.OPTIONAL_SURFACES_REPORT_DIR??path.join(root,'../../artifacts/game-optional-surfaces-2026-10-03',reactMode));
+const output=path.resolve(process.env.OPTIONAL_SURFACES_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-optional-surfaces-2026-10-03',reactMode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/optional-surfaces-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

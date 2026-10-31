@@ -1,0 +1,11 @@
+Start 13: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --config firebase.race-verification.json --only firestore,database --project demo-riddle-quest-multiplayer pnpm exec jest --config jest.race-coverage.config.js --runInBand
+passed 13: pnpm exec jest --config jest.race-coverage.config.js --runInBand
+Start 31: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts
+passed 31: --testPathPatterns=raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts
+Start 70: env GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIRESTORE_EMULATOR_HOST=127.0.0.1:18199 PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec jest --runInBand --testPathPatterns=raceCallables.test.ts
+passed 70: --testPathPatterns=raceCallables.test.ts
+Start 154: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --only firestore --project demo-riddle-quest-live-seat-browser node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs
+passed 154: node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs
+Start 180: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/home/craig-beswetherick/android-studio/jbr/bin:/usr/local/bin:/usr/bin:/bin GCLOUD_PROJECT=demo-riddle-quest-multiplayer FIREBASE_PROJECT_ID=demo-riddle-quest-multiplayer OPENAI_API_KEY=test-openai-api-key pnpm --dir firebase-functions test:race:coverage
+passed 180: test:race:coverage
+{"selected":5,"completed":5,"failed":[],"sourceStillMatches":true,"report":"artifacts/development-checks/goal-20261024-backend-final5c-backend/report.json"}
