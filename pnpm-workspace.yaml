@@ -56,6 +56,8 @@ overrides:
   puppeteer-core: "25.16.0"
   protobufjs: "7.6.5"
   qs: "6.16.0"
+  # GHSA-gg6h-894w-4m9c: quadratic-time ReDoS in re2js below 2.8.7 (via @firebase/firestore).
+  re2js: "2.9.1"
   source-map-js: "1.2.2"
   "minimatch@3>brace-expansion": "1.1.21"
   "minimatch@8>brace-expansion": "2.1.7"
