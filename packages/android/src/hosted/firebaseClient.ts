@@ -6,9 +6,11 @@ import {
   initializeAuth,
   onAuthStateChanged,
   signInAnonymously,
+  signOut as firebaseSignOut,
   type Auth,
   type User,
 } from "firebase/auth";
+import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} from "firebase/firestore/lite";
 import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
 import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@qwordly/hosted";
 import type {HostedConfig} from "./hostedConfig";
@@ -35,6 +37,10 @@ export type HostedFirebaseClient = Readonly<{
   onUserChanged(listener: (user: User | null) => void): () => void;
   /** Signs in anonymously, reusing the persisted session when one exists. */
   signInAnonymously(): Promise<User>;
+  /** Signs the device out. */
+  signOut(): Promise<void>;
+  /** Reads the authoritative account document, or `null` when absent. */
+  loadUserDocument(userId: string): Promise<Record<string, unknown> | null>;
   /** Creates or confirms the Global Game Account for the signed-in user. */
   provisionAccount(): Promise<ProvisionedAccount>;
 }>;
@@ -68,13 +74,19 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
   const accountFunctions: Functions = getFunctions(app, config.firebase.functionsRegion);
   /** Solo gameplay callables, kept separate so the region can differ. */
   const gameplayFunctions: Functions = getFunctions(app, config.firebase.gameplayRegion);
+  /** Account document reads use the lightweight REST Firestore client. */
+  const firestore: Firestore = getFirestore(app);
   if (config.emulators) {
     connectAuthEmulator(auth, `http://${config.emulators.host}:${config.emulators.authPort}`, {disableWarnings: true});
     connectFunctionsEmulator(accountFunctions, config.emulators.host, config.emulators.functionsPort);
     connectFunctionsEmulator(gameplayFunctions, config.emulators.host, config.emulators.functionsPort);
+    connectFirestoreEmulator(firestore, config.emulators.host, config.emulators.firestorePort);
   }
   /** Shared typed callable surface; multiplayer runs beside solo gameplay. */
-  const gameFunctions = createGameFunctionsClient({account: accountFunctions, gameplay: gameplayFunctions, race: gameplayFunctions});
+  const gameFunctions = createGameFunctionsClient(
+    {account: accountFunctions, gameplay: gameplayFunctions, race: gameplayFunctions},
+    {contentProtection: false},
+  );
   /** Android-only account provisioning. */
   const androidFunctions = createAndroidAccountFunctions(gameplayFunctions);
   return {
@@ -87,6 +99,14 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
     async signInAnonymously() {
       if (auth.currentUser) return auth.currentUser;
       return (await signInAnonymously(auth)).user;
+    },
+    /** Signs out through the SDK; the next launch provisions a fresh anonymous account. */
+    signOut: () => firebaseSignOut(auth),
+    /** Reads the account document the backend maintains. */
+    async loadUserDocument(userId) {
+      /** Document snapshot. */
+      const snapshot = await getDoc(doc(firestore, "users", userId));
+      return snapshot.exists() ? snapshot.data() : null;
     },
     /** Provisions the account and validates the response shape. */
     async provisionAccount() {

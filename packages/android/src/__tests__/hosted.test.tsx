@@ -56,6 +56,20 @@ jest.mock("firebase/auth", () => ({
     return {user: mockUser};
   },
 }));
+jest.mock("firebase/firestore/lite", () => ({
+  getFirestore: () => {
+    mockCalls.push("getFirestore");
+    return "firestore";
+  },
+  connectFirestoreEmulator: (_db: unknown, host: string, port: number) => {
+    mockCalls.push(`connectFirestoreEmulator:${host}:${port}`);
+  },
+  doc: (_db: unknown, collection: string, id: string) => `${collection}/${id}`,
+  getDoc: async (path: string) => ({
+    exists: () => path === "users/device-uid",
+    data: () => ({coins: 300, username: "Android test"}),
+  }),
+}));
 jest.mock("firebase/functions", () => ({
   // The fake Functions handle is its region string, which keeps the mock free of object literals.
   getFunctions: (_app: unknown, region: string) => {
@@ -89,7 +103,10 @@ const productionConfig: HostedConfig = parseHostedConfig({
   emulators: null,
 });
 /** Emulator-targeting configuration. */
-const emulatorConfig: HostedConfig = {...productionConfig, emulators: {host: "10.0.2.2", authPort: 9099, functionsPort: 5001}};
+const emulatorConfig: HostedConfig = {
+  ...productionConfig,
+  emulators: {host: "10.0.2.2", authPort: 9099, functionsPort: 5001, firestorePort: 8099},
+};
 
 describe("parseHostedConfig", () => {
   it("accepts the bundled example configuration", () => {
@@ -99,10 +116,10 @@ describe("parseHostedConfig", () => {
   it("rejects missing Firebase fields and malformed emulator blocks", () => {
     expect(() => parseHostedConfig(null)).toThrow("hosted-config-invalid");
     expect(() => parseHostedConfig({firebase: {apiKey: "k"}})).toThrow("hosted-config-firebase-invalid");
-    expect(() => parseHostedConfig({firebase: productionConfig.firebase, emulators: {host: "", authPort: 1, functionsPort: 2}})).toThrow(
+    expect(() => parseHostedConfig({firebase: productionConfig.firebase, emulators: {host: "", authPort: 1, functionsPort: 2, firestorePort: 3}})).toThrow(
       "hosted-config-emulators-invalid",
     );
-    expect(() => parseHostedConfig({firebase: productionConfig.firebase, emulators: {host: "h", authPort: 70_000, functionsPort: 2}})).toThrow(
+    expect(() => parseHostedConfig({firebase: productionConfig.firebase, emulators: {host: "h", authPort: 70_000, functionsPort: 2, firestorePort: 3}})).toThrow(
       "hosted-config-emulators-invalid",
     );
   });
@@ -138,6 +155,7 @@ describe("createHostedFirebaseClient", () => {
       "connectAuthEmulator:http://10.0.2.2:9099",
       "connectFunctionsEmulator:us-central1:10.0.2.2:5001",
       "connectFunctionsEmulator:europe-west1:10.0.2.2:5001",
+      "connectFirestoreEmulator:10.0.2.2:8099",
     ]));
   });
 
@@ -148,6 +166,13 @@ describe("createHostedFirebaseClient", () => {
     await expect(client.signInAnonymously()).resolves.toBe(mockUser);
     expect(mockCalls.filter((call) => call === "signInAnonymously")).toHaveLength(1);
     expect(client.currentUser()).toBe(mockUser);
+  });
+
+  it("reads the account document through the lightweight Firestore client", async () => {
+    /** Client under test. */
+    const client = createHostedFirebaseClient(productionConfig);
+    await expect(client.loadUserDocument("device-uid")).resolves.toEqual({coins: 300, username: "Android test"});
+    await expect(client.loadUserDocument("missing")).resolves.toBeNull();
   });
 
   it("validates the provisioning response shape", async () => {

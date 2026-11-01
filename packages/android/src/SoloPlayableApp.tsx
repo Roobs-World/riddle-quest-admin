@@ -2,7 +2,9 @@ import {youtubeText, type YouTubeContentSource, type YouTubeCopyKey, type YouTub
 import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "@qwordly/solo/react";
 import {useRef, useState} from "react";
 import type {AnswerEditor} from "./screens/AnswerInput";
+import type {HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
 import type {HostedFirebaseClient} from "./hosted/firebaseClient";
+import {HostedGameScreen} from "./screens/HostedGameScreen";
 import {AccountScreen} from "./screens/AccountScreen";
 import {FailureScreen, LoadingScreen, ResetScreen} from "./screens/BootScreens";
 import {GameScreen} from "./screens/GameScreen";
@@ -17,6 +19,8 @@ export type SoloPlayableAppProps = Readonly<{
   contentSource: YouTubeContentSource;
   /** Hosted Firebase client for the account surface; absent in self-contained tests. */
   hosted?: HostedFirebaseClient;
+  /** Shared hosted play services; absent in self-contained tests. */
+  hostedServices?: HostServices;
 }>;
 /**
  * Native counterpart of the web `YouTubePlayableApp`.
@@ -25,7 +29,7 @@ export type SoloPlayableAppProps = Readonly<{
  * Boot, recovery, and gameplay transitions come from the shared controllers in
  * `@qwordly/solo/react`; this component only maps their state to native screens.
  */
-export function SoloPlayableApp({sdk, contentSource, hosted}: SoloPlayableAppProps) {
+export function SoloPlayableApp({sdk, contentSource, hosted, hostedServices}: SoloPlayableAppProps) {
   /** Shared boot controller. */
   const {state: boot, platformPaused, retry, setResetConfirmation, resetSave} = useYouTubePlayableBoot(sdk, contentSource);
   if (boot.kind === "loading") return <LoadingScreen paused={platformPaused} />;
@@ -53,7 +57,7 @@ export function SoloPlayableApp({sdk, contentSource, hosted}: SoloPlayableAppPro
       />
     );
   }
-  return <ReadySoloApp runtime={boot.runtime} sdk={sdk} hosted={hosted} />;
+  return <ReadySoloApp runtime={boot.runtime} sdk={sdk} hosted={hosted} hostedServices={hostedServices} />;
 }
 /** Props for {@link ReadySoloApp}. */
 type ReadySoloAppProps = Readonly<{
@@ -63,13 +67,20 @@ type ReadySoloAppProps = Readonly<{
   sdk: YouTubeSdkPort;
   /** Hosted Firebase client, when the account surface is available. */
   hosted?: HostedFirebaseClient;
+  /** Shared hosted play services, when hosted play is available. */
+  hostedServices?: HostServices;
 }>;
-/** Routes the ready session between result, gameplay, progress, account, and menu screens. */
-function ReadySoloApp({runtime, sdk, hosted}: ReadySoloAppProps) {
+/** Secondary screens reachable while no local puzzle is active. */
+type ReadyScreen = "menu" | "progress" | "account" | {
+  /** Server-authoritative play. */
+  hosted: WebGameMode;
+};
+/** Routes the ready session between result, gameplay, progress, account, hosted play, and menu screens. */
+function ReadySoloApp({runtime, sdk, hosted, hostedServices}: ReadySoloAppProps) {
   /** Locale, content, and authority prepared by boot. */
   const {locale, content, authority} = runtime;
   /** Secondary screen selection while no puzzle is active. */
-  const [screen, setScreen] = useState<"menu" | "progress" | "account">("menu");
+  const [screen, setScreen] = useState<ReadyScreen>("menu");
   /** Native answer editor. */
   const inputRef = useRef<AnswerEditor | null>(null);
   /** Shared ready-session controller. */
@@ -99,8 +110,17 @@ function ReadySoloApp({runtime, sdk, hosted}: ReadySoloAppProps) {
       />
     );
   }
+  if (typeof screen === "object" && hostedServices) {
+    return <HostedGameScreen services={hostedServices} mode={screen.hosted} locale={locale} onBack={() => setScreen("account")} />;
+  }
   if (screen === "account" && hosted) {
-    return <AccountScreen client={hosted} onBack={() => setScreen("menu")} />;
+    return (
+      <AccountScreen
+        client={hosted}
+        onBack={() => setScreen("menu")}
+        onPlay={hostedServices ? (mode) => setScreen({hosted: mode}) : undefined}
+      />
+    );
   }
   if (screen === "progress") {
     return (

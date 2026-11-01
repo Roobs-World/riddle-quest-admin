@@ -48,15 +48,29 @@ export const DEFAULT_ACCOUNT_REGION = "us-central1";
 /** Answer and hint delivery opts into encryption; older backend responses remain readable. */
 const protectedEndpoints = new Set(["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
   "getHint", "skipRiddle", "startRaceRun", "readyRaceRun", "submitRaceGuess", "requestRaceHint", "skipRaceRiddle", "resumeRaceRun"]);
-/** Keeps the SDK result contract while decoding only opted-in gameplay transports. */
-function httpsCallable<Input = unknown, Output = unknown>(functions: Parameters<typeof rawHttpsCallable>[0], name: string) {
-  /** SDK operation bound to its target region. */
-  const call = rawHttpsCallable<Input, Output>(functions, name);
-  if (!protectedEndpoints.has(name)) return call;
-  return async (input?: Input) => {
-    /** Encrypted response from a supporting backend, or a legacy plaintext response. */
-    const result = await call({...input, contentProtection: 1} as Input);
-    return {...result, data: await readProtectedContent(result.data) as Output};
+/** Host choices for how the client talks to the backend. */
+export type GameFunctionsOptions = Readonly<{
+  /**
+   * Whether answer-bearing responses are requested as AES-GCM envelopes decoded with Web Crypto.
+   * Browser hosts keep this on to deter casual inspection; a native app whose bundle already
+   * holds the decoding key turns it off, which also avoids requiring `crypto.subtle` at runtime.
+   */
+  contentProtection?: boolean;
+}>;
+/** Builds the callable wrapper for one host's protection choice. */
+function createCallableFactory(options: GameFunctionsOptions) {
+  /** Whether protected endpoints negotiate encrypted transport. */
+  const protect = options.contentProtection ?? true;
+  /** Keeps the SDK result contract while decoding only opted-in gameplay transports. */
+  return function httpsCallable<Input = unknown, Output = unknown>(functions: Parameters<typeof rawHttpsCallable>[0], name: string) {
+    /** SDK operation bound to its target region. */
+    const call = rawHttpsCallable<Input, Output>(functions, name);
+    if (!protect || !protectedEndpoints.has(name)) return call;
+    return async (input?: Input) => {
+      /** Encrypted response from a supporting backend, or a legacy plaintext response. */
+      const result = await call({...input, contentProtection: 1} as Input);
+      return {...result, data: await readProtectedContent(result.data) as Output};
+    };
   };
 }
 
@@ -181,7 +195,9 @@ export type ProvisionAndroidAccountOutput = {
  * Hosts own Firebase app initialization, auth persistence, App Check, and emulator
  * wiring; this factory only binds callables to the regions a host prepared.
  */
-export function createGameFunctionsClient(regions: GameFunctionRegions) {
+export function createGameFunctionsClient(regions: GameFunctionRegions, options: GameFunctionsOptions = {}) {
+  /** Callable wrapper honouring the host's protection choice. */
+  const httpsCallable = createCallableFactory(options);
   /** Creates a server-authorized Stripe Checkout Session for Yahoo. */
   const createYahooStripeCheckout = httpsCallable<
     {
@@ -570,6 +586,8 @@ export type GameFunctionsClient = ReturnType<typeof createGameFunctionsClient>;
 
 /** Callables only the Android app binds; web targets never declare them. */
 export function createAndroidAccountFunctions(gameplay: Functions) {
+  /** Android never negotiates encrypted transport. */
+  const httpsCallable = createCallableFactory({contentProtection: false});
   /** Creates the Global Game Account for an Android Firebase identity. */
   const provisionAndroidAccount = httpsCallable<Record<string, never> | undefined, ProvisionAndroidAccountOutput>(
     gameplay,

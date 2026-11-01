@@ -60,6 +60,14 @@ describe("createGameFunctionsClient", () => {
     expect(mockInputs.at(-1)).toEqual({username: "name"});
   });
 
+  it("skips protection negotiation when the host opts out", async () => {
+    /** Native-style client. */
+    const client = createGameFunctionsClient(regions, {contentProtection: false});
+    mockResponse = {challenge: {questions: [], totalQuestions: 0}};
+    await client.getClassicRiddleBuffer({locale: "en"});
+    expect(mockInputs.at(-1)).toEqual({locale: "en"});
+  });
+
   it("passes plaintext protected responses through unchanged", async () => {
     /** Client under test. */
     const client = createGameFunctionsClient(regions);

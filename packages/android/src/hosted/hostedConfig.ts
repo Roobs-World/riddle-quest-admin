@@ -24,6 +24,8 @@ export type HostedEmulatorConfig = Readonly<{
   authPort: number;
   /** Functions emulator port. */
   functionsPort: number;
+  /** Firestore emulator port. */
+  firestorePort: number;
 }>;
 /** Machine-local hosted configuration shape. */
 export type HostedConfig = Readonly<{
@@ -64,7 +66,7 @@ export function parseHostedConfig(value: unknown): HostedConfig {
   }
   /** Untrusted emulator block. */
   const emulators = document.emulators ?? null;
-  if (emulators !== null && (!isText(emulators.host) || !isPort(emulators.authPort) || !isPort(emulators.functionsPort))) {
+  if (emulators !== null && (!isText(emulators.host) || !isPort(emulators.authPort) || !isPort(emulators.functionsPort) || !isPort(emulators.firestorePort))) {
     throw new Error("hosted-config-emulators-invalid");
   }
   return {
@@ -78,7 +80,12 @@ export function parseHostedConfig(value: unknown): HostedConfig {
       gameplayRegion: firebase.gameplayRegion,
     },
     emulators: emulators
-      ? {host: emulators.host as string, authPort: emulators.authPort as number, functionsPort: emulators.functionsPort as number}
+      ? {
+          host: emulators.host as string,
+          authPort: emulators.authPort as number,
+          functionsPort: emulators.functionsPort as number,
+          firestorePort: emulators.firestorePort as number,
+        }
       : null,
   };
 }

@@ -9,13 +9,15 @@ export type AccountScreenProps = Readonly<{
   client: HostedFirebaseClient;
   /** Returns to the menu. */
   onBack: () => void;
+  /** Starts server-authoritative play in a mode; absent while hosted play is unavailable. */
+  onPlay?: (mode: "classic" | "challenge") => void;
 }>;
 /**
  * Phase 1 account surface: signs the device in anonymously and shows the
  * server-confirmed Global Game Account. Copy is English-only until the hosted
  * screens adopt the shared locale tables in Phase 1.5.
  */
-export function AccountScreen({client, onBack}: AccountScreenProps) {
+export function AccountScreen({client, onBack, onPlay}: AccountScreenProps) {
   /** Account controller. */
   const {state, connect} = useHostedAccount(client);
   return (
@@ -49,6 +51,12 @@ export function AccountScreen({client, onBack}: AccountScreenProps) {
               <Text style={styles.cellLabel}>Player id</Text>
               <Text style={styles.cellMono}>{state.account.uid}</Text>
             </View>
+            {onPlay && (
+              <View style={styles.stack}>
+                <ActionButton tone="primary" label="Play Classic on the server" onPress={() => onPlay("classic")} testID="hosted-play-classic" />
+                <ActionButton label="Play today's Daily on the server" onPress={() => onPlay("challenge")} testID="hosted-play-daily" />
+              </View>
+            )}
           </View>
         )}
       </Panel>

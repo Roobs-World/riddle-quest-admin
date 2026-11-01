@@ -227,6 +227,33 @@ describe("Android app on device", () => {
     assert.equal(await driver.readText("account-status"), "Account confirmed.");
   });
 
+  it("plays a server-issued Classic riddle through the shared hosted services against the emulators", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with seeded Firebase emulators running"}, async () => {
+    const driver = scenario("hosted-classic");
+    await freshMenu(driver);
+    await driver.tapId("show-account");
+    await driver.tapId("account-connect");
+    await driver.waitForId("account-ready", 60_000);
+    await driver.tapId("hosted-play-classic");
+    await driver.waitForId("screen-hosted-game", 60_000);
+    const riddle = await driver.readText("hosted-riddle-text");
+    driver.capture("hosted-classic-riddle");
+    await driver.waitFor("server coins", (node) => node.label === `Coins: ${STARTING_COINS}`);
+    // The emulator seed issues the bundled pack's playable riddles in order, so index 1 is the first of them.
+    const seeded = answers.classic.filter((answer) => /^[a-z]{1,7}$/u.test(answer));
+    await driver.typeAnswer(seeded[0]);
+    await driver.tapId("hosted-submit");
+    assert.equal(await driver.readText("hosted-result-heading"), "Solved!");
+    driver.capture("hosted-classic-solved");
+    const earned = await driver.readText("hosted-result-coins");
+    assert.match(earned, /Coins earned: [1-9]\d*$/u);
+    await driver.tapId("hosted-next");
+    await driver.waitForId("screen-hosted-game", 60_000);
+    assert.notEqual(await driver.readText("hosted-riddle-text"), riddle, "the next server-issued riddle differs");
+    const coins = await driver.waitFor("updated server coins", (node) => /^Coins: \d+$/u.test(node.label ?? "") && node.label !== `Coins: ${STARTING_COINS}`);
+    assert.ok(Number(/\d+/u.exec(coins.label)[0]) > STARTING_COINS, "the confirmed balance grew after the win");
+    driver.capture("hosted-classic-next");
+  });
+
   it("restores an interrupted puzzle with its scored guesses after backgrounding and a process kill", async () => {
     const driver = scenario("interrupted-puzzle");
     await freshMenu(driver);
