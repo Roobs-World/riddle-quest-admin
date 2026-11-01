@@ -120,13 +120,16 @@ describe("createHostedFirebaseClient", () => {
     const client = createHostedFirebaseClient(productionConfig);
     expect(client.projectId).toBe("riddle-quest-test");
     expect(client.usingEmulators).toBe(false);
-    expect(mockCalls).toEqual([
+    expect(mockCalls.slice(0, 4)).toEqual([
       "initializeApp:riddle-quest-test",
       "initializeAuth:rn-persistence",
       "getFunctions:us-central1",
       "getFunctions:europe-west1",
-      "httpsCallable:europe-west1:provisionAndroidAccount",
     ]);
+    expect(mockCalls).toContain("httpsCallable:europe-west1:provisionAndroidAccount");
+    expect(mockCalls).toContain("httpsCallable:europe-west1:getClassicRiddleBuffer");
+    expect(mockCalls).toContain("httpsCallable:us-central1:updateUsername");
+    expect(client.functions.completeGame).toBe(mockCallable);
   });
 
   it("targets the emulators only when configured", () => {

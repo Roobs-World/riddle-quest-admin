@@ -7,6 +7,7 @@ const root = process.cwd();
 const scanRoots = [
   "packages/core/src",
   "packages/solo/src",
+  "packages/hosted/src",
   "packages/android/src",
   "packages/portal/src",
   "packages/reddit-app/src",

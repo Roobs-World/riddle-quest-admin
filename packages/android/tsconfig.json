@@ -20,6 +20,8 @@
       "#hosted-config": ["./hosted.config.example.json"],
       "@qwordly/core": ["../core/src/index.ts"],
       "@qwordly/core/game": ["../core/src/game/index.ts"],
+      "@qwordly/core/*": ["../core/src/*"],
+      "@qwordly/hosted": ["../hosted/src/index.ts"],
       "@qwordly/solo": ["../solo/src/index.ts"],
       "@qwordly/solo/react": ["../solo/src/react/index.ts"]
     }

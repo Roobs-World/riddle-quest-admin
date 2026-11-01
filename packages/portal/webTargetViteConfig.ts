@@ -692,6 +692,7 @@ export function createWebTargetViteConfig({
         "@qwordly/core/referrals": fileURLToPath(new URL("../core/src/referrals/index.ts", import.meta.url)),
         "@qwordly/core/validation": fileURLToPath(new URL("../core/src/validation/index.ts", import.meta.url)),
         "@qwordly/core/contentProtection": fileURLToPath(new URL("../core/src/contentProtection.ts", import.meta.url)),
+        "@qwordly/hosted": fileURLToPath(new URL("../hosted/src/index.ts", import.meta.url)),
         "@qwordly/solo/react": fileURLToPath(new URL("../solo/src/react/index.ts", import.meta.url)),
         "@qwordly/solo": fileURLToPath(new URL("../solo/src/index.ts", import.meta.url)),
         "@qwordly/core/game": fileURLToPath(new URL("../core/src/game/index.ts", import.meta.url)),

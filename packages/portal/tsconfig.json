@@ -34,6 +34,7 @@
       "@qwordly/core/referrals": ["../core/src/referrals/index.ts"],
       "@qwordly/core/validation": ["../core/src/validation/index.ts"],
       "@qwordly/core/validation/*": ["../core/src/validation/*"],
+      "@qwordly/hosted": ["../hosted/src/index.ts"],
       "@qwordly/solo": ["../solo/src/index.ts"],
       "@qwordly/solo/react": ["../solo/src/react/index.ts"]
     },

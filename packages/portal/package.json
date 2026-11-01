@@ -243,6 +243,7 @@
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",
+    "@qwordly/hosted": "workspace:*",
     "@qwordly/solo": "workspace:*",
     "@sentry/browser": "^11.1.0",
     "firebase": "^12.19.0",

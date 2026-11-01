@@ -8,6 +8,7 @@ module.exports = {
     "^#hosted-config$": "<rootDir>/hosted.config.example.json",
     "^@qwordly/core$": "<rootDir>/../core/src/index.ts",
     "^@qwordly/core/(.*)$": "<rootDir>/../core/src/$1",
+    "^@qwordly/hosted$": "<rootDir>/../hosted/src/index.ts",
     "^@qwordly/solo$": "<rootDir>/../solo/src/index.ts",
     "^@qwordly/solo/react$": "<rootDir>/../solo/src/react/index.ts",
   },

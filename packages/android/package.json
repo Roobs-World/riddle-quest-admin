@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@qwordly/core": "workspace:*",
+    "@qwordly/hosted": "workspace:*",
     "@qwordly/solo": "workspace:*",
     "@react-native-async-storage/async-storage": "3.1.1",
     "firebase": "^12.19.0",

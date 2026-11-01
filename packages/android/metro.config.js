@@ -11,6 +11,7 @@ const repositoryRoot = path.resolve(__dirname, "../..");
  */
 const workspaceSources = {
   "#solo-content": path.join(repositoryRoot, "packages/portal/src/playable/generated/youtube-content-v1.json"),
+  "@qwordly/hosted": path.join(repositoryRoot, "packages/hosted/src/index.ts"),
   "@qwordly/solo/react": path.join(repositoryRoot, "packages/solo/src/react/index.ts"),
   "@qwordly/solo": path.join(repositoryRoot, "packages/solo/src/index.ts"),
   "@qwordly/core/game": path.join(repositoryRoot, "packages/core/src/game/index.ts"),

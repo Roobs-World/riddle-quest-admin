@@ -9,7 +9,8 @@ import {
   type Auth,
   type User,
 } from "firebase/auth";
-import {connectFunctionsEmulator, getFunctions, httpsCallable, type Functions} from "firebase/functions";
+import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
+import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@qwordly/hosted";
 import type {HostedConfig} from "./hostedConfig";
 /** Response of the backend `provisionAndroidAccount` callable. */
 export type ProvisionedAccount = Readonly<{
@@ -26,6 +27,8 @@ export type HostedFirebaseClient = Readonly<{
   projectId: string;
   /** Whether calls go to local emulators. */
   usingEmulators: boolean;
+  /** Typed game backend callables bound to this client's regions. */
+  functions: GameFunctionsClient;
   /** Current Firebase user or `null`. */
   currentUser(): User | null;
   /** Subscribes to sign-in changes. */
@@ -70,11 +73,14 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
     connectFunctionsEmulator(accountFunctions, config.emulators.host, config.emulators.functionsPort);
     connectFunctionsEmulator(gameplayFunctions, config.emulators.host, config.emulators.functionsPort);
   }
-  /** Account provisioning callable; it runs beside the gameplay region. */
-  const provision = httpsCallable<undefined, unknown>(gameplayFunctions, "provisionAndroidAccount");
+  /** Shared typed callable surface; multiplayer runs beside solo gameplay. */
+  const gameFunctions = createGameFunctionsClient({account: accountFunctions, gameplay: gameplayFunctions, race: gameplayFunctions});
+  /** Android-only account provisioning. */
+  const androidFunctions = createAndroidAccountFunctions(gameplayFunctions);
   return {
     projectId: config.firebase.projectId,
     usingEmulators: config.emulators !== null,
+    functions: gameFunctions,
     currentUser: () => auth.currentUser,
     onUserChanged: (listener) => onAuthStateChanged(auth, listener),
     /** Reuses the persisted anonymous session before creating a new one. */
@@ -85,7 +91,7 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
     /** Provisions the account and validates the response shape. */
     async provisionAccount() {
       /** Raw callable response. */
-      const {data} = await provision();
+      const {data} = await androidFunctions.provisionAndroidAccount();
       if (!isProvisionedAccount(data)) throw new Error("provision-response-invalid");
       return data;
     },
