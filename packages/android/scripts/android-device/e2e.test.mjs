@@ -206,6 +206,27 @@ describe("Android app on device", () => {
     assert.equal(driver.isEnabled(await driver.waitForId("hint")), true);
   });
 
+  it("signs in anonymously and provisions a hosted account against the Firebase emulators", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with the Firebase emulators running"}, async () => {
+    const driver = scenario("hosted-account");
+    await freshMenu(driver);
+    await driver.tapId("show-account");
+    await driver.waitForId("account-heading");
+    driver.capture("account");
+    await driver.tapId("account-connect");
+    await driver.waitForId("account-ready", 60_000);
+    driver.capture("account-ready");
+    assert.equal(await driver.readText("account-status"), "Account created.");
+    const coins = await driver.waitFor("server coins", (node) => /^Server coins: \d+$/u.test(node.label ?? ""));
+    assert.equal(coins.label, "Server coins: 300");
+    driver.stop();
+    driver.launch();
+    await driver.waitForId("menu-heading");
+    await driver.tapId("show-account");
+    await driver.tapId("account-connect");
+    await driver.waitForId("account-ready", 60_000);
+    assert.equal(await driver.readText("account-status"), "Account confirmed.");
+  });
+
   it("restores an interrupted puzzle with its scored guesses after backgrounding and a process kill", async () => {
     const driver = scenario("interrupted-puzzle");
     await freshMenu(driver);

@@ -23,11 +23,17 @@ const workspaceSources = {
  *
  * @type {import('@react-native/metro-config').MetroConfig}
  */
+/** Optional machine-local hosted configuration (gitignored); the example ships production defaults. */
+const hostedConfigPath = ["hosted.config.json", "hosted.config.example.json"]
+  .map((name) => path.join(__dirname, name))
+  .find((candidate) => require("node:fs").existsSync(candidate));
+
 const config = {
   watchFolders: [repositoryRoot],
   resolver: {
     nodeModulesPaths: [path.join(__dirname, "node_modules"), path.join(repositoryRoot, "node_modules")],
     resolveRequest: (context, moduleName, platform) => {
+      if (moduleName === "#hosted-config") return {type: "sourceFile", filePath: hostedConfigPath};
       /** Shared workspace module mapped to its TypeScript source. */
       const filePath = workspaceSources[moduleName];
       if (filePath) return {type: "sourceFile", filePath};

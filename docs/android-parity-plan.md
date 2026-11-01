@@ -6,10 +6,10 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 
 ## Phase 1 — Account and confirmed solo play
 
-- [ ] 1.1 Backend: `provisionAndroidAccount` callable creates the Global Game Account for an authenticated Firebase user whose sign-in provider is `anonymous` (later also `google.com`), idempotently, with the same reserved-username and starting-balance rules as Jest. App Check enforced like every other callable.
+- [x] 1.1 Backend: `provisionAndroidAccount` callable creates the Global Game Account for an authenticated Firebase user whose sign-in provider is `anonymous` (later also `google.com`), idempotently, with the same reserved-username and starting-balance rules as Jest. App Check enforced like every other callable.
 - [ ] 1.2 Shared: move the provider-neutral Firebase client (`packages/portal/src/firebase.ts` callable surface, protected-content decoding, region selection) into `@qwordly/hosted` as a factory taking configuration and an auth persistence strategy; the portal keeps module-level re-exports.
 - [ ] 1.3 Shared: move the `HostServices` contract and the DOM-free hosted play logic (`HostedPlaySession`, checkpoints, journal, attempt recovery, completion presentation ordering) into `@qwordly/hosted`; portal re-exports.
-- [ ] 1.4 Android: Firebase JS SDK with AsyncStorage auth persistence, anonymous sign-in, account provisioning, and an account screen showing the confirmed balance; emulator configuration (`10.0.2.2`) for local verification.
+- [x] 1.4 Android: Firebase JS SDK with AsyncStorage auth persistence, anonymous sign-in, account provisioning, and an account screen showing the confirmed balance; emulator configuration (`10.0.2.2`) for local verification. App Check (1.7) is still required before production calls succeed.
 - [ ] 1.5 Android: native Classic and Daily screens driven by server-issued sessions through the shared hosted play logic, replacing the self-contained solo screens; hints, continue, skip and completion are server-confirmed.
 - [ ] 1.6 Verification: backend unit tests for provisioning; `@qwordly/hosted` tests; adb suite running against the Firebase emulators with a seeded account.
 - Owner prerequisites: Firebase Android app registration (`google-services.json` is not required for the JS SDK but is for Play Integrity), Play Integrity API enabled in Play Console, and an App Check exchange endpoint decision (see 1.7).
@@ -38,4 +38,5 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 
 ## Evidence
 
-Recorded per step as it completes.
+- 2026-11-01, step 1.1: `provisionAndroidAccount` unit tests (6) pass with the backend type check, lint, export audits and the export-list test.
+- 2026-11-01, step 1.4: on the `Medium_Phone` emulator against the local Auth, Functions and Firestore emulators, the release APK signed in anonymously, `provisionAndroidAccount` executed in the Functions emulator, and the Account screen showed "Account created." with 300 server coins; a cold relaunch confirmed the existing account. Scenario: `signs in anonymously and provisions a hosted account` in `packages/android/scripts/android-device/e2e.test.mjs`.

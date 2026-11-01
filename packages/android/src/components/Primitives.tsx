@@ -126,9 +126,10 @@ export function Notice({children, error = false, testID}: NoticeProps) {
       accessibilityLiveRegion={error ? "assertive" : "polite"}
       accessibilityRole="alert"
       style={[styles.notice, error && styles.noticeError]}
-      testID={testID}
     >
-      <Text style={styles.noticeText}>{children}</Text>
+      <Text style={styles.noticeText} testID={testID}>
+        {children}
+      </Text>
     </View>
   );
 }

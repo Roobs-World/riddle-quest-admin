@@ -2,6 +2,8 @@ import {youtubeText, type YouTubeContentSource, type YouTubeCopyKey, type YouTub
 import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "@qwordly/solo/react";
 import {useRef, useState} from "react";
 import type {AnswerEditor} from "./screens/AnswerInput";
+import type {HostedFirebaseClient} from "./hosted/firebaseClient";
+import {AccountScreen} from "./screens/AccountScreen";
 import {FailureScreen, LoadingScreen, ResetScreen} from "./screens/BootScreens";
 import {GameScreen} from "./screens/GameScreen";
 import {MenuScreen} from "./screens/MenuScreen";
@@ -13,6 +15,8 @@ export type SoloPlayableAppProps = Readonly<{
   sdk: YouTubeSdkPort;
   /** Bundled content bound to this app. */
   contentSource: YouTubeContentSource;
+  /** Hosted Firebase client for the account surface; absent in self-contained tests. */
+  hosted?: HostedFirebaseClient;
 }>;
 /**
  * Native counterpart of the web `YouTubePlayableApp`.
@@ -21,7 +25,7 @@ export type SoloPlayableAppProps = Readonly<{
  * Boot, recovery, and gameplay transitions come from the shared controllers in
  * `@qwordly/solo/react`; this component only maps their state to native screens.
  */
-export function SoloPlayableApp({sdk, contentSource}: SoloPlayableAppProps) {
+export function SoloPlayableApp({sdk, contentSource, hosted}: SoloPlayableAppProps) {
   /** Shared boot controller. */
   const {state: boot, platformPaused, retry, setResetConfirmation, resetSave} = useYouTubePlayableBoot(sdk, contentSource);
   if (boot.kind === "loading") return <LoadingScreen paused={platformPaused} />;
@@ -49,7 +53,7 @@ export function SoloPlayableApp({sdk, contentSource}: SoloPlayableAppProps) {
       />
     );
   }
-  return <ReadySoloApp runtime={boot.runtime} sdk={sdk} />;
+  return <ReadySoloApp runtime={boot.runtime} sdk={sdk} hosted={hosted} />;
 }
 /** Props for {@link ReadySoloApp}. */
 type ReadySoloAppProps = Readonly<{
@@ -57,13 +61,15 @@ type ReadySoloAppProps = Readonly<{
   runtime: YouTubeRuntime;
   /** Host services. */
   sdk: YouTubeSdkPort;
+  /** Hosted Firebase client, when the account surface is available. */
+  hosted?: HostedFirebaseClient;
 }>;
-/** Routes the ready session between result, gameplay, progress, and menu screens. */
-function ReadySoloApp({runtime, sdk}: ReadySoloAppProps) {
+/** Routes the ready session between result, gameplay, progress, account, and menu screens. */
+function ReadySoloApp({runtime, sdk, hosted}: ReadySoloAppProps) {
   /** Locale, content, and authority prepared by boot. */
   const {locale, content, authority} = runtime;
   /** Secondary screen selection while no puzzle is active. */
-  const [screen, setScreen] = useState<"menu" | "progress">("menu");
+  const [screen, setScreen] = useState<"menu" | "progress" | "account">("menu");
   /** Native answer editor. */
   const inputRef = useRef<AnswerEditor | null>(null);
   /** Shared ready-session controller. */
@@ -93,6 +99,9 @@ function ReadySoloApp({runtime, sdk}: ReadySoloAppProps) {
       />
     );
   }
+  if (screen === "account" && hosted) {
+    return <AccountScreen client={hosted} onBack={() => setScreen("menu")} />;
+  }
   if (screen === "progress") {
     return (
       <ProgressScreen
@@ -117,6 +126,7 @@ function ReadySoloApp({runtime, sdk}: ReadySoloAppProps) {
       run={run}
       text={text}
       onShowProgress={() => setScreen("progress")}
+      onShowAccount={hosted ? () => setScreen("account") : undefined}
     />
   );
 }

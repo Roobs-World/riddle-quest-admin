@@ -77,3 +77,6 @@ yarn-error.log
 # Google Play upload signing stays on the owner machine
 android/app/keystore.properties
 android/app/*.jks
+
+# Machine-local hosted configuration (emulator hosts)
+hosted.config.json

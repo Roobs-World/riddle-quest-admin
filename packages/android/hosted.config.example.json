@@ -1,0 +1,12 @@
+{
+  "firebase": {
+    "apiKey": "AIzaSyB_ie9S8gNt3WT3nNPivZA5_B_BgMs8PR4",
+    "appId": "1:329028367192:web:b85776d379ea3356b7eb2d",
+    "authDomain": "riddle-quest-ec2b2.firebaseapp.com",
+    "messagingSenderId": "329028367192",
+    "projectId": "riddle-quest-ec2b2",
+    "functionsRegion": "us-central1",
+    "gameplayRegion": "europe-west1"
+  },
+  "emulators": null
+}

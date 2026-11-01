@@ -56,9 +56,11 @@ export type MenuScreenProps = Readonly<{
   text: (key: YouTubeCopyKey) => string;
   /** Opens the progress screen. */
   onShowProgress: () => void;
+  /** Opens the hosted account screen, when the build has one. */
+  onShowAccount?: () => void;
 }>;
 /** Mode selection with recovery, guidance, and save-status banners. */
-export function MenuScreen({locale, content, authority, snapshot, today, notice, run, text, onShowProgress}: MenuScreenProps) {
+export function MenuScreen({locale, content, authority, snapshot, today, notice, run, text, onShowProgress, onShowAccount}: MenuScreenProps) {
   /** Durable progression. */
   const progression = snapshot.save.progression;
   /** Whether material transitions are unavailable. */
@@ -122,6 +124,7 @@ export function MenuScreen({locale, content, authority, snapshot, today, notice,
         />
       </View>
       <ActionButton label={text("progress")} onPress={onShowProgress} disabled={materialDisabled} testID="show-progress" />
+      {onShowAccount && <ActionButton label="Account" onPress={onShowAccount} disabled={materialDisabled} testID="show-account" />}
     </Screen>
   );
 }

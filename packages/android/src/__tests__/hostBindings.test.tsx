@@ -1,5 +1,17 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+/** The root creates the hosted Firebase client; this suite covers the device bindings, not Firebase. */
+jest.mock("../hosted/firebaseClient", () => ({
+  createHostedFirebaseClient: () => ({
+    projectId: "test-project",
+    usingEmulators: false,
+    currentUser: () => null,
+    onUserChanged: () => () => {},
+    signInAnonymously: async () => ({uid: "test"}),
+    provisionAccount: async () => ({uid: "test", created: true, coins: 300}),
+  }),
+}));
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {I18nManager} from "react-native";
 import {ANDROID_SAVE_KEY, createAndroidSdkPort, resolveDeviceLanguageTag} from "../androidSdkPort";

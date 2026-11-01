@@ -17,6 +17,7 @@
     "types": ["jest", "react-native"],
     "paths": {
       "#solo-content": ["../portal/src/playable/generated/youtube-content-v1.json"],
+      "#hosted-config": ["./hosted.config.example.json"],
       "@qwordly/core": ["../core/src/index.ts"],
       "@qwordly/core/game": ["../core/src/game/index.ts"],
       "@qwordly/solo": ["../solo/src/index.ts"],

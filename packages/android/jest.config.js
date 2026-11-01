@@ -5,6 +5,7 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.(test|spec).(ts|tsx)"],
   moduleNameMapper: {
     "^#solo-content$": "<rootDir>/../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
+    "^#hosted-config$": "<rootDir>/hosted.config.example.json",
     "^@qwordly/core$": "<rootDir>/../core/src/index.ts",
     "^@qwordly/core/(.*)$": "<rootDir>/../core/src/$1",
     "^@qwordly/solo$": "<rootDir>/../solo/src/index.ts",
