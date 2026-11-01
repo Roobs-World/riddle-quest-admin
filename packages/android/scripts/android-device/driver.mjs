@@ -68,6 +68,16 @@ export const createDriver = ({serial, evidenceDirectory}) => {
   const clearData = () => adb("shell", "pm", "clear", applicationId);
   /** Sends the app to the background with the Home key. */
   const home = () => adb("shell", "input", "keyevent", "KEYCODE_HOME");
+  /** Forces portrait (0) or landscape (1) orientation; auto-rotation is disabled while forced. */
+  const rotate = (orientation) => {
+    adb("shell", "settings", "put", "system", "accelerometer_rotation", "0");
+    adb("shell", "settings", "put", "system", "user_rotation", String(orientation));
+  };
+  /** Restores automatic rotation in portrait. */
+  const resetRotation = () => {
+    adb("shell", "settings", "put", "system", "user_rotation", "0");
+    adb("shell", "settings", "put", "system", "accelerometer_rotation", "1");
+  };
 
   /** Saves a PNG screenshot as numbered evidence. */
   const capture = (name) => {
@@ -138,9 +148,42 @@ export const createDriver = ({serial, evidenceDirectory}) => {
   };
   const byId = (id) => (node) => node.id === id;
   const waitForId = (id, timeout) => waitFor(`node ${id}`, byId(id), timeout);
-  /** Taps a node by identifier once it is visible. */
+  /** Scrolls the screen by one swipe; `direction` 1 reveals content below, -1 above. */
+  const swipe = (nodes, direction) => {
+    const root = nodes.find((node) => node.center) ?? {center: {x: 540, y: 1200}};
+    const width = root.center.x * 2;
+    const height = root.center.y * 2;
+    const from = direction > 0 ? Math.round(height * 0.7) : Math.round(height * 0.3);
+    const to = direction > 0 ? Math.round(height * 0.3) : Math.round(height * 0.7);
+    adb("shell", "input", "swipe", String(Math.round(width / 2)), String(from), String(Math.round(width / 2)), String(to), "300");
+  };
+  /** Waits for a node, scrolling the screen when it is not on screen; every screen is a scroll view. */
+  const findScrolling = async (id, timeoutMilliseconds = 30_000) => {
+    const deadline = Date.now() + timeoutMilliseconds;
+    let direction = 1;
+    let misses = 0;
+    let nodes = [];
+    while (Date.now() < deadline) {
+      try {
+        nodes = dumpUi();
+        if (dismissSystemDialogs(nodes)) continue;
+        const node = nodes.find(byId(id));
+        if (node) return node;
+        misses += 1;
+        if (misses >= 2) {
+          swipe(nodes, direction);
+          if (misses % 6 === 0) direction = -direction;
+        }
+      } catch {
+        // Retry after a transition.
+      }
+      await sleep(600);
+    }
+    throw new Error(`Timed out waiting for node ${id} (with scrolling). Visible nodes:\n${summarize(nodes)}`);
+  };
+  /** Taps a node by identifier once it is visible, scrolling to it when needed. */
   const tapId = async (id) => {
-    tap(await waitForId(id));
+    tap(await findScrolling(id));
   };
   /** Reads a node's text or label by identifier. */
   const readText = async (id) => {
@@ -160,5 +203,5 @@ export const createDriver = ({serial, evidenceDirectory}) => {
   /** Whether a node reports the enabled state. */
   const isEnabled = (node) => node.enabled === "true";
 
-  return {adb, devices, install, launch, stop, clearData, home, capture, dumpUi, waitFor, waitForAbsence, waitForId, byId, tap, tapId, readText, readCoins, typeAnswer, isEnabled};
+  return {adb, devices, install, launch, stop, clearData, home, rotate, resetRotation, capture, dumpUi, waitFor, waitForAbsence, waitForId, findScrolling, byId, tap, tapId, readText, readCoins, typeAnswer, isEnabled};
 };

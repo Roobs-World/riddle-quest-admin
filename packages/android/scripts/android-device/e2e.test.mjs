@@ -61,6 +61,8 @@ describe("Android app on device", () => {
     driver.capture("typed");
     await driver.tapId("submit");
     assert.equal(await driver.readText("result-heading"), "Solved!");
+    await driver.waitFor("new achievements heading", (node) => node.text === "New achievements");
+    await driver.waitFor("first win badge", (node) => node.label === "Wins: 1");
     driver.capture("result");
     const rewarded = await driver.readCoins();
     assert.ok(rewarded > STARTING_COINS, `expected a reward above ${STARTING_COINS}, saw ${rewarded}`);
@@ -150,6 +152,58 @@ describe("Android app on device", () => {
     assert.equal(driver.isEnabled(await driver.waitForId("start-daily")), false);
     await driver.tapId("show-progress");
     await driver.waitFor("reduced motion persisted", (node) => node.id === "preference-reduced-motion" && node.checked === "true");
+  });
+
+  it("keeps the riddle, keys and actions reachable in landscape", async () => {
+    const driver = scenario("landscape");
+    try {
+      await freshMenu(driver);
+      await driver.tapId("start-classic");
+      await driver.waitForId("riddle-text");
+      driver.rotate(1);
+      await driver.waitFor("landscape layout", (node) => node.id === "riddle-text" && node.center.x > 600);
+      driver.capture("landscape-riddle");
+      await driver.typeAnswer(answers.classic[0]);
+      const submit = await driver.findScrolling("submit");
+      assert.ok(driver.isEnabled(submit), "submit enabled after typing in landscape");
+      driver.tap(submit);
+      assert.equal(await driver.readText("result-heading"), "Solved!");
+      driver.capture("landscape-result");
+      driver.rotate(0);
+      await driver.waitFor("portrait layout", (node) => node.id === "result-heading" && node.center.x < 600);
+      await driver.tapId("continue-to-menu");
+      await driver.waitForId("menu-heading");
+    } finally {
+      driver.resetRotation();
+    }
+  });
+
+  it("disables paid actions once the wallet is empty and re-enables them after a win", async () => {
+    const driver = scenario("empty-wallet");
+    await freshMenu(driver);
+    for (let skip = 0; skip < STARTING_COINS / SKIP_COST; skip += 1) {
+      await driver.tapId("start-classic");
+      await driver.waitForId("riddle-text");
+      await driver.tapId("skip");
+      assert.equal(await driver.readText("result-heading"), "Skipped");
+      await driver.tapId("continue-to-menu");
+      await driver.waitForId("menu-heading");
+    }
+    assert.equal(await driver.readCoins(), 0);
+    await driver.tapId("start-classic");
+    await driver.waitForId("riddle-text");
+    assert.equal(driver.isEnabled(await driver.waitForId("hint")), false, "hint unaffordable");
+    assert.equal(driver.isEnabled(await driver.waitForId("skip")), false, "skip unaffordable");
+    driver.capture("empty-wallet");
+    const nextIndex = STARTING_COINS / SKIP_COST;
+    await driver.typeAnswer(answers.classic[nextIndex]);
+    await driver.tapId("submit");
+    assert.equal(await driver.readText("result-heading"), "Solved!");
+    await driver.tapId("continue-to-menu");
+    await driver.waitForId("menu-heading");
+    assert.ok((await driver.readCoins()) >= HINT_COST, "a win refills enough for a hint");
+    await driver.tapId("start-classic");
+    assert.equal(driver.isEnabled(await driver.waitForId("hint")), true);
   });
 
   it("restores an interrupted puzzle with its scored guesses after backgrounding and a process kill", async () => {
