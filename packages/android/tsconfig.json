@@ -1,0 +1,28 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["ES2022", "ES2022.Intl"],
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "erasableSyntaxOnly": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUncheckedSideEffectImports": true,
+    "resolveJsonModule": true,
+    "types": ["jest", "react-native"],
+    "paths": {
+      "#solo-content": ["../portal/src/playable/generated/youtube-content-v1.json"],
+      "@qwordly/core": ["../core/src/index.ts"],
+      "@qwordly/core/game": ["../core/src/game/index.ts"],
+      "@qwordly/solo": ["../solo/src/index.ts"],
+      "@qwordly/solo/react": ["../solo/src/react/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "index.js"],
+  "exclude": ["node_modules", "android"]
+}

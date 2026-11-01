@@ -1,2 +1,2 @@
-/** Maximum localized answer length supported by the YouTube tile layout and save format. */
-export const YOUTUBE_ANSWER_MAX_GRAPHEMES = 12;
+// Shim: the Playable's limits module now lives in @qwordly/solo so native targets share it verbatim.
+export {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "@qwordly/solo";

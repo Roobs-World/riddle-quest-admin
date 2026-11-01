@@ -33,7 +33,9 @@
       "@qwordly/core/race": ["../core/src/race/index.ts"],
       "@qwordly/core/referrals": ["../core/src/referrals/index.ts"],
       "@qwordly/core/validation": ["../core/src/validation/index.ts"],
-      "@qwordly/core/validation/*": ["../core/src/validation/*"]
+      "@qwordly/core/validation/*": ["../core/src/validation/*"],
+      "@qwordly/solo": ["../solo/src/index.ts"],
+      "@qwordly/solo/react": ["../solo/src/react/index.ts"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

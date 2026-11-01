@@ -16,6 +16,14 @@ _Avoid_: Reddit ZIP, Reddit web build
 A self-contained Web Target hosted by YouTube whose play state belongs only to that Playable surface.
 _Avoid_: YouTube app, YouTube account
 
+**Android App**:
+The bare React Native app in `packages/android` submitted to Google Play. Like the YouTube Playable it is self-contained: it bundles the same content pack, keeps progress in app-private storage, and has no account, purchases, sharing, or multiplayer.
+_Avoid_: Mobile build, native port, Play version of the web game
+
+**Shared Solo Logic**:
+The provider-neutral local solo play package `@qwordly/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
+_Avoid_: YouTube module, playable folder, duplicated native rules
+
 **Bundled Content Pack**:
 A versioned, reviewed set of canonical riddles and aligned localizations shipped inside a Web Target.
 _Avoid_: Live catalog, remote content
