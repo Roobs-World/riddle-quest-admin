@@ -18,4 +18,8 @@ module.exports = {
   setupFiles: ["<rootDir>/src/test/setup.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/__tests__/**", "!src/test/**"],
   coverageDirectory: "coverage",
+  coverageReporters: ["text", "text-summary", "json-summary"],
+  coverageThreshold: {
+    global: {statements: 93, branches: 88, functions: 90, lines: 94},
+  },
 };

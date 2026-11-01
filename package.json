@@ -38,7 +38,7 @@
     "verify:production:extended": "pnpm verify:production && PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:mobile-soak",
     "check:types": "pnpm prepare:functions && pnpm --filter @qwordly/core check:types && pnpm --filter @qwordly/solo check:types && pnpm --filter @qwordly/android check:types && pnpm --filter @qwordly/portal check:types && pnpm --dir firebase-functions check:types && pnpm --filter @qwordly/reddit-app check:types",
     "test": "pnpm --filter @qwordly/core test && pnpm --filter @qwordly/solo test && pnpm --filter @qwordly/android test && pnpm --filter @qwordly/portal test && pnpm --filter @qwordly/reddit-app test",
-    "test:coverage": "pnpm prepare:functions && pnpm --filter @qwordly/core test:coverage && pnpm --filter @qwordly/portal test:coverage && pnpm --dir firebase-functions test:coverage",
+    "test:coverage": "pnpm prepare:functions && pnpm --filter @qwordly/core test:coverage && pnpm --filter @qwordly/android test:coverage && pnpm --filter @qwordly/portal test:coverage && pnpm --dir firebase-functions test:coverage",
     "test:race:coverage": "pnpm prepare:functions && pnpm --filter @qwordly/core test:race:coverage && pnpm --filter @qwordly/portal test:race:coverage && pnpm --dir firebase-functions test:race:coverage",
     "test:jest-notifications": "pnpm --filter @qwordly/portal test:jest-notifications",
     "test:web": "pnpm --filter @qwordly/portal test",

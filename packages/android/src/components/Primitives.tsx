@@ -157,7 +157,13 @@ export function Banner({message, actionLabel, onAction, error = false, disabled 
       testID={testID}
     >
       <Text style={styles.bannerText}>{message}</Text>
-      <ActionButton label={actionLabel} onPress={onAction} disabled={disabled} style={styles.bannerAction} />
+      <ActionButton
+        label={actionLabel}
+        onPress={onAction}
+        disabled={disabled}
+        style={styles.bannerAction}
+        testID={testID ? `${testID}-action` : undefined}
+      />
     </View>
   );
 }
