@@ -4,7 +4,7 @@ import {useTranslator} from "../../i18n";
 import {isCompletionAdvancePending} from "../../completionPresentation";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {CoinFlight} from "../../CoinFlight";
-import type {CompletionRewardBreakdown} from "../../completionRewardBreakdown";
+import type {CompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 import chestClosedUrl from "../../../../../../assets/images-web/chest-closed.png";
 import chestOpenUrl from "../../../../../../assets/images-web/chest-open.webp";
 import "../../../styles.victory.css";

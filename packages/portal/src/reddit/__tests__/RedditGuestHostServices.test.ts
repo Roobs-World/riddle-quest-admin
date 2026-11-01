@@ -3,7 +3,7 @@ import {computeFeedback} from "@qwordly/core/game";
 import {createSavedGame} from "../../play/GameSessionCheckpoints";
 import {createInitialGameSession, gameSessionReducer} from "../../play/gameSession";
 import {BridgeRiddleSchema} from "@qwordly/core/bridge";
-import type {HostServices} from "../../play/types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 
 it.each([1, 5])("recovers an accepted win on attempt %s before completion delivery", async count => {
   /** Drives the actual authority, reducer and provider checkpoint before replacing the page. */

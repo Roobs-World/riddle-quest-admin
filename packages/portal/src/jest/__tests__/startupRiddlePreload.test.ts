@@ -1,5 +1,5 @@
 import {createJestStartupRiddlePreload} from "../startupRiddlePreload";
-import type {HostServices} from "../../play/types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 import type {BridgeRiddle} from "@qwordly/core/bridge";
 
 /** Controls optional authority requests independently from actual game loading. */

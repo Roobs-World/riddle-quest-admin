@@ -7,7 +7,7 @@ import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
-import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "./types";
+import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "@qwordly/hosted/hostTypes";
 import type {RaceOutcome} from "@qwordly/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlayerData} from "../platform/types";
@@ -99,7 +99,7 @@ export function PlayHostApp({
   /** Tracks initialized game settings independently of profile-only host notifications. */
   const sentInitializationRef = useRef<{
     /** Last projected immutable target product catalog, absent when commerce is unavailable. */
-    products: readonly import("./types").ProductSummary[] | undefined;
+    products: readonly import("@qwordly/hosted/hostTypes").ProductSummary[] | undefined;
     /** Last content language actually delivered to the embedded game. */
     locale: typeof locale;
     /** Last mode actually delivered to the embedded game. */
@@ -279,7 +279,7 @@ export function PlayHostApp({
   }, [authority.commerce, frameReady, gameMode, locale, sendInit]);
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback(
-    (result: import("./types").PurchaseResult) => applyCoinBalance(result.newCoins),
+    (result: import("@qwordly/hosted/hostTypes").PurchaseResult) => applyCoinBalance(result.newCoins),
     [applyCoinBalance],
   );
   /** Multiplayer rollout, preload, and authoritative reward reconciliation. */

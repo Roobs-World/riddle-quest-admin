@@ -396,7 +396,7 @@ export function JestPlayApp() {
               /** Authoritative profile remains mandatory before showing the balance or enabling play. */
               const [{loadUserDocument}, {toBridgeProfile}] = await Promise.all([
                 import("../firebase"),
-                import("../play/profileMapper"),
+                import("@qwordly/hosted/profileMapper"),
               ]);
               /** Profile created or restored by the authoritative identity exchange. */
               const profileData = await loadUserDocument(readySession.firebaseUid);

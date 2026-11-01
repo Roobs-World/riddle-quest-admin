@@ -12,7 +12,7 @@ import {
   hasSeenTooltipTour,
   PROFILE_TOUR,
 } from "../guidance/guidanceConfig";
-import type {ProductSummary} from "../types";
+import type {ProductSummary} from "@qwordly/hosted/hostTypes";
 
 /** Provides a purchasable coin pack so shop guidance is eligible. */
 const shopProduct: ProductSummary = {

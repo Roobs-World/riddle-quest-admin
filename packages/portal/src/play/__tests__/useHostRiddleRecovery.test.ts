@@ -1,6 +1,6 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
 import type {BridgeRiddle, HostToGameMessage} from "@qwordly/core/bridge";
-import type {HostServices} from "../types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 
 /** Effects are committed after each simulated render, preserving hook ref ownership. */
 const effects: Array<() => void | (() => void)> = [];

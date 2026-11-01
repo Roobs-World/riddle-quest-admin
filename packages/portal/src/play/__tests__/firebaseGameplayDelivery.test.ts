@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
-import type {HostServices} from "../types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 
 /** SDK account shared by the actual adapter and native identity observer. */
 const sdkUser = (uid: string) => ({uid, isAnonymous: false, metadata: {creationTime: "2026-01-01T00:00:00Z"}});

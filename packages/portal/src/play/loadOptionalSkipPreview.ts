@@ -1,5 +1,5 @@
 import type {BridgeRiddle} from "@qwordly/core/bridge";
-import type {HostServices} from "./types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 import {riddleLoadDeadline} from "./riddleLoadDeadline";
 
 /** Optional content delivery is loaded only when Skip requests a speculative successor. */

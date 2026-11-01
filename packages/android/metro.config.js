@@ -35,6 +35,9 @@ const config = {
     nodeModulesPaths: [path.join(__dirname, "node_modules"), path.join(repositoryRoot, "node_modules")],
     resolveRequest: (context, moduleName, platform) => {
       if (moduleName === "#hosted-config") return {type: "sourceFile", filePath: hostedConfigPath};
+      if (moduleName.startsWith("@qwordly/hosted/")) {
+        return {type: "sourceFile", filePath: path.join(repositoryRoot, "packages/hosted/src", `${moduleName.slice("@qwordly/hosted/".length)}.ts`)};
+      }
       /** Shared workspace module mapped to its TypeScript source. */
       const filePath = workspaceSources[moduleName];
       if (filePath) return {type: "sourceFile", filePath};

@@ -1,7 +1,7 @@
 import {readProtectedContent} from "@qwordly/core/contentProtection";
 import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
 import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "../play/types";
+import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "@qwordly/hosted/hostTypes";
 import type {SavedGame} from "../platform/types";
 import {parseSavedGame} from "../platform/playerDataValidation";
 

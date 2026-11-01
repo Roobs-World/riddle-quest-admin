@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
 import {configurePlatformAnalytics, resetAnalyticsForTests} from "../../analytics/events";
 import {createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "../hostCompletionEffects";
-import type {CompletionResult, SinglePlayerGuessResult} from "../types";
+import type {CompletionResult, SinglePlayerGuessResult} from "@qwordly/hosted/hostTypes";
 
 /** Stable issuing identity remains private to the effect consumer. */
 const input: HostCompletionInput = {riddleId: "classic-1", gameMode: "classic", sessionToken: "private-issued-session"};

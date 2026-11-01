@@ -35,6 +35,7 @@
       "@qwordly/core/validation": ["../core/src/validation/index.ts"],
       "@qwordly/core/validation/*": ["../core/src/validation/*"],
       "@qwordly/hosted": ["../hosted/src/index.ts"],
+      "@qwordly/hosted/*": ["../hosted/src/*"],
       "@qwordly/solo": ["../solo/src/index.ts"],
       "@qwordly/solo/react": ["../solo/src/react/index.ts"]
     },

@@ -5,7 +5,7 @@ import {createGameMessageRouter} from "./bridgeRouter";
 import {gameSessionReducer, type GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
 import {isSingleAnswerCell} from "./answerCell";
-import {parseCompletionRewardBreakdown} from "./completionRewardBreakdown";
+import {parseCompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 
 /** Gets object. */
 const getObject = (data: unknown): Record<string, unknown> =>

@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {AuthSnapshot, HostServices} from "../types";
+import type {AuthSnapshot, HostServices} from "@qwordly/hosted/hostTypes";
 
 /** Retains effect lifetimes across simulated parent renders. */
 const effects: Array<{

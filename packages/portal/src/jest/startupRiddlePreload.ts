@@ -1,4 +1,4 @@
-import type {HostServices} from "../play/types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 
 /** Starts the current Classic fallback before Daily's launch decision completes. */
 export function createJestStartupRiddlePreload<Services extends Pick<HostServices, "loadRiddle">>(

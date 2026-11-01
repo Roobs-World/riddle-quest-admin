@@ -1,5 +1,5 @@
 import type {BridgeRiddle} from "@qwordly/core/bridge";
-import type {CurrentRiddleResponse} from "../firebase";
+import type {CurrentRiddleResponse} from "./gameFunctions";
 
 /** Maps riddle response. */
 export const mapRiddleResponse = (response: CurrentRiddleResponse, gameMode: "classic" | "challenge"): BridgeRiddle => {

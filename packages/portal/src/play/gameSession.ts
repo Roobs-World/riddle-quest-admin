@@ -12,7 +12,7 @@ import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
 import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
 import {isSingleAnswerCell} from "./answerCell";
 import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
-import {parseCompletionRewardBreakdown} from "./completionRewardBreakdown";
+import {parseCompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 import {createRequestId} from "./requestIds";
 
 export type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";

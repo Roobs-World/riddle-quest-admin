@@ -1,4 +1,4 @@
-import {mapRiddleResponse} from "../riddleResponse";
+import {mapRiddleResponse} from "@qwordly/hosted/riddleResponse";
 
 it("preserves authoritative Daily completion as a distinct launch outcome", () => {
   expect(() => mapRiddleResponse({hasCompletedToday: true, error: "Today's daily challenge is already complete."}, "challenge"))

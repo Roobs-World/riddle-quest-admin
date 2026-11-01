@@ -2,7 +2,7 @@ import {describe, expect, it, jest} from "@jest/globals";
 import type {BridgeProfile, BridgeRiddle} from "@qwordly/core/bridge";
 import type {GameSessionState} from "../gameSessionTypes";
 import {CompleteGameOutputSchema} from "@qwordly/core/validation";
-import {parseCompletionRewardBreakdown} from "../completionRewardBreakdown";
+import {parseCompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 
 /** Provides mock use memo behavior. */
 const mockUseMemo = (factory: () => unknown) => factory();

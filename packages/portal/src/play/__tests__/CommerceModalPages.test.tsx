@@ -23,7 +23,7 @@ import {tr} from "../i18n";
 import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
 import {ShopSubscriptionContext} from "../modalPages/commerce/ShopSubscriptionContext";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../modalPages/commerce/commerceCosts";
-import type {ProductSummary} from "../types";
+import type {ProductSummary} from "@qwordly/hosted/hostTypes";
 
 /** No-op callback shared by server-rendering tests. */
 const noop = () => undefined;

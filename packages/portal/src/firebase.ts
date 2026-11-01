@@ -2,10 +2,10 @@ import {initializeApp} from "firebase/app";
 import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
 import {getFunctions} from "firebase/functions";
-import {createGameFunctionsClient} from "@qwordly/hosted";
+import {createGameFunctionsClient} from "@qwordly/hosted/gameFunctions";
 import {firebaseEnvironment} from "./firebaseEnvironment";
 import {DEFAULT_GAMEPLAY_REGION} from "./platform/startupWarmup";
-export type {CurrentRiddleResponse, GetHintInput, GetHintOutput, SpendCoinsOutput} from "@qwordly/hosted";
+export type {CurrentRiddleResponse, GetHintInput, GetHintOutput, SpendCoinsOutput} from "@qwordly/hosted/gameFunctions";
 
 /** Provides raw firebase config behavior. */
 const rawFirebaseConfig = {

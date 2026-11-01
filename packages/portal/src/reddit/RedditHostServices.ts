@@ -11,7 +11,7 @@ import {
   SpendCoinsResponseSchema,
   SubmitSinglePlayerGuessResponseDataSchema,
 } from "@qwordly/core/validation";
-import type {AuthSnapshot, HostServices} from "../play/types";
+import type {AuthSnapshot, HostServices} from "@qwordly/hosted/hostTypes";
 import {tr} from "../play/i18n";
 import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
 import {

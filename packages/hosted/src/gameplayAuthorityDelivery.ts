@@ -1,10 +1,11 @@
-import {tr} from "./i18n";
+/** Localized copy lookup supplied by the host. */
+export type HostTranslate = (key: string, params?: Record<string, string | number>) => string;
 
 /** Single-player authority delivery must settle locally before indefinite transport stalls block recovery. */
 export const GAMEPLAY_AUTHORITY_DEADLINE_MS = 15_000;
 
 /** Bounds and coalesces identical account-scoped authority transports, preserving server idempotency. */
-export const createGameplayAuthorityDelivery = () => {
+export const createGameplayAuthorityDelivery = (tr: HostTranslate) => {
   /** Only in-flight deliveries are retained; expired requests permit a fresh transport attempt. */
   const pending = new Map<string, Promise<unknown>>();
   return {

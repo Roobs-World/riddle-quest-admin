@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {toBridgeProfile} from "../profileMapper";
+import {toBridgeProfile} from "@qwordly/hosted/profileMapper";
 
 describe("Firebase profile mapping", () => {
   it("maps authoritative achievement objects and all gameplay statistics", () => {

@@ -1,4 +1,4 @@
-import type {HostServices} from "./types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 
 /** Cross-tab operation boundary supplied by the Jest shell. */
 export type AccountDeletionServiceGate = {

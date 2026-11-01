@@ -1,7 +1,7 @@
 import {useCallback, type Dispatch, type SetStateAction} from "react";
 import {tr} from "../play/i18n";
 import {trackEvent, trackPurchase} from "../analytics/events";
-import type {ProductSummary, PurchaseResult} from "../play/types";
+import type {ProductSummary, PurchaseResult} from "@qwordly/hosted/hostTypes";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
 

@@ -9,3 +9,9 @@
  * @packageDocumentation
  */
 export * from "./gameFunctions";
+export * from "./completionRewardBreakdown";
+export * from "./gameplayAuthorityDelivery";
+export * from "./hostServices";
+export * from "./hostTypes";
+export * from "./profileMapper";
+export * from "./riddleResponse";

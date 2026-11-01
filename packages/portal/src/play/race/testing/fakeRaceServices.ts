@@ -10,7 +10,7 @@ import {
   type RaceRunView,
 } from "@qwordly/core/race";
 import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
-import type {HostServices} from "../../types";
+import type {HostServices} from "@qwordly/hosted/hostTypes";
 import {readBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 
 /** Multiplayer host methods implemented by the deterministic browser harness. */

@@ -22,6 +22,7 @@
       "@qwordly/core/game": ["../core/src/game/index.ts"],
       "@qwordly/core/*": ["../core/src/*"],
       "@qwordly/hosted": ["../hosted/src/index.ts"],
+      "@qwordly/hosted/*": ["../hosted/src/*"],
       "@qwordly/solo": ["../solo/src/index.ts"],
       "@qwordly/solo/react": ["../solo/src/react/index.ts"]
     }

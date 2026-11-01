@@ -1,7 +1,7 @@
 import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {ProductSummary} from "./types";
-import type {CompletionRewardBreakdown} from "./completionRewardBreakdown";
+import type {ProductSummary} from "@qwordly/hosted/hostTypes";
+import type {CompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 
 /** Identifies the modal currently presented by the game session. */
 export type GameModal =
