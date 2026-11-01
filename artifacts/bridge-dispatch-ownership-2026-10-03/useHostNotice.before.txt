@@ -1,6 +1,0 @@
-import {useState} from "react";
-/** Faithful extraction of the previous PlayHostApp notice state for baseline injection. */
-export function useHostNotice({configurationWarning}: {configurationWarning: string | null}) {
-  const [notice, setNotice] = useState<string | null>(configurationWarning);
-  return {notice, setNotice};
-}

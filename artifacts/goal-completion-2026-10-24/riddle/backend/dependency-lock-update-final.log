@@ -1,7 +1,0 @@
-npm warn EBADENGINE Unsupported engine {
-npm warn EBADENGINE   package: undefined,
-npm warn EBADENGINE   required: { node: '22' },
-npm warn EBADENGINE   current: { node: 'v24.17.0', npm: '11.13.0' }
-npm warn EBADENGINE }
-
-up to date in 394ms

@@ -1,7 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ jest --config jest.config.cjs --runInBand src/play/__tests__/queuedCoinActions.jest-playwright.test.ts -t 'shop buying power'
-Test Suites: 1 passed, 1 total
-Tests:       10 skipped, 2 passed, 12 total
-Snapshots:   0 total
-Time:        3.285 s, estimated 46 s
-Ran all test suites matching src/play/__tests__/queuedCoinActions.jest-playwright.test.ts with tests matching "shop buying power".

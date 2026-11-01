@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       24 passed, 24 total
-Snapshots:   0 total
-Time:        0.408 s, estimated 1 s
-Ran all test suites within paths "src/__tests__/facebookClientConfiguration.test.ts", "src/__tests__/facebookNotificationPrompts.test.ts", "src/__tests__/facebookNotificationPromptCallables.test.ts".

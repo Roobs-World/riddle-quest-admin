@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` सिक्के`,CONTINUE_BUTTON:`अद्भुत`,LEVEL_PREFIX:`स्तर `,TITLE:`स्तर ऊपर!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

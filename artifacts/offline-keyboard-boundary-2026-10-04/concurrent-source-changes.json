@@ -1,4 +1,0 @@
-[
-  "packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts",
-  "packages/portal/src/jest/__tests__/authenticationHarness.jest-playwright.support.ts"
-]

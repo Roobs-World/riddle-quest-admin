@@ -1,3 +1,0 @@
-✔  functions[syncJestSubscriptions(us-central1)] Successful update operation. 
-Function URL (syncJestSubscriptions(us-central1)): https://syncjestsubscriptions-h5dplxxwha-uc.a.run.app
-✔  Deploy complete! 

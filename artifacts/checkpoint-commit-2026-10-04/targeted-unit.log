@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       48 passed, 48 total
-Snapshots:   0 total
-Time:        0.341 s, estimated 1 s
-Ran all test suites matching src/play/__tests__/confirmedGuessPersistence.test.ts|src/play/__tests__/GameSessionCheckpoints.test.ts|src/play/__tests__/gameSessionPersistence.test.ts.

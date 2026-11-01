@@ -1,6 +1,0 @@
-
-Test Suites: 7 passed, 7 total
-Tests:       169 passed, 169 total
-Snapshots:   0 total
-Time:        0.378 s, estimated 1 s
-Ran all test suites within paths "src/facebook/__tests__/FacebookNotificationCapability.test.ts", "src/facebook/__tests__/FacebookNotificationPromptCoordinator.test.ts", "src/facebook/__tests__/FacebookNotificationPromptPolicy.test.ts", "src/facebook/__tests__/FacebookPlatformBootstrap.test.ts", "src/jest/__tests__/JestSdkPlatform.test.ts", "src/jest/__tests__/useJestNotifications.test.ts", "src/reddit/__tests__/RedditPlatformBootstrap.test.ts".

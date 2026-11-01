@@ -1,7 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       44 passed, 44 total
-Snapshots:   0 total
-Time:        0.451 s
-Ran all test suites within paths "src/play/__tests__/useProvisionalPlayRecovery.test.ts", "src/play/__tests__/fanfareSequence.test.ts", "src/play/__tests__/FanfareModalContent.test.tsx", "src/play/__tests__/hostCompletionEffects.test.ts", "src/play/__tests__/useCompletionDelivery.test.ts".
-Test results written to: ../../artifacts/performance-current-20261019/completion/unit-results.json

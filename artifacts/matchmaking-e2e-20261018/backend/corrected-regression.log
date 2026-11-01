@@ -1,7 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       135 passed, 135 total
-Snapshots:   0 total
-Time:        75.209 s, estimated 79 s
-Ran all test suites within paths "src/__tests__/race/raceLive.it.test.ts", "src/__tests__/race/raceLiveDeckCompatibility.it.test.ts", "src/__tests__/race/raceLiveJoinRetirement.it.test.ts", "src/__tests__/race/raceLiveIdentityPayload.it.test.ts", "src/__tests__/race/raceLivePublicWait.it.test.ts".
-Test results written to: ../artifacts/matchmaking-e2e-20261018/backend/corrected-regression-results.json

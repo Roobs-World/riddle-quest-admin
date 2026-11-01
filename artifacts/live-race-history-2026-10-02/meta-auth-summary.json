@@ -1,9 +1,0 @@
-{
-  "appId": "1748953042991569",
-  "name": "Riddle Quest",
-  "viewerRole": "admin",
-  "callerPermissions": ["read"],
-  "appStatus": "dev_mode",
-  "isLive": false,
-  "providerMutationPerformed": false
-}

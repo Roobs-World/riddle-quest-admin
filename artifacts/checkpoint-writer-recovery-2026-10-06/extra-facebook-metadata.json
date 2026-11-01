@@ -1,9 +1,0 @@
-[
-  {
-    "target": "facebook",
-    "original": "artifacts/target-dependencies/custom/ee67a8443dea3429464392eeceb63e8145c91358258803615f0d055cfd1760d3/facebook.json",
-    "preserved": "artifacts/checkpoint-writer-recovery-2026-10-06/extra-facebook-0.json",
-    "sha256": "8810debff3a7dc29620be942b0b05ee80fcff0ab29f0d323bcd6a63dfabf79f1",
-    "outputDirectory": "/tmp/riddle-quest-facebook-browser-t6NtfX"
-  }
-]

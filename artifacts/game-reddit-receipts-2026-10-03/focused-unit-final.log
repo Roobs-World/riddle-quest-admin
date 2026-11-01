@@ -1,6 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       88 passed, 88 total
-Snapshots:   0 total
-Time:        0.422 s, estimated 1 s
-Ran all test suites matching src/reddit/__tests__/RedditReceiptDelivery.test.ts|src/reddit/__tests__/RedditHostServices.test.ts|src/reddit/__tests__/RedditGatewayDeadline.test.ts|src/reddit/__tests__/RedditGatewayRedirect.test.ts|src/reddit/__tests__/RedditPlatformBootstrap.test.ts.

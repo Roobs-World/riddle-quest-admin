@@ -1,6 +1,0 @@
-
-Test Suites: 2 passed, 2 total
-Tests:       40 passed, 40 total
-Snapshots:   0 total
-Time:        0.298 s, estimated 1 s
-Ran all test suites matching src/play/__tests__/useHostRiddleRecovery.test.ts|src/play/__tests__/useHostRiddleLifecycle.test.ts.

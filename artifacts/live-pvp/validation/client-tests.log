@@ -1,8 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ jest --config jest.config.cjs --runInBand '--testPathPatterns=liveRaceDeliveryDeadline|raceComponents|firebaseRaceMatchmaking|RedditPlatformBootstrap|FacebookCapabilityPolicy'
-
-Test Suites: 5 passed, 5 total
-Tests:       62 passed, 62 total
-Snapshots:   0 total
-Time:        0.403 s, estimated 1 s
-Ran all test suites matching liveRaceDeliveryDeadline|raceComponents|firebaseRaceMatchmaking|RedditPlatformBootstrap|FacebookCapabilityPolicy.

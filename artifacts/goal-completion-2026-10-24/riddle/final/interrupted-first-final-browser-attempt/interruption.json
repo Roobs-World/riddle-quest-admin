@@ -1,7 +1,0 @@
-{
-  "recordedAt": "2026-10-24T01:31:32.933890+00:00",
-  "reason": "Goal continuation ended tracked tool processes before completion; PIDs and emulators independently verified absent.",
-  "sourceDigest": "96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402",
-  "completedAcceptance": false,
-  "evidenceMustNotBeUsedAsCompletion": true
-}

@@ -1,5 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 2 production declarations are undocumented.
-- packages/portal/src/reddit/RedditGuestHostServices.ts:60 guess
-- packages/portal/src/reddit/RedditGuestHostServices.ts:60 result
-[ELIFECYCLE] Command failed with exit code 1.

@@ -1,7 +1,0 @@
-Jest artifact audit passed: 419 files, 4.50 MB, 0.55 MB initial resources, relative entry paths, no native modules, external auth/ads, Google Analytics, install copy, secrets, source maps, or missing entry assets
-W3C HTML validation passed with zero findings (pinned Nu 26.9.30 (bf06d70)):
-/home/craig-beswetherick/Documents/riddle-quest/builds/jest/index.html
-Gated build.zip (2.74 MB, 421 entries, sha256 e724f5e3e9c58ba1d82d95b2a172d64fdd5e15ff03fd023b029db11ef97cb181)
-Source: c1224fc18ff145d4d1d5ae34650ea075b378b6a5 (dirty; upload blocked)
-Gate receipt: /home/craig-beswetherick/Documents/riddle-quest/artifacts/jest-amendments-2026-10-22/upload-final-preflight.json
-Jest upload preflight passed; dry run stopped before network transmission.

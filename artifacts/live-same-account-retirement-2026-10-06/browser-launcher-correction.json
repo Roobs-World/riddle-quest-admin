@@ -1,6 +1,0 @@
-{
-  "path": "packages/portal/scripts/verify-live-same-account-retirement-browser.mjs",
-  "beforeSha256": "9d517fad0397f421351190ba5764f5afb8dbb3fad40ebf861ac7aef4304bc0eb",
-  "afterSha256": "8e96658104466dd150c84102932a55120ce4ace34817eab6040e775895a31b12",
-  "reason": "Existing native Firefox1538 is installed; Playwright default1543 is absent. Add explicit executable seam, matching existing retirement harness."
-}

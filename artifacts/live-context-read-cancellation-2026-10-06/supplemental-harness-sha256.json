@@ -1,7 +1,0 @@
-{
-  "artifacts/live-context-read-cancellation-2026-10-06/adapter-before-final-admission.ts": "900d784545091fabd31abbbe6c3e90cc7ff60ff28c7ac84213c617960d9b3912",
-  "artifacts/live-context-read-cancellation-2026-10-06/expanded-driver.txt": "b911bb221e0d4d15297cf88f79bea08977f2aa3f1826df9b073996c9aeb0ddcf",
-  "artifacts/live-context-read-cancellation-2026-10-06/expanded-prefix.txt": "de3fe343a6bf6c398679bb08b494d8705044bc4f22def4a9a78507d918afc47c",
-  "artifacts/live-context-read-cancellation-2026-10-06/probe-admission-gap.mjs": "faaac5442a89d9f55e1621f0317bac8a076f31d8c6347d734ab33b41136e6d67",
-  "artifacts/live-context-read-cancellation-2026-10-06/probe-minimal.mjs": "4e08e7c2d6a2bd6356fcd4d139d70d4a4bae50bc1f19734309151db8ebf8c265"
-}

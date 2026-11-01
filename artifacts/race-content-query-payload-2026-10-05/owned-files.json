@@ -1,7 +1,0 @@
-{
-  "setup": "firebase-functions/src/race/raceSetupService.ts",
-  "validation": "firebase-functions/src/race/raceContentValidation.ts",
-  "latency-test": "firebase-functions/src/__tests__/race/raceLiveLatency.test.ts",
-  "service-test": "firebase-functions/src/__tests__/race/raceService.test.ts",
-  "emulator-test": "firebase-functions/src/__tests__/race/raceContentPayload.it.test.ts"
-}

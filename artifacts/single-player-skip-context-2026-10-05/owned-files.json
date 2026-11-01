@@ -1,9 +1,0 @@
-{
-  "game-logic": "firebase-functions/src/gameplay/gameLogic.ts",
-  "session": "firebase-functions/src/gameplay/singlePlayerSession.ts",
-  "session-types": "firebase-functions/src/gameplay/singlePlayerSessionTypes.ts",
-  "game-logic-test": "firebase-functions/src/__tests__/gameLogic.test.ts",
-  "session-test": "firebase-functions/src/__tests__/singlePlayerSessionTransactions.test.ts",
-  "latency-test": "firebase-functions/src/__tests__/singlePlayerSkipPreparationLatency.test.ts",
-  "emulator-test": "firebase-functions/src/__tests__/singlePlayerSkipContext.it.test.ts"
-}

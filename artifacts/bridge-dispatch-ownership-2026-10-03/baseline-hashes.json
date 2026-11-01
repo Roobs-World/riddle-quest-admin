@@ -1,7 +1,0 @@
-{
-  "bridgeRouter.before.txt": "72cc8cdb827115b610cb7023b33c3fb590d9a6cfc96eecac2524cb528343013c",
-  "useHostBridgeLifecycle.before.txt": "35e861c27e1a21372bfaedc61a04ff69783625f2d88f07f597f55e2f841c2b77",
-  "useGameBridgeLifecycle.before.txt": "b605f7432d1fa1d173bc7c19fc51a18b5bf3ac34800212306dab354a059866bb",
-  "useGameMessageRouter.before.txt": "2d64a3e9805866e437684f5ef4ce2c7cc2e44d30287653a625f9c339b810c16c",
-  "useHostNotice.before.txt": "25fac2dd699c2093bfa34be75befe7e72279b61a391ffa7df0c32e79cb1689a0"
-}

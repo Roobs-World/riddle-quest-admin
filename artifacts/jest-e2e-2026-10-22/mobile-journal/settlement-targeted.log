@@ -1,5 +1,0 @@
-Test Suites: 1 passed, 1 total
-Tests:       15 skipped, 3 passed, 18 total
-Snapshots:   0 total
-Time:        6.567 s, estimated 59 s
-Ran all test suites within paths "src/play/__tests__/queuedCoinActions.jest-playwright.test.ts".

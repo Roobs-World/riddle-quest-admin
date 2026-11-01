@@ -1,6 +1,0 @@
-
-Test Suites: 2 passed, 2 total
-Tests:       15 passed, 15 total
-Snapshots:   0 total
-Time:        0.368 s
-Ran all test suites matching raceMatchFreshness|raceMatchReadMeter.

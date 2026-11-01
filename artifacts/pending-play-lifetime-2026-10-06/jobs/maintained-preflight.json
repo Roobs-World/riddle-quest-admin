@@ -1,8 +1,0 @@
-{
-  "name": "maintained-preflight",
-  "status": "terminal",
-  "exitCode": 0,
-  "logs": [
-    "maintained-preflight.log"
-  ]
-}

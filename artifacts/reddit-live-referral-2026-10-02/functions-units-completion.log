@@ -1,6 +1,0 @@
-
-Test Suites: 12 passed, 12 total
-Tests:       152 passed, 152 total
-Snapshots:   0 total
-Time:        1.088 s
-Ran all test suites within paths "src/__tests__/redditReferrals.test.ts", "src/__tests__/race/raceDeliveryRecords.test.ts", "src/__tests__/facebookReferrals.test.ts", "src/__tests__/race/raceLiveScoring.test.ts", "src/__tests__/redditFeatureFlags.test.ts", "src/__tests__/facebookFeatureFlags.test.ts", "src/__tests__/race/raceLiveLatency.test.ts", "src/__tests__/race/raceReadService.test.ts", "src/__tests__/race/raceMatchPerformance.test.ts", "src/__tests__/completeGameTransaction.test.ts", "src/__tests__/completeGameCallable.test.ts", "src/__tests__/completeGameSecurity.test.ts".

@@ -1,5 +1,0 @@
-{
-  "packages/portal/src/play/useHostBridgeLifecycle.ts": "35e861c27e1a21372bfaedc61a04ff69783625f2d88f07f597f55e2f841c2b77",
-  "packages/portal/src/play/PlayHostApp.tsx": "0e64783e14c38065897da6cdb18c15f8a8fd70e6ea363d75cf57e477f7b54871",
-  "packages/portal/scripts/verify-host-bridge-ownership-browser.mjs": "2dc0d4eff9f70c9953d55add1dd7f70a80a9dadaf85415f09a639a9ad7d36427"
-}

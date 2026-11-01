@@ -1,3 +1,0 @@
-E2E coverage audit failed:
-- Playwright suites missing from portal scripts: packages/portal/src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts
-- Emulator integration suites missing from jest.rules.config.js: firebase-functions/src/__tests__/race/raceLiveInvitation.it.test.ts, firebase-functions/src/__tests__/race/raceLivePush.it.test.ts

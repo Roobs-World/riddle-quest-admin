@@ -1,4 +1,0 @@
-$ pnpm --filter @qwordly/portal validate:w3c
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ node scripts/validate-w3c.mjs dist-jest/index.html
-W3C HTML validation passed with zero findings (pinned Nu 26.9.30 (bf06d70)): /home/craig-beswetherick/Documents/riddle-quest/packages/portal/dist-jest/index.html

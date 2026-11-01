@@ -1,5 +1,0 @@
-$ node scripts/prepare-deploy.js
-.                                        | [WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
-$ tsc -p tsconfig.build.json
-Prepared deploy build artifact at /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/packages/core
-$ eslint --ext .js,.ts src

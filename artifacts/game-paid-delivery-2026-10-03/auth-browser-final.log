@@ -1,5 +1,0 @@
-Test Suites: 1 passed, 1 total
-Tests:       63 skipped, 11 passed, 74 total
-Snapshots:   0 total
-Time:        61 s
-Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "starts a guest|registers with a stable|logs an existing|restores platform data|reports first_milestone|reports a guest Daily|offers registration.*confirmation|first Classic victory|unavailable Daily|pending social profile|25 seconds".

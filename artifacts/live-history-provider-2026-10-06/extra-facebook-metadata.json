@@ -1,8 +1,0 @@
-[
-  {
-    "original": "artifacts/target-dependencies/custom/6d1805b7da7e93c08cfc5457abb3b7369f159d9ca7cc9b84d9e516e78622f037/facebook.json",
-    "preserved": "artifacts/live-history-provider-2026-10-06/target-dependencies/facebook-browser.json",
-    "sha256": "91fb7d8dfbb8c5df289da7f1ee2aaa8c5defdec2bf01fdfd7a500cf61b74d64e",
-    "outputDirectory": "/tmp/riddle-quest-facebook-browser-089E6u"
-  }
-]

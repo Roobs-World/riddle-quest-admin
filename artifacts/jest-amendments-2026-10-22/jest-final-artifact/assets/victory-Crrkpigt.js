@@ -1,7 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={ACHIEVEMENT_UNLOCKED:`Pencapaian Terbuka!`,COINS_SUFFIX:` Koin`,NEXT_LEVEL_BUTTON:`Level Selanjutnya`,SHARE_TEXT:`Undang teman · masing-masing 100 koin`,REFERRAL_REWARD_MESSAGE:`Daftar melalui undangan saya dan kita berdua mendapat {coins} koin!`,OPEN_INVITE_MESSAGE:`{name} menantangmu bermain Riddle Quest. Daftar melalui undangan ini dan kalian berdua mendapat {coins} koin!`,REFERRAL_REWARD_TITLE:`Seorang teman bergabung!`,TITLE:`PEKERJAAN BAGUS!`,TOTAL_COINS_LABEL:`Total koin`,YOU_WON_TITLE:`ANDA MENANG!`,SHARE_ATTEMPT_PLURAL:`upaya`,SHARE_ATTEMPT_SINGULAR:`percobaan`,SHARE_CLASSIC_MODE_LABEL:`Mode Klasik`,SHARE_DAILY_CHALLENGE_LABEL:`Tantangan Harian`,SHARE_MESSAGE_TEMPLATE:`Saya menyelesaikan Riddle Quest {gameType} hari ini dalam {attempts} {attemptLabel}!
-
-{emojiGrid}
-
-Bisakah kamu mengalahkan skorku?
-
-#Riddle Quest #WordPuzzle #BrainGame`,SHARE_RESULT_TITLE:`Lihat hasil Riddle Quest saya!`,INVITE_FRIEND:`Undang teman`,REWARD_CLASSIC:`Teka-teki klasik`,REWARD_DAILY:`Teka-teki harian`,REWARD_LEVEL_BONUS:`Bonus naik level`,REWARD_STREAK_BONUS:`Bonus kemenangan beruntun`,REWARD_ACHIEVEMENT_BONUS:`Bonus pencapaian`,REWARD_REFERRAL_BONUS:`Bonus undangan`},n={VictoryModal:t}})))()}r();export{n as default};

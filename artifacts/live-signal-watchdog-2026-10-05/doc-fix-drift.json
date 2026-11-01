@@ -1,6 +1,0 @@
-{
-  "changed": [
-    "packages/portal/src/play/__tests__/firebaseLiveRaceRecovery.test.ts"
-  ],
-  "reason": "Three test-only documentation annotations; production observer and verifier unchanged. All full gates and six builds repeated after this fix."
-}

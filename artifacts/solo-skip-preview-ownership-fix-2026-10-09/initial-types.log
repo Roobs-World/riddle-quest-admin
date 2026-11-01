@@ -1,3 +1,0 @@
-$ tsc -p tsconfig.json --noEmit
-src/play/game/hooks/useProvisionalPlayRecovery.ts(705,13): error TS18048: 'checkpoint.skipPreview' is possibly 'undefined'.
-[ELIFECYCLE] Command failed with exit code 1.

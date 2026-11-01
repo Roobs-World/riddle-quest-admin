@@ -1,7 +1,0 @@
-{"mode":"fresh","viewport":{"width":390,"height":844},"balance":"350","reads":1,"events":1}
-{"mode":"failed","viewport":{"width":390,"height":844},"balance":"350","reads":1,"events":1}
-{"mode":"delayed","viewport":{"width":390,"height":844},"balance":"350","reads":1,"events":1}
-{"mode":"fresh","viewport":{"width":1280,"height":900},"balance":"350","reads":1,"events":1}
-{"mode":"failed","viewport":{"width":1280,"height":900},"balance":"350","reads":1,"events":1}
-{"mode":"delayed","viewport":{"width":1280,"height":900},"balance":"350","reads":1,"events":1}
-PASS: 6 live-result balance/profile return cases

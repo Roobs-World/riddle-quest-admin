@@ -1,7 +1,0 @@
-{
-  "observedAt": "2026-10-01T19:16:42.102626+00:00",
-  "priorProof": "artifacts/race-current-backend-verification/verification-held.json",
-  "previouslyVerifiedFilesRechecked": 148,
-  "changedFiles": [],
-  "scope": "Checks only the files captured by the earlier focused backend verification; no full-source completion claim."
-}

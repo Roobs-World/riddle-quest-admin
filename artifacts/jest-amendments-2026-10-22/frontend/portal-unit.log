@@ -1,7 +1,0 @@
-
-Test Suites: 320 passed, 320 total
-Tests:       3326 passed, 3326 total
-Snapshots:   0 total
-Time:        8.617 s, estimated 9 s
-Ran all test suites.
-Test results written to: ../../artifacts/jest-amendments-2026-10-22/frontend/portal-unit-results.json

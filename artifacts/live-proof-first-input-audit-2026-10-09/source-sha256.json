@@ -1,6 +1,0 @@
-{
-  "packages/portal/src/play/race/LiveRaceGame.tsx": "43ee31f8a215f4600cd6ca5402022271c74b64c8ade45d925db8bf5f154e24a2",
-  "packages/portal/src/play/race/hooks/useLiveRaceDraft.ts": "fc35abb67b39a3c0ce4293da696f5c68aca58c9a549a4ab4ac127f771490a9b7",
-  "packages/portal/src/play/race/logic/liveRaceDraftStorage.ts": "a2e7a2332c68216fb99f36aec8c79059767b1581baaec3dbd9ce21a0f41cd765",
-  "packages/portal/src/play/race/logic/liveRaceDraft.ts": "f8d5054744f83aeb82da58a77917f4e3690587f7c8d8b3350f8477966727b611"
-}

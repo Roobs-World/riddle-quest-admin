@@ -1,7 +1,0 @@
-
-Test Suites: 2 passed, 2 total
-Tests:       52 passed, 52 total
-Snapshots:   0 total
-Time:        180.428 s
-Ran all test suites within paths "src/play/__tests__/profileTour.jest-playwright.test.ts", "src/jest/__tests__/authentication.jest-playwright.test.ts".
-Test results written to: ../../artifacts/jest-route-verification-2026-10-22/browser/final-journeys-results.json

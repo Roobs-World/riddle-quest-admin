@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` Монеты`,CONTINUE_BUTTON:`Отлично`,LEVEL_PREFIX:`Уровень `,TITLE:`Повышайте уровень!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

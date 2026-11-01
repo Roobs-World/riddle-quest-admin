@@ -1,8 +1,0 @@
-{
-  "reconstructedBeforeSha256": "d25d64806af6180839a42df77011812036e591619f8e1ea443daf05de008fe91",
-  "rootPreeditSha256": "d25d64806af6180839a42df77011812036e591619f8e1ea443daf05de008fe91",
-  "preeditMatchesRootInventory": true,
-  "afterSha256": "1ff5d215a7aa3da138ecd2ccc4a4be937a81bf8232a49a75f0ecf708b56d57a7",
-  "reconstruction": "Only the exact newly edited acknowledgement branch was restored from the observed original branch. Entire reconstructed file hash matches root preedit inventory.",
-  "isolatedPatch": "purchases-request.patch"
-}

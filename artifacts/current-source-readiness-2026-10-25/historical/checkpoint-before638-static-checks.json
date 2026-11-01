@@ -1,8 +1,0 @@
-{
-  "status": "final-current-matrix-in-progress",
-  "sourceDigest": "119a3d57559aaa769978ba2eeb5e344824e8be04172e2a016634fc91b56ac8cf",
-  "currentEvidence": "matrix/",
-  "historicalStaticOnlyReport": "historical/interim-static-checks.json",
-  "supersededFullRun": "historical/matrix-0ea5085e8446/archive-summary.json",
-  "note": "Final182 exact commands and192 canonical revalidation receipts are in progress after the tested backend fix. No historical command has been relabelled current."
-}

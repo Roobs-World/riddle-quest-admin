@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       31 passed, 31 total
-Snapshots:   0 total
-Time:        0.287 s, estimated 1 s
-Ran all test suites matching src/play/__tests__/skipPreviewOwnership.test.ts|src/play/__tests__/skipSuccessorOwnership.test.ts|src/play/__tests__/terminalPaidLiveness.test.ts|src/play/__tests__/terminalPaidReceiptPresentation.test.ts.

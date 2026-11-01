@@ -1,6 +1,0 @@
-
-Test Suites: 2 passed, 2 total
-Tests:       15 passed, 15 total
-Snapshots:   0 total
-Time:        0.188 s, estimated 1 s
-Ran all test suites within paths "src/youtube/__tests__/input.test.ts", "src/play/race/__tests__/raceInput.test.ts".

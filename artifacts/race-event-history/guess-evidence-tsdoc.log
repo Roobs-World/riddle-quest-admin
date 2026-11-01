@@ -1,4 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 1 production declarations are undocumented.
-- packages/portal/src/play/race/__tests__/RaceSessionGuessEvidence.test.ts:55 active
-[ELIFECYCLE] Command failed with exit code 1.

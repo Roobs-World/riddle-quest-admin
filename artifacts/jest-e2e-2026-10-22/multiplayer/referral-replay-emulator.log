@@ -1,3 +1,0 @@
-PASS failed pre-commit attempt leaves no receipt or wallet mutation
-PASS later reconciliation grants the previously uncommitted conversion
-PASS ignored/lost success response plus concurrent replay credits both wallets exactly once

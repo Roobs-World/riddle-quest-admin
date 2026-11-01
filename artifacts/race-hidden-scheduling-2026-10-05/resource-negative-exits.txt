@@ -1,3 +1,0 @@
-interval 1
-bridge 1
-visibility 1

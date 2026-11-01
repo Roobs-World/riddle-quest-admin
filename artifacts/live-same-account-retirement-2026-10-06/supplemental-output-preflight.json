@@ -1,5 +1,0 @@
-{
-  "resolution": "A supplemental leave-recovery invocation used LIVE_LEAVE_REPORT_DIR, but the existing harness reads LIVE_RACE_REPORT_DIR. It exited0 and wrote its default artifacts/live-leave-recovery directory. Replayed with the exact supported variable into this owned report directory. No source was changed by this command.",
-  "wrongInvocationExitCode": 0,
-  "correctedLog": "active-close-recovery-final.log"
-}

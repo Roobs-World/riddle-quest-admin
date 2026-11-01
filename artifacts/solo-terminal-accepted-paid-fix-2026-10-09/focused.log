@@ -1,5 +1,0 @@
-Test Suites: 1 passed, 1 total
-Tests:       4 passed, 4 total
-Snapshots:   0 total
-Time:        0.281 s
-Ran all test suites matching src/play/__tests__/terminalPaidReceiptPresentation.test.ts.

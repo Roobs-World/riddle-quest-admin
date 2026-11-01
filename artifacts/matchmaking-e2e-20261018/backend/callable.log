@@ -1,7 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       130 passed, 130 total
-Snapshots:   0 total
-Time:        1.308 s
-Ran all test suites within paths "src/__tests__/callableSecurity.test.ts", "src/__tests__/race/raceCallables.test.ts", "src/__tests__/race/raceLiveRetirementCallables.test.ts", "src/__tests__/race/raceLiveGuessReceiptCallables.test.ts", "src/__tests__/race/raceLiveStreamingCallables.test.ts".
-Test results written to: ../artifacts/matchmaking-e2e-20261018/backend/callable-results.json

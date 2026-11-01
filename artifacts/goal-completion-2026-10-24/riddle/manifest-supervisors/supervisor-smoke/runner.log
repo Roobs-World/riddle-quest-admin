@@ -1,3 +1,0 @@
-Start 177 at 2026-10-24T01:54:51.902Z: node --test scripts/release/development-source-digest.test.mjs
-passed 177 at 2026-10-24T01:54:52.601Z; source matches true
-{"selected":1,"recorded":1,"failed":[],"report":"artifacts/development-checks/goal-20261024-supervisor-smoke/96e2b6b6f58b0e8a00d299435c643cc5a2fa034072e910213e9cf7a707a75402.json","sourceStillMatches":true}

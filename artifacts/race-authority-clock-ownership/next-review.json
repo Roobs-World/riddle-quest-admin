@@ -1,6 +1,0 @@
-{
-  "candidate": "Hosted race reload restores blank rows despite three authoritative used attempts.",
-  "reportedByThread": "01a0ef3b-6f07-7b31-9444-3732ae46886e",
-  "reportedAtCursor": "ca1113f1-1e2a-495b-bbf2-3eb9212d8dc0:72",
-  "nextAction": "Inspect canonical resume history, draft restore and board attempt accounting; verify independently before fixing. Preserve the active pathway chat files and evidence."
-}

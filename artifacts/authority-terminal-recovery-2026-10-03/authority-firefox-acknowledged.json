@@ -1,8 +1,0 @@
-{
-  "content": [
-    {
-      "type": "text",
-      "text": "Script ran on page and returned:\n```json\n{\n  \"profile\": {\n    \"username\": \"Guest Solver\",\n    \"coins\": 0,\n    \"level\": 1,\n    \"xp\": 0,\n    \"winStreak\": 0,\n    \"gamesPlayed\": 1,\n    \"wins\": 1,\n    \"achievements\": [],\n    \"classicIndex\": 2\n  },\n  \"nextDisabled\": false,\n  \"cleared\": true,\n  \"guessRequests\": 0,\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
-    }
-  ]
-}

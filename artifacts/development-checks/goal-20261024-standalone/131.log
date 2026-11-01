@@ -1,9 +1,0 @@
-Guess evidence UI passed: 1280px correct-missing-event; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 1280px correct-wrong-question; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 1280px correct-flags; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 1280px automatic-missing-charge; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 390px correct-missing-event; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 390px correct-wrong-question; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 390px correct-flags; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Guess evidence UI passed: 390px automatic-missing-charge; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-

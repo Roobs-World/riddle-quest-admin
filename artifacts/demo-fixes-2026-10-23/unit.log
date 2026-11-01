@@ -1,7 +1,0 @@
-
-Test Suites: 19 skipped, 321 passed, 321 of 340 total
-Tests:       129 skipped, 3349 passed, 3478 total
-Snapshots:   0 total
-Time:        10.471 s, estimated 1681 s
-Ran all test suites.
-Test results written to: ../../artifacts/demo-fixes-2026-10-23/unit-results.json

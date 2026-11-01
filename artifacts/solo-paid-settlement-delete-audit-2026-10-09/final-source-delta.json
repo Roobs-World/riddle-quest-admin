@@ -1,9 +1,0 @@
-{
-  "changed": [
-    "packages/portal/src/play/__tests__/paidSettlementPersistence.test.ts",
-    "packages/portal/src/play/pendingGuessJournal.ts",
-    "packages/portal/src/play/paidSettlement.ts"
-  ],
-  "productionEdits": "Documentation only; emitted JavaScript equivalence verified",
-  "testEdit": "Use valid request ID and assert initial fixture validity"
-}

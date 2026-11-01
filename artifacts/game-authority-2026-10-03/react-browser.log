@@ -1,4 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ node scripts/verify-single-player-recovery-browser.mjs
-PASS 1280px: effect replay, completion/startup reconnect, fresh profile, and unmount ownership
-PASS 390px: effect replay, completion/startup reconnect, fresh profile, and unmount ownership

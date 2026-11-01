@@ -1,2 +1,0 @@
-$ node scripts/audit-facebook-visible-copy.mjs
-Facebook visible-copy audit passed: 16 locales, 704 required translations

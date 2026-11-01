@@ -1,7 +1,0 @@
-$ cross-env NODE_ENV=test jest --config jest.config.js --runInBand
-
-Test Suites: 39 passed, 39 total
-Tests:       391 passed, 391 total
-Snapshots:   0 total
-Time:        1.115 s
-Ran all test suites.

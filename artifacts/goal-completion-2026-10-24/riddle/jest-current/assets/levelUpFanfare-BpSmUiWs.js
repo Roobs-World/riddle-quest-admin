@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` 동전`,CONTINUE_BUTTON:`굉장해요`,LEVEL_PREFIX:`레벨 `,TITLE:`레벨업!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

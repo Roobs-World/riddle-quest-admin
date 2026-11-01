@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       73 passed, 73 total
-Snapshots:   0 total
-Time:        0.888 s, estimated 1 s
-Ran all test suites matching src/__tests__/firestoreService.test.ts|src/__tests__/completeGameTransaction.test.ts|src/__tests__/completeGameSecurity.test.ts.

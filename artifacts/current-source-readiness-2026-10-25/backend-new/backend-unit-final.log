@@ -1,7 +1,0 @@
-
-Test Suites: 7 passed, 7 total
-Tests:       56 passed, 56 total
-Snapshots:   0 total
-Time:        1.311 s, estimated 2 s
-Ran all test suites within paths "src/__tests__/race/raceLiveScoring.test.ts", "src/__tests__/race/raceLiveLatency.test.ts", "src/__tests__/race/raceLiveSettlementLatency.test.ts", "src/__tests__/race/raceLiveObservation.test.ts", "src/__tests__/race/raceLiveFailures.test.ts", "src/__tests__/race/raceLiveRetirementCallables.test.ts", "src/__tests__/race/raceLiveStreamingCallables.test.ts".
-Test results written to: ../artifacts/current-source-readiness-2026-10-25/backend-new/backend-unit-final-results.json

@@ -1,7 +1,0 @@
-{
-  "ownedProbeNodeProcessesRemaining": [],
-  "jobsReachedTerminal": 10,
-  "browserAndServerClosure": "each probe finally closes its owned browser and server",
-  "temporaryArtifactCopies": 0,
-  "productionInstrumentation": false
-}

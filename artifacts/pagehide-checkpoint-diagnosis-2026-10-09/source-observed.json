@@ -1,6 +1,0 @@
-{
-  "packages/portal/src/play/game/hooks/useGameSessionPersistence.ts": "614a659efa5fd92f26399ed1d3ba01fe67cc3013bfb1d1a68ea6a0249c8f7560",
-  "packages/portal/src/play/GameSessionCheckpoints.ts": "50f5a2b9893c97439d4f795aa387a56ed17e5b21e465244644da329680eb0660",
-  "packages/portal/src/play/gameSession.ts": "1382f8554914e581ee03d77f8ad6cee4b15eaca8f85dd38ca77bdd55d1e1e8f8",
-  "artifacts/pagehide-checkpoint-diagnosis-2026-10-09/probe.mjs": "c9f252adcb656a2fae1596503acb12a02b879adf6d666e9d7fa1df2ba2a403ff"
-}

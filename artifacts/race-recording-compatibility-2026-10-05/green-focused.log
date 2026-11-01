@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       90 passed, 90 total
-Snapshots:   0 total
-Time:        0.83 s, estimated 1 s
-Ran all test suites matching src/__tests__/race/raceService.test.ts|src/__tests__/race/raceDeckSnapshot.test.ts|src/__tests__/race/raceStoredRecords.test.ts.

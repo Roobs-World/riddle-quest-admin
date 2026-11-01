@@ -1,8 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ jest --config jest.config.cjs --runInBand --runTestsByPath src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts '--testNamePattern=rejects inconsistent hint confirmations|preserves the player.s draft through projected|preserves solving time when hint and skip|recovers lost hint and skip confirmations'
-
-Test Suites: 1 skipped, 1 passed, 1 of 2 total
-Tests:       17 skipped, 4 passed, 21 total
-Snapshots:   0 total
-Time:        64.992 s, estimated 98 s
-Ran all test suites within paths "src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts", "src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts".

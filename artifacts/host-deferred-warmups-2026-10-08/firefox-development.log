@@ -1,8 +1,0 @@
-{
-  "mode": "development",
-  "engine": "firefox",
-  "browserVersion": "153.0",
-  "cases": 9,
-  "checks": 45,
-  "failures": []
-}

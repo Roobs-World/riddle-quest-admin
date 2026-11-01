@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       76 passed, 76 total
-Snapshots:   0 total
-Time:        0.389 s, estimated 1 s
-Ran all test suites within paths "src/youtube/__tests__/YouTubeSaveGate.test.ts", "src/youtube/__tests__/LocalSoloAuthority.test.ts", "src/youtube/__tests__/save.test.ts", "src/play/__tests__/GameSessionCheckpoints.test.ts".

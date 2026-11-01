@@ -1,8 +1,0 @@
-{
-  "engine": "chromium",
-  "mode": "development",
-  "browserVersion": "153.0.8010.12",
-  "cases": 117,
-  "checks": 1392,
-  "failures": []
-}

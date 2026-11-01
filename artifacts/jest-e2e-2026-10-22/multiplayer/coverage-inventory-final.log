@@ -1,1 +1,0 @@
-E2E coverage audit passed: 19 Playwright suites and 94 emulator suites are reachable through pnpm test:e2e.

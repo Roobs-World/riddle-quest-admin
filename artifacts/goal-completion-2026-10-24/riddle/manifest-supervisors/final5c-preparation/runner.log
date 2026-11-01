@@ -1,5 +1,0 @@
-Start 4 at 2026-10-24T02:05:09.463Z: pnpm check:types
-passed 4 at 2026-10-24T02:05:15.986Z; source matches true
-Start 12 at 2026-10-24T02:05:17.098Z: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions run pretest:race:coverage
-passed 12 at 2026-10-24T02:05:23.393Z; source matches true
-{"selected":2,"recorded":2,"failed":[],"report":"artifacts/development-checks/goal-20261024-final5c-preparation/8491fe2641455299eb3b556e77c08deed360ca590e7854ebe872706dd240b89e.json","sourceStillMatches":true}

@@ -1,8 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ cross-env NODE_ENV=test jest --config jest.config.js --runInBand --runTestsByPath src/game/__tests__/achievementMilestones.test.ts src/game/__tests__/achievementRewards.test.ts
-
-Test Suites: 2 passed, 2 total
-Tests:       5 passed, 5 total
-Snapshots:   0 total
-Time:        0.168 s, estimated 1 s
-Ran all test suites within paths "src/game/__tests__/achievementMilestones.test.ts", "src/game/__tests__/achievementRewards.test.ts".

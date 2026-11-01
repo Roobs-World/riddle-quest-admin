@@ -1,6 +1,0 @@
-Hint and manual skip at nine solves produced a fresh, unscored question at 1280px.
-Live PvP passed at 1280px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
-Hint and exhausted guesses at nine solves produced a fresh, unscored question at 390px.
-Live PvP passed at 390px: intro, lobby identities, five-second countdown, two-player progress, immediate victory and 50 coins.
-Retired links, category selection, PvP-only return navigation and missing live capability passed.
-Bot fallback UI passed at 390px; server deadline advanced through the injected transport.

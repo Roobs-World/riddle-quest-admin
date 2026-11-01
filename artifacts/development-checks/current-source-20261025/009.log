@@ -1,3 +1,0 @@
-$ node scripts/audit-function-capacity.mjs && node scripts/audit-backend-scalability.mjs
-Function capacity audit passed: no reserved warm instances.
-Backend scalability audit passed.

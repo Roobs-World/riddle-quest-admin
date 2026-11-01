@@ -1,8 +1,0 @@
-Checking keyboard.type retains every burst letter
-PASS keyboard.type retains every burst letter
-Checking same-task-keydown retains every burst letter
-PASS same-task-keydown retains every burst letter
-Checking microtask-keydown retains every burst letter
-PASS microtask-keydown retains every burst letter
-Checking keydown-up-sequence retains every burst letter
-PASS keydown-up-sequence retains every burst letter

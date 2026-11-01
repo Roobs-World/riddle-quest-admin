@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       37 passed, 37 total
-Snapshots:   0 total
-Time:        0.202 s, estimated 1 s
-Ran all test suites matching src/youtube/__tests__/content.test.ts|src/youtube/__tests__/LocalSoloAuthority.test.ts|src/youtube/__tests__/YouTubeSaveGate.test.ts.

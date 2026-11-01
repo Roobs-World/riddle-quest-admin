@@ -1,6 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-Test Suites: 1 passed, 1 total
-Tests:       41 skipped, 5 passed, 46 total
-Snapshots:   0 total
-Time:        25.982 s, estimated 151 s
-Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed".

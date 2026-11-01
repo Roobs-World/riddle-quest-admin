@@ -1,8 +1,0 @@
-{
-  "target": "jest",
-  "equal": true,
-  "previousBrowserEvidence": "42 scoped cases pass, 31 recorded-race cases unresolved",
-  "filesBefore": 404,
-  "filesAfter": 404,
-  "changed": []
-}

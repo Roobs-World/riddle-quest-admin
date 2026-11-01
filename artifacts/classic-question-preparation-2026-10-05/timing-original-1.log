@@ -1,2 +1,0 @@
-{"run":0,"cpuRate":12,"domObserver":false,"longObserver":false,"guidanceSeen":false,"clickReturnMs":8.399999998509884,"domCommitMs":null,"rafObservedMs":139.20000000298023,"nextFrameMs":170.80000000447035,"guidanceBefore":null,"guidanceAfter":"leaderboardFifthCorrectAnswer","frameTimes":[-11.099999995529743,72.20000000447044,105.6000000044703],"longTasks":[],"held":1,"delivered":1}
-{"runs":1,"over100ms":1,"maxDomCommitMs":null,"maxRafObservedMs":139.20000000298023}

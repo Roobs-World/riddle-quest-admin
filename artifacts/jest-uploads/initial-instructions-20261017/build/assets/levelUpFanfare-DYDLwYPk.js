@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` Paralar`,CONTINUE_BUTTON:`Muhteşem`,LEVEL_PREFIX:`Seviye `,TITLE:`Seviye Atlayın!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

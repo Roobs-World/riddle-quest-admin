@@ -157,3 +157,6 @@ artifacts/**/built/
 
 # Local source snapshot captured during verification; too large for GitHub
 artifacts/goal-completion-2026-10-24/riddle/final/upload-source/
+
+# Test reports, verification evidence, and release snapshots stay local
+artifacts/

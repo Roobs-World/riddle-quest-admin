@@ -1,8 +1,0 @@
-{
-  "scope": "Current-source regression rerun; copied immediately after the owned command completed. Package defaults wrote their current observations into existing dated report folders. Current-pass copies live here.",
-  "runs": [
-    "scheduling",
-    "retirement",
-    "countdown"
-  ]
-}

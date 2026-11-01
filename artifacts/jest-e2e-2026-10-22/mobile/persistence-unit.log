@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       66 passed, 66 total
-Snapshots:   0 total
-Time:        0.54 s, estimated 1 s
-Ran all test suites within paths "src/play/__tests__/GameSessionCheckpoints.test.ts", "src/play/__tests__/gameSessionPersistence.test.ts", "src/play/__tests__/paidSettlementPersistence.test.ts", "src/jest/__tests__/useJestPlayerStateWrites.test.ts".

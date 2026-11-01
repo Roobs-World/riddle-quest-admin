@@ -1,6 +1,0 @@
-
-Test Suites: 7 passed, 7 total
-Tests:       94 passed, 94 total
-Snapshots:   0 total
-Time:        0.577 s, estimated 2 s
-Ran all test suites within paths "src/__tests__/race/raceDeliveryRecords.test.ts", "src/__tests__/race/raceLiveLatency.test.ts", "src/__tests__/race/raceReadService.test.ts", "src/__tests__/facebookReferrals.test.ts", "src/__tests__/facebookFeatureFlags.test.ts", "src/__tests__/race/raceMatchPerformance.test.ts", "src/__tests__/race/raceLiveScoring.test.ts".

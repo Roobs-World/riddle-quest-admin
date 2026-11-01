@@ -1,8 +1,0 @@
-{
-  "sourceEvidence": "artifacts/race-invitation-creator-recovery-2026-10-05/verification-summary.json",
-  "unchangedBackendCoreInputs": true,
-  "reusedBackendUnitTests": 1722,
-  "reusedEmulatorCases": 641,
-  "additionalLiveCreatorCases": 4,
-  "noFreshFullSuiteClaim": true
-}

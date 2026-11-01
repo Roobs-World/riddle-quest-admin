@@ -1,8 +1,0 @@
-{
-  "changed": [
-    "packages/portal/src/play/__tests__/pendingJournalPresentation.test.tsx",
-    "packages/portal/src/play/gameSession.ts"
-  ],
-  "added": [],
-  "removed": []
-}

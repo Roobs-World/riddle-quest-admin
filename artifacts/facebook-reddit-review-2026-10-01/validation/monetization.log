@@ -1,2 +1,0 @@
-$ node scripts/audit-platform-monetization.mjs
-Platform monetization audit passed for 55 targets.

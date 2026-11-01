@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-export pnpm_config_verify_deps_before_run=false
-python3 artifacts/live-destination-capability-2026-10-06/run-job.py firefox-development firefox-development.log env LIVE_DEST_MODE=development LIVE_DEST_BROWSER=firefox LIVE_DEST_REPORT_DIR=../../artifacts/live-destination-capability-2026-10-06/firefox-development LIVE_DEST_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox pnpm --dir packages/portal exec node scripts/verify-live-destination-capability-browser.mjs
-python3 artifacts/live-destination-capability-2026-10-06/run-job.py firefox-production firefox-production.log env LIVE_DEST_MODE=production LIVE_DEST_BROWSER=firefox LIVE_DEST_REPORT_DIR=../../artifacts/live-destination-capability-2026-10-06/firefox-production LIVE_DEST_FIREFOX_EXECUTABLE=/home/craig-beswetherick/.cache/ms-playwright/firefox-1538/firefox/firefox pnpm --dir packages/portal exec node scripts/verify-live-destination-capability-browser.mjs

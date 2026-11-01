@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` moedas`,TITLE:`Moedas adicionadas!`},n={CoinPurchase:t}})))()}r();export{n as default};

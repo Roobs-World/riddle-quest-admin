@@ -1,7 +1,0 @@
-{
-  "game": "packages/portal/src/play/race/LiveRaceGame.tsx",
-  "retirement": "packages/portal/src/play/race/logic/liveRaceRetirement.ts",
-  "units": "packages/portal/src/play/race/__tests__/liveRaceRetirement.test.ts",
-  "harness": "packages/portal/scripts/verify-live-retired-leave-recovery-browser.mjs",
-  "package": "packages/portal/package.json"
-}

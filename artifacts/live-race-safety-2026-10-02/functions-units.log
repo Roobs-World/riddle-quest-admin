@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       27 passed, 27 total
-Snapshots:   0 total
-Time:        0.583 s, estimated 1 s
-Ran all test suites within paths "src/__tests__/socialSafetyCallables.test.ts", "src/__tests__/socialSafety.test.ts", "src/__tests__/redditGameplayEndpoint.test.ts", "src/__tests__/sentryHandlers.test.ts".

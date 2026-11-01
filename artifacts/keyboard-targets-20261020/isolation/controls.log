@@ -1,6 +1,0 @@
-{
-  "mode": "production",
-  "authority": "local UI fixtures using real shared components",
-  "checks": 165,
-  "failures": []
-}

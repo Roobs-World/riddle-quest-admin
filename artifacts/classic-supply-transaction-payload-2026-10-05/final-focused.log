@@ -1,6 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       54 passed, 54 total
-Snapshots:   0 total
-Time:        1.249 s
-Ran all test suites matching src/__tests__/classicSupplyWorker.test.ts|src/__tests__/riddleSupply.test.ts|src/__tests__/singlePlayerContentPreparationLatency.test.ts|src/__tests__/singlePlayerSkipPreparationLatency.test.ts|src/__tests__/completeGameTransaction.test.ts.

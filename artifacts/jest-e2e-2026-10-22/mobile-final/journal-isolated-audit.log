@@ -1,8 +1,0 @@
-file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-jest-artifact.mjs:140
-  throw new Error(
-        ^
-
-Error: Initial Jest resources are 0.55 MB; budget is 0.55 MB
-    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/audit-jest-artifact.mjs:140:9
-
-Node.js v24.17.0

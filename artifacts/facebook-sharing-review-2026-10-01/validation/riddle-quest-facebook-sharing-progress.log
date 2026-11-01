@@ -1,2 +1,0 @@
-$ node scripts/validate-facebook-progress.mjs
-Facebook progress tracker passed: 20/53 complete (38%), 2026-10-01T05:13:20+01:00

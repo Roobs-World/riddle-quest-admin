@@ -1,5 +1,0 @@
-$ node scripts/verify-game-bridge-errors-browser.mjs && GAME_BRIDGE_ERRORS_REACT_MODE=production node scripts/verify-game-bridge-errors-browser.mjs
-PASS development 1280px game bridge errors
-PASS development 390px game bridge errors
-PASS production 1280px game bridge errors
-PASS production 390px game bridge errors

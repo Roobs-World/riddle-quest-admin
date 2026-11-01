@@ -1,7 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       94 passed, 94 total
-Snapshots:   0 total
-Time:        27.923 s
-Ran all test suites within paths "src/__tests__/race/raceLivePublicWait.it.test.ts", "src/__tests__/race/raceLiveIdentityPayload.it.test.ts", "src/__tests__/race/raceLiveInvitation.it.test.ts", "src/__tests__/race/raceLiveCreatorRecovery.it.test.ts", "src/__tests__/race/raceLiveDeckCompatibility.it.test.ts".
-Test results written to: ../artifacts/performance-current-20261019/backend/regressions.json

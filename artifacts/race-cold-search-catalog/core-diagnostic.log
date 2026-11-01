@@ -1,6 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ tsc -p tsconfig.build.json
-src/validation/dailyCalendar.ts(6,60): error TS2353: Object literal may only specify known properties, and 'zh' does not exist in type 'Readonly<Record<"ar" | "de" | "en" | "es" | "fr" | "hi" | "id" | "it" | "ja" | "ko" | "nl" | "pl" | "pt" | "ru" | "tr" | "vi", string>>'.
-/home/craig-beswetherick/Documents/riddle-quest/packages/core:
-[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @qwordly/core@0.1.0 build: `tsc -p tsconfig.build.json`
-Exit status 2

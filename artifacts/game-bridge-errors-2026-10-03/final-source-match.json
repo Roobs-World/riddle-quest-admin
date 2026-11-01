@@ -1,6 +1,0 @@
-{
-  "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": true,
-  "packages/portal/src/observability/browserErrorReporter.ts": true,
-  "packages/portal/src/observability/__tests__/browserErrorReporter.test.ts": true,
-  "packages/portal/scripts/verify-game-bridge-errors-browser.mjs": true
-}

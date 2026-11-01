@@ -1,7 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-
-Test Suites: 2 passed, 2 total
-Tests:       2 passed, 2 total
-Snapshots:   0 total
-Time:        72.765 s, estimated 75 s
-Ran all test suites matching src/play/__tests__/viewportFit.jest-playwright.test.ts|src/play/__tests__/hostedBrowser.jest-playwright.test.ts.

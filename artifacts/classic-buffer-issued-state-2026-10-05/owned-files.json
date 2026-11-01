@@ -1,9 +1,0 @@
-{
-  "session": "firebase-functions/src/gameplay/singlePlayerSession.ts",
-  "session-types": "firebase-functions/src/gameplay/singlePlayerSessionTypes.ts",
-  "buffer": "firebase-functions/src/daily/classicRiddleBuffer.ts",
-  "buffer-test": "firebase-functions/src/__tests__/classicRiddleBufferLatency.test.ts",
-  "daily-test": "firebase-functions/src/__tests__/dailyChallenge.test.ts",
-  "latency-test": "firebase-functions/src/__tests__/classicRiddleBufferIssuanceLatency.test.ts",
-  "emulator-test": "firebase-functions/src/__tests__/classicBufferIssuedState.it.test.ts"
-}

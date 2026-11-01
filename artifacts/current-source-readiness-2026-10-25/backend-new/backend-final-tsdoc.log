@@ -1,3 +1,0 @@
-[WARN] Unsupported engine: wanted: {"node":">=24.17.0"} (current: {"node":"v22.23.1","pnpm":"11.21.0"})
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit passed: 28937 declarations are documented across 1258 files.

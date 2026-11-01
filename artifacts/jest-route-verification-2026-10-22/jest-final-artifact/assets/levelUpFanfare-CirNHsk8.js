@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` Koin`,CONTINUE_BUTTON:`Luar biasa`,LEVEL_PREFIX:`Tingkat `,TITLE:`Naik Level!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

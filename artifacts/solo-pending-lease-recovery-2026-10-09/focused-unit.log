@@ -1,6 +1,0 @@
-
-Test Suites: 2 passed, 2 total
-Tests:       61 passed, 61 total
-Snapshots:   0 total
-Time:        0.23 s, estimated 1 s
-Ran all test suites within paths "src/play/__tests__/pendingGuessJournal.test.ts", "src/play/__tests__/useProvisionalPlayRecovery.test.ts".

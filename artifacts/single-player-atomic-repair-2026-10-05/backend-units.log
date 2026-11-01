@@ -1,8 +1,0 @@
-(node:48894) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
-(Use `node --trace-warnings ...` to show where the warning was created)
-
-Test Suites: 130 passed, 130 total
-Tests:       1600 passed, 1600 total
-Snapshots:   0 total
-Time:        22.452 s
-Ran all test suites.

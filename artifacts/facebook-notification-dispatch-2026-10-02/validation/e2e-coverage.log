@@ -1,5 +1,0 @@
-$ node scripts/audit-e2e-coverage.mjs
-E2E coverage audit failed:
-- Playwright suites missing from portal scripts: packages/portal/src/youtube/__tests__/achievementMilestones.jest-playwright.test.ts
-- Emulator integration suites missing from jest.rules.config.js: firebase-functions/src/__tests__/race/raceLiveInvitation.it.test.ts
-[ELIFECYCLE] Command failed with exit code 1.

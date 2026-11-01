@@ -1,7 +1,0 @@
-{
-  "exitCode": 1,
-  "operation": "gh pr edit --body-file",
-  "cause": "GraphQL repository.pullRequest.projectCards queries deprecated Projects classic",
-  "nextOperation": "Official REST PATCH same pull request body via JSON input file",
-  "approvalRejection": false
-}

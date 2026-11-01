@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BX80bFGj.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` Xu xu`,CONTINUE_BUTTON:`Tuyệt vời`,LEVEL_PREFIX:`Cấp độ `,TITLE:`Tăng cấp!`},n={LevelUpFanfare:t}})))()}r();export{n as default};

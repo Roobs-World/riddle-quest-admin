@@ -1,8 +1,0 @@
-[
-  {
-    "tool": "firefox_devtools.get_firefox_info",
-    "outcome": "error",
-    "message": "Process (pid=535620) unexpectedly closed with status 0",
-    "browserObservation": false
-  }
-]

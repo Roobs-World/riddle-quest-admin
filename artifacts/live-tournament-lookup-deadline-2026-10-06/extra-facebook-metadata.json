@@ -1,8 +1,0 @@
-[
-  {
-    "original": "artifacts/target-dependencies/custom/88921fa2d44b661f79adfe03288536ecca20fb2a4b92cf9d5fbf4b96988ac7ee/facebook.json",
-    "preserved": "artifacts/live-tournament-lookup-deadline-2026-10-06/target-dependencies/facebook-browser.json",
-    "sha256": "0ad78bde3a8e88a22e99741c2ce5c83bdea52364680af1e9ca2210c470b27cb7",
-    "outputDirectory": "/tmp/riddle-quest-facebook-browser-8S36pH"
-  }
-]

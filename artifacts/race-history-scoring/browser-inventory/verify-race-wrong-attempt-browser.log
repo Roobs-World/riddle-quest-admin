@@ -1,6 +1,0 @@
-Wrong attempt UI passed: 1280px first; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Wrong attempt UI passed: 1280px later; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Wrong attempt UI passed: 1280px legacy; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Wrong attempt UI passed: 390px first; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Wrong attempt UI passed: 390px later; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.
-Wrong attempt UI passed: 390px legacy; rejected acknowledgement restores submitted input, one resume recovers without resubmitting.

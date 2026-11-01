@@ -1,6 +1,0 @@
-{
-  "changedInputs": [
-    "packages/portal/src/play/gameSession.ts"
-  ],
-  "reason": "Added declaration documentation required by TSDoc gate; no behavior changed. Client units and injected matrix preceded this comment-only change; all final target builds and built browser checks use final freeze."
-}

@@ -1,8 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ jest --config jest.config.cjs --runInBand '--testPathPatterns=RaceSessionHistoryScoring|RaceSessionHistoryCheckpoints|RaceSessionConcurrentHintHistory|RaceSessionGuessFeedback|RaceSessionHistoryNormalization|RaceSessionConfirmedGuessRetention'
-
-Test Suites: 6 passed, 6 total
-Tests:       32 passed, 32 total
-Snapshots:   0 total
-Time:        0.391 s, estimated 1 s
-Ran all test suites matching RaceSessionHistoryScoring|RaceSessionHistoryCheckpoints|RaceSessionConcurrentHintHistory|RaceSessionGuessFeedback|RaceSessionHistoryNormalization|RaceSessionConfirmedGuessRetention.

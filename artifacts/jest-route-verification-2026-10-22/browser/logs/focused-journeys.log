@@ -1,7 +1,0 @@
-
-Test Suites: 7 passed, 7 total
-Tests:       29 passed, 29 total
-Snapshots:   0 total
-Time:        153.368 s
-Ran all test suites within paths "src/play/__tests__/profileTour.jest-playwright.test.ts", "src/play/__tests__/queuedCoinActions.jest-playwright.test.ts", "src/play/__tests__/coinCollection.jest-playwright.test.ts", "src/play/__tests__/musicStart.jest-playwright.test.ts", "src/play/__tests__/instructionsModalScroll.jest-playwright.test.ts", "src/play/__tests__/viewportFit.jest-playwright.test.ts", "src/play/__tests__/hostedBrowser.jest-playwright.test.ts".
-Test results written to: ../../artifacts/jest-route-verification-2026-10-22/browser/focused-journeys-results.json

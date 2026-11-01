@@ -1,2 +1,0 @@
-Maintainable-file size audit failed:
-- packages/portal/src/jest/__tests__/authentication.jest-playwright.test.ts: 1221 equivalent lines (limit 1200)

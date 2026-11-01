@@ -1,5 +1,0 @@
-{
-  "controls": "packages/portal/src/play/GameFrameControls.tsx",
-  "styles": "packages/portal/src/styles.puzzle.css",
-  "hook": "packages/portal/src/input/useGuessGlyphFit.ts"
-}

@@ -1,4 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit passed: 18909 declarations are documented across 834 files.
-$ node scripts/audit-backend-scalability.mjs
-Backend scalability audit passed.

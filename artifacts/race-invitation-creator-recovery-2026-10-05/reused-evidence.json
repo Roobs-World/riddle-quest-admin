@@ -1,8 +1,0 @@
-{
-  "sourceEvidence": "artifacts/race-catalog-validation-work-2026-10-05/verification-summary.json",
-  "unchangedSourceInputs": 2386,
-  "freshNewSdkCases": 4,
-  "reusedBackendUnitTests": 1722,
-  "reusedEmulatorCases": 641,
-  "noFreshFullSuiteClaim": true
-}

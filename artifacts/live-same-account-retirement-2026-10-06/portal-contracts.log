@@ -1,6 +1,0 @@
-
-Test Suites: 6 passed, 6 total
-Tests:       120 passed, 120 total
-Snapshots:   0 total
-Time:        0.417 s, estimated 1 s
-Ran all test suites matching src/play/race/__tests__/liveRaceRetirement.test.ts|src/play/race/__tests__/liveRaceDeliveryDeadline.test.ts|src/play/race/__tests__/liveRaceInvitationFailure.test.ts|src/reddit/__tests__/RedditPlatformBootstrap.test.ts|src/__tests__/firebase.test.ts|src/play/__tests__/firebaseRaceMatchmaking.test.ts.

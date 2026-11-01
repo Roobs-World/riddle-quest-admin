@@ -1,3 +1,0 @@
-$ tsc -p tsconfig.json --noEmit
-src/play/paidSettlement.ts(1,112): error TS2206: The 'type' modifier cannot be used on a named import when 'import type' is used on its import statement.
-[ELIFECYCLE] Command failed with exit code 1.

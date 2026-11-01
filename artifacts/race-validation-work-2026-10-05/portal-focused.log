@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       37 passed, 37 total
-Snapshots:   0 total
-Time:        0.435 s, estimated 1 s
-Ran all test suites matching src/play/race/__tests__/raceInput.test.ts|src/play/race/__tests__/RaceSessionKnownAnswerFeedback.test.ts|src/play/race/__tests__/RaceSessionKnownAnswerReveals.test.ts|src/play/race/__tests__/RaceSessionGuessFeedback.test.ts.
