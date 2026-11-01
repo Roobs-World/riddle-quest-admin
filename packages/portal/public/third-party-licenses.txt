@@ -88,7 +88,7 @@ Dependency inventory
 - lodash.camelcase@4.3.0 | MIT | https://lodash.com/
 - long@5.3.2 | Apache-2.0 | https://github.com/dcodeIO/long.js#readme
 - protobufjs@7.6.5 | BSD-3-Clause | https://protobufjs.github.io/protobuf.js/
-- re2js@2.8.6 | MIT | https://github.com/le0pard/re2js#readme
+- re2js@2.9.1 | MIT | https://github.com/le0pard/re2js#readme
 - react-dom@19.3.0 | MIT | https://react.dev/
 - react@19.3.0 | MIT | https://react.dev/
 - require-directory@2.1.1 | MIT | https://github.com/troygoode/node-require-directory/
@@ -1435,7 +1435,7 @@ standalone and requires a support library to be linked with it. This
 support library is itself covered by the above license.
 
 ===============================================================================
-Packages: re2js@2.8.6
+Packages: re2js@2.9.1
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
