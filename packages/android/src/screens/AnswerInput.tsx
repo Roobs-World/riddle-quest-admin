@@ -34,7 +34,9 @@ export type AnswerInputProps = Readonly<{
  *
  * @remarks
  * The editor stays empty: committed text is consumed into grapheme slots by the
- * authority, exactly as the web Playable consumes its native input.
+ * authority, exactly as the web Playable consumes its native input. While the
+ * Latin shortcut keys are shown the system keyboard stays hidden so it cannot
+ * cover them; hardware keyboards still type into the focused editor.
  */
 export function AnswerInput({inputRef, disabled, locale, label, latinShortcut, onText, onBackspace, onSubmit}: AnswerInputProps) {
   /** Focuses the native editor so physical typing keeps working after a shortcut. */
@@ -62,6 +64,7 @@ export function AnswerInput({inputRef, disabled, locale, label, latinShortcut, o
         onSubmitEditing={onSubmit}
         placeholder={label}
         placeholderTextColor={palette.muted}
+        showSoftInputOnFocus={!latinShortcut}
         spellCheck={false}
         style={styles.editor}
         testID="answer-input"

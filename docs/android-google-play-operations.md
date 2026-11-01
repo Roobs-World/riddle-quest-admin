@@ -16,16 +16,19 @@ pnpm --filter @qwordly/android check:types
 pnpm --filter @qwordly/android test
 ```
 
-Build a release APK for the emulator and drive it through adb. The script installs the APK, clears app data, confirms a fresh 300-coin save, starts Classic, types the first answer on the on-screen keys, checks the reward, relaunches cold, and confirms the coins and Classic progress persisted. Screenshots, UI dumps, and `summary.json` land in `artifacts/android-device-verification/` (ignored by git).
+Build a release APK for the emulator and drive it through adb. Both device checks use only the Android SDK's adb (`uiautomator` hierarchy reads and `input tap`), matching controls by their `testID`; no instrumentation or third-party automation is built into the app.
 
 ```bash
 export ANDROID_HOME="$HOME/Android/Sdk"
 "$ANDROID_HOME/emulator/emulator" -avd Medium_Phone -no-window -no-audio &
-pnpm --filter @qwordly/android build:release -- -PreactNativeArchitectures=x86_64
-pnpm --filter @qwordly/android verify:device
+cd packages/android/android && ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 && cd ../../..
+pnpm --filter @qwordly/android verify:device      # smoke: install, solve, relaunch
+pnpm --filter @qwordly/android test:e2e:device    # scenario suite (node --test)
 ```
 
-Pass an APK path or `--serial <device>` to `verify:device` to target an attached phone (`adb devices` must list it as `device`). Debug builds (`build:debug`) need the Metro server (`pnpm --filter @qwordly/android start`) and `adb reverse tcp:8081 tcp:8081`.
+`verify:device` is the smoke check: install, clear data, a fresh 300-coin save, solve the first Classic riddle on the on-screen keys, relaunch cold, confirm coins and progress. `test:e2e:device` runs the scenario suite from cleared data each time: Classic solve and persistence, hint and skip charges, the five-attempt limit with finish, buying a continue and solving after it, today's Daily with the closed card and persisted accessibility preferences, and an interrupted puzzle restored after backgrounding and a process kill. Evidence (screenshots and the last UI dump) lands under `artifacts/android-device-verification/` and `artifacts/android-e2e/<scenario>/`, both ignored by git.
+
+Pass an APK path or `--serial <device>` to `verify:device`, or set `RIDDLE_QUEST_APK`, `ANDROID_SERIAL`, and `RIDDLE_QUEST_SKIP_INSTALL=1` for the suite, to target an attached phone (`adb devices` must list it as `device`). The driver dismisses the emulator keyboard's permission and translate dialogs if they appear; the app itself keeps the system keyboard hidden while its own Latin keys are shown. Debug builds (`build:debug`) need the Metro server (`pnpm --filter @qwordly/android start`) and `adb reverse tcp:8081 tcp:8081`.
 
 ## Google Play submission
 

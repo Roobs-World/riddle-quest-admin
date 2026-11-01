@@ -102,10 +102,16 @@ describe("AnswerInput native editor", () => {
     expect(calls).toEqual(["text:ab", "backspace", "submit"]);
   });
 
-  it("hides the shortcut keys for non-Latin answers", async () => {
+  it("hides the shortcut keys for non-Latin answers and lets the system keyboard open", async () => {
     await renderEditor(false, false);
     expect(screen.queryByTestId("latin-keyboard")).toBeNull();
-    expect(screen.getByTestId("answer-input")).toBeTruthy();
+    expect(screen.getByTestId("answer-input").props.showSoftInputOnFocus).toBe(true);
+  });
+
+  it("keeps the system keyboard hidden while the shortcut keys are shown", async () => {
+    await renderEditor();
+    expect(screen.getByTestId("latin-keyboard")).toBeTruthy();
+    expect(screen.getByTestId("answer-input").props.showSoftInputOnFocus).toBe(false);
   });
 
   it("ignores shortcut presses while disabled", async () => {
