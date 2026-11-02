@@ -52,7 +52,7 @@ button.theme { margin-left: auto; background: none; border: 1px solid var(--line
 <body>
 <main>
   <h1>Riddle Quest: outstanding tasks</h1>
-  <p class="sub">Compiled 2 November 2026 from the shared task register (snapshot 13 Oct 2026), GitHub Issues, every local branch and worktree, and the Jest connector.</p>
+  <p class="sub">Updated 2 November 2026. Sources: the shared task register (snapshot 13 Oct 2026), GitHub Issues, every local branch and worktree, and the Jest connector.</p>
 
   <div class="progress" aria-hidden="true"><span id="pbar"></span></div>
   <p class="note" id="ptext"></p>
@@ -64,13 +64,17 @@ button.theme { margin-left: auto; background: none; border: 1px solid var(--line
     <button class="theme" id="theme" type="button">Theme</button>
   </div>
 
-  <h2>Audited this session</h2>
-  <p class="note">Agent checks, already resolved. No action needed.</p>
+  <h2>Done</h2>
+  <p class="note">Completed and verified by the agent.</p>
   <ul class="items" data-group="audit"></ul>
 
-  <h2>Needs agent follow-up</h2>
-  <p class="note">An agent can do these once you approve.</p>
+  <h2>Remaining agent work</h2>
+  <p class="note">Code an agent can do; the larger items take several sessions.</p>
   <ul class="items" data-group="agent"></ul>
+
+  <h2>Owner actions: Android launch</h2>
+  <p class="note">Code is done and tested; these need your accounts.</p>
+  <ul class="items" data-group="android"></ul>
 
   <h2>Blocked on owner access or provider</h2>
   <ul class="items" data-group="blocked"></ul>
@@ -94,16 +98,34 @@ const REGISTER = [{"id": "riddle-quest:promotion_outreach:alpha-beta-gamer:9346c
 
 const AUDIT = [
   {id: "audit:issues", t: "GitHub Issues", a: "Grindhead/riddle-quest has 0 open issues.", done: true},
-  {id: "audit:branches", t: "Side branches and worktrees", a: "Checked 7 codex/* branches. The release, scheduler, Jest region, reminder-JPEG, Daily Skip warning and live-race draft-recovery work is already in jest, either directly or via newer reimplementations. No code is stranded.", done: true},
-  {id: "audit:jest-sync", t: "jest ↔ origin/jest", a: "In sync (0 ahead, 0 behind). Working tree clean.", done: true},
-  {id: "audit:android-sync", t: "android-react-native ↔ origin", a: "In sync with origin and includes the latest jest merge.", done: true},
+  {id: "audit:branches", t: "Side branches and worktrees", a: "7 codex/* branches checked: everything they held is already in jest. 14 stale worktree records pruned; branches that exist only locally were kept.", done: true},
+  {id: "audit:rename", t: "Package scope renamed to @riddle-quest", a: "Both branches; type checks, unit suites and the functions suite pass. Historical evidence records keep the old name.", done: true},
+  {id: "audit:locales", t: "899 broken translations fixed in 15 locales", a: "Transliterated Russian, missing accents and umlauts, English left in place (Race to 10 categories) and mistranslations. Locale and copy audits plus the portal suite pass.", done: true},
+  {id: "audit:jest-upload-1", t: "Jest upload: rename build", a: "1.0.0-dev.20261102100648.b86e691d600e.8b879716 uploaded inactive; Jest emailed \"Build ready\". Not activated.", done: true},
+  {id: "audit:android-billing", t: "Android: Google Play Billing", a: "Server-verified coin packs and Premium, restore, launch-time recovery, shop in 16 languages. Release APK builds with Billing 9.1.0.", done: true},
+  {id: "audit:android-redelivery", t: "Android: offline guess redelivery fixed", a: "Firebase SDK error codes were misread, so offline guesses were dropped. Full adb suite now passes on the emulator.", done: true},
+  {id: "audit:android-profile", t: "Android: profile, leaderboards, account deletion", a: "Profile, stats, achievements, rename, XP/wins/streak leaderboards and deletion, verified on the emulator.", done: true},
+  {id: "audit:android-appcheck", t: "Android: Play Integrity App Check (code)", a: "Nonce, Play Integrity verdict and App Check minting, tested; production needs the owner steps under Android launch.", done: true},
 ];
 
 const AGENT = [
-  {id: "agent:android-wip", t: "Android worktree has uncommitted work", a: "../riddle-quest-android has staged and modified files (AndroidApp, HostedGameScreen, packages/hosted ConfirmedRiddleOutcome and GameSessionCheckpoints, docs). They look like another session's work in progress, so this session left them alone. Finish or commit that work on android-react-native."},
-  {id: "agent:dashboard", t: "Refresh the public task register", a: "The register snapshot is from 13 Oct. Run npm run dashboard:sync, dashboard:build and dashboard:deploy. This updates the public Vercel dashboard, so it needs your go-ahead."},
-  {id: "agent:worktrees", t: "Prune stale worktree metadata", a: "15 /tmp worktrees are marked prunable, and 7 codex/* branches are fully superseded by jest. Running git worktree prune and deleting those branches needs your go-ahead."},
-  {id: "agent:jest-secrets", t: "jest-production GitHub environment has no secrets", a: "Add JEST_GAME_UPLOAD_TOKEN and JEST_NOTIFICATION_EMAIL. You supply the values (also tracked under GitHub / Jest below)."},
+  {id: "agent:jest-upload-2", t: "Jest upload: translation build", a: "The inactive upload of the 899-string fix (e496a3be) is running its release gate. Confirm the \"Build ready\" email when it arrives."},
+  {id: "agent:android-race", t: "Android: Race to 10 multiplayer (plan 2.1, 2.2, 2.5)", a: "Move RaceSession and live-race logic into @riddle-quest/hosted and build native lobby, countdown, live play and results. Large: the web race is several thousand lines."},
+  {id: "agent:android-push", t: "Android: push notifications (plan 2.4)", a: "Firebase Cloud Messaging native module for race invitations and daily reminders. Needs google-services.json from the Firebase Android app registration."},
+  {id: "agent:android-avatar", t: "Android: avatar upload", a: "Needs an image-picker native module; the profile otherwise matches Jest."},
+  {id: "agent:android-data-safety", t: "Android: Data safety form and privacy notice (plan 4.2)", a: "The app now stores an account id, progress and purchase history; the Play form and privacy notice need updating before release."},
+];
+
+const ANDROID = [
+  {id: "android:firebase-app", t: "Register the Android app in Firebase", a: "Package com.roobsworld.riddlequest; set ANDROID_FIREBASE_APP_ID for the functions to the new app id."},
+  {id: "android:play-integrity", t: "Link Play Integrity", a: "Play Console, App integrity: link the Firebase Cloud project and enable the Play Integrity API."},
+  {id: "android:ttl", t: "Firestore TTL policy", a: "Add a TTL policy on androidAttestationNonces.expiresAt."},
+  {id: "android:deploy", t: "Deploy the Android functions", a: "grantAndroidPurchase, syncAndroidSubscriptions, issueAndroidAttestationNonce and exchangeAndroidAttestation, with provisionAndroidAccount."},
+  {id: "android:products", t: "Create Play products", a: "Six coin packs com.roobsworld.riddlequest.coinpack1 to coinpack6, and subscriptions premium.monthly (P1M) and premium.yearly (P1Y)."},
+  {id: "android:service-account", t: "Grant the functions service account Play access", a: "Users and permissions: view financial data and manage orders and subscriptions."},
+  {id: "android:internal-testing", t: "Internal testing with licence testers", a: "Upload a signed AAB to internal testing and buy with a licence tester; a sideloaded build cannot make real purchases."},
+  {id: "android:offline-decision", t: "Decide the offline mode (plan 4.1)", a: "Keep the self-contained game behind Play offline, or retire it."},
+  {id: "android:jest-connector", t: "Re-authorize the Jest connector", a: "The Jest connector needs re-authorizing in claude.ai connector settings; it also only reached the Dash Games team."},
 ];
 
 const GROUP = {
@@ -155,6 +177,7 @@ function item(task, status) {
 const lists = Object.fromEntries([...document.querySelectorAll("ul.items")].map(u => [u.dataset.group, u]));
 AUDIT.forEach(t => lists.audit.append(item(t)));
 AGENT.forEach(t => lists.agent.append(item(t)));
+ANDROID.forEach(t => lists.android.append(item(t)));
 REGISTER.slice().sort((a, b) => a.t.localeCompare(b.t)).forEach(t => lists[GROUP[t.s]].append(item(t, t.s)));
 
 function refresh() {
@@ -172,7 +195,7 @@ function refresh() {
   document.getElementById("ptext").textContent = `${done} of ${total} ticked. Ticks are saved in this browser only.`;
   const counts = {};
   REGISTER.forEach(t => { counts[t.s] = (counts[t.s] || 0) + 1; });
-  const cards = [["Agent follow-up", AGENT.length], ["Blocked", counts["Blocked"] || 0],
+  const cards = [["Done", AUDIT.length], ["Agent work", AGENT.length], ["Android launch", ANDROID.length], ["Blocked", counts["Blocked"] || 0],
     ["Verify / review", (counts["To verify"] || 0) + (counts["To investigate"] || 0) + (counts["To review"] || 0)],
     ["Submissions to do", counts["To do"] || 0], ["Waiting", (counts["Submitted"] || 0) + (counts["On hold"] || 0)],
     ["Press outreach", counts["Ready to contact"] || 0]];
