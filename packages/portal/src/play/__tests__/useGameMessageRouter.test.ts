@@ -1,6 +1,6 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import type {BridgeProfile, BridgeRiddle} from "@qwordly/core/bridge";
-import type {GameSessionState} from "../gameSessionTypes";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
 import {CompleteGameOutputSchema} from "@qwordly/core/validation";
 import {parseCompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 
@@ -15,7 +15,7 @@ jest.mock("react", () => ({
   useSyncExternalStore: jest.fn(),
 }));
 
-import {createInitialGameSession, gameSessionReducer} from "../gameSession";
+import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
 import {useGameMessageRouter} from "../useGameMessageRouter";
 import {setLocaleAndWait, type Locale} from "../i18n";
 

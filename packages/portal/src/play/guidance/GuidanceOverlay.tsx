@@ -1,6 +1,6 @@
 import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {tr, useLocale} from "../i18n";
-import type {GameModal, GameSessionState} from "../gameSession";
+import type {GameModal, GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {
   createGuidanceStorageKey,
   createTooltipTourStorageKey,
@@ -16,7 +16,7 @@ import {
 } from "./guidanceConfig";
 import {OnboardingOverlay} from "./OnboardingOverlay";
 import {TooltipOverlay} from "./TooltipOverlay";
-import {completionPresentationKey} from "../completionPresentation";
+import {completionPresentationKey} from "@qwordly/hosted/play/completionPresentation";
 import {GuidanceSeenMarkers} from "./GuidanceSeenMarkers";
 import {
   completePlayerOnboarding,

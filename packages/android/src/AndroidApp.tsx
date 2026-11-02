@@ -7,6 +7,7 @@ import {hostedText} from "./i18n/hostedCopy";
 import {AccountScreen} from "./screens/AccountScreen";
 import {LoadingScreen} from "./screens/BootScreens";
 import {HostedConnectScreen} from "./screens/HostedConnectScreen";
+import type {AndroidPendingPlayStorage} from "./hosted/pendingPlayStorage";
 import {HostedGameScreen} from "./screens/HostedGameScreen";
 import {HostedHomeScreen} from "./screens/HostedHomeScreen";
 import {SoloPlayableApp} from "./SoloPlayableApp";
@@ -22,6 +23,8 @@ export type AndroidAppProps = Readonly<{
   services: HostServices;
   /** Receives the resolved device locale so host-level copy can follow it. */
   onLocaleResolved?: (locale: YouTubeLocale) => void;
+  /** Provisional Play journal storage for hosted sessions. */
+  journal?: AndroidPendingPlayStorage;
 }>;
 /** Screens reachable while the Global Game Account is confirmed. */
 type HostedRoute =
@@ -36,7 +39,7 @@ type HostedRoute =
  * Global Game Account on launch and plays server-issued riddles. The
  * self-contained game remains available as the offline surface.
  */
-export function AndroidApp({sdk, contentSource, client, services, onLocaleResolved}: AndroidAppProps) {
+export function AndroidApp({sdk, contentSource, client, services, onLocaleResolved, journal}: AndroidAppProps) {
   /** Device locale, once the host port has reported it. */
   const [locale, setLocale] = useState<YouTubeLocale | null>(null);
   /** Which surface the player is on. */
@@ -69,7 +72,7 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
     return <HostedConnectScreen locale={locale} client={client} state={account.state} onRetry={account.connect} onPlayOffline={() => setSurface("offline")} />;
   }
   if (typeof route === "object") {
-    return <HostedGameScreen services={services} mode={route.hosted} locale={locale} onBack={() => setRoute("home")} />;
+    return <HostedGameScreen services={services} mode={route.hosted} locale={locale} onBack={() => setRoute("home")} journal={journal} />;
   }
   if (route === "account") {
     return <AccountScreen locale={locale} client={client} account={account} onBack={() => setRoute("home")} />;

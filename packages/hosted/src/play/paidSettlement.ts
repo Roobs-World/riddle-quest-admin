@@ -1,5 +1,6 @@
 import type {readPendingGuessJournal} from "./readPendingGuessJournal";
 import type {writePendingGuessJournal,acquirePendingPlayLease,releasePendingPlayLease, PendingGuessJournal,PendingPlayStorage} from "./pendingGuessJournal";
+import type {PendingPlayClock} from "./pendingPlayAdapters";
 
 /** Storage operations stay bound to the concrete adapter without a runtime import cycle. */
 export type JournalOperations = readonly [read: typeof readPendingGuessJournal, write: typeof writePendingGuessJournal,
@@ -48,10 +49,7 @@ export type SettlementPersistence = readonly [
   /** Immutable expected predecessor bytes. */ pending: Cell<string | null>,
   /** Current renewal clock handle. */ timer: Cell<number | null>,
   /** This tab's durable lease identity. */ tabOwner: string,
-  /** Clock and cancellation remain target-owned. */ clock: Pick<Window, "clearInterval"> & {
-    /** Current lease time. */
-    now: () => number;
-  },
+  /** Clock and cancellation remain target-owned. */ clock: Pick<PendingPlayClock, "clearInterval" | "now">,
 ];
 /** Deferred coordinator cannot borrow a newer receipt or account after module loading. */
 export function persist(storage: PendingPlayStorage, state: SettlementPersistence,

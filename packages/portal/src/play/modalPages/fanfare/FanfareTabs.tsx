@@ -1,5 +1,5 @@
 import {useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore} from "react";
-import type {GameSessionState} from "../../gameSession";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "../../playerPreferences";
 import {FanfareTabContent} from "./FanfareModalContent";
 import {createRewardFanfareSteps, createVictoryFanfareSteps, getActiveCoinAward, type FanfareStep} from "./fanfareSequence";

@@ -5,10 +5,11 @@ const mockEffects:Array<()=>unknown>=[];
 /** Terminal authority or exact unresolved payment fixture. */
 const mockLayoutEffects:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T,>(fn:T)=>fn,useEffect:(fn:()=>unknown)=>mockEffects.push(fn),useLayoutEffect:(fn:()=>unknown)=>mockLayoutEffects.push(fn),useRef:<T,>(current:T)=>({current}),useState:<T,>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
-import {createInitialGameSession,gameSessionReducer} from '../gameSession';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery,type PendingPlayRecoveryAdapters} from '../game/hooks/useProvisionalPlayRecovery';
+import {createInitialGameSession,gameSessionReducer} from "@qwordly/hosted/play/gameSession";
+import {pendingPlayScope,type PendingGuessJournal} from "@qwordly/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@qwordly/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from '../game/hooks/useProvisionalPlayRecovery';
+import type {PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
 it.each([{kind:'win',holdCharge:true,buffered:false},{kind:'loss',holdCharge:true,buffered:false},{kind:'win',holdCharge:false,buffered:false},{kind:'loss',holdCharge:false,buffered:false},{kind:'win',holdCharge:true,buffered:true}])('retains a settlement route for terminal $kind with held charge=$holdCharge',async ({kind,holdCharge,buffered})=>{
  mockEffects.length=0;mockLayoutEffects.length=0;
  /** Terminal authority or exact unresolved payment fixture. */

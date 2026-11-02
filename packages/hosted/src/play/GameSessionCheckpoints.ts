@@ -1,5 +1,5 @@
 import type {ScoredGuess} from "@qwordly/core/game";
-import type {SavedGame} from "../platform/types";
+import type {SavedGame} from "./savedGame";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import {rejectHintPreview} from "./hintPreview";
 

@@ -1,4 +1,4 @@
-import type {SavedGame} from "../platform/types";
+import type {SavedGame} from "./savedGame";
 import type {PendingGuessJournal} from "./pendingGuessJournal";
 
 /** Only a strictly newer, compatible draft may supersede a journal without deliveries. */

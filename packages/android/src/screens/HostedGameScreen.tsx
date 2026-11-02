@@ -4,6 +4,7 @@ import {useRef} from "react";
 import {Pressable, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import {AchievementRow} from "../components/StatusViews";
+import type {AndroidPendingPlayStorage} from "../hosted/pendingPlayStorage";
 import {useHostedGame, type HostedFeedback, type HostedGameNotice} from "../hosted/useHostedGame";
 import {hostedText, type HostedCopyKey} from "../i18n/hostedCopy";
 import {palette, spacing} from "../theme";
@@ -45,11 +46,13 @@ export type HostedGameScreenProps = Readonly<{
   locale: YouTubeLocale;
   /** Returns to the hosted home. */
   onBack: () => void;
+  /** Provisional Play journal storage; optional for tests. */
+  journal?: AndroidPendingPlayStorage;
 }>;
 /** Server-authoritative Classic or Daily play: every guess, hint, continue, skip and completion is confirmed by the backend. */
-export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScreenProps) {
+export function HostedGameScreen({services, mode, locale, onBack, journal}: HostedGameScreenProps) {
   /** Session controller. */
-  const game = useHostedGame(services, mode, locale);
+  const game = useHostedGame(services, mode, locale, {journal});
   /** Window width used to size one row of tiles. */
   const {width} = useWindowDimensions();
   /** Native answer editor. */

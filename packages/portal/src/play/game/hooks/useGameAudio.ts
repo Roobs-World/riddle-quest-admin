@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useLayoutEffect, useRef} from "react";
-import type {GameSessionState} from "../../gameSession";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {setPlayerMuted} from "../../playerPreferences";
 
 /** Describes game feedback kind. */

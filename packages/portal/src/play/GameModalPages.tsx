@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import type {GameModal, GameSessionState} from "./gameSession";
+import type {GameModal, GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {
   ContinueModalPage,
   HintModalPage,

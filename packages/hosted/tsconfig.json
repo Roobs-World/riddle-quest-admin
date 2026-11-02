@@ -24,5 +24,6 @@
       "@qwordly/core/*": ["../core/src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/__tests__/**", "src/**/*.test.ts"]
 }

@@ -1,6 +1,6 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
 import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
-import type {GameSessionAction, GameSessionState, PendingGuessState} from "../gameSessionTypes";
+import type {GameSessionAction, GameSessionState, PendingGuessState} from "@qwordly/hosted/play/gameSessionTypes";
 
 /** Run the real recovery owner's mount effects against the real reducer. */
 const mockEffects: Array<() => unknown> = [];
@@ -15,10 +15,11 @@ jest.mock("react", () => ({
     typeof initial === "function" ? (initial as () => T)() : initial, jest.fn(),
   ],
 }));
-import {createInitialGameSession, gameSessionReducer} from "../gameSession";
-import { pendingPlayScope, type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery, type PendingPlayRecoveryAdapters} from "../game/hooks/useProvisionalPlayRecovery";
+import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
+import { pendingPlayScope, type PendingGuessJournal} from "@qwordly/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@qwordly/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from "../game/hooks/useProvisionalPlayRecovery";
+import type {PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
 
 beforeEach(() => {mockEffects.length = 0; mockLayoutEffects.length = 0;});
 

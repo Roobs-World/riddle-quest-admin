@@ -1,6 +1,10 @@
 import type {BridgeRiddle} from "@qwordly/core/bridge";
 import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
+import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
+import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "@qwordly/hosted/play/pendingGuessJournal";
+import {readPendingGuessJournal} from "@qwordly/hosted/play/readPendingGuessJournal";
 import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "@qwordly/solo";
+import type {AndroidPendingPlayStorage} from "./pendingPlayStorage";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 /** Positional colour of one accepted letter, matching the shared single-player feedback names. */
 export type HostedFeedback = "green" | "yellow" | "red";
@@ -59,6 +63,11 @@ export type HostedGameState =
       /** Confirmed rewards. */
       result: CompletionResult;
     };
+/** Optional device adapters for {@link useHostedGame}. */
+export type HostedGameOptions = Readonly<{
+  /** Provisional Play journal; without it drafts and in-flight guesses live only in memory. */
+  journal?: AndroidPendingPlayStorage;
+}>;
 /** Controller returned by {@link useHostedGame}. */
 export type HostedGameController = Readonly<{
   /** Current session state. */
@@ -132,6 +141,27 @@ const firstEditable = (letters: readonly string[], hints: Map<number, string>): 
   const open = letters.findIndex((letter, index) => !hints.has(index) && !letter);
   return open >= 0 ? open : Math.max(0, letters.length - 1);
 };
+/** Whether a failed delivery may be retried with the same request id later. */
+const retryable = (error: unknown): boolean => {
+  /** Stable code when the host attached one. */
+  const code = errorCode(error);
+  return code === "" || code === "unavailable" || code === "deadline-exceeded" || code === "internal";
+};
+/** Whether a journal belongs to the issued question. */
+const sameRound = (recorded: BridgeRiddle, riddle: BridgeRiddle): boolean =>
+  recorded.riddleId === riddle.riddleId && recorded.sessionToken === riddle.sessionToken && recorded.gameMode === riddle.gameMode;
+/** Builds the shared journal record for the issued question from the reducer's confirmed base. */
+const journalFor = (scope: string, riddle: BridgeRiddle, queue: QueuedGuess[], draft: readonly string[], slot: number): PendingGuessJournal => ({
+  version: 1,
+  scope,
+  riddle,
+  confirmedClassicIndex: riddle.index ?? 0,
+  base: capturePendingBase(gameSessionReducer(createInitialGameSession(), {type: "loadRiddle", riddle})),
+  successors: [],
+  queue,
+  draft: Array.from({length: riddle.answerLength}, (_, index) => draft[index] ?? ""),
+  draftActiveSlotIndex: slot,
+});
 /** Maps a thrown host error to a notice code. */
 const noticeFor = (error: unknown): HostedGameNotice => {
   /** Stable code when the host attached one. */
@@ -147,11 +177,19 @@ const noticeFor = (error: unknown): HostedGameNotice => {
  * Every material transition (guess, hint, continue, skip, completion) is a
  * backend call; this hook only keeps the draft and the server's accepted facts.
  */
-export function useHostedGame(services: HostServices, mode: WebGameMode, locale: string): HostedGameController {
+export function useHostedGame(services: HostServices, mode: WebGameMode, locale: string, options: HostedGameOptions = {}): HostedGameController {
   /** Session state. */
   const [state, setState] = useState<HostedGameState>({kind: "loading"});
   /** Latest account snapshot. */
   const [account, setAccount] = useState<AuthSnapshot>({user: null, profile: null});
+  /** Latest account snapshot for callbacks. */
+  const accountRef = useRef<AuthSnapshot>({user: null, profile: null});
+  /** Journal storage, when the device provides one. */
+  const journal = options.journal;
+  /** Journal scope for the signed-in account and locale, once known. */
+  const scopeRef = useRef<string | null>(null);
+  /** Guess sent but not yet confirmed; redelivered with the same request id. */
+  const pendingRef = useRef<QueuedGuess | null>(null);
   /** Draft letters by slot. */
   const draftRef = useRef<string[]>([]);
   /** Revealed hints by slot. */
@@ -171,7 +209,27 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
       mounted.current = false;
     };
   }, []);
-  useEffect(() => services.auth.subscribe((snapshot) => setAccount(snapshot)), [services]);
+  useEffect(
+    () =>
+      services.auth.subscribe((snapshot) => {
+        accountRef.current = snapshot;
+        setAccount(snapshot);
+      }),
+    [services],
+  );
+  /** Journals the draft and any unconfirmed guess for the issued question. */
+  const record = useCallback(
+    (riddle: BridgeRiddle) => {
+      if (!journal || !scopeRef.current) return;
+      writePendingGuessJournal(journalFor(scopeRef.current, riddle, pendingRef.current ? [pendingRef.current] : [], draftRef.current, slotRef.current), journal, true);
+    },
+    [journal],
+  );
+  /** Clears the journal once the question is settled or left. */
+  const forget = useCallback(() => {
+    pendingRef.current = null;
+    if (journal && scopeRef.current) clearPendingGuessJournal(scopeRef.current, journal);
+  }, [journal]);
 
   /** Publishes the playing state from the current refs. */
   const publish = useCallback((riddle: BridgeRiddle, rows: readonly HostedGuessRow[], patch: Partial<PlayingState> = {}) => {
@@ -192,6 +250,24 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
       ...patch,
     }));
   }, []);
+  /** Reads the journal for the issued question, discarding one left by another question. */
+  const recover = useCallback(
+    async (riddle: BridgeRiddle): Promise<PendingGuessJournal | null> => {
+      /** Signed-in account owning the journal. */
+      const user = accountRef.current.user;
+      scopeRef.current = user ? pendingPlayScope(user.uid, user.accountGeneration, locale) : null;
+      if (!journal || !scopeRef.current) return null;
+      await journal.hydrate(scopeRef.current);
+      /** Validated journal for this account and locale. */
+      const recorded = readPendingGuessJournal(scopeRef.current, journal);
+      if (recorded && sameRound(recorded.riddle, riddle)) return recorded;
+      if (recorded) clearPendingGuessJournal(scopeRef.current, journal);
+      return null;
+    },
+    [journal, locale],
+  );
+  /** Redelivers the journaled guess once the restored question is on screen. */
+  const redeliverRef = useRef<() => void>(() => undefined);
   /** Loads the current puzzle for the mode. */
   const load = useCallback(() => {
     /** Load generation that owns the response. */
@@ -199,17 +275,25 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
     setState({kind: "loading"});
     void services
       .loadRiddle({gameMode: mode, locale, authoritative: mode === "classic"})
-      .then((riddle) => {
+      .then(async (riddle) => {
+        /** Journal left by an interrupted session on this question. */
+        const recorded = await recover(riddle);
         if (!mounted.current || token !== generation.current) return;
-        draftRef.current = [];
         hintsRef.current = recoveredHints(riddle);
-        slotRef.current = firstEditable(project([], hintsRef.current, riddle.answerLength), hintsRef.current);
+        draftRef.current = (recorded?.draft ?? []).map((letter, index) => (hintsRef.current.has(index) ? "" : letter));
+        /** Letters as restored. */
+        const letters = project(draftRef.current, hintsRef.current, riddle.answerLength);
+        slotRef.current =
+          recorded?.draftActiveSlotIndex !== undefined && !hintsRef.current.has(recorded.draftActiveSlotIndex)
+            ? recorded.draftActiveSlotIndex
+            : firstEditable(letters, hintsRef.current);
+        pendingRef.current = recorded?.queue[0] ?? null;
         busyRef.current = false;
         setState({
           kind: "playing",
           riddle,
           rows: recoveredRows(riddle),
-          displayLetters: project([], hintsRef.current, riddle.answerLength),
+          displayLetters: letters,
           activeSlot: slotRef.current,
           hintedSlots: [...hintsRef.current.keys()],
           attempts: riddle.attemptsUsed,
@@ -218,12 +302,13 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
           busy: false,
           notice: null,
         });
+        if (pendingRef.current) redeliverRef.current();
       })
       .catch((error: unknown) => {
         if (!mounted.current || token !== generation.current) return;
         setState({kind: "unavailable", code: errorCode(error) === "daily-completed" ? "daily-completed" : "load-failed"});
       });
-  }, [locale, mode, services]);
+  }, [locale, mode, recover, services]);
   useEffect(load, [load]);
 
   /** Runs one server operation against the active riddle with busy and notice bookkeeping. */
@@ -256,9 +341,10 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
     async (riddle: BridgeRiddle, rows: readonly HostedGuessRow[]) => {
       /** Confirmed completion. */
       const result = await services.completeGame({riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken});
+      forget();
       if (mounted.current) setState({kind: "complete", riddle, rows, result});
     },
-    [services],
+    [forget, services],
   );
   /** Edits the draft and republishes. */
   const edit = useCallback(
@@ -266,6 +352,9 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
       setState((current) => {
         if (current.kind !== "playing" || current.awaitingContinue) return current;
         change(current);
+        /** Editing the answer cancels redelivery of the unconfirmed guess. */
+        pendingRef.current = null;
+        record(current.riddle);
         return {
           ...current,
           displayLetters: project(draftRef.current, hintsRef.current, current.riddle.answerLength),
@@ -273,8 +362,61 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         };
       });
     },
-    [],
+    [record],
   );
+  /** Delivers the draft, or redelivers the journaled guess, with one replay-safe request id. */
+  const submit = useCallback(
+    () =>
+      operate(async (riddle, rows) => {
+        /** Letters as the player sees them. */
+        const letters = project(draftRef.current, hintsRef.current, riddle.answerLength);
+        if (!pendingRef.current && letters.some((letter) => !letter)) {
+          setState((latest) => (latest.kind === "playing" ? {...latest, notice: "answer-incomplete"} : latest));
+          return;
+        }
+        /** Replay-safe id for a new delivery. */
+        const requestId = createHostedRequestId("guess");
+        /** Guess to deliver: the journaled one when it exists, otherwise the current draft. */
+        const queued: QueuedGuess = pendingRef.current ?? {
+          message: {
+            type: "game:submitGuess",
+            requestId,
+            payload: {riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken, guess: letters.join(""), requestId},
+          },
+          attempts: rows.length + 1,
+          isCorrect: false,
+          gameOver: false,
+          canContinue: false,
+          feedback: [],
+        };
+        pendingRef.current = queued;
+        record(riddle);
+        /** Server-scored guess. */
+        let result;
+        try {
+          result = await services.submitGuess(queued.message.payload);
+        } catch (error) {
+          if (!retryable(error)) {
+            pendingRef.current = null;
+            record(riddle);
+          }
+          throw error;
+        }
+        pendingRef.current = null;
+        /** Rows including this guess. */
+        const nextRows = [...rows, {letters: result.feedback.map((cell) => cell.letter), feedback: result.feedback.map((cell) => cell.status)}];
+        draftRef.current = [];
+        slotRef.current = firstEditable(project([], hintsRef.current, riddle.answerLength), hintsRef.current);
+        if (result.gameOver || result.isCorrect) {
+          await complete(riddle, nextRows);
+          return;
+        }
+        record(riddle);
+        publish(riddle, nextRows, {attempts: result.attempts, awaitingContinue: result.canContinue === true});
+      }),
+    [complete, operate, publish, record, services],
+  );
+  redeliverRef.current = submit;
 
   return useMemo<HostedGameController>(
     () => ({
@@ -306,32 +448,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         edit(() => {
           if (!hintsRef.current.has(index)) slotRef.current = index;
         }),
-      submit: () =>
-        operate(async (riddle, rows) => {
-          /** Letters as the player sees them. */
-          const letters = project(draftRef.current, hintsRef.current, riddle.answerLength);
-          if (letters.some((letter) => !letter)) {
-            setState((latest) => (latest.kind === "playing" ? {...latest, notice: "answer-incomplete"} : latest));
-            return;
-          }
-          /** Server-scored guess. */
-          const result = await services.submitGuess({
-            riddleId: riddle.riddleId,
-            gameMode: riddle.gameMode,
-            sessionToken: riddle.sessionToken,
-            guess: letters.join(""),
-            requestId: createHostedRequestId("guess"),
-          });
-          /** Rows including this guess. */
-          const nextRows = [...rows, {letters: result.feedback.map((cell) => cell.letter), feedback: result.feedback.map((cell) => cell.status)}];
-          draftRef.current = [];
-          slotRef.current = firstEditable(project([], hintsRef.current, riddle.answerLength), hintsRef.current);
-          if (result.gameOver || result.isCorrect) {
-            await complete(riddle, nextRows);
-            return;
-          }
-          publish(riddle, nextRows, {attempts: result.attempts, awaitingContinue: result.canContinue === true});
-        }),
+      submit,
       hint: () =>
         operate(async (riddle, rows) => {
           /** Purchased hint. */
@@ -345,6 +462,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
           if (!hint) return;
           hintsRef.current = new Map(hintsRef.current).set(hint.index, hint.revealedLetter);
           if (slotRef.current === hint.index) slotRef.current = firstEditable(project(draftRef.current, hintsRef.current, riddle.answerLength), hintsRef.current);
+          record(riddle);
           publish(riddle, rows);
         }),
       buyContinue: () =>
@@ -362,10 +480,11 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
       skip: () =>
         operate(async (riddle) => {
           await services.skipRiddle({riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken, requestId: createHostedRequestId("skip")});
+          forget();
           load();
         }),
       next: load,
     }),
-    [account, complete, edit, load, locale, operate, publish, services, state],
+    [account, complete, edit, forget, load, locale, operate, publish, record, services, state, submit],
   );
 }

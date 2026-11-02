@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
-import type {GameSessionState} from "../../gameSession";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
-import {isCompletionAdvancePending} from "../../completionPresentation";
+import {isCompletionAdvancePending} from "@qwordly/hosted/play/completionPresentation";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {CoinFlight} from "../../CoinFlight";
 import type {CompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";

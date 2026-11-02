@@ -1,11 +1,11 @@
-import {completionPresentationKey, isCompletionAdvancePending} from "./completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "@qwordly/hosted/play/completionPresentation";
 import {useEffect, useId, useLayoutEffect, useRef} from "react";
 import "../styles.modal-shell.css";
 import "../styles.modal-rewards.css";
 import "../styles.modal-commerce.css";
 import "../styles.account.css";
 import "../styles.profile-details.css";
-import {isBlockingGameModal, type GameModal, type GameSessionState} from "./gameSession";
+import {isBlockingGameModal, type GameModal, type GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {useTranslator} from "./i18n";
 import {SpinningWheel} from "./SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";

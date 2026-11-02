@@ -5,7 +5,7 @@ import {
   type ScoredGuess,
 } from "@qwordly/core/game";
 import type {PlayerData, SavedGame} from "./types";
-import {parseDraftCheckpointRevision} from "../play/draftCheckpointRevision";
+import {parseDraftCheckpointRevision} from "@qwordly/hosted/play/draftCheckpointRevision";
 
 /** Defines the max saved guesses value. */
 const MAX_SAVED_GUESSES = 6;

@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import type {BridgeRiddle} from "@qwordly/core/bridge";
-import type {SavedGame} from "../../platform/types";
+import type {SavedGame} from "../savedGame";
 import {
   createInitialGameSession,
   canEditCurrentGuess,
@@ -9,7 +9,7 @@ import {
   type GameSessionAction,
   type GameSessionState,
 } from "../gameSession";
-import {createSavedGame} from "../game/hooks/useGameSessionPersistence";
+import {createSavedGame} from "../GameSessionCheckpoints";
 import type {PendingGuessState} from "../gameSessionTypes";
 
 it("starts with sound enabled when no sound preference is saved", () => {

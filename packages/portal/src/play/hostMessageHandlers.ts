@@ -1,7 +1,7 @@
 import {BridgeParserLoadError, createHostMessageRouter, type HostMessageHandlers} from "./bridgeRouter";
 import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import type {RaceOutcome} from "@qwordly/core/race";
 import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "@qwordly/hosted/hostTypes";
 import type {HostAuthorityModules} from "./HostAuthorityModules";

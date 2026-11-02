@@ -1,4 +1,4 @@
-import {completionPresentationKey, type CompletionIdentity} from "./completionPresentation";
+import {completionPresentationKey, type CompletionIdentity} from "@qwordly/hosted/play/completionPresentation";
 import {trackEvent} from "../analytics/events";
 import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "@qwordly/hosted/hostTypes";
 

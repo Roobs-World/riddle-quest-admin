@@ -304,7 +304,7 @@ it("keeps the newer question's draft when an older correlated load resolves last
   /** Real bridge validation and the actual game reducer reproduce the board replacement seam. */
   const {createGameMessageRouter} = await import("../bridgeRouter");
   /** Typed letters belong to the question actually delivered through the bridge. */
-  const {createInitialGameSession, gameSessionReducer} = await import("../gameSession");
+  const {createInitialGameSession, gameSessionReducer} = await import("@qwordly/hosted/play/gameSession");
   /** Earlier network read completes only after a newer read becomes playable. */
   const held = deferred<BridgeRiddle>();
   /** Newer question has its own authority-issued session identity. */

@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {createInitialGameSession} from "../gameSession";
+import {createInitialGameSession} from "@qwordly/hosted/play/gameSession";
 import {
   createGuidanceStorageKey,
   createTooltipTourStorageKey,

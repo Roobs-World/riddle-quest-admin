@@ -3,7 +3,7 @@ import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
 import {trackEvent} from "../analytics/events";
 import type {Locale} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
 import type {AuthSnapshot, HostServices} from "@qwordly/hosted/hostTypes";
 import type {HostAuthorityModules} from "./HostAuthorityModules";

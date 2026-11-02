@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
-import type {GameSessionState} from "../gameSession";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {LeaderboardModalPage} from "../modalPages/leaderboard/LeaderboardModalPage";
 
 /** No-op leaderboard request used during server rendering. */

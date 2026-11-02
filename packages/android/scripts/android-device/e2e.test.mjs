@@ -250,7 +250,35 @@ describe("Android app on device", () => {
     await driver.waitFor("server coins", (node) => node.label === `Coins: ${STARTING_COINS}`);
     // The emulator seed issues the bundled pack's playable riddles in order, so index 1 is the first of them.
     const seeded = answers.classic.filter((answer) => /^[a-z]{1,7}$/u.test(answer));
-    await driver.typeAnswer(seeded[0]);
+    // Provisional Play: a wrong guess sent while the device is offline is journaled and redelivered on the next launch.
+    driver.adb("shell", "svc", "wifi", "disable");
+    driver.adb("shell", "svc", "data", "disable");
+    try {
+      await driver.typeAnswer("z".repeat(seeded[0].length));
+      await driver.tapId("hosted-submit");
+      await driver.waitForId("hosted-notice", 120_000);
+      driver.capture("hosted-offline-guess");
+    } finally {
+      driver.adb("shell", "svc", "wifi", "enable");
+      driver.adb("shell", "svc", "data", "enable");
+    }
+    driver.stop();
+    driver.launch();
+    await driver.waitForId("screen-hosted-home", 60_000);
+    await driver.tapId("hosted-play-classic");
+    await driver.waitForId("screen-hosted-game", 60_000);
+    await driver.waitForId("hosted-guess-row-0", 60_000);
+    driver.capture("hosted-redelivered-guess");
+    // The unsent draft survives a process kill too.
+    await driver.typeAnswer(seeded[0].slice(0, 2));
+    driver.stop();
+    driver.launch();
+    await driver.waitForId("screen-hosted-home", 60_000);
+    await driver.tapId("hosted-play-classic");
+    await driver.waitForId("screen-hosted-game", 60_000);
+    await driver.waitFor("restored draft letter", (node) => node.text === seeded[0][0]);
+    driver.capture("hosted-restored-draft");
+    await driver.typeAnswer(seeded[0].slice(2));
     await driver.tapId("hosted-submit");
     assert.equal(await driver.readText("hosted-result-heading"), "Solved!");
     driver.capture("hosted-classic-solved");

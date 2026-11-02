@@ -1,7 +1,7 @@
 import {createRedditGuestHostServices} from "../RedditGuestHostServices";
 import {computeFeedback} from "@qwordly/core/game";
-import {createSavedGame} from "../../play/GameSessionCheckpoints";
-import {createInitialGameSession, gameSessionReducer} from "../../play/gameSession";
+import {createSavedGame} from "@qwordly/hosted/play/GameSessionCheckpoints";
+import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
 import {BridgeRiddleSchema} from "@qwordly/core/bridge";
 import type {HostServices} from "@qwordly/hosted/hostTypes";
 

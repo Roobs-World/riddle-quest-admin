@@ -2,9 +2,9 @@ import {useLayoutEffect, useMemo, useRef} from "react";
 import type {Dispatch, MutableRefObject} from "react";
 import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
-import {gameSessionReducer, type GameSessionState} from "./gameSession";
+import {gameSessionReducer, type GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {tr} from "./i18n";
-import {isSingleAnswerCell} from "./answerCell";
+import {isSingleAnswerCell} from "@qwordly/hosted/play/answerCell";
 import {parseCompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
 
 /** Gets object. */

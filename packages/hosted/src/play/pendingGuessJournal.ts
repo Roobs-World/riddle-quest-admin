@@ -1,4 +1,5 @@
-import type {PendingPlayRecoveryAdapters} from "./pendingPlayRecoveryTypes";
+import type {PendingPlayStorage} from "./pendingPlayAdapters";
+export type {PendingPlayStorage} from "./pendingPlayAdapters";
 import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
 import type {Feedback} from "@qwordly/core/game";
 import {splitGraphemes} from "@qwordly/core/game";
@@ -145,7 +146,7 @@ export function writePendingGuessJournal(journal: PendingGuessJournal, storage?:
   /** Only apparently unchanged drafts may reuse matching durable bytes. */ skipUnchanged = false): boolean {
   try {
     /** Reads remain scoped to the same concrete target as the attempted write. */
-    const target = storage ?? localStorage;
+    const target = storage ?? browserStorage();
     /** Canonical serialized bytes include requests, cursor and every buffered segment. */
     const payload = JSON.stringify(journal);
     if (skipUnchanged) {
@@ -161,7 +162,7 @@ export function writePendingGuessJournal(journal: PendingGuessJournal, storage?:
 /** Removes a fully reconciled or definitively rejected journal. */
 export function clearPendingGuessJournal(scope: string, storage?: PendingPlayStorage): void {
   try {
-    (storage ?? localStorage).removeItem(journalKey(scope));
+    (storage ?? browserStorage()).removeItem(journalKey(scope));
   } catch {
     /* Restricted browser storage. */
   }
@@ -177,7 +178,7 @@ export function acquirePendingPlayLease(
     /** The key retained for safe pending-play recovery. */
     const key = leaseKey(scope);
     /** The raw retained for safe pending-play recovery. */
-    const raw = (storage ?? localStorage).getItem(key);
+    const raw = (storage ?? browserStorage()).getItem(key);
     /** The lease retained for safe pending-play recovery. */
     let lease: unknown = null;
     try {lease = raw && raw.length <= 512 ? JSON.parse(raw) : null;} catch { /* Invalid bytes cannot establish another tab's delivery ownership. */ }
@@ -193,8 +194,8 @@ export function acquirePendingPlayLease(
       return false;
     /** A renewal succeeds only when the exact new owner and deadline were persisted together. */
     const payload = JSON.stringify({owner, expiresAt: nowMs + 15_000});
-    (storage ?? localStorage).setItem(key, payload);
-    return (storage ?? localStorage).getItem(key) === payload;
+    (storage ?? browserStorage()).setItem(key, payload);
+    return (storage ?? browserStorage()).getItem(key) === payload;
   } catch {
     return false;
   }
@@ -205,15 +206,19 @@ export function releasePendingPlayLease(scope: string, owner: string, storage?: 
     /** The key retained for safe pending-play recovery. */
     const key = leaseKey(scope);
     /** The lease retained for safe pending-play recovery. */
-    const lease: unknown = JSON.parse((storage ?? localStorage).getItem(key) ?? "null");
+    const lease: unknown = JSON.parse((storage ?? browserStorage()).getItem(key) ?? "null");
     if (typeof lease === "object" && lease !== null && "owner" in lease && lease.owner === owner)
-      (storage ?? localStorage).removeItem(key);
+      (storage ?? browserStorage()).removeItem(key);
   } catch {
     /* Restricted browser storage. */
   }
 }
 /** Durable browser-storage seam; Map-backed tests use exactly the same operations. */
-export type PendingPlayStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+/** Browser-global storage used when a caller passes none; absent elsewhere so the guarded callers report unavailability. */
+const browserStorage = (): PendingPlayStorage => (globalThis as {
+  /** Web Storage when the runtime provides it. */
+  localStorage?: PendingPlayStorage;
+}).localStorage as PendingPlayStorage;
 /** Binds durable validation and lease semantics to one concrete storage adapter. */
 export function createPendingPlayRecoveryStorage(storage: PendingPlayStorage) {
   return {
@@ -250,22 +255,6 @@ export const ownsSkipSuccessor = (origin: BridgeRiddle, target: BridgeRiddle, cu
   target.index === origin.index + 1 && target.sessionToken !== origin.sessionToken &&
   Boolean(current && current.gameMode === "classic" &&
     (current.sessionToken === origin.sessionToken || current.index === origin.index + 1));
-
-/** Browser implementation keeps global access behind the recovery seam. */
-export const browserAdapters: PendingPlayRecoveryAdapters = {
-  journal: createPendingPlayRecoveryStorage({
-    getItem: (key) => localStorage.getItem(key),
-    setItem: (key, value) => localStorage.setItem(key, value),
-    removeItem: (key) => localStorage.removeItem(key),
-  }),
-  clock: {
-    now: Date.now,
-    setTimeout: (callback, delay) => window.setTimeout(callback, delay),
-    clearTimeout: (timer) => window.clearTimeout(timer),
-    setInterval: (callback, delay) => window.setInterval(callback, delay),
-    clearInterval: (timer) => window.clearInterval(timer),
-  },
-};
 
 /** Captures only fields needed to restore one issued question. */
 export const capturePendingBase = (state: GameSessionState): PendingGuessState => ({

@@ -4,7 +4,7 @@ import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} f
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
 import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "@qwordly/hosted/hostTypes";

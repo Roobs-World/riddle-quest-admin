@@ -3,7 +3,7 @@ import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage} from "./hostMessageHandlers";
 import {GAME_TO_HOST_EVENT} from "./localBridge";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import type {LifecycleCapability} from "../platform/types";
 import {BridgeParserLoadError} from "./bridgeRouter";
 

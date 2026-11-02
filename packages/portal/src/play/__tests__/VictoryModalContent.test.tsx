@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToStaticMarkup} from "react-dom/server";
-import {createInitialGameSession, type GameSessionState} from "../gameSession";
+import {createInitialGameSession, type GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {VictoryModalContent} from "../modalPages/fanfare/VictoryModalContent";
 
 /** Completed Daily receipt includes independent bonuses settled by the server. */

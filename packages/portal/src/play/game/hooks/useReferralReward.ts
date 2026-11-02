@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import type {Dispatch, MutableRefObject} from "react";
-import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
+import type {GameSessionAction, GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
 
 /** Describes referral reward detail. */
 type ReferralRewardDetail = {

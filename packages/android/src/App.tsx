@@ -7,6 +7,7 @@ import {createAndroidSdkPort} from "./androidSdkPort";
 import {androidContentSource} from "./content";
 import {createHostedFirebaseClient} from "./hosted/firebaseClient";
 import {createAndroidHostServices} from "./hosted/hostedServices";
+import {createAndroidPendingPlayStorage} from "./hosted/pendingPlayStorage";
 import {hostedConfig} from "./hosted/hostedConfig";
 /** Root component registered with React Native. */
 export function App() {
@@ -18,6 +19,8 @@ export function App() {
   const localeRef = useRef<YouTubeLocale>("en");
   /** Shared hosted play services bound to that client. */
   const hostedServices = useMemo(() => createAndroidHostServices(hosted, () => localeRef.current), [hosted]);
+  /** Provisional Play journal persisted on the device. */
+  const journal = useMemo(() => createAndroidPendingPlayStorage(), []);
   /** Records the resolved locale for the services. */
   const onLocaleResolved = useCallback((locale: YouTubeLocale) => {
     localeRef.current = locale;
@@ -25,7 +28,7 @@ export function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
-      <AndroidApp sdk={sdk} contentSource={androidContentSource} client={hosted} services={hostedServices} onLocaleResolved={onLocaleResolved} />
+      <AndroidApp sdk={sdk} contentSource={androidContentSource} client={hosted} services={hostedServices} onLocaleResolved={onLocaleResolved} journal={journal} />
     </SafeAreaProvider>
   );
 }

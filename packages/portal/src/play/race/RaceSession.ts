@@ -3,7 +3,7 @@ import {parseHostToGameMessage, type GameToHostMessage} from "@qwordly/core/brid
 import {classifyRaceMatchFailure, raceMatchFailure, type RaceMatchFailure} from "@qwordly/core/race";
 import {type RaceOutcome, type RaceAnalyticsEventName, type RaceCategoryId, type RaceInboxItem, type RaceRunView, type SocialReportCategory} from "@qwordly/core/race";
 import type {MatchmakingCapability} from "../../platform/types";
-import {createRequestId} from "../requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import {RacePlay, type RacePlayClock} from "./RacePlay";
 import {raceErrorKey, raceRejectedState, raceMatchErrorKey, bindRaceCommand, applyRaceAuthority, raceAttemptState, type RaceResumeDraft} from "./RaceSessionAuthority";
 import type {RaceSessionEffect, RaceSessionEntry, RaceSessionOptions, RaceSessionState, RaceStage} from "./RaceSession.types";

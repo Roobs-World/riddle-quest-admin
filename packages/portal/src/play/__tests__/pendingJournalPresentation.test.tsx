@@ -1,8 +1,8 @@
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {gameSessionReducer,createInitialGameSession} from '../gameSession';
+import {pendingPlayScope,type PendingGuessJournal} from "@qwordly/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@qwordly/hosted/play/pendingPlayJournalDiagnostics";
+import {gameSessionReducer,createInitialGameSession} from "@qwordly/hosted/play/gameSession";
 import {ControlledGuessBoard} from '../GameFrameControls';
 /** State or receipt fixture for the recovery boundary. */
 const riddle={riddleId:'classic-1',text:'A clue',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000001',gameMode:'classic' as const,attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false,evaluation:{answer:'piano',locale:'en'}};

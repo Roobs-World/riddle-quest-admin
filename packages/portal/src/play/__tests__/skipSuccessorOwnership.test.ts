@@ -2,10 +2,11 @@ import {expect,it,jest} from '@jest/globals';
 /** Exercises paid successor ownership against the actual recovery handler. */
 const effects:Array<()=>unknown>=[],layouts:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T>(fn:T)=>fn,useEffect:(fn:()=>unknown)=>effects.push(fn),useLayoutEffect:(fn:()=>unknown)=>layouts.push(fn),useRef:<T>(current:T)=>({current}),useState:<T>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
-import {createInitialGameSession,gameSessionReducer} from '../gameSession';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery,type PendingPlayRecoveryAdapters} from '../game/hooks/useProvisionalPlayRecovery';
+import {createInitialGameSession,gameSessionReducer} from "@qwordly/hosted/play/gameSession";
+import {pendingPlayScope,type PendingGuessJournal} from "@qwordly/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@qwordly/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from '../game/hooks/useProvisionalPlayRecovery';
+import type {PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
 it.each((['early','late'] as const).flatMap(phase=>(['valid','origin','wrong-index','wrong-mode','advanced'] as const).map(target=>({phase,target}))))('$phase Skip successor accepts only its owned question: $target',async ({phase,target})=>{
  effects.length=0;layouts.length=0;
  /** Exercises paid successor ownership against the actual recovery handler. */

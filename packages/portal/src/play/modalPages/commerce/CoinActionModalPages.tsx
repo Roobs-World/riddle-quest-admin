@@ -1,5 +1,5 @@
 import treasureChestUrl from "../../../../../../assets/images-web/chest-open.webp";
-import type {GameModal} from "../../gameSession";
+import type {GameModal} from "@qwordly/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 export {ContinueModalPage, type ContinueModalPageProps} from "./ContinueActions";
 export {HintModalPage, SkipModalPage, type CoinActionModalPageProps} from "./GameplayCoinActions";

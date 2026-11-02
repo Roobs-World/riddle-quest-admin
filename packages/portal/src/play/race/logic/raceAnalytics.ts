@@ -1,6 +1,6 @@
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {RACE_ANALYTICS_FIELDS, type RaceAnalyticsEventName} from "@qwordly/core/race";
-import {createRequestId} from "../../requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 
 /** Builds a host analytics message containing only fields allowed for the race event. */
 export const createRaceAnalyticsMessage = (

@@ -699,6 +699,7 @@ export function createWebTargetViteConfig({
         "@qwordly/hosted/profileMapper": fileURLToPath(new URL("../hosted/src/profileMapper.ts", import.meta.url)),
         "@qwordly/hosted/riddleResponse": fileURLToPath(new URL("../hosted/src/riddleResponse.ts", import.meta.url)),
         "@qwordly/hosted/gameFunctions": fileURLToPath(new URL("../hosted/src/gameFunctions.ts", import.meta.url)),
+        "@qwordly/hosted/play": fileURLToPath(new URL("../hosted/src/play", import.meta.url)),
         "@qwordly/hosted": fileURLToPath(new URL("../hosted/src/index.ts", import.meta.url)),
         "@qwordly/solo/react": fileURLToPath(new URL("../solo/src/react/index.ts", import.meta.url)),
         "@qwordly/solo": fileURLToPath(new URL("../solo/src/index.ts", import.meta.url)),

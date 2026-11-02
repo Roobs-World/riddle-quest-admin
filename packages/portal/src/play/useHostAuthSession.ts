@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
 import {restoreProfileWhileServerLoads} from "../platform/playerData";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import type {AuthSnapshot, HostServices} from "@qwordly/hosted/hostTypes";
 
 /** Configuration owned by the authenticated host-session module. */

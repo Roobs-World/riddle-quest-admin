@@ -1,21 +1,13 @@
 import type {Dispatch, MutableRefObject} from "react";
 import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
 import type {SavedGame} from "../platform/types";
-import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
-import type {createPendingPlayRecoveryStorage} from "./pendingGuessJournal";
+import type {GameSessionAction, GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
 import type {GameFeedbackKind} from "./game/hooks/useGameAudio";
 
 /** Host sender captured by a committed account visit. */
 type PostToHost = (message: GameToHostMessage) => void;
-/** Clock seam for retry, lease renewal and account-scope cleanup. */
-export type PendingPlayClock = Pick<Window, "setTimeout" | "clearTimeout" | "setInterval" | "clearInterval"> & {
-  /** Current lease and retransmission time. */ now: () => number;
-};
-/** Stable adapters used for one mounted Provisional Play recovery owner. */
-export type PendingPlayRecoveryAdapters = {
-  /** Durable journal and cross-tab lease adapter. */ journal: ReturnType<typeof createPendingPlayRecoveryStorage>;
-  /** Retry and lease time adapter. */ clock: PendingPlayClock;
-};
+export type {PendingPlayClock, PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
+import type {PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
 /** Stable adapters, rendered state and host sender for one recovery coordinator. */
 export type RecoveryOptions = {
   /** Stable storage and time adapters for the mounted recovery owner. */

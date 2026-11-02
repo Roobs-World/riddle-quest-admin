@@ -4,7 +4,7 @@ import chestUrl from "../../../../../../assets/images-web/chest-closed.png";
 import {useProviderProfile} from "../../ProviderProfileContext";
 import {useContext, useLayoutEffect, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
-import type {GameModal, GameSessionState} from "../../gameSession";
+import type {GameModal, GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../ranks";
 import {RankedAvatar} from "../../RankedAvatar";

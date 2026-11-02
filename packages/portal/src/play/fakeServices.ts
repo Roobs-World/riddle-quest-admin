@@ -5,7 +5,7 @@ import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} fr
 import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "@qwordly/hosted/hostTypes";
 import {toProductSummaries} from "@qwordly/hosted/hostTypes";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
-import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
+import {predictCompletionAchievementIds} from "@qwordly/hosted/play/predictCompletionAchievements";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "./modalPages/commerce/commerceCosts";
 
 /** Provides fake riddles behavior. */

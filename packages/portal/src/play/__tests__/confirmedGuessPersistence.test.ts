@@ -1,5 +1,5 @@
 import {expect, it, jest} from "@jest/globals";
-import type {GameSessionState} from "../gameSession";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
 import type {SavedGame} from "../../platform/types";
 
 /** Hook slots retain React's dependency identity across controlled renders. */
@@ -48,7 +48,7 @@ jest.mock("react", () => ({
     mockSlots[index] = {dependencies};
   },
 }));
-import {createInitialGameSession, gameSessionReducer} from "../gameSession";
+import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
 import {useGameSessionPersistence} from "../game/hooks/useGameSessionPersistence";
 
 it("checkpoints the fifth confirmed row before reload when confirmation changes only pending state", () => {

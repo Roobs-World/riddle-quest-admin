@@ -1,5 +1,5 @@
 import {LiveGuessReceiptQuerySchema, type LiveGuessReceiptQuery, type LiveRaceView} from "@qwordly/core/race";
-import {isSingleAnswerCell} from "../../answerCell";
+import {isSingleAnswerCell} from "@qwordly/hosted/play/answerCell";
 import {reconcileLiveRaceDraft, type LiveRaceDraft} from "./liveRaceDraft";
 
 /** Local presentation expires independently of the authoritative match clock. */

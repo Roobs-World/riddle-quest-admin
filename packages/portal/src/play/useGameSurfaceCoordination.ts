@@ -3,8 +3,8 @@ import {useCallback, useEffect, useState} from "react";
 import {trackScreen} from "../analytics/events";
 import {resolveActivityPresence} from "../presence/activityPresence";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
-import type {GameSessionState} from "./gameSessionTypes";
-import {isBlockingGameModal} from "./gameSession";
+import type {GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
+import {isBlockingGameModal} from "@qwordly/hosted/play/gameSession";
 import {isSupportedLocale, type Locale} from "./i18n";
 import {isRaceHarness} from "./race/logic/raceFeatureFlag";
 

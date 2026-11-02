@@ -1,7 +1,7 @@
 import type {GameToHostMessage} from "@qwordly/core/bridge";
 import {computeFeedback, lowerCaseGraphemes, type ScoredGuess} from "@qwordly/core/game";
 import type {RaceRunView, SubmitRaceGuessResponse} from "@qwordly/core/race";
-import {createRequestId} from "../requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import {raceOperationRequiresRefresh, raceOperationRequiresReceipt, type RaceOperation} from "./logic/raceOperations";
 import {
   createRaceAttempt,

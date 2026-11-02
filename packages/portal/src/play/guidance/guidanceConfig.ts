@@ -1,5 +1,5 @@
 import type {CSSProperties} from "react";
-import type {GameModal, GameSessionState} from "../gameSession";
+import type {GameModal, GameSessionState} from "@qwordly/hosted/play/gameSession";
 
 /** Stable identifier for one tooltip or guided-tour step. */
 export type TooltipId =

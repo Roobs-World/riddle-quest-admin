@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {BlockSocialRivalResponseSchema, ReportSocialRivalResponseSchema, type LiveRaceCapability, type SocialReportCategory} from "@qwordly/core/race";
 import {tr} from "../../i18n";
-import {createRequestId} from "../../requestIds";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
 import {liveRaceDeliveryDeadline} from "../logic/liveRaceDeliveryDeadline";
 import {captureBrowserException} from "../../../observability/browserErrorReporter";
 

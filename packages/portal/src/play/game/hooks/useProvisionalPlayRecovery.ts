@@ -1,22 +1,15 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
 import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
-import type {PendingGuessState} from "../../gameSessionTypes";
-import {canEditCurrentGuess, gameSessionReducer, hasRemainingGuessAttempts} from "../../gameSession";
-import {
-  browserAdapters, capturePendingBase, findSegment, ownsSkipSuccessor,
-  pendingPlayScope,
-  reconcileConfirmedPendingPlay,
-  createRejectedPlayDraft,
-  type PendingGuessJournal,
-  type QueuedGuess,
-  type QueuedCoinAction,
-} from "../../pendingGuessJournal";
-import {createRequestId} from "../../requestIds";
-import {getConfirmedRiddleOutcome} from "../../ConfirmedRiddleOutcome";
+import type {PendingGuessState} from "@qwordly/hosted/play/gameSessionTypes";
+import {canEditCurrentGuess, gameSessionReducer, hasRemainingGuessAttempts} from "@qwordly/hosted/play/gameSession";
+import {capturePendingBase, findSegment, ownsSkipSuccessor, pendingPlayScope, reconcileConfirmedPendingPlay,
+  createRejectedPlayDraft, type PendingGuessJournal, type QueuedGuess, type QueuedCoinAction} from "@qwordly/hosted/play/pendingGuessJournal";
+import {createRequestId} from "@qwordly/hosted/play/requestIds";
+import {browserAdapters} from "./browserAdapters";
+import {getConfirmedRiddleOutcome} from "@qwordly/hosted/play/ConfirmedRiddleOutcome";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "../../modalPages/commerce/commerceCosts";
 import type {RecoveryOptions, PendingAnswer, RestoredJournal, ContinueSubmit, SkipLoad, SkipPreview, EarlySkipLoad, DirectGuess, DeliveryOwner, PendingPlayRecoveryAdapters} from "../../pendingPlayRecoveryTypes";
-export type {PendingPlayClock, PendingPlayRecoveryAdapters} from "../../pendingPlayRecoveryTypes";
 /** Owns player-initiated host commands and their idempotent retry identifiers. */
 export function useProvisionalPlayRecovery({
   state,

@@ -61,7 +61,10 @@ const validCoinAction = (value: unknown): boolean => {
 export function readPendingGuessJournal(scope: string, storage?: PendingPlayStorage): PendingGuessJournal | null {
   try {
     /** The raw retained for safe pending-play recovery. */
-    const raw = (storage ?? localStorage).getItem(`riddleQuest:pendingPlay:v1:${scope}`);
+    const raw = (storage ?? (globalThis as {
+      /** Web Storage when the runtime provides it. */
+      localStorage?: PendingPlayStorage;
+    }).localStorage as PendingPlayStorage).getItem(`riddleQuest:pendingPlay:v1:${scope}`);
     if (!raw) return null;
     /** The value retained for safe pending-play recovery. */
     const value: unknown = JSON.parse(raw);

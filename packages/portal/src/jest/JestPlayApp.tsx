@@ -1,6 +1,6 @@
 import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
 import {ProfileSubscriptionContext} from "../play/modalPages/profile/ProfileSubscriptionContext";
-import {completionPresentationKey} from "../play/completionPresentation";
+import {completionPresentationKey} from "@qwordly/hosted/play/completionPresentation";
 import {ProviderProfileContext} from "../play/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
 import {Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";

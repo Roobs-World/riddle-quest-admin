@@ -1,4 +1,4 @@
-import type {GameModal, GameSessionState} from "../../gameSession";
+import type {GameModal, GameSessionState} from "@qwordly/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {HINT_COIN_COST, SKIP_COIN_COST} from "./commerceCosts";
 
