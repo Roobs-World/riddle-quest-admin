@@ -8,6 +8,8 @@ import {chromium,firefox} from '@playwright/test';
 
 // Supporting regression: real keyboard events through the whole solo game.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+/** Turkish tooltip dismissal label, read from the locale so translation fixes do not break the check. */
+const turkishGotIt = JSON.parse(await readFile(path.join(root, '../../src/locales/tr/tooltips.json'), 'utf8')).Tooltips.GOT_IT_BUTTON;
 const evidence = path.resolve(process.env.GUESS_RECOVERY_REPORT_DIR??path.join(root,'../../builds/test-evidence/guess-result-recovery-2026-10-08/permanent',process.env.GUESS_RECOVERY_REACT_MODE??'development'));
 await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
 await mkdir(evidence, {recursive: true});
@@ -85,7 +87,7 @@ try {
     const authoritativeRow=(await page.locator('.guess-row').first().textContent()).replaceAll(/\s/g,'');assert.equal(authoritativeRow.toLocaleLowerCase('tr'),'izmir');
     const guess=await page.evaluate(()=>window.sentGuesses[0].payload.guess);assert.equal(guess.toLocaleLowerCase('tr'),'izmir');
     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-    await page.getByRole('button',{name:'Anladim',exact:true}).click();
+    await page.getByRole('button',{name:turkishGotIt,exact:true}).click();
     await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('zombi');
     await page.waitForFunction(()=>document.querySelectorAll('.guess-row')[1]?.textContent.replaceAll(/\s/g,'').toLocaleLowerCase('tr')==='zombi');
     const nextDraft=(await page.locator('.guess-row').nth(1).textContent()).replaceAll(/\s/g,'');assert.equal(nextDraft.toLocaleLowerCase('tr'),'zombi');
