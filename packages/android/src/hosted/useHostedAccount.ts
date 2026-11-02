@@ -31,8 +31,13 @@ export type HostedAccountController = Readonly<{
   /** Signs in and provisions, or retries after a failure. */
   connect: () => void;
 }>;
-/** Signs the device in anonymously and provisions its Global Game Account on demand. */
-export function useHostedAccount(client: HostedFirebaseClient): HostedAccountController {
+/** Options for {@link useHostedAccount}. */
+export type HostedAccountOptions = Readonly<{
+  /** Whether to connect as soon as the hook mounts; hosted-first surfaces do, the on-demand account screen does not. */
+  autoConnect?: boolean;
+}>;
+/** Signs the device in anonymously and provisions its Global Game Account on demand or on mount. */
+export function useHostedAccount(client: HostedFirebaseClient, options: HostedAccountOptions = {}): HostedAccountController {
   /** Current state. */
   const [state, setState] = useState<HostedAccountState>({kind: "idle"});
   /** Whether the component is still mounted. */
@@ -62,5 +67,10 @@ export function useHostedAccount(client: HostedFirebaseClient): HostedAccountCon
       }
     })();
   }, [client]);
+  /** Whether the first connection should start without a tap. */
+  const autoConnect = options.autoConnect === true;
+  useEffect(() => {
+    if (autoConnect) connect();
+  }, [autoConnect, connect]);
   return {state, connect};
 }

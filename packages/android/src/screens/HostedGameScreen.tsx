@@ -1,10 +1,11 @@
 import type {HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
-import {canShowLatinShortcut} from "@qwordly/solo";
+import {canShowLatinShortcut, youtubeText, type YouTubeCopyKey, type YouTubeLocale} from "@qwordly/solo";
 import {useRef} from "react";
 import {Pressable, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import {AchievementRow} from "../components/StatusViews";
 import {useHostedGame, type HostedFeedback, type HostedGameNotice} from "../hosted/useHostedGame";
+import {hostedText, type HostedCopyKey} from "../i18n/hostedCopy";
 import {palette, spacing} from "../theme";
 import {AnswerInput, type AnswerEditor} from "./AnswerInput";
 /** Largest tile edge in density-independent pixels. */
@@ -17,22 +18,32 @@ const tileSize = (width: number, slots: number): number =>
 /** Fill and border for a scored tile. */
 const feedbackStyle = (feedback: HostedFeedback) =>
   feedback === "green" ? styles.tileGreen : feedback === "yellow" ? styles.tileYellow : styles.tileRed;
-/** English copy for hosted notices; localized tables arrive with plan step 1.5. */
-const NOTICE_COPY: Readonly<Record<HostedGameNotice, string>> = Object.freeze({
-  "answer-incomplete": "Complete every answer slot.",
-  "insufficient-coins": "Not enough coins.",
-  "operation-failed": "That action could not be completed.",
-  "service-unavailable": "The service is temporarily unavailable. Try again.",
+/** Copy key for each hosted notice: shared keys come from the solo tables, hosted-only keys from the hosted table. */
+const NOTICE_KEYS: Readonly<Record<HostedGameNotice, NoticeKey>> = Object.freeze({
+  "answer-incomplete": {solo: "answerIncomplete"},
+  "insufficient-coins": {solo: "insufficientCoins"},
+  "operation-failed": {solo: "operationFailed"},
+  "service-unavailable": {hosted: "serviceUnavailable"},
 });
+/** A notice key in one of the two copy tables. */
+type NoticeKey =
+  | {
+      /** Key in the shared solo table. */
+      solo: YouTubeCopyKey;
+    }
+  | {
+      /** Key in the hosted table. */
+      hosted: HostedCopyKey;
+    };
 /** Props for {@link HostedGameScreen}. */
 export type HostedGameScreenProps = Readonly<{
   /** Shared hosted play services. */
   services: HostServices;
   /** Classic or Daily (`challenge`). */
   mode: WebGameMode;
-  /** Content locale. */
-  locale: string;
-  /** Returns to the account screen. */
+  /** Active locale. */
+  locale: YouTubeLocale;
+  /** Returns to the hosted home. */
   onBack: () => void;
 }>;
 /** Server-authoritative Classic or Daily play: every guess, hint, continue, skip and completion is confirmed by the backend. */
@@ -43,15 +54,25 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
   const {width} = useWindowDimensions();
   /** Native answer editor. */
   const inputRef = useRef<AnswerEditor | null>(null);
+  /** Shared copy lookup. */
+  const text = (key: YouTubeCopyKey): string => youtubeText(locale, key);
+  /** Hosted copy lookup. */
+  const hosted = (key: HostedCopyKey): string => hostedText(locale, key);
+  /** Resolves one notice's copy. */
+  const noticeText = (notice: HostedGameNotice): string => {
+    /** Key location for the notice. */
+    const key = NOTICE_KEYS[notice];
+    return "solo" in key ? text(key.solo) : hosted(key.hosted);
+  };
   /** Server-confirmed coins. */
   const coins = game.account.profile?.coins;
   /** Title for the mode. */
-  const title = mode === "classic" ? "Classic" : "Daily";
+  const title = text(mode === "classic" ? "classic" : "daily");
   /** Header shared by every state. */
   const header = (
     <View style={styles.status} testID="hosted-status">
-      <ActionButton label="← Back" onPress={onBack} style={styles.back} testID="hosted-back" />
-      <Text accessibilityLabel={coins === undefined ? "Coins: loading" : `Coins: ${coins}`} style={styles.coins} testID="hosted-coins">
+      <ActionButton label={`← ${text("back")}`} onPress={onBack} style={styles.back} testID="hosted-back" />
+      <Text accessibilityLabel={`${text("coins")}: ${coins ?? text("loading")}`} style={styles.coins} testID="hosted-coins">
         🪙 {coins ?? "…"}
       </Text>
     </View>
@@ -60,21 +81,23 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
     return (
       <Screen testID="screen-hosted-loading">
         {header}
-        <Notice testID="hosted-notice">Loading your puzzle from the server…</Notice>
+        <Notice testID="hosted-notice">{hosted("loadingPuzzle")}</Notice>
       </Screen>
     );
   }
   if (game.state.kind === "unavailable") {
+    /** Whether the Daily is simply done for today. */
+    const dailyDone = game.state.code === "daily-completed";
     return (
       <Screen testID="screen-hosted-unavailable">
         {header}
         <Panel>
-          <Eyebrow>{`${title} · server`}</Eyebrow>
-          <Heading testID="hosted-heading">{game.state.code === "daily-completed" ? "Daily complete" : "Puzzle unavailable"}</Heading>
-          <Notice error={game.state.code !== "daily-completed"} testID="hosted-notice">
-            {game.state.code === "daily-completed" ? "Today's Daily is already solved on this account." : "The puzzle could not be loaded."}
+          <Eyebrow>{`${title} · ${hosted("online")}`}</Eyebrow>
+          <Heading testID="hosted-heading">{dailyDone ? text("dailyComplete") : hosted("puzzleUnavailable")}</Heading>
+          <Notice error={!dailyDone} testID="hosted-notice">
+            {dailyDone ? hosted("dailyAlreadySolved") : hosted("puzzleLoadFailed")}
           </Notice>
-          {game.state.code !== "daily-completed" && <ActionButton tone="primary" label="Retry" onPress={game.next} testID="hosted-retry" />}
+          {!dailyDone && <ActionButton tone="primary" label={text("retry")} onPress={game.next} testID="hosted-retry" />}
         </Panel>
       </Screen>
     );
@@ -87,30 +110,35 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
         {header}
         <Panel style={styles.resultPanel}>
           <Text style={styles.icon}>{result.isCorrect ? "✨" : "🌙"}</Text>
-          <Heading testID="hosted-result-heading">{result.isCorrect ? "Solved!" : "Not solved"}</Heading>
+          <Heading testID="hosted-result-heading">{text(result.isCorrect ? "victory" : "loss")}</Heading>
           <View style={styles.stats}>
-            <View accessibilityLabel={`Attempts: ${result.attempts}`} style={styles.stat} testID="hosted-result-attempts">
-              <Text style={styles.statLabel}>Attempts</Text>
+            <View accessibilityLabel={`${text("attempts")}: ${result.attempts}`} style={styles.stat} testID="hosted-result-attempts">
+              <Text style={styles.statLabel}>{text("attempts")}</Text>
               <Text style={styles.statValue}>{result.attempts}</Text>
             </View>
-            <View accessibilityLabel={`Coins earned: ${result.coinsEarned}`} style={styles.stat} testID="hosted-result-coins">
-              <Text style={styles.statLabel}>Coins earned</Text>
+            <View accessibilityLabel={`${text("coinsEarned")}: ${result.coinsEarned}`} style={styles.stat} testID="hosted-result-coins">
+              <Text style={styles.statLabel}>{text("coinsEarned")}</Text>
               <Text style={styles.statValue}>{result.coinsEarned}</Text>
             </View>
             {typeof result.newXp === "number" && (
-              <View accessibilityLabel={`XP: ${result.newXp}`} style={styles.stat}>
-                <Text style={styles.statLabel}>XP</Text>
+              <View accessibilityLabel={`${text("xp")}: ${result.newXp}`} style={styles.stat}>
+                <Text style={styles.statLabel}>{text("xp")}</Text>
                 <Text style={styles.statValue}>{result.newXp}</Text>
               </View>
             )}
           </View>
           {result.newlyUnlockedAchievementIds.length > 0 && (
             <View style={styles.achievements}>
-              <Heading level={2}>New achievements</Heading>
-              <AchievementRow ids={result.newlyUnlockedAchievementIds} text={() => "Achievement"} label="New achievements" />
+              <Heading level={2}>{text("newAchievements")}</Heading>
+              <AchievementRow ids={result.newlyUnlockedAchievementIds} text={text} label={text("newAchievements")} />
             </View>
           )}
-          <ActionButton tone="primary" label={mode === "classic" ? "Next riddle" : "Done"} onPress={mode === "classic" ? game.next : onBack} testID="hosted-next" />
+          <ActionButton
+            tone="primary"
+            label={mode === "classic" ? hosted("nextRiddle") : hosted("done")}
+            onPress={mode === "classic" ? game.next : onBack}
+            testID="hosted-next"
+          />
         </Panel>
       </Screen>
     );
@@ -128,14 +156,14 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
       {header}
       {notice && (
         <Notice error testID="hosted-notice">
-          {NOTICE_COPY[notice]}
+          {noticeText(notice)}
         </Notice>
       )}
       <View style={styles.puzzle}>
-        <Eyebrow>{`${title} · server`}</Eyebrow>
+        <Eyebrow>{`${title} · ${hosted("online")}`}</Eyebrow>
         <Heading testID="hosted-riddle-text">{riddle.text}</Heading>
       </View>
-      <View accessibilityLabel="Attempts" style={styles.guesses} testID="hosted-guesses">
+      <View accessibilityLabel={text("attempts")} style={styles.guesses} testID="hosted-guesses">
         {rows.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row} testID={`hosted-guess-row-${rowIndex}`}>
             {row.letters.map((letter, index) => (
@@ -158,7 +186,7 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
               <Pressable
                 key={index}
                 accessibilityRole="button"
-                accessibilityLabel={`Type your answer: ${index + 1}${letter ? `: ${letter}` : ""}`}
+                accessibilityLabel={`${text("inputLabel")}: ${index + 1}${letter ? `: ${letter}` : ""}`}
                 disabled={busy || awaitingContinue || hinted}
                 onPress={() => {
                   game.setActiveSlot(index);
@@ -177,7 +205,7 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
         inputRef={inputRef}
         disabled={busy || awaitingContinue}
         locale={locale}
-        label="Type your answer"
+        label={text("inputLabel")}
         latinShortcut={latinShortcut}
         onText={game.insertText}
         onBackspace={game.backspace}
@@ -185,14 +213,14 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
       />
       {awaitingContinue ? (
         <View style={styles.actions}>
-          <ActionButton tone="primary" label="Use one more guess" disabled={busy} onPress={game.buyContinue} testID="hosted-buy-continue" />
-          <ActionButton label="Finish" disabled={busy} onPress={game.finish} testID="hosted-finish" />
+          <ActionButton tone="primary" label={text("buyContinue")} disabled={busy} onPress={game.buyContinue} testID="hosted-buy-continue" />
+          <ActionButton label={text("finishRun")} disabled={busy} onPress={game.finish} testID="hosted-finish" />
         </View>
       ) : (
         <View style={styles.actions}>
           <ActionButton
             tone="primary"
-            label="Submit"
+            label={text("submit")}
             disabled={busy || displayLetters.some((letter) => !letter)}
             onPress={() => {
               focusAnswer();
@@ -202,7 +230,7 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
           />
           <View style={styles.secondaryActions}>
             <ActionButton
-              label="Hint"
+              label={text("hint")}
               disabled={busy}
               onPress={() => {
                 focusAnswer();
@@ -211,7 +239,7 @@ export function HostedGameScreen({services, mode, locale, onBack}: HostedGameScr
               style={styles.secondaryAction}
               testID="hosted-hint"
             />
-            {mode === "classic" && <ActionButton label="Skip" disabled={busy} onPress={game.skip} style={styles.secondaryAction} testID="hosted-skip" />}
+            {mode === "classic" && <ActionButton label={text("skip")} disabled={busy} onPress={game.skip} style={styles.secondaryAction} testID="hosted-skip" />}
           </View>
         </View>
       )}

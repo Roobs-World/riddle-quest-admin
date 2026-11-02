@@ -1,24 +1,31 @@
-import {useMemo} from "react";
+import type {YouTubeLocale} from "@qwordly/solo";
+import {useCallback, useMemo, useRef} from "react";
 import {StatusBar} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
+import {AndroidApp} from "./AndroidApp";
 import {createAndroidSdkPort} from "./androidSdkPort";
 import {androidContentSource} from "./content";
 import {createHostedFirebaseClient} from "./hosted/firebaseClient";
 import {createAndroidHostServices} from "./hosted/hostedServices";
 import {hostedConfig} from "./hosted/hostedConfig";
-import {SoloPlayableApp} from "./SoloPlayableApp";
 /** Root component registered with React Native. */
 export function App() {
   /** Device-bound host port created once for the app lifetime. */
   const sdk = useMemo(() => createAndroidSdkPort(), []);
   /** Hosted Firebase client created once for the app lifetime. */
   const hosted = useMemo(() => createHostedFirebaseClient(hostedConfig), []);
+  /** Device locale once resolved; host-level copy reads it lazily. */
+  const localeRef = useRef<YouTubeLocale>("en");
   /** Shared hosted play services bound to that client. */
-  const hostedServices = useMemo(() => createAndroidHostServices(hosted), [hosted]);
+  const hostedServices = useMemo(() => createAndroidHostServices(hosted, () => localeRef.current), [hosted]);
+  /** Records the resolved locale for the services. */
+  const onLocaleResolved = useCallback((locale: YouTubeLocale) => {
+    localeRef.current = locale;
+  }, []);
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
-      <SoloPlayableApp sdk={sdk} contentSource={androidContentSource} hosted={hosted} hostedServices={hostedServices} />
+      <AndroidApp sdk={sdk} contentSource={androidContentSource} client={hosted} services={hostedServices} onLocaleResolved={onLocaleResolved} />
     </SafeAreaProvider>
   );
 }

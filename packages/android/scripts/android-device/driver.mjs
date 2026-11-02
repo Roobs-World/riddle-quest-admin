@@ -185,6 +185,28 @@ export const createDriver = ({serial, evidenceDirectory}) => {
   const tapId = async (id) => {
     tap(await findScrolling(id));
   };
+  /** Taps `id` whenever it is visible until `targetId` appears; survives a screen that changes under the first tap and a target that is already shown. */
+  const tapIdUntil = async (id, targetId, timeoutMilliseconds = 60_000) => {
+    const deadline = Date.now() + timeoutMilliseconds;
+    let nodes = [];
+    while (Date.now() < deadline) {
+      try {
+        nodes = dumpUi();
+        if (dismissSystemDialogs(nodes)) continue;
+        if (nodes.some(byId(targetId))) return;
+        const node = nodes.find(byId(id));
+        if (node) {
+          tap(node);
+          await sleep(1200);
+          continue;
+        }
+      } catch {
+        // Retry after a transition.
+      }
+      await sleep(600);
+    }
+    throw new Error(`Timed out waiting for ${targetId} after tapping ${id}. Visible nodes:\n${summarize(nodes)}`);
+  };
   /** Reads a node's text or label by identifier. */
   const readText = async (id) => {
     const node = await waitForId(id);
@@ -203,5 +225,5 @@ export const createDriver = ({serial, evidenceDirectory}) => {
   /** Whether a node reports the enabled state. */
   const isEnabled = (node) => node.enabled === "true";
 
-  return {adb, devices, install, launch, stop, clearData, home, rotate, resetRotation, capture, dumpUi, waitFor, waitForAbsence, waitForId, findScrolling, byId, tap, tapId, readText, readCoins, typeAnswer, isEnabled};
+  return {adb, devices, install, launch, stop, clearData, home, rotate, resetRotation, capture, dumpUi, waitFor, waitForAbsence, waitForId, findScrolling, byId, tap, tapId, tapIdUntil, readText, readCoins, typeAnswer, isEnabled};
 };

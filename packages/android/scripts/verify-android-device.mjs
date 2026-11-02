@@ -28,8 +28,8 @@ const main = async () => {
   driver.install(apkPath);
   driver.clearData();
   driver.launch();
-  log("Waiting for the menu after a cold first run");
-  await driver.waitForId("menu-heading");
+  log("Switching to the offline game from the hosted-first launch");
+  await driver.tapIdUntil("play-offline", "menu-heading");
   const startingCoins = await driver.readCoins();
   driver.capture("menu-first-run");
   if (startingCoins !== 300) throw new Error(`Expected a fresh save with 300 coins, saw ${startingCoins}`);
@@ -54,7 +54,7 @@ const main = async () => {
   log("Relaunching cold to confirm persistence");
   driver.stop();
   driver.launch();
-  await driver.waitForId("menu-heading");
+  await driver.tapIdUntil("play-offline", "menu-heading");
   const persistedCoins = await driver.readCoins();
   driver.capture("menu-after-relaunch");
   if (persistedCoins !== rewardedCoins) throw new Error(`Expected ${rewardedCoins} coins after relaunch, saw ${persistedCoins}`);

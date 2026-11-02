@@ -17,7 +17,7 @@ A self-contained Web Target hosted by YouTube whose play state belongs only to t
 _Avoid_: YouTube app, YouTube account
 
 **Android App**:
-The bare React Native app in `packages/android` submitted to Google Play. Like the YouTube Playable it is self-contained: it bundles the same content pack, keeps progress in app-private storage, and has no account, purchases, sharing, or multiplayer.
+The bare React Native app in `packages/android` submitted to Google Play. It launches hosted-first like the Jest Web Target: the device signs in to its Global Game Account anonymously and plays server-issued Classic and Daily riddles through the shared host services, with copy from the same locale tables as the Playable plus a hosted-only table. The self-contained game (bundled content pack, progress in app-private storage) remains one tap away as the Offline Surface. It still has no purchases, sharing, or multiplayer.
 _Avoid_: Mobile build, native port, Play version of the web game
 
 **Shared Solo Logic**:

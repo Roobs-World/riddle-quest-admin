@@ -1,62 +1,53 @@
+import {youtubeText, type YouTubeLocale} from "@qwordly/solo";
 import {StyleSheet, Text, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
-import {useHostedAccount} from "../hosted/useHostedAccount";
+import type {HostedAccountController} from "../hosted/useHostedAccount";
+import {hostedText} from "../i18n/hostedCopy";
 import {palette, spacing} from "../theme";
 /** Props for {@link AccountScreen}. */
 export type AccountScreenProps = Readonly<{
-  /** Hosted Firebase client. */
+  /** Active locale. */
+  locale: YouTubeLocale;
+  /** Hosted Firebase client, for the environment caption. */
   client: HostedFirebaseClient;
-  /** Returns to the menu. */
+  /** Account controller owned by the root so the confirmed state survives navigation. */
+  account: HostedAccountController;
+  /** Returns to the previous screen. */
   onBack: () => void;
-  /** Starts server-authoritative play in a mode; absent while hosted play is unavailable. */
-  onPlay?: (mode: "classic" | "challenge") => void;
 }>;
-/**
- * Phase 1 account surface: signs the device in anonymously and shows the
- * server-confirmed Global Game Account. Copy is English-only until the hosted
- * screens adopt the shared locale tables in Phase 1.5.
- */
-export function AccountScreen({client, onBack, onPlay}: AccountScreenProps) {
-  /** Account controller. */
-  const {state, connect} = useHostedAccount(client);
+/** Shows the server-confirmed Global Game Account, or lets the player connect and retry. */
+export function AccountScreen({locale, client, account, onBack}: AccountScreenProps) {
+  /** Account state. */
+  const {state, connect} = account;
   return (
     <Screen testID="screen-account">
       <Panel>
-        <ActionButton label="← Back" onPress={onBack} style={styles.back} testID="back" />
+        <ActionButton label={`← ${youtubeText(locale, "back")}`} onPress={onBack} style={styles.back} testID="back" />
         <Eyebrow>{client.usingEmulators ? `Firebase emulators · ${client.projectId}` : client.projectId}</Eyebrow>
-        <Heading testID="account-heading">Account</Heading>
-        <Text style={styles.body}>
-          Your progress, coins and races are kept on the Riddle Quest servers. This device is signed in anonymously; a Google
-          sign-in can be linked later to recover the account on another phone.
-        </Text>
-        {state.kind === "idle" && <ActionButton tone="primary" label="Connect" onPress={connect} testID="account-connect" />}
-        {state.kind === "connecting" && <Notice testID="account-status">Connecting…</Notice>}
+        <Heading testID="account-heading">{hostedText(locale, "account")}</Heading>
+        <Text style={styles.body}>{hostedText(locale, "accountIntro")}</Text>
+        {state.kind === "idle" && <ActionButton tone="primary" label={hostedText(locale, "playOnline")} onPress={connect} testID="account-connect" />}
+        {state.kind === "connecting" && <Notice testID="account-status">{hostedText(locale, "connecting")}</Notice>}
         {state.kind === "failed" && (
           <View style={styles.stack}>
             <Notice error testID="account-status">
-              {state.code === "sign-in" ? "Sign-in failed. Check your connection and try again." : "The account could not be confirmed. Try again."}
+              {hostedText(locale, state.code === "sign-in" ? "signInFailed" : "provisionFailed")}
             </Notice>
-            <ActionButton tone="primary" label="Retry" onPress={connect} testID="account-connect" />
+            <ActionButton tone="primary" label={youtubeText(locale, "retry")} onPress={connect} testID="account-connect" />
           </View>
         )}
         {state.kind === "ready" && (
           <View style={styles.stack} testID="account-ready">
-            <Notice testID="account-status">{state.account.created ? "Account created." : "Account confirmed."}</Notice>
-            <View accessibilityLabel={`Server coins: ${state.account.coins}`} style={styles.cell} testID="account-coins">
-              <Text style={styles.cellLabel}>Server coins</Text>
+            <Notice testID="account-status">{hostedText(locale, state.account.created ? "accountCreated" : "accountConfirmed")}</Notice>
+            <View accessibilityLabel={`${hostedText(locale, "serverCoins")}: ${state.account.coins}`} style={styles.cell} testID="account-coins">
+              <Text style={styles.cellLabel}>{hostedText(locale, "serverCoins")}</Text>
               <Text style={styles.cellValue}>{state.account.coins}</Text>
             </View>
-            <View accessibilityLabel={`Player id: ${state.account.uid}`} style={styles.cell}>
-              <Text style={styles.cellLabel}>Player id</Text>
+            <View accessibilityLabel={`${hostedText(locale, "playerId")}: ${state.account.uid}`} style={styles.cell}>
+              <Text style={styles.cellLabel}>{hostedText(locale, "playerId")}</Text>
               <Text style={styles.cellMono}>{state.account.uid}</Text>
             </View>
-            {onPlay && (
-              <View style={styles.stack}>
-                <ActionButton tone="primary" label="Play Classic on the server" onPress={() => onPlay("classic")} testID="hosted-play-classic" />
-                <ActionButton label="Play today's Daily on the server" onPress={() => onPlay("challenge")} testID="hosted-play-daily" />
-              </View>
-            )}
           </View>
         )}
       </Panel>

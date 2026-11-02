@@ -85,8 +85,10 @@ jest.mock("firebase/functions", () => ({
   },
 }));
 
-import {createHostedFirebaseClient} from "../hosted/firebaseClient";
+import type {YouTubeLocale} from "@qwordly/solo";
+import {createHostedFirebaseClient, type HostedFirebaseClient} from "../hosted/firebaseClient";
 import {parseHostedConfig, type HostedConfig} from "../hosted/hostedConfig";
+import {useHostedAccount} from "../hosted/useHostedAccount";
 import {AccountScreen} from "../screens/AccountScreen";
 
 /** Valid production-shaped configuration. */
@@ -191,15 +193,30 @@ describe("AccountScreen", () => {
     mockAuth.currentUser = null;
     mockCallable.mockReset();
   });
+  /** Props for the harness that owns the account controller the way the root does. */
+  type HarnessProps = {
+    /** Client under test. */
+    client: HostedFirebaseClient;
+    /** Back handler. */
+    onBack: () => void;
+    /** Locale under test. */
+    locale: YouTubeLocale;
+  };
+  /** Owns the account controller so the screen receives it as the root would. */
+  const Harness = ({client, onBack, locale}: HarnessProps) => {
+    /** On-demand account controller. */
+    const account = useHostedAccount(client);
+    return <AccountScreen locale={locale} client={client} account={account} onBack={onBack} />;
+  };
   /** Renders the screen with a client built from the given configuration. */
-  const renderScreen = async (config = productionConfig) => {
+  const renderScreen = async (config = productionConfig, locale: YouTubeLocale = "en") => {
     /** Client under test. */
     const client = createHostedFirebaseClient(config);
     /** Back handler spy. */
     const onBack = jest.fn();
     await render(
       <SafeAreaProvider>
-        <AccountScreen client={client} onBack={onBack} />
+        <Harness client={client} onBack={onBack} locale={locale} />
       </SafeAreaProvider>,
     );
     return {client, onBack};
@@ -208,7 +225,7 @@ describe("AccountScreen", () => {
   it("connects on demand and shows the confirmed server balance", async () => {
     mockCallable.mockResolvedValueOnce({data: {uid: "device-uid", created: true, coins: 300}});
     await renderScreen();
-    expect(screen.getByTestId("account-heading")).toBeTruthy();
+    expect(screen.getByTestId("account-heading")).toHaveTextContent("Account");
     await fireEvent.press(screen.getByTestId("account-connect"));
     await waitFor(() => expect(screen.getByTestId("account-ready")).toBeTruthy());
     expect(screen.getByTestId("account-status")).toHaveTextContent(/Account created/u);
@@ -228,10 +245,19 @@ describe("AccountScreen", () => {
     expect(screen.getByTestId("account-coins")).toHaveTextContent(/540$/u);
   });
 
-  it("returns to the menu", async () => {
+  it("returns to the previous screen", async () => {
     /** Rendered screen handles. */
     const {onBack} = await renderScreen();
     await fireEvent.press(screen.getByTestId("back"));
     expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders the device locale's copy", async () => {
+    mockCallable.mockResolvedValueOnce({data: {uid: "device-uid", created: true, coins: 300}});
+    await renderScreen(productionConfig, "es");
+    expect(screen.getByTestId("account-heading")).toHaveTextContent("Cuenta");
+    await fireEvent.press(screen.getByTestId("account-connect"));
+    await waitFor(() => expect(screen.getByTestId("account-status")).toHaveTextContent("Cuenta creada."));
+    expect(screen.getByTestId("account-coins")).toHaveTextContent(/Monedas en el servidor/u);
   });
 });

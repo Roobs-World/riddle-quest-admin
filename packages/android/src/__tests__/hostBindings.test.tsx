@@ -20,9 +20,11 @@ import {androidContentSource} from "../content";
 import {AnswerInput} from "../screens/AnswerInput";
 
 describe("App", () => {
-  it("boots the shared game through the device port and persists to AsyncStorage", async () => {
+  it("connects hosted-first, then boots the offline game through the device port and persists to AsyncStorage", async () => {
     await AsyncStorage.removeItem(ANDROID_SAVE_KEY);
     await render(<App />);
+    await waitFor(() => expect(screen.getByTestId("screen-hosted-home")).toBeTruthy());
+    await fireEvent.press(screen.getByTestId("play-offline"));
     await waitFor(() => expect(screen.getByTestId("screen-menu")).toBeTruthy());
     await fireEvent.press(screen.getByTestId("start-classic"));
     await waitFor(() => expect(screen.getByTestId("screen-game")).toBeTruthy());

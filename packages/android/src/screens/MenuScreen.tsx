@@ -1,41 +1,16 @@
 import type {LocalSoloAuthority, YouTubeAuthoritySnapshot, YouTubeContent, YouTubeCopyKey, YouTubeLocale} from "@qwordly/solo";
-import {Pressable, StyleSheet, Text, View} from "react-native";
+import {StyleSheet, View} from "react-native";
+import {ModeCard} from "../components/ModeCard";
 import {ActionButton, Banner, Eyebrow, Heading, Notice, Screen} from "../components/Primitives";
 import {SaveBanner, StatusHeader} from "../components/StatusViews";
-import {palette, radius, spacing} from "../theme";
-/** Props for {@link ModeCard}. */
-type ModeCardProps = Readonly<{
-  /** Decorative glyph. */
-  glyph: string;
-  /** Mode name. */
-  title: string;
-  /** Progress or availability caption. */
-  caption: string;
-  /** Whether the mode cannot start. */
-  disabled: boolean;
-  /** Starts the mode. */
+import {spacing} from "../theme";
+/** A way back to the hosted surface, when the build has one. */
+export type OnlineAction = Readonly<{
+  /** Localized button label. */
+  label: string;
+  /** Switches to hosted play. */
   onPress: () => void;
-  /** Stable automation identifier. */
-  testID: string;
 }>;
-/** Large tappable card for one game mode. */
-function ModeCard({glyph, title, caption, disabled, onPress, testID}: ModeCardProps) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={`${title}: ${caption}`}
-      accessibilityState={{disabled}}
-      disabled={disabled}
-      onPress={onPress}
-      testID={testID}
-      style={({pressed}) => [styles.modeCard, disabled && styles.modeCardDisabled, pressed && !disabled && styles.modeCardPressed]}
-    >
-      <Text style={styles.modeGlyph}>{glyph}</Text>
-      <Text style={styles.modeTitle}>{title}</Text>
-      <Text style={styles.modeCaption}>{caption}</Text>
-    </Pressable>
-  );
-}
 /** Props for {@link MenuScreen}. */
 export type MenuScreenProps = Readonly<{
   /** Active locale. */
@@ -56,11 +31,11 @@ export type MenuScreenProps = Readonly<{
   text: (key: YouTubeCopyKey) => string;
   /** Opens the progress screen. */
   onShowProgress: () => void;
-  /** Opens the hosted account screen, when the build has one. */
-  onShowAccount?: () => void;
+  /** Returns to hosted play, when the build has it. */
+  online?: OnlineAction;
 }>;
 /** Mode selection with recovery, guidance, and save-status banners. */
-export function MenuScreen({locale, content, authority, snapshot, today, notice, run, text, onShowProgress, onShowAccount}: MenuScreenProps) {
+export function MenuScreen({locale, content, authority, snapshot, today, notice, run, text, onShowProgress, online}: MenuScreenProps) {
   /** Durable progression. */
   const progression = snapshot.save.progression;
   /** Whether material transitions are unavailable. */
@@ -124,7 +99,7 @@ export function MenuScreen({locale, content, authority, snapshot, today, notice,
         />
       </View>
       <ActionButton label={text("progress")} onPress={onShowProgress} disabled={materialDisabled} testID="show-progress" />
-      {onShowAccount && <ActionButton label="Account" onPress={onShowAccount} disabled={materialDisabled} testID="show-account" />}
+      {online && <ActionButton label={online.label} onPress={online.onPress} disabled={materialDisabled} testID="play-online" />}
     </Screen>
   );
 }
@@ -132,20 +107,4 @@ export function MenuScreen({locale, content, authority, snapshot, today, notice,
 const styles = StyleSheet.create({
   intro: {gap: spacing.xs},
   modes: {flexDirection: "row", gap: spacing.md},
-  modeCard: {
-    flex: 1,
-    minHeight: 150,
-    padding: spacing.md,
-    borderRadius: radius.panel,
-    borderWidth: 1,
-    borderColor: palette.border,
-    backgroundColor: palette.panel,
-    gap: spacing.sm,
-    justifyContent: "flex-end",
-  },
-  modeCardDisabled: {opacity: 0.45},
-  modeCardPressed: {borderColor: palette.accent},
-  modeGlyph: {fontSize: 36},
-  modeTitle: {color: palette.text, fontSize: 20, fontWeight: "700"},
-  modeCaption: {color: palette.subtle, fontSize: 14},
 });

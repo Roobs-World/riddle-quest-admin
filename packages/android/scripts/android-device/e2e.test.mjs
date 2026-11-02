@@ -30,13 +30,20 @@ before(() => {
   if (process.env.RIDDLE_QUEST_SKIP_INSTALL !== "1") driver.install(process.env.RIDDLE_QUEST_APK ?? defaultApk);
 });
 
-/** Clears data, launches, and waits for the fresh menu. */
+/** Clears data, launches hosted-first, and switches to the offline menu; the offline button is available while connecting and once connected. */
 const freshMenu = async (driver) => {
   driver.stop();
   driver.clearData();
   driver.launch();
-  await driver.waitForId("menu-heading");
+  await driver.tapIdUntil("play-offline", "menu-heading");
   assert.equal(await driver.readCoins(), STARTING_COINS);
+};
+/** Clears data, launches, and waits for the hosted home once the account is confirmed against the emulators. */
+const freshHosted = async (driver) => {
+  driver.stop();
+  driver.clearData();
+  driver.launch();
+  await driver.waitForId("screen-hosted-home", 60_000);
 };
 /** Submits wrong guesses until the attempt limit offers a continue. */
 const exhaustAttempts = async (driver, length) => {
@@ -70,7 +77,7 @@ describe("Android app on device", () => {
     await driver.waitForId("menu-heading");
     driver.stop();
     driver.launch();
-    await driver.waitForId("menu-heading");
+    await driver.tapIdUntil("play-offline", "menu-heading");
     assert.equal(await driver.readCoins(), rewarded);
     assert.match(await driver.readText("start-classic"), /2\/\d+$/u);
     await driver.tapId("show-progress");
@@ -148,7 +155,7 @@ describe("Android app on device", () => {
     driver.capture("preferences");
     driver.stop();
     driver.launch();
-    await driver.waitForId("menu-heading");
+    await driver.tapIdUntil("play-offline", "menu-heading");
     assert.equal(driver.isEnabled(await driver.waitForId("start-daily")), false);
     await driver.tapId("show-progress");
     await driver.waitFor("reduced motion persisted", (node) => node.id === "preference-reduced-motion" && node.checked === "true");
@@ -208,31 +215,34 @@ describe("Android app on device", () => {
 
   it("signs in anonymously and provisions a hosted account against the Firebase emulators", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with the Firebase emulators running"}, async () => {
     const driver = scenario("hosted-account");
-    await freshMenu(driver);
+    await freshHosted(driver);
+    driver.capture("hosted-home");
+    await driver.waitFor("server coins on the home", (node) => node.label === `Coins: ${STARTING_COINS}`);
     await driver.tapId("show-account");
-    await driver.waitForId("account-heading");
-    driver.capture("account");
-    await driver.tapId("account-connect");
     await driver.waitForId("account-ready", 60_000);
     driver.capture("account-ready");
     assert.equal(await driver.readText("account-status"), "Account created.");
     const coins = await driver.waitFor("server coins", (node) => /^Server coins: \d+$/u.test(node.label ?? ""));
     assert.equal(coins.label, "Server coins: 300");
+    await driver.tapId("back");
+    await driver.waitForId("screen-hosted-home");
+    // The offline game stays one tap away and the confirmed account survives the round trip.
+    await driver.tapId("play-offline");
+    await driver.waitForId("menu-heading");
+    driver.capture("offline-menu");
+    await driver.tapId("play-online");
+    await driver.waitForId("screen-hosted-home");
     driver.stop();
     driver.launch();
-    await driver.waitForId("menu-heading");
+    await driver.waitForId("screen-hosted-home", 60_000);
     await driver.tapId("show-account");
-    await driver.tapId("account-connect");
     await driver.waitForId("account-ready", 60_000);
     assert.equal(await driver.readText("account-status"), "Account confirmed.");
   });
 
   it("plays a server-issued Classic riddle through the shared hosted services against the emulators", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with seeded Firebase emulators running"}, async () => {
     const driver = scenario("hosted-classic");
-    await freshMenu(driver);
-    await driver.tapId("show-account");
-    await driver.tapId("account-connect");
-    await driver.waitForId("account-ready", 60_000);
+    await freshHosted(driver);
     await driver.tapId("hosted-play-classic");
     await driver.waitForId("screen-hosted-game", 60_000);
     const riddle = await driver.readText("hosted-riddle-text");
@@ -265,10 +275,10 @@ describe("Android app on device", () => {
     driver.home();
     await driver.waitForAbsence("app in foreground", driver.byId("riddle-text"));
     driver.launch();
-    await driver.waitForId("guess-row-0");
+    await driver.tapIdUntil("play-offline", "guess-row-0");
     driver.stop();
     driver.launch();
-    await driver.waitForId("riddle-text");
+    await driver.tapIdUntil("play-offline", "riddle-text");
     await driver.waitForId("guess-row-0");
     driver.capture("restored");
     await driver.typeAnswer(answers.classic[0]);
