@@ -105,9 +105,15 @@ type CodedError = {
   /** Stable code. */
   code: unknown;
 };
-/** Reads a stable error code when one is attached. */
+/**
+ * Reads a stable error code when one is attached.
+ *
+ * @remarks
+ * The Firebase callable SDK reports codes as `functions/<code>`; host services
+ * may raise bare codes. Both normalize to the bare code.
+ */
 const errorCode = (error: unknown): string =>
-  typeof error === "object" && error !== null && "code" in error ? String((error as CodedError).code) : "";
+  typeof error === "object" && error !== null && "code" in error ? String((error as CodedError).code).replace(/^functions\//u, "") : "";
 /** Global shape exposing the optional Web Crypto UUID generator. */
 type RandomUuidHost = {
   /** Web Crypto, when the runtime provides it. */

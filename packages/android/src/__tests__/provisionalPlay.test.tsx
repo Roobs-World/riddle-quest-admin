@@ -114,7 +114,42 @@ describe("provisional play buffering", () => {
     expect(screen.getByTestId("hosted-guess-0-0-yellow")).toBeTruthy();
     await second.journal.settled();
     expect(JSON.parse(fixture.map.get(JOURNAL_KEY) ?? "{}")).toMatchObject({queue: [], draft: ["", "", "", ""]});
+    // A draft typed after the redelivered guess survives the next restart too.
+    await typeLetters("ro");
+    await second.journal.settled();
+    expect(JSON.parse(fixture.map.get(JOURNAL_KEY) ?? "{}")).toMatchObject({queue: [], draft: ["r", "o", "", ""]});
+    await second.unmount();
+    await renderBuffered(createServices({guess}), fixture.store);
+    await waitFor(() => expect(screen.getByTestId("hosted-slot-0")).toHaveTextContent("r"));
+    expect(screen.getByTestId("hosted-slot-1")).toHaveTextContent("o");
   });
+
+  it.each(["functions/unavailable", "functions/internal", "functions/deadline-exceeded"])(
+    "keeps a guess the Firebase SDK reports as %s journaled for redelivery",
+    async (code) => {
+      /** Device store fixture. */
+      const fixture = createStore();
+      /** Deliveries attempted by the fake backend. */
+      let sends = 0;
+      /** Fails the first delivery the way the callable SDK does when the device is offline. */
+      const guess = async (text: string) => {
+        sends += 1;
+        if (sends === 1) throw Object.assign(new Error("offline"), {code});
+        return score(text, 1);
+      };
+      /** First mount of the screen. */
+      const first = await renderBuffered(createServices({guess}), fixture.store);
+      await expectId("screen-hosted-game");
+      await typeLetters("more");
+      await fireEvent.press(screen.getByTestId("hosted-submit"));
+      await waitFor(() => expect(screen.getByTestId("hosted-notice")).toBeTruthy());
+      await first.journal.settled();
+      expect(JSON.parse(fixture.map.get(JOURNAL_KEY) ?? "{}").queue).toHaveLength(1);
+      await first.unmount();
+      await renderBuffered(createServices({guess}), fixture.store);
+      await expectId("hosted-guess-row-0");
+    },
+  );
 
   it("drops a rejected guess instead of replaying it, and a fresh guess gets a new id", async () => {
     /** Device store fixture. */
@@ -124,7 +159,7 @@ describe("provisional play buffering", () => {
     /** Scripted guess delivery. */
     const guess = async (text: string) => {
       sends += 1;
-      if (sends === 1) throw Object.assign(new Error("not enough coins"), {code: "failed-precondition"});
+      if (sends === 1) throw Object.assign(new Error("not enough coins"), {code: "functions/failed-precondition"});
       return score(text, 1);
     };
     /** Scripted services. */

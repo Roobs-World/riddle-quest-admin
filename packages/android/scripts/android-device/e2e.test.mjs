@@ -296,7 +296,8 @@ describe("Android app on device", () => {
     await driver.waitForId("screen-hosted-home", 60_000);
     await driver.tapId("hosted-play-classic");
     await driver.waitForId("screen-hosted-game", 60_000);
-    await driver.waitFor("restored draft letter", (node) => node.text === seeded[0][0]);
+    // Slots render letters in upper case, so read the slot's accessible description rather than its glyph.
+    await driver.waitFor("restored draft letter", (node) => node.id === "hosted-slot-0" && (node.label ?? "").endsWith(`1: ${seeded[0][0]}`));
     driver.capture("hosted-restored-draft");
     await driver.typeAnswer(seeded[0].slice(2));
     await driver.tapId("hosted-submit");
