@@ -55,6 +55,7 @@ import {
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
 import {provisionAndroidAccount} from "./android/provisionAndroidAccount";
 import {grantAndroidPurchase, syncAndroidSubscriptions} from "./android/androidPurchaseEndpoints";
+import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "./android/androidAttestation";
 import {facebookDataDeletionCallback, facebookDataDeletionStatus} from "./facebook/facebookDataDeletionEndpoints";
 import {listFacebookTournament, recordFacebookTournament} from "./race/facebookTournamentCallable";
 import {blockRival, reportRival} from "./social/socialSafetyCallables";
@@ -124,6 +125,8 @@ export {
   provisionAndroidAccount,
   grantAndroidPurchase,
   syncAndroidSubscriptions,
+  issueAndroidAttestationNonce,
+  exchangeAndroidAttestation,
   issueFacebookIdentityNonce,
   exchangeFacebookIdentity,
   facebookDataDeletionCallback,

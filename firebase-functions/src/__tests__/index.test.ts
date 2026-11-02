@@ -153,6 +153,8 @@ describe("Firebase Functions", () => {
       "provisionAndroidAccount",
       "grantAndroidPurchase",
       "syncAndroidSubscriptions",
+      "issueAndroidAttestationNonce",
+      "exchangeAndroidAttestation",
       "redditGameplay",
     ];
 

@@ -14,6 +14,7 @@ import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} fro
 import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
 import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@riddle-quest/hosted";
 import type {AndroidPurchaseBackend} from "../billing/androidCommerce";
+import {enableAndroidAppCheck} from "./appCheck";
 import type {HostedConfig} from "./hostedConfig";
 /** Response of the backend `provisionAndroidAccount` callable. */
 export type ProvisionedAccount = Readonly<{
@@ -60,7 +61,8 @@ const isProvisionedAccount = (value: unknown): value is ProvisionedAccount =>
  * @remarks
  * The same Firebase project and callables serve the Jest Web Target; this
  * client differs only in auth persistence (AsyncStorage) and in optionally
- * targeting the local emulators. App Check attestation is added in Phase 1.7.
+ * targeting the local emulators. Outside the emulators App Check attests the
+ * device with Play Integrity (`appCheck.ts`).
  */
 export function createHostedFirebaseClient(config: HostedConfig, storage = AsyncStorage): HostedFirebaseClient {
   /** Firebase app bound to the public project config. */
@@ -71,6 +73,8 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
     messagingSenderId: config.firebase.messagingSenderId,
     projectId: config.firebase.projectId,
   });
+  // Production callables enforce App Check; attest with Play Integrity before the first call.
+  enableAndroidAppCheck(app, config);
   /** Auth with the device-private persisted session. */
   const auth: Auth = initializeAuth(app, {persistence: getReactNativePersistence(storage)});
   /** Account callables. */

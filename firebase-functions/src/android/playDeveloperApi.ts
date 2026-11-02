@@ -72,19 +72,19 @@ export type PlayDeveloperApiOptions = {
 };
 
 /**
- * Reads a scoped token for the runtime service account from the metadata server.
+ * Reads a scoped token (the androidpublisher scope by default) for the runtime service account from the metadata server.
  *
  * @remarks
  * The runtime service account must be invited in Play Console with permission
  * to view financial data and manage orders and subscriptions.
  */
-export function createMetadataAccessToken(fetchImpl: typeof fetch = fetch): () => Promise<string> {
+export function createMetadataAccessToken(fetchImpl: typeof fetch = fetch, scope: string = ANDROID_PUBLISHER_SCOPE): () => Promise<string> {
   /** Cached token and its expiry in epoch milliseconds. */
   let cached: {token: string; expiresAt: number} | null = null;
   return async () => {
     if (cached && cached.expiresAt > Date.now()) return cached.token;
     /** Metadata server response. */
-    const response = await fetchImpl(`${METADATA_TOKEN_URL}?scopes=${encodeURIComponent(ANDROID_PUBLISHER_SCOPE)}`, {
+    const response = await fetchImpl(`${METADATA_TOKEN_URL}?scopes=${encodeURIComponent(scope)}`, {
       headers: {"Metadata-Flavor": "Google"},
     });
     if (!response.ok) throw new Error("play-api-unavailable");
