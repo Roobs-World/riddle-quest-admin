@@ -18,7 +18,7 @@ try {
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,'src/play/race/RaceTournamentEntry.tsx'))};
-import {ListLiveRaceHistoryResponseSchema,LiveRaceViewSchema} from '@qwordly/core/race';
+import {ListLiveRaceHistoryResponseSchema,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(portal,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

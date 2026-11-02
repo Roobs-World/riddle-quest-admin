@@ -1,6 +1,6 @@
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import type {ReactNode} from "react";
-import type {LiveRaceView, ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
+import type {LiveRaceView, ListRaceCategoriesResponse, RaceLocale} from "@riddle-quest/core/race";
 import type {
   ContextBoardCapability,
   MatchmakingCapability,

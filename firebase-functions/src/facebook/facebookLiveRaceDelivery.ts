@@ -1,4 +1,4 @@
-import {RACE_TARGET_CORRECT} from "@qwordly/core/race";
+import {RACE_TARGET_CORRECT} from "@riddle-quest/core/race";
 import {runWithJestAccountOperationLease} from "../jest/jestAccountDeletion";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "./facebookRaceReferralDelivery";

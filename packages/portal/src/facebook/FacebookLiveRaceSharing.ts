@@ -1,4 +1,4 @@
-import type {LiveRaceCapability} from "@qwordly/core/race";
+import type {LiveRaceCapability} from "@riddle-quest/core/race";
 import {tr} from "../play/i18n";
 import {captureVictoryShareImage} from "../play/sharing/shareImages";
 import type {FacebookInstantSdk} from "./fbinstant";

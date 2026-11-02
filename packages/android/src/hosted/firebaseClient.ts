@@ -12,7 +12,7 @@ import {
 } from "firebase/auth";
 import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} from "firebase/firestore/lite";
 import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
-import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@qwordly/hosted";
+import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@riddle-quest/hosted";
 import type {HostedConfig} from "./hostedConfig";
 /** Response of the backend `provisionAndroidAccount` callable. */
 export type ProvisionedAccount = Readonly<{

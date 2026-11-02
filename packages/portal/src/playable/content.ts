@@ -1,7 +1,7 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
-import {createYouTubeContentSource, type YouTubeContentSource, type YouTubeLocale} from "@qwordly/solo";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
+import {createYouTubeContentSource, type YouTubeContentSource, type YouTubeLocale} from "@riddle-quest/solo";
 import contentDocument from "#youtube-content";
-export {YOUTUBE_LOCALES, parseYouTubeContentDocument, resolveYouTubeLocale} from "@qwordly/solo";
+export {YOUTUBE_LOCALES, parseYouTubeContentDocument, resolveYouTubeLocale} from "@riddle-quest/solo";
 /** Content source bound to this Web Target's bundled document and its protected locale packs. */
 export const youtubeContentSource: YouTubeContentSource = createYouTubeContentSource(
   contentDocument,

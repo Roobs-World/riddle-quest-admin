@@ -1,10 +1,10 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import {useCallback, useEffect, useState} from "react";
 import {trackScreen} from "../analytics/events";
 import {resolveActivityPresence} from "../presence/activityPresence";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
-import {isBlockingGameModal} from "@qwordly/hosted/play/gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
+import {isBlockingGameModal} from "@riddle-quest/hosted/play/gameSession";
 import {isSupportedLocale, type Locale} from "./i18n";
 import {isRaceHarness} from "./race/logic/raceFeatureFlag";
 

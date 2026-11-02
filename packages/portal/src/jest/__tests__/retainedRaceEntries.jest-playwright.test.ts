@@ -6,7 +6,7 @@ import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
 import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
 
 import {

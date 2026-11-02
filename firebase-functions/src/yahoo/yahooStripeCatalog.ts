@@ -1,4 +1,4 @@
-import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
+import {DEFAULT_PRODUCT_PRICING} from "@riddle-quest/core/pricing/catalog";
 
 /** Server-owned Stripe representation of one Yahoo coin product. */
 export type YahooStripeProduct = Readonly<{

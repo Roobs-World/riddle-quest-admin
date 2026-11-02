@@ -8,7 +8,7 @@ import {processRaceDeliveryQueue} from "../../race/raceDeliveryQueue";
 import {replayRaceDelivery} from "../../race/raceDeliveryRecovery";
 import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
 import {Timestamp} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS} from "@qwordly/core/race";
+import {LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
 import {requestDocumentId} from "../../race/raceSetupService";
 
 /** Real local authority; no production or non-emulated account access is allowed. */

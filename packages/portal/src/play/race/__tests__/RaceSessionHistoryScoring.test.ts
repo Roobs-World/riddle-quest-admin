@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import {computeFeedback} from "@qwordly/core/game";
+import {computeFeedback} from "@riddle-quest/core/game";
 import {fixture, harness} from "./raceSession.support";
 
 /** Restored colors must agree with immutable evaluation when that answer is actually available. */

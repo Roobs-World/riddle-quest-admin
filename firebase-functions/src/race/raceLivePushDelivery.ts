@@ -6,7 +6,7 @@ import {createFacebookNotificationDispatchLedger} from "../facebook/facebookNoti
 import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
 import {raceProviderScope} from "./raceEligibility";
 import {type LiveChallengePushEvent} from "./raceLiveChallengeNotifications";
-import {LIVE_RACE_INVITE_MS} from "@qwordly/core/race";
+import {LIVE_RACE_INVITE_MS} from "@riddle-quest/core/race";
 import {type LiveTicket} from "./raceLiveState";
 import {liveChallengePushCopy} from "./raceLivePushCopy";
 

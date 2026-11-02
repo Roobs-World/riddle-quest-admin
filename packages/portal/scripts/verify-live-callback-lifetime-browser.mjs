@@ -16,7 +16,7 @@ import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRa
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
-import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 import ${JSON.stringify(path.join(root,'src/styles.race-gameplay.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

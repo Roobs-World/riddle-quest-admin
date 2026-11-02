@@ -16,7 +16,7 @@ test("the package release mutations exit non-zero without invoking Devvit", () =
   for (const action of ["upload", "publish"]) {
     const result = spawnSync(
       "pnpm",
-      ["--filter", "@qwordly/reddit-app", "run", `release:${action}`],
+      ["--filter", "@riddle-quest/reddit-app", "run", `release:${action}`],
       {cwd: repository, encoding: "utf8"},
     );
     assert.equal(result.status, 1);

@@ -1,6 +1,6 @@
 import {createFacebookContextChallenges} from "../contextChallenges";
 import type {FacebookInstantSdk} from "../fbinstant";
-import type {JoinLiveRace, LiveRaceCapability, RaceLocale} from "@qwordly/core/race";
+import type {JoinLiveRace, LiveRaceCapability, RaceLocale} from "@riddle-quest/core/race";
 import {runFacebookSdkDialog} from "../FacebookSdkDialogGate";
 
 /** Server-issued opaque invitations never expose identities or answers. */

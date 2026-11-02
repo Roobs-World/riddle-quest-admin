@@ -1,14 +1,14 @@
 import {deliverHostRaceResult} from "./hostRaceResultEffects";
 import {createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "./hostCompletionEffects";
 import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} from "react";
-import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
-import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+import type {BridgeProfile, HostToGameMessage} from "@riddle-quest/core/bridge";
+import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
-import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "@qwordly/hosted/hostTypes";
-import type {RaceOutcome} from "@qwordly/core/race";
+import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
+import type {RaceOutcome} from "@riddle-quest/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlayerData} from "../platform/types";
 import {createHostedPlayCommandModule, getHostNoticeMessage, type HostOperationName} from "./hostMessageHandlers";
@@ -99,7 +99,7 @@ export function PlayHostApp({
   /** Tracks initialized game settings independently of profile-only host notifications. */
   const sentInitializationRef = useRef<{
     /** Last projected immutable target product catalog, absent when commerce is unavailable. */
-    products: readonly import("@qwordly/hosted/hostTypes").ProductSummary[] | undefined;
+    products: readonly import("@riddle-quest/hosted/hostTypes").ProductSummary[] | undefined;
     /** Last content language actually delivered to the embedded game. */
     locale: typeof locale;
     /** Last mode actually delivered to the embedded game. */
@@ -279,7 +279,7 @@ export function PlayHostApp({
   }, [authority.commerce, frameReady, gameMode, locale, sendInit]);
   /** Applies purchase balance. */
   const applyPurchaseBalance = useCallback(
-    (result: import("@qwordly/hosted/hostTypes").PurchaseResult) => applyCoinBalance(result.newCoins),
+    (result: import("@riddle-quest/hosted/hostTypes").PurchaseResult) => applyCoinBalance(result.newCoins),
     [applyCoinBalance],
   );
   /** Multiplayer rollout, preload, and authoritative reward reconciliation. */

@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {AuthSnapshot, CompletionResult} from "@qwordly/hosted/hostTypes";
+import type {AuthSnapshot, CompletionResult} from "@riddle-quest/hosted/hostTypes";
 
 /** Minimal SDK user fields consumed by the production bridge projection. */
 const sdkUser = (uid: string) => ({uid, displayName: uid, email: null, photoURL: null, isAnonymous: false,

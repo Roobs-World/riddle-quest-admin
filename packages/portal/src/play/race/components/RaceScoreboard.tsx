@@ -1,5 +1,5 @@
 import type {CSSProperties} from "react";
-import type {RaceRunView} from "@qwordly/core/race";
+import type {RaceRunView} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
 import {RaceRailHeader} from "./RaceHeader";

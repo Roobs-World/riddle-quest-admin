@@ -22,7 +22,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/play/race/LiveRaceGame.tsx"))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/play/playerPreferences.ts"))};
-import {LiveRaceViewSchema} from '@qwordly/core/race';
+import {LiveRaceViewSchema} from '@riddle-quest/core/race';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import ${JSON.stringify(path.join(root, "src/styles.race-lobby.css"))};
 import ${JSON.stringify(path.join(root, "src/styles.race-gameplay.css"))};

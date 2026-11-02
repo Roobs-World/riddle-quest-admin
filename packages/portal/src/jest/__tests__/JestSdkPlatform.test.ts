@@ -1,6 +1,6 @@
 import {JestSdkPlatform} from "../JestSdkPlatform";
 
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 
 /** Completes profile. */
 const completeProfile: BridgeProfile = {

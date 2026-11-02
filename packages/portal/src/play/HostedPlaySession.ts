@@ -1,10 +1,10 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import {createHostAuthorityModules, type HostAuthorityModules} from "./HostAuthorityModules";
 import type {ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
-import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "@qwordly/hosted/hostTypes";
+import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 
 /** Target-owned facts required to assemble one hosted-play session. */
 export type HostedPlaySession = Readonly<{

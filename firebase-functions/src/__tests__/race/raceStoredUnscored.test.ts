@@ -1,4 +1,4 @@
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 import {parseRunRecord} from "../../race/raceSetupService";
 
 /** An untouched scheduled record must not carry scoring even when history was omitted. */

@@ -4,7 +4,7 @@ import {
   SOLO_COIN_COSTS,
   SOLO_WIN_COINS,
   getDailyStreakBonusCoins,
-} from "@qwordly/core/game";
+} from "@riddle-quest/core/game";
 
 /** Server game constants share the provider-independent solo economy with the client. */
 
@@ -112,4 +112,4 @@ export const RIDDLE_GENERATION_THRESHOLD = 1;
 export const RIDDLE_GENERATION_BATCH_SIZE = 5;
 
 /** Maximum characters allowed in generated riddle answers. */
-export {MAX_RIDDLE_ANSWER_CHARACTERS} from "@qwordly/core/game";
+export {MAX_RIDDLE_ANSWER_CHARACTERS} from "@riddle-quest/core/game";

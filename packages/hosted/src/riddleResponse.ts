@@ -1,4 +1,4 @@
-import type {BridgeRiddle} from "@qwordly/core/bridge";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
 import type {CurrentRiddleResponse} from "./gameFunctions";
 
 /** Maps riddle response. */

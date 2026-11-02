@@ -1,5 +1,5 @@
-import {youtubeText, type YouTubeContentSource, type YouTubeCopyKey, type YouTubeSdkPort} from "@qwordly/solo";
-import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "@qwordly/solo/react";
+import {youtubeText, type YouTubeContentSource, type YouTubeCopyKey, type YouTubeSdkPort} from "@riddle-quest/solo";
+import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "@riddle-quest/solo/react";
 import {useRef, useState} from "react";
 import type {AnswerEditor} from "./screens/AnswerInput";
 import {FailureScreen, LoadingScreen, ResetScreen} from "./screens/BootScreens";
@@ -22,7 +22,7 @@ export type SoloPlayableAppProps = Readonly<{
  *
  * @remarks
  * Boot, recovery, and gameplay transitions come from the shared controllers in
- * `@qwordly/solo/react`; this component only maps their state to native screens.
+ * `@riddle-quest/solo/react`; this component only maps their state to native screens.
  */
 export function SoloPlayableApp({sdk, contentSource, online}: SoloPlayableAppProps) {
   /** Shared boot controller. */

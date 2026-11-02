@@ -1,5 +1,5 @@
-import type {HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "@qwordly/solo";
+import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
+import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
 import {StyleSheet, Text, View} from "react-native";
 import {ModeCard} from "../components/ModeCard";
 import {ActionButton, Eyebrow, Heading, Screen} from "../components/Primitives";

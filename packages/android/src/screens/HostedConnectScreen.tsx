@@ -1,4 +1,4 @@
-import {youtubeText, type YouTubeLocale} from "@qwordly/solo";
+import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
 import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";

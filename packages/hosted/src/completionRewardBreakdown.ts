@@ -1,4 +1,4 @@
-import type {CompleteGameResponseData} from "@qwordly/core/validation/requestSchemas";
+import type {CompleteGameResponseData} from "@riddle-quest/core/validation/requestSchemas";
 
 /** Server-settled coin components for one completed solo question. */
 export type CompletionRewardBreakdown = NonNullable<CompleteGameResponseData["rewardBreakdown"]>;

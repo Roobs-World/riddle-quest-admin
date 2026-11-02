@@ -1,4 +1,4 @@
-import {SOLO_COIN_COSTS} from "@qwordly/core/game";
+import {SOLO_COIN_COSTS} from "@riddle-quest/core/game";
 
 /** Coin cost of receiving one additional classic-mode attempt. */
 export const CONTINUE_COIN_COST = SOLO_COIN_COSTS.continue;

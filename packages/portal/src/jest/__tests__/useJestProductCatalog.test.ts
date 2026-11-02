@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {ProductSummary} from "@qwordly/hosted/hostTypes";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import type {JestPurchaseCoordinator} from "../purchases";
 import type {JestSession} from "../types";
 

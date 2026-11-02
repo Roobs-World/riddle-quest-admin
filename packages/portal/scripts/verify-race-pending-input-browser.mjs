@@ -17,7 +17,7 @@ const source = `
 import React from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 const now=Date.now(),deck=Array.from({length:RACE_RULES.deckSize},(_,position)=>({riddleId:'question-'+position,text:'Question '+(position+1),answerLength:5,position,evaluation:{answer:position===0?'piano':'clock',locale:'en'}}));
 let view={runId:'pending-input-run',role:'creator',status:'active',categoryId:'history',locale:'en',rules:RACE_RULES,

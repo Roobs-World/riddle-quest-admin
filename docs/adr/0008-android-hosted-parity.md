@@ -11,7 +11,7 @@ The Android app will become a full hosted Riddle Quest client with the same prod
 
 - Keeping Android self-contained (ADR 0007) was rejected by the owner: the first release must match the hosted game.
 - Loading the hosted web bundle in a WebView was rejected by the owner in favour of a native user interface, accepting the longer schedule.
-- Reusing the browser host layer as-is was rejected because it is bound to the iframe bridge and DOM; its provider-neutral state machines are moved into shared packages instead, following the pattern already used for solo play (`@qwordly/solo`).
+- Reusing the browser host layer as-is was rejected because it is bound to the iframe bridge and DOM; its provider-neutral state machines are moved into shared packages instead, following the pattern already used for solo play (`@riddle-quest/solo`).
 
 ## Consequences
 

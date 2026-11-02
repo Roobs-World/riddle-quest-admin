@@ -12,7 +12,7 @@
  */
 
 import {MILESTONE_ACHIEVEMENT_DEFINITIONS} from "./achievementMilestones";
-import type {PlayerStats, PlayerProgress} from "@qwordly/core/validation";
+import type {PlayerStats, PlayerProgress} from "@riddle-quest/core/validation";
 import {RACE_ACHIEVEMENT_DEFINITIONS} from "./race/raceAchievementDefinitions";
 import type {AchievementCriteriaType, AchievementDefinition} from "./achievementTypes";
 

@@ -13,7 +13,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {useRaceSession} from ${JSON.stringify(path.join(root,'src/play/race/hooks/useRaceSession.ts'))};
 const intervals=new Set(),bridge=new Set(),visibility=new Set();
 let intervalStarts=0,bridgeAdds=0,visibilityAdds=0,ticks=0;

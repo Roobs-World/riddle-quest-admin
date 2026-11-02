@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
+import {computeFeedback, splitGraphemes} from "@riddle-quest/core/game";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 
 /** Browser authority fixtures use the same duplicate-aware scoring contract as real race authority. */

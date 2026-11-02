@@ -1,5 +1,5 @@
 import type {PlatformCapabilities} from "../platform/types";
-import type {HostServices} from "@qwordly/hosted/hostTypes";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 
 /** Capability-shaped authority modules exposed to hosted play. */
 export type HostAuthorityModules = Readonly<{

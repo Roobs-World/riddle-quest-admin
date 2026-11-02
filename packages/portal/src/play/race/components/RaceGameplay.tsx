@@ -1,5 +1,5 @@
-import type {Feedback, ScoredGuess} from "@qwordly/core/game";
-import type {RaceRunView} from "@qwordly/core/race";
+import type {Feedback, ScoredGuess} from "@riddle-quest/core/game";
+import type {RaceRunView} from "@riddle-quest/core/race";
 import type {RefObject} from "react";
 import {tr} from "../../i18n";
 import {ControlledGuessBoard, ControlledKeyboard, ForwardIcon, HintIcon} from "../../GameFrameControls";

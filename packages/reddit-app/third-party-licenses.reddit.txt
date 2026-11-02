@@ -2,7 +2,7 @@ Riddle Quest Third-Party Software Notices
 ==========================================
 
 This file lists the production runtime dependencies distributed with Riddle Quest.
-It is generated from the locked @qwordly/portal production dependency graph.
+It is generated from the locked @riddle-quest/portal production dependency graph.
 
 Dependency inventory
 --------------------

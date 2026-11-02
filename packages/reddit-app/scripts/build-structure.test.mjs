@@ -10,14 +10,14 @@ const productionWorkflow = await readFile(
 );
 
 test("the trusted Reddit server builds Core before resolving its generated package exports", () => {
-  assert.match(redditPackage.scripts["prebuild:server"], /@qwordly\/core build/u);
+  assert.match(redditPackage.scripts["prebuild:server"], /@riddle-quest\/core build/u);
 });
 
 test("workspace build and verification assemble the trusted Reddit package from the isolated client", () => {
   for (const script of [rootPackage.scripts.build, rootPackage.scripts["build:web"], rootPackage.scripts["verify:all-targets"]]) {
-    assert.match(script, /@qwordly\/reddit-app build:package:from-client/u);
+    assert.match(script, /@riddle-quest\/reddit-app build:package:from-client/u);
   }
-  assert.match(productionWorkflow, /@qwordly\/reddit-app build:package:from-client/u);
+  assert.match(productionWorkflow, /@riddle-quest\/reddit-app build:package:from-client/u);
   assert.doesNotMatch(redditPackage.scripts["build:package:from-client"], /build:client/u);
 });
 

@@ -58,7 +58,7 @@ test("allows target-local edges, target-to-shared edges, and the real shop adapt
     "shared.ts": `
       import "./core/helper";
       import {ShopModalPage} from "#shop-modal-page";
-      import type {RaceLocale} from "@qwordly/core/race";
+      import type {RaceLocale} from "@riddle-quest/core/race";
       void ShopModalPage;
       let locale: RaceLocale;
       void locale;

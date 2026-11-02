@@ -54,7 +54,7 @@ export const createDriver = ({serial, evidenceDirectory}) => {
 
   /** Installs the APK, replacing an incompatible or newer local installation on the verification device. */
   const install = (apkPath = defaultApk) => {
-    if (!existsSync(apkPath)) throw new Error(`APK not found: ${apkPath}. Build it with pnpm --filter @qwordly/android build:release first.`);
+    if (!existsSync(apkPath)) throw new Error(`APK not found: ${apkPath}. Build it with pnpm --filter @riddle-quest/android build:release first.`);
     const installArguments = [...deviceArguments, "install", "-r", "-t", apkPath];
     let result = spawnSync(adbExecutable, installArguments, {encoding: "utf8"});
     if (result.status !== 0 && /INSTALL_FAILED_(?:VERSION_DOWNGRADE|UPDATE_INCOMPATIBLE)/u.test(`${result.stdout}${result.stderr}`)) {

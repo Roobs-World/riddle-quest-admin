@@ -1,5 +1,5 @@
-import {RACE_DECK_SIZE, RACE_MAX_GUESSES_PER_RIDDLE, RACE_NORMALIZED_TEXT_UNITS, RaceGraphemeTextSchema, RaceLocaleSchema, RaceRunIdRequestSchema, type RaceRunView} from "@qwordly/core/race";
-import {MAX_RIDDLE_ANSWER_CHARACTERS} from "@qwordly/core/game";
+import {RACE_DECK_SIZE, RACE_MAX_GUESSES_PER_RIDDLE, RACE_NORMALIZED_TEXT_UNITS, RaceGraphemeTextSchema, RaceLocaleSchema, RaceRunIdRequestSchema, type RaceRunView} from "@riddle-quest/core/race";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "@riddle-quest/core/game";
 import {safeBrowserStorageSet, safeBrowserStorageRemove} from "../../playerPreferences";
 import {observeBrowserStorage} from "../../../platform/browserStorage";
 import type {RaceSessionState} from "../RaceSession.types";

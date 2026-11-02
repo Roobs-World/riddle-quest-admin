@@ -1,4 +1,4 @@
-import {createYouTubeContentSource, type YouTubeContentEnvelope, type YouTubeContentSource} from "@qwordly/solo";
+import {createYouTubeContentSource, type YouTubeContentEnvelope, type YouTubeContentSource} from "@riddle-quest/solo";
 import contentDocument from "#solo-content";
 /**
  * Content source bound to the reviewed Bundled Content Pack shipped inside the APK.

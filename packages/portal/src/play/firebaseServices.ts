@@ -1,6 +1,6 @@
 import {onAuthStateChanged, signOut} from "firebase/auth";
-import {createFirebaseHostServices as createSharedFirebaseHostServices, type HostAuth} from "@qwordly/hosted/hostServices";
-import type {HostServices} from "@qwordly/hosted/hostTypes";
+import {createFirebaseHostServices as createSharedFirebaseHostServices, type HostAuth} from "@riddle-quest/hosted/hostServices";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 import * as firebase from "../firebase";
 import {tr} from "./i18n";
 /** Binds the browser's Firebase Auth instance to the shared host-auth surface. */

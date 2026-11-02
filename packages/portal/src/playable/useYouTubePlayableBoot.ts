@@ -2,10 +2,10 @@ import {
   useYouTubePlayableBoot as useSharedYouTubePlayableBoot,
   type YouTubeBootController,
   type YouTubeBootPresentation,
-} from "@qwordly/solo/react";
+} from "@riddle-quest/solo/react";
 import {youtubeContentSource} from "./content";
 import type {YouTubeSdkPort} from "./types";
-export type {YouTubeBootController, YouTubeBootState, YouTubeRuntime} from "@qwordly/solo/react";
+export type {YouTubeBootController, YouTubeBootState, YouTubeRuntime} from "@riddle-quest/solo/react";
 /** Applies platform pause state to the document. */
 const markPaused = (paused: boolean): void => {
   document.documentElement.classList.toggle("youtube-game-paused", paused);

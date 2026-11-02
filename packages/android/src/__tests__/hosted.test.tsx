@@ -85,7 +85,7 @@ jest.mock("firebase/functions", () => ({
   },
 }));
 
-import type {YouTubeLocale} from "@qwordly/solo";
+import type {YouTubeLocale} from "@riddle-quest/solo";
 import {createHostedFirebaseClient, type HostedFirebaseClient} from "../hosted/firebaseClient";
 import {parseHostedConfig, type HostedConfig} from "../hosted/hostedConfig";
 import {useHostedAccount} from "../hosted/useHostedAccount";

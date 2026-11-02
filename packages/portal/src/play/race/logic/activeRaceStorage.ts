@@ -1,6 +1,6 @@
 import {safeBrowserStorageGet, safeBrowserStorageRemove, safeBrowserStorageSet} from "../../playerPreferences";
 import {observeBrowserStorage} from "../../../platform/browserStorage";
-import {RaceRunIdRequestSchema, type RaceRunView} from "@qwordly/core/race";
+import {RaceRunIdRequestSchema, type RaceRunView} from "@riddle-quest/core/race";
 import type {RaceSessionOptions} from "../RaceSession.types";
 
 /** Existing key retained so account deletion also clears the owner-bound record. */

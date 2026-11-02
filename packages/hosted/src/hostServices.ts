@@ -1,6 +1,6 @@
-import {getDailyDate} from "@qwordly/core/validation";
-import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
-import type {ClassicRiddleBufferResponse} from "@qwordly/core/validation";
+import {getDailyDate} from "@riddle-quest/core/validation";
+import type {BridgeProfile, BridgeUser} from "@riddle-quest/core/bridge";
+import type {ClassicRiddleBufferResponse} from "@riddle-quest/core/validation";
 import {createGameplayAuthorityDelivery, type HostTranslate} from "./gameplayAuthorityDelivery";
 import type {CurrentRiddleResponse, GameFunctionsClient} from "./gameFunctions";
 import type {AuthSnapshot, HostServices} from "./hostTypes";

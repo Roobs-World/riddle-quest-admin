@@ -1,5 +1,5 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS, RANK_MATERIAL_ORDER} from "../../ranks";
 import {RankedAvatar} from "../../RankedAvatar";

@@ -1,4 +1,4 @@
-import {LiveRaceChallengeSchema, type LiveRaceCapability} from "@qwordly/core/race";
+import {LiveRaceChallengeSchema, type LiveRaceCapability} from "@riddle-quest/core/race";
 
 /** Background polling must not hold an interactive player command indefinitely. */
 export const LIVE_RACE_POLL_DEADLINE_MS = 2_000;

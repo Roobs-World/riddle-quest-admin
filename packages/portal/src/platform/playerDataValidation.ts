@@ -3,9 +3,9 @@ import {
   type Feedback,
   type GameEngineSnapshot,
   type ScoredGuess,
-} from "@qwordly/core/game";
+} from "@riddle-quest/core/game";
 import type {PlayerData, SavedGame} from "./types";
-import {parseDraftCheckpointRevision} from "@qwordly/hosted/play/draftCheckpointRevision";
+import {parseDraftCheckpointRevision} from "@riddle-quest/hosted/play/draftCheckpointRevision";
 
 /** Defines the max saved guesses value. */
 const MAX_SAVED_GUESSES = 6;
@@ -181,7 +181,7 @@ export async function parsePlayerData(value: unknown): Promise<PlayerData | null
   )
     return null;
   /** Provides {bridge profile schema} behavior. */
-  const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
+  const {BridgeProfileSchema} = await import("@riddle-quest/core/bridge");
   /** Provides profile behavior. */
   const profile = BridgeProfileSchema.safeParse(value.profile);
   /** Provides active game behavior. */

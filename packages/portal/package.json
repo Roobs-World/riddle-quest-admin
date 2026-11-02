@@ -1,5 +1,5 @@
 {
-  "name": "@qwordly/portal",
+  "name": "@riddle-quest/portal",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -242,9 +242,9 @@
     "test:retained-race:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand --runTestsByPath src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts"
   },
   "dependencies": {
-    "@qwordly/core": "workspace:*",
-    "@qwordly/hosted": "workspace:*",
-    "@qwordly/solo": "workspace:*",
+    "@riddle-quest/core": "workspace:*",
+    "@riddle-quest/hosted": "workspace:*",
+    "@riddle-quest/solo": "workspace:*",
     "@sentry/browser": "^11.1.0",
     "firebase": "^12.19.0",
     "html2canvas-pro": "2.5.2",

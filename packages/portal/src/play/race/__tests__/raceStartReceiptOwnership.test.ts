@@ -1,6 +1,6 @@
 import {expect, it} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {RaceRecovery} from "@qwordly/core/race";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {RaceRecovery} from "@riddle-quest/core/race";
 import {RaceSession} from "../RaceSession";
 import {catalog, fixture, preview} from "./raceSession.support";
 

@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {RaceChallengePreview, RaceRunView} from "@qwordly/core/race";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {RaceChallengePreview, RaceRunView} from "@riddle-quest/core/race";
 import {RaceSession} from "../RaceSession";
 import type {RaceSessionEffect, RaceSessionEntry, RaceSessionOptions} from "../RaceSession.types";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";

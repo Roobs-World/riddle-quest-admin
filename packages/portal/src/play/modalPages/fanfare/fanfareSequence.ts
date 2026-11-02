@@ -1,4 +1,4 @@
-import type {GameModal, GameSessionState} from "@qwordly/hosted/play/gameSession";
+import type {GameModal, GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 
 /** A single tab in a victory or auxiliary reward queue. */
 export type FanfareStep =

@@ -1,4 +1,4 @@
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
 
 /** Failed or unsupported push connections retain fast foreground PvP recovery. */
 export const LIVE_RACE_POLL_TICK_MS = 500;

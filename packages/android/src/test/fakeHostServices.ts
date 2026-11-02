@@ -1,5 +1,5 @@
-import type {BridgeRiddle} from "@qwordly/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "@qwordly/hosted/hostTypes";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
+import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "@riddle-quest/hosted/hostTypes";
 /** Server-issued riddle used by most scenarios. */
 export const issued = (overrides: Partial<BridgeRiddle> = {}): BridgeRiddle => ({
   riddleId: "race:history:01",

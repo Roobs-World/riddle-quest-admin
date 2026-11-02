@@ -1,4 +1,4 @@
-import {FACEBOOK_PRODUCTS} from "@qwordly/core/pricing/facebookCatalog";
+import {FACEBOOK_PRODUCTS} from "@riddle-quest/core/pricing/facebookCatalog";
 import type {CommerceCapability, CommerceProduct, PlatformResult} from "../platform/types";
 import {
   FacebookPurchaseRecovery,

@@ -1,5 +1,5 @@
-import {RaceRecoverySchema, RACE_RECOVERY_TTL_MS, RACE_RECOVERY_KEY, type RaceRecovery} from "@qwordly/core/race";
-export {RACE_RECOVERY_TTL_MS, RACE_RECOVERY_KEY, type RaceRecovery, type RaceRecoveryIntent} from "@qwordly/core/race";
+import {RaceRecoverySchema, RACE_RECOVERY_TTL_MS, RACE_RECOVERY_KEY, type RaceRecovery} from "@riddle-quest/core/race";
+export {RACE_RECOVERY_TTL_MS, RACE_RECOVERY_KEY, type RaceRecovery, type RaceRecoveryIntent} from "@riddle-quest/core/race";
 import {observeBrowserStorage} from "../../../platform/browserStorage";
 import {safeBrowserStorageGet, safeBrowserStorageRemove, safeBrowserStorageSet} from "../../playerPreferences";
 

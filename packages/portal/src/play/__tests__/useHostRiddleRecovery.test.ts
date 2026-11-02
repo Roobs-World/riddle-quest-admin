@@ -1,6 +1,6 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
-import type {BridgeRiddle, HostToGameMessage} from "@qwordly/core/bridge";
-import type {HostServices} from "@qwordly/hosted/hostTypes";
+import type {BridgeRiddle, HostToGameMessage} from "@riddle-quest/core/bridge";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 
 /** Effects are committed after each simulated render, preserving hook ref ownership. */
 const effects: Array<() => void | (() => void)> = [];
@@ -304,7 +304,7 @@ it("keeps the newer question's draft when an older correlated load resolves last
   /** Real bridge validation and the actual game reducer reproduce the board replacement seam. */
   const {createGameMessageRouter} = await import("../bridgeRouter");
   /** Typed letters belong to the question actually delivered through the bridge. */
-  const {createInitialGameSession, gameSessionReducer} = await import("@qwordly/hosted/play/gameSession");
+  const {createInitialGameSession, gameSessionReducer} = await import("@riddle-quest/hosted/play/gameSession");
   /** Earlier network read completes only after a newer read becomes playable. */
   const held = deferred<BridgeRiddle>();
   /** Newer question has its own authority-issued session identity. */

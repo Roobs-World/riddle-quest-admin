@@ -1,4 +1,4 @@
-import {ACHIEVEMENT_MILESTONES} from "@qwordly/core/game";
+import {ACHIEVEMENT_MILESTONES} from "@riddle-quest/core/game";
 import type {YouTubeGameMode, YouTubeProgress} from "./types";
 /** Describes achievement context. */
 type AchievementContext = Readonly<{

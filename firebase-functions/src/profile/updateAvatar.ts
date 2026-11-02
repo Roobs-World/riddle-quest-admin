@@ -6,7 +6,7 @@ import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {admin} from "../shared/firebaseAdmin";
 import {captureException} from "../shared/sentry";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {UpdateAvatarRequestSchema, UpdateAvatarResponseSchema} from "@qwordly/core/validation/requestSchemas";
+import {UpdateAvatarRequestSchema, UpdateAvatarResponseSchema} from "@riddle-quest/core/validation/requestSchemas";
 import {avatarDownloadUrl, decodeAvatarDataUrl} from "./avatarUpload";
 import {syncLeaderboardProfileFields} from "./leaderboardProfile";
 import {onCallWithSentry} from "../shared/sentryHandlers";

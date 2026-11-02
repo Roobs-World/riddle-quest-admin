@@ -64,7 +64,7 @@ import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/play/GameFrameA
 import {RaceGameplay} from ${JSON.stringify(path.join(root, 'src/play/race/components/RaceGameplay.tsx'))};
 import {useRaceGameplayFit} from ${JSON.stringify(path.join(root, 'src/play/race/hooks/useRaceGameplayFit.ts'))};
 import {editRaceInput} from ${JSON.stringify(path.join(root, 'src/play/race/logic/raceInput.ts'))};
-import {RACE_RULES, RaceRunViewSchema} from '@qwordly/core/race';
+import {RACE_RULES, RaceRunViewSchema} from '@riddle-quest/core/race';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, 'src/play/guidance/guidanceConfig.ts'))};
 import {setLocaleAndWait} from ${JSON.stringify(path.join(root, 'src/play/i18n.ts'))};

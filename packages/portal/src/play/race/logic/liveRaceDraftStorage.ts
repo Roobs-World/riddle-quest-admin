@@ -1,8 +1,8 @@
-import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult, type LiveRaceView} from "@qwordly/core/race";
+import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult, type LiveRaceView} from "@riddle-quest/core/race";
 import {observeBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 import {liveRaceDeliveryDeadline} from "./liveRaceDeliveryDeadline";
 import {liveRaceDraftBinding as binding, liveDraftReceiptMatches, parseLiveRaceDraftCheckpoint} from "./liveRaceDraftCheckpoint";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import type {LiveRaceDraft} from "./liveRaceDraft";
 
 /** Shared retention contract remains available to existing checkpoint callers. */

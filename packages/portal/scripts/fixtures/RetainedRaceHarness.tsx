@@ -5,7 +5,7 @@ import {needsRaceCatalog} from "../../src/play/race/logic/raceDiscoveryRecovery"
 import {useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore} from "react";
 import "../../src/styles.race-lobby.css";
 import "../../src/styles.race-gameplay.css";
-import type {PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceInboxItem} from "@qwordly/core/race";
+import type {PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceInboxItem} from "@riddle-quest/core/race";
 import {tr} from "../../src/play/i18n";
 import {useReferralSharing} from "../../src/play/sharing/ReferralSharingCapability";
 import {createRaceAnalyticsMessage} from "../../src/play/race/logic/raceAnalytics";

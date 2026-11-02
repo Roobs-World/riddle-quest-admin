@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {BridgeRiddle} from "@qwordly/core/bridge";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
 import type {SavedGame} from "../savedGame";
 import {
   createInitialGameSession,

@@ -1,4 +1,4 @@
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
 import {
   RACE_RULES,
   type RaceCategoryId,
@@ -8,7 +8,7 @@ import {
   type RaceRunStatus,
   type RaceRunView,
   type RaceRules,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 
 /** Bounds unscored deck preparation so repeatedly postponing readiness cannot extend one attempt. */

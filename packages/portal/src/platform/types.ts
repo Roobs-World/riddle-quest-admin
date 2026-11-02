@@ -1,5 +1,5 @@
-import type {BridgeProfile} from "@qwordly/core/bridge";
-import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
+import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@riddle-quest/core/game";
 import type {
   ListFacebookTournamentResponse,
   RaceMatchResponse,
@@ -9,7 +9,7 @@ import type {
   RecordFacebookTournamentRunResponse,
   ListFacebookContextBoardResponse,
   RecordFacebookContextRunResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 
 /** Identifies the release target that owns the active browser session. */
 export type PlatformId = "jest" | "facebook" | "reddit" | "youtube";
@@ -138,8 +138,8 @@ export type PlatformPreferences = {
   facebookNotificationLastPromptAtMs?: number;
 };
 
-export type {SavedGame} from "@qwordly/hosted/play/savedGame";
-import type {SavedGame} from "@qwordly/hosted/play/savedGame";
+export type {SavedGame} from "@riddle-quest/hosted/play/savedGame";
+import type {SavedGame} from "@riddle-quest/hosted/play/savedGame";
 
 /** Versioned client-owned player projection persisted by a platform adapter. */
 export type PlayerData = {
@@ -370,7 +370,7 @@ export type MatchmakingResult = PlatformResult<RaceMatchResponse> & {
 /** Provider-wide, server-authoritative offline opponent selection. */
 export type MatchmakingCapability = {
   /** Authenticated live PvP transport, only on supported targets. */
-  live?: import("@qwordly/core/race").LiveRaceCapability;
+  live?: import("@riddle-quest/core/race").LiveRaceCapability;
   /**
    * Finds an identity-minimized offline opponent through the authoritative backend.
    *

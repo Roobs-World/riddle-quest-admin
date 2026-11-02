@@ -1,6 +1,6 @@
 import {useCallback, useLayoutEffect, useMemo, useRef, useState, type Dispatch} from "react";
 import type {AttemptRecoveryCapability} from "../../../platform/types";
-import type {GameSessionAction, GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
+import type {GameSessionAction, GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
 
 /** Stops a retired local wait while still observing its admitted provider operation. */
 const awaitOwnedAttempt = <Result,>(operation: Promise<Result>, signal: AbortSignal): Promise<Result | undefined> =>

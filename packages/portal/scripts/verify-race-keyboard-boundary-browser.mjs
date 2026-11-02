@@ -16,7 +16,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RaceContextBoard} from ${JSON.stringify(path.join(root,'src/play/race/RaceContextBoard.tsx'))};
 import {RaceTournamentEntry} from ${JSON.stringify(path.join(root,'src/play/race/RaceTournamentEntry.tsx'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};

@@ -1,8 +1,8 @@
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {ScoredGuess} from "@qwordly/core/game";
-import type {RaceEntryResponse, ListRaceCategoriesResponse, PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceChallengePreview, RaceInboxItem, RaceLocale, RaceOutcome, RaceRunView} from "@qwordly/core/race";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {ScoredGuess} from "@riddle-quest/core/game";
+import type {RaceEntryResponse, ListRaceCategoriesResponse, PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceChallengePreview, RaceInboxItem, RaceLocale, RaceOutcome, RaceRunView} from "@riddle-quest/core/race";
 import type {RacePlayClock} from "./RacePlay";
-import type {RaceMatchFailure} from "@qwordly/core/race";
+import type {RaceMatchFailure} from "@riddle-quest/core/race";
 import type {RaceDraftStorage} from "./logic/raceDraftStorage";
 import type {RaceRecoveryPersistence} from "./logic/raceRecoveryStorage";
 import type {MatchmakingCapability} from "../../platform/types";

@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {catalog, fixture, harness, racing} from "./raceSession.support";
-import type {RaceRunView} from "@qwordly/core/race";
+import type {RaceRunView} from "@riddle-quest/core/race";
 
 /** Individually valid transport fields contradict one attempt's remaining capacity. */
 const corrupt = (run: RaceRunView, kind: string): RaceRunView => {

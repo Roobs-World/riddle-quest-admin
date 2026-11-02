@@ -1,13 +1,13 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
-import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
-import type {PendingGuessState} from "@qwordly/hosted/play/gameSessionTypes";
-import {canEditCurrentGuess, gameSessionReducer, hasRemainingGuessAttempts} from "@qwordly/hosted/play/gameSession";
+import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
+import type {PendingGuessState} from "@riddle-quest/hosted/play/gameSessionTypes";
+import {canEditCurrentGuess, gameSessionReducer, hasRemainingGuessAttempts} from "@riddle-quest/hosted/play/gameSession";
 import {capturePendingBase, findSegment, ownsSkipSuccessor, pendingPlayScope, reconcileConfirmedPendingPlay,
-  createRejectedPlayDraft, type PendingGuessJournal, type QueuedGuess, type QueuedCoinAction} from "@qwordly/hosted/play/pendingGuessJournal";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
+  createRejectedPlayDraft, type PendingGuessJournal, type QueuedGuess, type QueuedCoinAction} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {browserAdapters} from "./browserAdapters";
-import {getConfirmedRiddleOutcome} from "@qwordly/hosted/play/ConfirmedRiddleOutcome";
+import {getConfirmedRiddleOutcome} from "@riddle-quest/hosted/play/ConfirmedRiddleOutcome";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "../../modalPages/commerce/commerceCosts";
 import type {RecoveryOptions, PendingAnswer, RestoredJournal, ContinueSubmit, SkipLoad, SkipPreview, EarlySkipLoad, DirectGuess, DeliveryOwner, PendingPlayRecoveryAdapters} from "../../pendingPlayRecoveryTypes";
 /** Owns player-initiated host commands and their idempotent retry identifiers. */

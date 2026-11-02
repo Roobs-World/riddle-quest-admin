@@ -4,7 +4,7 @@
 const {createHash} = require("node:crypto");
 const {readFile, readdir} = require("node:fs/promises");
 const path = require("node:path");
-const {RACE_SUPPORTED_LOCALES} = require("@qwordly/core/race");
+const {RACE_SUPPORTED_LOCALES} = require("@riddle-quest/core/race");
 const {createRaceTranslationMatrixPlan} = require("../lib/race/raceTranslationValidation.js");
 
 const args = process.argv.slice(2);

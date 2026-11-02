@@ -1,4 +1,4 @@
-import {ACHIEVEMENT_MILESTONES} from "@qwordly/core/game";
+import {ACHIEVEMENT_MILESTONES} from "@riddle-quest/core/game";
 import {findNewYouTubeAchievements, YOUTUBE_ACHIEVEMENTS} from "../../playable/achievements";
 import {createEmptyYouTubeSave, parseYouTubeSave, serializeYouTubeSave} from "../../playable/save";
 import {LocalSoloAuthority} from "../../playable/LocalSoloAuthority";

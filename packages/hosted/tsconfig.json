@@ -20,8 +20,8 @@
     "stableTypeOrdering": true,
     "types": ["jest", "node"],
     "paths": {
-      "@qwordly/core": ["../core/src/index.ts"],
-      "@qwordly/core/*": ["../core/src/*"]
+      "@riddle-quest/core": ["../core/src/index.ts"],
+      "@riddle-quest/core/*": ["../core/src/*"]
     }
   },
   "include": ["src/**/*"],

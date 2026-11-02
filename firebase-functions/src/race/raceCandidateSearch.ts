@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import {RACE_CATEGORY_IDS, RACE_RULES_VERSION, type RaceCategoryId, type RaceMatchRequest} from "@qwordly/core/race";
+import {RACE_CATEGORY_IDS, RACE_RULES_VERSION, type RaceCategoryId, type RaceMatchRequest} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {racePerformanceExpectation, type RaceMatchProfile} from "./raceMatchPerformance";
 import {DEFAULT_RACE_MATCH_CONTEXT, type RaceMatchContext} from "./raceMatchPolicy";

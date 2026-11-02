@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {
   createRewardFanfareSteps,
   createVictoryFanfareSteps,

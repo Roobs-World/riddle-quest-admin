@@ -1,5 +1,5 @@
-import {createPendingPlayRecoveryStorage} from "@qwordly/hosted/play/pendingGuessJournal";
-import type {PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
+import {createPendingPlayRecoveryStorage} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import type {PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
 
 /** Browser implementation keeps global access behind the recovery seam. */
 export const browserAdapters: PendingPlayRecoveryAdapters = {

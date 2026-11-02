@@ -12,8 +12,8 @@ const scratch=await mkdtemp(path.join(root,'node_modules/.cache/race-discovery-c
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
-import React from 'react';import {flushSync} from 'react-dom';import {RACE_RECOVERY_KEY} from '@qwordly/core/race';import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import React from 'react';import {flushSync} from 'react-dom';import {RACE_RECOVERY_KEY} from '@riddle-quest/core/race';import {createRoot} from 'react-dom/client';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {tr} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 window.readRecovery=()=>localStorage.getItem(RACE_RECOVERY_KEY);window.retiredLeaks=[];window.armed=false;window.revocations=0;window.commands=[];window.finds=[];window.label=tr('RaceTo10.MATCH_PLAYER');

@@ -1,4 +1,4 @@
-import {RACE_CHALLENGE_TTL_MS} from "@qwordly/core/race";
+import {RACE_CHALLENGE_TTL_MS} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {settleRaceRun} from "./raceSettlement";
 import {withRaceTransactionReads} from "./raceTransactionReads";

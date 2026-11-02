@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRecovery, RaceMatchRequest} from "@qwordly/core/race";
+import type {RaceRecovery, RaceMatchRequest} from "@riddle-quest/core/race";
 import {catalog, harness, preview, settleMatch} from "./raceSession.support";
 
 describe("Race Session search retry journal ownership", () => {

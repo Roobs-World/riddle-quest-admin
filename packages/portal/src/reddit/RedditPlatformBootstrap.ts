@@ -13,8 +13,8 @@ import {
   RecordFacebookTournamentRunResponseSchema,
   type RaceLocale,
   type RaceMatchRequest,
-} from "@qwordly/core/race";
-import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
+} from "@riddle-quest/core/race";
+import {REDDIT_GOLD_PRODUCTS, resolveRedditGoldProduct} from "@riddle-quest/core/pricing/redditCatalog";
 import {purchase} from "@devvit/payments/client";
 import {getWebViewMode} from "@devvit/client";
 import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../platform/browserStorage";
@@ -380,61 +380,61 @@ export class RedditPlatformBootstrap implements PlatformBootstrap {
                     /** Private proof stays on the approved same-origin gateway without a browser provider SDK. */
                     async confirmGuessReceipt(input) {
                       /** Optional lookup contains only a bounded historical locator and acknowledgement. */
-                      const {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} = await import("@qwordly/core/race");
+                      const {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} = await import("@riddle-quest/core/race");
                       return LiveGuessReceiptResultSchema.parse((await postRedditGateway("/api/game/race.live.receipt", LiveGuessReceiptQuerySchema.parse(input))).result);
                     },
                     /** Server resolves the former human from this caller's retained seat. */
                     async rematch(input) {
                       /** Same-origin join remains the only creation boundary. */
-                      const {LiveRaceViewSchema} = await import("@qwordly/core/race");
+                      const {LiveRaceViewSchema} = await import("@riddle-quest/core/race");
                       return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.join", input)).result);
                     },
                     /** Reads private in-game invitations without provider notifications or acceptance. */
                     async inbox() {
                       /** Bounded public notices contain no provider subject or canonical account ID. */
-                      const {LiveRaceChallengeSchema} = await import("@qwordly/core/race");
+                      const {LiveRaceChallengeSchema} = await import("@riddle-quest/core/race");
                       return LiveRaceChallengeSchema.array().max(10).parse((await postRedditGateway("/api/game/race.live.inbox", {})).result);
                     },
                     /** Explicit acceptance is preceded by an authenticated private preview. */
                     async challenge(input) {
                       /** The original lobby owns locale, category and deadline. */
-                      const {LiveRaceChallengeSchema} = await import("@qwordly/core/race");
+                      const {LiveRaceChallengeSchema} = await import("@riddle-quest/core/race");
                       return LiveRaceChallengeSchema.parse((await postRedditGateway("/api/game/race.live.challenge", input)).result);
                     },
                     /** Retained results stay on the approved same-origin signed gateway. */
                     async history(locale) {
                       /** Exact public rows contain no account IDs, decks or confirmed guesses. */
-                      const {ListLiveRaceHistoryResponseSchema} = await import("@qwordly/core/race");
+                      const {ListLiveRaceHistoryResponseSchema} = await import("@riddle-quest/core/race");
                       return ListLiveRaceHistoryResponseSchema.parse((await postRedditGateway("/api/game/race.live.history", {locale, limit: 20})).result);
                     },
                     /** Existing same-origin safety endpoint resolves the private human opponent. */
                     async blockOpponent(input) {
                       /** Lazy strict acknowledgement adds no provider SDK. */
-                      const {BlockSocialRivalResponseSchema} = await import("@qwordly/core/race");
+                      const {BlockSocialRivalResponseSchema} = await import("@riddle-quest/core/race");
                       return BlockSocialRivalResponseSchema.parse((await postRedditGateway("/api/game/safety.block", input)).result);
                     },
                     /** Categorized reports retain their opaque seat and retry identity through Devvit. */
                     async reportOpponent(input) {
                       /** Only the exact bounded queue acknowledgement is accepted. */
-                      const {ReportSocialRivalResponseSchema} = await import("@qwordly/core/race");
+                      const {ReportSocialRivalResponseSchema} = await import("@riddle-quest/core/race");
                       return ReportSocialRivalResponseSchema.parse((await postRedditGateway("/api/game/safety.report", input)).result);
                     },
                     /** Enters live matchmaking through the same-origin Devvit gateway. */
                     async join(input) {
                       /** Answer-free response contract loaded with multiplayer. */
-                      const {LiveRaceViewSchema} = await import("@qwordly/core/race");
+                      const {LiveRaceViewSchema} = await import("@riddle-quest/core/race");
                       return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.join", input)).result);
                     },
                     /** Retires the original join under verified same-origin account authority. */
                     async retireJoin(input) {
                       /** Retirement carries only the original request identity through the same-origin gateway. */
-                      const {RetireLiveRaceJoinResponseSchema} = await import("@qwordly/core/race");
+                      const {RetireLiveRaceJoinResponseSchema} = await import("@riddle-quest/core/race");
                       return RetireLiveRaceJoinResponseSchema.parse((await postRedditGateway("/api/game/race.live.retire", input)).result);
                     },
                     /** Reads or mutates an authenticated live seat through Devvit. */
                     async update(input) {
                       /** Strict viewer-specific lobby and progress contract. */
-                      const {LiveRaceViewSchema} = await import("@qwordly/core/race");
+                      const {LiveRaceViewSchema} = await import("@riddle-quest/core/race");
                       return LiveRaceViewSchema.parse((await postRedditGateway("/api/game/race.live.update", input)).result);
                     },
                   },

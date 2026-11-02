@@ -1,6 +1,6 @@
 import type {Player} from "../validation/firestoreSchemas";
 import {coerceToDate} from "./dailyStreak";
-import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 
 /** Defines the contract for daily challenge progress. */
 export interface DailyChallengeProgress {

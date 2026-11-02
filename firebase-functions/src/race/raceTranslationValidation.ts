@@ -6,8 +6,8 @@ import {
   RaceDifficultyBandSchema,
   type RaceCategoryId,
   type RaceLocale,
-} from "@qwordly/core/race";
-import {graphemeLength} from "@qwordly/core/game";
+} from "@riddle-quest/core/race";
+import {graphemeLength} from "@riddle-quest/core/game";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {RaceContentImportFileSchema, createRaceContentImportPlan, type RaceContentImportFile} from "./raceContentImport";

@@ -42,7 +42,7 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
     if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-      execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
+      execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:jest"], {
         cwd: path.resolve(packageRoot, "../.."),
         stdio: "inherit",
       });

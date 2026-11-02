@@ -1,4 +1,4 @@
-import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
+import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@riddle-quest/core/game";
 import type {DraftCheckpointRevision} from "./draftCheckpointRevision";
 
 /**

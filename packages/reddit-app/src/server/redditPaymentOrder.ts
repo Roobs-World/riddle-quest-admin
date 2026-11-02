@@ -1,4 +1,4 @@
-import {REDDIT_GOLD_PRODUCTS} from "@qwordly/core/pricing/redditCatalog";
+import {REDDIT_GOLD_PRODUCTS} from "@riddle-quest/core/pricing/redditCatalog";
 
 /** Describes hook kind. */
 type HookKind = "fulfill" | "refund";

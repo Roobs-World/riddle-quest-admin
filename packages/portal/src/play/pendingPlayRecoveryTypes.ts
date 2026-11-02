@@ -1,13 +1,13 @@
 import type {Dispatch, MutableRefObject} from "react";
-import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
+import type {BridgeRiddle, GameToHostMessage} from "@riddle-quest/core/bridge";
 import type {SavedGame} from "../platform/types";
-import type {GameSessionAction, GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
+import type {GameSessionAction, GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
 import type {GameFeedbackKind} from "./game/hooks/useGameAudio";
 
 /** Host sender captured by a committed account visit. */
 type PostToHost = (message: GameToHostMessage) => void;
-export type {PendingPlayClock, PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
-import type {PendingPlayRecoveryAdapters} from "@qwordly/hosted/play/pendingPlayAdapters";
+export type {PendingPlayClock, PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
+import type {PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
 /** Stable adapters, rendered state and host sender for one recovery coordinator. */
 export type RecoveryOptions = {
   /** Stable storage and time adapters for the mounted recovery owner. */

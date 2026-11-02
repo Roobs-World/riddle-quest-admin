@@ -1,9 +1,9 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import type {HostToGameMessage} from "@qwordly/core/bridge";
+import type {HostToGameMessage} from "@riddle-quest/core/bridge";
 import {trackEvent} from "../analytics/events";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {getHostErrorMessage} from "./hostMessageHandlers";
-import type {AuthSnapshot, HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
+import type {AuthSnapshot, HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 import {preloadGameModals} from "./preloadGameModals";
 import {riddleLoadDeadline} from "./riddleLoadDeadline";
 

@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import type {Firestore} from "firebase-admin/firestore";
-import {resolveRedditGoldProduct} from "@qwordly/core/pricing";
+import {resolveRedditGoldProduct} from "@riddle-quest/core/pricing";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {isRedditCommerceEnabled} from "./redditFeatureFlags";
 import {isRedditFirebaseUid} from "./redditSecurity";

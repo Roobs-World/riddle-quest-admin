@@ -13,8 +13,8 @@ module.exports = {
     ],
   },
   moduleNameMapper: {
-    "^@qwordly/core$": "<rootDir>/../core/src/index.ts",
-    "^@qwordly/core/(.*)$": "<rootDir>/../core/src/$1",
+    "^@riddle-quest/core$": "<rootDir>/../core/src/index.ts",
+    "^@riddle-quest/core/(.*)$": "<rootDir>/../core/src/$1",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "json"],
   collectCoverageFrom: [

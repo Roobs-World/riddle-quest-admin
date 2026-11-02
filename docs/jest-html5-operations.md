@@ -11,7 +11,7 @@ For the source-audited map of player data, system boundaries, deletion, export, 
 Start the normal development server:
 
 ```bash
-pnpm --filter @qwordly/portal dev:jest
+pnpm --filter @riddle-quest/portal dev:jest
 ```
 
 Open `http://localhost:5173/targets/jest/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
@@ -19,7 +19,7 @@ Open `http://localhost:5173/targets/jest/`. The game uses Jest's SDK adapter and
 For repeatable automated regression tests, use the project's deterministic harness and Playwright suite:
 
 ```bash
-pnpm --filter @qwordly/portal test:jest-local:playwright
+pnpm --filter @riddle-quest/portal test:jest-local:playwright
 ```
 
 The deterministic `?harness=jest` route is test-only; it deliberately uses the repository's fixed mock adapter instead of the JestSDK debug menu.
@@ -50,7 +50,7 @@ login URL, then run with the exact build version from its accepted receipt:
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
 JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm --filter @qwordly/portal test:jest-deployed:playwright
+pnpm --filter @riddle-quest/portal test:jest-deployed:playwright
 ```
 
 If Firebase App Check rejects the automated Chromium session, rerun the deployed gate in a visible browser. This preserves production attestation instead of weakening App Check or introducing a production debug token:
@@ -59,7 +59,7 @@ If Firebase App Check rejects the automated Chromium session, rerun the deployed
 JEST_DEPLOYED_HEADED=1 \
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
 JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm --filter @qwordly/portal test:jest-deployed:playwright
+pnpm --filter @riddle-quest/portal test:jest-deployed:playwright
 ```
 
 Use two sandbox users for referral attribution. Reset the invitee's player state between referral runs because attribution happens on first entry. Sandbox checkout uses the real platform UI at a zero charge; also inspect scheduled notifications and persisted player state in the Developer Console.
@@ -90,13 +90,13 @@ pnpm verify:production:extended
 The individual commands remain useful while diagnosing a failed gate:
 
 ```bash
-pnpm --filter @qwordly/portal build:jest
-PORTAL_BROWSER_TESTS=1 pnpm --filter @qwordly/portal exec jest \
+pnpm --filter @riddle-quest/portal build:jest
+PORTAL_BROWSER_TESTS=1 pnpm --filter @riddle-quest/portal exec jest \
   --config jest.config.cjs \
   src/play/__tests__/hostedBrowser.jest-playwright.test.ts \
   --runInBand
-pnpm --filter @qwordly/portal test
-pnpm --filter @qwordly/core test
+pnpm --filter @riddle-quest/portal test
+pnpm --filter @riddle-quest/core test
 pnpm --dir firebase-functions test
 pnpm --dir firebase-functions lint
 pnpm build
@@ -107,7 +107,7 @@ The Fund-facing end-to-end check must target the active uploaded build through a
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
 JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm --filter @qwordly/portal test:jest-deployed:playwright
+pnpm --filter @riddle-quest/portal test:jest-deployed:playwright
 ```
 
 Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest
@@ -124,7 +124,7 @@ Headless browsers can be rejected by reCAPTCHA Enterprise even when the hosted b
 read -rsp 'App Check debug token: ' RQ_APP_CHECK_DEBUG_TOKEN; echo
 FIREBASE_APPCHECK_DEBUG_TOKEN="$RQ_APP_CHECK_DEBUG_TOKEN" \
 JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm --filter @qwordly/portal test:jest-deployed:playwright
+pnpm --filter @riddle-quest/portal test:jest-deployed:playwright
 unset RQ_APP_CHECK_DEBUG_TOKEN
 ```
 
@@ -134,7 +134,7 @@ Run the destructive-but-zero-dollar payment smoke test separately. It refuses to
 
 ```bash
 JEST_SANDBOX_PAYMENT_CONFIRM=com.roobsworld.riddlequest.coinpack1 \
-pnpm --filter @qwordly/portal test:jest-payments:live
+pnpm --filter @riddle-quest/portal test:jest-payments:live
 ```
 
 This checks the live Jest/Stripe product and subscription catalogs, completes a sandbox checkout, verifies the signed receipt through `grantJestPurchase`, replays the receipt to prove the grant is idempotent, calls `completePurchase`, and confirms the token has left the recovery queue. The backend hashes the signed purchase token before using it as a Firestore receipt ID, and a replay returns the user's current balance rather than the historical post-grant balance. Account deletion removes receipt identity fields but retains the opaque hash as a minimal anti-replay tombstone; older raw-token receipts are migrated when read or deleted. Jest owns the Stripe customer, wallet, checkout, and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
@@ -143,7 +143,7 @@ Run the separate subscription activation, restoration, and cancellation gate wit
 
 ```bash
 JEST_SANDBOX_SUBSCRIPTION_CONFIRM=com.roobsworld.riddlequest.premium.monthly \
-pnpm --filter @qwordly/portal test:jest-subscription:live
+pnpm --filter @riddle-quest/portal test:jest-subscription:live
 ```
 
 This is a direct SDK sandbox gate. The gate requires Jest's **Sandbox User** checkout marker before it clicks Subscribe, verifies
@@ -166,12 +166,12 @@ gate for provider behavior rather than treating the localhost mock as proof of c
 
 ### Local SDK mock
 
-Run `pnpm --filter @qwordly/portal dev:jest` and open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
+Run `pnpm --filter @riddle-quest/portal dev:jest` and open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
 
 Run both deterministic browser suites with:
 
 ```bash
-pnpm --filter @qwordly/portal test:jest-local:playwright
+pnpm --filter @riddle-quest/portal test:jest-local:playwright
 ```
 
 ### Hosted emulator
@@ -307,7 +307,7 @@ missing Sentry value fails the build; ordinary builds never generate source maps
 To exercise the complete packaging preflight without transmitting anything:
 
 ```bash
-pnpm --filter @qwordly/portal preflight:jest-upload
+pnpm --filter @riddle-quest/portal preflight:jest-upload
 ```
 
 The direct preflight overwrites `build.zip` and its default gate receipt together; the timestamped release instead uses
@@ -353,7 +353,7 @@ Owner access to `https://jest.com/developers` is required:
    public listing, loading mode, exact asset bytes, catalog SKUs, and any separately published onboarding games. Validate all known values and assets:
 
    ```bash
-   pnpm --filter @qwordly/portal check:jest-console
+   pnpm --filter @riddle-quest/portal check:jest-console
    ```
 
 2. The owner-approved publisher is `Jest`, and the approved Console privacy-policy URL is
@@ -361,7 +361,7 @@ Owner access to `https://jest.com/developers` is required:
    the in-game About page because Jest requires external links to be removed. The stricter check binds both decisions:
 
    ```bash
-   pnpm --filter @qwordly/portal check:jest-console:release
+   pnpm --filter @riddle-quest/portal check:jest-console:release
    ```
 
 3. Copy the manifest's exact listing values into the Console, select its logo and hero from the Asset Library, select Manual
@@ -389,7 +389,7 @@ Retain screenshots, recordings, event IDs, and device traces with the relevant r
 
 ## Jest Games Fund readiness
 
-Jest multiplayer friend invitations use the [Referrals API](https://docs.jest.com/sdk/referrals). Select a category and choose **Challenge a friend** to reserve a private lobby, then choose **Challenge a friend** in the lobby to open Jest's share dialog with the message and exact challenge link. The SDK call runs directly in the click handler after a synchronous account-deletion check. Each share has its own reference so a later lobby cannot replace an earlier invitation. Dismissing the dialog keeps the lobby available for another attempt; a provider failure shows the translated retry notice. The player chooses the recipient and messaging destination in the platform dialog. SDK success does not prove SMS delivery. Run `pnpm --filter @qwordly/portal test:jest-live-invite:browser` for the injected guest, registered-player, retry, and recipient-entry journeys. Confirm actual messaging delivery separately with two Jest sandbox users before publication.
+Jest multiplayer friend invitations use the [Referrals API](https://docs.jest.com/sdk/referrals). Select a category and choose **Challenge a friend** to reserve a private lobby, then choose **Challenge a friend** in the lobby to open Jest's share dialog with the message and exact challenge link. The SDK call runs directly in the click handler after a synchronous account-deletion check. Each share has its own reference so a later lobby cannot replace an earlier invitation. Dismissing the dialog keeps the lobby available for another attempt; a provider failure shows the translated retry notice. The player chooses the recipient and messaging destination in the platform dialog. SDK success does not prove SMS delivery. Run `pnpm --filter @riddle-quest/portal test:jest-live-invite:browser` for the injected guest, registered-player, retry, and recipient-entry journeys. Confirm actual messaging delivery separately with two Jest sandbox users before publication.
 
 - **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
 - **Notifications:** registered players receive a fuzzy D1-D7 series early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.

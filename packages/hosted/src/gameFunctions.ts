@@ -1,5 +1,5 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
-import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@qwordly/core/race";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
+import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@riddle-quest/core/race";
 import {httpsCallable as rawHttpsCallable, type Functions} from "firebase/functions";
 import type {
   ClassicRiddleBufferResponse,
@@ -9,7 +9,7 @@ import type {
   SpendCoinsRequest,
   SubmitSinglePlayerGuessInput,
   SubmitSinglePlayerGuessOutput,
-} from "@qwordly/core/validation";
+} from "@riddle-quest/core/validation";
 import type {
   AbandonRaceRunRequest,
   AbandonRaceRunResponse,
@@ -38,7 +38,7 @@ import type {
   ReadyRaceRunRequest,
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 
 /** Region that hosts solo gameplay and multiplayer callables beside eur3. */
 export const DEFAULT_GAMEPLAY_REGION = "europe-west1";
@@ -450,7 +450,7 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
       /** Stores challenge id. */
       challengeId: string;
       /** Stores locale. */
-      locale: import("@qwordly/core/race").RaceLocale;
+      locale: import("@riddle-quest/core/race").RaceLocale;
     },
     RaceChallengePreview
   >(regions.race, "getRaceChallenge");
@@ -468,12 +468,12 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
     "listRaceInbox",
   );
   /** Immediately blocks an established social rival. */
-  const blockRival = httpsCallable<import("@qwordly/core/race").BlockSocialRivalRequest, {
+  const blockRival = httpsCallable<import("@riddle-quest/core/race").BlockSocialRivalRequest, {
     /** Confirmed block status. */
     blocked: true;
   }>(regions.account, "blockRival");
   /** Queues a categorized known-rival or private live-opponent report. */
-  const reportRival = httpsCallable<import("@qwordly/core/race").ReportSocialRivalRequest,
+  const reportRival = httpsCallable<import("@riddle-quest/core/race").ReportSocialRivalRequest,
     {
       /** Opaque server queue receipt. */
       reportId: string;
@@ -500,13 +500,13 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   /** Cancels only a creator-owned reservation, preserving reusable public challenges. */
   const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(regions.race, "cancelRaceInvite");
   /** Authenticated live matchmaking and input transports. */
-  const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveRace, import("@qwordly/core/race").LiveRaceView>(regions.race, "joinLiveRace");
+  const joinLiveRace = httpsCallable<import("@riddle-quest/core/race").JoinLiveRace, import("@riddle-quest/core/race").LiveRaceView>(regions.race, "joinLiveRace");
   /** Retires a stable account-owned join without cancelling a newer recovered seat. */
-  const retireLiveRaceJoin = httpsCallable<import("@qwordly/core/race").RetireLiveRaceJoin, import("@qwordly/core/race").RetireLiveRaceJoinResponse>(regions.race, "retireLiveRaceJoin");
+  const retireLiveRaceJoin = httpsCallable<import("@riddle-quest/core/race").RetireLiveRaceJoin, import("@riddle-quest/core/race").RetireLiveRaceJoinResponse>(regions.race, "retireLiveRaceJoin");
   /** Optional private receipt observation leaves existing command transports unchanged. */
-  const confirmLiveGuessReceipt = httpsCallable<import("@qwordly/core/race").LiveGuessReceiptQuery, import("@qwordly/core/race").LiveGuessReceiptResult>(regions.race, "confirmLiveGuessReceipt");
+  const confirmLiveGuessReceipt = httpsCallable<import("@riddle-quest/core/race").LiveGuessReceiptQuery, import("@riddle-quest/core/race").LiveGuessReceiptResult>(regions.race, "confirmLiveGuessReceipt");
   /** Reads live progress and commits idempotent commands. */
-  const updateLiveRace = rawHttpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView, {
+  const updateLiveRace = rawHttpsCallable<import("@riddle-quest/core/race").UpdateLiveRace, import("@riddle-quest/core/race").LiveRaceView, {
     /** Private wake-up notification received through the same authenticated endpoint. */
     revision: string | null;
   }>(regions.race, "updateLiveRace");
@@ -514,7 +514,7 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   const getLiveRaceChallenge = httpsCallable<{
     /** Server invitation handle. */
     challengeId: string;
-  }, import("@qwordly/core/race").LiveRaceChallenge>(regions.race, "getLiveRaceChallenge");
+  }, import("@riddle-quest/core/race").LiveRaceChallenge>(regions.race, "getLiveRaceChallenge");
   /** Addresses an existing player and queues a server-owned offline notification. */
   const sendLiveRaceChallenge = httpsCallable<{
     /** Creator-owned private lobby. */ challengeId: string;
@@ -523,9 +523,9 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   /** Stores status. */
   status: "queued"}>(regions.race, "sendLiveRaceChallenge");
   /** Reads direct challenge notices without accepting their lobby. */
-  const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("@qwordly/core/race").LiveRaceChallenge[]>(regions.race, "listLiveRaceChallenges");
+  const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("@riddle-quest/core/race").LiveRaceChallenge[]>(regions.race, "listLiveRaceChallenges");
   /** Locale-bound retained results never include another account or answer-bearing run. */
-  const listLiveRaceHistory = httpsCallable<import("@qwordly/core/race").ListLiveRaceHistoryRequest, import("@qwordly/core/race").ListLiveRaceHistoryResponse>(regions.race, "listLiveRaceHistory");
+  const listLiveRaceHistory = httpsCallable<import("@riddle-quest/core/race").ListLiveRaceHistoryRequest, import("@riddle-quest/core/race").ListLiveRaceHistoryResponse>(regions.race, "listLiveRaceHistory");
   /** Stores explicit browser-push consent on the authenticated registered Jest account. */
   const setLiveRacePushSubscription = httpsCallable<{
     /** False revokes the current subscription. */ enabled: boolean;

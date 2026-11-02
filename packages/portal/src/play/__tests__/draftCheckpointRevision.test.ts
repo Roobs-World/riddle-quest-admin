@@ -1,12 +1,12 @@
 import {expect, it} from "@jest/globals";
-import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
-import {createSavedGame, GameSessionCheckpoints} from "@qwordly/hosted/play/GameSessionCheckpoints";
-import {parseDraftCheckpointRevision} from "@qwordly/hosted/play/draftCheckpointRevision";
-import {preferProviderDraft} from "@qwordly/hosted/play/draftCheckpointReconciliation";
-import {createJournalWriter} from "@qwordly/hosted/play/journalWriter";
-import {createPendingPlayJournalStorage} from "@qwordly/hosted/play/pendingPlayJournalDiagnostics";
-import {readPendingGuessJournal} from "@qwordly/hosted/play/readPendingGuessJournal";
-import {writePendingGuessJournal, acquirePendingPlayLease, releasePendingPlayLease, createRejectedPlayDraft} from "@qwordly/hosted/play/pendingGuessJournal";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {createSavedGame, GameSessionCheckpoints} from "@riddle-quest/hosted/play/GameSessionCheckpoints";
+import {parseDraftCheckpointRevision} from "@riddle-quest/hosted/play/draftCheckpointRevision";
+import {preferProviderDraft} from "@riddle-quest/hosted/play/draftCheckpointReconciliation";
+import {createJournalWriter} from "@riddle-quest/hosted/play/journalWriter";
+import {createPendingPlayJournalStorage} from "@riddle-quest/hosted/play/pendingPlayJournalDiagnostics";
+import {readPendingGuessJournal} from "@riddle-quest/hosted/play/readPendingGuessJournal";
+import {writePendingGuessJournal, acquirePendingPlayLease, releasePendingPlayLease, createRejectedPlayDraft} from "@riddle-quest/hosted/play/pendingGuessJournal";
 import {parseSavedGame} from "../../platform/playerDataValidation";
 
 /** One question shares a real reducer, guarded journal writer and provider projection. */

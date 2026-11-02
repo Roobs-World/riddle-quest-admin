@@ -1,6 +1,6 @@
 import {RankedAvatar} from "../../RankedAvatar";
 import {useState} from "react";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {PulsingSpinner} from "../../SpinningWheelLoader";
 import {LEADERBOARD_PAGE_SIZE, paginateLeaderboard} from "./leaderboardPagination";

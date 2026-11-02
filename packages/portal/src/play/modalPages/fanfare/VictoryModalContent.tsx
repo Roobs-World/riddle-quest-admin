@@ -1,10 +1,10 @@
 import {useEffect, useRef, useState} from "react";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
-import {isCompletionAdvancePending} from "@qwordly/hosted/play/completionPresentation";
+import {isCompletionAdvancePending} from "@riddle-quest/hosted/play/completionPresentation";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {CoinFlight} from "../../CoinFlight";
-import type {CompletionRewardBreakdown} from "@qwordly/hosted/completionRewardBreakdown";
+import type {CompletionRewardBreakdown} from "@riddle-quest/hosted/completionRewardBreakdown";
 import chestClosedUrl from "../../../../../../assets/images-web/chest-closed.png";
 import chestOpenUrl from "../../../../../../assets/images-web/chest-open.webp";
 import "../../../styles.victory.css";

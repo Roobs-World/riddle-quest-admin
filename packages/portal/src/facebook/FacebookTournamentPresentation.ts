@@ -1,4 +1,4 @@
-import type {ListFacebookTournamentResponse, RaceLocale, RecordFacebookTournamentRunResponse} from "@qwordly/core/race";
+import type {ListFacebookTournamentResponse, RaceLocale, RecordFacebookTournamentRunResponse} from "@riddle-quest/core/race";
 import type {PlatformResult} from "../platform/types";
 import {tr} from "../play/i18n";
 import {captureVictoryShareImage} from "../play/sharing/shareImages";

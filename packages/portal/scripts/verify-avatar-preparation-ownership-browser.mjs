@@ -19,7 +19,7 @@ try{
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameOperations} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameOperations.ts'))};
 import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
-import {parseGameToHostMessage} from '@qwordly/core/bridge';
+import {parseGameToHostMessage} from '@riddle-quest/core/bridge';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.probe={sent:[],started:0,completed:0,closed:0,rejected:[],releases:[],errors:[],unhandled:[],owner:null};
 window.addEventListener('error',e=>probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>probe.unhandled.push(String(e.reason)));
@@ -37,7 +37,7 @@ function App(){const [state,dispatch]=React.useReducer(gameSessionReducer,undefi
 }
 createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'@qwordly/core/bridge':path.join(root,'../core/src/bridge/index.ts')}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-avatar-operations',enforce:'pre',async load(id){if(baseline&&id.endsWith('/useGameOperations.ts'))return readFile(path.join(baseline,'operations.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'@riddle-quest/core/bridge':path.join(root,'../core/src/bridge/index.ts')}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-avatar-operations',enforce:'pre',async load(id){if(baseline&&id.endsWith('/useGameOperations.ts'))return readFile(path.join(baseline,'operations.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  await copyFile(path.join(root,'../../assets/images-web/riddlequest-r.webp'),path.join(scratch,'dist/source.webp'));
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.json':'application/json'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});const url='http://127.0.0.1:'+server.address().port;

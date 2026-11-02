@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_HISTORY_MS, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema,
-  LiveRaceHistoryEntrySchema, RaceCategoryIdSchema, type ListLiveRaceHistoryRequest, type LiveRaceHistoryEntry} from "@qwordly/core/race";
+  LiveRaceHistoryEntrySchema, RaceCategoryIdSchema, type ListLiveRaceHistoryRequest, type LiveRaceHistoryEntry} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {resolveLiveRaceSafetyTarget} from "../social/liveRaceSafetyTarget";

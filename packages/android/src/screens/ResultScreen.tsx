@@ -1,4 +1,4 @@
-import type {LocalSoloAuthority, YouTubeAuthoritySnapshot, YouTubeCopyKey, YouTubeLocale, YouTubeResult} from "@qwordly/solo";
+import type {LocalSoloAuthority, YouTubeAuthoritySnapshot, YouTubeCopyKey, YouTubeLocale, YouTubeResult} from "@riddle-quest/solo";
 import {StyleSheet, Text, View} from "react-native";
 import {ActionButton, Heading, Panel, Screen} from "../components/Primitives";
 import {AchievementRow, SaveBanner, StatusHeader} from "../components/StatusViews";

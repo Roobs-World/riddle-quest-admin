@@ -1,7 +1,7 @@
 import {useEffect, useLayoutEffect, useMemo, useRef} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 
 /** Quietly prepares one issued successor while a hosted Classic victory remains visible. */
 export function useClassicQuestionPreparation({enabled, state, postToHost}: {

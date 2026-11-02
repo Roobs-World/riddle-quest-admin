@@ -1275,7 +1275,7 @@ result → counter_challenge → categories</code></pre>
               <td>Define shared Zod schemas for categories, runs, events, challenges, attempts, and outcomes.</td>
               <td><span class="pill status-done">Done</span></td>
               <td class="evidence">
-                Shared strict schemas and inferred types live under <code>@qwordly/core/race</code>; 10 focused contract
+                Shared strict schemas and inferred types live under <code>@riddle-quest/core/race</code>; 10 focused contract
                 tests pass.
               </td>
               <td class="issues">Completed 2026-07-31. No schema blockers encountered.</td>
@@ -1815,7 +1815,7 @@ result → counter_challenge → categories</code></pre>
               <td><span class="pill status-done">Resolved</span></td>
               <td>
                 The first live dry run failed with <code>ERR_PACKAGE_PATH_NOT_EXPORTED</code> for
-                <code>@qwordly/core/race</code>.
+                <code>@riddle-quest/core/race</code>.
               </td>
               <td>
                 The installed Functions file dependency had a stale export map. The dry-run script now executes
@@ -1872,7 +1872,7 @@ result → counter_challenge → categories</code></pre>
               <td>R10-010–014, R10-022</td>
               <td><span class="pill status-done">Resolved</span></td>
               <td>
-                The first transaction-emulator run loaded stale local <code>@qwordly/core</code> artifacts, leaving new
+                The first transaction-emulator run loaded stale local <code>@riddle-quest/core</code> artifacts, leaving new
                 response schemas undefined.
               </td>
               <td>
@@ -1898,7 +1898,7 @@ result → counter_challenge → categories</code></pre>
               <td><span class="pill status-done">Resolved</span></td>
               <td>
                 The first required browser verification rendered a blank page because Vite could not resolve
-                <code>@qwordly/core/race</code>, although TypeScript and Jest passed.
+                <code>@riddle-quest/core/race</code>, although TypeScript and Jest passed.
               </td>
               <td>
                 Added the race subpath to the portal Vite source aliases, restarted the server, and verified meaningful

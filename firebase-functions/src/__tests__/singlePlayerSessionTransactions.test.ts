@@ -115,7 +115,7 @@ import {
   type SinglePlayerSessionState,
 } from "../gameplay/singlePlayerSession";
 import {getCompletionBoundAuthoritativeSession} from "../gameplay/singlePlayerCompletionBinding";
-import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 
 /** Defines the user id value. */
 const USER_ID = "player-1";

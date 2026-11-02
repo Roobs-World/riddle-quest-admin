@@ -1,6 +1,6 @@
-import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
-import type {HostServices} from "@qwordly/hosted/hostTypes";
-import {toProductSummaries} from "@qwordly/hosted/hostTypes";
+import {cloneProductPricingCatalog} from "@riddle-quest/core/pricing/catalog";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
+import {toProductSummaries} from "@riddle-quest/hosted/hostTypes";
 import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarness";
 
 /** Describes host services mode. */

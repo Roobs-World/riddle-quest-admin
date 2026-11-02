@@ -1,5 +1,5 @@
 import coinUrl from "../../../../assets/images/coin.svg";
-import type {ProductSummary} from "@qwordly/hosted/hostTypes";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import {tr} from "../play/i18n";
 
 /** Describes props. */

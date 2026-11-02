@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {YOUTUBE_COPY} from "@qwordly/solo";
+import {YOUTUBE_COPY} from "@riddle-quest/solo";
 import {HOSTED_COPY, hostedText, translateHostCopy, type HostedCopyKey} from "../i18n/hostedCopy";
 
 /** Every hosted key, taken from the English table so a key added to the type but not the table fails here. */

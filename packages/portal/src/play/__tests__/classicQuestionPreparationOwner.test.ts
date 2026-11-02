@@ -1,7 +1,7 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
-import type {GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
 /** Retained passive callbacks are delivered explicitly across committed ownership changes. */
 const effects: Array<() => void> = [];
 /** Hook cells survive parent renders and layout retirement. */

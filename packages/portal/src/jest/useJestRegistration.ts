@@ -7,7 +7,7 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import {CompletionPresentation} from "@qwordly/hosted/play/completionPresentation";
+import {CompletionPresentation} from "@riddle-quest/hosted/play/completionPresentation";
 import {tr} from "../play/i18n";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import type {JestBackendPort} from "./backend";

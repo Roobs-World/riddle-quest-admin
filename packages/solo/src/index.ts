@@ -6,7 +6,7 @@
  * the local save schema and durable write gate, the economy, achievements,
  * localized copy, answer input editing, and the local gameplay authority.
  * Hosts bind their own save transport, locale, lifecycle, and presentation
- * through {@link YouTubeSdkPort} and the hooks in `@qwordly/solo/react`.
+ * through {@link YouTubeSdkPort} and the hooks in `@riddle-quest/solo/react`.
  *
  * @packageDocumentation
  */

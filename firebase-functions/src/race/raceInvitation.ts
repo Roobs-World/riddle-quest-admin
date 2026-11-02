@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import {createHash, randomUUID} from "node:crypto";
-import {ReserveRaceInviteResponseSchema, RaceEntryResponseSchema, RACE_CHALLENGE_TTL_MS, type ReserveRaceInviteRequest, type ReserveRaceInviteResponse, type RaceLocale, type RaceChallengePreview, type RaceEntryResponse, type RaceInvitationView, type CancelRaceInviteRequest} from "@qwordly/core/race";
+import {ReserveRaceInviteResponseSchema, RaceEntryResponseSchema, RACE_CHALLENGE_TTL_MS, type ReserveRaceInviteRequest, type ReserveRaceInviteResponse, type RaceLocale, type RaceChallengePreview, type RaceEntryResponse, type RaceInvitationView, type CancelRaceInviteRequest} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {assertRaceInteractionAllowed} from "./raceRunMutation";

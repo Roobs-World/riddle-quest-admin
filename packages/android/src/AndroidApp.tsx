@@ -1,5 +1,5 @@
-import type {HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
-import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "@qwordly/solo";
+import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
+import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "@riddle-quest/solo";
 import {useEffect, useState} from "react";
 import type {HostedFirebaseClient} from "./hosted/firebaseClient";
 import {useHostedAccount} from "./hosted/useHostedAccount";

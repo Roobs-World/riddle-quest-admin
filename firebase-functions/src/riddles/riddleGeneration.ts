@@ -1,10 +1,10 @@
-import type {EconomyDifficulty} from "@qwordly/core/game";
+import type {EconomyDifficulty} from "@riddle-quest/core/game";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "./openaiService";
 import {captureException} from "../shared/sentry";
 import {RiddleCollections} from "../validation/firestoreSchemas";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 import {
   areLocalizedClassicRiddlesSeeded,
   areLocalizedClassicRiddlesSeededForLocale,

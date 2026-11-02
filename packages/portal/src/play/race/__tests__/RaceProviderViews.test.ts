@@ -1,5 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import type {ListFacebookTournamentResponse, RecordFacebookTournamentRunResponse} from "@qwordly/core/race";
+import type {ListFacebookTournamentResponse, RecordFacebookTournamentRunResponse} from "@riddle-quest/core/race";
 import {RaceProviderViews} from "../RaceProviderViews";
 
 /** Identity-free standings expose which delivery was accepted. */

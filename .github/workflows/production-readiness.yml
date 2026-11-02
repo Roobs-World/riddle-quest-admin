@@ -41,7 +41,7 @@ jobs:
       - run: pnpm check:facebook-copy
       - run: pnpm --dir firebase-functions test:youtube-content
       - run: pnpm test:coverage
-      - run: pnpm --filter @qwordly/portal test:release-scripts
+      - run: pnpm --filter @riddle-quest/portal test:release-scripts
       - run: pnpm test:architecture
       - run: pnpm build
       - run: git diff --exit-code -- firebase-functions/packages/core/package.json
@@ -86,12 +86,12 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
       - run: pnpm test:e2e
       - run: pnpm check:w3c
-      - run: pnpm --filter @qwordly/reddit-app build:package:from-client
-      - run: pnpm --filter @qwordly/portal preflight:jest-upload
-      - run: pnpm --filter @qwordly/portal preflight:facebook-upload
+      - run: pnpm --filter @riddle-quest/reddit-app build:package:from-client
+      - run: pnpm --filter @riddle-quest/portal preflight:jest-upload
+      - run: pnpm --filter @riddle-quest/portal preflight:facebook-upload
       - run: pnpm check:facebook-progress
       - run: pnpm check:youtube-progress
 

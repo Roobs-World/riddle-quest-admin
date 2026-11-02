@@ -1,6 +1,6 @@
-import {createFirebaseHostServices, type HostAuth} from "@qwordly/hosted/hostServices";
-import type {HostServices} from "@qwordly/hosted/hostTypes";
-import type {YouTubeLocale} from "@qwordly/solo";
+import {createFirebaseHostServices, type HostAuth} from "@riddle-quest/hosted/hostServices";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
+import type {YouTubeLocale} from "@riddle-quest/solo";
 import {translateHostCopy} from "../i18n/hostedCopy";
 import type {HostedFirebaseClient} from "./firebaseClient";
 /** Binds the device's Firebase Auth session to the shared host-auth surface. */

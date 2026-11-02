@@ -1,4 +1,4 @@
-import {LiveRaceViewSchema, RACE_RULES} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RACE_RULES} from "@riddle-quest/core/race";
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
 import type {FacebookInstantTournament} from "../fbinstant";

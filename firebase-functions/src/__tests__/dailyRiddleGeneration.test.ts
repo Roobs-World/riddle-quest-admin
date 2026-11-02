@@ -18,7 +18,7 @@ const mockGetLocalizedDailyDocRef = jest.fn(() => ({get: mockGet, set: mockSet, 
 /** Provides mock generate unique riddle behavior. */
 const mockGenerateUniqueRiddle = jest.fn();
 
-jest.mock("@qwordly/core/validation", () => ({SUPPORTED_LOCALES: ["en"]}));
+jest.mock("@riddle-quest/core/validation", () => ({SUPPORTED_LOCALES: ["en"]}));
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {firestore: {FieldValue: {serverTimestamp: () => "server-time"}}},
 }));

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {protectContent, readProtectedContent, contentProtectionRequest} from '@qwordly/core/contentProtection';
+import {protectContent, readProtectedContent, contentProtectionRequest} from '@riddle-quest/core/contentProtection';
 
 test('protects Unicode answers, complete decks, and hints with a fresh IV without altering gameplay data', async () => {
   const content = {preloadedRiddles:[{evaluation:{answer:'café',locale:'fr'},hint:{index:3,letter:'é'}}], answer:'時計', hints:['क','👩‍👩‍👧‍👦']};

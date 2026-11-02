@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 import {submitRaceGuessForUser, resumeRaceRunForUser, getRaceOutcomeForUser} from "../../race/raceService";
 import {raceOutcome, type RaceRunRecord} from "../../race/raceEngine";
 import {processRaceDeadline, replayRaceDeadline} from "../../race/raceDeadlineRecovery";

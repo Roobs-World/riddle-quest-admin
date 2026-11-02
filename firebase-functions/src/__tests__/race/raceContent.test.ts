@@ -3,8 +3,8 @@ import {
   RACE_SUPPORTED_LOCALES,
   type RaceCategoryId,
   type RaceDifficultyBand,
-} from "@qwordly/core/race";
-import type {SupportedLocale} from "@qwordly/core/validation";
+} from "@riddle-quest/core/race";
+import type {SupportedLocale} from "@riddle-quest/core/validation";
 import {
   createRaceContentDryRun,
   inferCanonicalRiddleId,

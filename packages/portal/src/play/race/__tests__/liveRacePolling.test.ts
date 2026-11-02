@@ -1,5 +1,5 @@
 import {liveRacePollInterval} from "../logic/liveRacePolling";
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
 
 /** Minimal participant projection keeps scheduling tests independent of game content. */
 const human = {displayName: "Rival", avatarUrl: null, bot: false, correctCount: 0};

@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 
 /** Describes effect. */
 type Effect = () => void | (() => void);
@@ -46,7 +46,7 @@ jest.mock("react", () => ({
   },
 }));
 
-jest.mock("@qwordly/hosted/play/requestIds", () => ({createRequestId: () => "complete-request-stable"}));
+jest.mock("@riddle-quest/hosted/play/requestIds", () => ({createRequestId: () => "complete-request-stable"}));
 
 import {useCompletionDelivery} from "../game/hooks/useCompletionDelivery";
 

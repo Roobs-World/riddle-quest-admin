@@ -11,11 +11,11 @@ const repositoryRoot = path.resolve(__dirname, "../..");
  */
 const workspaceSources = {
   "#solo-content": path.join(repositoryRoot, "packages/portal/src/playable/generated/youtube-content-v1.json"),
-  "@qwordly/hosted": path.join(repositoryRoot, "packages/hosted/src/index.ts"),
-  "@qwordly/solo/react": path.join(repositoryRoot, "packages/solo/src/react/index.ts"),
-  "@qwordly/solo": path.join(repositoryRoot, "packages/solo/src/index.ts"),
-  "@qwordly/core/game": path.join(repositoryRoot, "packages/core/src/game/index.ts"),
-  "@qwordly/core": path.join(repositoryRoot, "packages/core/src/index.ts"),
+  "@riddle-quest/hosted": path.join(repositoryRoot, "packages/hosted/src/index.ts"),
+  "@riddle-quest/solo/react": path.join(repositoryRoot, "packages/solo/src/react/index.ts"),
+  "@riddle-quest/solo": path.join(repositoryRoot, "packages/solo/src/index.ts"),
+  "@riddle-quest/core/game": path.join(repositoryRoot, "packages/core/src/game/index.ts"),
+  "@riddle-quest/core": path.join(repositoryRoot, "packages/core/src/index.ts"),
 };
 
 /**
@@ -35,8 +35,8 @@ const config = {
     nodeModulesPaths: [path.join(__dirname, "node_modules"), path.join(repositoryRoot, "node_modules")],
     resolveRequest: (context, moduleName, platform) => {
       if (moduleName === "#hosted-config") return {type: "sourceFile", filePath: hostedConfigPath};
-      if (moduleName.startsWith("@qwordly/hosted/")) {
-        return {type: "sourceFile", filePath: path.join(repositoryRoot, "packages/hosted/src", `${moduleName.slice("@qwordly/hosted/".length)}.ts`)};
+      if (moduleName.startsWith("@riddle-quest/hosted/")) {
+        return {type: "sourceFile", filePath: path.join(repositoryRoot, "packages/hosted/src", `${moduleName.slice("@riddle-quest/hosted/".length)}.ts`)};
       }
       /** Shared workspace module mapped to its TypeScript source. */
       const filePath = workspaceSources[moduleName];

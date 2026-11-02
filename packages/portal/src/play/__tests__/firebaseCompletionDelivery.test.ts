@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {CompletionResult} from "@qwordly/hosted/hostTypes";
+import type {CompletionResult} from "@riddle-quest/hosted/hostTypes";
 
 /** Provider identity consumed by the real adapter. */
 const mockAuth = {currentUser: {uid: "alice", metadata: {creationTime: "2026-01-01T00:00:00Z"}}};

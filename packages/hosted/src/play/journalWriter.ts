@@ -1,7 +1,7 @@
 import type {PendingGuessJournal,PendingPlayStorage} from './pendingGuessJournal';
 import {preferProviderDraft} from './draftCheckpointReconciliation';
 import type {JournalOperations} from './paidSettlement';
-import type {BridgeRiddle} from '@qwordly/core/bridge';
+import type {BridgeRiddle} from '@riddle-quest/core/bridge';
 import type {GameSessionState,PendingGuessState} from './gameSessionTypes';
 
 /** Retains only confirmed purchased hint presentation alongside its issued question. */

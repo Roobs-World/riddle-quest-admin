@@ -1,10 +1,10 @@
-import type {YouTubeLocale} from "@qwordly/solo";
+import type {YouTubeLocale} from "@riddle-quest/solo";
 /**
  * Copy that only the hosted (server-authoritative) Android screens need.
  *
  * @remarks
  * Keys shared with self-contained play (`submit`, `hint`, `victory`, …) stay in
- * `@qwordly/solo`'s tables; this table only adds the account, connectivity and
+ * `@riddle-quest/solo`'s tables; this table only adds the account, connectivity and
  * server-session strings so the YouTube artifact never carries them.
  */
 export type HostedCopyKey =

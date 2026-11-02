@@ -1,4 +1,4 @@
-import {getDailyDate, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {getDailyDate, shiftDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 /** Describes timestamp like. */
 type TimestampLike = {
   /** Stores to date. */

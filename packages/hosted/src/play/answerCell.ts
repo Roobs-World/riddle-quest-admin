@@ -1,4 +1,4 @@
-import {splitGraphemes} from "@qwordly/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 
 /** A bounded answer cell must occupy one grapheme before and after its displayed locale casing. */
 export const isSingleAnswerCell = (letter: unknown, locale: string): letter is string =>

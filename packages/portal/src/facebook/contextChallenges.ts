@@ -1,4 +1,4 @@
-import type {LiveRaceCapability, RaceLocale} from "@qwordly/core/race";
+import type {LiveRaceCapability, RaceLocale} from "@riddle-quest/core/race";
 import english from "../../../../src/locales/en/race.json";
 import {tr} from "../play/i18n";
 import {captureVictoryShareImage} from "../play/sharing/shareImages";

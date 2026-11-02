@@ -17,7 +17,7 @@ const source = `
 import React,{useState} from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/play/sharing/ReferralSharingCapability.tsx"))};
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root, "src/play/race/logic/racePresentation.ts"))};

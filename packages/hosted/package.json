@@ -1,5 +1,5 @@
 {
-  "name": "@qwordly/hosted",
+  "name": "@riddle-quest/hosted",
   "version": "0.1.0",
   "private": true,
   "description": "Provider-neutral hosted play client shared by the Firebase-backed web targets and the Android app",
@@ -22,7 +22,7 @@
     "test:coverage": "cross-env NODE_ENV=test jest --config jest.config.js --runInBand --coverage"
   },
   "dependencies": {
-    "@qwordly/core": "workspace:*"
+    "@riddle-quest/core": "workspace:*"
   },
   "peerDependencies": {
     "firebase": "^12.19.0"

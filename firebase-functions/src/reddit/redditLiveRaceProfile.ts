@@ -1,4 +1,4 @@
-import {LiveRaceViewSchema} from "@qwordly/core/race";
+import {LiveRaceViewSchema} from "@riddle-quest/core/race";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import type {LiveMatch, LiveTicket} from "../race/raceLiveState";
 import {readRedditSocialProfile} from "./redditSocialProfile";

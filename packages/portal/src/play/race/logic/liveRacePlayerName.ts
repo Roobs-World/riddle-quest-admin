@@ -1,4 +1,4 @@
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 
 /** Keeps assigned guest usernames while localising retained legacy bot labels. */

@@ -1,9 +1,9 @@
-import type {BridgeRiddle} from "@qwordly/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "@qwordly/hosted/hostTypes";
-import {createInitialGameSession, gameSessionReducer} from "@qwordly/hosted/play/gameSession";
-import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "@qwordly/hosted/play/pendingGuessJournal";
-import {readPendingGuessJournal} from "@qwordly/hosted/play/readPendingGuessJournal";
-import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "@qwordly/solo";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
+import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import {readPendingGuessJournal} from "@riddle-quest/hosted/play/readPendingGuessJournal";
+import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "@riddle-quest/solo";
 import type {AndroidPendingPlayStorage} from "./pendingPlayStorage";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 /** Positional colour of one accepted letter, matching the shared single-player feedback names. */

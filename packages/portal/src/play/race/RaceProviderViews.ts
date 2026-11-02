@@ -1,4 +1,4 @@
-import type {ListFacebookContextBoardResponse, ListFacebookTournamentResponse, RaceLocale} from "@qwordly/core/race";
+import type {ListFacebookContextBoardResponse, ListFacebookTournamentResponse, RaceLocale} from "@riddle-quest/core/race";
 import type {ContextBoardCapability, TournamentCapability} from "../../platform/types";
 import type {RacePlayClock} from "./RacePlay";
 import type {RaceStage} from "./RaceSession.types";

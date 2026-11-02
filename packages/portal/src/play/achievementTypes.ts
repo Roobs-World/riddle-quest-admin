@@ -1,5 +1,5 @@
-import type {AchievementMilestoneId} from "@qwordly/core/game";
-import type {PlayerProgress, PlayerStats} from "@qwordly/core/validation";
+import type {AchievementMilestoneId} from "@riddle-quest/core/game";
+import type {PlayerProgress, PlayerStats} from "@riddle-quest/core/validation";
 
 /** Identifies the supported criteria used to unlock an achievement. */
 export type AchievementCriteriaType =

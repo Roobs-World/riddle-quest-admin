@@ -1,9 +1,9 @@
 import {RaceOwnedAuthority} from "./RaceOwnedAuthority";
-import {parseHostToGameMessage, type GameToHostMessage} from "@qwordly/core/bridge";
-import {classifyRaceMatchFailure, raceMatchFailure, type RaceMatchFailure} from "@qwordly/core/race";
-import {type RaceOutcome, type RaceAnalyticsEventName, type RaceCategoryId, type RaceInboxItem, type RaceRunView, type SocialReportCategory} from "@qwordly/core/race";
+import {parseHostToGameMessage, type GameToHostMessage} from "@riddle-quest/core/bridge";
+import {classifyRaceMatchFailure, raceMatchFailure, type RaceMatchFailure} from "@riddle-quest/core/race";
+import {type RaceOutcome, type RaceAnalyticsEventName, type RaceCategoryId, type RaceInboxItem, type RaceRunView, type SocialReportCategory} from "@riddle-quest/core/race";
 import type {MatchmakingCapability} from "../../platform/types";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {RacePlay, type RacePlayClock} from "./RacePlay";
 import {raceErrorKey, raceRejectedState, raceMatchErrorKey, bindRaceCommand, applyRaceAuthority, raceAttemptState, type RaceResumeDraft} from "./RaceSessionAuthority";
 import type {RaceSessionEffect, RaceSessionEntry, RaceSessionOptions, RaceSessionState, RaceStage} from "./RaceSession.types";

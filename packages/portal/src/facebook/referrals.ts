@@ -1,5 +1,5 @@
 import type {FacebookInstantSdk} from "./fbinstant";
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import {facebookTournamentLocaleFromEntryData} from "./facebookTournamentEntry";
 
 /** Defines the token pattern value. */

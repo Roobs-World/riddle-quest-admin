@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {youtubeText, type YouTubeCopyKey} from "@qwordly/solo";
+import {youtubeText, type YouTubeCopyKey} from "@riddle-quest/solo";
 import {render, screen} from "@testing-library/react-native";
 import {AchievementRow, describeAchievement} from "../components/StatusViews";
 

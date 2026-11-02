@@ -1,6 +1,6 @@
-import {splitGraphemes, computeFeedback} from "@qwordly/core/game";
+import {splitGraphemes, computeFeedback} from "@riddle-quest/core/game";
 import {describe, expect, it} from "@jest/globals";
-import {RACE_HINT_PENALTY_MS, type RaceRunView} from "@qwordly/core/race";
+import {RACE_HINT_PENALTY_MS, type RaceRunView} from "@riddle-quest/core/race";
 import {RACE_DRAFT_TTL_MS, type RaceDraftStorage} from "../logic/raceDraftStorage";
 import {fixture, harness} from "./raceSession.support";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";

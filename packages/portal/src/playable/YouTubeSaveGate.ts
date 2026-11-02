@@ -1,2 +1,2 @@
-// Shim: the Playable's YouTubeSaveGate module now lives in @qwordly/solo so native targets share it verbatim.
-export {YouTubeSaveBlockedError, YouTubeSaveGate} from "@qwordly/solo";
+// Shim: the Playable's YouTubeSaveGate module now lives in @riddle-quest/solo so native targets share it verbatim.
+export {YouTubeSaveBlockedError, YouTubeSaveGate} from "@riddle-quest/solo";

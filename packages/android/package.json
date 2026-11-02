@@ -1,5 +1,5 @@
 {
-  "name": "@qwordly/android",
+  "name": "@riddle-quest/android",
   "version": "1.0.0",
   "private": true,
   "description": "React Native Android app for Google Play: self-contained solo play shared with the web Playable targets",
@@ -15,9 +15,9 @@
     "verify:device": "node scripts/verify-android-device.mjs"
   },
   "dependencies": {
-    "@qwordly/core": "workspace:*",
-    "@qwordly/hosted": "workspace:*",
-    "@qwordly/solo": "workspace:*",
+    "@riddle-quest/core": "workspace:*",
+    "@riddle-quest/hosted": "workspace:*",
+    "@riddle-quest/solo": "workspace:*",
     "@react-native-async-storage/async-storage": "3.1.1",
     "firebase": "^12.19.0",
     "react": "19.3.0",

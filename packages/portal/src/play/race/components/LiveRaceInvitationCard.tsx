@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useRef, useState} from "react";
-import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "@qwordly/core/race";
+import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 
 /** A preview's exact server selector and authenticated provider define acceptance ownership. */

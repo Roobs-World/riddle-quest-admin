@@ -1,4 +1,4 @@
-import {protectContent} from "@qwordly/core/contentProtection";
+import {protectContent} from "@riddle-quest/core/contentProtection";
 import {readFileSync} from "node:fs";
 import type {Plugin} from "vite";
 
@@ -45,7 +45,7 @@ export function playableContentPlugin(contentPath: string): Plugin {
         return `${JSON.stringify(locale)}:loader(import.meta.ROLLUP_FILE_URL_${reference})`;
       }).join(",");
       return `
-        import {readProtectedContent} from "@qwordly/core/contentProtection";
+        import {readProtectedContent} from "@riddle-quest/core/contentProtection";
         function loader(url) {
           let attempt = 0, pending;
           return () => pending ??= import(/* @vite-ignore */ attempt ? url + '?retry=' + attempt : url)

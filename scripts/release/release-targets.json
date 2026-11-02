@@ -10,7 +10,7 @@
       "executable": "pnpm",
       "args": [
         "--filter",
-        "@qwordly/portal",
+        "@riddle-quest/portal",
         "release:jest:timestamped"
       ]
     },
@@ -30,7 +30,7 @@
       "executable": "pnpm",
       "args": [
         "--filter",
-        "@qwordly/portal",
+        "@riddle-quest/portal",
         "release:facebook"
       ]
     },
@@ -50,7 +50,7 @@
       "executable": "pnpm",
       "args": [
         "--filter",
-        "@qwordly/portal",
+        "@riddle-quest/portal",
         "preflight:youtube-upload"
       ]
     },
@@ -70,7 +70,7 @@
       "executable": "pnpm",
       "args": [
         "--filter",
-        "@qwordly/reddit-app",
+        "@riddle-quest/reddit-app",
         "release:candidate"
       ]
     },

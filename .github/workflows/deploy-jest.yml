@@ -31,7 +31,7 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@11.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
         timeout-minutes: 15
       - name: Install the release sandbox
         run: sudo apt-get update && sudo apt-get install --yes bubblewrap

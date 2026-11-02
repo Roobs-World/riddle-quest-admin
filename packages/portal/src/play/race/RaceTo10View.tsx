@@ -1,5 +1,5 @@
 import type {RefObject} from "react";
-import type {Feedback, ScoredGuess} from "@qwordly/core/game";
+import type {Feedback, ScoredGuess} from "@riddle-quest/core/game";
 import type {
   ListRaceCategoriesResponse,
   PublishRaceChallengeResponse,
@@ -12,7 +12,7 @@ import type {
   SocialReportCategory,
   ListFacebookTournamentResponse,
   ListFacebookContextBoardResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {tr} from "../i18n";
 import {RaceCountdown} from "./components/RaceCountdown";
 import {RaceGameplay} from "./components/RaceGameplay";

@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
-import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS} from "@qwordly/core/race";
+import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
 import {LiveRaceSearchWheel} from "../components/LiveRaceSearchWheel";
 
 /** Reads the progress percentage rendered for one authoritative search deadline. */

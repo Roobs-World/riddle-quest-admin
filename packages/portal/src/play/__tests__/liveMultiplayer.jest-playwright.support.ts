@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
-import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, RACE_RULES, type JoinLiveRace, type RetireLiveRaceJoin, type UpdateLiveRace, type LiveRaceView} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, RACE_RULES, type JoinLiveRace, type RetireLiveRaceJoin, type UpdateLiveRace, type LiveRaceView} from "@riddle-quest/core/race";
 import {installLiveHistoryJourney} from "./liveHistory.jest-playwright.support";
 import {installLiveRematchJourney} from "./liveRematch.jest-playwright.support";
 

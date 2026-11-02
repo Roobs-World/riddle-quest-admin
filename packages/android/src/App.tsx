@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "@qwordly/solo";
+import type {YouTubeLocale} from "@riddle-quest/solo";
 import {useCallback, useMemo, useRef} from "react";
 import {StatusBar} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";

@@ -1,15 +1,15 @@
-import {normalizeEconomyDifficulty} from "@qwordly/core/game";
-import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {normalizeEconomyDifficulty} from "@riddle-quest/core/game";
+import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 import {coerceToDate} from "../daily/dailyStreak";
-import {countCoinRewardAchievements} from "@qwordly/core/game";
+import {countCoinRewardAchievements} from "@riddle-quest/core/game";
 import {createHash, randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {splitGraphemes} from "@qwordly/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import type {
   GetHintRequestSchema,
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "@qwordly/core/validation/requestSchemas";
+} from "@riddle-quest/core/validation/requestSchemas";
 import type {z} from "zod";
 import type {Player, PlayerProgress} from "../validation/firestoreSchemas";
 import {admin} from "../shared/firebaseAdmin";

@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRecovery} from "@qwordly/core/race";
+import type {RaceRecovery} from "@riddle-quest/core/race";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 import {catalog, fixture, harness, preview} from "./raceSession.support";
 

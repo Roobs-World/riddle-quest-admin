@@ -3,7 +3,7 @@ import {
   useYouTubeReadySession as useSharedYouTubeReadySession,
   type YouTubeAccessibilityPreferences,
   type YouTubeReadySession,
-} from "@qwordly/solo/react";
+} from "@riddle-quest/solo/react";
 import type {LocalSoloAuthority} from "./LocalSoloAuthority";
 import type {YouTubeSdkPort} from "./types";
 /** Applies accessibility preferences as document classes consumed by the Playable stylesheet. */

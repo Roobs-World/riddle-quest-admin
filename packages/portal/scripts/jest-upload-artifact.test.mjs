@@ -801,7 +801,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     unresolvedBarrierIndex,
   );
   const consoleReadinessIndex = findAfter(
-    /\[\s*["']--filter["']\s*,\s*["']@qwordly\/portal["']\s*,\s*["']check:jest-console:release["']\s*\]/,
+    /\[\s*["']--filter["']\s*,\s*["']@riddle-quest\/portal["']\s*,\s*["']check:jest-console:release["']\s*\]/,
     dependencyCaptureIndex,
   );
   const gateIndex = findAfter(/\[\s*["']verify:production:extended["']\s*\]/, consoleReadinessIndex);

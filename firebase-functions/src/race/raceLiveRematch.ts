@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, type JoinLiveRace} from "@qwordly/core/race";
+import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, type JoinLiveRace} from "@riddle-quest/core/race";
 import {resolveLiveRaceSafetyTarget} from "../social/liveRaceSafetyTarget";
 import {raceProviderScope} from "./raceEligibility";
 import {admin} from "../shared/firebaseAdmin";

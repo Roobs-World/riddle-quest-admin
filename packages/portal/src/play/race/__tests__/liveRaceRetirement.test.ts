@@ -1,4 +1,4 @@
-import {LiveRaceViewSchema, RACE_RULES, type LiveRaceView, type UpdateLiveRace, type RetireLiveRaceJoinResponse} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RACE_RULES, type LiveRaceView, type UpdateLiveRace, type RetireLiveRaceJoinResponse} from "@riddle-quest/core/race";
 import {createLiveRaceRetirement} from "../logic/liveRaceRetirement";
 
 /** Valid server receipts distinguish owned confirmation from unrelated terminal seats. */

@@ -20,7 +20,7 @@ import {useHostAuthSession} from ${JSON.stringify(path.join(root,'src/play/useHo
 import {createHostMessageRouter,BridgeParserLoadError} from ${JSON.stringify(path.join(root,'src/play/bridgeRouter.ts'))};
 import {dispatchLocalBridge,GAME_TO_HOST_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/observability/browserErrorReporter.ts'))};
-import {BRIDGE_PROTOCOL_VERSION} from '@qwordly/core/bridge';
+import {BRIDGE_PROTOCOL_VERSION} from '@riddle-quest/core/bridge';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};

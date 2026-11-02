@@ -1,4 +1,4 @@
-import {LiveRaceViewSchema, RetireLiveRaceJoinResponseSchema, type LiveRaceCapability, type LiveRaceView, type UpdateLiveRace} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RetireLiveRaceJoinResponseSchema, type LiveRaceCapability, type LiveRaceView, type UpdateLiveRace} from "@riddle-quest/core/race";
 import {liveRaceDeliveryDeadline} from "./liveRaceDeliveryDeadline";
 
 /** A retired seat gets an initial leave and three bounded outage retries. */

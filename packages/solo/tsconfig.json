@@ -22,8 +22,8 @@
     "types": ["jest", "node"],
     "resolveJsonModule": true,
     "paths": {
-      "@qwordly/core": ["../core/src/index.ts"],
-      "@qwordly/core/game": ["../core/src/game/index.ts"]
+      "@riddle-quest/core": ["../core/src/index.ts"],
+      "@riddle-quest/core/game": ["../core/src/game/index.ts"]
     }
   },
   "include": ["src/**/*"]

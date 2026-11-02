@@ -1,7 +1,7 @@
 import {ProviderProfileContext} from "../ProviderProfileContext";
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 import {ProfileModalPage} from "../modalPages/profile/ProfileModalPage";
 import {ReferralSharingProvider, type ReferralSharingCapability} from "../sharing/ReferralSharingCapability";
 

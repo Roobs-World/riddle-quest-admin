@@ -1,4 +1,4 @@
-import {RACE_ACHIEVEMENT_IDS} from "@qwordly/core/race";
+import {RACE_ACHIEVEMENT_IDS} from "@riddle-quest/core/race";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../shared/constants";
 import {evaluateRaceAchievementEvent, raceRewardAwardsAgree} from "../../race/raceAchievements";
 

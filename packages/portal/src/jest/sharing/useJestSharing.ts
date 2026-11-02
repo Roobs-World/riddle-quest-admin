@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo} from "react";
-import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "@riddle-quest/core/referrals";
 import {tr} from "../../play/i18n";
 import type {
   ReferralRaceShareInput,

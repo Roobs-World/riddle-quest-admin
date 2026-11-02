@@ -12,7 +12,7 @@ import {
   type VerifiedJestSubscription,
 } from "./jestProductCatalog";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
-import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {JEST_REFERRAL_REWARD_COINS} from "@riddle-quest/core/referrals";
 import {captureException, flushSentry} from "../shared/sentry";
 import {onRequestWithSentry} from "../shared/sentryHandlers";
 import {

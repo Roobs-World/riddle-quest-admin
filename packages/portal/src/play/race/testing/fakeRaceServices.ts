@@ -1,4 +1,4 @@
-import {RaceEntryResponseSchema, type RaceInvitationView} from "@qwordly/core/race";
+import {RaceEntryResponseSchema, type RaceInvitationView} from "@riddle-quest/core/race";
 import {
   RACE_CATEGORY_IDS,
   RACE_HINT_PENALTY_MS,
@@ -8,9 +8,9 @@ import {
   type RaceGhostEvent,
   type RaceOutcome,
   type RaceRunView,
-} from "@qwordly/core/race";
-import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
-import type {HostServices} from "@qwordly/hosted/hostTypes";
+} from "@riddle-quest/core/race";
+import {computeFeedback, splitGraphemes} from "@riddle-quest/core/game";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 import {readBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 
 /** Multiplayer host methods implemented by the deterministic browser harness. */

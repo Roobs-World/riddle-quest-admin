@@ -2,7 +2,7 @@
  * End-to-end scenarios for the Android app on a connected device or emulator,
  * driven purely through adb. Each scenario starts from cleared app data.
  *
- * Run: ANDROID_HOME=~/Android/Sdk pnpm --filter @qwordly/android test:e2e:device
+ * Run: ANDROID_HOME=~/Android/Sdk pnpm --filter @riddle-quest/android test:e2e:device
  * Env: RIDDLE_QUEST_APK (release APK path), ANDROID_SERIAL (device), RIDDLE_QUEST_SKIP_INSTALL=1.
  * Evidence lands in artifacts/android-e2e/<scenario>/.
  */

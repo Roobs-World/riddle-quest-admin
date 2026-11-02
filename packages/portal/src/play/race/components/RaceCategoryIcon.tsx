@@ -1,4 +1,4 @@
-import type {RaceCategoryId} from "@qwordly/core/race";
+import type {RaceCategoryId} from "@riddle-quest/core/race";
 
 /** Small line drawings use the same rounded shapes as the game controls. */
 const CATEGORY_PATHS: Record<RaceCategoryId, string> = {

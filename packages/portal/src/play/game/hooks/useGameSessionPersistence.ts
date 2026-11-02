@@ -1,9 +1,9 @@
 import {useEffect, useLayoutEffect, useRef, type Dispatch} from "react";
 import type {SavedGame} from "../../../platform/types";
-import type {GameSessionAction, GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
-import {GameSessionCheckpoints, createSavedGame} from "@qwordly/hosted/play/GameSessionCheckpoints";
+import type {GameSessionAction, GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
+import {GameSessionCheckpoints, createSavedGame} from "@riddle-quest/hosted/play/GameSessionCheckpoints";
 
-export {createSavedGame} from "@qwordly/hosted/play/GameSessionCheckpoints";
+export {createSavedGame} from "@riddle-quest/hosted/play/GameSessionCheckpoints";
 
 /** React adapter for the session-owned checkpoint interface and browser lifecycle signals. */
 export const useGameSessionPersistence = ({state, stateRef, restoredGame, dispatch, onSaveGame}: {

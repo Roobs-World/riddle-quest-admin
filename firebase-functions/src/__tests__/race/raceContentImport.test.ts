@@ -1,4 +1,4 @@
-import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@qwordly/core/race";
+import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "@riddle-quest/core/race";
 import easierEnglish from "../../../content/race-en-reviewed-v2.json";
 import {createRaceContentImportPlan} from "../../race/raceContentImport";
 

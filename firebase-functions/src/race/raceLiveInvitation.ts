@@ -2,7 +2,7 @@ import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
 import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
-  type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "@qwordly/core/race";
+  type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceProviderScope} from "./raceEligibility";

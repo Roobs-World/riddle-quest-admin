@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
-import {RaceEntryResponseSchema} from "@qwordly/core/race";
+import {RaceEntryResponseSchema} from "@riddle-quest/core/race";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 
 /** Completes a creator recording through the same typed mutation interface used by browser flows. */

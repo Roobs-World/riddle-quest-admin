@@ -1,8 +1,8 @@
 import type {PendingPlayStorage} from "./pendingPlayAdapters";
 export type {PendingPlayStorage} from "./pendingPlayAdapters";
-import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
-import type {Feedback} from "@qwordly/core/game";
-import {splitGraphemes} from "@qwordly/core/game";
+import type {BridgeRiddle, GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {Feedback} from "@riddle-quest/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import type {PendingGuessState, GameSessionState} from "./gameSessionTypes";
 import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";
 /** A confirmed coin action delivered after all earlier answers settle. */

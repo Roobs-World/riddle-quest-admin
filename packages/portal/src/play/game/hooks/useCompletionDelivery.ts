@@ -1,9 +1,9 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import type {Dispatch} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {GameSessionAction, GameSessionState} from "@qwordly/hosted/play/gameSessionTypes";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
-import {completionPresentationKey} from "@qwordly/hosted/play/completionPresentation";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {GameSessionAction, GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
+import {completionPresentationKey} from "@riddle-quest/hosted/play/completionPresentation";
 
 /** Delays used for bounded-backoff completion delivery. */
 const COMPLETION_RETRY_DELAYS = [1_000, 2_000, 5_000, 10_000, 30_000] as const;

@@ -1,4 +1,4 @@
-import {RaceEntryResponseSchema} from "@qwordly/core/race";
+import {RaceEntryResponseSchema} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {
@@ -10,7 +10,7 @@ import {
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   AbandonRaceRunResponseSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {parseChallengeRecord, parseRunRecord} from "../race/raceSetupService";
 
 /** Describes reddit social profile. */

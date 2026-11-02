@@ -29,7 +29,7 @@ import {
   RecordFacebookTournamentRunResponseSchema,
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {joinLiveRace, retireLiveRaceJoin, confirmLiveGuessReceipt, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
@@ -61,7 +61,7 @@ import {disconnectRedditPresence, pollRedditPresence} from "./redditPresence";
 import {blockRival, reportRival} from "../social/socialSafetyCallables";
 import {grantVerifiedRedditOrder, refundVerifiedRedditOrder} from "./redditCommerceLedger";
 import {bindRedditReferralToken, issueRedditReferralToken} from "./redditReferrals";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 
 /** Provides gateway secret behavior. */
 const gatewaySecret = defineSecret("REDDIT_GATEWAY_SECRET");

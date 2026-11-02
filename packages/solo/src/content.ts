@@ -1,4 +1,4 @@
-import {splitGraphemes} from "@qwordly/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "./limits";
 import type {YouTubeContent, YouTubeLocale, YouTubeRiddle} from "./types";
 /** Defines the youtube locales value. */

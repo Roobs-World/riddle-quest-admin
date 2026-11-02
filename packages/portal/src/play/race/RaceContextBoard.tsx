@@ -1,5 +1,5 @@
 import {useEffect, useLayoutEffect, useRef, useState, type ReactNode} from "react";
-import {ListFacebookContextBoardResponseSchema, type ListFacebookContextBoardResponse} from "@qwordly/core/race";
+import {ListFacebookContextBoardResponseSchema, type ListFacebookContextBoardResponse} from "@riddle-quest/core/race";
 import type {RaceTournamentEntryProps} from "./RaceTournamentEntry";
 import {PlatformPlayerOverlay} from "./components/PlatformPlayerOverlay";
 import {useRaceDialogFocus} from "./hooks/useRaceDialogFocus";

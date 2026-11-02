@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import type {ProductSummary} from "@qwordly/hosted/hostTypes";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 
 /** Target-owned subscription operations; absent on targets without subscriptions. */
 export const ShopSubscriptionContext = createContext<{

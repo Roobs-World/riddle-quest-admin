@@ -1,11 +1,11 @@
 import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
 import {isFacebookWebTarget} from "../platform/webTargetEnvironment";
-import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "@qwordly/hosted/play/gameSession";
+import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "@riddle-quest/hosted/play/gameSession";
 import {tr} from "./i18n";
-import {createRequestId} from "@qwordly/hosted/play/requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
 import {ShopSubscriptionContext} from "./modalPages/commerce/ShopSubscriptionContext";
 import {GuidanceOverlay} from "./guidance/GuidanceOverlay";
@@ -44,7 +44,7 @@ import {
   useViewportFit,
 } from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
-import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
+import type {ListRaceCategoriesResponse, RaceLocale} from "@riddle-quest/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
 import {useClassicQuestionPreparation} from "./game/hooks/useClassicQuestionPreparation";
@@ -54,7 +54,7 @@ import type {AttemptRecoveryCapability} from "../platform/types";
 
 import {DecorativeSolarSystem} from "./DecorativeSolarSystem";
 import {GameSurfaceBoundary, GameSurfaceRecovery} from "./GameSurfaceRecovery";
-import {completionPresentationKey, isCompletionAdvancePending} from "@qwordly/hosted/play/completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "@riddle-quest/hosted/play/completionPresentation";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "./playerPreferences";
 
 /** Provides game frame app behavior. */

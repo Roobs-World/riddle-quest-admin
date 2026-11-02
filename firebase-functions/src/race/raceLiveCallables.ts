@@ -2,8 +2,8 @@ import {streamLiveRaceChanges} from "./raceLiveStream";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {JoinLiveRaceSchema, UpdateLiveRaceSchema, LiveRaceViewSchema, GetLiveRaceChallengeSchema, LiveRaceChallengeSchema,
-  SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema} from "@qwordly/core/race";
-import {RetireLiveRaceJoinSchema, RetireLiveRaceJoinResponseSchema} from "@qwordly/core/race";
+  SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema} from "@riddle-quest/core/race";
+import {RetireLiveRaceJoinSchema, RetireLiveRaceJoinResponseSchema} from "@riddle-quest/core/race";
 import {retireLiveRaceJoinForUser} from "./raceLiveRetirement";
 import {listLiveRaceHistoryForUser} from "./raceLiveHistory";
 import {admin} from "../shared/firebaseAdmin";
@@ -14,7 +14,7 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 import {assertRaceAccess} from "./raceRollout";
 import {getLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "./raceLiveService";
-import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} from "@qwordly/core/race";
+import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} from "@riddle-quest/core/race";
 import {confirmLiveGuessReceiptForUser} from "./raceLiveGuessReceipt";
 
 /** Live transport uses the same authenticated regional boundary as recorded races. */

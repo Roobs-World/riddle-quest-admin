@@ -69,7 +69,7 @@ importers:
       '@firebase/app-compat':
         specifier: 0.5.18
         version: 0.5.18
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: file:packages/core
         version: file:firebase-functions/packages/core
       '@sentry/node':
@@ -154,13 +154,13 @@ importers:
 
   packages/android:
     dependencies:
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
-      '@qwordly/hosted':
+      '@riddle-quest/hosted':
         specifier: workspace:*
         version: link:../hosted
-      '@qwordly/solo':
+      '@riddle-quest/solo':
         specifier: workspace:*
         version: link:../solo
       '@react-native-async-storage/async-storage':
@@ -273,7 +273,7 @@ importers:
 
   packages/hosted:
     dependencies:
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -307,13 +307,13 @@ importers:
 
   packages/portal:
     dependencies:
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
-      '@qwordly/hosted':
+      '@riddle-quest/hosted':
         specifier: workspace:*
         version: link:../hosted
-      '@qwordly/solo':
+      '@riddle-quest/solo':
         specifier: workspace:*
         version: link:../solo
       '@sentry/browser':
@@ -422,7 +422,7 @@ importers:
       '@hono/node-server':
         specifier: 2.1.3
         version: 2.1.3(hono@4.13.11)
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
       devvit:
@@ -453,7 +453,7 @@ importers:
 
   packages/solo:
     dependencies:
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -2832,7 +2832,7 @@ packages:
       yauzl:
         optional: true
 
-  '@qwordly/core@file:firebase-functions/packages/core':
+  '@riddle-quest/core@file:firebase-functions/packages/core':
     resolution: {directory: firebase-functions/packages/core, type: directory}
 
   '@react-native-async-storage/async-storage@3.1.1':
@@ -11534,7 +11534,7 @@ snapshots:
       modern-tar: 0.8.6
       yargs: 18.2.0
 
-  '@qwordly/core@file:firebase-functions/packages/core':
+  '@riddle-quest/core@file:firebase-functions/packages/core':
     dependencies:
       zod: 4.6.7
 

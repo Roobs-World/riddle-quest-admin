@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {YouTubeLocale, YouTubeSdkPort} from "@qwordly/solo";
+import type {YouTubeLocale, YouTubeSdkPort} from "@riddle-quest/solo";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";

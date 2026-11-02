@@ -18,13 +18,13 @@
     "paths": {
       "#solo-content": ["../portal/src/playable/generated/youtube-content-v1.json"],
       "#hosted-config": ["./hosted.config.example.json"],
-      "@qwordly/core": ["../core/src/index.ts"],
-      "@qwordly/core/game": ["../core/src/game/index.ts"],
-      "@qwordly/core/*": ["../core/src/*"],
-      "@qwordly/hosted": ["../hosted/src/index.ts"],
-      "@qwordly/hosted/*": ["../hosted/src/*"],
-      "@qwordly/solo": ["../solo/src/index.ts"],
-      "@qwordly/solo/react": ["../solo/src/react/index.ts"]
+      "@riddle-quest/core": ["../core/src/index.ts"],
+      "@riddle-quest/core/game": ["../core/src/game/index.ts"],
+      "@riddle-quest/core/*": ["../core/src/*"],
+      "@riddle-quest/hosted": ["../hosted/src/index.ts"],
+      "@riddle-quest/hosted/*": ["../hosted/src/*"],
+      "@riddle-quest/solo": ["../solo/src/index.ts"],
+      "@riddle-quest/solo/react": ["../solo/src/react/index.ts"]
     }
   },
   "include": ["src/**/*", "index.js"],

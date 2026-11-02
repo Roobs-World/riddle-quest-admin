@@ -1,4 +1,4 @@
-import type {Feedback} from "@qwordly/core/game";
+import type {Feedback} from "@riddle-quest/core/game";
 /** Capability policy declared by a self-contained host; shared UI must not infer unavailable integrations. */
 export type YouTubeRuntimePolicy = Readonly<{
   /** Selects browser events or provider callbacks as the authoritative pause/resume source. */

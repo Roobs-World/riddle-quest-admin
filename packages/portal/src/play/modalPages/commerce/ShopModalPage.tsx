@@ -1,9 +1,9 @@
-import {getCoinPackBuyingPower} from "@qwordly/core/game";
-import {DEFAULT_PRODUCT_PRICING, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
+import {getCoinPackBuyingPower} from "@riddle-quest/core/game";
+import {DEFAULT_PRODUCT_PRICING, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@riddle-quest/core/pricing/catalog";
 import {useSubscriptionManagement} from "./useSubscriptionManagement";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 import {useTranslator} from "../../i18n";
-import type {ProductSummary} from "@qwordly/hosted/hostTypes";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 
 /** Inputs required to display the platform product catalog. */
 export type ShopModalPageProps = {

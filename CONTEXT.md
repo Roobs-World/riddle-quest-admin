@@ -21,7 +21,7 @@ The bare React Native app in `packages/android` submitted to Google Play. It lau
 _Avoid_: Mobile build, native port, Play version of the web game
 
 **Shared Solo Logic**:
-The provider-neutral local solo play package `@qwordly/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
+The provider-neutral local solo play package `@riddle-quest/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
 _Avoid_: YouTube module, playable folder, duplicated native rules
 
 **Bundled Content Pack**:

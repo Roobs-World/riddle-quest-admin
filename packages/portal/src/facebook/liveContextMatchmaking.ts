@@ -1,4 +1,4 @@
-import type {JoinLiveRace, RaceLocale} from "@qwordly/core/race";
+import type {JoinLiveRace, RaceLocale} from "@riddle-quest/core/race";
 import type {MatchmakingCapability} from "../platform/types";
 import type {FacebookContextCoordinator} from "./contexts";
 

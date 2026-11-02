@@ -15,7 +15,7 @@ import {
   type RaceCategoryId,
   type RaceLocale,
   type RaceChallengePreview,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
 import {assertRaceStoredRecord} from "./raceStoredRecords";
 import {logger} from "firebase-functions";

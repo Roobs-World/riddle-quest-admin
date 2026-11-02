@@ -1,4 +1,4 @@
-import type {GameModal} from "@qwordly/hosted/play/gameSession";
+import type {GameModal} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "./commerceCosts";
 import {isFacebookWebTarget} from "../../../platform/webTargetEnvironment";

@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import type {RaceRunRecord} from "../../race/raceEngine";
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {recordFacebookTournamentRun} from "../../race/facebookTournament";
 

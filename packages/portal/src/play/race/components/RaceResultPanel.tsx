@@ -1,4 +1,4 @@
-import type {PublishRaceChallengeResponse, RaceCategoryId, RaceOutcome, RaceRunView} from "@qwordly/core/race";
+import type {PublishRaceChallengeResponse, RaceCategoryId, RaceOutcome, RaceRunView} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 import {formatRaceTime} from "../logic/racePresentation";
 import {getGhostCorrectCount} from "../logic/racePlayback";
