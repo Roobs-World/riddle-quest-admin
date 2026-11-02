@@ -13,6 +13,7 @@ import {
 import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} from "firebase/firestore/lite";
 import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
 import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@riddle-quest/hosted";
+import type {AndroidPurchaseBackend} from "../billing/androidCommerce";
 import type {HostedConfig} from "./hostedConfig";
 /** Response of the backend `provisionAndroidAccount` callable. */
 export type ProvisionedAccount = Readonly<{
@@ -43,6 +44,8 @@ export type HostedFirebaseClient = Readonly<{
   loadUserDocument(userId: string): Promise<Record<string, unknown> | null>;
   /** Creates or confirms the Global Game Account for the signed-in user. */
   provisionAccount(): Promise<ProvisionedAccount>;
+  /** Server-authoritative Google Play purchase callables. */
+  purchases: AndroidPurchaseBackend;
 }>;
 /** Whether a provisioning response has the expected shape. */
 const isProvisionedAccount = (value: unknown): value is ProvisionedAccount =>
@@ -114,6 +117,10 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
       const {data} = await androidFunctions.provisionAndroidAccount();
       if (!isProvisionedAccount(data)) throw new Error("provision-response-invalid");
       return data;
+    },
+    purchases: {
+      grant: async (input) => (await androidFunctions.grantAndroidPurchase(input)).data,
+      syncSubscriptions: async (purchaseTokens) => (await androidFunctions.syncAndroidSubscriptions({purchaseTokens})).data,
     },
   };
 }

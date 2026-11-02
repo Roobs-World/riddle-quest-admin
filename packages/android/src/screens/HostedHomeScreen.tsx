@@ -6,6 +6,7 @@ import {ActionButton, Eyebrow, Heading, Screen} from "../components/Primitives";
 import type {ProvisionedAccount} from "../hosted/firebaseClient";
 import {useAuthSnapshot} from "../hosted/useAuthSnapshot";
 import {hostedText} from "../i18n/hostedCopy";
+import {shopText} from "../i18n/shopCopy";
 import {palette, spacing} from "../theme";
 /** Props for {@link HostedHomeScreen}. */
 export type HostedHomeScreenProps = Readonly<{
@@ -19,13 +20,15 @@ export type HostedHomeScreenProps = Readonly<{
   onPlay: (mode: WebGameMode) => void;
   /** Opens the account screen. */
   onShowAccount: () => void;
+  /** Opens the Google Play shop. */
+  onShowShop: () => void;
   /** Switches to the self-contained offline game. */
   onPlayOffline: () => void;
 }>;
 /** Current UTC day, matching the Daily's server calendar. */
 const utcToday = (): string => new Date().toISOString().slice(0, 10);
 /** Hosted-first home: Classic and Daily issued by the server, with the account and offline play one tap away. */
-export function HostedHomeScreen({locale, services, account, onPlay, onShowAccount, onPlayOffline}: HostedHomeScreenProps) {
+export function HostedHomeScreen({locale, services, account, onPlay, onShowAccount, onShowShop, onPlayOffline}: HostedHomeScreenProps) {
   /** Live account snapshot from the shared services. */
   const snapshot = useAuthSnapshot(services);
   /** Server-confirmed coins: the profile once loaded, else the provisioned balance. */
@@ -53,6 +56,7 @@ export function HostedHomeScreen({locale, services, account, onPlay, onShowAccou
         />
         <ModeCard glyph="☀️" title={youtubeText(locale, "daily")} caption={utcToday()} disabled={false} onPress={() => onPlay("challenge")} testID="hosted-play-daily" />
       </View>
+      <ActionButton tone="primary" label={shopText(locale, "shopTitle")} onPress={onShowShop} testID="show-shop" />
       <ActionButton label={hostedText(locale, "account")} onPress={onShowAccount} testID="show-account" />
       <ActionButton label={hostedText(locale, "playOffline")} onPress={onPlayOffline} testID="play-offline" />
     </Screen>

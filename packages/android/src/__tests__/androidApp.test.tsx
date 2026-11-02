@@ -50,6 +50,7 @@ const createClient = (script: ClientScript): FakeClient => {
       if (next instanceof Error) throw next;
       return next;
     },
+    purchases: {} as never,
   };
 };
 /** A freshly created account. */

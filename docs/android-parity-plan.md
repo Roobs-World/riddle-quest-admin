@@ -26,8 +26,8 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 
 ## Phase 3 — Commerce
 
-- [ ] 3.1 Backend: server-authoritative, idempotent Google Play Billing grant (`grantAndroidPurchase`) verifying purchase tokens with the Play Developer API; subscription sync mirroring `syncJestSubscriptions`.
-- [ ] 3.2 Android: shop with coin packs and Premium through the Play Billing library (native module), restore, and cancellation handling.
+- [x] 3.1 Backend: server-authoritative, idempotent Google Play Billing grant (`grantAndroidPurchase`) verifying purchase tokens with the Play Developer API; subscription sync mirroring `syncJestSubscriptions` (`syncAndroidSubscriptions`). Tokens are bound to the account through `obfuscatedAccountId` = SHA-256 of the uid; grants are recorded under `androidPurchaseGrants/{sha256(token)}`, granted packs are consumed server-side, and pending subscription acknowledgements are completed.
+- [x] 3.2 Android: shop with coin packs and Premium through Play Billing Library 9.1.0 (`RiddleQuestPlayBilling` native module), restore (also run on every launch), pending and cancellation handling, and Play's subscription management link.
 - [ ] 3.3 Verification: Play internal-testing licence testers; receipts replayed in backend tests.
 - Owner prerequisites: Play Console products and subscriptions, service account for the Play Developer API, upload key.
 
@@ -38,6 +38,8 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 - [ ] 4.3 Full gate: unit, hosted emulator e2e, two-device race, Play internal testing.
 
 ## Evidence
+
+- 2026-11-02, steps 3.1–3.2 (Google Play Billing): backend `androidPlayCommerce.test.ts` (18 tests) covers grant, replay, first-purchase achievement, account binding, pending, cancelled, consumed-elsewhere and product-mismatch tokens, consumption retry, Play outages, subscription entitlement states, the Premium 30-day coin cadence, acknowledgement, request limits and the Play Developer API client; functions type check and lint pass. Android `billing.test.ts` and `shop.test.tsx` (20 tests) cover the native-module validation, checkout and restore flows, every shop state in English and Spanish, and launch-time restore; the Android suite passes 123 tests above its coverage thresholds. The release APK compiles against Play Billing Library 9.1.0 and passes the device smoke check and the seven offline adb scenarios on the `Medium_Phone` emulator. Real purchases need the Play Console products, the service-account grant and an internal-testing install (owner steps in `android-google-play-operations.md`); on the emulator the shop reports that Play Billing is unavailable.
 
 - 2026-11-02, step 1.5 (hosted-first, localized): Android unit suite 95 tests above the coverage thresholds (`androidApp.test.tsx` covers auto-connect, routing, offline fallback and retry, Spanish copy and the English fallback; `hostedCopy.test.ts` enforces every locale and key). On the `Medium_Phone` emulator against the seeded Auth, Functions and Firestore emulators, the full adb suite passed 9/9 with nothing skipped: the cold launch provisioned the account and showed the hosted home with 300 coins, the account round-tripped through the offline menu and back without reconnecting, a relaunch confirmed the account, and the server-issued Classic solved and advanced; the offline scenarios reach the menu through Play offline (`tapIdUntil` in the driver tolerates the connect-to-home transition under the tap). TSDoc and file-size audits pass; no shared package or Web Target source changed in this step.
 

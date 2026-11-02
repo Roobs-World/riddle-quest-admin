@@ -151,6 +151,8 @@ describe("Firebase Functions", () => {
       "retryJestAccountDeletion",
       "verifyJestReferrals",
       "provisionAndroidAccount",
+      "grantAndroidPurchase",
+      "syncAndroidSubscriptions",
       "redditGameplay",
     ];
 

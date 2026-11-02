@@ -4,6 +4,7 @@ import {StatusBar} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "./AndroidApp";
 import {createAndroidSdkPort} from "./androidSdkPort";
+import {getPlayBilling} from "./billing/playBilling";
 import {androidContentSource} from "./content";
 import {createHostedFirebaseClient} from "./hosted/firebaseClient";
 import {createAndroidHostServices} from "./hosted/hostedServices";
@@ -21,6 +22,8 @@ export function App() {
   const hostedServices = useMemo(() => createAndroidHostServices(hosted, () => localeRef.current), [hosted]);
   /** Provisional Play journal persisted on the device. */
   const journal = useMemo(() => createAndroidPendingPlayStorage(), []);
+  /** Google Play Billing native module, when the build includes it. */
+  const billing = useMemo(() => getPlayBilling(), []);
   /** Records the resolved locale for the services. */
   const onLocaleResolved = useCallback((locale: YouTubeLocale) => {
     localeRef.current = locale;
@@ -28,7 +31,7 @@ export function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
-      <AndroidApp sdk={sdk} contentSource={androidContentSource} client={hosted} services={hostedServices} onLocaleResolved={onLocaleResolved} journal={journal} />
+      <AndroidApp sdk={sdk} contentSource={androidContentSource} client={hosted} services={hostedServices} onLocaleResolved={onLocaleResolved} journal={journal} billing={billing} />
     </SafeAreaProvider>
   );
 }

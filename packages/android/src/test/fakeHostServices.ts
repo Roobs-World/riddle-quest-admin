@@ -55,7 +55,10 @@ export const createFakeHostServices = (script: {
       calls.push(`loadRiddle:${input.gameMode}:${input.authoritative ? "authoritative" : "buffered"}`);
       return script.load ? script.load() : issued();
     },
-    loadProfile: async () => null,
+    loadProfile: async (userId) => {
+      calls.push(`loadProfile:${userId}`);
+      return null;
+    },
     completeGame: async (input) => {
       calls.push(`completeGame:${input.riddleId}`);
       return script.complete ? script.complete() : {attempts, isCorrect: true, coinsEarned: 65, newlyUnlockedAchievementIds: ["first_win"], newXp: 100};

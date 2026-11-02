@@ -188,6 +188,47 @@ export type ProvisionAndroidAccountOutput = {
   coins: number;
 };
 
+/** Request of `grantAndroidPurchase`. */
+export type GrantAndroidPurchaseInput = {
+  /** Play in-app product id. */
+  productId: string;
+  /** Play purchase token. */
+  purchaseToken: string;
+};
+/** Response of `grantAndroidPurchase`. */
+export type GrantAndroidPurchaseOutput = {
+  /** The token is granted. */
+  granted: true;
+  /** An earlier call already granted this token. */
+  alreadyProcessed: boolean;
+  /** Product the coins were granted for. */
+  productId: string;
+  /** Coins the product grants. */
+  coinsAwarded: number;
+  /** Confirmed balance after the grant. */
+  newCoins: number;
+  /** Achievements this grant unlocked. */
+  newlyUnlockedAchievementIds: string[];
+  /** Whether Play confirmed consumption; when false the app consumes the token itself. */
+  consumed: boolean;
+};
+/** Request of `syncAndroidSubscriptions`. */
+export type SyncAndroidSubscriptionsInput = {
+  /** Subscription purchase tokens the device's Play account owns. */
+  purchaseTokens: string[];
+};
+/** Response of `syncAndroidSubscriptions`. */
+export type SyncAndroidSubscriptionsOutput = {
+  /** The tokens were verified with Play. */
+  verified: true;
+  /** Subscription products currently entitling the account. */
+  activeSkus: string[];
+  /** Premium coins this sync granted. */
+  premiumCoinsAwarded: number;
+  /** Confirmed balance after the sync. */
+  newCoins: number;
+};
+
 /**
  * Creates the typed callable surface shared by every Firebase-backed host.
  *
@@ -593,7 +634,17 @@ export function createAndroidAccountFunctions(gameplay: Functions) {
     gameplay,
     "provisionAndroidAccount",
   );
-  return {provisionAndroidAccount};
+  /** Verifies a Google Play coin purchase and grants it exactly once. */
+  const grantAndroidPurchase = httpsCallable<GrantAndroidPurchaseInput, GrantAndroidPurchaseOutput>(
+    gameplay,
+    "grantAndroidPurchase",
+  );
+  /** Mirrors the device's verified Google Play subscriptions onto the account. */
+  const syncAndroidSubscriptions = httpsCallable<SyncAndroidSubscriptionsInput, SyncAndroidSubscriptionsOutput>(
+    gameplay,
+    "syncAndroidSubscriptions",
+  );
+  return {provisionAndroidAccount, grantAndroidPurchase, syncAndroidSubscriptions};
 }
 /** Android-only callable surface returned by {@link createAndroidAccountFunctions}. */
 export type AndroidAccountFunctions = ReturnType<typeof createAndroidAccountFunctions>;

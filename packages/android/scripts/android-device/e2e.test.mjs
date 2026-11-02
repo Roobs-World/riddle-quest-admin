@@ -240,6 +240,26 @@ describe("Android app on device", () => {
     assert.equal(await driver.readText("account-status"), "Account confirmed.");
   });
 
+  it("opens the Google Play shop from the hosted home and reports the store the device offers", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with the Firebase emulators running"}, async () => {
+    const driver = scenario("hosted-shop");
+    await freshHosted(driver);
+    await driver.tapId("show-shop");
+    await driver.waitForId("shop-heading", 30_000);
+    driver.capture("shop-open");
+    assert.equal(await driver.readText("shop-heading"), "COIN SHOP");
+    // The native module always answers: without the Play Store Play Billing is unavailable, and with
+    // it a build Play does not know prices no products. Purchases need an internal-testing install.
+    const state = await driver.waitFor("shop store state", (node) => ["shop-unavailable", "shop-empty", "shop-load-failed"].includes(node.id), 60_000);
+    driver.capture(`shop-${state.id}`);
+    await driver.tapId("shop-restore");
+    // Restore talks to Play and the backend; with nothing owned it either confirms or reports the store error.
+    const notice = await driver.waitFor("restore result", (node) => node.id === "shop-notice", 60_000);
+    driver.capture("shop-restore");
+    assert.match(notice.text ?? notice.label ?? "", /Purchases restored\.|Purchase failed\. Please try again\./u);
+    await driver.tapId("back");
+    await driver.waitForId("screen-hosted-home");
+  });
+
   it("plays a server-issued Classic riddle through the shared hosted services against the emulators", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with seeded Firebase emulators running"}, async () => {
     const driver = scenario("hosted-classic");
     await freshHosted(driver);

@@ -26,6 +26,7 @@ const client: HostedFirebaseClient = {
     return {coins: 300, username: "Android"};
   },
   provisionAccount: async () => ({uid: "device-uid", created: false, coins: 300}),
+  purchases: {} as never,
 };
 
 describe("createAndroidHostAuth", () => {

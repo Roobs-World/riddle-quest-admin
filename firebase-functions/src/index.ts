@@ -54,6 +54,7 @@ import {
 } from "./jest/jestEndpoints";
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
 import {provisionAndroidAccount} from "./android/provisionAndroidAccount";
+import {grantAndroidPurchase, syncAndroidSubscriptions} from "./android/androidPurchaseEndpoints";
 import {facebookDataDeletionCallback, facebookDataDeletionStatus} from "./facebook/facebookDataDeletionEndpoints";
 import {listFacebookTournament, recordFacebookTournament} from "./race/facebookTournamentCallable";
 import {blockRival, reportRival} from "./social/socialSafetyCallables";
@@ -121,6 +122,8 @@ export {
   syncJestSubscriptions,
   verifyJestReferrals,
   provisionAndroidAccount,
+  grantAndroidPurchase,
+  syncAndroidSubscriptions,
   issueFacebookIdentityNonce,
   exchangeFacebookIdentity,
   facebookDataDeletionCallback,
