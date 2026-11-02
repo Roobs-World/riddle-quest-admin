@@ -13,6 +13,12 @@
 - Run tests and browser test harnesses only when the user explicitly requests them. Build the target artifacts needed for the requested change or upload.
 - After each requested code change, upload the current game to Jest and tell the user when the upload has completed processing. Activate a build, publish the game, or submit it for review only when explicitly requested.
 
+## Branches
+
+- `jest` owns the Jest web deployment: the web client, backend functions, and every Jest upload come from it. `android-react-native` owns the Android app in `packages/android` and the shared-package extractions it depends on; it is checked out as a separate worktree (`git worktree list` shows the path). Make each change on the branch that owns it, and upload to Jest only from `jest`.
+- Before editing, confirm `git branch --show-current` is the owning branch; switch to the other worktree rather than committing to the wrong branch.
+- Keep both branches current on GitHub: after each completed change, commit it on its branch and push to `origin` in the same turn, so neither local branch runs ahead of its remote. Merge `jest` into `android-react-native` whenever the web branch moves ahead; Android's shared-package changes reach Jest only through a merge into `jest`.
+
 ## Agent skills
 
 ### Issue tracker
