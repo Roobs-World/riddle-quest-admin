@@ -240,6 +240,33 @@ describe("Android app on device", () => {
     assert.equal(await driver.readText("account-status"), "Account confirmed.");
   });
 
+  it("shows the profile and leaderboard, renames the player, and deletes the account into a fresh one", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with the Firebase emulators running"}, async () => {
+    const driver = scenario("hosted-profile");
+    await freshHosted(driver);
+    await driver.tapId("show-profile");
+    await driver.waitForId("profile-summary", 60_000);
+    // Lower panels sit below the fold; uiautomator only reports what is on screen.
+    await driver.findScrolling("leaderboard-rows", 60_000);
+    driver.capture("profile-leaderboard");
+    const name = `Rq${Date.now().toString(36).slice(-6)}`;
+    driver.tap(await driver.findScrolling("profile-username-input"));
+    driver.adb("shell", "input", "text", name);
+    driver.adb("shell", "input", "keyevent", "KEYCODE_BACK");
+    driver.tap(await driver.findScrolling("profile-username-save"));
+    const notice = await driver.findScrolling("profile-username-notice");
+    assert.equal(notice.text, "Username updated successfully!");
+    await driver.findScrolling("profile-username");
+    await driver.waitFor("renamed profile", (node) => node.text === name, 30_000);
+    driver.capture("profile-renamed");
+    driver.tap(await driver.findScrolling("profile-delete"));
+    driver.tap(await driver.findScrolling("profile-delete-confirm-button"));
+    await driver.waitForId("screen-hosted-home", 60_000);
+    await driver.tapId("show-account");
+    await driver.waitForId("account-ready", 60_000);
+    driver.capture("profile-deleted-fresh-account");
+    assert.equal(await driver.readText("account-status"), "Account created.");
+  });
+
   it("opens the Google Play shop from the hosted home and reports the store the device offers", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with the Firebase emulators running"}, async () => {
     const driver = scenario("hosted-shop");
     await freshHosted(driver);

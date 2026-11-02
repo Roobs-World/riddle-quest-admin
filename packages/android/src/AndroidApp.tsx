@@ -12,6 +12,7 @@ import {HostedConnectScreen} from "./screens/HostedConnectScreen";
 import type {AndroidPendingPlayStorage} from "./hosted/pendingPlayStorage";
 import {HostedGameScreen} from "./screens/HostedGameScreen";
 import {HostedHomeScreen} from "./screens/HostedHomeScreen";
+import {HostedProfileScreen} from "./screens/HostedProfileScreen";
 import {HostedShopScreen} from "./screens/HostedShopScreen";
 import {SoloPlayableApp} from "./SoloPlayableApp";
 /** Props for {@link AndroidApp}. */
@@ -35,6 +36,7 @@ export type AndroidAppProps = Readonly<{
 type HostedRoute =
   | "home"
   | "account"
+  | "profile"
   | "shop"
   | {
       /** Server-authoritative play. */
@@ -93,6 +95,21 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   if (typeof route === "object") {
     return <HostedGameScreen services={services} mode={route.hosted} locale={locale} onBack={() => setRoute("home")} journal={journal} />;
   }
+  if (route === "profile") {
+    return (
+      <HostedProfileScreen
+        locale={locale}
+        services={services}
+        accountUid={account.state.account.uid}
+        onBack={() => setRoute("home")}
+        onDeleted={() => {
+          // The shared services signed the deleted account out; provision a fresh anonymous one.
+          setRoute("home");
+          account.connect();
+        }}
+      />
+    );
+  }
   if (route === "shop") {
     return (
       <HostedShopScreen
@@ -117,6 +134,7 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
       onPlay={(mode) => setRoute({hosted: mode})}
       onShowAccount={() => setRoute("account")}
       onShowShop={() => setRoute("shop")}
+      onShowProfile={() => setRoute("profile")}
       onPlayOffline={() => setSurface("offline")}
     />
   );

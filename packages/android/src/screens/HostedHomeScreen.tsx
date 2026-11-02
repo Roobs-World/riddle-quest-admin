@@ -6,6 +6,7 @@ import {ActionButton, Eyebrow, Heading, Screen} from "../components/Primitives";
 import type {ProvisionedAccount} from "../hosted/firebaseClient";
 import {useAuthSnapshot} from "../hosted/useAuthSnapshot";
 import {hostedText} from "../i18n/hostedCopy";
+import {profileText} from "../i18n/profileCopy";
 import {shopText} from "../i18n/shopCopy";
 import {palette, spacing} from "../theme";
 /** Props for {@link HostedHomeScreen}. */
@@ -22,13 +23,15 @@ export type HostedHomeScreenProps = Readonly<{
   onShowAccount: () => void;
   /** Opens the Google Play shop. */
   onShowShop: () => void;
+  /** Opens the profile, leaderboards and account settings. */
+  onShowProfile: () => void;
   /** Switches to the self-contained offline game. */
   onPlayOffline: () => void;
 }>;
 /** Current UTC day, matching the Daily's server calendar. */
 const utcToday = (): string => new Date().toISOString().slice(0, 10);
 /** Hosted-first home: Classic and Daily issued by the server, with the account and offline play one tap away. */
-export function HostedHomeScreen({locale, services, account, onPlay, onShowAccount, onShowShop, onPlayOffline}: HostedHomeScreenProps) {
+export function HostedHomeScreen({locale, services, account, onPlay, onShowAccount, onShowShop, onShowProfile, onPlayOffline}: HostedHomeScreenProps) {
   /** Live account snapshot from the shared services. */
   const snapshot = useAuthSnapshot(services);
   /** Server-confirmed coins: the profile once loaded, else the provisioned balance. */
@@ -57,6 +60,7 @@ export function HostedHomeScreen({locale, services, account, onPlay, onShowAccou
         <ModeCard glyph="☀️" title={youtubeText(locale, "daily")} caption={utcToday()} disabled={false} onPress={() => onPlay("challenge")} testID="hosted-play-daily" />
       </View>
       <ActionButton tone="primary" label={shopText(locale, "shopTitle")} onPress={onShowShop} testID="show-shop" />
+      <ActionButton label={profileText(locale, "profileTitle")} onPress={onShowProfile} testID="show-profile" />
       <ActionButton label={hostedText(locale, "account")} onPress={onShowAccount} testID="show-account" />
       <ActionButton label={hostedText(locale, "playOffline")} onPress={onPlayOffline} testID="play-offline" />
     </Screen>
