@@ -1,9 +1,9 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "koin",
+    "COINS_SUFFIX": " koin",
     "LOADING_TEXT": "Memuat toko...",
     "NO_PACKS_AVAILABLE": "Tidak ada paket koin yang tersedia saat ini.",
-    "PURCHASE_BUTTON": "PEMBELIAN",
+    "PURCHASE_BUTTON": "BELI",
     "PERIOD_MONTHLY": "bulan",
     "PERIOD_WEEKLY": "minggu",
     "PERIOD_YEARLY": "tahun",

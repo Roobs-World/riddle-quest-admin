@@ -1,9 +1,9 @@
 {
   "Instructions": {
     "COLOR_CLUES_TITLE": "Manh mối màu sắc",
-    "COLOR_CORRECT": "Chữ viết đúng và đúng vị trí",
-    "COLOR_MISPLACED": "Chữ có trong chữ nhưng sai vị trí",
-    "COLOR_WRONG": "Bức thư không có trong từ nào cả",
+    "COLOR_CORRECT": "Chữ cái đúng và ở đúng vị trí",
+    "COLOR_MISPLACED": "Chữ cái có trong từ nhưng sai vị trí",
+    "COLOR_WRONG": "Chữ cái hoàn toàn không có trong từ",
     "GOAL_DESCRIPTION": "Đoán câu đố ẩn sau 5 lần thử sử dụng các manh mối màu sắc để hướng dẫn bạn.",
     "GOAL_TITLE": "Mục tiêu",
     "GOT_IT_BUTTON": "Hiểu rồi!",
@@ -15,7 +15,7 @@
     "TITLE": "Chào mừng trở lại"
   },
   "WelcomeModal": {
-    "EARN_COINS_TEXT": "Kiếm tiền, vượt qua các thử thách hàng ngày và leo lên bảng xếp hạng.",
+    "EARN_COINS_TEXT": "Kiếm xu, vượt qua các thử thách hằng ngày và leo lên bảng xếp hạng.",
     "LETS_PLAY": "Hãy chơi",
     "SOLVE_RIDDLES_TEXT": "Giải các câu đố hấp dẫn bằng cách đoán câu trả lời từng chữ cái. Sử dụng manh mối màu sắc để thu hẹp từng lần đoán."
   }

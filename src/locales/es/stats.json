@@ -8,14 +8,14 @@
     "GAMEPLAY_SECTION": "Jugabilidad",
     "GAMES_PLAYED": "Juegos jugados",
     "HIGHEST_CLASSIC_LEVEL": "Nivel clásico más alto",
-    "HINTS_USED": "Sugerencias utilizadas",
+    "HINTS_USED": "Pistas usadas",
     "PERFORMANCE_SECTION": "Rendimiento",
     "TITLE": "Estadísticas",
     "TOTAL_SCORE": "Puntuación total",
-    "TOTAL_WINS": "Total de ganancias",
+    "TOTAL_WINS": "Victorias totales",
     "TOTAL_WORDS_GUESSED": "Total de palabras adivinadas",
-    "WIN_RATE": "Porcentaje de ganancias",
+    "WIN_RATE": "Porcentaje de victorias",
     "WINS_STREAKS_SECTION": "Victorias y rachas",
-    "XP": "experiencia"
+    "XP": "XP"
   }
 }

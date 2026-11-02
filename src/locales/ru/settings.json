@@ -1,13 +1,13 @@
 {
   "Settings": {
-    "ABOUT_BUTTON": "О",
+    "ABOUT_BUTTON": "Об игре",
     "ACCOUNT_DELETION_BUTTON": "Удалить аккаунт",
     "CLOSE_BUTTON": "Закрыть",
-    "CREDITS_BUTTON": "Кредиты",
+    "CREDITS_BUTTON": "Авторы",
     "DATA_EXPORT_BUTTON": "Экспортировать мои данные",
     "HELP_BUTTON": "Справка",
     "LANGUAGE_LABEL": "Язык",
-    "LANGUAGE_SELECTED": "Выбранные",
+    "LANGUAGE_SELECTED": "Выбрано",
     "LICENSES_BUTTON": "Лицензии",
     "LOGOUT_BUTTON": "Выход",
     "LOGOUT_ERROR_MESSAGE": "Не удалось выйти из системы. Повторите попытку.",

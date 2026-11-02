@@ -3,11 +3,11 @@
     "VIDEO_EXTRA_GO_BUTTON": "Xem video để có thêm một lượt thử",
     "COIN_EXTRA_GO_BUTTON": "{coins} xu để có thêm một lượt",
     "OPEN_SHOP_BUTTON": "Mở cửa hàng",
-    "OUT_OF_ATTEMPTS": "Hết sức cố gắng.",
+    "OUT_OF_ATTEMPTS": "Hết lượt thử.",
     "SKIP_LEVEL_PREFIX": "Dùng ",
     "SKIP_LEVEL_SUFFIX": " xu để bỏ qua cấp độ",
     "SKIP_PUZZLE_BUTTON": "Bỏ qua câu đố",
-    "USE_COINS_PREFIX": "sử dụng",
+    "USE_COINS_PREFIX": "Dùng ",
     "USE_COINS_SUFFIX": " xu để thử lại"
   }
 }

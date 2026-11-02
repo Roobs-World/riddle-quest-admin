@@ -26,7 +26,7 @@
     "SKIP_MODAL_TITLE": "Pomiń poziom?",
     "SKIP_NOT_ENOUGH_COINS_MESSAGE": "Nie masz wystarczającej liczby monet, aby pominąć poziom.",
     "SPEND_COINS_ERROR_MESSAGE": "Nie udało się wydać monet. Spróbuj ponownie.",
-    "SUBMIT_BUTTON": "SKŁADAĆ",
+    "SUBMIT_BUTTON": "WYŚLIJ",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Nie można przesłać odpowiedzi. Spróbuj ponownie.",
     "SUBMIT_GUESS_ERROR_TITLE": "Błąd",
     "DEBUG_CLEAR_LOCAL_DATA_ERROR_MESSAGE": "Nie udało się wyczyścić danych lokalnych.",
@@ -36,11 +36,11 @@
     "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Pomyślnie wygenerowano nowe codzienne wyzwanie w localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Codzienne wyzwanie Wygenerowano",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Twoje postępy są zapisywane na tym urządzeniu. Uaktualnij swoje konto, aby zapewnić jego bezpieczeństwo na różnych urządzeniach.",
-    "STREAK_BROKEN_MESSAGE": "Twoja passa zakończyła się o {previousStreak} day{daySuffix}. Ukończ dzisiejsze codzienne wyzwanie, aby rozpocząć nową passę.",
+    "STREAK_BROKEN_MESSAGE": "Twoja passa zakończyła się na {previousStreak} dniu{daySuffix}. Ukończ dzisiejsze codzienne wyzwanie, aby rozpocząć nową passę.",
     "STREAK_BROKEN_TITLE": "Przerwana passa",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Brak dostępnych produktów",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Aplikacja nie mogła dokończyć ładowania swoich zagadek. Sprawdź połączenie i spróbuj ponownie.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Baza danych Riddle jest niedostępna",
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Baza danych zagadek jest niedostępna",
     "PROGRESS_UNSAVED_MESSAGE": "Postęp nie został jeszcze zapisany. Nie zamykaj gry."
   }
 }

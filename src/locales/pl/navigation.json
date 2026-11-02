@@ -1,11 +1,11 @@
 {
   "Navigation": {
     "BUY_COINS_BUTTON": "Kup monety",
-    "CREDITS": "Kredyty",
+    "CREDITS": "Twórcy",
     "GAME": "Gra",
     "HINT_BUTTON": "Podpowiedź",
-    "LANDING": "Lądowanie",
-    "PLAY_BUTTON": "Grać",
+    "LANDING": "Strona główna",
+    "PLAY_BUTTON": "Graj",
     "PROFILE_BUTTON": "Profil",
     "SETTINGS_BUTTON": "Ustawienia"
   },

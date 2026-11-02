@@ -40,7 +40,7 @@
     "STREAK_BROKEN_TITLE": "Streak gebrochen",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Keine Produkte verfügbar",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Die App konnte ihre Rätsel nicht vollständig laden. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle-Datenbank nicht verfügbar",
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Rätseldatenbank nicht verfügbar",
     "PROGRESS_UNSAVED_MESSAGE": "Der Fortschritt ist noch nicht gespeichert. Lass das Spiel geöffnet."
   }
 }

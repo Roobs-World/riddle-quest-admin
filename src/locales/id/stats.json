@@ -1,9 +1,9 @@
 {
   "StatsModal": {
     "AVG_GUESSES": "Rata-rata Tebak (menang)",
-    "BEST_STREAK": "Garis Terbaik",
-    "CHALLENGE_WINS": "Tantangan Menang",
-    "CURRENT_STREAK": "Rekor Saat Ini",
+    "BEST_STREAK": "Rentetan Terbaik",
+    "CHALLENGE_WINS": "Kemenangan Tantangan",
+    "CURRENT_STREAK": "Rentetan Saat Ini",
     "DAILY_PUZZLES": "Teka-teki Harian",
     "GAMEPLAY_SECTION": "Permainan",
     "GAMES_PLAYED": "Game yang Dimainkan",
@@ -15,7 +15,7 @@
     "TOTAL_WINS": "Total Kemenangan",
     "TOTAL_WORDS_GUESSED": "Total Kata yang Ditebak",
     "WIN_RATE": "Tingkat Kemenangan",
-    "WINS_STREAKS_SECTION": "Kemenangan & Pukulan Beruntun",
-    "XP": "pengalaman"
+    "WINS_STREAKS_SECTION": "Kemenangan & Rentetan",
+    "XP": "XP"
   }
 }

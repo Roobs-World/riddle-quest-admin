@@ -1,6 +1,6 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "đồng xu",
+    "COINS_SUFFIX": " xu",
     "LOADING_TEXT": "Đang tải cửa hàng...",
     "NO_PACKS_AVAILABLE": "Hiện tại không có gói tiền xu nào có sẵn.",
     "PURCHASE_BUTTON": "MUA HÀNG",

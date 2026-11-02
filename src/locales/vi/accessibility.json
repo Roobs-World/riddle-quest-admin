@@ -3,7 +3,7 @@
     "BACK_BUTTON_HINT": "Nhấn đúp để điều hướng quay lại hoặc quay lại màn hình trước",
     "BACKSPACE": "Phím lùi",
     "CHANGE_GAME_MODE": "Thay đổi chế độ trò chơi",
-    "CHANGE_GAME_MODE_HINT": "Chọn chế độ Thử thách cổ điển hoặc Hàng ngày",
+    "CHANGE_GAME_MODE_HINT": "Chọn chế độ Cổ điển hoặc Thử thách hằng ngày",
     "CLOSE_ACHIEVEMENTS": "Đóng thành tích",
     "CLOSE_COIN_SHOP": "Đóng cửa hàng xu",
     "CLOSE_LEADERBOARD": "Đóng bảng xếp hạng",
@@ -11,7 +11,7 @@
     "DELETE_LAST_LETTER": "Xóa chữ cái đã nhập gần đây nhất",
     "GAME_HEADER": "Tiêu đề trò chơi có logo và số dư xu",
     "GAME_LOSS_NOTIFICATION": "Thông báo thua trò chơi",
-    "GO_BACK": "Go quay lại",
+    "GO_BACK": "Quay lại",
     "LETTER_PREFIX": "Chữ cái ",
     "LOADING": "Đang tải",
     "LOADING_LEADERBOARD": "Đang tải bảng xếp hạng",
@@ -30,6 +30,6 @@
     "LOGO_BUTTON": "biểu tượng",
     "MODAL_SEQUENCE_GO_TO_HINT": "Quay lại cửa sổ bật lên này",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Chuyển đến cửa sổ bật lên {popupIndex} của {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current} của {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Cửa sổ bật lên {current} trên {total}"
   }
 }

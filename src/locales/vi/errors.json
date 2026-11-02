@@ -12,7 +12,7 @@
     "EMAIL_PERMISSION_REQUIRED": "Email là bắt buộc nhưng không được nhà cung cấp xác thực cung cấp. Hãy đảm bảo quyền gửi email được cấp.",
     "GENERIC_UNEXPECTED_ERROR": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.",
     "PLAY_RESTORED": "Không thể xác nhận một câu trả lời. Tiến trình đã xác nhận gần nhất của bạn đã được khôi phục.",
-    "GUESS_CANNOT_BE_EMPTY": "Đoán không được để trống",
+    "GUESS_CANNOT_BE_EMPTY": "Lượt đoán không được để trống",
     "INVALID_DATA_FORMAT": "Định dạng dữ liệu không hợp lệ. Vui lòng kiểm tra đầu vào của bạn.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Lỗi mạng. Vui lòng kiểm tra kết nối của bạn.",
     "NETWORK_REQUEST_FAILED": "Yêu cầu mạng không thành công",

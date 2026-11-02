@@ -1,13 +1,13 @@
 {
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Video ansehen für einen weiteren Versuch",
-    "COIN_EXTRA_GO_BUTTON": "{coins} Muenzen fuer einen extra Versuch",
-    "OPEN_SHOP_BUTTON": "Shop oeffnen",
+    "COIN_EXTRA_GO_BUTTON": "{coins} Münzen für einen zusätzlichen Versuch",
+    "OPEN_SHOP_BUTTON": "Shop öffnen",
     "OUT_OF_ATTEMPTS": "Keine Versuche mehr.",
     "SKIP_LEVEL_PREFIX": "Verwende ",
-    "SKIP_LEVEL_SUFFIX": " Muenzen, um das Level zu ueberspringen",
-    "SKIP_PUZZLE_BUTTON": "Raetsel ueberspringen",
+    "SKIP_LEVEL_SUFFIX": " Münzen, um das Level zu überspringen",
+    "SKIP_PUZZLE_BUTTON": "Rätsel überspringen",
     "USE_COINS_PREFIX": "Verwende ",
-    "USE_COINS_SUFFIX": " Muenzen fuer einen neuen Versuch"
+    "USE_COINS_SUFFIX": " Münzen für einen neuen Versuch"
   }
 }

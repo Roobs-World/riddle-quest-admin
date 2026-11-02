@@ -30,6 +30,6 @@
     "LOGO_BUTTON": "ロゴ",
     "MODAL_SEQUENCE_GO_TO_HINT": "このポップアップに戻る",
     "MODAL_SEQUENCE_GO_TO_POPUP": "次のポップアップ {popupIndex} に移動{total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current}/{total}"
+    "MODAL_SEQUENCE_PROGRESS": "ポップアップ {current}/{total}"
   }
 }

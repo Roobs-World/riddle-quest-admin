@@ -4,7 +4,7 @@
     "BEST_STREAK": "Beste reeks",
     "CHALLENGE_WINS": "Uitdagingsoverwinningen",
     "CURRENT_STREAK": "Huidige reeks",
-    "DAILY_PUZZLES": "Dagelijks Puzzels",
+    "DAILY_PUZZLES": "Dagelijkse puzzels",
     "GAMEPLAY_SECTION": "Spelverloop",
     "GAMES_PLAYED": "Gespeelde games",
     "HIGHEST_CLASSIC_LEVEL": "Hoogste klassieke niveau",
@@ -12,10 +12,10 @@
     "PERFORMANCE_SECTION": "Prestaties",
     "TITLE": "Statistieken",
     "TOTAL_SCORE": "Totale score",
-    "TOTAL_WINS": "Totale winst",
+    "TOTAL_WINS": "Totaal overwinningen",
     "TOTAL_WORDS_GUESSED": "Totaal aantal geraden woorden",
-    "WIN_RATE": "Winingspercentage",
+    "WIN_RATE": "Winstpercentage",
     "WINS_STREAKS_SECTION": "Overwinningen en reeksen",
-    "XP": "ervaring"
+    "XP": "XP"
   }
 }

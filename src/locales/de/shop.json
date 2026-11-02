@@ -1,8 +1,8 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": " Muenzen",
+    "COINS_SUFFIX": " Münzen",
     "LOADING_TEXT": "Shop wird geladen...",
-    "NO_PACKS_AVAILABLE": "Derzeit keine Muenzenpakete verfuegbar.",
+    "NO_PACKS_AVAILABLE": "Derzeit keine Münzpakete verfügbar.",
     "PURCHASE_BUTTON": "KAUFEN",
     "PERIOD_MONTHLY": "Monat",
     "PERIOD_WEEKLY": "Woche",
@@ -18,7 +18,7 @@
     "SUBSCRIPTION_BENEFIT_STATUS": "Premium-Status für dein Riddle-Quest-Konto",
     "SUBSCRIPTION_BENEFIT_SUPPORT": "Unterstütze das Team hinter Riddle Quest",
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Verlängert sich automatisch. Jederzeit unter Profil oder Einstellungen kündbar.",
-    "TITLE": "MUENZENSHOP",
+    "TITLE": "MÜNZSHOP",
     "YOUR_BALANCE": "Ihr Guthaben",
     "BADGE_STARTER": "EINSTIEG",
     "BADGE_POPULAR": "BELIEBT",
