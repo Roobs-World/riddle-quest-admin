@@ -1,6 +1,6 @@
 import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
 import {isFacebookWebTarget} from "../platform/webTargetEnvironment";
 import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "./gameSession";
@@ -44,7 +44,7 @@ import {
   useViewportFit,
 } from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
-import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
+import type {ListRaceCategoriesResponse, RaceLocale} from "@riddle-quest/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
 import {useClassicQuestionPreparation} from "./game/hooks/useClassicQuestionPreparation";

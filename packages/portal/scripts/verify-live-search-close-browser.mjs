@@ -20,7 +20,7 @@ import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/play/playerPreferences.ts"))};
-import {LiveRaceViewSchema, RACE_RULES} from '@qwordly/core/race';
+import {LiveRaceViewSchema, RACE_RULES} from '@riddle-quest/core/race';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 applyPlayerPreferences({locale:'en', muted:true, reducedMotion:true, onboardingComplete:true});
 const scenario = new URLSearchParams(location.search).get('scenario');

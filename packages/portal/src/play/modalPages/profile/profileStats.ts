@@ -1,4 +1,4 @@
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 import type {AchievementPlayerData} from "../../achievements";
 
 /** Projects an optional bridge profile into the achievement evaluation contract. */

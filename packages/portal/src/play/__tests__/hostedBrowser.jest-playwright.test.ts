@@ -4,7 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 import {expectConformingHtml} from "./webStandards.jest-playwright.support";
 import {chromium, type Page} from "@playwright/test";
 import {version as reactVersion} from "react";
-import {SOLO_COIN_COSTS} from "@qwordly/core/game";
+import {SOLO_COIN_COSTS} from "@riddle-quest/core/game";
 import {getProfileTour} from "../guidance/guidanceConfig";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -174,7 +174,7 @@ describeBrowser("standalone Jest browser game", () => {
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
     if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-      execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
+      execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:jest"], {
         cwd: path.resolve(packageRoot, "../.."),
         stdio: "inherit",
       });

@@ -10,7 +10,7 @@ it("exposes retained live history through the explicitly enabled Facebook live s
   expect(typeof target.live!.rematch).toBe("function");
   expect(createFirebaseRaceMatchmaking().live!.rematch).toBeUndefined();
 });
-import {raceMatchFailure} from "@qwordly/core/race";
+import {raceMatchFailure} from "@riddle-quest/core/race";
 
 it.each(["permission-denied", "unauthenticated", "invalid-argument"])("retains terminal recovery for %s", async code => {
   /** Callable transport adapter under test. */

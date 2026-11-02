@@ -14,8 +14,8 @@ module.exports = {
   },
   moduleNameMapper: {
     "^(?:\\.\\./)+platform/webTargetEnvironment$": "<rootDir>/src/test/webTargetEnvironmentMock.ts",
-    "^@qwordly/core$": "<rootDir>/../core/src/index.ts",
-    "^@qwordly/core/(.*)$": "<rootDir>/../core/src/$1",
+    "^@riddle-quest/core$": "<rootDir>/../core/src/index.ts",
+    "^@riddle-quest/core/(.*)$": "<rootDir>/../core/src/$1",
     "^#youtube-content$": "<rootDir>/../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
     "^\\./localeModules$": "<rootDir>/src/test/localeModulesMock.ts",
     "^(?:\\.\\./|\\./)firebaseEnvironment$": "<rootDir>/src/test/firebaseEnvironmentMock.ts",

@@ -24,7 +24,7 @@ import {
   type StartRaceRunRequest,
   type SubmitRaceGuessRequest,
   type SubmitRaceGuessResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {assertRaceMatchOfferForStart} from "./raceMatchOffer";
 import {

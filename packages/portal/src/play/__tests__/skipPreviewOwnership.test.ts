@@ -1,5 +1,5 @@
 import {expect,it,jest} from '@jest/globals';
-import type {GameToHostMessage} from '@qwordly/core/bridge';
+import type {GameToHostMessage} from '@riddle-quest/core/bridge';
 /** Exercises speculative ownership and rejection against the real recovery handler. */
 const effects:Array<()=>unknown>=[],layouts:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T>(fn:T)=>fn,useEffect:(fn:()=>unknown)=>effects.push(fn),useLayoutEffect:(fn:()=>unknown)=>layouts.push(fn),useRef:<T>(current:T)=>({current}),useState:<T>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));

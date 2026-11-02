@@ -1,5 +1,5 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
-import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@qwordly/core/race";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
+import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "@riddle-quest/core/race";
 import {initializeApp} from "firebase/app";
 import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
 import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
@@ -12,7 +12,7 @@ import type {
   SpendCoinsRequest,
   SubmitSinglePlayerGuessInput,
   SubmitSinglePlayerGuessOutput,
-} from "@qwordly/core/validation";
+} from "@riddle-quest/core/validation";
 import type {
   AbandonRaceRunRequest,
   AbandonRaceRunResponse,
@@ -41,7 +41,7 @@ import type {
   ReadyRaceRunRequest,
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {firebaseEnvironment} from "./firebaseEnvironment";
 import {DEFAULT_GAMEPLAY_REGION} from "./platform/startupWarmup";
 
@@ -366,7 +366,7 @@ export const getRaceChallenge = httpsCallable<
     /** Stores challenge id. */
     challengeId: string;
     /** Stores locale. */
-    locale: import("@qwordly/core/race").RaceLocale;
+    locale: import("@riddle-quest/core/race").RaceLocale;
   },
   RaceChallengePreview
 >(raceFunctions, "getRaceChallenge");
@@ -384,12 +384,12 @@ export const listRaceInbox = httpsCallable<ListRaceInboxRequest | undefined, Lis
   "listRaceInbox",
 );
 /** Immediately blocks an established social rival. */
-export const blockRival = httpsCallable<import("@qwordly/core/race").BlockSocialRivalRequest, {
+export const blockRival = httpsCallable<import("@riddle-quest/core/race").BlockSocialRivalRequest, {
   /** Confirmed block status. */
   blocked: true;
 }>(functions, "blockRival");
 /** Queues a categorized known-rival or private live-opponent report. */
-export const reportRival = httpsCallable<import("@qwordly/core/race").ReportSocialRivalRequest,
+export const reportRival = httpsCallable<import("@riddle-quest/core/race").ReportSocialRivalRequest,
   {
     /** Opaque server queue receipt. */
     reportId: string;
@@ -522,13 +522,13 @@ export const getRaceEntry = httpsCallable<{
 export const cancelRaceInvite = httpsCallable<CancelRaceInviteRequest, RaceEntryResponse>(raceFunctions, "cancelRaceInvite");
 
 /** Authenticated live matchmaking and input transports. */
-export const joinLiveRace = httpsCallable<import("@qwordly/core/race").JoinLiveRace, import("@qwordly/core/race").LiveRaceView>(raceFunctions, "joinLiveRace");
+export const joinLiveRace = httpsCallable<import("@riddle-quest/core/race").JoinLiveRace, import("@riddle-quest/core/race").LiveRaceView>(raceFunctions, "joinLiveRace");
 /** Retires a stable account-owned join without cancelling a newer recovered seat. */
-export const retireLiveRaceJoin = httpsCallable<import("@qwordly/core/race").RetireLiveRaceJoin, import("@qwordly/core/race").RetireLiveRaceJoinResponse>(raceFunctions, "retireLiveRaceJoin");
+export const retireLiveRaceJoin = httpsCallable<import("@riddle-quest/core/race").RetireLiveRaceJoin, import("@riddle-quest/core/race").RetireLiveRaceJoinResponse>(raceFunctions, "retireLiveRaceJoin");
 /** Optional private receipt observation leaves existing command transports unchanged. */
-export const confirmLiveGuessReceipt = httpsCallable<import("@qwordly/core/race").LiveGuessReceiptQuery, import("@qwordly/core/race").LiveGuessReceiptResult>(raceFunctions, "confirmLiveGuessReceipt");
+export const confirmLiveGuessReceipt = httpsCallable<import("@riddle-quest/core/race").LiveGuessReceiptQuery, import("@riddle-quest/core/race").LiveGuessReceiptResult>(raceFunctions, "confirmLiveGuessReceipt");
 /** Reads live progress and commits idempotent commands. */
-export const updateLiveRace = rawHttpsCallable<import("@qwordly/core/race").UpdateLiveRace, import("@qwordly/core/race").LiveRaceView, {
+export const updateLiveRace = rawHttpsCallable<import("@riddle-quest/core/race").UpdateLiveRace, import("@riddle-quest/core/race").LiveRaceView, {
   /** Private wake-up notification received through the same authenticated endpoint. */
   revision: string | null;
 }>(raceFunctions, "updateLiveRace");
@@ -537,7 +537,7 @@ export const updateLiveRace = rawHttpsCallable<import("@qwordly/core/race").Upda
 export const getLiveRaceChallenge = httpsCallable<{
   /** Server invitation handle. */
   challengeId: string;
-}, import("@qwordly/core/race").LiveRaceChallenge>(raceFunctions, "getLiveRaceChallenge");
+}, import("@riddle-quest/core/race").LiveRaceChallenge>(raceFunctions, "getLiveRaceChallenge");
 
 /** Addresses an existing player and queues a server-owned offline notification. */
 export const sendLiveRaceChallenge = httpsCallable<{
@@ -547,9 +547,9 @@ export const sendLiveRaceChallenge = httpsCallable<{
 /** Stores status. */
 status: "queued"}>(raceFunctions, "sendLiveRaceChallenge");
 /** Reads direct challenge notices without accepting their lobby. */
-export const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("@qwordly/core/race").LiveRaceChallenge[]>(raceFunctions, "listLiveRaceChallenges");
+export const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("@riddle-quest/core/race").LiveRaceChallenge[]>(raceFunctions, "listLiveRaceChallenges");
 /** Locale-bound retained results never include another account or answer-bearing run. */
-export const listLiveRaceHistory = httpsCallable<import("@qwordly/core/race").ListLiveRaceHistoryRequest, import("@qwordly/core/race").ListLiveRaceHistoryResponse>(raceFunctions, "listLiveRaceHistory");
+export const listLiveRaceHistory = httpsCallable<import("@riddle-quest/core/race").ListLiveRaceHistoryRequest, import("@riddle-quest/core/race").ListLiveRaceHistoryResponse>(raceFunctions, "listLiveRaceHistory");
 /** Stores explicit browser-push consent on the authenticated registered Jest account. */
 export const setLiveRacePushSubscription = httpsCallable<{
   /** False revokes the current subscription. */ enabled: boolean;

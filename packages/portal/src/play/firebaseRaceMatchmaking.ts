@@ -1,4 +1,4 @@
-import type {RaceMatchRequest, RaceMatchResponse} from "@qwordly/core/race";
+import type {RaceMatchRequest, RaceMatchResponse} from "@riddle-quest/core/race";
 import type {MatchmakingCapability} from "../platform/types";
 
 /** Adapts authenticated recorded selection; native provider context selection remains a separate capability. */
@@ -21,24 +21,24 @@ export function createFirebaseRaceMatchmaking(
     /** Loads receipt transport only for an eligible recovery, never during normal live play. */
     async confirmGuessReceipt(input) {
       /** Both the locator and private acknowledgement cross a strict shared contract. */
-      const [{confirmLiveGuessReceipt}, {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+      const [{confirmLiveGuessReceipt}, {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema}] = await Promise.all([import("../firebase"), import("@riddle-quest/core/race")]);
       return LiveGuessReceiptResultSchema.parse((await confirmLiveGuessReceipt(LiveGuessReceiptQuerySchema.parse(input))).data);
     },
     ...(options.liveRematch ? {
       /** The existing authenticated join reserves the original private opponent server-side. */
-      async rematch(input: Pick<import("@qwordly/core/race").JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {
+      async rematch(input: Pick<import("@riddle-quest/core/race").JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {
         /** Caller-owned terminal seat. */ rematchOfTicketId: string;
       }) {
         /** Untrusted callable replies pass the existing strict live projection schema. */
-        const [{joinLiveRace}, {LiveRaceViewSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        const [{joinLiveRace}, {LiveRaceViewSchema}] = await Promise.all([import("../firebase"), import("@riddle-quest/core/race")]);
         return LiveRaceViewSchema.parse((await joinLiveRace(input)).data);
       },
     } : {}),
     ...(options.liveHistory ? {
       /** Lazy strict history remains outside startup and the default Jest surface. */
-      async history(locale: import("@qwordly/core/race").RaceLocale) {
+      async history(locale: import("@riddle-quest/core/race").RaceLocale) {
         /** One owning-target callable and shared public schema load together. */
-        const [{listLiveRaceHistory}, {ListLiveRaceHistoryResponseSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        const [{listLiveRaceHistory}, {ListLiveRaceHistoryResponseSchema}] = await Promise.all([import("../firebase"), import("@riddle-quest/core/race")]);
         return ListLiveRaceHistoryResponseSchema.parse((await listLiveRaceHistory({locale, limit: 20})).data);
       },
     } : {}),
@@ -49,7 +49,7 @@ export function createFirebaseRaceMatchmaking(
         liveTicketId: string;
       }) {
         /** Lazy strict response contract stays outside target startup. */
-        const [{blockRival}, {BlockSocialRivalResponseSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        const [{blockRival}, {BlockSocialRivalResponseSchema}] = await Promise.all([import("../firebase"), import("@riddle-quest/core/race")]);
         return BlockSocialRivalResponseSchema.parse((await blockRival(input)).data);
       },
       /** Report retries preserve the selected category, owned seat and request identity. */
@@ -57,12 +57,12 @@ export function createFirebaseRaceMatchmaking(
         /** Caller-owned live seat. */
         liveTicketId: string;
         /** Fixed reason. */
-        category: import("@qwordly/core/race").SocialReportCategory;
+        category: import("@riddle-quest/core/race").SocialReportCategory;
         /** Retry identity. */
         requestId: string;
       }) {
         /** Only an exact queue acknowledgement reaches the shared UI. */
-        const [{reportRival}, {ReportSocialRivalResponseSchema}] = await Promise.all([import("../firebase"), import("@qwordly/core/race")]);
+        const [{reportRival}, {ReportSocialRivalResponseSchema}] = await Promise.all([import("../firebase"), import("@riddle-quest/core/race")]);
         return ReportSocialRivalResponseSchema.parse((await reportRival(input)).data);
       },
     } : {}),
@@ -79,7 +79,7 @@ export function createFirebaseRaceMatchmaking(
     },
     ...(options.directInvites ? {
       /** Persists an addressed invitation with one durable notification receipt. */
-      async sendChallenge(input: Parameters<NonNullable<import("@qwordly/core/race").LiveRaceCapability["sendChallenge"]>>[0]) {
+      async sendChallenge(input: Parameters<NonNullable<import("@riddle-quest/core/race").LiveRaceCapability["sendChallenge"]>>[0]) {
         return (await (await import("../firebase")).sendLiveRaceChallenge(input)).data;
       },
     } : {}),
@@ -100,7 +100,7 @@ export function createFirebaseRaceMatchmaking(
       /** Load validation alongside the request without adding it to game startup. */
       const [response, {RaceMatchResponseSchema}] = await Promise.all([
         lookup(typeof input === "string" ? {locale: input} : input),
-        import("@qwordly/core/race"),
+        import("@riddle-quest/core/race"),
       ]);
       return {status: "success", value: RaceMatchResponseSchema.parse(response)};
     } catch (error) {

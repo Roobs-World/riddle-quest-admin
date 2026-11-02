@@ -1,6 +1,6 @@
-import type {RaceEntryResponse, CancelRaceInviteRequest} from "@qwordly/core/race";
-import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {ProductPricing} from "@qwordly/core/pricing/catalog";
+import type {RaceEntryResponse, CancelRaceInviteRequest} from "@riddle-quest/core/race";
+import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@riddle-quest/core/bridge";
+import type {ProductPricing} from "@riddle-quest/core/pricing/catalog";
 import type {CompletionRewardBreakdown} from "./completionRewardBreakdown";
 import type {
   AbandonRaceRunRequest,
@@ -25,7 +25,7 @@ import type {
   ReadyRaceRunRequest,
   SubmitRaceGuessRequest,
   SubmitRaceGuessResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 
 /** Describes web game mode. */
 export type WebGameMode = "classic" | "challenge";

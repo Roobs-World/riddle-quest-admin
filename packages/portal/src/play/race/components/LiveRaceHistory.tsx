@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {ListLiveRaceHistoryResponseSchema, type ListLiveRaceHistoryResponse, type LiveRaceCapability, type RaceLocale} from "@qwordly/core/race";
+import {ListLiveRaceHistoryResponseSchema, type ListLiveRaceHistoryResponse, type LiveRaceCapability, type RaceLocale} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 import {LiveRaceSafety} from "./LiveRaceSafety";
 import {liveRacePlayerName} from "../logic/liveRacePlayerName";

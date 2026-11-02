@@ -1,5 +1,5 @@
-import {RACE_MAX_GUESSES_PER_RIDDLE, type RaceRunView} from "@qwordly/core/race";
-import {lowerCaseGraphemes, type ScoredGuess} from "@qwordly/core/game";
+import {RACE_MAX_GUESSES_PER_RIDDLE, type RaceRunView} from "@riddle-quest/core/race";
+import {lowerCaseGraphemes, type ScoredGuess} from "@riddle-quest/core/game";
 
 /** One canonical row recorded at its consumed attempt index. */
 type HistoryRow = NonNullable<NonNullable<RaceRunView["currentRiddle"]>["confirmedGuesses"]>[number];

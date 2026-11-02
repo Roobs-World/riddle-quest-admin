@@ -1,9 +1,9 @@
-import {getDailyDate} from "@qwordly/core/validation";
+import {getDailyDate} from "@riddle-quest/core/validation";
 import {mapRiddleResponse} from "./riddleResponse";
 import {tr} from "./i18n";
 import {createGameplayAuthorityDelivery} from "./gameplayAuthorityDelivery";
 import {getRaceEntry, cancelRaceInvite} from "../firebase";
-import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
+import type {BridgeProfile, BridgeUser} from "@riddle-quest/core/bridge";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {
   auth,
@@ -40,7 +40,7 @@ import {
   type CurrentRiddleResponse,
 } from "../firebase";
 import type {AuthSnapshot, HostServices} from "./types";
-import type {ClassicRiddleBufferResponse} from "@qwordly/core/validation";
+import type {ClassicRiddleBufferResponse} from "@riddle-quest/core/validation";
 import {toBridgeProfile} from "./profileMapper";
 
 /** Provides to bridge user behavior. */

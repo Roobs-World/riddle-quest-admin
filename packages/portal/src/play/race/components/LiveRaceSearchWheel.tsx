@@ -1,4 +1,4 @@
-import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_PLAYER_WAIT_MS, LIVE_RACE_WAIT_MS} from "@qwordly/core/race";
+import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_PLAYER_WAIT_MS, LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 
 /** Presents the authoritative search deadline as a filling ring without visible numbers. */

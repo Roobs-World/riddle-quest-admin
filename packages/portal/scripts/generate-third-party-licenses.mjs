@@ -5,7 +5,7 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 
 const portalDirectory = fileURLToPath(new URL("../", import.meta.url));
 const repositoryDirectory = resolve(portalDirectory, "../..");
-const licensePackage = process.env.RIDDLE_QUEST_LICENSE_PACKAGE ?? "@qwordly/portal";
+const licensePackage = process.env.RIDDLE_QUEST_LICENSE_PACKAGE ?? "@riddle-quest/portal";
 const configuredOutputFile = process.env.RIDDLE_QUEST_LICENSE_OUTPUT;
 if (configuredOutputFile !== undefined && !isAbsolute(configuredOutputFile)) {
   throw new Error("RIDDLE_QUEST_LICENSE_OUTPUT must be absolute when provided");
@@ -170,7 +170,7 @@ export function createNotice(packageNames, {includeHomepages = true} = {}) {
     "==========================================",
     "",
     "This file lists the production runtime dependencies distributed with Riddle Quest.",
-    packageNames ? "It includes only packages emitted in this Web Target." : "It is generated from the locked @qwordly/portal production dependency graph.",
+    packageNames ? "It includes only packages emitted in this Web Target." : "It is generated from the locked @riddle-quest/portal production dependency graph.",
     "",
     "Dependency inventory",
     "--------------------",

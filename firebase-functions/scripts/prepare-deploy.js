@@ -34,7 +34,7 @@ function assertCopiedArtifactIsComplete(target) {
 }
 
 function syncInstalledPackageCopy(targetCorePackageDir) {
-  const installedPackageLink = path.join(functionsNodeModulesDir, "@qwordly", "core");
+  const installedPackageLink = path.join(functionsNodeModulesDir, "@riddle-quest", "core");
   const packageDirs = new Set();
   if (fs.existsSync(installedPackageLink)) {
     packageDirs.add(fs.realpathSync(installedPackageLink));
@@ -43,10 +43,10 @@ function syncInstalledPackageCopy(targetCorePackageDir) {
   const pnpmDir = path.join(functionsNodeModulesDir, ".pnpm");
   if (fs.existsSync(pnpmDir)) {
     for (const entry of fs.readdirSync(pnpmDir, {withFileTypes: true})) {
-      if (!entry.isDirectory() || !entry.name.startsWith("@qwordly+core@file+")) {
+      if (!entry.isDirectory() || !entry.name.startsWith("@riddle-quest+core@file+")) {
         continue;
       }
-      const candidate = path.join(pnpmDir, entry.name, "node_modules", "@qwordly", "core");
+      const candidate = path.join(pnpmDir, entry.name, "node_modules", "@riddle-quest", "core");
       if (fs.existsSync(candidate)) {
         packageDirs.add(fs.realpathSync(candidate));
       }
@@ -63,7 +63,7 @@ function syncInstalledPackageCopy(targetCorePackageDir) {
   }
 }
 
-execSync("pnpm --filter @qwordly/core build", {
+execSync("pnpm --filter @riddle-quest/core build", {
   cwd: repoRoot,
   stdio: "inherit",
 });

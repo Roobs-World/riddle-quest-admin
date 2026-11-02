@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
-import type {BridgeRiddle, HostToGameMessage} from "@qwordly/core/bridge";
+import type {BridgeRiddle, HostToGameMessage} from "@riddle-quest/core/bridge";
 import type {HostServices} from "../types";
 
 /** Effects are committed after each simulated render, preserving hook ref ownership. */

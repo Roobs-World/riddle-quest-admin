@@ -1,4 +1,4 @@
-import {type ReadyRaceRunRequest, type RaceRunResponse} from "@qwordly/core/race";
+import {type ReadyRaceRunRequest, type RaceRunResponse} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";

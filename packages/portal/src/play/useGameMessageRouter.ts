@@ -1,6 +1,6 @@
 import {useLayoutEffect, useMemo, useRef} from "react";
 import type {Dispatch, MutableRefObject} from "react";
-import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
 import {gameSessionReducer, type GameSessionState} from "./gameSession";
 import {tr} from "./i18n";
@@ -281,7 +281,7 @@ export function useGameMessageRouter({
           }
           if (message.payload.operation === "leaderboard") {
             /** Provides {bridge leaderboard entry schema} behavior. */
-            const {BridgeLeaderboardEntrySchema} = await import("@qwordly/core/bridge");
+            const {BridgeLeaderboardEntrySchema} = await import("@riddle-quest/core/bridge");
             if (isCurrent && !isCurrent()) return;
             /** Provides entries behavior. */
             const entries = Array.isArray(data.entries)
@@ -298,7 +298,7 @@ export function useGameMessageRouter({
           }
           if (message.payload.operation === "profile") {
             /** Provides {bridge profile schema} behavior. */
-            const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
+            const {BridgeProfileSchema} = await import("@riddle-quest/core/bridge");
             if (isCurrent && !isCurrent()) return;
             /** Parses d. */
             const parsed = BridgeProfileSchema.safeParse(data.profile);

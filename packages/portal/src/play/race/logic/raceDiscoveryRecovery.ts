@@ -1,4 +1,4 @@
-import type {RaceMatchFailure, RaceMatchRequest, RaceRecoveryIntent} from "@qwordly/core/race";
+import type {RaceMatchFailure, RaceMatchRequest, RaceRecoveryIntent} from "@riddle-quest/core/race";
 import type {MatchmakingCapability} from "../../../platform/types";
 import type {RaceSessionState} from "../RaceSession.types";
 import {raceMatchErrorKey} from "../RaceSessionAuthority";

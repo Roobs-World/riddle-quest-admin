@@ -1,5 +1,5 @@
 import {RaceConfirmedHistory} from "./logic/raceConfirmedHistory";
-import type {RaceOutcome, RaceRunView} from "@qwordly/core/race";
+import type {RaceOutcome, RaceRunView} from "@riddle-quest/core/race";
 import {isolateConfirmedRace} from "./RaceSessionAuthority";
 
 /** Owns canonical snapshots and receipt timing separately from mutable UI presentation. */

@@ -1,6 +1,6 @@
 import {useEffect, useLayoutEffect, useRef, useState, type CSSProperties} from "react";
-import {parseHostToGameMessage} from "@qwordly/core/bridge";
-import {ListRaceCategoriesResponseSchema, type LiveRaceCapability, type RaceCategoryId, type RaceLocale} from "@qwordly/core/race";
+import {parseHostToGameMessage} from "@riddle-quest/core/bridge";
+import {ListRaceCategoriesResponseSchema, type LiveRaceCapability, type RaceCategoryId, type RaceLocale} from "@riddle-quest/core/race";
 import "../../styles.race-lobby.css";
 import "../../styles.race-gameplay.css";
 import {tr} from "../i18n";

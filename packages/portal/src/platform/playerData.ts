@@ -1,4 +1,4 @@
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 import type {AuthSnapshot} from "../play/types";
 
 /** Restores low-integrity display state only while authoritative profile data loads. */

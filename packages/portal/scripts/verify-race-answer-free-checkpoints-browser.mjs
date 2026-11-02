@@ -17,8 +17,8 @@ const source = `
 import React from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
-import {computeFeedback} from '@qwordly/core/game';
+import {RACE_RULES} from '@riddle-quest/core/race';
+import {computeFeedback} from '@riddle-quest/core/game';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 const params=new URLSearchParams(location.search),known=params.get('known')==='true',scenario=params.get('scenario');
 const key='riddleQuest:activeRaceRun',now=Date.now();

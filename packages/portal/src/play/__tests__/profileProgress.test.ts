@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 import {getProfileProgress, getXpForLevel} from "../modalPages/profile/profileProgress";
 
 /** Creates the minimum complete bridge profile needed by progression tests. */

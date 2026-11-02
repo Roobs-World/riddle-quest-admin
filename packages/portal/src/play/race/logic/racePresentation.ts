@@ -1,5 +1,5 @@
-import {splitGraphemes, type Feedback, type ScoredGuess} from "@qwordly/core/game";
-import type {RaceOutcome, RaceRunView} from "@qwordly/core/race";
+import {splitGraphemes, type Feedback, type ScoredGuess} from "@riddle-quest/core/game";
+import type {RaceOutcome, RaceRunView} from "@riddle-quest/core/race";
 
 /** Non-null riddle prompt presented during an active race. */
 type RaceRiddle = NonNullable<RaceRunView["currentRiddle"]>;

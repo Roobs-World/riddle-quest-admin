@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import type {LiveRaceCapability, LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceCapability, LiveRaceView} from "@riddle-quest/core/race";
 
 /** Owns one optional platform subscription for the mounted, nonterminal seat. */
 export function useLiveRaceSignals(transport: LiveRaceCapability, view: LiveRaceView | null, refresh: () => void,

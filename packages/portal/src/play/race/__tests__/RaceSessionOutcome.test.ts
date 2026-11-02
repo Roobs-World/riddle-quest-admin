@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceOutcome, RaceRunView} from "@qwordly/core/race";
+import type {RaceOutcome, RaceRunView} from "@riddle-quest/core/race";
 import {catalog, fixture, harness} from "./raceSession.support";
 import {projectRaceOutcome} from "../logic/racePresentation";
 

@@ -1,4 +1,4 @@
-import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
+import type {BridgeProfile, BridgeUser} from "@riddle-quest/core/bridge";
 import {restoreProfileWhileServerLoads} from "../playerData";
 
 /** Provides r. */

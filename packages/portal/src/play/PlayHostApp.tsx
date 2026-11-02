@@ -1,14 +1,14 @@
 import {deliverHostRaceResult} from "./hostRaceResultEffects";
 import {createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "./hostCompletionEffects";
 import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} from "react";
-import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
-import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+import type {BridgeProfile, HostToGameMessage} from "@riddle-quest/core/bridge";
+import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import {detectDeviceLanguage, tr, useLocale} from "./i18n";
 import {createRequestId} from "./requestIds";
 import {GameFrameApp} from "./GameFrameApp";
 import {dispatchLocalBridge, HOST_TO_GAME_EVENT} from "./localBridge";
 import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "./types";
-import type {RaceOutcome} from "@qwordly/core/race";
+import type {RaceOutcome} from "@riddle-quest/core/race";
 import {SpinningWheelLoader} from "./SpinningWheelLoader";
 import type {PlayerData} from "../platform/types";
 import {createHostedPlayCommandModule, getHostNoticeMessage, type HostOperationName} from "./hostMessageHandlers";

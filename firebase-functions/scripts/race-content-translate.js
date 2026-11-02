@@ -8,7 +8,7 @@ const {z} = require("zod");
 const {createHash} = require("node:crypto");
 const {mkdir, readFile, rename, writeFile} = require("node:fs/promises");
 const path = require("node:path");
-const {RACE_SUPPORTED_LOCALES} = require("@qwordly/core/race");
+const {RACE_SUPPORTED_LOCALES} = require("@riddle-quest/core/race");
 const {
   RaceTranslationCheckpointSchema,
   assertExactTranslationResponseIds,

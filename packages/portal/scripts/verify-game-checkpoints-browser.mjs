@@ -56,7 +56,7 @@ let browser;
 let server;
 try {
   await build({root: scratch, configFile: false, logLevel: "error",
-    resolve: {alias: {"@qwordly/core": path.resolve(root, "../core/src")}}, build: {outDir: "dist"}});
+    resolve: {alias: {"@riddle-quest/core": path.resolve(root, "../core/src")}}, build: {outDir: "dist"}});
   server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, "http://localhost");

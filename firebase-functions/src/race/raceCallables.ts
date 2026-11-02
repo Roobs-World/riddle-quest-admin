@@ -1,5 +1,5 @@
-import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "@qwordly/core/race";
-import {RaceEntryRequestSchema} from "@qwordly/core/race";
+import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "@riddle-quest/core/race";
+import {RaceEntryRequestSchema} from "@riddle-quest/core/race";
 import {getRaceEntryForUser, cancelRaceInviteForUser} from "./raceInvitation";
 import {
   AbandonRaceRunRequestSchema,
@@ -31,7 +31,7 @@ import {
   ReadyRaceRunRequestSchema,
   SubmitRaceGuessRequestSchema,
   SubmitRaceGuessResponseSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {

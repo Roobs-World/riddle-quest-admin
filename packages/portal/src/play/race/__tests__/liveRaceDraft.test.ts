@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import {LiveRaceViewSchema, RACE_RULES} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RACE_RULES} from "@riddle-quest/core/race";
 import {createLiveRaceDraft, editLiveRaceDraft, reconcileLiveRaceDraft, rejectLiveRaceDraft} from "../logic/liveRaceDraft";
 
 /** Schema-valid viewer seat used by the same reconciliation helper as the live React adapter. */

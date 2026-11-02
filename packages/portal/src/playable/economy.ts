@@ -1,4 +1,4 @@
-import {SOLO_BONUS_COINS, SOLO_COIN_COSTS, SOLO_WIN_COINS, getDailyStreakBonusCoins} from "@qwordly/core/game";
+import {SOLO_BONUS_COINS, SOLO_COIN_COSTS, SOLO_WIN_COINS, getDailyStreakBonusCoins} from "@riddle-quest/core/game";
 import type {YouTubeGameMode} from "./types";
 /** Defines the youtube starting coins value. */
 export const YOUTUBE_STARTING_COINS = 300;

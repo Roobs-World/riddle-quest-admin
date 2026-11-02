@@ -12,7 +12,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const require=createRequire(import.meta.url);
-const {RACE_RULES,LiveRaceViewSchema}=require('@qwordly/core/race');
+const {RACE_RULES,LiveRaceViewSchema}=require('@riddle-quest/core/race');
 const output=path.resolve(process.env.LIVE_WAIT_PERFORMANCE_REPORT_DIR??path.join(root,'../../artifacts/performance-current-20261019/client'));
 await mkdir(output,{recursive:true});
 const baseline=await readFile(path.join(output,'liveRacePolling.before.ts'),'utf8');

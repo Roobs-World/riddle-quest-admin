@@ -35,7 +35,7 @@ still outstanding; installation availability is controlled by Reddit.
 ## Implementation and review notes
 
 This package is the Devvit Web container for the Reddit target. The webview client is built by
-`@qwordly/portal` into `dist-reddit` and staged as separate inline and expanded entry points. The
+`@riddle-quest/portal` into `dist-reddit` and staged as separate inline and expanded entry points. The
 request-scoped server owns every `/api/*` call. Browser code must never contact Firebase or another
 external origin directly.
 

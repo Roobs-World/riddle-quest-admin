@@ -1,4 +1,4 @@
-import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult, type LiveRaceView} from "@qwordly/core/race";
+import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult, type LiveRaceView} from "@riddle-quest/core/race";
 import {observeBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 import {liveRaceDeliveryDeadline} from "./liveRaceDeliveryDeadline";
 import {liveRaceDraftBinding as binding, liveDraftReceiptMatches, parseLiveRaceDraftCheckpoint} from "./liveRaceDraftCheckpoint";

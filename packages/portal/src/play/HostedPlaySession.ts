@@ -1,4 +1,4 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";

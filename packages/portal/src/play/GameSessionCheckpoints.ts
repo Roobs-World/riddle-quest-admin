@@ -1,4 +1,4 @@
-import type {ScoredGuess} from "@qwordly/core/game";
+import type {ScoredGuess} from "@riddle-quest/core/game";
 import type {SavedGame} from "../platform/types";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import {rejectHintPreview} from "./hintPreview";

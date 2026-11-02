@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import type {RetireLiveRaceJoin, RetireLiveRaceJoinResponse} from "@qwordly/core/race";
+import type {RetireLiveRaceJoin, RetireLiveRaceJoinResponse} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceProviderScope} from "./raceEligibility";

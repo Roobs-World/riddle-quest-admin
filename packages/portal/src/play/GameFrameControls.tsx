@@ -1,5 +1,5 @@
 import type {CSSProperties, Dispatch} from "react";
-import type {Feedback, ScoredGuess} from "@qwordly/core/game";
+import type {Feedback, ScoredGuess} from "@riddle-quest/core/game";
 import mascotUrl from "../../../../assets/images-web/riddlequest-r.webp";
 import coinUrl from "../../../../assets/images/coin.svg";
 import backspaceUrl from "../../../../assets/images/backspace-key.svg";

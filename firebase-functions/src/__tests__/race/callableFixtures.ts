@@ -1,4 +1,4 @@
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 
 /** Provides race callable user id behavior. */
 export const raceCallableUserId = "player-1";

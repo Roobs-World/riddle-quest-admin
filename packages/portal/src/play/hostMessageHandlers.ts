@@ -2,7 +2,7 @@ import {BridgeParserLoadError, createHostMessageRouter, type HostMessageHandlers
 import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
 import {createRequestId} from "./requestIds";
-import type {RaceOutcome} from "@qwordly/core/race";
+import type {RaceOutcome} from "@riddle-quest/core/race";
 import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "./types";
 import type {HostAuthorityModules} from "./HostAuthorityModules";
 import {captureBrowserException} from "../observability/browserErrorReporter";

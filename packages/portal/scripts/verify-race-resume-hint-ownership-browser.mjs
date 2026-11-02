@@ -16,7 +16,7 @@ const source = `
 import React from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/play/race/testing/fakeRaceServices.ts"))};
 const scenario=new URLSearchParams(location.search).get("case"),catalog=createFakeRaceServices();

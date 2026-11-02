@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {tr} from "../../i18n";
-import {type LiveRaceCapability} from "@qwordly/core/race";
+import {type LiveRaceCapability} from "@riddle-quest/core/race";
 import {LiveRaceDirectInvite} from "./LiveRaceDirectInvite";
 
 /** One visit to a lobby and its target-owned native callback owns dialog feedback. */

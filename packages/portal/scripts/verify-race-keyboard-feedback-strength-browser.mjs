@@ -12,7 +12,7 @@ const scratch=await mkdtemp(path.join(root,'node_modules/.cache/race-keyboard-fe
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
-import React from 'react';import {createRoot} from 'react-dom/client';import {computeFeedback} from '@qwordly/core/game';
+import React from 'react';import {createRoot} from 'react-dom/client';import {computeFeedback} from '@riddle-quest/core/game';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
 const mode=new URLSearchParams(location.search).get('mode'),authority=createFakeRaceServices();window.commands=[];

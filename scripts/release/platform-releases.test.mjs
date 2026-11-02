@@ -17,10 +17,10 @@ import {
 const isEndToEndGate = ({args}) => args[0] === "scripts/release/verify-packaged-games.mjs" || args.at(-1) === "test:reddit:playwright";
 
 const expectedCommands = new Map([
-  ["jest", ["--filter", "@qwordly/portal", "release:jest:timestamped"]],
-  ["facebook", ["--filter", "@qwordly/portal", "release:facebook"]],
-  ["youtube", ["--filter", "@qwordly/portal", "preflight:youtube-upload"]],
-  ["reddit", ["--filter", "@qwordly/reddit-app", "release:candidate"]],
+  ["jest", ["--filter", "@riddle-quest/portal", "release:jest:timestamped"]],
+  ["facebook", ["--filter", "@riddle-quest/portal", "release:facebook"]],
+  ["youtube", ["--filter", "@riddle-quest/portal", "preflight:youtube-upload"]],
+  ["reddit", ["--filter", "@riddle-quest/reddit-app", "release:candidate"]],
   ["netflix", ["build:netflix"]],
   ["yahoo", ["build:yahoo"]],
   ["gamesnacks", ["build:gamesnacks"]],
@@ -305,7 +305,7 @@ test("execution delegates once, plays the produced artifact, then reports the pl
   assert.equal(invocations.length, 2);
   assert.equal(invocations[0].executable, "pnpm");
   assert.deepEqual(invocations[0].args, expectedCommands.get("reddit"));
-  assert.deepEqual(invocations[1].args, ["--filter", "@qwordly/portal", "test:reddit:playwright"]);
+  assert.deepEqual(invocations[1].args, ["--filter", "@riddle-quest/portal", "test:reddit:playwright"]);
   assert.equal(result.status, "handoff-ready");
   assert.match(lines.join("\n"), /immutable Reddit handoff|Release handoff ready/u);
 });

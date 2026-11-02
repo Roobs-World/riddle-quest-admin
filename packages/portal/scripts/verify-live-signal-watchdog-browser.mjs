@@ -19,7 +19,7 @@ try{
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
 import {observeFirebaseLiveRace} from ${JSON.stringify(path.join(root,'src/play/firebaseLiveRaceSignals.ts'))};
-import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import {liveRacePollInterval} from ${JSON.stringify(path.join(root,'src/play/race/logic/liveRacePolling.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 const scenario=new URLSearchParams(location.search).get('scenario')??'eof',revision='aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';

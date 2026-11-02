@@ -28,7 +28,7 @@ yarn-error.log*
 firebase-functions/lib/
 firebase-functions/.emulator-data/
 firebase-functions/*admin-sdk*.json
-firebase-functions/qwordly-admin-sdk.json
+firebase-functions/riddle-quest-admin-sdk.json
 firebase-functions/.runtimeconfig.json
 firebase-functions/artifacts/notification-copy-backups/
 
@@ -160,3 +160,4 @@ artifacts/goal-completion-2026-10-24/riddle/final/upload-source/
 
 # Test reports, verification evidence, and release snapshots stay local
 artifacts/
+firebase-functions/qwordly-admin-sdk.json

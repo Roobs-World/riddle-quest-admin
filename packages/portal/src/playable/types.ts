@@ -1,4 +1,4 @@
-import type {Feedback} from "@qwordly/core/game";
+import type {Feedback} from "@riddle-quest/core/game";
 import type {PlatformRuntimePolicy} from "../platform/types";
 /** Locale identifiers supported by the bundled YouTube content pack. */
 export type YouTubeLocale =

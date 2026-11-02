@@ -1,4 +1,4 @@
-import type {BridgeRiddle} from "@qwordly/core/bridge";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
 import type {HostServices} from "./types";
 import {riddleLoadDeadline} from "./riddleLoadDeadline";
 

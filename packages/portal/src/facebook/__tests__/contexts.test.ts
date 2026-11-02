@@ -20,7 +20,7 @@ const fixture = () => {
   /** Provides current behavior. */
   let current = ok("context-a");
   /** Provides locale behavior. */
-  let locale: import("@qwordly/core/race").RaceLocale = "ja";
+  let locale: import("@riddle-quest/core/race").RaceLocale = "ja";
   /** Provides sdk behavior. */
   const sdk: NativeSocialCapability = {
     currentContext: () => current,
@@ -41,7 +41,7 @@ const fixture = () => {
     setCurrent: (value: PlatformResult<Context>) => {
       current = value;
     },
-    setLocale: (value: import("@qwordly/core/race").RaceLocale) => {
+    setLocale: (value: import("@riddle-quest/core/race").RaceLocale) => {
       locale = value;
     },
   };

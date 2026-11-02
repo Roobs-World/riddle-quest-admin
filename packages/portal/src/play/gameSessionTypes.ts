@@ -1,5 +1,5 @@
-import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@qwordly/core/game";
-import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
+import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@riddle-quest/core/game";
+import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@riddle-quest/core/bridge";
 import type {ProductSummary} from "./types";
 import type {CompletionRewardBreakdown} from "./completionRewardBreakdown";
 

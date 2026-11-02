@@ -1,5 +1,5 @@
-import {AcceptedGuessesSchema} from "@qwordly/core/validation/acceptedGuesses";
-import {splitGraphemes} from "@qwordly/core/game";
+import {AcceptedGuessesSchema} from "@riddle-quest/core/validation/acceptedGuesses";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import {HttpsError} from "firebase-functions/v2/https";
 import {baseAttemptLimit} from "./singlePlayerGuessTransition";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";

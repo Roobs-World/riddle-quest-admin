@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import type {Dispatch} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import type {GameSessionAction, GameSessionState} from "../../gameSessionTypes";
 import {createRequestId} from "../../requestIds";
 import {completionPresentationKey} from "../../completionPresentation";

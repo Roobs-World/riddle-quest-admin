@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
-import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
+import type {BridgeProfile, HostToGameMessage} from "@riddle-quest/core/bridge";
+import type {ListRaceCategoriesResponse} from "@riddle-quest/core/race";
 import {trackEvent} from "../analytics/events";
 import type {Locale} from "./i18n";
 import {createRequestId} from "./requestIds";

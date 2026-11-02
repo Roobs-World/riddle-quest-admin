@@ -1,7 +1,7 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {raceMatchFailure} from "@qwordly/core/race";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import type {RaceChallengePreview, RaceOutcome, RaceRunView} from "@qwordly/core/race";
+import {raceMatchFailure} from "@riddle-quest/core/race";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import type {RaceChallengePreview, RaceOutcome, RaceRunView} from "@riddle-quest/core/race";
 import type {MatchmakingCapability} from "../../../platform/types";
 import {RaceSession} from "../RaceSession";
 import type {RaceSessionEffect, RaceSessionEntry, RaceSessionOptions} from "../RaceSession.types";

@@ -13,10 +13,10 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {raceMatchFailure} from '@qwordly/core/race';
+import {raceMatchFailure} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
-import {RACE_RECOVERY_KEY,RACE_RECOVERY_TTL_MS} from '@qwordly/core/race';
+import {RACE_RECOVERY_KEY,RACE_RECOVERY_TTL_MS} from '@riddle-quest/core/race';
 const field=new URLSearchParams(location.search).get('case'),authority=createFakeRaceServices();
 window.calls=[];window.provider={find:async request=>{window.calls.push(request);if(field==='retired'){window.currentProvider=undefined;return {status:'cancelled'};}if(field==='empty')return {status:'success',value:{status:'empty',locale:'en'}};if(field==='failure')return {status:'retryable-failure',failure:raceMatchFailure('temporarily-unavailable',1000)};return {status:'cancelled'};}};
 window.currentProvider=window.provider;window.failResolver=false;window.newer=false;window.recoveryKey=RACE_RECOVERY_KEY;

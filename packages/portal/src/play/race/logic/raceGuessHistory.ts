@@ -1,5 +1,5 @@
-import type {RaceRunView, SubmitRaceGuessResponse} from "@qwordly/core/race";
-import {lowerCaseGraphemes, type ScoredGuess} from "@qwordly/core/game";
+import type {RaceRunView, SubmitRaceGuessResponse} from "@riddle-quest/core/race";
+import {lowerCaseGraphemes, type ScoredGuess} from "@riddle-quest/core/game";
 import {raceBoardAttempts} from "./raceBoardAttempts";
 
 /** A wrong guess receipt ends with this submission after any concurrently consumed attempts. */

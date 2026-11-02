@@ -3,7 +3,7 @@ import {
   type Feedback,
   type GameEngineSnapshot,
   type ScoredGuess,
-} from "@qwordly/core/game";
+} from "@riddle-quest/core/game";
 import type {PlayerData, SavedGame} from "./types";
 import {parseDraftCheckpointRevision} from "../play/draftCheckpointRevision";
 
@@ -181,7 +181,7 @@ export async function parsePlayerData(value: unknown): Promise<PlayerData | null
   )
     return null;
   /** Provides {bridge profile schema} behavior. */
-  const {BridgeProfileSchema} = await import("@qwordly/core/bridge");
+  const {BridgeProfileSchema} = await import("@riddle-quest/core/bridge");
   /** Provides profile behavior. */
   const profile = BridgeProfileSchema.safeParse(value.profile);
   /** Provides active game behavior. */

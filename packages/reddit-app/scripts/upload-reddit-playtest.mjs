@@ -12,7 +12,7 @@ export function uploadRedditPlaytest(args, run = spawnSync, receiptsDirectory = 
     args.length !== 1 ||
     typeof version !== "string"
   ) {
-    throw new Error("Supply one explicit prerelease version: pnpm --filter @qwordly/reddit-app playtest:upload <major.minor.patch.prerelease>");
+    throw new Error("Supply one explicit prerelease version: pnpm --filter @riddle-quest/reddit-app playtest:upload <major.minor.patch.prerelease>");
   }
   validateRedditPlaytestVersion(version);
   const options = {cwd: packageDirectory, stdio: "inherit"};

@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {splitGraphemes, isValidGuess} from "@qwordly/core/game";
-import {SubmitRaceGuessRequestSchema, UpdateLiveRaceSchema} from "@qwordly/core/race";
+import {splitGraphemes, isValidGuess} from "@riddle-quest/core/game";
+import {SubmitRaceGuessRequestSchema, UpdateLiveRaceSchema} from "@riddle-quest/core/race";
 import {startRaceRunForUser, submitRaceGuessForUser, requestRaceHintForUser, resumeRaceRunForUser} from "../../race/raceService";
 import {parseRunRecord} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";

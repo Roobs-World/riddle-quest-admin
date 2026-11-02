@@ -219,7 +219,7 @@ test('published inventory reflects final chunk bytes after private map cleanup',
   const expected = createNotice(new Set(['react']));
   const metadata = JSON.parse(await readFile(path.join(repository,'node_modules/.modules.yaml'),'utf8'));
   const storeDirectory = process.env.RIDDLE_QUEST_LICENSE_STORE_DIR ?? metadata.storeDir;
-  const inventory = execFileSync('pnpm',['--filter','@qwordly/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024,env:{...process.env,pnpm_config_store_dir:storeDirectory}});
+  const inventory = execFileSync('pnpm',['--filter','@riddle-quest/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024,env:{...process.env,pnpm_config_store_dir:storeDirectory}});
   const file = path.join(directory,'inventory.json');
   await writeFile(file,inventory,{mode:0o400});
   process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = file;

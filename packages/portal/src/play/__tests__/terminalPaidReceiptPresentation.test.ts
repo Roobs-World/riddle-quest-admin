@@ -1,5 +1,5 @@
 import {expect,it,jest} from '@jest/globals';
-import type {GameToHostMessage} from '@qwordly/core/bridge';
+import type {GameToHostMessage} from '@riddle-quest/core/bridge';
 /** Terminal authority or exact unresolved payment fixture. */
 const mockEffects:Array<()=>unknown>=[];
 /** Terminal authority or exact unresolved payment fixture. */

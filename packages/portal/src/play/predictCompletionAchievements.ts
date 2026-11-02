@@ -1,5 +1,5 @@
-import {findNewMilestoneAchievementIds} from "@qwordly/core/game";
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import {findNewMilestoneAchievementIds} from "@riddle-quest/core/game";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 
 /** Terminal result fields that can be evaluated without trusting client rewards. */
 export type AchievementCompletionPreview = {

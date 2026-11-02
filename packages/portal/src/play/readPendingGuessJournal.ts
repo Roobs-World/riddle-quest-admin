@@ -1,5 +1,5 @@
-import type {BridgeRiddle} from "@qwordly/core/bridge";
-import {isSinglePlayerKeyboardLetter} from "@qwordly/core/game";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
+import {isSinglePlayerKeyboardLetter} from "@riddle-quest/core/game";
 import type {PendingGuessJournal, PendingPlayStorage} from "./pendingGuessJournal";
 import {parseDraftCheckpointRevision} from "./draftCheckpointRevision";
 

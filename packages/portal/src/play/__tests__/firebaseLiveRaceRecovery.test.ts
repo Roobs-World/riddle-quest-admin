@@ -1,6 +1,6 @@
 import {initializeApp, deleteApp} from "firebase/app";
 import {getFunctions, httpsCallableFromURL} from "firebase/functions";
-import type {LiveRaceView, UpdateLiveRace} from "@qwordly/core/race";
+import type {LiveRaceView, UpdateLiveRace} from "@riddle-quest/core/race";
 import {observeFirebaseLiveRace} from "../firebaseLiveRaceSignals";
 import {updateLiveRace} from "../../firebase";
 

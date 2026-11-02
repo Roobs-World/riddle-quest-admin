@@ -56,7 +56,7 @@ Do not use npm or Yarn to update this workspace. Commit `pnpm-lock.yaml` wheneve
 Start the normal Vite development server:
 
 ```bash
-pnpm --filter @qwordly/portal dev:jest
+pnpm --filter @riddle-quest/portal dev:jest
 ```
 
 Open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
@@ -344,7 +344,7 @@ When adding or removing copy:
 5. If notification fields changed, publish the reviewed Firestore notification configuration separately.
 
 ```bash
-pnpm --filter @qwordly/portal check:locales
+pnpm --filter @riddle-quest/portal check:locales
 ```
 
 ## Testing
@@ -375,8 +375,8 @@ Useful focused checks:
 ```bash
 pnpm test:core
 pnpm test:web
-pnpm --filter @qwordly/portal test:jest-local:playwright
-pnpm --filter @qwordly/portal test:mobile-soak
+pnpm --filter @riddle-quest/portal test:jest-local:playwright
+pnpm --filter @riddle-quest/portal test:mobile-soak
 pnpm --dir firebase-functions test:race:rules
 ```
 
@@ -389,7 +389,7 @@ pnpm verify:production
 pnpm verify:production:extended
 ```
 
-The gate prepares the ignored `@qwordly/core` deploy package before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, active-version verification, and moderation remain explicit owner-run checks.
+The gate prepares the ignored `@riddle-quest/core` deploy package before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, active-version verification, and moderation remain explicit owner-run checks.
 
 ### Uploaded sandbox build
 
@@ -398,7 +398,7 @@ Generate a short-lived login URL under Developer Console → Sandbox Users, copy
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
 JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm --filter @qwordly/portal test:jest-deployed:playwright
+pnpm --filter @riddle-quest/portal test:jest-deployed:playwright
 ```
 
 `JEST_EXPECTED_BUILD_VERSION` is required. Optional deployed-test values are `JEST_DEPLOYED_GAME_URL`, `JEST_SANDBOX_STORAGE_STATE`, and `JEST_GAME_ID`. The default storage-state file lives under `/tmp`; do not commit authenticated browser state.
@@ -457,7 +457,7 @@ The command rebuilds and audits Facebook, creates the source/hash-bound ZIP rece
 Build and package a YouTube release candidate through the separate fail-closed path after all 16 audited content bundles exist:
 
 ```bash
-pnpm --filter @qwordly/portal build:youtube
+pnpm --filter @riddle-quest/portal build:youtube
 pnpm release:youtube
 ```
 

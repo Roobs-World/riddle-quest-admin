@@ -1,5 +1,5 @@
 import {useEffect, useLayoutEffect, useMemo, useRef} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import type {GameSessionState} from "../../gameSessionTypes";
 import {createRequestId} from "../../requestIds";
 

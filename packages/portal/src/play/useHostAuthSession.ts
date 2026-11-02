@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
+import type {BridgeProfile, HostToGameMessage} from "@riddle-quest/core/bridge";
 import {restoreProfileWhileServerLoads} from "../platform/playerData";
 import {createRequestId} from "./requestIds";
 import type {AuthSnapshot, HostServices} from "./types";

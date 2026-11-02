@@ -50,7 +50,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     // builds cannot silently disable the platform capabilities under test.
     /** Provides dist directory behavior. */
     const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
-    execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:facebook"], {
+    execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:facebook"], {
       cwd: path.resolve(packageRoot, "../.."),
       env: {
         ...process.env,

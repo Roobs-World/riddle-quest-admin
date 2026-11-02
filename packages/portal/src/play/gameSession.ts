@@ -5,8 +5,8 @@ import {
   splitGraphemes,
   type Feedback,
   type ScoredGuess,
-} from "@qwordly/core/game";
-import type {BridgeRiddle, BridgeProfile} from "@qwordly/core/bridge";
+} from "@riddle-quest/core/game";
+import type {BridgeRiddle, BridgeProfile} from "@riddle-quest/core/bridge";
 import type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
 import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
 import {getConfirmedRiddleOutcome} from "./ConfirmedRiddleOutcome";

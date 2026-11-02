@@ -1,12 +1,12 @@
 import {createHash} from "node:crypto";
 import {isDeepStrictEqual} from "node:util";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {AbandonRaceRunResponseSchema, SubmitRaceGuessResponseSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema,
   type AbandonRaceRunRequest, type SubmitRaceGuessRequest, type RequestRaceHintRequest, type SkipRaceRiddleRequest,
   type StartRaceRunRequest, type PublishRaceChallengeRequest, type ReserveRaceInviteRequest, type CancelRaceInviteRequest,
-  type RaceRunView} from "@qwordly/core/race";
+  type RaceRunView} from "@riddle-quest/core/race";
 import {raceRules, type RaceRunRecord} from "./raceEngine";
 import {raceTimelineAgrees} from "./raceStoredTimeline";
 

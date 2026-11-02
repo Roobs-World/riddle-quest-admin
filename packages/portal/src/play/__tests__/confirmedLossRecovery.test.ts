@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import {BridgeRiddleSchema} from "@qwordly/core/bridge";
+import {BridgeRiddleSchema} from "@riddle-quest/core/bridge";
 import {createInitialGameSession, gameSessionReducer} from "../gameSession";
 import {GameSessionCheckpoints, createSavedGame} from "../GameSessionCheckpoints";
 import {getConfirmedRiddleOutcome, getConfirmedRiddleWin} from "../ConfirmedRiddleOutcome";

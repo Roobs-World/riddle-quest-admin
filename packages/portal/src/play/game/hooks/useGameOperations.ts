@@ -1,5 +1,5 @@
 import {useCallback, useLayoutEffect, useMemo, useRef} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {prepareAvatarImage} from "../../avatarImage";
 import {createRequestId} from "../../requestIds";
 import {useProvisionalPlayRecovery} from "./useProvisionalPlayRecovery";

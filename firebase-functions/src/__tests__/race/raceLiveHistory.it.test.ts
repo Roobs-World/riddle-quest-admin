@@ -4,7 +4,7 @@ import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {listLiveRaceHistoryForUser} from "../../race/raceLiveHistory";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
-import {LIVE_RACE_HISTORY_MS} from "@qwordly/core/race";
+import {LIVE_RACE_HISTORY_MS} from "@riddle-quest/core/race";
 import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../reddit/redditSecurity";

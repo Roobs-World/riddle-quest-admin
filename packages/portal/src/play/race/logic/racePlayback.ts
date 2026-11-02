@@ -1,4 +1,4 @@
-import type {RaceOpponent} from "@qwordly/core/race";
+import type {RaceOpponent} from "@riddle-quest/core/race";
 
 /** Returns the opponent score reached at an authoritative adjusted elapsed time. */
 export const getGhostCorrectCount = (opponent: RaceOpponent | undefined, adjustedElapsedMs: number): number => {

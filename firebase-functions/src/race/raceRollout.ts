@@ -7,7 +7,7 @@ import {
   type RaceAccessResponse,
   type RaceAnalyticsEventRequest,
   type RaceLocale,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";

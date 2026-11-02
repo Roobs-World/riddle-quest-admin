@@ -89,7 +89,7 @@ The barrier is exclusive only within one archive hash. Before beginning, operato
 
 `release:reddit` stops before remote mutation. The installed Devvit `upload` command runs a build, while `devvit publish` creates and uploads a new version. Neither command currently proves that the immutable candidate handoff is the version being ingested or promoted. For that reason, the package-level `release:upload` and `release:publish` shortcuts fail closed. The setup wizard's explicitly named `playtest:upload` is a non-promotable bootstrap build, not release evidence.
 
-Remote Reddit release is blocked until an exact-byte Devvit adapter or equivalent authoritative proof is available. After such a path ingests and reviews one retained candidate, `pnpm --filter @qwordly/reddit-app release:promotion` verifies that hosted evidence matches its receipt, commit, SHA-256, and read-only handoff before the human promotes that existing version. Never rebuild between evidence and promotion.
+Remote Reddit release is blocked until an exact-byte Devvit adapter or equivalent authoritative proof is available. After such a path ingests and reviews one retained candidate, `pnpm --filter @riddle-quest/reddit-app release:promotion` verifies that hosted evidence matches its receipt, commit, SHA-256, and read-only handoff before the human promotes that existing version. Never rebuild between evidence and promotion.
 
 The legacy `pnpm jest:build-upload` and `pnpm youtube:preflight` aliases remain for one migration cycle and delegate to the canonical commands. `pnpm facebook:preflight` remains a lower-level local check and does not create the immutable handoff; use `pnpm release:facebook` for that boundary.
 

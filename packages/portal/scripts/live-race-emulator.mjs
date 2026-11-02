@@ -17,7 +17,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   const {getLiveRaceChallengeForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveInvitation.js"));
   const {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} = require(path.join(root, "firebase-functions/lib/race/raceLiveChallengeNotifications.js"));
   const {createUsernameReservationFields} = require(path.join(root, "firebase-functions/lib/profile/usernameReservations.js"));
-  const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require("@qwordly/core/race");
+  const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require("@riddle-quest/core/race");
   const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
   const tickets = new Map();
   let clockOffsetMs = 0, lastCommitAtMs = 0;

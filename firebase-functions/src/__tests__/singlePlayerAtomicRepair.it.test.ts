@@ -1,4 +1,4 @@
-import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";

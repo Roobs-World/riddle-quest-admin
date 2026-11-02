@@ -1,6 +1,6 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
-import {RaceEntryResponseSchema} from "@qwordly/core/race";
-import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "@qwordly/core/bridge";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
+import {RaceEntryResponseSchema} from "@riddle-quest/core/race";
+import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "@riddle-quest/core/bridge";
 import {
   ClassicRiddleBufferResponseSchema,
   CompleteGameResponseDataSchema,
@@ -10,7 +10,7 @@ import {
   SkipRiddleResponseSchema,
   SpendCoinsResponseSchema,
   SubmitSinglePlayerGuessResponseDataSchema,
-} from "@qwordly/core/validation";
+} from "@riddle-quest/core/validation";
 import type {AuthSnapshot, HostServices} from "../play/types";
 import {tr} from "../play/i18n";
 import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
@@ -26,7 +26,7 @@ import {
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   SubmitRaceGuessResponseSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>

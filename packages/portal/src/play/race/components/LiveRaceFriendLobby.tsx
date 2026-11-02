@@ -1,4 +1,4 @@
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
 import {useId, type ReactNode} from "react";
 import {tr} from "../../i18n";
 import {LiveRaceIdentity} from "./LiveRaceIdentity";

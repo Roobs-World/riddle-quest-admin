@@ -1,13 +1,13 @@
 import {raceGuessHistory, assertRaceGuessHistory} from "./logic/raceGuessHistory";
 import {raceHintHistory} from "./logic/raceHintHistory";
-import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RaceRunViewSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView, type RaceOutcome, type RaceMatchFailure} from "@qwordly/core/race";
+import {RaceEntryResponseSchema, AbandonRaceRunResponseSchema, ListRaceCategoriesResponseSchema, ListRaceInboxResponseSchema, PublishRaceChallengeResponseSchema, RaceChallengePreviewSchema, RaceOutcomeSchema, RaceRunResponseSchema, RaceRunViewSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema, SubmitRaceGuessResponseSchema, type RaceRunView, type RaceOutcome, type RaceMatchFailure} from "@riddle-quest/core/race";
 import {assertExistingRaceRun} from "./logic/raceEntrySelection";
 import {RacePlay} from "./RacePlay";
 import type {RaceSessionState} from "./RaceSession.types";
 import {raceOperationRequiresRefresh, type RaceOperation} from "./logic/raceOperations";
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import {applyRaceOutcome, createRaceAttempt, findFirstEditableRaceSlot, projectRaceOutcome} from "./logic/racePresentation";
-import {computeFeedback, splitGraphemes, type ScoredGuess} from "@qwordly/core/game";
+import {computeFeedback, splitGraphemes, type ScoredGuess} from "@riddle-quest/core/game";
 
 /** Authority diagnostics never become untranslated player-facing copy. */
 export const raceErrorKey = (error: string | null): string | null => error === null ? null

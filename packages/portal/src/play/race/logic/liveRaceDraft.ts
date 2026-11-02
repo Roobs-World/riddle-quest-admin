@@ -1,4 +1,4 @@
-import type {LiveRaceView, RaceRiddlePrompt} from "@qwordly/core/race";
+import type {LiveRaceView, RaceRiddlePrompt} from "@riddle-quest/core/race";
 import {createRaceAttempt, findFirstEditableRaceSlot} from "./racePresentation";
 import {editRaceInput, type RaceInputState} from "./raceInput";
 

@@ -8,7 +8,7 @@ import type {
   PlayerDataUpdate,
 } from "../platform/types";
 import type {ProductSummary} from "../play/types";
-import {resolveRedditGoldProduct} from "@qwordly/core/pricing/redditCatalog";
+import {resolveRedditGoldProduct} from "@riddle-quest/core/pricing/redditCatalog";
 import {PlayHostApp} from "../play/PlayHostApp";
 import {detectDeviceLanguage, tr, useLocale} from "../play/i18n";
 import {applyPlayerPreferences, subscribeToPlayerPreferenceChanges} from "../play/playerPreferences";

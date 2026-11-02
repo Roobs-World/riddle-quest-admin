@@ -1,4 +1,4 @@
-import {readProtectedContent} from '@qwordly/core/contentProtection';
+import {readProtectedContent} from '@riddle-quest/core/contentProtection';
 import assert from 'node:assert/strict';
 import {mkdtemp, writeFile, rm} from 'node:fs/promises';
 import os from 'node:os';

@@ -1,5 +1,5 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
-import {splitGraphemes} from "@qwordly/core/game";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import contentDocument from "#youtube-content";
 import {YOUTUBE_ANSWER_MAX_GRAPHEMES} from "./limits";
 import type {YouTubeContent, YouTubeLocale, YouTubeRiddle} from "./types";

@@ -1,4 +1,4 @@
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
 import {RankedAvatar} from "../../RankedAvatar";
 import {liveRacePlayerName} from "../logic/liveRacePlayerName";
 

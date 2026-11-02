@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceOpponent} from "@qwordly/core/race";
+import type {RaceOpponent} from "@riddle-quest/core/race";
 import {getGhostCorrectCount} from "../logic/racePlayback";
 
 /** Provides opponent behavior. */

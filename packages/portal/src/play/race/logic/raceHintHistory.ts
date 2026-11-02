@@ -1,5 +1,5 @@
-import type {RaceRunView} from "@qwordly/core/race";
-import type {ScoredGuess} from "@qwordly/core/game";
+import type {RaceRunView} from "@riddle-quest/core/race";
+import type {ScoredGuess} from "@riddle-quest/core/game";
 import {raceBoardAttempts} from "./raceBoardAttempts";
 
 /** A same-question hint may observe attempts committed by another tab while preserving local input. */

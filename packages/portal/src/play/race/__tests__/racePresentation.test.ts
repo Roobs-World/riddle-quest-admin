@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {RACE_RULES, type RaceRiddlePrompt, type RaceRunView} from "@qwordly/core/race";
+import {RACE_RULES, type RaceRiddlePrompt, type RaceRunView} from "@riddle-quest/core/race";
 import {
   confirmedGuessesKey,
   applyRaceOutcome,

@@ -1,4 +1,4 @@
-import type {ScoredGuess} from "@qwordly/core/game";
+import type {ScoredGuess} from "@riddle-quest/core/game";
 
 /** Aligns known feedback with authoritative consumed attempts without inventing missing scores. */
 export const raceBoardAttempts = (guesses: ScoredGuess[], used: number, projectedWrongGuess = false): ScoredGuess[] => {

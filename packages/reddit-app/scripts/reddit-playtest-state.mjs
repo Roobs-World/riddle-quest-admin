@@ -9,7 +9,7 @@ export function validateRedditPlaytestVersion(version) {
   if (typeof version !== "string" || version.length > 80 ||
     !/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.[1-9]\d*$/u.test(version) ||
     !version.split(".").every((part) => Number.isSafeInteger(Number(part)))) {
-    throw new Error("Supply one explicit prerelease version: pnpm --filter @qwordly/reddit-app playtest:upload <major.minor.patch.prerelease>");
+    throw new Error("Supply one explicit prerelease version: pnpm --filter @riddle-quest/reddit-app playtest:upload <major.minor.patch.prerelease>");
   }
   return version;
 }

@@ -20,7 +20,7 @@ it("offers the ordinary next action without advertising unavailable guest coin a
 });
 import {ShopModalPage, SUBSCRIPTION_BENEFIT_KEYS} from "../modalPages/commerce/ShopModalPage";
 import {tr} from "../i18n";
-import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
+import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@riddle-quest/core/pricing/catalog";
 import {ShopSubscriptionContext} from "../modalPages/commerce/ShopSubscriptionContext";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../modalPages/commerce/commerceCosts";
 import type {ProductSummary} from "../types";

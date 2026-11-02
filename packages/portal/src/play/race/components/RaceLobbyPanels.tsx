@@ -9,7 +9,7 @@ import type {
   SocialReportCategory,
   ListFacebookTournamentResponse,
   ListFacebookContextBoardResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 import {canCancelRaceInvitation} from "../logic/raceEntrySelection";
 import {formatRaceTime} from "../logic/racePresentation";

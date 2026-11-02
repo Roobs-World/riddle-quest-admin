@@ -1,4 +1,4 @@
-import {RaceMatchResponseSchema, RaceMatchFailureSchema, classifyRaceMatchFailure, raceMatchFailure, type RaceMatchRequest} from "@qwordly/core/race";
+import {RaceMatchResponseSchema, RaceMatchFailureSchema, classifyRaceMatchFailure, raceMatchFailure, type RaceMatchRequest} from "@riddle-quest/core/race";
 import type {MatchmakingCapability, MatchmakingResult} from "../../../platform/types";
 import type {RacePlayClock} from "../RacePlay";
 

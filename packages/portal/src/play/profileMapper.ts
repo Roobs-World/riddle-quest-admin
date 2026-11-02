@@ -1,4 +1,4 @@
-import type {BridgeProfile, BridgeUser} from "@qwordly/core/bridge";
+import type {BridgeProfile, BridgeUser} from "@riddle-quest/core/bridge";
 
 /** Provides to number behavior. */
 const toNumber = (value: unknown, fallback: number): number =>

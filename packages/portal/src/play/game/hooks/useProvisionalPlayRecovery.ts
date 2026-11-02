@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
-import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@qwordly/core/game";
+import type {BridgeRiddle, GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
 import type {PendingGuessState} from "../../gameSessionTypes";
 import {canEditCurrentGuess, gameSessionReducer, hasRemainingGuessAttempts} from "../../gameSession";
 import {

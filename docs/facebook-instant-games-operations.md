@@ -10,8 +10,8 @@ This runbook describes the Facebook web target currently present in source. It i
 ## Build and inspect
 
 ```sh
-pnpm --filter @qwordly/portal build:facebook
-pnpm --filter @qwordly/portal audit:facebook-artifact
+pnpm --filter @riddle-quest/portal build:facebook
+pnpm --filter @riddle-quest/portal audit:facebook-artifact
 ```
 
 The build writes `builds/facebook`. It must load only `fbinstant.8.0.js`, contain root `fbapp-config.json`, remain below 5 MiB of critical initial resources and 200 MiB total, contain no source maps or private credentials, and pass the reciprocal Jest-leakage audit. The Jest build remains independently available through `build:jest`; never combine both SDKs in one artifact.
@@ -39,7 +39,7 @@ remains a fallback. These paths still require Meta-hosted acceptance.
 Run the interactive setup/evidence guide from the repository root when the real Meta app is available:
 
 ```sh
-pnpm --filter @qwordly/portal facebook:setup
+pnpm --filter @riddle-quest/portal facebook:setup
 ```
 
 The wizard stores the Meta app ID, origins, and deletion-status URL under the ignored, owner-local `.facebook-setup-receipts` directory. It deliberately never accepts secret values, does not collect `FACEBOOK_FIREBASE_APP_ID`, does not write the Functions deployment environment, and never changes tracker statuses. Treat `setup.env` as evidence input only: obtain the canonical Firebase web app ID separately, review all four non-secret values, and deliberately copy them into `firebase-functions/.env.riddle-quest-ec2b2` before backend preflight. Meta approvals remain deferred until the production gate, as requested.

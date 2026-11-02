@@ -1,5 +1,5 @@
-import {countCoinRewardAchievements} from "@qwordly/core/game";
-import {splitGraphemes} from "@qwordly/core/game";
+import {countCoinRewardAchievements} from "@riddle-quest/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import {findNewYouTubeAchievements} from "./achievements";
 import {insertYouTubeAnswerText, deleteYouTubeAnswerLetter} from "./input";
 import {

@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {createInitialGameSession, gameSessionReducer} from "../gameSession";
 import type {GameSessionState} from "../gameSessionTypes";
 /** Retained passive callbacks are delivered explicitly across committed ownership changes. */

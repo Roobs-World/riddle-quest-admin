@@ -18,7 +18,7 @@ import React from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
 import {flushSync} from 'react-dom';
-import {RACE_RULES, RaceRunViewSchema} from '@qwordly/core/race';
+import {RACE_RULES, RaceRunViewSchema} from '@riddle-quest/core/race';
 import {RaceSession} from ${JSON.stringify(path.join(root, "src/play/race/RaceSession.ts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};

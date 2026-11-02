@@ -1,4 +1,4 @@
-import {StartRaceRunRequestSchema, type StartRaceRunRequest} from "@qwordly/core/race";
+import {StartRaceRunRequestSchema, type StartRaceRunRequest} from "@riddle-quest/core/race";
 
 /** Validates and journals a start receipt only while its originating journey owns creation. */
 export function recordOwnedRaceStart(

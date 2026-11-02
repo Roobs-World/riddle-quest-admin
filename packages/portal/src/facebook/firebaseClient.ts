@@ -4,7 +4,7 @@ import type {
   RecordFacebookTournamentRunRequest,
   ListFacebookContextBoardRequest,
   RecordFacebookContextRunRequest,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {firebaseFunctions} from "../firebase";
 import {
   parseFacebookClientConfiguration,

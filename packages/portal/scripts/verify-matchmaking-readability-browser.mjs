@@ -18,7 +18,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {LIVE_RACE_WAIT_MS,RACE_RULES} from '@qwordly/core/race';
+import {LIVE_RACE_WAIT_MS,RACE_RULES} from '@riddle-quest/core/race';
 import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 import ${JSON.stringify(path.join(root,'src/styles.race-lobby.css'))};

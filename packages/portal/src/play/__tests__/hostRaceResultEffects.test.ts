@@ -1,5 +1,5 @@
 import {expect, it, jest} from "@jest/globals";
-import type {RaceOutcome} from "@qwordly/core/race";
+import type {RaceOutcome} from "@riddle-quest/core/race";
 import {deliverHostRaceResult} from "../hostRaceResultEffects";
 
 /** Canonical recording delivered to optional target callbacks. */

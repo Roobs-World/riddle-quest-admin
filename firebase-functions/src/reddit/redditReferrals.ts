@@ -4,7 +4,7 @@ import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {isRedditFeatureEnabled} from "./redditFeatureFlags";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 
 /** Defines the reddit referral reward coins value. */
 export const REDDIT_REFERRAL_REWARD_COINS = 100;

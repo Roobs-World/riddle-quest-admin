@@ -1,5 +1,5 @@
 import type {Dispatch, MutableRefObject} from "react";
-import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
+import type {BridgeRiddle, GameToHostMessage} from "@riddle-quest/core/bridge";
 import type {SavedGame} from "../platform/types";
 import type {GameSessionAction, GameSessionState} from "./gameSessionTypes";
 import type {createPendingPlayRecoveryStorage} from "./pendingGuessJournal";

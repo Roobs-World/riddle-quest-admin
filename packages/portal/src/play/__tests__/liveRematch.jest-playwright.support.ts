@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
-import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, type JoinLiveRace, type RetireLiveRaceJoin} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, type JoinLiveRace, type RetireLiveRaceJoin} from "@riddle-quest/core/race";
 
 /** Exercises both rematch entry points and explicit inbox acceptance through each actual target adapter. */
 export async function installLiveRematchJourney(page: Page, target: "Facebook" | "Reddit", requestUrls: string[]) {

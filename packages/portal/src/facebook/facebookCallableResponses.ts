@@ -8,7 +8,7 @@ import {
   type ListFacebookTournamentResponse,
   type RecordFacebookContextRunResponse,
   type RecordFacebookTournamentRunResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 
 /** Defines the facebook tournament duration ms value. */
 const FACEBOOK_TOURNAMENT_DURATION_MS = 24 * 60 * 60 * 1_000;

@@ -1,7 +1,7 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {HostToGameMessageSchema} from "@qwordly/core/bridge";
+import {HostToGameMessageSchema} from "@riddle-quest/core/bridge";
 import type {AuthSnapshot, HostServices} from "../types";
-import type {RaceOutcome} from "@qwordly/core/race";
+import type {RaceOutcome} from "@riddle-quest/core/race";
 import {createFakeHostServices} from "../fakeServices";
 import {
   createPlayHostMessageHandlers,

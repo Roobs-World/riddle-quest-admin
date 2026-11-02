@@ -11,7 +11,7 @@ import {LIVE_RACE_JOIN_DEADLINE_MS, liveRaceDeliveryDeadline, liveRaceCommandRej
 import {createLiveRaceRetirement} from "./logic/liveRaceRetirement";
 import {liveRacePollInterval} from "./logic/liveRacePolling";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {LiveRaceViewSchema, type LiveGuessReceiptQuery, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@qwordly/core/race";
+import {LiveRaceViewSchema, type LiveGuessReceiptQuery, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@riddle-quest/core/race";
 import {tr} from "../i18n";
 import {createRequestId} from "../requestIds";
 import {RaceTopbar} from "./components/RaceHeader";

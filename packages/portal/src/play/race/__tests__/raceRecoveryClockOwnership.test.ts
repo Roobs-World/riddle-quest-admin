@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import type {RaceRecovery} from "@qwordly/core/race";
+import type {RaceRecovery} from "@riddle-quest/core/race";
 import {catalog, harness, preview} from "./raceSession.support";
 
 /** Optional retention time cannot transfer an old start intent into a replacement journey. */

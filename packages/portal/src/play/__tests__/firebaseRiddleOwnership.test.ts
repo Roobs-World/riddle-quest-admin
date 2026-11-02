@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {ClassicRiddleBufferResponse} from "@qwordly/core/validation";
+import type {ClassicRiddleBufferResponse} from "@riddle-quest/core/validation";
 import type {CurrentRiddleResponse} from "../../firebase";
 
 /** Minimal SDK identity supporting same-UID account visit transitions. */

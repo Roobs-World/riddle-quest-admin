@@ -16,7 +16,7 @@ await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
-import {RACE_RECOVERY_KEY} from '@qwordly/core/race';
+import {RACE_RECOVERY_KEY} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
 const authority=createFakeRaceServices(),originalRead=Storage.prototype.getItem;

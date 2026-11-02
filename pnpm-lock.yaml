@@ -67,7 +67,7 @@ importers:
       '@firebase/app-compat':
         specifier: 0.5.18
         version: 0.5.18
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: file:packages/core
         version: file:firebase-functions/packages/core
       '@sentry/node':
@@ -180,7 +180,7 @@ importers:
 
   packages/portal:
     dependencies:
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
       '@sentry/browser':
@@ -289,7 +289,7 @@ importers:
       '@hono/node-server':
         specifier: 2.1.3
         version: 2.1.3(hono@4.13.11)
-      '@qwordly/core':
+      '@riddle-quest/core':
         specifier: workspace:*
         version: link:../core
       devvit:
@@ -2131,7 +2131,7 @@ packages:
       yauzl:
         optional: true
 
-  '@qwordly/core@file:firebase-functions/packages/core':
+  '@riddle-quest/core@file:firebase-functions/packages/core':
     resolution: {directory: firebase-functions/packages/core, type: directory}
 
   '@rolldown/binding-android-arm-eabi@1.2.11':
@@ -9488,7 +9488,7 @@ snapshots:
       modern-tar: 0.8.6
       yargs: 18.2.0
 
-  '@qwordly/core@file:firebase-functions/packages/core':
+  '@riddle-quest/core@file:firebase-functions/packages/core':
     dependencies:
       zod: 4.6.7
 

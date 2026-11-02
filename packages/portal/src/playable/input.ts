@@ -1,4 +1,4 @@
-import {iterateGraphemes, splitGraphemes} from "@qwordly/core/game";
+import {iterateGraphemes, splitGraphemes} from "@riddle-quest/core/game";
 /** Defines the answer grapheme pattern value. */
 const ANSWER_GRAPHEME_PATTERN = /^[\p{L}\p{M}]+$/u;
 /** Describes you tube input state. */

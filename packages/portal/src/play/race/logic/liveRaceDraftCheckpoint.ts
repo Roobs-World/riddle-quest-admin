@@ -1,4 +1,4 @@
-import {LiveGuessReceiptQuerySchema, type LiveGuessReceiptQuery, type LiveRaceView} from "@qwordly/core/race";
+import {LiveGuessReceiptQuerySchema, type LiveGuessReceiptQuery, type LiveRaceView} from "@riddle-quest/core/race";
 import {isSingleAnswerCell} from "../../answerCell";
 import {reconcileLiveRaceDraft, type LiveRaceDraft} from "./liveRaceDraft";
 

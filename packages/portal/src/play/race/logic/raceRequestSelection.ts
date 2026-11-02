@@ -1,4 +1,4 @@
-import type {RaceRunView} from "@qwordly/core/race";
+import type {RaceRunView} from "@riddle-quest/core/race";
 import type {RaceSessionState} from "../RaceSession.types";
 import type {RaceOperation} from "./raceOperations";
 import {raceEntryView, raceStartPreview} from "./raceEntrySelection";

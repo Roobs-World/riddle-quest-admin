@@ -1,6 +1,6 @@
-import {getSoloWinCoins} from "@qwordly/core/game";
-import {countCoinRewardAchievements} from "@qwordly/core/game";
-import {lowerCaseGraphemes, splitGraphemes, type Feedback} from "@qwordly/core/game";
+import {getSoloWinCoins} from "@riddle-quest/core/game";
+import {countCoinRewardAchievements} from "@riddle-quest/core/game";
+import {lowerCaseGraphemes, splitGraphemes, type Feedback} from "@riddle-quest/core/game";
 import {findNewYouTubeAchievements} from "./achievements";
 import {
   YOUTUBE_ACHIEVEMENT_COINS,

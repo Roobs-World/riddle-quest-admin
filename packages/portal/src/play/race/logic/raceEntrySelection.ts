@@ -1,4 +1,4 @@
-import type {RaceChallengePreview, RaceEntryResponse, RaceRunView} from "@qwordly/core/race";
+import type {RaceChallengePreview, RaceEntryResponse, RaceRunView} from "@riddle-quest/core/race";
 import type {RaceSessionState} from "../RaceSession.types";
 
 /** Accepted entry facts belong to the snapshot lifetime, independently of its exposed UI objects. */

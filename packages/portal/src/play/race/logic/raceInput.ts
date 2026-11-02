@@ -1,5 +1,5 @@
-import type {RaceRiddlePrompt} from "@qwordly/core/race";
-import {iterateGraphemes, splitGraphemes} from "@qwordly/core/game";
+import type {RaceRiddlePrompt} from "@riddle-quest/core/race";
+import {iterateGraphemes, splitGraphemes} from "@riddle-quest/core/game";
 
 /** Editable answer state controlled by the multiplayer race screen. */
 export type RaceInputState = {

@@ -1,4 +1,4 @@
-import type {EconomyDifficulty} from "@qwordly/core/game";
+import type {EconomyDifficulty} from "@riddle-quest/core/game";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import type {DocumentReference} from "firebase-admin/firestore";
@@ -6,7 +6,7 @@ import {captureException} from "../shared/sentry";
 import type {ClassicRiddle, DailyRiddle} from "../validation/firestoreSchemas";
 import {RiddleCollections} from "../validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 /** Provides riddle exists behavior. */

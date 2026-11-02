@@ -1,5 +1,5 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
 import type {RaceTo10GameProps} from "../play/race/RaceTo10Game.types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {PlayHostApp} from "../play/PlayHostApp";
@@ -252,13 +252,13 @@ export function FacebookPlatformEntry() {
               list: async locale => (await listFacebookTournament({locale})).data,
               reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
-              list: async (locale: import("@qwordly/core/race").RaceLocale) => {
+              list: async (locale: import("@riddle-quest/core/race").RaceLocale) => {
                 /** Validated official standings for the exact player locale and UTC window. */
                 const board = (await listFacebookTournament({locale})).data;
                 if (presentation) void presentation.projectBoard(board);
                 return board;
               },
-              record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) => {
+              record: async (runId: string, locale: import("@riddle-quest/core/race").RaceLocale) => {
                 /** Official success is returned independently of provider score delivery. */
                 const result = (await recordFacebookTournament({runId, locale})).data;
                 if (presentation) void presentation.projectRecord(result);
@@ -597,7 +597,7 @@ export function FacebookPlatformEntry() {
   );
 
   /** Handles authoritative race result. */
-  const handleAuthoritativeRaceResult = useCallback(async (result: import("@qwordly/core/race").RaceOutcome) => {
+  const handleAuthoritativeRaceResult = useCallback(async (result: import("@riddle-quest/core/race").RaceOutcome) => {
     try {
       await notificationPromptRef.current?.afterAuthoritativeCompletion(result.result === "player_win");
     } catch (error) {

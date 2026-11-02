@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import {raceMatchFailure} from "@qwordly/core/race";
+import {raceMatchFailure} from "@riddle-quest/core/race";
 /** Storage key observed at the real browser-persistence seam. */
 let mockKey: string | null = null;
 /** Serialized recovery hint shared across simulated tab lifetimes. */

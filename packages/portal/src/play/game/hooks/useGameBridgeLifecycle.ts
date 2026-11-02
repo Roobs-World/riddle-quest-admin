@@ -1,5 +1,5 @@
 import {useEffect, useLayoutEffect, useRef} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {createRequestId} from "../../requestIds";
 import {HOST_TO_GAME_EVENT} from "../../localBridge";
 import {tr} from "../../i18n";

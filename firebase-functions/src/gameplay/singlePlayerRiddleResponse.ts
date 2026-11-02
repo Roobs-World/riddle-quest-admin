@@ -1,5 +1,5 @@
-import {splitGraphemes} from "@qwordly/core/game";
-import type {GetCurrentDailyChallengeResponse} from "@qwordly/core/validation/requestSchemas";
+import {splitGraphemes} from "@riddle-quest/core/game";
+import type {GetCurrentDailyChallengeResponse} from "@riddle-quest/core/validation/requestSchemas";
 import {projectPublicSinglePlayerSession} from "./singlePlayerPublicSession";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 

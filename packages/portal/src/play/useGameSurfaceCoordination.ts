@@ -1,4 +1,4 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import {useCallback, useEffect, useState} from "react";
 import {trackScreen} from "../analytics/events";
 import {resolveActivityPresence} from "../presence/activityPresence";

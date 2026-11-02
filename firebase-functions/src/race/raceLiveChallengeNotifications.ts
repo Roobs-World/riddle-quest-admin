@@ -1,6 +1,6 @@
 import {Timestamp, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_INVITE_MS, type LiveRaceChallenge} from "@qwordly/core/race";
+import {LIVE_RACE_INVITE_MS, type LiveRaceChallenge} from "@riddle-quest/core/race";
 import {createUsernameReservationId, normalizeUsernameForReservation} from "../profile/usernameReservations";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceProviderScope} from "./raceEligibility";

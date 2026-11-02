@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {RaceSession} from "../RaceSession";
 import {catalog, preview} from "./raceSession.support";
 

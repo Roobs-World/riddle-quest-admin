@@ -1,6 +1,6 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort, PlatformResult} from "./types";
-import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
+import {DEFAULT_PRODUCT_PRICING} from "@riddle-quest/core/pricing/catalog";
 import type {ProductSummary} from "../play/types";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 

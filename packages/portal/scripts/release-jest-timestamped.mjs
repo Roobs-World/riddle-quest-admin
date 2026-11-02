@@ -707,7 +707,7 @@ try {
   // Known Console metadata and assets are part of ordinary builds. A real
   // timestamped release additionally requires the two owner-approved identity
   // decisions before this process reads credentials or can transmit bytes.
-  runPnpm(["--filter", "@qwordly/portal", "check:jest-console:release"], gateEnvironment);
+  runPnpm(["--filter", "@riddle-quest/portal", "check:jest-console:release"], gateEnvironment);
 
   // The long gate receives metadata only: no upload token, email, credential
   // path, Sentry token, or unrelated ambient environment. Release credentials
@@ -717,7 +717,7 @@ try {
   // Capture the installed graph while the read-only package store is available.
   // The credential-bearing rebuild consumes this frozen input without querying pnpm.
   const frozenLicenseInventoryPath = join(gatePreflightDirectory, "license-inventory.json");
-  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "@qwordly/portal", "licenses", "list", "--json"], {
+  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "@riddle-quest/portal", "licenses", "list", "--json"], {
     captureOutput: true,
     env: {...gateEnvironment, pnpm_config_store_dir: isolatedPnpmLicenseStoreDirectory},
   }).stdout);

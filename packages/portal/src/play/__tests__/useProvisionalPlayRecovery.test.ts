@@ -1,5 +1,5 @@
 import {beforeEach, expect, it, jest} from "@jest/globals";
-import type {BridgeRiddle, GameToHostMessage} from "@qwordly/core/bridge";
+import type {BridgeRiddle, GameToHostMessage} from "@riddle-quest/core/bridge";
 import type {GameSessionAction, GameSessionState, PendingGuessState} from "../gameSessionTypes";
 
 /** Run the real recovery owner's mount effects against the real reducer. */

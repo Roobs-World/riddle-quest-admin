@@ -12,24 +12,24 @@ const repositoryDirectory = fileURLToPath(new URL("../../..", import.meta.url));
 
 const invocations = Object.freeze([
   Object.freeze({args: ["--dir", "firebase-functions", "test:youtube-content"]}),
-  Object.freeze({args: ["--filter", "@qwordly/portal", "test:youtube:unit"]}),
-  Object.freeze({args: ["--filter", "@qwordly/portal", "build:web"]}),
-  Object.freeze({args: ["--filter", "@qwordly/portal", "build:youtube"]}),
-  Object.freeze({args: ["--filter", "@qwordly/portal", "test:release-scripts"]}),
+  Object.freeze({args: ["--filter", "@riddle-quest/portal", "test:youtube:unit"]}),
+  Object.freeze({args: ["--filter", "@riddle-quest/portal", "build:web"]}),
+  Object.freeze({args: ["--filter", "@riddle-quest/portal", "build:youtube"]}),
+  Object.freeze({args: ["--filter", "@riddle-quest/portal", "test:release-scripts"]}),
   Object.freeze({
-    args: ["--filter", "@qwordly/portal", "test:jest-local:playwright"],
+    args: ["--filter", "@riddle-quest/portal", "test:jest-local:playwright"],
     environment: {PORTAL_USE_EXISTING_BUILD: "1"},
   }),
   Object.freeze({
-    args: ["--filter", "@qwordly/portal", "test:facebook:playwright"],
+    args: ["--filter", "@riddle-quest/portal", "test:facebook:playwright"],
     environment: {PORTAL_USE_EXISTING_BUILD: "1"},
   }),
   Object.freeze({
-    args: ["--filter", "@qwordly/portal", "test:reddit:playwright"],
+    args: ["--filter", "@riddle-quest/portal", "test:reddit:playwright"],
     environment: {PORTAL_USE_EXISTING_BUILD: "1"},
   }),
   Object.freeze({
-    args: ["--filter", "@qwordly/portal", "test:youtube:playwright"],
+    args: ["--filter", "@riddle-quest/portal", "test:youtube:playwright"],
     environment: {PORTAL_USE_EXISTING_BUILD: "1"},
   }),
 ]);

@@ -1,4 +1,4 @@
-import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type RaceOutcome} from "@qwordly/core/race";
+import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type RaceOutcome} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {raceRewardAwardsAgree} from "./raceAchievements";

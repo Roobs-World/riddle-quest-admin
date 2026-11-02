@@ -1,5 +1,5 @@
-import type {BridgeRiddle} from "@qwordly/core/bridge";
-import {splitGraphemes} from "@qwordly/core/game";
+import type {BridgeRiddle} from "@riddle-quest/core/bridge";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import type {GameSessionState} from "./gameSessionTypes";
 
 /** Recovers wins and exhausted paid attempts from complete host feedback, independently of provider saves. */

@@ -1,4 +1,4 @@
-import {RaceLocaleSchema, type RaceLocale} from "@qwordly/core/race";
+import {RaceLocaleSchema, type RaceLocale} from "@riddle-quest/core/race";
 
 /** Reads only a live, bounded native-tournament destination; no entry field supplies authority. */
 export function facebookTournamentLocaleFromEntryData(value: unknown, nowMs = Date.now()): RaceLocale | undefined {

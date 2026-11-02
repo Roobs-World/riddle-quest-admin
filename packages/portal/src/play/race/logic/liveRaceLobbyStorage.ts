@@ -1,4 +1,4 @@
-import {LiveRaceChallengeSchema, LiveRaceViewSchema, RetireLiveRaceJoinSchema} from "@qwordly/core/race";
+import {LiveRaceChallengeSchema, LiveRaceViewSchema, RetireLiveRaceJoinSchema} from "@riddle-quest/core/race";
 import {observeBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 import {LIVE_RACE_LOBBY_KEY as KEY} from "./liveRaceLobbyHint";
 

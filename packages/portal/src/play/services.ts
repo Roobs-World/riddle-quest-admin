@@ -1,4 +1,4 @@
-import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
+import {cloneProductPricingCatalog} from "@riddle-quest/core/pricing/catalog";
 import type {HostServices} from "./types";
 import {toProductSummaries} from "./types";
 import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarness";

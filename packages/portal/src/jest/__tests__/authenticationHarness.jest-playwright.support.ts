@@ -3,7 +3,7 @@ import {installJestSdkHarness} from "./authentication.jest-sdk-harness";
 import {installJestSdkRequestRoute} from "./authentication.jest-playwright.support";
 import {createFakeRaceServices} from "../../play/race/testing/fakeRaceServices";
 import {projectRaceOutcome} from "../../play/race/logic/racePresentation";
-import type {RaceRunView} from "@qwordly/core/race";
+import type {RaceRunView} from "@riddle-quest/core/race";
 
 /** Creates an isolated authenticated page with optional race authority fixtures. */
 export const openAuthenticationHarness = async (

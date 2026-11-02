@@ -1,5 +1,5 @@
 import {randomUUID} from "node:crypto";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 import {admin} from "../shared/firebaseAdmin";
 import {onDocumentCreated, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {captureException} from "../shared/sentry";

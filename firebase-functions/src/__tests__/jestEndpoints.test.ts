@@ -24,7 +24,7 @@ import {
   DEFAULT_PRODUCT_PRICING,
   PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS,
   PREMIUM_SUBSCRIPTION_MONTHLY_COINS,
-} from "@qwordly/core/pricing/catalog";
+} from "@riddle-quest/core/pricing/catalog";
 
 /** Provides request behavior. */
 const request = (input: {

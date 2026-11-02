@@ -1,4 +1,4 @@
-import {RACE_RULES, type RaceGhostEvent} from "@qwordly/core/race";
+import {RACE_RULES, type RaceGhostEvent} from "@riddle-quest/core/race";
 import {parseRunRecord, parseChallengeRecord} from "../../race/raceSetupService";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun, abandonRaceRun, type RaceRunRecord} from "../../race/raceEngine";
 import {buildRaceBotOpponent} from "../../race/raceBot";

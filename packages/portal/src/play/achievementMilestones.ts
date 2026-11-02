@@ -1,4 +1,4 @@
-import {ACHIEVEMENT_MILESTONES} from "@qwordly/core/game";
+import {ACHIEVEMENT_MILESTONES} from "@riddle-quest/core/game";
 import english from "../../../../src/locales/en/achievements.json";
 import type {AchievementDefinition} from "./achievementTypes";
 
