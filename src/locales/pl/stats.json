@@ -4,7 +4,7 @@
     "BEST_STREAK": "Najlepsza passa",
     "CHALLENGE_WINS": "Wygrane w wyzwaniach",
     "CURRENT_STREAK": "Bieżąca passa",
-    "DAILY_PUZZLES": "Codziennie Puzzle",
+    "DAILY_PUZZLES": "Codzienne zagadki",
     "GAMEPLAY_SECTION": "Rozgrywka",
     "GAMES_PLAYED": "Grane gry",
     "HIGHEST_CLASSIC_LEVEL": "Najwyższy poziom klasyczny",
@@ -16,6 +16,6 @@
     "TOTAL_WORDS_GUESSED": "Łączna liczba odgadniętych słów",
     "WIN_RATE": "Współczynnik wygranych",
     "WINS_STREAKS_SECTION": "Zwycięstwa i serie",
-    "XP": "doświadczenie"
+    "XP": "XP"
   }
 }

@@ -1,9 +1,9 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "munten",
+    "COINS_SUFFIX": " munten",
     "LOADING_TEXT": "Winkel laden...",
     "NO_PACKS_AVAILABLE": "Er zijn momenteel geen muntpakketten beschikbaar.",
-    "PURCHASE_BUTTON": "AANKOOP",
+    "PURCHASE_BUTTON": "KOPEN",
     "PERIOD_MONTHLY": "maand",
     "PERIOD_WEEKLY": "week",
     "PERIOD_YEARLY": "jaar",

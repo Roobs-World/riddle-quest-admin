@@ -5,7 +5,7 @@
     "MODAL_TITLE": "Osiągnięcia",
     "MORE_UNLOCKED_SUFFIX": " więcej odblokowanych",
     "NEW_ACHIEVEMENT": "Nowe osiągnięcie",
-    "NICE_BUTTON": "Ładny",
+    "NICE_BUTTON": "Super",
     "UNLOCKED_ALERT_MESSAGE": "Sprawdź swój profil, aby zobaczyć swoje nowe osiągnięcia.",
     "UNLOCKED_ALERT_OK": "Potwierdź",
     "UNLOCKED_ALERT_TITLE": "Osiągnięcia Odblokowane!",
@@ -36,7 +36,7 @@
       },
       "daily_3": {
         "NAME": "Codzienne: 3",
-        "DESCRIPTION": "Ukończ 3 codziennych wyzwań"
+        "DESCRIPTION": "Ukończ 3 codzienne wyzwania"
       },
       "daily_365": {
         "NAME": "Codzienne: 365",

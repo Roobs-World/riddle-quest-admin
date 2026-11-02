@@ -2,20 +2,20 @@
   "StatsModal": {
     "AVG_GUESSES": "Moyenne de suppositions (victoires)",
     "BEST_STREAK": "Meilleure séquence",
-    "CHALLENGE_WINS": "Défi gagné",
+    "CHALLENGE_WINS": "Victoires en défi",
     "CURRENT_STREAK": "Séquence actuelle",
-    "DAILY_PUZZLES": "Quotidiennement Puzzles",
+    "DAILY_PUZZLES": "Énigmes quotidiennes",
     "GAMEPLAY_SECTION": "Jouabilité",
     "GAMES_PLAYED": "Jeux joués",
     "HIGHEST_CLASSIC_LEVEL": "Niveau classique le plus élevé",
-    "HINTS_USED": "Conseils utilisés",
+    "HINTS_USED": "Indices utilisés",
     "PERFORMANCE_SECTION": "Performances",
     "TITLE": "Statistiques",
     "TOTAL_SCORE": "Score total",
-    "TOTAL_WINS": "Total des gains",
+    "TOTAL_WINS": "Total des victoires",
     "TOTAL_WORDS_GUESSED": "Total de mots devinés",
     "WIN_RATE": "Taux de victoire",
     "WINS_STREAKS_SECTION": "Victoires et séquences",
-    "XP": "expérience"
+    "XP": "XP"
   }
 }

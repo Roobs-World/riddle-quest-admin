@@ -1,13 +1,13 @@
 {
   "GameMessages": {
-    "GAME_LOST": "Trò chơi thua: Trả lời đúng -",
-    "GAME_WON": "Trò chơi đã thắng: Số lần thử -",
-    "HINT_USED": "Gợi ý được sử dụng: Chi phí -",
-    "IN_MODE": "trong",
-    "MODE_SUFFIX": "chế độ.",
+    "GAME_LOST": "Thua: Đáp án đúng - ",
+    "GAME_WON": "Thắng: Số lần thử - ",
+    "HINT_USED": "Đã dùng gợi ý: Chi phí - ",
+    "IN_MODE": " ở chế độ ",
+    "MODE_SUFFIX": ".",
     "RETRY_BUTTON_PRESSED": "Đã nhấn nút thử lại",
     "FALLBACK_CLUE_SINGLE": "Giải quyết từ này.",
-    "FALLBACK_CLUE_TEMPLATE": "Giải từ có chữ cái {length} này."
+    "FALLBACK_CLUE_TEMPLATE": "Giải từ có {length} chữ cái này."
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",

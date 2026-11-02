@@ -15,7 +15,7 @@
     "ALERT_USERNAME_UPDATE_FAILED": "ユーザー名の更新に失敗しました。",
     "ALERT_USERNAME_UPDATE_SUCCESS": "ユーザー名は正常に更新されました!",
     "AVG_GUESS_LABEL": "平均推測",
-    "AVG_GUESSES_STAT": "平均。推測",
+    "AVG_GUESSES_STAT": "平均推測数",
     "BEST_STREAK_STAT": "ベスト連勝",
     "BEST_STRIKE_HEADER": "ベストストライク",
     "CANCEL_BUTTON": "キャンセル",

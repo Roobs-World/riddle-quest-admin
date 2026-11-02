@@ -1,11 +1,11 @@
 {
   "Navigation": {
-    "BUY_COINS_BUTTON": "Coin satın al",
-    "CREDITS": "Krediler",
+    "BUY_COINS_BUTTON": "Para satın al",
+    "CREDITS": "Emeği Geçenler",
     "GAME": "Oyun",
     "HINT_BUTTON": "İpucu",
-    "LANDING": "İniş",
-    "PLAY_BUTTON": "Oynamak",
+    "LANDING": "Ana sayfa",
+    "PLAY_BUTTON": "Oyna",
     "PROFILE_BUTTON": "Profil",
     "SETTINGS_BUTTON": "Ayarlar"
   },

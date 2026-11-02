@@ -2,11 +2,11 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Ek bir deneme için video izle",
     "COIN_EXTRA_GO_BUTTON": "{coins} jeton ile ekstra hak",
-    "OPEN_SHOP_BUTTON": "Magazayi ac",
-    "OUT_OF_ATTEMPTS": "Deneme hakki bitti.",
+    "OPEN_SHOP_BUTTON": "Mağazayı aç",
+    "OUT_OF_ATTEMPTS": "Deneme hakkı bitti.",
     "SKIP_LEVEL_PREFIX": "Kullan: ",
-    "SKIP_LEVEL_SUFFIX": " para ile bolumu atla",
-    "SKIP_PUZZLE_BUTTON": "Bulmacayi atla",
+    "SKIP_LEVEL_SUFFIX": " para ile bölümü atla",
+    "SKIP_PUZZLE_BUTTON": "Bulmacayı atla",
     "USE_COINS_PREFIX": "Kullan: ",
     "USE_COINS_SUFFIX": " para ile yeniden dene"
   }

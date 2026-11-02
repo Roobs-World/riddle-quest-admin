@@ -4,19 +4,19 @@
     "COLOR_CORRECT": "Der Buchstabe ist korrekt und an der richtigen Position",
     "COLOR_MISPLACED": "Der Buchstabe ist im Wort, aber an der falschen Position",
     "COLOR_WRONG": "Der Buchstabe ist nicht im Wort",
-    "GOAL_DESCRIPTION": "Erraten Sie das versteckte Raetsel in 5 Versuchen mithilfe der Farbhinweise.",
+    "GOAL_DESCRIPTION": "Erraten Sie das versteckte Rätsel in 5 Versuchen mithilfe der Farbhinweise.",
     "GOAL_TITLE": "Das Ziel",
     "GOT_IT_BUTTON": "Verstanden!",
-    "TIPS_DESCRIPTION": "Beginnen Sie mit haeufigen Buchstaben und nutzen Sie die Farbrueckmeldung. Denken Sie daran: Sie haben nur 5 Versuche!",
+    "TIPS_DESCRIPTION": "Beginnen Sie mit häufigen Buchstaben und nutzen Sie die Farbrückmeldung. Denken Sie daran: Sie haben nur 5 Versuche!",
     "TIPS_TITLE": "Tipps"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Zum Fortfahren tippen",
-    "TITLE": "Willkommen zurueck"
+    "TITLE": "Willkommen zurück"
   },
   "WelcomeModal": {
-    "EARN_COINS_TEXT": "Verdienen Sie Muenzen, meistern Sie taegliche Herausforderungen und erklimmen Sie die Bestenliste.",
+    "EARN_COINS_TEXT": "Verdienen Sie Münzen, meistern Sie tägliche Herausforderungen und erklimmen Sie die Bestenliste.",
     "LETS_PLAY": "Los geht's",
-    "SOLVE_RIDDLES_TEXT": "Losen Sie Raetsel, indem Sie die Antwort Buchstabe fuer Buchstabe erraten. Nutzen Sie die Farbhinweise fuer jeden Versuch."
+    "SOLVE_RIDDLES_TEXT": "Lösen Sie Rätsel, indem Sie die Antwort Buchstabe für Buchstabe erraten. Nutzen Sie die Farbhinweise für jeden Versuch."
   }
 }

@@ -1,6 +1,6 @@
 {
   "GameScreenAlerts": {
-    "CLASSIC_LABEL": "권위 있는",
+    "CLASSIC_LABEL": "클래식",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "계속하려면 코인이 충분하지 않습니다.",
     "COST_COINS_MIDDLE": " 동전.",
     "COST_COINS_PREFIX": "비용: ",

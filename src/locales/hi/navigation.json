@@ -11,7 +11,7 @@
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "अगली क्लासिक पहेली लोड करने में त्रुटि:",
-    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ Index ",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ इस इंडेक्स पर कोई क्लासिक पहेली नहीं मिली: ",
     "SERVER_GENERATES_RIDDLES": " पर कोई क्लासिक पहेली नहीं मिली। जब आप अनुमान सबमिट करेंगे तो सर्वर स्वचालित रूप से नई पहेलियाँ उत्पन्न करेगा।"
   }
 }

@@ -1,9 +1,9 @@
 {
   "Settings": {
-    "ABOUT_BUTTON": "O ",
+    "ABOUT_BUTTON": "O grze",
     "ACCOUNT_DELETION_BUTTON": "Usuń konto",
     "CLOSE_BUTTON": "Zamknij",
-    "CREDITS_BUTTON": "Kredyty",
+    "CREDITS_BUTTON": "Twórcy",
     "DATA_EXPORT_BUTTON": "Eksportuj moje dane",
     "HELP_BUTTON": "Pomoc",
     "LANGUAGE_LABEL": "Język",

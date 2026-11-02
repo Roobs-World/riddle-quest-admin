@@ -17,7 +17,7 @@
     "HINT_NOT_ENOUGH_COINS_MESSAGE": "Non hai abbastanza monete per un suggerimento.",
     "HINT_SHOW_BUTTON": "MOSTRA SUGGERIMENTO",
     "NEXT_BUTTON": "Avanti",
-    "NOT_ENOUGH_COINS_MESSAGE": "Hai bisogno di più monete per usare un suggerimento suggerimento.",
+    "NOT_ENOUGH_COINS_MESSAGE": "Hai bisogno di più monete per usare un suggerimento.",
     "NOT_ENOUGH_COINS_TITLE": "Monete insufficienti",
     "PURCHASE_FAILED_MESSAGE": "Acquisto fallito. Per favore riprova.",
     "PURCHASE_FAILED_TITLE": "Acquisto fallito",
@@ -40,7 +40,7 @@
     "STREAK_BROKEN_TITLE": "Striscia interrotta",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Nessun prodotto disponibile",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "L'app non è riuscita a completare il caricamento degli enigmi. Controlla la connessione e riprova.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Database Riddle non disponibile",
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Database degli indovinelli non disponibile",
     "PROGRESS_UNSAVED_MESSAGE": "I progressi non sono ancora salvati. Tieni il gioco aperto."
   }
 }

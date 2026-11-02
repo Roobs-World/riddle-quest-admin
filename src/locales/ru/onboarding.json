@@ -1,22 +1,22 @@
 {
   "Instructions": {
-    "COLOR_CLUES_TITLE": "Tsvetovye podskazki",
-    "COLOR_CORRECT": "Bukva pravilnaya i na pravilnoy pozitsii",
-    "COLOR_MISPLACED": "Bukva est v slove, no na nepravilnoy pozitsii",
-    "COLOR_WRONG": "Bukvyi net v slove",
-    "GOAL_DESCRIPTION": "Ugadayte skrytuyu zagadku za 5 popytok, ispolzuya tsvetovye podskazki.",
-    "GOAL_TITLE": "Tsel igry",
-    "GOT_IT_BUTTON": "Ponyatno!",
-    "TIPS_DESCRIPTION": "Nachinayte s chastykh bukv i ispolzuyte tsvetovuyu obratnuyu svyaz. Pomnite: tolko 5 popytok!",
-    "TIPS_TITLE": "Sovety"
+    "COLOR_CLUES_TITLE": "Цветовые подсказки",
+    "COLOR_CORRECT": "Буква верная и стоит на своём месте",
+    "COLOR_MISPLACED": "Буква есть в слове, но стоит не на своём месте",
+    "COLOR_WRONG": "Этой буквы нет в слове",
+    "GOAL_DESCRIPTION": "Отгадайте скрытую загадку за 5 попыток, ориентируясь на цветовые подсказки.",
+    "GOAL_TITLE": "Цель игры",
+    "GOT_IT_BUTTON": "Понятно!",
+    "TIPS_DESCRIPTION": "Начинайте с часто встречающихся букв и используйте цветовые подсказки, чтобы сузить варианты. Помните: у вас всего 5 попыток!",
+    "TIPS_TITLE": "Советы"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Нажмите, чтобы продолжить",
     "TITLE": "С возвращением"
   },
   "WelcomeModal": {
-    "EARN_COINS_TEXT": "Zarabatyvayte monety, prohodite ezhednevnye vyzovy i podnimaytes v reytinge.",
-    "LETS_PLAY": "Igrat",
-    "SOLVE_RIDDLES_TEXT": "Reshayte zagadki, ugadyvaya otvet bukva za bukvoy. Ispolzuyte tsvetovye podskazki dlya kazhdoy popytki."
+    "EARN_COINS_TEXT": "Зарабатывайте монеты, проходите ежедневные испытания и поднимайтесь в таблице лидеров.",
+    "LETS_PLAY": "Играть",
+    "SOLVE_RIDDLES_TEXT": "Решайте увлекательные загадки, угадывая ответ буква за буквой. Используйте цветовые подсказки, чтобы сузить варианты."
   }
 }

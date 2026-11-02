@@ -10,7 +10,7 @@
     "CLOSE_STATISTICS": "Zamknij statystyki",
     "DELETE_LAST_LETTER": "Usuń ostatnio wprowadzoną literę",
     "GAME_HEADER": "Nagłówek gry z logo i saldem monet",
-    "GAME_LOSS_NOTIFICATION": "Przegrana w grze powiadomienie",
+    "GAME_LOSS_NOTIFICATION": "Powiadomienie o przegranej",
     "GO_BACK": "Wróć",
     "LETTER_PREFIX": "Litera ",
     "LOADING": "Ładowanie",
@@ -24,12 +24,12 @@
     "OPEN_SETTINGS_HINT": "Dostęp do ustawień gry, opcji dźwięku i zarządzania kontem",
     "SHARE_SYSTEM": "Udostępnij",
     "SUBMIT_GUESS": "Prześlij bieżące przypuszczenie",
-    "UNMUTE_SOUND": "Włącz wyciszenie dźwięku",
+    "UNMUTE_SOUND": "Włącz dźwięk",
     "VIRTUAL_KEYBOARD": "Klawiatura wirtualna",
     "LANDING_ATTRIBUTION_LINK": "Wykonane przez Roobs World",
     "LOGO_BUTTON": "Logo aplikacji",
     "MODAL_SEQUENCE_GO_TO_HINT": "Wróć do tego wyskakującego okienka",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Przejdź do wyskakującego okienka {popupIndex} z {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current} z {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Wyskakujące okienko {current} z {total}"
   }
 }

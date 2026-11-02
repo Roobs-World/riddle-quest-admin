@@ -1,8 +1,8 @@
 {
   "LevelUpFanfare": {
-    "COINS_SUFFIX": " Монеты",
+    "COINS_SUFFIX": " монет",
     "CONTINUE_BUTTON": "Отлично",
     "LEVEL_PREFIX": "Уровень ",
-    "TITLE": "Повышайте уровень!"
+    "TITLE": "Новый уровень!"
   }
 }

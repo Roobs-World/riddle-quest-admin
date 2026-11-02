@@ -6,7 +6,7 @@
     "IN_MODE": " в режиме ",
     "MODE_SUFFIX": ".",
     "RETRY_BUTTON_PRESSED": "Нажата кнопка повтора",
-    "FALLBACK_CLUE_SINGLE": "Разгадай это слово.",
+    "FALLBACK_CLUE_SINGLE": "Разгадайте это слово.",
     "FALLBACK_CLUE_TEMPLATE": "Решите это слово из {length} букв."
   },
   "WebPortal": {

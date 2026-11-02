@@ -2,7 +2,7 @@
   "LevelUpFanfare": {
     "COINS_SUFFIX": " Münzen",
     "CONTINUE_BUTTON": "Großartig",
-    "LEVEL_PREFIX": "Ebene ",
-    "TITLE": "Level aufsteigen!"
+    "LEVEL_PREFIX": "Level ",
+    "TITLE": "Levelaufstieg!"
   }
 }

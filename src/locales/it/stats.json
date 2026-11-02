@@ -3,10 +3,10 @@
     "AVG_GUESSES": "Media ipotesi (vittorie)",
     "BEST_STREAK": "Miglior serie",
     "CHALLENGE_WINS": "Vittorie sfida",
-    "CURRENT_STREAK": " Serie attuale",
+    "CURRENT_STREAK": "Serie attuale",
     "DAILY_PUZZLES": "Enigmi giornalieri",
     "GAMEPLAY_SECTION": "Gioco",
-    "GAMES_PLAYED": "Giochi Giocato",
+    "GAMES_PLAYED": "Partite giocate",
     "HIGHEST_CLASSIC_LEVEL": "Livello classico più alto",
     "HINTS_USED": "Suggerimenti utilizzati",
     "PERFORMANCE_SECTION": "Prestazioni",
@@ -14,8 +14,8 @@
     "TOTAL_SCORE": "Punteggio totale",
     "TOTAL_WINS": "Vittorie totali",
     "TOTAL_WORDS_GUESSED": "Parole totali indovinate",
-    "WIN_RATE": "Vota vincita",
+    "WIN_RATE": "Percentuale di vittorie",
     "WINS_STREAKS_SECTION": "Vittorie e serie",
-    "XP": "esperienza"
+    "XP": "XP"
   }
 }

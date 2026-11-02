@@ -2,20 +2,20 @@
   "StatsModal": {
     "AVG_GUESSES": "Среднее число предположений (побед)",
     "BEST_STREAK": "Лучшая серия",
-    "CHALLENGE_WINS": "Выигрыши в соревнованиях",
+    "CHALLENGE_WINS": "Победы в испытаниях",
     "CURRENT_STREAK": "Текущая серия",
-    "DAILY_PUZZLES": "Ежедневно Пазлы",
+    "DAILY_PUZZLES": "Ежедневные загадки",
     "GAMEPLAY_SECTION": "Геймплей",
     "GAMES_PLAYED": "Сыгранные игры",
     "HIGHEST_CLASSIC_LEVEL": "Высший классический уровень",
     "HINTS_USED": "Использованные подсказки",
-    "PERFORMANCE_SECTION": "Производительность",
+    "PERFORMANCE_SECTION": "Результаты",
     "TITLE": "Статистика",
     "TOTAL_SCORE": "Общий счет",
     "TOTAL_WINS": "Всего побед",
     "TOTAL_WORDS_GUESSED": "Всего угаданных слов",
     "WIN_RATE": "Процент побед",
     "WINS_STREAKS_SECTION": "Победы и серии",
-    "XP": "опыт"
+    "XP": "XP"
   }
 }

@@ -5,27 +5,27 @@
     "HINT_USED": "Pista usada: costo - ",
     "IN_MODE": " en modo ",
     "MODE_SUFFIX": ".",
-    "RETRY_BUTTON_PRESSED": "Boton de reintento presionado",
+    "RETRY_BUTTON_PRESSED": "Botón de reintento presionado",
     "FALLBACK_CLUE_SINGLE": "Resuelve esta palabra.",
-    "FALLBACK_CLUE_TEMPLATE": "Resuelve esta palabra de {length} letra."
+    "FALLBACK_CLUE_TEMPLATE": "Resuelve esta palabra de {length} letras."
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",
     "JEST_APP_TITLE": "Riddle-Q",
     "HTML5_BADGE": "Portal jugable HTML5",
     "EMAIL_LABEL": "Correo",
-    "PASSWORD_LABEL": "Contrasena",
+    "PASSWORD_LABEL": "Contraseña",
     "SIGN_IN_WITH_EMAIL": "Entrar con correo",
     "SIGNING_IN": "Entrando...",
-    "GUEST_WARNING": "Juega como invitado o inicia sesion para sincronizar progreso, monedas y clasificacion.",
+    "GUEST_WARNING": "Juega como invitado o inicia sesión para sincronizar progreso, monedas y clasificación.",
     "HOST_STATUS_READY": "Host conectado",
     "STARTUP_CONNECTING": "Conectando con Jest…",
     "STARTUP_PLAYER": "Cargando la cuenta del jugador…",
     "STARTUP_PROGRESS": "Cargando el progreso guardado…",
     "STARTUP_GAME": "Preparando tu partida…",
-    "JEST_HARNESS": "Arnes Jest activo",
+    "JEST_HARNESS": "Arnés Jest activo",
     "GAME_FRAME_TITLE": "Marco de juego de Riddle Quest",
-    "PLAY_CLASSIC": "Clasico",
+    "PLAY_CLASSIC": "Clásico",
     "PLAY_DAILY": "Diario",
     "OPEN_GAME": "Cargar acertijo",
     "NOTIFICATION_PLAYER_FALLBACK": "Jugador",
@@ -37,11 +37,11 @@
     "NOTIFICATION_WEEKLY_BODY": "Nivel {level}: hay un nuevo Acertijo Cósmico Diario. Consigue {coins}+ monedas.",
     "PURCHASE_COMPLETE": "{coins} monedas agregadas.",
     "PROFILE_PROGRESS": "Nivel {level} con {xp} XP.",
-    "ACHIEVEMENTS_EMPTY": "Aun no hay logros desbloqueados.",
+    "ACHIEVEMENTS_EMPTY": "Aún no hay logros desbloqueados.",
     "PAUSE_GAME": "Pausar juego",
     "RESUME_GAME": "Reanudar juego",
     "PAUSED": "Pausado",
-    "BRIDGE_ERROR": "El puente del juego recibio un mensaje invalido.",
-    "PROVIDER_NOT_CONFIGURED": "Este proveedor web aun no esta configurado."
+    "BRIDGE_ERROR": "El puente del juego recibió un mensaje inválido.",
+    "PROVIDER_NOT_CONFIGURED": "Este proveedor web aún no está configurado."
   }
 }

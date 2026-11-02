@@ -1,8 +1,8 @@
 {
   "StreakFanfare": {
-    "COINS_SUFFIX": "Koin",
+    "COINS_SUFFIX": " Koin",
     "CONTINUE_BUTTON": "Teruskan",
-    "STREAK_SUFFIX": "-Hari Beruntun",
-    "TITLE": "Pukulan Meningkat!"
+    "STREAK_SUFFIX": " Hari Beruntun",
+    "TITLE": "Rentetan Bertambah!"
   }
 }

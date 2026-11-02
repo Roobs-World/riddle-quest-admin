@@ -1,10 +1,10 @@
 {
   "GameMessages": {
-    "GAME_LOST": "Przegrana gra: prawidłowa odpowiedź -",
-    "GAME_WON": "Wygrany mecz: próby –",
-    "HINT_USED": "Użyta wskazówka: Koszt -",
-    "IN_MODE": "w",
-    "MODE_SUFFIX": "tryb.",
+    "GAME_LOST": "Przegrana gra: prawidłowa odpowiedź - ",
+    "GAME_WON": "Wygrana gra: próby - ",
+    "HINT_USED": "Użyta wskazówka: koszt - ",
+    "IN_MODE": " w trybie ",
+    "MODE_SUFFIX": ".",
     "RETRY_BUTTON_PRESSED": "Naciśnięto przycisk Ponów próbę",
     "FALLBACK_CLUE_SINGLE": "Rozwiąż to słowo.",
     "FALLBACK_CLUE_TEMPLATE": "Rozwiąż to słowo o długości {length}."

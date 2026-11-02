@@ -2,9 +2,9 @@
   "GameScreenAlerts": {
     "CLASSIC_LABEL": "Классический",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "У вас недостаточно монет для продолжения.",
-    "COST_COINS_MIDDLE": " Монеты.",
+    "COST_COINS_MIDDLE": " монет.",
     "COST_COINS_PREFIX": "Стоимость: ",
-    "COST_COINS_SUFFIX": " Монеты.",
+    "COST_COINS_SUFFIX": " монет.",
     "DAILY_CHALLENGE_LABEL": "Ежедневное испытание",
     "DAILY_SKIP_MODAL_TITLE": "Выйти из ежедневной загадки?",
     "DAILY_SKIP_MESSAGE": "Ежедневная загадка останется незавершённой. Перейти в классический режим?",
@@ -22,7 +22,7 @@
     "PURCHASE_FAILED_MESSAGE": "Покупка не удалась. Пожалуйста, попробуйте еще раз.",
     "PURCHASE_FAILED_TITLE": "Не удалось совершить покупку",
     "SKIP_BUTTON": "Пропустить",
-    "SKIP_LEVEL_BUTTON": "ПЕРЕХОДИТЬ УРОВЕНЬ",
+    "SKIP_LEVEL_BUTTON": "ПРОПУСТИТЬ УРОВЕНЬ",
     "SKIP_MODAL_TITLE": "Пропустить уровень?",
     "SKIP_NOT_ENOUGH_COINS_MESSAGE": "У вас недостаточно монет, чтобы пропустить уровень.",
     "SPEND_COINS_ERROR_MESSAGE": "Не удалось потратить монеты. Пожалуйста, попробуйте еще раз.",
@@ -34,13 +34,13 @@
     "DEBUG_DAILY_CHALLENGE_ERROR_MESSAGE": "Не удалось создать новое ежедневное задание.",
     "DEBUG_DAILY_CHALLENGE_ERROR_TITLE": "Ошибка ежедневного задания",
     "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Успешно создано новое ежедневное задание в localizedRiddles/{locale}/riddles/current.",
-    "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Daily Задача создана",
+    "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Ежедневное задание создано",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Ваш прогресс сохраняется на этом устройстве. Обновите свою учетную запись, чтобы обеспечить ее безопасность на всех устройствах.",
     "STREAK_BROKEN_MESSAGE": "Ваша серия закончилась в {previousStreak} день{daySuffix}. Выполните сегодняшнее ежедневное задание, чтобы начать новую серию.",
-    "STREAK_BROKEN_TITLE": "Последовательность прервана",
+    "STREAK_BROKEN_TITLE": "Серия прервана",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Нет доступных товаров",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "Приложению не удалось завершить загрузку загадок. Пожалуйста, проверьте подключение и повторите попытку.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "База данных Riddle недоступна",
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "База данных загадок недоступна",
     "PROGRESS_UNSAVED_MESSAGE": "Прогресс ещё не сохранён. Не закрывайте игру."
   }
 }
