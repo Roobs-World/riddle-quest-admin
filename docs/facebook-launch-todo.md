@@ -995,20 +995,14 @@ pnpm --dir packages/portal facebook:draft promote --archive-hash EXACT_64_HEX_SH
 7. Test public monetization only through a deliberately approved purchase/ad test method with the owner aware of any actual charge. Do not fabricate a sandbox purchase on a production-only path.
 8. Repeat public startup/core play on supported web/iOS/Android surfaces.
 9. Verify the expected production version/hash and backend revisions.
-10. Open the existing private monitoring viewer, if the configured collector is accessible:
-
-```sh
-node tooling/deployment-monitor/preview.mjs
-```
-
-11. Open `http://127.0.0.1:4179`. Confirm collection health and snapshot freshness; use Cloud Logging/Functions dashboards for the actual deployed services if the viewer is unavailable.
-12. Review request failures, auth/App Check rejection, latency, storage failures, ad/payment faults, deletion/support queue and physical-device issues at the agreed times.
-13. Do not label backend requests as players/sessions. The collector lacks complete Facebook gameplay/performance exports, and its runbook says no email/Slack alerts are configured.
-14. Assign a human to inspect dashboards during this window, or have the owner approve a real alerting implementation. Do not assume an email will arrive.
-15. When a feature is unsafe, use P6-03's verified switch procedure. Restart sessions where required, confirm the effect and record incident time/revision.
-16. If core safety/identity is broken, follow the approved broader rollback/public-availability response and stop announcing a successful launch.
-17. Write a final release report containing version/hash, backend revisions, review references, smoke outcomes, supported surfaces, scope exclusions, incident contacts and recovery steps.
-18. Update this checklist and the progress tracker with actual evidence. Keep post-release unresolved work visible.
+10. Open Cloud Logging and the Cloud Functions metrics for the deployed services.
+11. Review request failures, auth/App Check rejection, latency, storage failures, ad/payment faults, deletion/support queue and physical-device issues at the agreed times.
+12. Do not label backend requests as players/sessions. No email or Slack alerting is configured.
+13. Assign a human to inspect dashboards during this window, or have the owner approve a real alerting implementation. Do not assume an email will arrive.
+14. When a feature is unsafe, use P6-03's verified switch procedure. Restart sessions where required, confirm the effect and record incident time/revision.
+15. If core safety/identity is broken, follow the approved broader rollback/public-availability response and stop announcing a successful launch.
+16. Write a final release report containing version/hash, backend revisions, review references, smoke outcomes, supported surfaces, scope exclusions, incident contacts and recovery steps.
+17. Update this checklist and the progress tracker with actual evidence. Keep post-release unresolved work visible.
 
 **Done when:** Non-role play passes, monitoring has an accountable operator and the agreed launch window closes with a recorded result.
 

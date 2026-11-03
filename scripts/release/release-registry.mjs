@@ -17,7 +17,7 @@ export function createReleaseRegistry(plans, html5 = {}) {
   const targets = new Set();
   return Object.freeze(plans.map(plan => {
     if (!/^[a-z][a-z0-9-]*$/.test(plan.target) || targets.has(plan.target)) throw new Error(`Invalid or duplicate target: ${plan.target}`);
-    if (!plan.dashboardName) throw new Error(`Missing dashboard mapping: ${plan.target}`);
+    if (!plan.displayName) throw new Error(`Missing display name: ${plan.target}`);
     targets.add(plan.target);
     const neutral = html5[plan.target];
     return Object.freeze({...plan,

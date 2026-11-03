@@ -1,5 +1,0 @@
-.git
-.gitignore
-node_modules
-test
-# index.html and seed.json are generated for deployment and must be uploaded.
