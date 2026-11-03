@@ -4,8 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {promisify} from 'node:util';
 import {releaseRepository} from './html5-handoff-preparation.mjs';
-import {recordDevelopmentCompletion, publishDevelopmentCompletion} from './development-progress.mjs';
-import {googleClient, snapshotStore} from '../../tooling/deployment-monitor/google.mjs';
+import {recordDevelopmentCompletion} from './development-progress.mjs';
 import {developmentSourceDigest} from './development-source-digest.mjs';
 import {executeDevelopmentCheck} from './development-check-output.mjs';
 import {reuseDevelopmentChecks} from './development-check-reuse.mjs';
@@ -28,7 +27,7 @@ if (process.argv[2] === '--ci') {
   const receipt = JSON.parse(await readFile(process.argv[3], 'utf8'));
   completion = receipt.completion;
 } else {
-  if (!process.argv[2]) throw new Error('Usage: complete-development-task.mjs task.json [--checks-report report.json] | --ci | --retry receipt.json [--publish]');
+  if (!process.argv[2]) throw new Error('Usage: complete-development-task.mjs task.json [--checks-report report.json] | --ci | --retry receipt.json');
   const task = JSON.parse(await readFile(process.argv[2], 'utf8'));
   if (!Array.isArray(task.checks) || !task.checks.length) throw new Error('Task must declare required checks');
   const sourceDigest = await developmentSourceDigest(releaseRepository);
@@ -47,19 +46,5 @@ if (process.argv[2] === '--ci') {
     requiredChecks: task.checks.map(check => check.id), checks, remainingGates: task.remainingGates, nextAction: task.nextAction, artifacts: []};
   for (const artifact of task.artifacts ?? []) completion.artifacts.push({...artifact, sha256: createHash('sha256').update(await readFile(artifact.file)).digest('hex')});
 }
-const publish = process.argv.includes('--publish');
-let store;
-if (publish) {
-  const accessToken = process.env.MONITOR_ACCESS_TOKEN ?? execFileSync('gcloud', ['auth', 'print-access-token'], {encoding: 'utf8'}).trim();
-  store = snapshotStore(googleClient({accessToken}), 'riddle-quest-monitoring-ec2b2');
-}
-// Remote publication always checks the configured accepted branch, never a PR checkout.
-const getAcceptedRevision = async () => {
-  const branch = process.env.DEVELOPMENT_ACCEPTED_BRANCH ?? 'main';
-  if (!/^[a-zA-Z0-9_/-]+$/.test(branch)) throw new Error('Invalid accepted branch');
-  const {stdout} = await execute('git', ['ls-remote', 'origin', `refs/heads/${branch}`], {cwd: releaseRepository});
-  return stdout.split(/\s/u)[0];
-};
-await recordDevelopmentCompletion(releaseRepository, completion, {acceptedRevision: revision,
-  ...(publish ? {publish: value => publishDevelopmentCompletion(store, value, {getAcceptedRevision})} : {})});
-console.log(`Recorded ${completion.taskId} for ${completion.targets.join(', ')}${publish ? ' and refreshed the existing dashboard snapshot' : ' in the local dashboard'}.`);
+const receiptPath = await recordDevelopmentCompletion(releaseRepository, completion, {acceptedRevision: revision});
+console.log(`Recorded ${completion.taskId} for ${completion.targets.join(', ')} in ${receiptPath}.`);

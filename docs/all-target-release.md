@@ -8,7 +8,7 @@ pnpm release:all
 
 Current scope is platform-specific HTML5 delivery only. Standalone web hosting and
 all PWA builds are excluded from this command, packaging, verification and future
-submission work. Historical receipts remain in the dashboard with excluded status.
+submission work.
 
 The command first runs `pnpm verify:all-targets`. No target release adapter starts unless that shared gate succeeds. It then runs all configured provider and distribution adapters in a deterministic order and stops at the first failure.
 

@@ -16,7 +16,7 @@
     },
     "handoff": "Confirm authoritative completion and exact build activation, then run the Simulator and sandbox checks. Game publication remains held.",
     "runbook": "docs/jest-html5-operations.md",
-    "dashboardName": "Jest",
+    "displayName": "Jest",
     "delivery": "web-target"
   },
   {
@@ -36,7 +36,7 @@
     },
     "handoff": "Upload only the printed read-only archive to Meta as a non-production Draft.",
     "runbook": "docs/facebook-instant-games-operations.md",
-    "dashboardName": "Facebook",
+    "displayName": "Facebook",
     "delivery": "web-target"
   },
   {
@@ -56,7 +56,7 @@
     },
     "handoff": "Upload build-youtube.zip and retain its manifest and test report for manual certification.",
     "runbook": "docs/youtube-playables-operations.md",
-    "dashboardName": "YouTube",
+    "displayName": "YouTube",
     "delivery": "web-target"
   },
   {
@@ -76,7 +76,7 @@
     },
     "handoff": "Remote ingestion remains blocked until an exact-byte Devvit adapter or equivalent proof is available.",
     "runbook": "docs/reddit-games-operations.md",
-    "dashboardName": "Reddit",
+    "displayName": "Reddit",
     "delivery": "web-target"
   },
   {
@@ -94,7 +94,7 @@
     },
     "handoff": "Use builds/netflix with the Netflix partner delivery tooling.",
     "runbook": "docs/netflix-yahoo-candidate-builds.md",
-    "dashboardName": "Netflix",
+    "displayName": "Netflix",
     "delivery": "web-target"
   },
   {
@@ -112,7 +112,7 @@
     },
     "handoff": "Use builds/yahoo with the Yahoo partner delivery tooling.",
     "runbook": "docs/netflix-yahoo-candidate-builds.md",
-    "dashboardName": "Yahoo",
+    "displayName": "Yahoo",
     "delivery": "web-target"
   },
   {
@@ -130,7 +130,7 @@
     },
     "handoff": "Complete the GameSnacks licensing agreement, then upload build-gamesnacks.zip in the Developer Console.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Google GameSnacks",
+    "displayName": "Google GameSnacks",
     "delivery": "web-target",
     "artifact": "build-gamesnacks.zip"
   },
@@ -150,7 +150,7 @@
     },
     "handoff": "Create the initial itch.io project once, then configure Butler for automatic updates.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "itch.io",
+    "displayName": "itch.io",
     "delivery": "neutral-html5",
     "artifact": "build-itch.zip",
     "releaseGate": "Initial project creation remains a manual itch.io step; later uploads use Butler."
@@ -171,7 +171,7 @@
     },
     "handoff": "Upload build-crazygames-basic.zip in the Developer Portal and retain its manifest digest.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "CrazyGames",
+    "displayName": "CrazyGames",
     "delivery": "neutral-html5",
     "artifact": "build-crazygames-basic.zip",
     "releaseGate": "Developer Portal upload and Basic Launch review remain manual."
@@ -192,7 +192,7 @@
     },
     "handoff": "Use build-newgrounds.zip only after the authenticated project requirements are reviewed.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Newgrounds",
+    "displayName": "Newgrounds",
     "delivery": "neutral-html5",
     "artifact": "build-newgrounds.zip",
     "releaseGate": "Newgrounds project creation and publication remain manual."
@@ -213,7 +213,7 @@
     },
     "handoff": "Create the Game Jolt game and browser package, then upload build-gamejolt.zip and publish its release.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Game Jolt",
+    "displayName": "Game Jolt",
     "delivery": "neutral-html5",
     "artifact": "build-gamejolt.zip",
     "releaseGate": "Game Jolt game-page, browser package, release and publication setup remain manual."
@@ -234,7 +234,7 @@
     },
     "handoff": "Submit the playable URL and retain build-coolmath-pitch.zip for requested review.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Coolmath Games",
+    "displayName": "Coolmath Games",
     "delivery": "neutral-html5",
     "artifact": "build-coolmath-pitch.zip",
     "releaseGate": "Coolmath licensing review remains manual; this neutral archive is for the non-exclusive pitch only."
@@ -255,7 +255,7 @@
     },
     "handoff": "Send the playable URL and retain build-armor-pitch.zip if Armor requests the archive.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Armor Games",
+    "displayName": "Armor Games",
     "delivery": "neutral-html5",
     "artifact": "build-armor-pitch.zip",
     "releaseGate": "Armor Games licensing outreach and publication remain manual."
@@ -276,7 +276,7 @@
     },
     "handoff": "Upload build-gamepix-review.zip without enabling syndication until the current terms are accepted.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "GamePix",
+    "displayName": "GamePix",
     "delivery": "neutral-html5",
     "artifact": "build-gamepix-review.zip",
     "releaseGate": "GamePix account creation, upload, distribution choice and review remain manual."
@@ -297,7 +297,7 @@
     },
     "handoff": "Submit the hosted game URL and retain build-addictinggames-review.zip if the reviewer requests files.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Addicting Games",
+    "displayName": "Addicting Games",
     "delivery": "neutral-html5",
     "artifact": "build-addictinggames-review.zip",
     "releaseGate": "Addicting Games submission and licensing review remain manual."
@@ -318,7 +318,7 @@
     },
     "handoff": "Use the official developer form and retain build-htmlgames-pitch.zip for requested delivery.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "HTMLGames.com",
+    "displayName": "HTMLGames.com",
     "delivery": "neutral-html5",
     "artifact": "build-htmlgames-pitch.zip",
     "releaseGate": "HTMLGames.com contact, commercial review and publication remain manual."
@@ -339,7 +339,7 @@
     },
     "handoff": "Submit the hosted build or build-playkovo-review.zip through the provider review channel.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "PlayKovo",
+    "displayName": "PlayKovo",
     "delivery": "neutral-html5",
     "artifact": "build-playkovo-review.zip",
     "releaseGate": "PlayKovo submission review and publication remain manual."
@@ -360,7 +360,7 @@
     },
     "handoff": "Apply for developer status, review the upload agreement, then upload build-kongregate.zip for review.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Kongregate",
+    "displayName": "Kongregate",
     "delivery": "neutral-html5",
     "artifact": "build-kongregate.zip",
     "releaseGate": "Kongregate developer approval, upload agreement, portal upload and publication remain manual."
@@ -381,7 +381,7 @@
     },
     "handoff": "Apply with the production playable URL and retain build-lagged-review.zip for provider review.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Lagged",
+    "displayName": "Lagged",
     "delivery": "neutral-html5",
     "artifact": "build-lagged-review.zip",
     "releaseGate": "Lagged developer approval, SDK credentials, integration review and publication remain manual."
@@ -402,7 +402,7 @@
     },
     "handoff": "Apply with the production playable URL and retain build-gamedistribution-review.zip for technical review.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "GameDistribution",
+    "displayName": "GameDistribution",
     "delivery": "neutral-html5",
     "artifact": "build-gamedistribution-review.zip",
     "releaseGate": "GameDistribution contracting, game ID issuance, SDK integration, upload and activation remain manual."
@@ -423,7 +423,7 @@
     },
     "handoff": "Create the provider game record, obtain its GameId, then integrate and validate the SDK before activation.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "GameMonetize",
+    "displayName": "GameMonetize",
     "delivery": "neutral-html5",
     "artifact": "build-gamemonetize-review.zip",
     "releaseGate": "GameMonetize account setup, GameId issuance, SDK integration, upload and activation remain manual."
@@ -444,7 +444,7 @@
     },
     "handoff": "Confirm contracting eligibility and obtain Console access before building the isolated mandatory SDK adapter.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Yandex Games",
+    "displayName": "Yandex Games",
     "delivery": "neutral-html5",
     "artifact": "build-yandex-review.zip",
     "releaseGate": "Yandex developer registration, contract, SDK integration, Console upload and moderation remain manual."
@@ -465,7 +465,7 @@
     },
     "handoff": "Create the bot and game in BotFather, then use build-telegram-review.zip as the isolated integration baseline.",
     "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
-    "dashboardName": "Telegram",
+    "displayName": "Telegram",
     "delivery": "neutral-html5",
     "artifact": "build-telegram-review.zip",
     "releaseGate": "BotFather bot/game creation, signed identity, Telegram Stars fulfillment and launch-link configuration remain manual."
@@ -486,7 +486,7 @@
     },
     "handoff": "Submit build-y8-review.zip without external monetization, then add an isolated Y8 SDK adapter only after approval.",
     "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
-    "dashboardName": "Y8",
+    "displayName": "Y8",
     "delivery": "neutral-html5",
     "artifact": "build-y8-review.zip",
     "releaseGate": "Y8 account setup, studio review, SDK approval, upload and publication remain manual."
@@ -507,7 +507,7 @@
     },
     "handoff": "Review partner syndication overlap before implementing the isolated Playgama Bridge adapter.",
     "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
-    "dashboardName": "Playgama",
+    "displayName": "Playgama",
     "delivery": "neutral-html5",
     "artifact": "build-playgama-review.zip",
     "releaseGate": "Playgama contracting, Bridge integration, distribution choices, moderation and publication remain manual."
@@ -528,7 +528,7 @@
     },
     "handoff": "Test build-amazon-webapp-review.zip with Fire Web App Tester before adding isolated Amazon IAP.",
     "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
-    "dashboardName": "Amazon Appstore Web App",
+    "displayName": "Amazon Appstore Web App",
     "delivery": "neutral-html5",
     "artifact": "build-amazon-webapp-review.zip",
     "releaseGate": "Amazon developer enrollment, Fire compatibility testing, IAP setup, listing and certification remain manual."
@@ -549,7 +549,7 @@
     },
     "handoff": "Apply for partner access and obtain the current SDK and UK commercial terms before integration.",
     "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
-    "dashboardName": "JioGames HTML5",
+    "displayName": "JioGames HTML5",
     "delivery": "neutral-html5",
     "artifact": "build-jiogames-review.zip",
     "releaseGate": "JioGames account approval, HTML5 SDK access, ads/IAP integration, QA and publication remain manual."
@@ -570,7 +570,7 @@
     },
     "handoff": "Pitch the hosted demo and retain build-famobi-pitch.zip until compatible non-exclusive terms are offered.",
     "runbook": "docs/research/further-html5-release-targets-2026-09-21.md",
-    "dashboardName": "Famobi",
+    "displayName": "Famobi",
     "delivery": "neutral-html5",
     "artifact": "build-famobi-pitch.zip",
     "releaseGate": "Famobi contract screening, studio approval, source handling, SDK integration, QA and publication remain manual."
@@ -591,7 +591,7 @@
     },
     "handoff": "Request the exact destination and opt-out list before implementing the isolated GamePush SDK adapter.",
     "runbook": "docs/research/further-html5-release-targets-2026-09-21.md",
-    "dashboardName": "GamePush Distribution",
+    "displayName": "GamePush Distribution",
     "delivery": "neutral-html5",
     "artifact": "build-gamepush-review.zip",
     "releaseGate": "GamePush contracting, destination selection, SDK integration, moderation and syndication remain manual."
@@ -612,7 +612,7 @@
     },
     "handoff": "Request a written non-exclusive revenue-share offer before providing source or integrating an SDK.",
     "runbook": "docs/research/further-html5-release-targets-2026-09-21.md",
-    "dashboardName": "SOFTGAMES",
+    "displayName": "SOFTGAMES",
     "delivery": "neutral-html5",
     "artifact": "build-softgames-pitch.zip",
     "releaseGate": "SOFTGAMES outreach, non-exclusive contract review, SDK integration and publication remain manual."
@@ -633,7 +633,7 @@
     },
     "handoff": "Review renewal, sublicensing, termination and fee clauses before integrating the isolated SDK.",
     "runbook": "docs/research/further-html5-release-targets-2026-09-21.md",
-    "dashboardName": "WGPlayground",
+    "displayName": "WGPlayground",
     "delivery": "neutral-html5",
     "artifact": "build-wgplayground-review.zip",
     "releaseGate": "WGPlayground agreement review, account setup, SDK integration, upload and publication remain manual."
@@ -654,7 +654,7 @@
     },
     "handoff": "Request credentials and written non-exclusive terms before implementing an isolated Miniplay adapter.",
     "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
-    "dashboardName": "Miniplay",
+    "displayName": "Miniplay",
     "delivery": "neutral-html5",
     "artifact": "build-miniplay-review.zip",
     "releaseGate": "Miniplay account setup, support request, API credentials, integration review and production launch remain manual."
@@ -675,7 +675,7 @@
     },
     "handoff": "Send the playable build and accept only a compatible non-exclusive publishing offer.",
     "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
-    "dashboardName": "Kizi",
+    "displayName": "Kizi",
     "delivery": "neutral-html5",
     "artifact": "build-kizi-pitch.zip",
     "releaseGate": "Kizi developer outreach, non-exclusive commercial review, SDK integration and publication remain manual."
@@ -696,7 +696,7 @@
     },
     "handoff": "Confirm UK eligibility and non-exclusive terms before building the isolated RPK wrapper or enabling services.",
     "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
-    "dashboardName": "Huawei Quick Game",
+    "displayName": "Huawei Quick Game",
     "delivery": "neutral-html5",
     "artifact": "build-huawei-quick-game-review.zip",
     "releaseGate": "Huawei UK developer onboarding, agreement review, service approvals, RPK integration and AppGallery review remain manual."
@@ -717,7 +717,7 @@
     },
     "handoff": "Confirm host-side advertising without bundled ad code and non-exclusive terms before submission.",
     "runbook": "docs/research/additional-release-targets-round-4-2026-09-21.md",
-    "dashboardName": "GameFlare Distribution",
+    "displayName": "GameFlare Distribution",
     "delivery": "neutral-html5",
     "artifact": "build-gameflare-review.zip",
     "releaseGate": "GameFlare account setup, contract review, upload, payout configuration and production approval remain manual."
@@ -738,7 +738,7 @@
     },
     "handoff": "Obtain official SDK documentation and confirm its ad behavior is compatible before isolated integration.",
     "runbook": "docs/research/additional-release-targets-round-4-2026-09-21.md",
-    "dashboardName": "Shockwave",
+    "displayName": "Shockwave",
     "delivery": "neutral-html5",
     "artifact": "build-shockwave-review.zip",
     "releaseGate": "Shockwave registration, agreement review, official SDK access, integration, QA and publication remain manual."
@@ -759,7 +759,7 @@
     },
     "handoff": "Create the game ID and design the phone controller before building the isolated two-page artifact.",
     "runbook": "docs/research/additional-release-targets-round-5-2026-09-21.md",
-    "dashboardName": "AirConsole",
+    "displayName": "AirConsole",
     "delivery": "neutral-html5",
     "artifact": "build-airconsole-review.zip",
     "releaseGate": "AirConsole game creation, controller design, SDK integration, upload, review and approval remain manual."
@@ -780,7 +780,7 @@
     },
     "handoff": "Verify UK eligibility and choose free-only or legally reviewed wallet payments before MiniKit integration.",
     "runbook": "docs/research/additional-release-targets-round-5-2026-09-21.md",
-    "dashboardName": "World App Mini Apps",
+    "displayName": "World App Mini Apps",
     "delivery": "neutral-html5",
     "artifact": "build-world-mini-app-review.zip",
     "releaseGate": "World Developer Portal setup, commercial review, MiniKit integration, listing review and release remain manual."
@@ -801,7 +801,7 @@
     },
     "handoff": "Reserve a stable domain and sign the initial association before publishing the isolated Mini App.",
     "runbook": "docs/research/additional-release-targets-round-5-2026-09-21.md",
-    "dashboardName": "Farcaster Mini Apps",
+    "displayName": "Farcaster Mini Apps",
     "delivery": "neutral-html5",
     "artifact": "build-farcaster-mini-app-review.zip",
     "releaseGate": "Farcaster domain selection, manifest signing, SDK integration, launch publication and discovery remain manual."
@@ -822,7 +822,7 @@
     },
     "handoff": "Review authenticated terms and verify a dedicated domain before isolated SDK or payment work.",
     "runbook": "docs/research/additional-release-targets-round-6-2026-09-21.md",
-    "dashboardName": "Pi Apps Platform",
+    "displayName": "Pi Apps Platform",
     "delivery": "neutral-html5",
     "artifact": "build-pi-apps-review.zip",
     "releaseGate": "Pi account, KYC, terms review, app creation, SDK integration, listing review and approval remain manual."
@@ -843,7 +843,7 @@
     },
     "handoff": "Confirm UK organization eligibility and start free-only unless wallet commerce is separately approved.",
     "runbook": "docs/research/additional-release-targets-round-6-2026-09-21.md",
-    "dashboardName": "MiniPay Mini Apps",
+    "displayName": "MiniPay Mini Apps",
     "delivery": "neutral-html5",
     "artifact": "build-minipay-mini-app-review.zip",
     "releaseGate": "MiniPay terms review, commerce decision, hosted integration, listing submission and approval remain manual."
@@ -864,7 +864,7 @@
     },
     "handoff": "Confirm non-exclusive terms and UK monetization eligibility before isolated Zoom integration.",
     "runbook": "docs/research/additional-release-targets-round-7-2026-09-21.md",
-    "dashboardName": "Zoom App Marketplace",
+    "displayName": "Zoom App Marketplace",
     "delivery": "neutral-html5",
     "artifact": "build-zoom-app-review.zip",
     "releaseGate": "Zoom app creation, agreement review, SDK integration, security evidence, Marketplace review and publication remain manual."
@@ -885,7 +885,7 @@
     },
     "handoff": "Design a real facilitator and board-result flow before recruiting the beta organizations required for review.",
     "runbook": "docs/research/additional-release-targets-round-8-2026-09-21.md",
-    "dashboardName": "Miro Marketplace",
+    "displayName": "Miro Marketplace",
     "delivery": "neutral-html5",
     "artifact": "build-miro-marketplace-review.zip",
     "releaseGate": "Miro app creation, collaborative-flow design, SDK integration, beta adoption, Marketplace review and publication remain manual."
@@ -906,7 +906,7 @@
     },
     "handoff": "Define the learning objective and remove ads, IAP, analytics and off-origin dependencies before submission.",
     "runbook": "docs/research/additional-release-targets-round-9-2026-09-21.md",
-    "dashboardName": "Greenhouse Games",
+    "displayName": "Greenhouse Games",
     "delivery": "neutral-html5",
     "artifact": "build-greenhouse-review.zip",
     "releaseGate": "Greenhouse educational positioning, CSP/offline adaptation, creator onboarding, upload, review and publication remain manual."
@@ -927,7 +927,7 @@
     },
     "handoff": "Send the demo and request written advertising, revenue-share and commerce terms before integration.",
     "runbook": "docs/research/additional-release-targets-round-9-2026-09-21.md",
-    "dashboardName": "OzoGames",
+    "displayName": "OzoGames",
     "delivery": "neutral-html5",
     "artifact": "build-ozogames-review.zip",
     "releaseGate": "OzoGames email submission, publisher agreement, monetization review and publication remain manual."
@@ -948,7 +948,7 @@
     },
     "handoff": "Submit the canonical neutral URL and record the listing only after it becomes public.",
     "runbook": "docs/research/additional-release-targets-round-9-2026-09-21.md",
-    "dashboardName": "SlowDen",
+    "displayName": "SlowDen",
     "delivery": "neutral-html5",
     "artifact": "build-slowden-review.zip",
     "releaseGate": "SlowDen form submission, terms confirmation, editorial review and listing approval remain manual."
@@ -969,7 +969,7 @@
     },
     "handoff": "Submit the hosted HTTPS URL or ZIP only after confirming the artifact contains no advertising code.",
     "runbook": "docs/research/additional-release-targets-round-10-2026-09-21.md",
-    "dashboardName": "NoAdsGames",
+    "displayName": "NoAdsGames",
     "delivery": "neutral-html5",
     "artifact": "build-noadsgames-review.zip",
     "releaseGate": "NoAdsGames API submission and mandatory human review remain manual; the artifact must remain ad-free."
@@ -990,7 +990,7 @@
     },
     "handoff": "Send the canonical HTTPS playable and review ZIP through the official contact route.",
     "runbook": "docs/research/additional-release-targets-round-11-2026-09-21.md",
-    "dashboardName": "YalGames",
+    "displayName": "YalGames",
     "delivery": "neutral-html5",
     "artifact": "build-yalgames-review.zip",
     "releaseGate": "YalGames contact submission, editorial review and publication remain manual; ads and commerce stay disabled."
@@ -1011,7 +1011,7 @@
     },
     "handoff": "Submit the canonical HTTPS playable after cross-origin iframe verification.",
     "runbook": "docs/research/additional-release-targets-round-12-2026-09-21.md",
-    "dashboardName": "Rando.gg",
+    "displayName": "Rando.gg",
     "delivery": "neutral-html5",
     "artifact": "build-rando-review.zip",
     "releaseGate": "Rando.gg hosted-URL submission and listing review remain manual; ads and commerce stay disabled."

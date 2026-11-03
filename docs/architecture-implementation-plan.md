@@ -45,3 +45,5 @@ Canonical inventories remain `artifacts/target-dependencies/<target>.json`. Cust
 - Follow-up verification: 31 architecture checks passed, including independent concurrent outputs, late build failures, generate-only builds and hashing after private source-map cleanup. All seven target builds and 48 packaged browser flows passed. Facebook's temporary-output SDK harness passed and preserved the canonical Facebook inventory byte-for-byte. The harness also waits for settled gameplay audio preferences after asynchronous SDK restoration.
 
 - Follow-up completion is published for eight targets, preserving all prior development, provider and submission rows. Receipt: `artifacts/development-progress/architecture_build-evidence-isolation-2f1eb897f8ef31d29cebd4a7868bd9d0333700c5.json`. Check summary: `artifacts/build-evidence-verification.json`.
+
+Note, 3 November 2026: the platform release dashboard and the private deployment monitor were removed from this repository. Development completion receipts are still written to `artifacts/development-progress/` (the portfolio operations sync reads them); the dashboard items above are historical.

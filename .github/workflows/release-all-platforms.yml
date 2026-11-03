@@ -68,12 +68,6 @@ jobs:
         run: node scripts/release/package-neutral-handoffs.mjs
       - name: Verify packaged gameplay before recording readiness
         run: pnpm test:release-artifacts:browser
-      - name: Record the verified release evidence in the dashboard
-        run: node scripts/release/record-release-automation.mjs
-        env:
-          ITCH_BUTLER_CONFIGURED: ${{ secrets.ITCH_BUTLER_API_KEY != '' && vars.ITCH_GAME_TARGET != '' }}
-          JEST_PUBLISH_CONFIGURED: ${{ secrets.JEST_GAME_UPLOAD_TOKEN != '' }}
-          REDDIT_CONTRACTS_CONFIGURED: false
       - name: Hand the verified packages to the finalize job
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -88,7 +82,6 @@ jobs:
             build-html5.zip.source.json
             builds/
             packages/reddit-app/dist/
-            docs/reports/platform-release-readiness/src/data.json
 
   youtube:
     name: Verify and package the YouTube Playable
@@ -148,12 +141,6 @@ jobs:
           name: release-youtube-${{ github.sha }}
       - name: Verify every release target end to end
         run: node scripts/release/verify-release-target-e2e.mjs
-      - name: Install release dashboard dependencies
-        run: npm ci
-        working-directory: docs/reports/platform-release-readiness
-      - name: Build the release dashboard
-        run: npm run build
-        working-directory: docs/reports/platform-release-readiness
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: riddle-quest-release-${{ github.sha }}
@@ -170,7 +157,6 @@ jobs:
             builds/reddit
             builds/yahoo
             builds/gamesnacks
-            docs/reports/platform-release-readiness/dist/index.html
 
   itch:
     name: Publish itch.io when configured

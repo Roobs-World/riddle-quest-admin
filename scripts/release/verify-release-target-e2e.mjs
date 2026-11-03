@@ -9,18 +9,10 @@ import {listHtml5DistributionDefinitions} from "./package-html5-platform.mjs";
 import {listPlatformReleasePlans} from "./platform-releases.mjs";
 
 import {expectedName} from "./release-target-names.mjs";
-import {excludedReleasePlatforms} from "./release-scope.mjs";
 
 const execute = promisify(execFile);
 const repository = fileURLToPath(new URL("../..", import.meta.url));
-const snapshot = JSON.parse(await readFile(path.join(repository, "docs/reports/platform-release-readiness/src/data.json"), "utf8"));
 const plans = listPlatformReleasePlans();
-const gatedTargets = new Map([
-  ["Discord", /not started|account|portal/iu],
-  ["Poki", /on hold/iu],
-  ["LINE MINI App", /blocked|eligibility/iu],
-  ...excludedReleasePlatforms.map(platform => [platform, /excluded from current/iu]),
-]);
 const requireFile = async (relative) => access(path.join(repository, relative));
 const verifyZip = async (artifact, expectedPlatform) => {
   await requireFile(artifact);
@@ -52,40 +44,10 @@ for (const directory of ["jest", "facebook", "netflix", "yahoo"]) {
 await requireFile("packages/reddit-app/dist/client/game.html");
 await requireFile("packages/reddit-app/dist/server/index.cjs");
 
-for (const query of ["platform_status", "target_links", "monetization_readiness", "release_automation"]) {
-  const names = new Set(snapshot.queries[query].rows.map(({platform}) => platform));
-  const missing = plans.map(expectedName).filter((name) => !names.has(name));
-  if (missing.length) throw new Error(`${query} is missing: ${missing.join(", ")}`);
-}
-const targetLinks = snapshot.queries.target_links.rows;
-for (const {platform, gameLinkStatus, gameUrl, adminUrl} of targetLinks) {
-  if (!gameLinkStatus?.trim()) throw new Error(`${platform} has no game-link status`);
-  for (const [kind, value] of [["game", gameUrl], ["administration", adminUrl]]) {
-    let url;
-    try { url = new URL(value); } catch { throw new Error(`${platform} has an invalid ${kind} URL`); }
-    if (url.protocol !== "https:" || ["localhost", "127.0.0.1"].includes(url.hostname)) {
-      throw new Error(`${platform} has a non-production ${kind} URL`);
-    }
-  }
-}
-const todoNames = new Set(snapshot.queries.manual_action_checklist.rows.map(({platform}) => platform));
-const missingTodos = plans.map(expectedName).filter((name) => !todoNames.has(name));
-if (missingTodos.length) throw new Error(`manual_action_checklist is missing: ${missingTodos.join(", ")}`);
+// Every executable release path carries a canonical monetization policy.
+const policy = JSON.parse(await readFile(path.join(repository, "config/platform-monetization.json"), "utf8"));
+const policed = new Set(policy.platforms.map(({platform}) => platform));
+const unpoliced = plans.map(expectedName).filter((name) => !policed.has(name));
+if (unpoliced.length) throw new Error(`Monetization policy is missing: ${unpoliced.join(", ")}`);
 
-const statusByPlatform = new Map(snapshot.queries.platform_status.rows.map((row) => [row.platform, row]));
-const monetizationNames = new Set(snapshot.queries.monetization_readiness.rows.map(({platform}) => platform));
-for (const [platform, expectedGate] of gatedTargets) {
-  const status = statusByPlatform.get(platform);
-  if (!status || !expectedGate.test(`${status.localValidation} ${status.releaseStatus}`)) {
-    throw new Error(`${platform} does not expose its truthful release gate or scope exclusion`);
-  }
-  if (!todoNames.has(platform) || !monetizationNames.has(platform)) {
-    throw new Error(`${platform} is missing its dashboard TODO or monetization policy`);
-  }
-}
-const coveredTargets = plans.length + gatedTargets.size;
-if (coveredTargets !== snapshot.queries.platform_status.rows.length) {
-  throw new Error(`Release coverage mismatch: ${coveredTargets} covered, ${snapshot.queries.platform_status.rows.length} tracked`);
-}
-
-console.log(`Release-target integrity passed for all ${coveredTargets} tracked targets: ${plans.length} executable release paths, ${gatedTargets.size - excludedReleasePlatforms.length} external gates and ${excludedReleasePlatforms.length} scope exclusions; ${definitions.length + 2} immutable ZIPs, 4 browser builds, and the Reddit client/server package are valid; dashboard status, game/admin links, monetization, automation receipts, and TODOs are complete.`);
+console.log(`Release-target integrity passed for ${plans.length} executable release paths: ${definitions.length + 2} immutable ZIPs, 4 browser builds and the Reddit client/server package are valid, and every target has a monetization policy.`);

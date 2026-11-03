@@ -34,10 +34,10 @@ test('one preparation creates many verified handoffs and supports a newly regist
   assert.equal(f.builds(), 1);
   assert.equal(itch.sha256, second.sha256);
   assert.match((await execute('unzip', ['-Z1', path.join(f.root, itch.artifact)])).stdout, /^index.html$/mu);
-  const [added] = createReleaseRegistry([{target: 'test-store', title: 'Test Store', dashboardName: 'Test Store',
+  const [added] = createReleaseRegistry([{target: 'test-store', title: 'Test Store', displayName: 'Test Store',
     command: {executable: 'node', args: []}}], {'test-store': {artifact: 'build-test-store.zip', boundary: 'Review remains manual.'}});
   assert.equal(added.delivery, 'neutral-html5');
-  assert.equal(added.dashboardName, 'Test Store');
+  assert.equal(added.displayName, 'Test Store');
   assert.equal((await preparation.handoff(added)).sha256, itch.sha256);
   assert.equal(releaseRegistry.find(row => row.target === 'facebook').delivery, 'web-target');
 });
