@@ -44,6 +44,8 @@ overrides:
   graphql: "16.14.2"
   hono: "4.13.11"
   ip-address: "10.7.4"
+  # GHSA-9qw7-j9xw-fv9c: prevent checkout writes through directory symlinks in the Reddit CLI.
+  isomorphic-git: "1.38.6"
   "js-yaml@3": "3.15.2"
   "js-yaml@4": "4.3.2"
   "external-editor>tmp": "0.2.7"
