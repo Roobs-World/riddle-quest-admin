@@ -28,7 +28,7 @@ import {configurePlatformAnalytics, trackScreen} from "../analytics/events";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
-import {JestAccountDeleted, JestRegistrationAlert, JestStartupError, JestStartupProgress} from "./JestSessionViews";
+import {JestAccountDeleted, JestStartupError, JestStartupProgress} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
 import {captureBrowserException} from "../observability/browserErrorReporter";
@@ -61,6 +61,10 @@ import {firebaseStartupOrigins, preconnectStartupOrigins} from "../platform/star
 /** Account-management controls load when Profile or Settings first renders them. */
 const JestProfileSubscriptions = lazy(() => import("./JestProfileSubscriptions")
   .then(module => ({default: module.JestProfileSubscriptions})));
+
+/** Guest registration controls load only when the player reaches a registration prompt. */
+const JestRegistrationAlert = lazy(() => import("./JestRegistrationAlert")
+  .then(module => ({default: module.JestRegistrationAlert})));
 
 /**
  * Overlaps Firebase connection setup, SDK chunk downloads and App Check
@@ -619,12 +623,14 @@ export function JestPlayApp() {
         </div>
       ) : null}
       {!session.player.registered && showRegistration ? (
-        <JestRegistrationAlert
-          blocked={pendingPlatformOperations > 0 || registrationPending}
-          session={session}
-          onRegister={register}
-          onDismiss={dismissRegistration}
-        />
+        <Suspense fallback={null}>
+          <JestRegistrationAlert
+            blocked={pendingPlatformOperations > 0 || registrationPending}
+            session={session}
+            onRegister={register}
+            onDismiss={dismissRegistration}
+          />
+        </Suspense>
       ) : null}
       <PlayerSaveRecoveryLayout recovery={playerStateWrites.recovery}>
       <ProviderProfileContext.Provider
