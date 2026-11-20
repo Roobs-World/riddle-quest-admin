@@ -14,6 +14,7 @@ const workspaceSources = {
   "@riddle-quest/hosted": path.join(repositoryRoot, "packages/hosted/src/index.ts"),
   "@riddle-quest/solo/react": path.join(repositoryRoot, "packages/solo/src/react/index.ts"),
   "@riddle-quest/solo": path.join(repositoryRoot, "packages/solo/src/index.ts"),
+  "@riddle-quest/core/validation/androidEntryInbox": path.join(repositoryRoot, "packages/core/src/validation/androidEntryInbox.ts"),
   "@riddle-quest/core/game": path.join(repositoryRoot, "packages/core/src/game/index.ts"),
   "@riddle-quest/core": path.join(repositoryRoot, "packages/core/src/index.ts"),
 };

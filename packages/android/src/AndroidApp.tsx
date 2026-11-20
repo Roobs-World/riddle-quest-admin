@@ -1,8 +1,7 @@
 import {useAuthSnapshot} from "./hosted/useAuthSnapshot";
-import {parseAndroidReferralUrl} from "@riddle-quest/hosted/androidReferrals";
 import {HostedReferralScreen} from "./screens/HostedReferralScreen";
 import {createPurchaseRecovery} from "@riddle-quest/hosted/commerce/purchaseRecovery";
-import {AppState, BackHandler, Linking} from "react-native";
+import {AppState, BackHandler} from "react-native";
 import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "@riddle-quest/solo";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
@@ -21,7 +20,7 @@ import {HostedProfileScreen} from "./screens/HostedProfileScreen";
 import {HostedRaceScreen} from "./screens/HostedRaceScreen";
 import {HostedNotificationScreen} from "./screens/HostedNotificationScreen";
 import {useAndroidNotifications} from "./notifications/androidNotifications";
-import {useAndroidRaceLinks} from "./hosted/raceLinks";
+import {useAndroidEntries} from "./hosted/useAndroidEntries";
 import {HostedShopScreen} from "./screens/HostedShopScreen";
 import {SoloPlayableApp} from "./SoloPlayableApp";
 /** Props for {@link AndroidApp}. */
@@ -50,10 +49,14 @@ type HostedRoute =
   | "notifications"
   | {
   /** Stores race. */
-  race: string | undefined}
+  race: string | undefined;
+  /** Exact pending preview acknowledged by this route only. */
+  entryId?: string}
   | {
   /** Stores referral. */
-  referral: string | undefined}
+  referral: string | undefined;
+  /** Exact pending preview acknowledged by this route only. */
+  entryId?: string}
   | {
       /** Server-authoritative play. */
       hosted: WebGameMode;
@@ -74,33 +77,51 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   const [accountReturnRoute, setAccountReturnRoute] = useState<HostedRoute>("home");
   /** Retains route ref for this operation. */
   const routeRef = useRef(route);
+  /** A persisted preview is replaceable until a join or owned seat needs retirement. */
+  const [raceOccupied, setRaceOccupied] = useState(false);
+  /** Native layout reports activity before queued navigation effects can run. */
+  const reportRaceActivity = useCallback((active: boolean) => {setRaceOccupied(active);}, []);
   useLayoutEffect(() => {routeRef.current = route;}, [route]);
-  /** Retains [referral token, set referral token] for this operation. */
-  const [referralToken, setReferralToken] = useState<string | undefined>();
   /** Retains [incoming route, set incoming route] for this operation. */
   const [incomingRoute, setIncomingRoute] = useState<HostedRoute | null>(null);
+  /** Native reads are optional and never hold up authentication or the hosted home. */
+  const {pending, acknowledge} = useAndroidEntries({
+    ignoreEntry: entry => {
+      /** Current native route checked before a duplicate invitation can replace queued work. */
+      const active = routeRef.current;
+      return entry.kind === "race" && typeof active === "object" && "race" in active && active.race === entry.challengeId;
+    },
+    onDaily: () => setIncomingRoute({hosted: "challenge"}),
+  });
+  useEffect(() => {
+    if (!pending) return;
+    setIncomingRoute(pending.entry.kind === "race"
+      ? {race: pending.entry.challengeId, entryId: pending.id}
+      : {referral: pending.entry.token, entryId: pending.id});
+  }, [pending]);
   useEffect(() => {
     if (!incomingRoute) return;
     // Preserve an active race until its controller confirms retirement.
-    if (typeof route === "object" && "race" in route) {
+    if (typeof route === "object" && "race" in route && (raceOccupied || route.entryId === undefined)) {
       if (typeof incomingRoute === "object" && "race" in incomingRoute && route.race === incomingRoute.race) setIncomingRoute(null);
       return;
     }
     setSurface("online");
     setRoute(incomingRoute);
     setIncomingRoute(null);
-  }, [incomingRoute, route]);
+  }, [incomingRoute, route, raceOccupied]);
   useEffect(() => {
     /** Retains subscription for this operation. */
     const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
       if (surface === "offline") { setSurface("online"); return true; }
       if (typeof route === "object" && "race" in route) return false;
       if (route === "home") return false;
+      if (typeof route === "object" && "referral" in route && route.entryId) void acknowledge(route.entryId);
       setRoute(route === "account" ? accountReturnRoute : "home");
       return true;
     });
     return () => subscription.remove();
-  }, [route, surface, accountReturnRoute]);
+  }, [route, surface, accountReturnRoute, acknowledge]);
   /** Auth can observe a missing document before provisioning; refresh after that write commits. */
   const confirmProfile = useCallback((uid: string) => services.loadProfile(uid), [services]);
   /** Account controller publishes readiness only after host authority is refreshed. */
@@ -113,30 +134,6 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   const accountUid = account.state.kind === "ready" ? account.state.account.uid : null;
   /** Retains notifications for this operation. */
   const notifications = useAndroidNotifications(accountUid, locale ?? "en", client.notifications);
-  /** Retains open race link for this operation. */
-  const openRaceLink = useCallback((challengeId: string) => {
-    /** Retains active route for this operation. */
-    const activeRoute = routeRef.current;
-    // Reopening the current invitation must not discard a different queued journey.
-    if (typeof activeRoute === "object" && "race" in activeRoute && activeRoute.race === challengeId) return;
-    setIncomingRoute({race: challengeId});
-  }, []);
-  useAndroidRaceLinks(openRaceLink);
-  useEffect(() => {
-    /** Retains open daily for this operation. */
-    const openDaily = (url: string | null | undefined) => {
-      if (url === "riddlequest://daily") setIncomingRoute({hosted: "challenge"});
-      /** Retains referral for this operation. */
-      const referral = url ? parseAndroidReferralUrl(url) : null;
-      if (referral) {setReferralToken(referral); setIncomingRoute({referral});}
-    };
-    /** Retains current for this operation. */
-    let current = true;
-    Linking.getInitialURL().then(url => { if (current) openDaily(url); }, () => undefined);
-    /** Retains listener for this operation. */
-    const listener = Linking.addEventListener("url", event => openDaily(event.url));
-    return () => { current = false; listener.remove(); };
-  }, []);
   useEffect(() => {
     if (!commerce || !accountUid) return;
     /** Retains recovery for this operation. */
@@ -181,10 +178,14 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
     return <HostedNotificationScreen locale={locale} controller={notifications} onBack={() => setRoute("home")} />;
   }
   if (typeof route === "object" && "race" in route) {
-    return <HostedRaceScreen locale={locale} accountUid={account.state.account.uid} client={client} services={services} challengeId={route.race} onBack={() => setRoute("home")} />;
+    return <HostedRaceScreen locale={locale} accountUid={account.state.account.uid} client={client} services={services} challengeId={route.race} onActivityChange={reportRaceActivity}
+      onEntryHandled={() => {if (route.entryId) void acknowledge(route.entryId);}}
+      onBack={() => {if (route.entryId) void acknowledge(route.entryId); setRoute("home");}} />;
   }
   if (typeof route === "object" && "referral" in route) {
-    return <HostedReferralScreen locale={locale} accountUid={account.state.account.uid} backend={client.referrals} token={route.referral} onBack={() => setRoute("home")} onGoogle={() => {setAccountReturnRoute(route); setRoute("account");}} />;
+    return <HostedReferralScreen locale={locale} accountUid={account.state.account.uid} backend={client.referrals} token={route.referral}
+      onEntryHandled={() => {if (route.entryId) void acknowledge(route.entryId);}}
+      onBack={() => {if (route.entryId) void acknowledge(route.entryId); setRoute("home");}} onGoogle={() => {setAccountReturnRoute(route); setRoute("account");}} />;
   }
   if (typeof route === "object") {
     return <HostedGameScreen services={services} mode={route.hosted} locale={locale} onBack={() => setRoute("home")} journal={journal} />;
@@ -230,7 +231,7 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
       onPlay={(mode) => setRoute({hosted: mode})}
       onShowRace={() => setRoute({race: undefined})}
       onShowNotifications={() => setRoute("notifications")}
-      onShowReferrals={() => setRoute({referral: referralToken})}
+      onShowReferrals={() => setRoute(pending?.entry.kind === "referral" ? {referral: pending.entry.token, entryId: pending.id} : {referral: undefined})}
       onShowAccount={() => {setAccountReturnRoute("home"); setRoute("account");}}
       onShowShop={() => setRoute("shop")}
       onShowProfile={() => setRoute("profile")}

@@ -14,6 +14,8 @@ This inventory covers the React game, its isolated Jest, Facebook Instant Games,
 
 Data subjects represented by current flows include Jest guests and registered players, invited/referred Jest players (whose game profile can be created before first play), multiplayer opponents, and people who email the support mailbox. The source does not implement an age field or age-verification flow.
 
+The native Android app has a separate [Android privacy notice and Data safety draft](android-privacy-and-data-safety.md). That inventory covers Firebase anonymous and Google-linked accounts, native FCM, Play Billing, Play Integrity and the Play Install Referrer handoff. Its local pending-entry record is separate from the backend referral settlement ledger. The Android draft remains unpublished, and real Play installation and payment verification remain open.
+
 The source has four materially different player-data boundaries:
 
 | Boundary | What the source establishes | What the source does not establish |

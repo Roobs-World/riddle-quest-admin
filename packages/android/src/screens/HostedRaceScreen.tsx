@@ -3,7 +3,7 @@ import {createFirebaseLiveTransport} from "@riddle-quest/hosted/live/firebaseLiv
 import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 import {formatRaceTime} from "@riddle-quest/hosted/race/logic/racePresentation";
 import {canShowLatinShortcut, type YouTubeLocale} from "@riddle-quest/solo";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {BackHandler, Image, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
@@ -20,6 +20,8 @@ export type HostedRaceScreenProps = Readonly<{
   /** Typed authenticated Firebase callables. */ client: HostedFirebaseClient;
   /** Shared profile refresh after authoritative completion. */ services: HostServices;
   /** Optional server invitation delivered by an app link or notification. */ challengeId?: string;
+  /** Reports whether a join or owned seat requires confirmed retirement before navigation. */ onActivityChange?: (active: boolean) => void;
+  /** Clears only this preview after server acceptance or terminal unavailability. */ onEntryHandled?: () => void;
   /** Returns to the online home after confirmed retirement. */ onBack: () => void;
 }>;
 /** Existing localized category-name keys, without dynamic unchecked string indexing. */
@@ -40,13 +42,17 @@ export type HostedRaceViewProps = Omit<HostedRaceScreenProps, "client"> & {
   /** Approved category catalog. */ categories: (locale: RaceLocale) => Promise<ListRaceCategoriesResponse>;
 };
 /** Keeps the target transport and native controller stable while the race polls. */
-export function HostedRaceView({locale, accountUid, transport, categories, services, challengeId, onBack}: HostedRaceViewProps) {
+export function HostedRaceView({locale, accountUid, transport, categories, services, challengeId, onBack, onEntryHandled, onActivityChange}: HostedRaceViewProps) {
   /** Resolves existing translated race keys for the device locale. */
   const text = (key: RaceCopyKey, params?: Readonly<Record<string, string | number>>) => raceText(locale, key, params);
   /** Shared authority and input state with native lifecycle adapters. */
   const {state, controller} = useHostedRace({ownerId: accountUid, locale, transport, challengeId,
     categories,
     onCompleted: () => {void services.loadProfile(accountUid).catch(() => undefined);}});
+  useLayoutEffect(() => {
+    onActivityChange?.(state.busy || controller.requiresRetirement());
+    return () => onActivityChange?.(false);
+  }, [controller, state.recovering, state.busy, state.error, state.view?.phase, onActivityChange]);
   useEffect(() => {
     /** Hardware-back listener delegates to the race's confirmed quit flow. */
     const subscription = BackHandler.addEventListener("hardwareBackPress", () => {controller.requestClose(); return true;});
@@ -67,6 +73,15 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
   useEffect(() => {if (state.closed) onBack();}, [state.closed, onBack]);
   /** Answer-free canonical projection displayed for this owned seat. */
   const view = state.view;
+  /** A successful join or authoritative expired preview finishes the pending entry only. */
+  const entryHandled = useRef(false);
+  useEffect(() => {
+    if (!challengeId || entryHandled.current) return;
+    if (view?.challengeId === challengeId || state.invitations.some(invitation => invitation.challengeId === challengeId && invitation.status === "unavailable")) {
+      entryHandled.current = true;
+      onEntryHandled?.();
+    }
+  }, [challengeId, view?.challengeId, state.invitations, onEntryHandled]);
   useEffect(() => {setSafetyState("idle"); setInviteState("idle"); setShareFailed(false);}, [view?.ticketId]);
   /** Current server-issued question, absent while waiting or finished. */
   const prompt = view?.run?.currentRiddle;
@@ -78,14 +93,14 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
   /** Race identity and close action remain reachable on every stage. */
   const header = <View style={styles.header}>
     <Heading>{text("TITLE")}</Heading>
-    <ActionButton label={text("CLOSE")} disabled={state.busy} onPress={() => controller.requestClose()} testID="race-close" />
+    <ActionButton label={text("CLOSE")} disabled={state.busy || state.recovering} onPress={() => controller.requestClose()} testID="race-close" />
   </View>;
   /** Opens Android's native share sheet for the existing private lobby. */
   const share = async () => {
     if (!view?.challengeId) return;
     setShareFailed(false);
     /** Native share outcome does not imply invitation acceptance. */
-    const result = await shareAndroidRaceChallenge(view.challengeId, text("CHALLENGE_FRIEND"), text("LIVE_INVITE_MESSAGE", {name: view.player.displayName}));
+    const result = await shareAndroidRaceChallenge(view.challengeId, text("CHALLENGE_FRIEND"), text("LIVE_INVITE_MESSAGE", {name: view.player.displayName}), locale);
     setShareFailed(result === "error");
   };
   /** Queues an addressed invitation without claiming push delivery. */

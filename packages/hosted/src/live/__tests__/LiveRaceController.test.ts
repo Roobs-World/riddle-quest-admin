@@ -110,6 +110,67 @@ describe("native-independent live multiplayer", () => {
     expect(second.controller.getSnapshot().view?.ticketId).toBe(first.controller.getSnapshot().view?.ticketId);
     expect(second.update).not.toHaveBeenCalled(); second.controller.dispose();
   });
+  it("does not delete another owned race checkpoint when an untouched invitation preview closes", async () => {
+    /** Shared private records retained across independently mounted race journeys. */
+    const values = new Map<string, string>();
+    /** Whole-record storage used by actual controller recovery. */
+    const storage: LiveRaceStorage = {getItem: async key => values.get(key) ?? null,
+      setItem: async (key, value) => {values.set(key, value);}, removeItem: async key => {values.delete(key);}};
+    /** Existing acknowledged race and unsent draft before process loss. */
+    const active = setup({storage}); await active.controller.start(); await active.controller.play();
+    active.controller.edit("text", "te"); await settle(); active.controller.dispose();
+    /** Exact retained bytes must survive viewing and dismissing another invitation. */
+    const before = [...values.entries()];
+    /** Different incoming preview never owns the existing race's retirement or checkpoint. */
+    const preview = setup({storage, challengeId: `live_${"b".repeat(64)}`});
+    await preview.controller.start(); await preview.controller.close();
+    expect(preview.join).not.toHaveBeenCalled(); expect(preview.retireJoin).not.toHaveBeenCalled();
+    expect([...values.entries()]).toEqual(before); preview.controller.dispose();
+    /** Ordinary lobby recovery still restores the exact previous join and unsent input. */
+    const recovered = setup({storage}); await recovered.controller.start();
+    expect(recovered.join).toHaveBeenCalledWith(active.join.mock.calls[0]?.[0]);
+    expect(recovered.controller.getSnapshot().draft.letters.join("")).toBe("te"); recovered.controller.dispose();
+  });
+  it("recovers a previously accepted matching invitation with its exact original join", async () => {
+    /** Storage remains available after the accepted native view is lost. */
+    const values = new Map<string, string>();
+    /** Controller recovery reads and writes the same real serialized envelope. */
+    const storage: LiveRaceStorage = {getItem: async key => values.get(key) ?? null,
+      setItem: async (key, value) => {values.set(key, value);}, removeItem: async key => {values.delete(key);}};
+    /** Exact incoming invitation previously accepted by an explicit press. */
+    const challengeId = `live_${"c".repeat(64)}`;
+    /** First view creates a join only after explicit invitation acceptance. */
+    const first = setup({storage, challengeId}); await first.controller.start();
+    await first.controller.play(false, first.controller.getSnapshot().invitations[0]); await settle(); first.controller.dispose();
+    /** Cold view recovers that accepted intent, not a replacement invitation join. */
+    const recovered = setup({storage, challengeId}); await recovered.controller.start();
+    expect(recovered.join).toHaveBeenCalledWith(first.join.mock.calls[0]?.[0]); recovered.controller.dispose();
+  });
+  it("protects a matching accepted join while its cold checkpoint is still loading", async () => {
+    /** Exact acknowledged join from a previous explicit acceptance. */
+    const challengeId = `live_${"e".repeat(64)}`;
+    /** Releases the delayed local lobby read after navigation checks its ownership. */
+    let release: (raw: string | null) => void = () => {};
+    /** Local checkpoint can be slower than a newly delivered direct link. */
+    const read = new Promise<string | null>(resolve => {release = resolve;});
+    /** Recovery stays protected without inventing a replacement server request. */
+    const fixture = setup({challengeId, storage: {getItem: async key => key.endsWith(":draft") ? null : read,
+      setItem: async () => {}, removeItem: async () => {}}});
+    /** Pending startup has not yet established whether an accepted seat exists. */
+    const startup = fixture.controller.start(); await settle();
+    expect(fixture.controller.requiresRetirement()).toBe(true);
+    fixture.controller.requestClose(); await fixture.controller.close();
+    expect(fixture.controller.getSnapshot().closed).toBe(false);
+    expect(fixture.retireJoin).not.toHaveBeenCalled();
+    release(JSON.stringify({savedAtMs: Date.now(), join: {locale: "en", categoryId: "mixed", requestId: "accepted-before-process-loss",
+      retirementAware: true, expectedOwnerId: ownerId, challengeId}}));
+    await startup;
+    expect(fixture.join).toHaveBeenCalledWith(expect.objectContaining({requestId: "accepted-before-process-loss", challengeId}));
+    expect(fixture.controller.requiresRetirement()).toBe(true);
+    await fixture.controller.close();
+    expect(fixture.retireJoin).toHaveBeenCalledWith({requestId: "accepted-before-process-loss", expectedOwnerId: ownerId});
+    expect(fixture.controller.getSnapshot().closed).toBe(true); fixture.controller.dispose();
+  });
   it("never accepts arbitrary links or unvalidated challenge handles", () => {
     /** Valid opaque invitation handle used by URL boundary checks. */
     const id = `live_${"d".repeat(64)}`;

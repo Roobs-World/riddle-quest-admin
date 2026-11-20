@@ -438,6 +438,39 @@ describe("Android app on device", () => {
     await driver.waitForId("screen-hosted-home", 60_000);
   });
 
+  it("restores an unaccepted invitation after an ordinary cold launch and remembers explicit dismissal", {
+    skip: (process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" || !process.env.RIDDLE_QUEST_SECOND_SERIAL || !process.env.FIRESTORE_EMULATOR_HOST) &&
+      "set hosted/emulator variables and RIDDLE_QUEST_SECOND_SERIAL for pending invitation verification",
+  }, async () => {
+    const creator = scenario("pending-invite-creator");
+    const recipient = createDriver({serial: process.env.RIDDLE_QUEST_SECOND_SERIAL, evidenceDirectory: join(evidenceRoot, "pending-invite-recipient")});
+    if (process.env.RIDDLE_QUEST_SKIP_INSTALL !== "1") recipient.install(process.env.RIDDLE_QUEST_APK ?? defaultApk);
+    await freshHosted(creator); await freshHosted(recipient);
+    const createdAfter = Date.now();
+    await creator.tapId("show-race"); await creator.waitForId("race-category-mixed");
+    await creator.tapId("race-category-mixed"); await creator.tapId("race-create-challenge"); await creator.waitForId("race-share");
+    const requireFromFunctions = createRequire(join(repositoryRoot, "firebase-functions/package.json"));
+    const {getApps, initializeApp} = requireFromFunctions("firebase-admin/app");
+    const {getFirestore} = requireFromFunctions("firebase-admin/firestore");
+    const app = getApps().find(value => value.name === "android-device-race") ?? initializeApp({projectId: "riddle-quest-ec2b2"}, "android-device-race");
+    const tickets = await getFirestore(app).collection("liveRaceTickets").where("privateChallenge", "==", true).get();
+    const ticket = tickets.docs.filter(value => value.data().createdAtMs >= createdAfter && !value.data().cancelled)
+      .sort((left, right) => right.data().createdAtMs - left.data().createdAtMs)[0];
+    assert.ok(ticket, "creator acknowledged a private lobby");
+    const challengeId = `live_${ticket.id}`;
+    recipient.adb("shell", "am", "start", "-W", "-a", "android.intent.action.VIEW", "-d", `riddlequest://race?challengeId=${challengeId}`, "com.roobsworld.riddlequest");
+    await recipient.waitForId(`race-accept-${challengeId}`, 60_000); recipient.capture("pending-preview");
+    // An ordinary launcher restart must recover the opaque preview without accepting it.
+    recipient.stop(); recipient.launch();
+    await recipient.waitForId(`race-accept-${challengeId}`, 60_000); recipient.capture("pending-preview-restored");
+    assert.ok(!recipient.dumpUi().some(node => node.id === "race-riddle"), "cold entry never autojoins");
+    await recipient.tapIdUntil("race-close", "screen-hosted-home");
+    recipient.stop(); recipient.launch(); await recipient.waitForId("screen-hosted-home", 60_000);
+    assert.ok(!recipient.dumpUi().some(node => node.id === `race-accept-${challengeId}`), "dismissed preview stays dismissed");
+    recipient.capture("pending-preview-dismissed");
+    await creator.tapIdUntil("race-close", "screen-hosted-home");
+  });
+
   it("accepts a private invitation on a second device and settles one shared race result", {
     skip: (process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" || !process.env.RIDDLE_QUEST_SECOND_SERIAL || !process.env.FIRESTORE_EMULATOR_HOST) &&
       "set hosted/emulator variables and RIDDLE_QUEST_SECOND_SERIAL for two-device verification",

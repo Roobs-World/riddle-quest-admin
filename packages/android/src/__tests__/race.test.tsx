@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {LiveRaceViewSchema, RACE_RULES, type LiveRaceCapability, type ListRaceCategoriesResponse} from "@riddle-quest/core/race";
+import {LiveRaceChallengeSchema, LiveRaceViewSchema, RACE_RULES, type LiveRaceCapability, type ListRaceCategoriesResponse} from "@riddle-quest/core/race";
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {BackHandler} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
@@ -52,6 +52,47 @@ describe("Android live race view", () => {
     await fireEvent.press(screen.getByTestId("race-quit-confirm"));
     await waitFor(() => expect(onBack).toHaveBeenCalledTimes(1)); expect(retireJoin).toHaveBeenCalledTimes(1);
   });
+  it("retains an invitation preview until an explicit join receives server acknowledgement", async () => {
+    /** Opaque server-issued private lobby handle, independently checked before joining. */
+    const challengeId = `live_${"a".repeat(64)}`;
+    /** Authoritative answer-free invitation shown before explicit acceptance. */
+    const preview = LiveRaceChallengeSchema.parse({challengeId, locale: "en", categoryId: "mixed", creator: racing().player,
+      expiresAtMs: Date.now() + 60000, status: "available"});
+    /** Server-confirmed seat returned only after the invitation is accepted. */
+    const seat = racing(); seat.challengeId = challengeId;
+    /** Deferred server join acknowledgement, kept separate from the accept press. */
+    let confirm: (value: ReturnType<typeof racing>) => void = () => {};
+    /** Authenticated join port whose receipt determines when the preview is consumed. */
+    const join = jest.fn<LiveRaceCapability["join"]>(() => new Promise(resolve => {confirm = resolve;}));
+    /** Fresh lifetime checking that a consumed installation receipt stays consumed. */
+    const handled = jest.fn();
+    await render(<SafeAreaProvider><HostedRaceView locale="en" accountUid="device-uid" services={createFakeHostServices()}
+      transport={{join, update: async () => seat, challenge: async () => preview}} categories={async () => catalog}
+      challengeId={challengeId} onBack={() => {}} onEntryHandled={handled} /></SafeAreaProvider>);
+    await waitFor(() => expect(screen.getByTestId(`race-accept-${challengeId}`)).toBeEnabled());
+    expect(join).not.toHaveBeenCalled(); expect(handled).not.toHaveBeenCalled();
+    await fireEvent.press(screen.getByTestId(`race-accept-${challengeId}`));
+    expect(handled).not.toHaveBeenCalled();
+    await act(() => {confirm(seat);});
+    await waitFor(() => expect(handled).toHaveBeenCalledTimes(1));
+    expect(join).toHaveBeenCalledWith(expect.objectContaining({challengeId, expectedOwnerId: "device-uid"}));
+  });
+
+  it("keeps an uncertain accepted join protected after transport fails before a seat is visible", async () => {
+    /** Server acceptance may have occurred even though its response was lost. */
+    const join = jest.fn<LiveRaceCapability["join"]>(async () => {throw new Error("response lost");});
+    /** Native routing must retain this original admitted intent through the failure. */
+    const activity = jest.fn<(active: boolean) => void>();
+    await render(<SafeAreaProvider><HostedRaceView locale="en" accountUid="device-uid" services={createFakeHostServices()}
+      transport={{join, update: async () => racing()}} categories={async () => catalog} onBack={() => {}}
+      onActivityChange={activity} /></SafeAreaProvider>);
+    await waitFor(() => expect(screen.getByTestId("race-start")).toBeEnabled());
+    await fireEvent.press(screen.getByTestId("race-start"));
+    await waitFor(() => expect(screen.getByTestId("race-error")).toBeTruthy());
+    expect(screen.queryByTestId("race-riddle")).toBeNull();
+    expect(activity.mock.calls.at(-1)?.[0]).toBe(true);
+  });
+
   it("shows a confirmed result and reward then returns to category selection", async () => {
     /** Authoritative terminal projection containing the committed reward. */
     const result = racing(); result.phase = "result"; result.result = "win"; result.rewardCoins = 50; result.run = null;

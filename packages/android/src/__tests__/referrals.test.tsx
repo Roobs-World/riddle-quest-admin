@@ -22,8 +22,10 @@ async function show(initial: AndroidReferralStatus = ready) {
   } satisfies AndroidReferralBackend;
   /** Retains on google for this operation. */
   const onGoogle = jest.fn();
-  await render(<SafeAreaProvider><HostedReferralScreen locale="en" accountUid="native-user" backend={backend} token={token} onBack={() => {}} onGoogle={onGoogle} /></SafeAreaProvider>);
-  return {backend, onGoogle};
+  /** Records consumption only after authoritative referral acceptance or terminal status. */
+  const onEntryHandled = jest.fn();
+  await render(<SafeAreaProvider><HostedReferralScreen locale="en" accountUid="native-user" backend={backend} token={token} onBack={() => {}} onGoogle={onGoogle} onEntryHandled={onEntryHandled} /></SafeAreaProvider>);
+  return {backend, onGoogle, onEntryHandled};
 }
 describe("native referrals", () => {
   it("routes anonymous players to explicit Google sign-in without binding a launch token", async () => {
@@ -36,9 +38,10 @@ describe("native referrals", () => {
   it("accepts an incoming invite only when pressed and shows the first-win condition", async () => {
     /** Retains f for this operation. */
     const f = await show(); await waitFor(() => expect(screen.getByTestId("referral-accept")).toBeVisible());
-    expect(f.backend.bind).not.toHaveBeenCalled(); await fireEvent.press(screen.getByTestId("referral-accept"));
+    expect(f.backend.bind).not.toHaveBeenCalled(); expect(f.onEntryHandled).not.toHaveBeenCalled(); await fireEvent.press(screen.getByTestId("referral-accept"));
     await waitFor(() => expect(screen.getByTestId("referral-bound")).toBeVisible());
     expect(f.backend.bind).toHaveBeenCalledWith(token, "native-user");
+    await waitFor(() => expect(f.onEntryHandled).toHaveBeenCalled());
   });
   it("shares an issued link without promising a completed reward", async () => {
     /** Retains share for this operation. */

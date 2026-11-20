@@ -25,6 +25,7 @@ export type LiveRaceState = Readonly<{
   /** Server-validated incoming invitations. */ invitations: LiveRaceChallenge[];
   /** Current local answer cells. */ draft: LiveRaceDraft;
   /** Server-clock estimate anchored to monotonic device time. */ now: number;
+  /** Local join recovery has not yet established whether a seat is already owned. */ recovering: boolean;
   /** Catalog or invitation refresh. */ loading: boolean;
   /** Join, command or retirement awaits confirmation. */ busy: boolean;
   /** One retryable operation failed. */ error: boolean;
@@ -49,7 +50,7 @@ export type LiveRaceControllerOptions = {
 export class LiveRaceController {
   /** Immutable presentation exposed to the native subscriber. */
   private state: LiveRaceState = {view: null, categories: [], selected: "mixed", invitations: [], draft: createLiveRaceDraft(null),
-    now: 0, loading: true, busy: false, error: false, quitConfirmation: false, requiresRefresh: false, closed: false};
+    now: 0, recovering: true, loading: true, busy: false, error: false, quitConfirmation: false, requiresRefresh: false, closed: false};
   /** Observers notified only when presentation facts change. */
   private readonly listeners = new Set<() => void>();
   /** Monotonic time source, independent of wall-clock adjustments. */
@@ -113,6 +114,10 @@ export class LiveRaceController {
   readonly subscribe = (listener: () => void): (() => void) => {this.listeners.add(listener); return () => this.listeners.delete(listener);};
   /** Immutable current presentation. */
   readonly getSnapshot = (): LiveRaceState => this.state;
+  /** An admitted join stays owned through timeouts until retirement or an authoritative terminal result. */
+  requiresRetirement(): boolean {
+    return !this.state.closed && (this.state.recovering || (this.join !== null && this.state.view?.phase !== "result" && this.state.view?.phase !== "cancelled"));
+  }
   /** Publishes changed presentation fields while suppressing identical snapshots. */
   private patch(update: Partial<LiveRaceState>): void {
     if (!this.active) return;
@@ -139,12 +144,12 @@ export class LiveRaceController {
     /** Mount generation that owns this asynchronous startup. */
     const generation = ++this.lifecycle;
     this.active = true;
+    this.patch({recovering: true});
     if (this.abort.signal.aborted) this.abort = new AbortController();
     try {this.cachedDraft = await this.options.storage?.getItem(this.draftKey);} catch {this.cachedDraft = undefined;}
     if (!this.active || generation !== this.lifecycle) return;
     /** Read-only lobby load that runs alongside recovery. */
     const catalog = this.refreshLobby();
-    if (this.options.challengeId) {await catalog; return;}
     try {
       /** Untrusted serialized join hint from device storage. */
       const raw = await this.options.storage?.getItem(this.key);
@@ -156,13 +161,16 @@ export class LiveRaceController {
         const saved = envelope && typeof envelope === "object" && "savedAtMs" in envelope && typeof envelope.savedAtMs === "number" &&
           envelope.savedAtMs <= Date.now() && Date.now() - envelope.savedAtMs <= 30 * 60_000 && "join" in envelope
           ? JoinLiveRaceSchema.safeParse(envelope.join) : null;
-        if (saved?.success && saved.data.expectedOwnerId === this.options.ownerId && saved.data.locale === this.options.locale && this.active) {
+        if (saved?.success && saved.data.expectedOwnerId === this.options.ownerId && saved.data.locale === this.options.locale && this.active &&
+          (!this.options.challengeId || saved.data.challengeId === this.options.challengeId)) {
           this.join = saved.data;
           this.retire = createLiveRaceRetirement(this.options.transport, createRequestId("native-live-leave"), this.join.requestId, this.options.ownerId);
+          this.patch({recovering: false});
           await this.deliver();
         }
       }
     } catch { /* Invalid or unavailable hints never create authority. */ }
+    if (this.active && generation === this.lifecycle) this.patch({recovering: false});
     await catalog;
   }
   /** Refreshes only read-only entry data; it never occupies an incoming invitation. */
@@ -374,6 +382,7 @@ export class LiveRaceController {
   }
   /** Keeps a running race visible until the player explicitly confirms retirement. */
   requestClose(): void {
+    if (this.state.recovering) return;
     if (this.state.view?.phase === "racing" || this.state.view?.phase === "countdown") this.patch({quitConfirmation: true});
     else void this.close();
   }
@@ -381,11 +390,12 @@ export class LiveRaceController {
   cancelClose(): void {this.patch({quitConfirmation: false});}
   /** Retires the original join, including a request whose receipt is still in flight. */
   async close(): Promise<void> {
+    if (this.state.recovering) return;
     this.patch({busy: true, quitConfirmation: false});
     /** Authoritative retirement acknowledgement required before navigation closes. */
     const confirmed = !this.retire || await this.retire(this.state.view, {retry: true});
     if (!confirmed) {this.patch({busy: false, error: true}); return;}
-    await this.persist(this.key, null); this.draftStorage.clear(); await this.writes;
+    if (this.join) {await this.persist(this.key, null); this.draftStorage.clear(); await this.writes;}
     this.patch({busy: false, closed: true});
   }
   /** Releases local delivery waits; process/background recovery retains its original server seat. */
