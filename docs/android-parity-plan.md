@@ -10,7 +10,7 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 - Verified release APK on both emulators: all 14 device scenarios pass, including two-device Race to 10, recovery, avatar upload and offline persistence. The production-config AAB builds for all four architectures.
 - Jest upload complete: build `1.0.0-dev.20261120040231.a0ab99f8023a.868a53c5` is READY and INACTIVE. The active October build is unchanged. Shared-package snapshot dependency wiring and fingerprints are fixed; deferred registration controls keep the longer release metadata within the unchanged startup budget.
 - In progress: final backend coverage on its canonical emulator ports, then targeted Functions deployment. The temporary-port run passed 243 suites but an existing port safety guard rejected two tests; its earlier rollout coverage snapshot also preceded the added Android cases. The expanded 40-case rollout suite independently passes its unchanged 100% coverage gate. Provider release gates remain unchecked below.
-- Firebase remains the Functions backend. The owner explicitly chose to retain the Firebase SDK for backend access.
+- Firebase remains the Functions backend. The owner explicitly chose to retain the Firebase SDK for backend access. Anonymous Authentication was disabled in production and is now enabled; other checked authentication settings are unchanged. Google Authentication/OAuth is still unconfigured.
 - Tests and emulator checks explicitly authorized by the owner on 20 November 2026.
 - External blocker confirmed by the owner: no Google Play developer account exists yet. Real purchase verification in 3.3, production Play Integrity and the Play portion of 4.3 cannot complete until the account and internal-testing configuration exist. Keep these tasks open.
 - Existing tracker remains this file. Checked tasks above or below retain their historical evidence; new work is checked only after current verification.
@@ -59,6 +59,9 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 - [ ] 4.3 Full gate: unit, hosted emulator e2e, two-device race, Play internal testing.
 
 ## Evidence
+
+- 2026-11-20, production runtime: the exact Node 22.23.1 verifier passes backend types, lint and all 1,884 unit tests across 145 suites after the added Android rollout coverage.
+- 2026-11-20, Authentication setup: a field-limited Identity Toolkit update changed only `signIn.anonymous.enabled` from false to true. A fresh read confirmed it; other checked sign-in methods, duplicate-email policy, signup/deletion permissions, anonymous auto-deletion and authorized domains are unchanged. Google provider remains unconfigured. No production test account was created.
 
 - 2026-11-20, Jest upload: source `a0ab99f8023a2ce24b9826d21a0b5bac55054560`, ZIP SHA-256 `7534206e0ef5a4d56bf9dff645f19c91323db0c83dbdea5f2ffdc65368124deb`, provider build `01a1f71f-192f-74bb-ad97-e8a7f069ff17`. Official Jest build listing reports `ready`, `isActive: false`, no processing error. Previous active build `01a17226-db08-708f-86a1-6733b1fe4824` remains active. Artifact and HTML validation pass; no activation, publication or review submission occurred. The immutable release used the completed targeted/unit/browser verification rather than repeating the extended production command; backend full coverage is recorded separately.
 - 2026-11-20, Jest packaging regressions: 19 release tests and an actual committed-archive type check pass with hosted/solo dependency links and fingerprints. Deferred registration passes two view tests and three rebuilt-artifact browser checks for focus, guest continuation, login and retry. Long-metadata initial resources measure 574,148 bytes against the unchanged 576,716.8-byte limit.

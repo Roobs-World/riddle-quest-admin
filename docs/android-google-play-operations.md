@@ -16,6 +16,8 @@ The Android App in `packages/android` is a bare React Native 0.88 app that launc
 
 The existing Firebase backend project now has Android app `1:329028367192:android:4c0af717dd9c0db1b7eb2d`, registered on 20 November 2026 for `com.roobsworld.riddlequest`. Its public app id and native API key are in the example config. The JS SDK still uses the existing backend configuration for authentication and callable access. Native FCM initializes from the Android configuration at runtime; no `google-services.json` file is needed for this implementation.
 
+Anonymous Firebase Authentication is enabled for the existing hosted startup flow. Google linking still requires the provider and OAuth configuration in `android-google-account-setup.md`.
+
 Enable invitation or Daily notifications explicitly in the app. Permission denial keeps both choices off. Tokens are account-bound, capped at five installations per account, and removed on deletion. Firebase registration alone does not configure Play Integrity or Google Play Billing.
 
 The owner confirmed there is no Google Play developer account yet. Real Play Billing, licence testing, Play Integrity recognition and Play Console declarations remain open release gates. A debug-signed local APK is only for development verification.
