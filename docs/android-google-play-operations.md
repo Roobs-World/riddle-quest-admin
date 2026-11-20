@@ -28,7 +28,7 @@ See [Android privacy and Data safety preparation](android-privacy-and-data-safet
 
 ## Share and installation entry
 
-Install-handoff code and local verification are tracked in parity plan 2.6c. Real Play Store delivery remains open in 2.6b and 4.3. Installed-app links alone do not prove that an invitation survives a first installation.
+Install-handoff implementation and local verification are complete in parity plan 2.6c. The final release APK passes all 15 device scenarios, including pending-preview recovery and explicit dismissal, and the production-config four-ABI AAB passes its artifact checks. Exact source, hashes and client gate counts are recorded in the [parity plan evidence](android-parity-plan.md#evidence). Both artifacts use the local debug-signing fallback. Real Play Store delivery remains open in 2.6b and 4.3; sideloaded verification does not establish first-install transport.
 
 The Android share sheet sends both the installed-app URL and a Play Store fallback. The direct forms are `riddlequest://race?challengeId=live_<64-lowercase-hex>` and `riddlequest://referral?token=<43-base64url>`. All supported locales explain how to open the invite, install from the Store link if needed and reopen the original invitation if automatic delivery does not occur. No verified HTTPS app-link domain is configured.
 
