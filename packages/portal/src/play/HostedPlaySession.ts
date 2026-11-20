@@ -4,7 +4,7 @@ import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import {createHostAuthorityModules, type HostAuthorityModules} from "./HostAuthorityModules";
 import type {ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
-import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "./types";
+import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 
 /** Target-owned facts required to assemble one hosted-play session. */
 export type HostedPlaySession = Readonly<{

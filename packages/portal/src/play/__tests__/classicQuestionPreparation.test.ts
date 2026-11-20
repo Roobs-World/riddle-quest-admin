@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
-import type {HostServices} from "../types";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 /** Stable hook cells support account replacement and retained callback regressions. */
 const refs: Array<{
   /** Current hook value. */

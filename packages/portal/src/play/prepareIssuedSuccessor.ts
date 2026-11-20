@@ -1,5 +1,5 @@
 import type {BridgeRiddle} from "@riddle-quest/core/bridge";
-import type {HostServices} from "./types";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 import {riddleLoadDeadline} from "./riddleLoadDeadline";
 
 /** One optional issued successor remains bound to its canonical predecessor. */

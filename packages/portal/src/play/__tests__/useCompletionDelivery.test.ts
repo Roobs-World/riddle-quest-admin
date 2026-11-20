@@ -46,7 +46,7 @@ jest.mock("react", () => ({
   },
 }));
 
-jest.mock("../requestIds", () => ({createRequestId: () => "complete-request-stable"}));
+jest.mock("@riddle-quest/hosted/play/requestIds", () => ({createRequestId: () => "complete-request-stable"}));
 
 import {useCompletionDelivery} from "../game/hooks/useCompletionDelivery";
 

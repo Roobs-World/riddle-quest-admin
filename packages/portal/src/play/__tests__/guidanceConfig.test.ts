@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {createInitialGameSession} from "../gameSession";
+import {createInitialGameSession} from "@riddle-quest/hosted/play/gameSession";
 import {
   createGuidanceStorageKey,
   createTooltipTourStorageKey,
@@ -12,7 +12,7 @@ import {
   hasSeenTooltipTour,
   PROFILE_TOUR,
 } from "../guidance/guidanceConfig";
-import type {ProductSummary} from "../types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 
 /** Provides a purchasable coin pack so shop guidance is eligible. */
 const shopProduct: ProductSummary = {

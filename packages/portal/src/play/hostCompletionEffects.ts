@@ -1,6 +1,6 @@
-import {completionPresentationKey, type CompletionIdentity} from "./completionPresentation";
+import {completionPresentationKey, type CompletionIdentity} from "@riddle-quest/hosted/play/completionPresentation";
 import {trackEvent} from "../analytics/events";
-import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "./types";
+import type {CompletionResult, SinglePlayerGuessResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 
 /** Exact issued puzzle identity passed to target-owned completion callbacks. */
 export type HostCompletionInput = CompletionIdentity & Readonly<{

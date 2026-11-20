@@ -1,7 +1,7 @@
 import {Component, useEffect, useId, useLayoutEffect, useRef, type ErrorInfo, type ReactNode} from "react";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {tr} from "./i18n";
-import type {GameSessionState} from "./gameSession";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {ContinueModalPage, type ContinueModalPageProps} from "./modalPages/commerce/ContinueActions";
 import {HintModalPage, SkipModalPage, type CoinActionModalPageProps} from "./modalPages/commerce/GameplayCoinActions";
 import "../styles.surface-recovery.css";

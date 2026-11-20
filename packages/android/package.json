@@ -1,0 +1,53 @@
+{
+  "name": "@riddle-quest/android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React Native Android app for Google Play: self-contained solo play shared with the web Playable targets",
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "build:debug": "cd android && ./gradlew assembleDebug",
+    "build:release": "cd android && ./gradlew bundleRelease",
+    "check:types": "tsc -p tsconfig.json --noEmit",
+    "test": "cross-env NODE_ENV=test jest --config jest.config.js",
+    "test:coverage": "cross-env NODE_ENV=test jest --config jest.config.js --runInBand --coverage",
+    "test:e2e:device": "node --test scripts/android-device/e2e.test.mjs",
+    "verify:device": "node scripts/verify-android-device.mjs"
+  },
+  "dependencies": {
+    "@riddle-quest/core": "workspace:*",
+    "@riddle-quest/hosted": "workspace:*",
+    "@riddle-quest/solo": "workspace:*",
+    "@react-native-async-storage/async-storage": "3.1.1",
+    "firebase": "^12.19.0",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "5.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@jest/globals": "30.5.2",
+    "@react-native-community/cli": "20.2.0",
+    "@react-native-community/cli-platform-android": "20.2.0",
+    "@react-native/babel-preset": "0.88.1",
+    "@react-native/codegen": "0.88.1",
+    "@react-native/gradle-plugin": "0.88.1",
+    "@react-native/jest-preset": "0.88.1",
+    "@react-native/metro-config": "0.88.1",
+    "@react-native/typescript-config": "0.88.1",
+    "@testing-library/react-native": "14.1.0",
+    "@types/jest": "30.0.0",
+    "@types/react": "~19.3.0",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "cross-env": "10.1.0",
+    "hermes-compiler": "260318099.0.5",
+    "jest": "30.5.2",
+    "test-renderer": "^1.0.0",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
+  },
+  "engines": {
+    "node": ">= 22.11.0"
+  }
+}

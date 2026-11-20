@@ -1,8 +1,8 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {BridgeProfile, HostToGameMessage} from "@riddle-quest/core/bridge";
 import {restoreProfileWhileServerLoads} from "../platform/playerData";
-import {createRequestId} from "./requestIds";
-import type {AuthSnapshot, HostServices} from "./types";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
+import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
 
 /** Configuration owned by the authenticated host-session module. */
 type HostAuthSessionOptions = Readonly<{

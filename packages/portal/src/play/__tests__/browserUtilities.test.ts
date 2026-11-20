@@ -1,5 +1,5 @@
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT, HOST_TO_GAME_EVENT} from "../localBridge";
-import {createRequestId} from "../requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 
 describe("browser utility boundaries", () => {
   /** Provides original crypto behavior. */

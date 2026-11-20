@@ -1,17 +1,8 @@
 import {safeBrowserStorageGet, safeBrowserStorageRemove, safeBrowserStorageSet} from "../../playerPreferences";
 import {observeBrowserStorage} from "../../../platform/browserStorage";
-import {RaceRunIdRequestSchema, type RaceRunView} from "@riddle-quest/core/race";
-import type {RaceSessionOptions} from "../RaceSession.types";
 
-/** Existing key retained so account deletion also clears the owner-bound record. */
-export const ACTIVE_RACE_KEY = "riddleQuest:activeRaceRun";
-
-/** Restored IDs must use the same normalization and bounds as authoritative requests. */
-export function parseActiveRaceRunId(value: unknown): string | null {
-  /** Parsing also rejects non-string adapter values without installing a pending request. */
-  const parsed = RaceRunIdRequestSchema.safeParse({runId: value});
-  return parsed.success ? parsed.data.runId : null;
-}
+import {ACTIVE_RACE_KEY, parseActiveRaceRunId} from "@riddle-quest/hosted/race/logic/activeRaceStorage";
+export {ACTIVE_RACE_KEY, parseActiveRaceRunId, persistConfirmedRace} from "@riddle-quest/hosted/race/logic/activeRaceStorage";
 
 /** Reads a resume hint only when it belongs to the authenticated game account. */
 export function readActiveRace(ownerId: string | undefined): string | null | undefined {
@@ -47,24 +38,4 @@ export function clearActiveRace(ownerId: string | undefined, runId?: string): vo
     if (saved?.ownerId === ownerId && savedRunId && (runId === undefined || savedRunId === runId) &&
       safeBrowserStorageGet("local", ACTIVE_RACE_KEY) === raw) safeBrowserStorageRemove("local", ACTIVE_RACE_KEY);
   } catch { /* Malformed values do not authorize cleanup of a replacement hint. */ }
-}
-
-/** Refreshes an owned hint; only an explicit new start can replace another selected run. */
-export function persistConfirmedRace(
-  run: RaceRunView,
-  ownerId: string | undefined,
-  persistence: NonNullable<RaceSessionOptions["persistence"]>,
-  current: () => boolean,
-  selectNewRun = false,
-  allowMissingRun = false,
-): void {
-  /** Optional adapters may replace the account while reading its saved pointer. */
-  const savedRunId = persistence.read(ownerId);
-  if (!current() || savedRunId === undefined || savedRunId && savedRunId !== run.runId &&
-    (!selectNewRun || ["completed", "timed_out"].includes(run.status))) return;
-  if (["prepared", "scheduled", "active", "completed", "timed_out"].includes(run.status)) {
-    if (savedRunId === null && !selectNewRun && !allowMissingRun) return;
-    persistence.save(ownerId, run.runId);
-  }
-  else persistence.clear(ownerId, run.runId);
 }

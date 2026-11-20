@@ -1,6 +1,6 @@
 import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
 import {ProfileSubscriptionContext} from "../play/modalPages/profile/ProfileSubscriptionContext";
-import {completionPresentationKey} from "../play/completionPresentation";
+import {completionPresentationKey} from "@riddle-quest/hosted/play/completionPresentation";
 import {ProviderProfileContext} from "../play/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
 import {Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
@@ -396,7 +396,7 @@ export function JestPlayApp() {
               /** Authoritative profile remains mandatory before showing the balance or enabling play. */
               const [{loadUserDocument}, {toBridgeProfile}] = await Promise.all([
                 import("../firebase"),
-                import("../play/profileMapper"),
+                import("@riddle-quest/hosted/profileMapper"),
               ]);
               /** Profile created or restored by the authoritative identity exchange. */
               const profileData = await loadUserDocument(readySession.firebaseUid);

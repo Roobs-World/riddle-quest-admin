@@ -13,7 +13,7 @@ import {liveRacePollInterval} from "./logic/liveRacePolling";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {LiveRaceViewSchema, type LiveGuessReceiptQuery, type LiveRaceCapability, type LiveRaceView, type RaceCategoryId, type RaceLocale, type UpdateLiveRace} from "@riddle-quest/core/race";
 import {tr} from "../i18n";
-import {createRequestId} from "../requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {RaceTopbar} from "./components/RaceHeader";
 import {RaceGameplay} from "./components/RaceGameplay";
 import {useRaceDialogFocus} from "./hooks/useRaceDialogFocus";

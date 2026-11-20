@@ -11,7 +11,7 @@ import {
   SpendCoinsResponseSchema,
   SubmitSinglePlayerGuessResponseDataSchema,
 } from "@riddle-quest/core/validation";
-import type {AuthSnapshot, HostServices} from "../play/types";
+import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
 import {tr} from "../play/i18n";
 import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
 import {

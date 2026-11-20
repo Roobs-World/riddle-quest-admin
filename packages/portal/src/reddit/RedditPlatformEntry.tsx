@@ -7,7 +7,7 @@ import type {
   PlayerData,
   PlayerDataUpdate,
 } from "../platform/types";
-import type {ProductSummary} from "../play/types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import {resolveRedditGoldProduct} from "@riddle-quest/core/pricing/redditCatalog";
 import {PlayHostApp} from "../play/PlayHostApp";
 import {detectDeviceLanguage, tr, useLocale} from "../play/i18n";

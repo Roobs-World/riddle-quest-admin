@@ -6,10 +6,11 @@ const mockEffects:Array<()=>unknown>=[];
 const mockLayoutEffects:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T,>(fn:T)=>fn,useMemo:<T,>(fn:()=>T)=>fn(),useEffect:(fn:()=>unknown)=>mockEffects.push(fn),useLayoutEffect:(fn:()=>unknown)=>mockLayoutEffects.push(fn),useRef:<T,>(current:T)=>({current}),useState:<T,>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
 import {useGameMessageRouter} from '../useGameMessageRouter';
-import {createInitialGameSession,gameSessionReducer} from '../gameSession';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery,type PendingPlayRecoveryAdapters} from '../game/hooks/useProvisionalPlayRecovery';
+import {createInitialGameSession,gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {pendingPlayScope,type PendingGuessJournal} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@riddle-quest/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from '../game/hooks/useProvisionalPlayRecovery';
+import type {PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
 it.each((['win','loss'] as const).flatMap(kind=>(['hint','skip'] as const).map(operation=>({kind,operation,holdCharge:true,buffered:false}))))('terminal $kind preserves authority after accepted $operation',async({kind,operation,holdCharge,buffered})=>{
  mockEffects.length=0;mockLayoutEffects.length=0;
  /** Terminal authority or exact unresolved payment fixture. */

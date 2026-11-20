@@ -580,9 +580,9 @@ export function FacebookPlatformEntry() {
         /** Stores riddle id. */
         riddleId: string; /** Stores game mode. */
         /** Stores game mode. */
-        gameMode: import("../play/types").WebGameMode;
+        gameMode: import("@riddle-quest/hosted/hostTypes").WebGameMode;
       },
-      result: import("../play/types").CompletionResult,
+      result: import("@riddle-quest/hosted/hostTypes").CompletionResult,
     ) => {
       try {
         await notificationPromptRef.current?.afterAuthoritativeCompletion(result.isCorrect);

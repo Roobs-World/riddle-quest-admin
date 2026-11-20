@@ -1,6 +1,6 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import {HostToGameMessageSchema} from "@riddle-quest/core/bridge";
-import type {AuthSnapshot, HostServices} from "../types";
+import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
 import type {RaceOutcome} from "@riddle-quest/core/race";
 import {createFakeHostServices} from "../fakeServices";
 import {

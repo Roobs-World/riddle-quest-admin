@@ -10,7 +10,7 @@ import {
   type RaceRunView,
 } from "@riddle-quest/core/race";
 import {computeFeedback, splitGraphemes} from "@riddle-quest/core/game";
-import type {HostServices} from "../../types";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 import {readBrowserStorage, writeBrowserStorage} from "../../../platform/browserStorage";
 
 /** Multiplayer host methods implemented by the deterministic browser harness. */

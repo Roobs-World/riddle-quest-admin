@@ -4,7 +4,7 @@ import mascotUrl from "../../../../assets/images-web/riddlequest-r.webp";
 import coinUrl from "../../../../assets/images/coin.svg";
 import backspaceUrl from "../../../../assets/images/backspace-key.svg";
 import {tr} from "./i18n";
-import {canEditCurrentGuess, gameSessionReducer, type GameSessionState} from "./gameSession";
+import {canEditCurrentGuess, gameSessionReducer, type GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useGuessGlyphFit} from "../input/useGuessGlyphFit";
 
 /** Fixed Latin shortcut letters are prepared once, independently of draft and receipt renders. */

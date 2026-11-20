@@ -243,6 +243,8 @@
   },
   "dependencies": {
     "@riddle-quest/core": "workspace:*",
+    "@riddle-quest/hosted": "workspace:*",
+    "@riddle-quest/solo": "workspace:*",
     "@sentry/browser": "^11.1.0",
     "firebase": "^12.19.0",
     "html2canvas-pro": "2.5.2",

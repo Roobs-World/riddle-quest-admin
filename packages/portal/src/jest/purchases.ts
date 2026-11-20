@@ -1,7 +1,7 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort, PlatformResult} from "./types";
 import {DEFAULT_PRODUCT_PRICING} from "@riddle-quest/core/pricing/catalog";
-import type {ProductSummary} from "../play/types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 
 /** Represents a page read from Jest's incomplete-purchase recovery queue. */

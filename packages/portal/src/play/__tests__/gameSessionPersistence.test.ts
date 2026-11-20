@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {createInitialGameSession, gameSessionReducer} from "../gameSession";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
 import {createSavedGame} from "../game/hooks";
 
 /** Provides riddle behavior. */

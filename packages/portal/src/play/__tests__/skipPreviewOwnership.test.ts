@@ -3,10 +3,11 @@ import type {GameToHostMessage} from '@riddle-quest/core/bridge';
 /** Exercises speculative ownership and rejection against the real recovery handler. */
 const effects:Array<()=>unknown>=[],layouts:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T>(fn:T)=>fn,useEffect:(fn:()=>unknown)=>effects.push(fn),useLayoutEffect:(fn:()=>unknown)=>layouts.push(fn),useRef:<T>(current:T)=>({current}),useState:<T>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
-import {createInitialGameSession,gameSessionReducer} from '../gameSession';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery,type PendingPlayRecoveryAdapters} from '../game/hooks/useProvisionalPlayRecovery';
+import {createInitialGameSession,gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {pendingPlayScope,type PendingGuessJournal} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@riddle-quest/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from '../game/hooks/useProvisionalPlayRecovery';
+import type {PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
 it.each(['preview-valid','preview-wrong-index','preview-wrong-mode','preview-advanced','preview-storage-failure','reject-origin','reject-preview','reject-owned-preview','reject-durable-preview','reject-malformed-preview','reject-advanced','reject-storage-recovery','reject-delete-recovery','reject-storage-takeover'] as const)('Skip ownership: %s',async scenario=>{
  /** Storage recovery uses the same owned-preview rejection fixture. */
  const target=['reject-storage-recovery','reject-delete-recovery','reject-storage-takeover'].includes(scenario)?'reject-durable-preview':scenario;

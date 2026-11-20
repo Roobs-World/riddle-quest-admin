@@ -1,9 +1,9 @@
 import {BridgeParserLoadError, createHostMessageRouter, type HostMessageHandlers} from "./bridgeRouter";
 import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import type {RaceOutcome} from "@riddle-quest/core/race";
-import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "./types";
+import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 import type {HostAuthorityModules} from "./HostAuthorityModules";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import type {HostCompletionInput} from "./hostCompletionEffects";

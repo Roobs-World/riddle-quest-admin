@@ -3,7 +3,7 @@ import {DEFAULT_PRODUCT_PRICING, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@ridd
 import {useSubscriptionManagement} from "./useSubscriptionManagement";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 import {useTranslator} from "../../i18n";
-import type {ProductSummary} from "../../types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 
 /** Inputs required to display the platform product catalog. */
 export type ShopModalPageProps = {

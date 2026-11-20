@@ -1,7 +1,7 @@
 import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
 import {useContext, type ChangeEvent} from "react";
 import {ProfileSubscriptionContext} from "../profile/ProfileSubscriptionContext";
-import type {GameModal} from "../../gameSession";
+import type {GameModal} from "@riddle-quest/hosted/play/gameSession";
 import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../i18n";
 import {setPlayerLocale} from "../../playerPreferences";
 

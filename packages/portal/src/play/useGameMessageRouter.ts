@@ -2,10 +2,10 @@ import {useLayoutEffect, useMemo, useRef} from "react";
 import type {Dispatch, MutableRefObject} from "react";
 import type {GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
 import {createGameMessageRouter} from "./bridgeRouter";
-import {gameSessionReducer, type GameSessionState} from "./gameSession";
+import {gameSessionReducer, type GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {tr} from "./i18n";
-import {isSingleAnswerCell} from "./answerCell";
-import {parseCompletionRewardBreakdown} from "./completionRewardBreakdown";
+import {isSingleAnswerCell} from "@riddle-quest/hosted/play/answerCell";
+import {parseCompletionRewardBreakdown} from "@riddle-quest/hosted/completionRewardBreakdown";
 
 /** Gets object. */
 const getObject = (data: unknown): Record<string, unknown> =>

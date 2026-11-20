@@ -1,6 +1,6 @@
 import {cloneProductPricingCatalog} from "@riddle-quest/core/pricing/catalog";
-import type {HostServices} from "./types";
-import {toProductSummaries} from "./types";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
+import {toProductSummaries} from "@riddle-quest/hosted/hostTypes";
 import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarness";
 
 /** Describes host services mode. */

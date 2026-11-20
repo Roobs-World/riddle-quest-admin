@@ -33,7 +33,11 @@
       "@riddle-quest/core/race": ["../core/src/race/index.ts"],
       "@riddle-quest/core/referrals": ["../core/src/referrals/index.ts"],
       "@riddle-quest/core/validation": ["../core/src/validation/index.ts"],
-      "@riddle-quest/core/validation/*": ["../core/src/validation/*"]
+      "@riddle-quest/core/validation/*": ["../core/src/validation/*"],
+      "@riddle-quest/hosted": ["../hosted/src/index.ts"],
+      "@riddle-quest/hosted/*": ["../hosted/src/*"],
+      "@riddle-quest/solo": ["../solo/src/index.ts"],
+      "@riddle-quest/solo/react": ["../solo/src/react/index.ts"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

@@ -1,8 +1,8 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import type {BridgeProfile, BridgeRiddle} from "@riddle-quest/core/bridge";
-import type {GameSessionState} from "../gameSessionTypes";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
 import {CompleteGameOutputSchema} from "@riddle-quest/core/validation";
-import {parseCompletionRewardBreakdown} from "../completionRewardBreakdown";
+import {parseCompletionRewardBreakdown} from "@riddle-quest/hosted/completionRewardBreakdown";
 
 /** Provides mock use memo behavior. */
 const mockUseMemo = (factory: () => unknown) => factory();
@@ -15,7 +15,7 @@ jest.mock("react", () => ({
   useSyncExternalStore: jest.fn(),
 }));
 
-import {createInitialGameSession, gameSessionReducer} from "../gameSession";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
 import {useGameMessageRouter} from "../useGameMessageRouter";
 import {setLocaleAndWait, type Locale} from "../i18n";
 

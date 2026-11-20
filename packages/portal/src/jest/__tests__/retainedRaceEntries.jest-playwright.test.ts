@@ -130,7 +130,7 @@ describeBrowser("Jest authentication integration", () => {
 
   afterAll(async () => {
     await browser?.close();
-    await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
+    if (server?.listening) await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
   });
 
   it("renders typed invitation waiting and cancellation for an opaque creator entry", async () => {

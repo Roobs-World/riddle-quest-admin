@@ -5,7 +5,7 @@ import "../../styles.race-lobby.css";
 import "../../styles.race-gameplay.css";
 import {tr} from "../i18n";
 import {HOST_TO_GAME_EVENT} from "../localBridge";
-import {createRequestId} from "../requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {useReferralSharing} from "../sharing/ReferralSharingCapability";
 import {LiveRaceInvitationCard} from "./components/LiveRaceInvitationCard";
 import {LiveRaceInbox} from "./components/LiveRaceInbox";

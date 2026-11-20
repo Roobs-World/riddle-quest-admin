@@ -1,7 +1,7 @@
 import {useCallback, useLayoutEffect, useMemo, useRef} from "react";
 import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {prepareAvatarImage} from "../../avatarImage";
-import {createRequestId} from "../../requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {useProvisionalPlayRecovery} from "./useProvisionalPlayRecovery";
 /** Routes optional host commands around the ordered Provisional Play recovery module. */
 export function useGameOperations(options: Parameters<typeof useProvisionalPlayRecovery>[0]) {

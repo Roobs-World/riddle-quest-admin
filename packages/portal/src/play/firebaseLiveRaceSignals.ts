@@ -1,5 +1,5 @@
 import {updateLiveRace} from "../firebase";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 
 /** Streams private wake-up revisions through the existing authenticated callable SDK. */
 export function observeFirebaseLiveRace(ticketId: string, onChange: () => void,

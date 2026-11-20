@@ -3,9 +3,9 @@ import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
 import {isFacebookWebTarget} from "../platform/webTargetEnvironment";
-import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "./gameSession";
+import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "@riddle-quest/hosted/play/gameSession";
 import {tr} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
 import {ShopSubscriptionContext} from "./modalPages/commerce/ShopSubscriptionContext";
 import {GuidanceOverlay} from "./guidance/GuidanceOverlay";
@@ -54,7 +54,7 @@ import type {AttemptRecoveryCapability} from "../platform/types";
 
 import {DecorativeSolarSystem} from "./DecorativeSolarSystem";
 import {GameSurfaceBoundary, GameSurfaceRecovery} from "./GameSurfaceRecovery";
-import {completionPresentationKey, isCompletionAdvancePending} from "./completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "@riddle-quest/hosted/play/completionPresentation";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "./playerPreferences";
 
 /** Provides game frame app behavior. */

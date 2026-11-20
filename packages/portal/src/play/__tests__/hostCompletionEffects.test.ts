@@ -1,6 +1,6 @@
 import {expect, it, jest} from "@jest/globals";
 import {createHostCompletionEffects, type HostCompletionInput} from "../hostCompletionEffects";
-import type {CompletionResult} from "../types";
+import type {CompletionResult} from "@riddle-quest/hosted/hostTypes";
 
 /** One accepted, server-owned Classic completion. */
 const input: HostCompletionInput = {riddleId: "classic-1", gameMode: "classic", sessionToken: "issued-session-one"};

@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import type {ProductSummary} from "../play/types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
 
