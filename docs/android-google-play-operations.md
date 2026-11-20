@@ -20,7 +20,7 @@ Enable invitation or Daily notifications explicitly in the app. Permission denia
 
 The owner confirmed there is no Google Play developer account yet. Real Play Billing, licence testing, Play Integrity recognition and Play Console declarations remain open release gates. A debug-signed local APK is only for development verification.
 
-See [Android privacy and Data safety preparation](android-privacy-and-data-safety.md) for the unpublished notice and inventory. Rewarded referrals remain an explicit gap in the parity tracker until Android has a durable verified account identity and its own authoritative conversion ledger.
+See [Android privacy and Data safety preparation](android-privacy-and-data-safety.md) for the unpublished notice and inventory. Rewarded referrals use Google-linked accounts and an Android-specific authoritative conversion ledger. Their real native acquisition verification remains open until Google Authentication/OAuth is configured.
 
 ## Local verification
 

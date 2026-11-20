@@ -5,7 +5,7 @@ Google linking is optional for online play and required before new paid checkout
 ## Owner configuration
 
 1. Enable Google in Firebase Authentication's sign-in providers for `riddle-quest-ec2b2`.
-2. The Android package and local debug SHA-1/SHA-256 are registered. Register each production signing certificate, including Google Play App Signing. Register the Android package `com.roobsworld.riddlequest` and each signing certificate's SHA-1, including Google Play App Signing for Play installs. Debug certificates authorize only local builds.
+2. The Android package `com.roobsworld.riddlequest` and local debug SHA-1/SHA-256 are registered. Register each production signing certificate, including Google Play App Signing for Play installs. Debug certificates authorize only local builds.
 3. Configure the OAuth consent screen and Android OAuth client for that package/certificate. Obtain the **Web application OAuth client ID** belonging to the same Firebase project.
 4. Set the public `firebase.googleWebClientId` in the ignored Android `hosted.config.json`. This is an audience identifier, not a client secret. Never put an OAuth client secret in the app.
 5. Verify linking and restoration on a device with Google Play services and a Google Account. Without this configuration the Account screen explains that Google sign-in is unavailable.
