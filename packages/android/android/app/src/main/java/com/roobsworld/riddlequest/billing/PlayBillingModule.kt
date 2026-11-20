@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 
@@ -57,6 +58,19 @@ class PlayBillingModule(private val context: ReactApplicationContext) :
 
   override fun getName(): String = NAME
 
+  override fun invalidate() {
+    val pending = synchronized(this) {
+      val promises = (waiting.map { it.first } + listOfNotNull(checkout)).distinct()
+      waiting.clear()
+      checkout = null
+      connecting = false
+      promises
+    }
+    pending.forEach { it.reject("billing-closed", "The billing connection closed.") }
+    client.endConnection()
+    super.invalidate()
+  }
+
   /** Runs [block] once the billing service is connected, or rejects [promise]. */
   private fun withConnection(promise: Promise, block: () -> Unit) {
     synchronized(this) {
@@ -76,7 +90,10 @@ class PlayBillingModule(private val context: ReactApplicationContext) :
         }
         for ((queuedPromise, queuedBlock) in queued) {
           if (result.responseCode == BillingResponseCode.OK) queuedBlock()
-          else queuedPromise.reject("billing-unavailable", result.debugMessage)
+          else {
+            synchronized(this@PlayBillingModule) { if (checkout === queuedPromise) checkout = null }
+            queuedPromise.reject("billing-unavailable", result.debugMessage)
+          }
         }
       }
 
@@ -172,9 +189,12 @@ class PlayBillingModule(private val context: ReactApplicationContext) :
   }
 
   override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
-    // Purchases that complete outside a checkout (a pending payment clearing later) are settled
-    // by the restore that runs on every launch.
+    val wasCheckout = synchronized(this) { checkout != null }
     settleCheckout(result, purchases)
+    if (!wasCheckout && result.responseCode == BillingResponseCode.OK) {
+      context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        .emit("RiddleQuestPurchasesChanged", null)
+    }
   }
 
   /** Resolves the open checkout from Play's result. */

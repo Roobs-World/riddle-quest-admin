@@ -35,16 +35,20 @@ export type BillingScript = {
   ownedSubs?: PlayPurchase[];
 };
 /** Fake Play port that records every call. */
-export function createFakeBilling(script: BillingScript = {}): PlayBillingPort & {calls: string[]} {
+export function createFakeBilling(script: BillingScript = {}): PlayBillingPort & {
+/** Stores calls. */
+calls: string[]} {
   /** Recorded calls. */
   const calls: string[] = [];
   return {
     calls,
+    /** Gets products. */
     async getProducts(inappIds, subsIds) {
       calls.push(`getProducts:${inappIds.length}+${subsIds.length}`);
       if (script.products instanceof Error) throw script.products;
       return script.products ?? [];
     },
+    /** Retains purchase for this operation. */
     async purchase(product, accountUid) {
       calls.push(`purchase:${product.productId}:${accountUid}`);
       /** Next checkout. */
@@ -53,13 +57,16 @@ export function createFakeBilling(script: BillingScript = {}): PlayBillingPort &
       if (next instanceof Error) throw next;
       return next;
     },
+    /** Gets owned purchases. */
     async getOwnedPurchases(type) {
       calls.push(`owned:${type}`);
       return (type === "inapp" ? script.ownedInapp : script.ownedSubs) ?? [];
     },
+    /** Retains consume for this operation. */
     async consume(token) {
       calls.push(`consume:${token}`);
     },
+    /** Retains manage subscription for this operation. */
     async manageSubscription(productId) {
       calls.push(`manage:${productId}`);
     },
@@ -71,13 +78,16 @@ export function createFakePurchaseBackend(options: {
   grants?: Record<string, Partial<GrantAndroidPurchaseOutput>>;
   /** Sync result. */
   sync?: Partial<SyncAndroidSubscriptionsOutput> | Error;
-} = {}): AndroidPurchaseBackend & {calls: string[]} {
+} = {}): AndroidPurchaseBackend & {
+/** Stores calls. */
+calls: string[]} {
   /** Recorded calls. */
   const calls: string[] = [];
   /** Tokens already granted, as the backend ledger remembers them. */
   const granted = new Set<string>();
   return {
     calls,
+    /** Retains grant for this operation. */
     async grant({productId, purchaseToken}) {
       calls.push(`grant:${purchaseToken}`);
       /** Scripted grant. */
@@ -88,6 +98,7 @@ export function createFakePurchaseBackend(options: {
       granted.add(purchaseToken);
       return {granted: true, alreadyProcessed, productId, coinsAwarded: 550, newCoins: 850, newlyUnlockedAchievementIds: [], consumed: true, ...grant};
     },
+    /** Retains sync subscriptions for this operation. */
     async syncSubscriptions(tokens) {
       calls.push(`sync:${tokens.join(",")}`);
       if (options.sync instanceof Error) throw options.sync;

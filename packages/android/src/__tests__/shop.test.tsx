@@ -1,9 +1,12 @@
-import {beforeEach, describe, expect, it} from "@jest/globals";
+import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {YouTubeLocale} from "@riddle-quest/solo";
-import {render, screen, waitFor} from "@testing-library/react-native";
+import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";
-import {createAndroidCommerce} from "../billing/androidCommerce";
+import {createAndroidCommerce as createGuardedAndroidCommerce, type AndroidPurchaseBackend} from "../billing/androidCommerce";
+import type {PlayBillingPort as CheckoutPort} from "../billing/playBilling";
+/** Shop behavior fixtures represent an explicitly linked, recoverable account. */
+const createAndroidCommerce = (billing: CheckoutPort, backend: AndroidPurchaseBackend) => createGuardedAndroidCommerce(billing, backend, {canCheckout: () => true});
 import type {PlayBillingPort} from "../billing/playBilling";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
 import {HostedShopScreen} from "../screens/HostedShopScreen";
@@ -38,11 +41,14 @@ const renderShop = async (
   backend = createFakePurchaseBackend(),
   locale: YouTubeLocale = "en",
   withBilling = true,
+  durableAccount = true,
 ) => {
   /** Play fake. */
   const billing = createFakeBilling(script);
   /** Port given to the screen. */
   const port: PlayBillingPort | null = withBilling ? billing : null;
+  /** Records explicit navigation to durable account linking. */
+  const onShowAccount = jest.fn();
   await render(
     <SafeAreaProvider>
       <HostedShopScreen
@@ -52,14 +58,26 @@ const renderShop = async (
         fallbackCoins={300}
         billing={port}
         commerce={port ? createAndroidCommerce(port, backend) : null}
+        durableAccount={durableAccount}
+        onShowAccount={onShowAccount}
         onBack={() => undefined}
       />
     </SafeAreaProvider>,
   );
-  return {billing, backend};
+  return {billing, backend, onShowAccount};
 };
 
 describe("HostedShopScreen", () => {
+  it("requires account linking for new purchases while allowing existing receipts to restore", async () => {
+    /** An anonymous account can inspect prices and restore, but cannot buy. */
+    const f = await renderShop({products: fullCatalog}, createFakePurchaseBackend(), "en", true, false);
+    await waitFor(() => expect(screen.getByTestId(`shop-buy-${PACK_ID}`)).toBeDisabled());
+    await fireEvent.press(screen.getByTestId(`shop-buy-${PACK_ID}`));
+    expect(f.billing.calls.some(call => call.startsWith("purchase:"))).toBe(false);
+    await fireEvent.press(screen.getByTestId("shop-link-account")); expect(f.onShowAccount).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("shop-restore")).toBeEnabled();
+  });
+
   beforeEach(() => {
     calls.length = 0;
     subscribers.clear();
@@ -79,6 +97,7 @@ describe("HostedShopScreen", () => {
   });
 
   it("buys a coin pack, reports the coins and refreshes the profile", async () => {
+    /** Retains {billing, backend} for this operation. */
     const {billing, backend} = await renderShop(
       {products: fullCatalog, checkouts: [{status: "purchased", purchases: [owned("tok", PACK_ID)]}]},
       createFakePurchaseBackend({grants: {tok: {}}}),
@@ -106,7 +125,9 @@ describe("HostedShopScreen", () => {
   it("subscribes to Premium and then offers Play's subscription management", async () => {
     /** Mutable backend script. */
     const backendScript: Parameters<typeof createFakePurchaseBackend>[0] = {sync: {activeSkus: []}};
+    /** Retains backend for this operation. */
     const backend = createFakePurchaseBackend(backendScript);
+    /** Retains {billing} for this operation. */
     const {billing} = await renderShop(
       {products: fullCatalog, checkouts: [{status: "purchased", purchases: [owned("sub", MONTHLY_ID)]}], ownedSubs: [owned("sub", MONTHLY_ID)]},
       backend,

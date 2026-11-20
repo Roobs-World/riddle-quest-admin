@@ -1,11 +1,29 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
+import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
 import type {YouTubeLocale, YouTubeSdkPort} from "@riddle-quest/solo";
-import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
+import {Linking} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";
+import type {HostedRaceScreenProps} from "../screens/HostedRaceScreen";
 import type {HostedFirebaseClient, ProvisionedAccount} from "../hosted/firebaseClient";
 import {calls, createFakeHostServices, subscribers} from "../test/fakeHostServices";
 import {contentSource, createPort, expectScreen, press} from "../test/harness";
+
+
+/** Isolates navigation ownership; the race controller's retirement is verified by its dedicated native tests. */
+jest.mock("../screens/HostedRaceScreen", () => {
+  /** Native primitives used by the isolated race-navigation boundary. */
+  const {View, Text, Pressable} = require("react-native");
+  return {HostedRaceScreen: ({challengeId, onBack}: Pick<HostedRaceScreenProps, "challengeId" | "onBack">) => <View testID="route-race">
+    <Text testID="route-race-challenge">{challengeId ?? "public"}</Text>
+    <Pressable testID="route-race-retired" onPress={onBack}><Text>Retirement confirmed</Text></Pressable>
+  </View>};
+});
+
+/** Native payload inferred from the installed link-listener contract. */
+type NativeLinkEvent = Parameters<Parameters<typeof Linking.addEventListener>[1]>[0];
 
 /** Scripted outcomes of the fake client's connection attempts. */
 type ClientScript = {
@@ -69,6 +87,7 @@ const renderRoot = async (client: HostedFirebaseClient, port: YouTubeSdkPort = c
 
 describe("AndroidApp", () => {
   beforeEach(() => {
+    jest.spyOn(Linking, "addEventListener").mockImplementation(() => ({remove: () => undefined}));
     calls.length = 0;
     subscribers.clear();
   });
@@ -82,7 +101,7 @@ describe("AndroidApp", () => {
     expect(screen.getByTestId("hosted-coins")).toHaveTextContent(/300$/u);
     await press("hosted-play-classic");
     await expectScreen("screen-hosted-game");
-    expect(calls).toEqual(["loadRiddle:classic:authoritative"]);
+    expect(calls.filter(call => call.startsWith("loadRiddle:"))).toEqual(["loadRiddle:classic:authoritative"]);
     await press("hosted-back");
     await expectScreen("screen-hosted-home");
     await press("hosted-play-daily");
@@ -147,4 +166,88 @@ describe("AndroidApp", () => {
     await expectScreen("screen-hosted-home");
     expect(screen.getByTestId("hosted-home-heading")).toHaveTextContent("Choose a puzzle");
   });
+  it("defers a second race invitation until the active race confirms retirement", async () => {
+    /** Installed native URL callbacks receive the same event as the root adapter. */
+    const listeners = new Set<(event: NativeLinkEvent) => void>();
+    /** Restorable listener registration captures foreground navigation events. */
+    const listenerSpy = jest.spyOn(Linking, "addEventListener").mockImplementation((_kind, callback) => {
+      listeners.add(callback); return {remove: () => {listeners.delete(callback);}};
+    });
+    await renderRoot(createClient({provisioning: [created]})); await expectScreen("screen-hosted-home");
+    await press("show-race"); await expectScreen("route-race");
+    /** New invitation remains queued until the active race retires. */
+    const challengeId = `live_${"a".repeat(64)}`;
+    await act(() => {for (const listener of listeners) listener({url: `riddlequest://race?challengeId=${challengeId}`});});
+    expect(screen.getByTestId("route-race-challenge")).toHaveTextContent("public");
+    await press("route-race-retired");
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(challengeId));
+    listenerSpy.mockRestore();
+  });
+
+  it("queues a Daily link during a race and opens it only after retirement", async () => {
+    /** Installed native URL callbacks receive the same event as the root adapter. */
+    const listeners = new Set<(event: NativeLinkEvent) => void>();
+    /** Restorable listener registration captures foreground navigation events. */
+    const listenerSpy = jest.spyOn(Linking, "addEventListener").mockImplementation((_kind, callback) => {
+      listeners.add(callback); return {remove: () => {listeners.delete(callback);}};
+    });
+    await renderRoot(createClient({provisioning: [created]})); await expectScreen("screen-hosted-home");
+    await press("show-race");
+    await act(() => {for (const listener of listeners) listener({url: "riddlequest://daily"});});
+    expect(screen.getByTestId("route-race")).toBeTruthy();
+    expect(calls).not.toContain("loadRiddle:challenge:buffered");
+    await press("route-race-retired"); await expectScreen("screen-hosted-game");
+    expect(calls).toContain("loadRiddle:challenge:buffered"); listenerSpy.mockRestore();
+  });
+
+  it("ignores a duplicate current invitation without losing a different queued invitation", async () => {
+    /** Installed native URL callbacks receive the same event as the root adapter. */
+    const listeners = new Set<(event: NativeLinkEvent) => void>();
+    /** Restorable listener registration captures foreground navigation events. */
+    const listenerSpy = jest.spyOn(Linking, "addEventListener").mockImplementation((_kind, callback) => {
+      listeners.add(callback); return {remove: () => {listeners.delete(callback);}};
+    });
+    /** Current and queued invitation handles remain distinct. */
+    const first = `live_${"b".repeat(64)}`, second = `live_${"c".repeat(64)}`;
+    await renderRoot(createClient({provisioning: [created]})); await expectScreen("screen-hosted-home");
+    /** Delivers one native invitation to every installed root listener. */
+    const receive = async (challengeId: string) => act(() => {
+      for (const listener of listeners) listener({url: `riddlequest://race?challengeId=${challengeId}`});
+    });
+    await receive(first); await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(first));
+    await receive(second); await receive(first);
+    expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(first);
+    await press("route-race-retired");
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(second));
+    listenerSpy.mockRestore();
+  });
+
+  it("refreshes a pre-provision placeholder balance even when Play Billing is unavailable", async () => {
+    /** Fresh account provisioning returns the actual starting balance. */
+    const client = createClient({provisioning: [created]});
+    /** Auth can observe a uid before the backend account document exists. */
+    const placeholder: BridgeProfile = {username: "Player", coins: 0, level: 1, xp: 0, winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 1};
+    /** The existing shared mapper may temporarily publish its empty-document fallback. */
+    let snapshot: AuthSnapshot = {user: {uid: "device-uid", isAnonymous: true}, profile: placeholder};
+    /** Native root and home receive the same account-owned profile publications. */
+    const observers = new Set<(value: AuthSnapshot) => void>();
+    /** Explicit profile reads are independent of optional commerce recovery. */
+    const loadProfile = jest.fn<HostServices["loadProfile"]>(async () => {
+      expect(client.recorded).toContain("provision");
+      /** Canonical document loaded only after provisioning has completed. */
+      const profile = {...placeholder, username: "Android", coins: 300};
+      snapshot = {...snapshot, profile};
+      for (const listener of observers) listener(snapshot);
+      return profile;
+    });
+    /** Authenticated services retain a placeholder until their explicit authoritative refresh. */
+    const services: HostServices = {...createFakeHostServices(), loadProfile, auth: {subscribe: listener => {
+      observers.add(listener); listener(snapshot); return () => {observers.delete(listener);};
+    }}};
+    await render(<SafeAreaProvider><AndroidApp sdk={createPort()} contentSource={contentSource} client={client} services={services} billing={null} /></SafeAreaProvider>);
+    await expectScreen("screen-hosted-home");
+    await waitFor(() => expect(screen.getByTestId("hosted-coins")).toHaveTextContent(/300$/u));
+    expect(loadProfile).toHaveBeenCalledWith("device-uid");
+  });
+
 });

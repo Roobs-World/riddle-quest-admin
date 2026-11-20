@@ -5,6 +5,12 @@ export type HostedFirebaseConfig = Readonly<{
   apiKey: string;
   /** Stores app id. */
   appId: string;
+  /** Registered Firebase Android app id for native FCM; absent until owner setup. */
+  androidAppId?: string;
+  /** Public Android API key for native Firebase installations and messaging. */
+  androidApiKey?: string;
+  /** Web OAuth client id from this Firebase project, used as Google ID token audience. */
+  googleWebClientId?: string;
   /** Stores auth domain. */
   authDomain: string;
   /** Stores messaging sender id. */
@@ -73,6 +79,9 @@ export function parseHostedConfig(value: unknown): HostedConfig {
     firebase: {
       apiKey: firebase.apiKey,
       appId: firebase.appId,
+      ...(isText(firebase.androidAppId) ? {androidAppId: firebase.androidAppId} : {}),
+      ...(isText(firebase.androidApiKey) ? {androidApiKey: firebase.androidApiKey} : {}),
+      ...(isText(firebase.googleWebClientId) ? {googleWebClientId: firebase.googleWebClientId} : {}),
       authDomain: firebase.authDomain,
       messagingSenderId: firebase.messagingSenderId,
       projectId: firebase.projectId,

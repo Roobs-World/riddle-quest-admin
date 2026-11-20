@@ -4,6 +4,7 @@ import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../componen
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
 import type {HostedAccountController} from "../hosted/useHostedAccount";
 import {hostedText} from "../i18n/hostedCopy";
+import {GoogleAccountLink} from "../components/GoogleAccountLink";
 import {palette, spacing} from "../theme";
 /** Props for {@link AccountScreen}. */
 export type AccountScreenProps = Readonly<{
@@ -15,9 +16,11 @@ export type AccountScreenProps = Readonly<{
   account: HostedAccountController;
   /** Returns to the previous screen. */
   onBack: () => void;
+  /** Latest confirmed balance for this same account; provisioning is the startup fallback. */
+  confirmedCoins?: number;
 }>;
 /** Shows the server-confirmed Global Game Account, or lets the player connect and retry. */
-export function AccountScreen({locale, client, account, onBack}: AccountScreenProps) {
+export function AccountScreen({locale, client, account, onBack, confirmedCoins}: AccountScreenProps) {
   /** Account state. */
   const {state, connect} = account;
   return (
@@ -40,9 +43,9 @@ export function AccountScreen({locale, client, account, onBack}: AccountScreenPr
         {state.kind === "ready" && (
           <View style={styles.stack} testID="account-ready">
             <Notice testID="account-status">{hostedText(locale, state.account.created ? "accountCreated" : "accountConfirmed")}</Notice>
-            <View accessibilityLabel={`${hostedText(locale, "serverCoins")}: ${state.account.coins}`} style={styles.cell} testID="account-coins">
+            <View accessibilityLabel={`${hostedText(locale, "serverCoins")}: ${confirmedCoins ?? state.account.coins}`} style={styles.cell} testID="account-coins">
               <Text style={styles.cellLabel}>{hostedText(locale, "serverCoins")}</Text>
-              <Text style={styles.cellValue}>{state.account.coins}</Text>
+              <Text style={styles.cellValue}>{confirmedCoins ?? state.account.coins}</Text>
             </View>
             <View accessibilityLabel={`${hostedText(locale, "playerId")}: ${state.account.uid}`} style={styles.cell}>
               <Text style={styles.cellLabel}>{hostedText(locale, "playerId")}</Text>
@@ -51,6 +54,7 @@ export function AccountScreen({locale, client, account, onBack}: AccountScreenPr
           </View>
         )}
       </Panel>
+      {state.kind === "ready" && <GoogleAccountLink locale={locale} client={client} ownerId={state.account.uid} onChanged={connect} />}
     </Screen>
   );
 }

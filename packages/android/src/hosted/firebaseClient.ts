@@ -1,3 +1,8 @@
+import {clearAndroidNotificationAccount} from "../notifications/androidNotifications";
+import type {GoogleAccountChange} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
+import type {AndroidGoogleIdentity} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
+import {createFirebaseGoogleIdentity} from "../auth/firebaseGoogleIdentity";
+import {clearGoogleCredentialState} from "../auth/googleCredentials";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {initializeApp, type FirebaseApp} from "firebase/app";
 import {
@@ -11,8 +16,10 @@ import {
   type User,
 } from "firebase/auth";
 import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} from "firebase/firestore/lite";
-import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
+import {connectFunctionsEmulator, getFunctions, httpsCallable, type Functions} from "firebase/functions";
 import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@riddle-quest/hosted";
+import type {AndroidReferralBackend, AndroidReferralStatus, AndroidReferralToken, AndroidReferralBinding} from "@riddle-quest/hosted/androidReferrals";
+import type {AndroidNotificationBackend, AndroidNotificationPreferences} from "@riddle-quest/hosted/androidNotifications";
 import type {AndroidPurchaseBackend} from "../billing/androidCommerce";
 import {enableAndroidAppCheck} from "./appCheck";
 import type {HostedConfig} from "./hostedConfig";
@@ -47,6 +54,12 @@ export type HostedFirebaseClient = Readonly<{
   provisionAccount(): Promise<ProvisionedAccount>;
   /** Server-authoritative Google Play purchase callables. */
   purchases: AndroidPurchaseBackend;
+  /** Explicit native FCM consent and registration. */
+  notifications?: AndroidNotificationBackend;
+  /** Optional native Google linking preserves the current account and confirms explicit restore choices. */
+  googleIdentity?: AndroidGoogleIdentity;
+  /** Google-only server-authoritative referral acquisition. */
+  referrals?: AndroidReferralBackend;
 }>;
 /** Whether a provisioning response has the expected shape. */
 const isProvisionedAccount = (value: unknown): value is ProvisionedAccount =>
@@ -96,19 +109,50 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
   );
   /** Android-only account provisioning. */
   const androidFunctions = createAndroidAccountFunctions(gameplayFunctions);
+  /** Provisioning is reused after native linking so the backend registers the verified Google subject. */
+  const provision = async (): Promise<ProvisionedAccount> => {
+    /** The callable remains authoritative for profile ownership and starting balance. */
+    const {data} = await androidFunctions.provisionAndroidAccount();
+    if (!isProvisionedAccount(data)) throw new Error("provision-response-invalid");
+    return data;
+  };
+  /** Firebase sign-out also clears Credential Manager's selected provider session. */
+  const signOutOwned = async (expectedUid: string | undefined, current: () => boolean): Promise<GoogleAccountChange> => {
+    if (!expectedUid || !current() || auth.currentUser?.uid !== expectedUid) return {kind: "cancelled"};
+    await clearAndroidNotificationAccount(expectedUid).catch(() => undefined);
+    await clearGoogleCredentialState().catch(() => undefined);
+    if (!current() || auth.currentUser?.uid !== expectedUid) return {kind: "cancelled"};
+    await firebaseSignOut(auth);
+    return auth.currentUser === null ? {kind: "committed", uid: null} : {kind: "cancelled"};
+  };
+  /** Public sign-out retains its existing void contract while retiring only the original owner. */
+  const signOut = async (): Promise<void> => {await signOutOwned(auth.currentUser?.uid, () => true);};
+
   return {
     projectId: config.firebase.projectId,
     usingEmulators: config.emulators !== null,
     functions: gameFunctions,
     currentUser: () => auth.currentUser,
-    onUserChanged: (listener) => onAuthStateChanged(auth, listener),
+    /** Auth replacement retires only the previous persisted native notification owner. */
+    onUserChanged(listener) {
+      /** Previous Firebase owner selects the native compare-and-clear operation. */
+      let previousUid = auth.currentUser?.uid ?? null;
+      return onAuthStateChanged(auth, user => {
+        /** New Firebase identity is authoritative even if a view has already retired. */
+        const nextUid = user?.uid ?? null, retiredUid = previousUid;
+        previousUid = nextUid;
+        if (retiredUid && retiredUid !== nextUid) void clearAndroidNotificationAccount(retiredUid).catch(() => undefined);
+        listener(user);
+      });
+    },
     /** Reuses the persisted anonymous session before creating a new one. */
     async signInAnonymously() {
       if (auth.currentUser) return auth.currentUser;
       return (await signInAnonymously(auth)).user;
     },
     /** Signs out through the SDK; the next launch provisions a fresh anonymous account. */
-    signOut: () => firebaseSignOut(auth),
+    signOut,
+    googleIdentity: createFirebaseGoogleIdentity(auth, config.firebase.googleWebClientId, provision, signOutOwned),
     /** Reads the account document the backend maintains. */
     async loadUserDocument(userId) {
       /** Document snapshot. */
@@ -116,11 +160,28 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
       return snapshot.exists() ? snapshot.data() : null;
     },
     /** Provisions the account and validates the response shape. */
-    async provisionAccount() {
-      /** Raw callable response. */
-      const {data} = await androidFunctions.provisionAndroidAccount();
-      if (!isProvisionedAccount(data)) throw new Error("provision-response-invalid");
-      return data;
+    provisionAccount: provision,
+    referrals: {
+      status: async expectedOwnerId => (await httpsCallable<{
+        /** Initiating native account, never a replacement signed-in uid. */
+        expectedOwnerId?: string}, AndroidReferralStatus>(gameplayFunctions, "getAndroidReferralStatus")(expectedOwnerId ? {expectedOwnerId} : {})).data,
+      create: async expectedOwnerId => (await httpsCallable<{
+        /** Native view's original authenticated owner. */
+        expectedOwnerId?: string}, AndroidReferralToken>(gameplayFunctions, "createAndroidReferral")(expectedOwnerId ? {expectedOwnerId} : {})).data,
+      bind: async (token, expectedOwnerId) => (await httpsCallable<{
+        /** Opaque server-issued acquisition token, never an inviter or award. */
+        token: string;
+        /** Account lifetime that explicitly accepted the referral. */
+        expectedOwnerId?: string
+      }, AndroidReferralBinding>(gameplayFunctions, "bindAndroidReferralEntry")({token, ...(expectedOwnerId ? {expectedOwnerId} : {})})).data,
+    },
+    notifications: {
+      /** Sends only the current account's explicit native notification consent. */
+      async setSubscription(input) {
+        /** Android-only callable bound to the authenticated gameplay region. */
+        const call = httpsCallable<Parameters<AndroidNotificationBackend["setSubscription"]>[0], AndroidNotificationPreferences>(gameplayFunctions, "setAndroidPushSubscription");
+        return (await call(input)).data;
+      },
     },
     purchases: {
       grant: async (input) => (await androidFunctions.grantAndroidPurchase(input)).data,

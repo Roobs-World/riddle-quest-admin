@@ -2,9 +2,6 @@ import type {BridgeProfile} from "@riddle-quest/core/bridge";
 import type {Feedback, GameEngineSnapshot, ScoredGuess} from "@riddle-quest/core/game";
 import type {
   ListFacebookTournamentResponse,
-  RaceMatchResponse,
-  RaceMatchRequest,
-  RaceMatchFailure,
   RaceLocale,
   RecordFacebookTournamentRunResponse,
   ListFacebookContextBoardResponse,
@@ -75,35 +72,8 @@ export const LEGACY_PLATFORM_RUNTIME_POLICY: PlatformRuntimePolicy = Object.free
  * current account, runtime, or release configuration. Only `success` carries a
  * value; callers should branch on `status` instead of catching provider errors.
  */
-export type PlatformResult<T> =
-  | {
-      /** Stores status. */
-      status: "success"; /** Stores value. */
-      /** Stores value. */
-      value: T;
-    }
-  | {
-      /** Stores status. */
-      status: "cancelled";
-    }
-  | {
-      /** Stores status. */
-      status: "retryable-failure"; /** Stores message. */
-      /** Stores message. */
-      message: string;
-    }
-  | {
-      /** Stores status. */
-      status: "terminal-failure"; /** Stores message. */
-      /** Stores message. */
-      message: string;
-    }
-  | {
-      /** Stores status. */
-      status: "unavailable"; /** Stores message. */
-      /** Stores message. */
-      message: string;
-    };
+export type {PlatformResult} from "@riddle-quest/hosted/race/matchmaking";
+import type {PlatformResult} from "@riddle-quest/hosted/race/matchmaking";
 
 /**
  * Portable, client-writable preferences restored before the shared game mounts.
@@ -361,23 +331,8 @@ export type NativeSocialCapability = {
   >;
 };
 
-/** Provider-wide, server-authoritative offline opponent selection. */
-export type MatchmakingResult = PlatformResult<RaceMatchResponse> & {
-  /** Optional for legacy adapters; new adapters preserve the structured recovery policy. */
-  failure?: RaceMatchFailure;
-};
-
-/** Provider-wide, server-authoritative offline opponent selection. */
-export type MatchmakingCapability = {
-  /** Authenticated live PvP transport, only on supported targets. */
-  live?: import("@riddle-quest/core/race").LiveRaceCapability;
-  /**
-   * Finds an identity-minimized offline opponent through the authoritative backend.
-   *
-   * @param input - Locale, category preference, and optional retry correlation.
-   */
-  find(input: RaceMatchRequest | RaceLocale): Promise<MatchmakingResult>;
-};
+export type {MatchmakingResult, MatchmakingCapability} from "@riddle-quest/hosted/race/matchmaking";
+import type {MatchmakingCapability} from "@riddle-quest/hosted/race/matchmaking";
 
 /** Privacy-safe activity vocabulary shared by provider presence adapters. */
 export type PresenceState = "offline" | "online" | "playing" | "racing";

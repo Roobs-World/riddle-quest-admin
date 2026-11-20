@@ -700,6 +700,7 @@ export function createWebTargetViteConfig({
         "@riddle-quest/hosted/riddleResponse": fileURLToPath(new URL("../hosted/src/riddleResponse.ts", import.meta.url)),
         "@riddle-quest/hosted/gameFunctions": fileURLToPath(new URL("../hosted/src/gameFunctions.ts", import.meta.url)),
         "@riddle-quest/hosted/play": fileURLToPath(new URL("../hosted/src/play", import.meta.url)),
+        "@riddle-quest/hosted/race": fileURLToPath(new URL("../hosted/src/race", import.meta.url)),
         "@riddle-quest/hosted": fileURLToPath(new URL("../hosted/src/index.ts", import.meta.url)),
         "@riddle-quest/solo/react": fileURLToPath(new URL("../solo/src/react/index.ts", import.meta.url)),
         "@riddle-quest/solo": fileURLToPath(new URL("../solo/src/index.ts", import.meta.url)),

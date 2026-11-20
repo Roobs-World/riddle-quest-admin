@@ -49,7 +49,9 @@ export type HostedProfileController = Readonly<{
 /** Reads a stable code from a callable or host error, without the SDK's `functions/` prefix. */
 const errorCode = (error: unknown): string =>
   typeof error === "object" && error !== null && "code" in error
-    ? String((error as {code: unknown}).code).replace(/^functions\//u, "")
+    ? String((error as {
+    /** Stores code. */
+    code: unknown}).code).replace(/^functions\//u, "")
     : "";
 /**
  * Drives the hosted profile: leaderboards, username edits and account deletion through the shared host services.

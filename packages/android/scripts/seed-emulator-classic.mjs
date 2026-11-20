@@ -39,7 +39,14 @@ const batch = db.batch();
 playable.forEach(({id, text, answer, difficultyBand}, index) => {
   batch.set(collection.doc(id), {riddleId: id, text, answer, difficultyBand, classicIndex: index + 1, category: "classic"});
 });
+// Multiplayer uses the same reviewed bundled pack, with its category and quality metadata.
+// These emulator-only records are not eligible for Classic unless the ordered seed above assigns an index.
+Object.entries(english).forEach(([id, item]) => {
+  batch.set(collection.doc(id), {riddleId: id, canonicalRiddleId: id, text: item.text, answer: item.answer,
+    categoryId: item.categoryId, difficultyBand: item.difficultyBand, raceEligible: true, qualityVersion: "human_review_v1"}, {merge: true});
+});
+batch.set(db.doc("raceConfig/rollout"), {enabled: true, percentage: 100, allowlistHashes: []});
 // Production completed the username-reservation migration; a fresh emulator has no marker, so renames would be refused.
 batch.set(db.collection("usernameReservationMigrations").doc("v1"), {complete: true});
 await batch.commit();
-process.stdout.write(`Seeded ${playable.length} Classic riddles into ${process.env.FIRESTORE_EMULATOR_HOST} (${projectId}); first answer "${playable[0]?.answer}"\n`);
+process.stdout.write(`Seeded ${playable.length} Classic riddles and ${Object.keys(english).length} multiplayer riddles into ${process.env.FIRESTORE_EMULATOR_HOST} (${projectId}); first answer "${playable[0]?.answer}"\n`);

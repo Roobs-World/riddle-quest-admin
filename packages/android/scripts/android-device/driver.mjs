@@ -3,12 +3,13 @@
  * device or emulator: install, launch, stop, UIAutomator hierarchy reads,
  * taps by `testID` (exposed as `resource-id`), and screenshot evidence.
  *
- * Only the Android SDK's adb is required; no instrumentation is built into the app.
+ * Uses adb and an SDK-only hierarchy reader; no instrumentation is built into the app.
  */
 import {execFileSync, spawnSync} from "node:child_process";
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import {dirname, join, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
+import {prepareHierarchyReader} from "./hierarchy-reader.mjs";
 
 /** Android package of the app under test. */
 export const applicationId = "com.roobsworld.riddlequest";
@@ -38,7 +39,7 @@ export const readBundledAnswers = (now = new Date()) => {
   const days = Math.floor((Date.parse(`${day}T00:00:00.000Z`) - Date.parse(`${segment.startsOn}T00:00:00.000Z`)) / 86_400_000);
   const dailyId = segment.canonicalIds[days % segment.canonicalIds.length];
   const classic = content.classicOrder.map((id) => english[id].answer);
-  return {classic, classicIds: content.classicOrder, daily: english[dailyId].answer, dailyId, classicCount: content.classicOrder.length};
+  return {raceByClue: Object.fromEntries(Object.values(english).map(({text, answer}) => [text, answer])), classic, classicIds: content.classicOrder, daily: english[dailyId].answer, dailyId, classicCount: content.classicOrder.length};
 };
 
 /** Creates a driver bound to one device and one evidence directory. */
@@ -46,6 +47,8 @@ export const createDriver = ({serial, evidenceDirectory}) => {
   mkdirSync(evidenceDirectory, {recursive: true});
   const deviceArguments = serial ? ["-s", serial] : [];
   let step = 0;
+  let hierarchyReady = false;
+  let hierarchyRuntime = [];
   const adb = (...parts) =>
     execFileSync(adbExecutable, [...deviceArguments, ...parts], {encoding: "utf8", maxBuffer: 64 * 1024 * 1024});
 
@@ -89,7 +92,20 @@ export const createDriver = ({serial, evidenceDirectory}) => {
 
   /** Parses the UIAutomator hierarchy into flat nodes with tap centers. */
   const dumpUi = () => {
-    const xml = adb("exec-out", "uiautomator", "dump", "/dev/tty").replace(/UI hierchary dumped to: \/dev\/tty\s*$/u, "");
+    if (!hierarchyReady) {
+      adb("push", prepareHierarchyReader(), "/data/local/tmp/riddle-quest-hierarchy.jar");
+      try {
+        adb("shell", "test", "-f", "/system/framework/android.test.base.jar");
+        hierarchyRuntime = ["/system/framework/android.test.base.jar"];
+      } catch { /* Older devices keep the test classes in their original runtime library. */ }
+      hierarchyReady = true;
+    }
+    const output = adb("shell", "uiautomator", "runtest", ...hierarchyRuntime, "/data/local/tmp/riddle-quest-hierarchy.jar", "-c", "com.riddlequest.verification.HierarchyReader#testDump");
+    if (!/OK \(1 test\)/u.test(output) || /(?:Exception|FAILURES|Test run aborted)/u.test(output)) throw new Error(`Hierarchy reader failed: ${output}`);
+    const path = /RQ_HIERARCHY_PATH=(\/data\/local\/tmp\/[a-zA-Z0-9._\/-]+)\s/u.exec(output)?.[1];
+    if (!path) throw new Error(`Hierarchy output path missing: ${output}`);
+    const xml = adb("exec-out", "cat", path);
+    if (!xml.includes("<hierarchy")) throw new Error(`Invalid hierarchy output: ${xml}`);
     writeFileSync(join(evidenceDirectory, "last-ui.xml"), xml);
     const nodes = [];
     for (const match of xml.matchAll(/<node ([^>]*)\/?>/gu)) {
@@ -196,10 +212,14 @@ export const createDriver = ({serial, evidenceDirectory}) => {
         if (nodes.some(byId(targetId))) return;
         const node = nodes.find(byId(id));
         if (node) {
-          tap(node);
+          // Confirm the identifier stayed in place across the hosted launch transition.
+          const confirmed = dumpUi().find(byId(id));
+          if (!confirmed || confirmed.center.x !== node.center.x || confirmed.center.y !== node.center.y) continue;
+          tap(confirmed);
           await sleep(1200);
           continue;
         }
+        swipe(nodes, 1);
       } catch {
         // Retry after a transition.
       }

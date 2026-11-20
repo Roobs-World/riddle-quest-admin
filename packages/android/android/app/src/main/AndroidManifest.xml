@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Hosted play: Firebase Auth, Functions and App Check over HTTPS. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
 
     <application
@@ -12,6 +13,10 @@
       android:theme="@style/AppTheme"
       android:networkSecurityConfig="@xml/network_security_config"
       android:supportsRtl="true">
+      <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
+      <service android:name=".notifications.RiddleQuestMessagingService" android:exported="false">
+        <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT" /></intent-filter>
+      </service>
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -22,6 +27,14 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="riddlequest" android:host="race" />
+          <data android:scheme="riddlequest" android:host="daily" />
+          <data android:scheme="riddlequest" android:host="referral" />
         </intent-filter>
       </activity>
     </application>

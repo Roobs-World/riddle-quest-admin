@@ -4,6 +4,14 @@ Tracks [ADR 0008](adr/0008-android-hosted-parity.md): bringing `packages/android
 
 Scale for context: the hosted browser game is roughly 36,000 lines of host, play, race, commerce, profile and notification code with ~150 browser harnesses. The shared-logic/native-views pattern from `@riddle-quest/solo` is applied phase by phase so logic moves once and only views are written twice.
 
+## Current work, 20 November 2026
+
+- Implemented and verified: shared race extraction, native multiplayer/invitations, avatar upload, notification consent, durable account linking and Android-specific referral grants.
+- In progress: final source-frozen artifact checks, branch synchronization, backend deployment preparation and Jest upload. Provider release gates remain unchecked below.
+- Tests and emulator checks explicitly authorized by the owner on 20 November 2026.
+- External blocker confirmed by the owner: no Google Play developer account exists yet. Real purchase verification in 3.3, production Play Integrity and the Play portion of 4.3 cannot complete until the account and internal-testing configuration exist. Keep these tasks open.
+- Existing tracker remains this file. Checked tasks above or below retain their historical evidence; new work is checked only after current verification.
+
 ## Phase 1 — Account and confirmed solo play
 
 - [x] 1.1 Backend: `provisionAndroidAccount` callable creates the Global Game Account for an authenticated Firebase user whose sign-in provider is `anonymous` (later also `google.com`), idempotently, with the same reserved-username and starting-balance rules as Jest. App Check enforced like every other callable.
@@ -18,26 +26,45 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 
 ## Phase 2 — Multiplayer and profile
 
-- [ ] 2.1 Shared: move `RaceSession`, race authority reconciliation, invitation polling and presentation logic into `@riddle-quest/hosted`.
-- [ ] 2.2 Android: Race to 10 lobby, countdown, live gameplay, results; friend challenges through the Android share sheet and app links.
-- [x] 2.3 Android: profile, username, leaderboards, achievements, account deletion (`HostedProfileScreen`, `useHostedProfile`). Avatar upload is not on Android yet; it needs an image picker native module.
-- [ ] 2.4 Android: notifications through Firebase Cloud Messaging for race invitations and daily reminders (native module required).
+- [x] 2.1 Shared: move `RaceSession`, race authority reconciliation, invitation polling and presentation logic into `@riddle-quest/hosted`.
+- [x] 2.2 Android: native Race to 10 lobby, countdown, live gameplay, results, rematches, safety actions, shared draft recovery and invitations through the actual Android share sheet and app links. Two emulators verified common content, ten submitted answers, complementary results and one 50-coin grant. Cold exact-seat/draft recovery and confirmed quit also pass.
+- [x] 2.3a Android: profile, username, leaderboards, achievements, account deletion (`HostedProfileScreen`, `useHostedProfile`).
+- [x] 2.3b Android: native document picker, bounded image decoding/cropping and server-validated avatar upload; real device selection and cold-relaunch persistence passed on 20 November 2026.
+- [x] 2.4a Android: native FCM bridge, separate invitation/Daily consent, token rotation, account-bound server delivery, deletion and reminder scheduler. Unit, native compile and isolated Firestore integration checks pass.
+- [ ] 2.4b Verify actual FCM delivery on a configured device against deployed endpoints. Firebase Android registration is complete; Play Integrity still needs its provider setup for production calls.
 - [ ] 2.5 Verification: adb suite for lobby, invitation, live race against the emulators; two-device race via two emulators.
+
+- [x] 2.6a Rewarded referrals: Android-specific opaque issuance, explicit binding, first confirmed win settlement, durable Google-subject replay protection, daily caps, deletion cleanup and native invite UI. Anonymous users cannot accept rewarded acquisition. Fourteen real Firestore cases and native/shared UI/controller checks pass, including wrong-owner refusal and delete/recreate replay.
+- [ ] 2.6b Verify the full native acquisition flow with configured real Google sign-in. Do not treat share-sheet completion as conversion.
+- [x] 2.7a Durable account recovery: optional native Google linking with uid preservation, explicit conflict choice, restore and owned sign-out. Real Auth emulator checks prove account/purchase binding, signed provider subject, conflict retention and explicit restoration; stale identity/provisioning regressions pass.
+- [ ] 2.7b Configure Google Authentication/OAuth and verify the real Credential Manager chooser. Firebase Android registration and debug certificate registration are complete. The Web OAuth client ID is not configured; the Console browser currently requires owner sign-in. See `android-google-account-setup.md`.
 
 ## Phase 3 — Commerce
 
 - [x] 3.1 Backend: server-authoritative, idempotent Google Play Billing grant (`grantAndroidPurchase`) verifying purchase tokens with the Play Developer API; subscription sync mirroring `syncJestSubscriptions` (`syncAndroidSubscriptions`). Tokens are bound to the account through `obfuscatedAccountId` = SHA-256 of the uid; grants are recorded under `androidPurchaseGrants/{sha256(token)}`, granted packs are consumed server-side, and pending subscription acknowledgements are completed.
-- [x] 3.2 Android: shop with coin packs and Premium through Play Billing Library 9.1.0 (`RiddleQuestPlayBilling` native module), restore (also run on every launch), pending and cancellation handling, and Play's subscription management link.
-- [ ] 3.3 Verification: Play internal-testing licence testers; receipts replayed in backend tests.
+- [x] 3.2 Android: shop with coin packs and Premium through Play Billing Library 9.1.0 (`RiddleQuestPlayBilling` native module), restore (also run on every launch), pending and cancellation handling, and Play's subscription management link. New checkout requires a Google-linked recoverable account and rechecks ownership before opening Play; Restore and management remain available for historical anonymous receipts.
+- [x] 3.3a Backend receipt replay, account binding, pending/cancelled tokens, consumption retry and subscription states verified in automated tests. Added recovery regressions for rejected old receipts, concurrent checkout/restore and lagging owned-subscription queries.
+- [ ] 3.3b Real Play internal-testing licence-tester purchases, pending payment completion, cancel/restore and subscription renewal. Blocked on the owner creating a Google Play developer account and configuring products, API access and licence testers.
 - Owner prerequisites: Play Console products and subscriptions, service account for the Play Developer API, upload key.
 
 ## Phase 4 — Release
 
-- [ ] 4.1 Retire the self-contained solo screens or keep them as the offline mode behind a connectivity check (decision recorded here).
-- [ ] 4.2 Data safety form reflects account, purchases and analytics; privacy notice updated.
+- [x] 4.1 Keep the self-contained solo screens as an explicitly selected offline fallback. Connection failure offers Play offline; the hosted home also allows choosing it. Offline saves and currency stay separate from the server account, never grant purchasable currency, and never merge into confirmed progress. Cold-relaunch device verification passed on 20 November 2026.
+- [x] 4.2a Prepare Android privacy and Data safety inventory from actual code in `android-privacy-and-data-safety.md`; Android has no analytics SDK.
+- [ ] 4.2b Publish the Android privacy notice and complete the Play Console Data safety declaration after the developer account exists. The draft is not a published policy or submitted form.
 - [ ] 4.3 Full gate: unit, hosted emulator e2e, two-device race, Play internal testing.
 
 ## Evidence
+
+- 2026-11-20, final code gates: Android unit suite 171 tests, hosted suite 327 tests, backend unit suite 1,863 tests pass. Backend lint/types/cycle checks and source-size checks pass. New server subscription registry passes seven real Firestore cases for cross-device ownership, concurrent refresh, bounded retention, expiry and outage behavior. Referral integration passes fourteen, notification integration seven, and Auth emulator linking/restoration six checks. A final checkout guard adds explicit anonymous/stale-account refusal while preserving Restore; its 25 billing/shop tests pass. Source-frozen APK and all-architecture AAB verification are in progress.
+- 2026-11-20, Firebase preparation: Android app and debug SHA-1/SHA-256 registered; production Functions environment has the public Android App Check app id. Expiry policies requested for `androidAttestationNonces`, `androidPushTokens`, `androidReferralTokens`, `androidReferralIssueLimits` and `androidReferralDailyCaps`; initial provider state is CREATING, so activation remains to be confirmed.
+
+- 2026-11-20: Android native avatar device scenario passed in 38.5 seconds using the real system picker and Storage/Functions emulators. Backend avatar authorization now accepts canonical Android accounts while preserving Jest guest rejection; avatar/profile backend tests passed 38 and Android avatar/profile tests passed 12. All 28 retained Jest invitation/recovery/quit browser scenarios passed; live reconnect passed 354 development and 354 production checks with no page errors. Latest Android unit run passed 157 tests and hosted unit run passed 306 before the final added payment-recovery cases; the specific billing suite passes 13. Backend unit run passed 1,856 tests before the final avatar additions; lint, types and module-cycle audit pass. Source-size audit passes. The initial TSDoc failures were resolved without weakening the gate; the full audit now passes 31,820 declarations across 1,448 files.
+
+- 2026-11-20: registered Firebase Android app `1:329028367192:android:4c0af717dd9c0db1b7eb2d` for `com.roobsworld.riddlequest` in the existing backend project. Native FCM configuration uses that app's public configuration; the JS SDK continues accessing the Functions backend. Google Play account, Play Integrity linkage and licence-testing prerequisites remain open.
+
+- 2026-11-20: 2.1 extracted shared race session, authority, presentation, timers and storage contracts with browser adapters retained in the portal. Shared/portal race suites passed 130 suites and 1,257 tests; complete portal unit suite passed 3,116 tests with its 129 pre-existing browser-only skips. Jest target build and artifact audit passed with 0.55 MB initial resources. Browser runtime verification is still required under 4.3.
+- 2026-11-20: release x86_64 APK built with native FCM and race screens; device smoke check on `emulator-5554` solved Classic and persisted 365 coins after cold relaunch. Android unit suite passed 138 tests before the added race screen tests. Backend provisioning, attestation, purchase and rollout tests passed 52 tests. Real Firestore transaction suites passed 58 Android/Jest live-race tests, including Android-only pools, invitations, one-time settlement and existing Jest behavior. Shared purchase recovery passed 2 tests for coalescing, retry and account disposal. Pending-payment foreground recovery and failed-checkout unlocking are implemented; real Play verification remains open.
 
 - 2026-11-02, step 1.7: `androidAttestation.test.ts` (7 tests) covers nonce issue, single use, expiry and format, every verdict rejection, the full exchange with replay refusal, the per-address limit and the Play Integrity decoder; `appCheck.test.ts` (4 tests) covers the client exchange, its failures and when App Check is installed. The four hosted adb scenarios still pass with the App Check code in the emulator build. A production-config build launched on the emulator without crashing: App Check initialized, attestation failed because the endpoints are not deployed and the build is unknown to Play, and the app showed the connect screen with Retry and Play offline.
 

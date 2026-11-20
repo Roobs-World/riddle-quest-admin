@@ -125,7 +125,9 @@ export function useShop({billing, commerce, accountUid, onAccountChanged}: ShopO
       (error: unknown) => {
         if (!mounted.current) return;
         // The native module rejects with this code when the device has no usable Play Store.
-        setCatalog({kind: (error as {code?: unknown} | null)?.code === "billing-unavailable" ? "unavailable" : "failed"});
+        setCatalog({kind: (error as {
+        /** Stores code. */
+        code?: unknown} | null)?.code === "billing-unavailable" ? "unavailable" : "failed"});
       },
     );
   }, [billing]);
@@ -186,6 +188,7 @@ export function useShop({billing, commerce, accountUid, onAccountChanged}: ShopO
       const restored = await commerce.restore();
       if (mounted.current) setActiveSkus(restored.activeSkus);
       onAccountChanged();
+      if (restored.failedPurchases > 0) return {kind: "failed"};
       return restored.coinsAwarded > 0 ? {kind: "coinsAdded", coins: restored.coinsAwarded} : {kind: "restored"};
     });
   }, [commerce, onAccountChanged, run]);

@@ -1,6 +1,11 @@
+import {useAuthSnapshot} from "./hosted/useAuthSnapshot";
+import {parseAndroidReferralUrl} from "@riddle-quest/hosted/androidReferrals";
+import {HostedReferralScreen} from "./screens/HostedReferralScreen";
+import {createPurchaseRecovery} from "@riddle-quest/hosted/commerce/purchaseRecovery";
+import {AppState, BackHandler, Linking} from "react-native";
 import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "@riddle-quest/solo";
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {createAndroidCommerce} from "./billing/androidCommerce";
 import type {PlayBillingPort} from "./billing/playBilling";
 import type {HostedFirebaseClient} from "./hosted/firebaseClient";
@@ -13,6 +18,10 @@ import type {AndroidPendingPlayStorage} from "./hosted/pendingPlayStorage";
 import {HostedGameScreen} from "./screens/HostedGameScreen";
 import {HostedHomeScreen} from "./screens/HostedHomeScreen";
 import {HostedProfileScreen} from "./screens/HostedProfileScreen";
+import {HostedRaceScreen} from "./screens/HostedRaceScreen";
+import {HostedNotificationScreen} from "./screens/HostedNotificationScreen";
+import {useAndroidNotifications} from "./notifications/androidNotifications";
+import {useAndroidRaceLinks} from "./hosted/raceLinks";
 import {HostedShopScreen} from "./screens/HostedShopScreen";
 import {SoloPlayableApp} from "./SoloPlayableApp";
 /** Props for {@link AndroidApp}. */
@@ -38,6 +47,13 @@ type HostedRoute =
   | "account"
   | "profile"
   | "shop"
+  | "notifications"
+  | {
+  /** Stores race. */
+  race: string | undefined}
+  | {
+  /** Stores referral. */
+  referral: string | undefined}
   | {
       /** Server-authoritative play. */
       hosted: WebGameMode;
@@ -54,21 +70,90 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   const [surface, setSurface] = useState<"online" | "offline">("online");
   /** Hosted route while the account is confirmed. */
   const [route, setRoute] = useState<HostedRoute>("home");
-  /** Account controller; connects as soon as the app mounts. */
-  const account = useHostedAccount(client, {autoConnect: true});
+  /** Retains [account return route, set account return route] for this operation. */
+  const [accountReturnRoute, setAccountReturnRoute] = useState<HostedRoute>("home");
+  /** Retains route ref for this operation. */
+  const routeRef = useRef(route);
+  useLayoutEffect(() => {routeRef.current = route;}, [route]);
+  /** Retains [referral token, set referral token] for this operation. */
+  const [referralToken, setReferralToken] = useState<string | undefined>();
+  /** Retains [incoming route, set incoming route] for this operation. */
+  const [incomingRoute, setIncomingRoute] = useState<HostedRoute | null>(null);
+  useEffect(() => {
+    if (!incomingRoute) return;
+    // Preserve an active race until its controller confirms retirement.
+    if (typeof route === "object" && "race" in route) {
+      if (typeof incomingRoute === "object" && "race" in incomingRoute && route.race === incomingRoute.race) setIncomingRoute(null);
+      return;
+    }
+    setSurface("online");
+    setRoute(incomingRoute);
+    setIncomingRoute(null);
+  }, [incomingRoute, route]);
+  useEffect(() => {
+    /** Retains subscription for this operation. */
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (surface === "offline") { setSurface("online"); return true; }
+      if (typeof route === "object" && "race" in route) return false;
+      if (route === "home") return false;
+      setRoute(route === "account" ? accountReturnRoute : "home");
+      return true;
+    });
+    return () => subscription.remove();
+  }, [route, surface, accountReturnRoute]);
+  /** Auth can observe a missing document before provisioning; refresh after that write commits. */
+  const confirmProfile = useCallback((uid: string) => services.loadProfile(uid), [services]);
+  /** Account controller publishes readiness only after host authority is refreshed. */
+  const account = useHostedAccount(client, {autoConnect: true, onConfirmed: confirmProfile});
+  /** Retains confirmed for this operation. */
+  const confirmed = useAuthSnapshot(services);
   /** Shop flow over Play and the backend, when the device has Play Billing. */
-  const commerce = useMemo(() => (billing ? createAndroidCommerce(billing, client.purchases) : null), [billing, client]);
+  const commerce = useMemo(() => (billing ? createAndroidCommerce(billing, client.purchases, {canCheckout: uid => client.currentUser()?.uid === uid && client.googleIdentity?.isLinked() === true}) : null), [billing, client]);
   /** Confirmed account uid, once connected. */
   const accountUid = account.state.kind === "ready" ? account.state.account.uid : null;
+  /** Retains notifications for this operation. */
+  const notifications = useAndroidNotifications(accountUid, locale ?? "en", client.notifications);
+  /** Retains open race link for this operation. */
+  const openRaceLink = useCallback((challengeId: string) => {
+    /** Retains active route for this operation. */
+    const activeRoute = routeRef.current;
+    // Reopening the current invitation must not discard a different queued journey.
+    if (typeof activeRoute === "object" && "race" in activeRoute && activeRoute.race === challengeId) return;
+    setIncomingRoute({race: challengeId});
+  }, []);
+  useAndroidRaceLinks(openRaceLink);
+  useEffect(() => {
+    /** Retains open daily for this operation. */
+    const openDaily = (url: string | null | undefined) => {
+      if (url === "riddlequest://daily") setIncomingRoute({hosted: "challenge"});
+      /** Retains referral for this operation. */
+      const referral = url ? parseAndroidReferralUrl(url) : null;
+      if (referral) {setReferralToken(referral); setIncomingRoute({referral});}
+    };
+    /** Retains current for this operation. */
+    let current = true;
+    Linking.getInitialURL().then(url => { if (current) openDaily(url); }, () => undefined);
+    /** Retains listener for this operation. */
+    const listener = Linking.addEventListener("url", event => openDaily(event.url));
+    return () => { current = false; listener.remove(); };
+  }, []);
   useEffect(() => {
     if (!commerce || !accountUid) return;
-    // A checkout interrupted before its grant stays owned by the Play account;
-    // settling on every launch delivers it and renews Premium coins.
-    commerce.restore().then(
-      () => services.loadProfile(accountUid),
-      () => undefined,
-    );
-  }, [accountUid, commerce, services]);
+    /** Retains recovery for this operation. */
+    const recovery = createPurchaseRecovery({restore: () => commerce.restore(), onRecovered: () => services.loadProfile(accountUid)});
+    void recovery.request();
+    /** Retains foreground for this operation. */
+    const foreground = AppState.addEventListener("change", state => {
+      if (state === "active") void recovery.request();
+    });
+    /** Retains unsubscribe for this operation. */
+    const unsubscribe = billing?.onPurchasesChanged?.(() => { void recovery.request(); });
+    return () => {
+      recovery.dispose();
+      foreground.remove();
+      unsubscribe?.();
+    };
+  }, [accountUid, billing, commerce, services]);
   useEffect(() => {
     /** Whether a newer effect superseded this one. */
     let cancelled = false;
@@ -91,6 +176,15 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   }
   if (account.state.kind !== "ready") {
     return <HostedConnectScreen locale={locale} client={client} state={account.state} onRetry={account.connect} onPlayOffline={() => setSurface("offline")} />;
+  }
+  if (route === "notifications") {
+    return <HostedNotificationScreen locale={locale} controller={notifications} onBack={() => setRoute("home")} />;
+  }
+  if (typeof route === "object" && "race" in route) {
+    return <HostedRaceScreen locale={locale} accountUid={account.state.account.uid} client={client} services={services} challengeId={route.race} onBack={() => setRoute("home")} />;
+  }
+  if (typeof route === "object" && "referral" in route) {
+    return <HostedReferralScreen locale={locale} accountUid={account.state.account.uid} backend={client.referrals} token={route.referral} onBack={() => setRoute("home")} onGoogle={() => {setAccountReturnRoute(route); setRoute("account");}} />;
   }
   if (typeof route === "object") {
     return <HostedGameScreen services={services} mode={route.hosted} locale={locale} onBack={() => setRoute("home")} journal={journal} />;
@@ -119,12 +213,14 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
         fallbackCoins={account.state.account.coins}
         billing={billing}
         commerce={commerce}
+        durableAccount={client.googleIdentity?.isLinked() === true}
+        onShowAccount={() => {setAccountReturnRoute("shop"); setRoute("account");}}
         onBack={() => setRoute("home")}
       />
     );
   }
   if (route === "account") {
-    return <AccountScreen locale={locale} client={client} account={account} onBack={() => setRoute("home")} />;
+    return <AccountScreen locale={locale} client={client} account={account} confirmedCoins={confirmed.user?.uid === account.state.account.uid ? confirmed.profile?.coins : undefined} onBack={() => setRoute(accountReturnRoute)} />;
   }
   return (
     <HostedHomeScreen
@@ -132,7 +228,10 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
       services={services}
       account={account.state.account}
       onPlay={(mode) => setRoute({hosted: mode})}
-      onShowAccount={() => setRoute("account")}
+      onShowRace={() => setRoute({race: undefined})}
+      onShowNotifications={() => setRoute("notifications")}
+      onShowReferrals={() => setRoute({referral: referralToken})}
+      onShowAccount={() => {setAccountReturnRoute("home"); setRoute("account");}}
       onShowShop={() => setRoute("shop")}
       onShowProfile={() => setRoute("profile")}
       onPlayOffline={() => setSurface("offline")}

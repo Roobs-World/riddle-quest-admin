@@ -14,7 +14,9 @@ import {contentSource, createPort, expectScreen, press} from "../test/harness";
 /** One leaderboard row. */
 const row = (userId: string, username: string, xp: number): BridgeLeaderboardEntry => ({userId, username, level: 2, xp, totalWins: xp / 10, bestStreak: xp / 100});
 /** Services with scripted profile operations. */
-const createServices = (overrides: Partial<HostServices> = {}): HostServices & {recorded: string[]} => {
+const createServices = (overrides: Partial<HostServices> = {}): HostServices & {
+/** Stores recorded. */
+recorded: string[]} => {
   /** Recorded profile operations. */
   const recorded: string[] = [];
   return {
@@ -49,6 +51,7 @@ describe("HostedProfileScreen", () => {
   });
 
   it("shows the confirmed profile, its stats and the XP leaderboard with the player's row highlighted", async () => {
+    /** Retains services for this operation. */
     const services = createServices();
     await renderProfile(services);
     expect(screen.getByTestId("profile-username")).toHaveTextContent("Android");
@@ -67,6 +70,7 @@ describe("HostedProfileScreen", () => {
   it("lists unlocked achievements and computes the win rate", async () => {
     /** Services whose profile has wins and achievements. */
     const base = createServices();
+    /** Retains services for this operation. */
     const services: HostServices = {
       ...base,
       auth: {
@@ -87,6 +91,7 @@ describe("HostedProfileScreen", () => {
   it("retries a leaderboard that failed to load", async () => {
     /** Whether the next load fails. */
     let fail = true;
+    /** Retains services for this operation. */
     const services = createServices({
       loadLeaderboard: async () => {
         if (fail) throw new Error("unavailable");
@@ -103,8 +108,10 @@ describe("HostedProfileScreen", () => {
   it("validates, saves and explains username changes", async () => {
     /** Successive username outcomes. */
     const outcomes: (Error | null)[] = [null, Object.assign(new Error("taken"), {code: "functions/already-exists"}), new Error("boom")];
+    /** Retains services for this operation. */
     const services = createServices({
       updateUsername: async () => {
+        /** Retains next for this operation. */
         const next = outcomes.shift();
         if (next) throw next;
         return null;
@@ -128,6 +135,7 @@ describe("HostedProfileScreen", () => {
     let fail = true;
     /** Deletions reported to the root. */
     let deleted = 0;
+    /** Retains services for this operation. */
     const services = createServices({
       deleteAccount: async () => {
         if (fail) throw new Error("offline");
@@ -166,6 +174,7 @@ describe("AndroidApp profile", () => {
   it("opens the profile from the hosted home and provisions a fresh account after deletion", async () => {
     /** Provisioning calls. */
     const provisioned: string[] = [];
+    /** Retains client for this operation. */
     const client = {
       projectId: "riddle-quest-test",
       usingEmulators: true,

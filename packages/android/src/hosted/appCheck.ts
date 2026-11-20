@@ -15,7 +15,13 @@ export type AttestedToken = Readonly<{
   expireTimeMillis: number;
 }>;
 /** Minimal HTTP transport so tests can substitute it. */
-type Fetch = (url: string, init: {method: "POST"; headers: Record<string, string>; body: string}) => Promise<{
+type Fetch = (url: string, init: {
+/** Stores method. */
+method: "POST";
+/** Stores headers. */
+headers: Record<string, string>;
+/** Stores body. */
+body: string}) => Promise<{
   /** Whether the status was 2xx. */
   ok: boolean;
   /** Parsed body. */

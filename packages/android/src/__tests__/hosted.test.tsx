@@ -1,11 +1,11 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
+import {act, fireEvent, render, renderHook, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 
 /** Recorded Firebase SDK calls. */
 const mockCalls: string[] = [];
 /** Fake Firebase user. */
-const mockUser = {uid: "device-uid", isAnonymous: true};
+const mockUser = {uid: "device-uid", isAnonymous: true, providerData: []};
 /** Shape of the fake auth object. */
 type FakeAuth = {
   /** Signed-in fake user, or `null`. */
@@ -259,5 +259,41 @@ describe("AccountScreen", () => {
     await fireEvent.press(screen.getByTestId("account-connect"));
     await waitFor(() => expect(screen.getByTestId("account-status")).toHaveTextContent("Cuenta creada."));
     expect(screen.getByTestId("account-coins")).toHaveTextContent(/Monedas en el servidor/u);
+  });
+});
+
+
+describe("hosted account continuation ownership", () => {
+  beforeEach(() => {
+    mockCalls.length = 0; mockAuth.currentUser = mockUser; mockCallable.mockReset();
+  });
+
+  it("ignores a retained account refresh callback after its root unmounts", async () => {
+    /** Real hosted adapter keeps the SDK/provision boundary visible to this hook test. */
+    const client = createHostedFirebaseClient(productionConfig);
+    /** Hook callback is retained by an operation that can outlive its original rendering root. */
+    const hook = await renderHook(() => useHostedAccount(client));
+    /** A committed Google operation may complete after the whole app root retires. */
+    const refresh = hook.result.current.connect;
+    await hook.unmount(); refresh();
+    expect(mockCallable).not.toHaveBeenCalled();
+    expect(mockCalls).not.toContain("signInAnonymously");
+  });
+
+  it("keeps the latest account snapshot when earlier provisioning finishes afterward", async () => {
+    /** An earlier server response remains pending across a newer ownership refresh. */
+    let finish: (value: FakeCallableResult) => void = () => undefined;
+    /** Only transport delivery is delayed; the hook and adapter execute their real control flow. */
+    const first = new Promise<FakeCallableResult>(resolve => {finish = resolve;});
+    mockCallable.mockReturnValueOnce(first).mockResolvedValueOnce({data: {uid: "device-uid", created: false, coins: 710}});
+    /** Persisted auth remains bound to this root during both requests. */
+    const client = createHostedFirebaseClient(productionConfig);
+    /** Each explicit identity refresh starts a new root connection generation. */
+    const hook = await renderHook(() => useHostedAccount(client));
+    await act(async () => {hook.result.current.connect();});
+    await act(async () => {hook.result.current.connect();});
+    expect(hook.result.current.state).toEqual({kind: "ready", account: {uid: "device-uid", created: false, coins: 710}});
+    await act(async () => {finish({data: {uid: "device-uid", created: false, coins: 300}});});
+    expect(hook.result.current.state).toEqual({kind: "ready", account: {uid: "device-uid", created: false, coins: 710}});
   });
 });

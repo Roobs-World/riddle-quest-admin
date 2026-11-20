@@ -4,6 +4,7 @@ import {useState} from "react";
 import {StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import {AchievementRow} from "../components/StatusViews";
+import {AvatarEditor} from "../components/AvatarEditor";
 import {useAuthSnapshot} from "../hosted/useAuthSnapshot";
 import {PROFILE_LEADERBOARDS, useHostedProfile, type UsernameNotice} from "../hosted/useHostedProfile";
 import {profileText, type ProfileCopyKey} from "../i18n/profileCopy";
@@ -59,6 +60,7 @@ export function HostedProfileScreen({locale, services, accountUid, onBack, onDel
         <Heading testID="profile-heading">{profileText(locale, "profileTitle")}</Heading>
         {profile ? (
           <View style={styles.stack} testID="profile-summary">
+            <AvatarEditor locale={locale} services={services} accountUid={accountUid} avatarUrl={profile.avatarUrl} />
             <Text style={styles.name} testID="profile-username">{profile.username}</Text>
             <Text style={styles.body}>{`${profileText(locale, "levelPrefix")} ${profile.level} · ${solo("xp")} ${profile.xp} · 🪙 ${profile.coins}`}</Text>
             <Eyebrow>{profileText(locale, "statsTitle")}</Eyebrow>

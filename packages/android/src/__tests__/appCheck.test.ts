@@ -8,8 +8,13 @@ const mockInitialized: unknown[] = [];
 jest.mock("firebase/app-check", () => ({
   CustomProvider: class {
     /** Provider options. */
-    options: {getToken: () => Promise<unknown>};
-    constructor(options: {getToken: () => Promise<unknown>}) {
+    options: {
+    /** Stores get token. */
+    getToken: () => Promise<unknown>};
+    /** Creates a class instance. */
+    constructor(options: {
+    /** Stores get token. */
+    getToken: () => Promise<unknown>}) {
       this.options = options;
     }
   },
@@ -40,8 +45,14 @@ const integrity = (calls: string[]): PlayIntegrityPort => ({
   },
 });
 /** Scripted HTTP transport. */
-const transport = (responses: Record<string, {ok: boolean; body: unknown}>, calls: string[]) =>
-  async (url: string, init: {body: string}) => {
+const transport = (responses: Record<string, {
+/** Stores ok. */
+ok: boolean;
+/** Stores body. */
+body: unknown}>, calls: string[]) =>
+  async (url: string, init: {
+  /** Stores body. */
+  body: string}) => {
     calls.push(`${url} ${init.body}`);
     /** Scripted response. */
     const scripted = responses[url.split("/").pop() ?? ""];
@@ -50,7 +61,9 @@ const transport = (responses: Record<string, {ok: boolean; body: unknown}>, call
 
 describe("attestDevice", () => {
   it("binds a Play Integrity token to the server nonce and returns the minted App Check token", async () => {
+    /** Retains calls for this operation. */
     const calls: string[] = [];
+    /** Retains token for this operation. */
     const token = await attestDevice(
       production,
       integrity(calls),
@@ -72,6 +85,7 @@ describe("attestDevice", () => {
   });
 
   it("fails on a refused exchange, a malformed nonce and a malformed token", async () => {
+    /** Retains calls for this operation. */
     const calls: string[] = [];
     await expect(attestDevice(production, integrity(calls), transport({
       issueAndroidAttestationNonce: {ok: true, body: {nonce: "n"}},
@@ -93,10 +107,12 @@ describe("attestDevice", () => {
 describe("enableAndroidAppCheck", () => {
   it("installs a Play Integrity provider in production and skips emulator builds and devices without the module", async () => {
     mockInitialized.length = 0;
+    /** Retains calls for this operation. */
     const calls: string[] = [];
     expect(enableAndroidAppCheck({} as never, {...production, emulators: {host: "10.0.2.2", authPort: 9099, functionsPort: 5001, firestorePort: 8099}}, integrity(calls))).toBeNull();
     expect(enableAndroidAppCheck({} as never, production, null)).toBeNull();
     expect(mockInitialized).toHaveLength(0);
+    /** Fetches impl. */
     const fetchImpl = transport({
       issueAndroidAttestationNonce: {ok: true, body: {nonce: "n"}},
       exchangeAndroidAttestation: {ok: true, body: {appCheckToken: "t", ttlMillis: 60_000}},
@@ -104,7 +120,17 @@ describe("enableAndroidAppCheck", () => {
     expect(enableAndroidAppCheck({} as never, production, integrity(calls), fetchImpl)).not.toBeNull();
     expect(mockInitialized).toHaveLength(1);
     /** Provider handed to App Check. */
-    const options = mockInitialized[0] as {provider: {options: {getToken: () => Promise<{token: string}>}}; isTokenAutoRefreshEnabled: boolean};
+    const options = mockInitialized[0] as {
+    /** Stores provider. */
+    provider: {
+    /** Stores options. */
+    options: {
+    /** Stores get token. */
+    getToken: () => Promise<{
+    /** Stores token. */
+    token: string}>}};
+    /** Stores is token auto refresh enabled. */
+    isTokenAutoRefreshEnabled: boolean};
     expect(options.isTokenAutoRefreshEnabled).toBe(true);
     expect((await options.provider.options.getToken()).token).toBe("t");
   });

@@ -1,3 +1,6 @@
+import {referralCopy} from "../i18n/referralCopy";
+import {raceText} from "../i18n/raceCopy";
+import {notificationCopy} from "../i18n/notificationCopy";
 import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
 import {StyleSheet, Text, View} from "react-native";
@@ -21,6 +24,12 @@ export type HostedHomeScreenProps = Readonly<{
   onPlay: (mode: WebGameMode) => void;
   /** Opens the account screen. */
   onShowAccount: () => void;
+  /** Opens Race to 10. */
+  onShowRace: () => void;
+  /** Opens notification preferences. */
+  onShowNotifications: () => void;
+  /** Opens acquisition invitations. */
+  onShowReferrals: () => void;
   /** Opens the Google Play shop. */
   onShowShop: () => void;
   /** Opens the profile, leaderboards and account settings. */
@@ -31,7 +40,7 @@ export type HostedHomeScreenProps = Readonly<{
 /** Current UTC day, matching the Daily's server calendar. */
 const utcToday = (): string => new Date().toISOString().slice(0, 10);
 /** Hosted-first home: Classic and Daily issued by the server, with the account and offline play one tap away. */
-export function HostedHomeScreen({locale, services, account, onPlay, onShowAccount, onShowShop, onShowProfile, onPlayOffline}: HostedHomeScreenProps) {
+export function HostedHomeScreen({locale, services, account, onPlay, onShowAccount, onShowShop, onShowProfile, onPlayOffline, onShowRace, onShowNotifications, onShowReferrals}: HostedHomeScreenProps) {
   /** Live account snapshot from the shared services. */
   const snapshot = useAuthSnapshot(services);
   /** Server-confirmed coins: the profile once loaded, else the provisioned balance. */
@@ -59,6 +68,9 @@ export function HostedHomeScreen({locale, services, account, onPlay, onShowAccou
         />
         <ModeCard glyph="☀️" title={youtubeText(locale, "daily")} caption={utcToday()} disabled={false} onPress={() => onPlay("challenge")} testID="hosted-play-daily" />
       </View>
+      <ActionButton tone="primary" label={raceText(locale, "MULTIPLAYER_BUTTON")} onPress={onShowRace} testID="show-race" />
+      <ActionButton label={referralCopy(locale).title} onPress={onShowReferrals} testID="show-referrals" />
+      <ActionButton label={notificationCopy(locale).title} onPress={onShowNotifications} testID="show-notifications" />
       <ActionButton tone="primary" label={shopText(locale, "shopTitle")} onPress={onShowShop} testID="show-shop" />
       <ActionButton label={profileText(locale, "profileTitle")} onPress={onShowProfile} testID="show-profile" />
       <ActionButton label={hostedText(locale, "account")} onPress={onShowAccount} testID="show-account" />

@@ -1,3 +1,4 @@
+import {googleIdentityCopy} from "../i18n/googleIdentityCopy";
 import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
 import {useCallback} from "react";
@@ -24,6 +25,10 @@ export type HostedShopScreenProps = Readonly<{
   billing: PlayBillingPort | null;
   /** Shop flow, or `null` without Play. */
   commerce: AndroidCommerce | null;
+  /** Whether Google linking makes this exact purchase account recoverable. */
+  durableAccount: boolean;
+  /** Opens account linking before a new paid checkout. */
+  onShowAccount: () => void;
   /** Returns to the home screen. */
   onBack: () => void;
 }>;
@@ -45,7 +50,7 @@ const noticeText = (locale: YouTubeLocale, notice: ShopNotice): string => {
   }
 };
 /** Google Play shop: coin packs and Premium, settled by the backend. */
-export function HostedShopScreen({locale, services, accountUid, fallbackCoins, billing, commerce, onBack}: HostedShopScreenProps) {
+export function HostedShopScreen({locale, services, accountUid, fallbackCoins, billing, commerce, durableAccount, onShowAccount, onBack}: HostedShopScreenProps) {
   /** Live account snapshot for the confirmed balance. */
   const snapshot = useAuthSnapshot(services);
   /** Refreshes the published profile after a grant. */
@@ -71,7 +76,7 @@ export function HostedShopScreen({locale, services, accountUid, fallbackCoins, b
           <ActionButton
             tone="primary"
             label={shopText(locale, "subscribe")}
-            disabled={shop.busy !== null}
+            disabled={shop.busy !== null || !durableAccount}
             onPress={() => shop.buy(plan)}
             testID={`shop-buy-${plan.productId}`}
           />
@@ -87,6 +92,10 @@ export function HostedShopScreen({locale, services, accountUid, fallbackCoins, b
         <Text accessibilityLabel={`${shopText(locale, "yourBalance")}: ${coins}`} style={styles.balance} testID="shop-coins">
           {`${shopText(locale, "yourBalance")}: 🪙 ${coins}`}
         </Text>
+        {!durableAccount && <View style={styles.stack} testID="shop-account-required">
+          <Notice>{googleIdentityCopy(locale).intro}</Notice>
+          <ActionButton label={googleIdentityCopy(locale).title} onPress={onShowAccount} testID="shop-link-account" />
+        </View>}
         {shop.notice && (
           <Notice error={shop.notice.kind === "failed"} testID="shop-notice">
             {noticeText(locale, shop.notice)}
@@ -112,7 +121,7 @@ export function HostedShopScreen({locale, services, accountUid, fallbackCoins, b
                 <ActionButton
                   tone="primary"
                   label={pack.product.price}
-                  disabled={shop.busy !== null}
+                  disabled={shop.busy !== null || !durableAccount}
                   onPress={() => shop.buy(pack.product)}
                   testID={`shop-buy-${pack.productId}`}
                 />

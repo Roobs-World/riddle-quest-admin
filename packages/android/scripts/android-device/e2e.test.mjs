@@ -8,6 +8,7 @@
  */
 import assert from "node:assert/strict";
 import {join} from "node:path";
+import {createRequire} from "node:module";
 import {before, describe, it} from "node:test";
 import {createDriver, defaultApk, readBundledAnswers, repositoryRoot} from "./driver.mjs";
 
@@ -35,6 +36,7 @@ const freshMenu = async (driver) => {
   driver.stop();
   driver.clearData();
   driver.launch();
+  if (process.env.RIDDLE_QUEST_HOSTED_EMULATOR === "1") await driver.waitForId("screen-hosted-home", 60_000);
   await driver.tapIdUntil("play-offline", "menu-heading");
   assert.equal(await driver.readCoins(), STARTING_COINS);
 };
@@ -77,6 +79,7 @@ describe("Android app on device", () => {
     await driver.waitForId("menu-heading");
     driver.stop();
     driver.launch();
+    if (process.env.RIDDLE_QUEST_HOSTED_EMULATOR === "1") await driver.waitForId("screen-hosted-home", 60_000);
     await driver.tapIdUntil("play-offline", "menu-heading");
     assert.equal(await driver.readCoins(), rewarded);
     assert.match(await driver.readText("start-classic"), /2\/\d+$/u);
@@ -155,6 +158,7 @@ describe("Android app on device", () => {
     driver.capture("preferences");
     driver.stop();
     driver.launch();
+    if (process.env.RIDDLE_QUEST_HOSTED_EMULATOR === "1") await driver.waitForId("screen-hosted-home", 60_000);
     await driver.tapIdUntil("play-offline", "menu-heading");
     assert.equal(driver.isEnabled(await driver.waitForId("start-daily")), false);
     await driver.tapId("show-progress");
@@ -178,8 +182,7 @@ describe("Android app on device", () => {
       driver.capture("landscape-result");
       driver.rotate(0);
       await driver.waitFor("portrait layout", (node) => node.id === "result-heading" && node.center.x < 600);
-      await driver.tapId("continue-to-menu");
-      await driver.waitForId("menu-heading");
+      await driver.tapIdUntil("continue-to-menu", "menu-heading");
     } finally {
       driver.resetRotation();
     }
@@ -267,6 +270,39 @@ describe("Android app on device", () => {
     assert.equal(await driver.readText("account-status"), "Account created.");
   });
 
+  it("selects a native avatar from Downloads and keeps the server-confirmed image after relaunch", {
+    skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with Auth, Functions, Firestore and Storage emulators running",
+  }, async () => {
+    /** Picker and profile evidence belong to this single seeded account. */
+    const driver = scenario("hosted-avatar");
+    await freshHosted(driver);
+    // Reuse a deterministic bundled PNG; the picker must decode, crop and encode its actual bytes.
+    driver.adb("shell", "mkdir", "-p", "/sdcard/Download");
+    driver.adb("push", join(repositoryRoot, "assets/images-web/chest-closed.png"), "/sdcard/Download/riddle-quest-avatar.png");
+    driver.adb("shell", "am", "broadcast", "-a", "android.intent.action.MEDIA_SCANNER_SCAN_FILE", "-d", "file:///sdcard/Download/riddle-quest-avatar.png");
+    await driver.tapId("show-profile");
+    await driver.waitForId("profile-username");
+    await driver.tapId("profile-avatar-select");
+    await driver.waitFor("system document picker", node => /documentsui/u.test(node.package ?? ""));
+    driver.capture("system-avatar-picker");
+    /** The permission-free system picker may start in Recent or its previous folder. */
+    let selected = driver.dumpUi().find(node => /riddle-quest-avatar(?:\.png)?/u.test(`${node.text ?? ""} ${node.label ?? ""}`));
+    if (!selected) {
+      driver.tap(await driver.waitFor("picker location menu", node => node.label === "Show roots"));
+      driver.tap(await driver.waitFor("Downloads folder", node => node.text === "Downloads"));
+      selected = await driver.waitFor("seeded avatar PNG", node => /riddle-quest-avatar(?:\.png)?/u.test(`${node.text ?? ""} ${node.label ?? ""}`));
+    }
+    driver.tap(selected);
+    assert.equal(await driver.readText("profile-avatar-notice"), "Avatar updated successfully!");
+    await driver.waitForId("profile-avatar");
+    driver.capture("avatar-server-confirmed");
+    driver.stop(); driver.launch();
+    await driver.waitForId("screen-hosted-home", 60_000);
+    await driver.tapId("show-profile");
+    await driver.waitForId("profile-avatar");
+    driver.capture("avatar-persisted");
+  });
+
   it("opens the Google Play shop from the hosted home and reports the store the device offers", {skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with the Firebase emulators running"}, async () => {
     const driver = scenario("hosted-shop");
     await freshHosted(driver);
@@ -318,13 +354,16 @@ describe("Android app on device", () => {
     driver.capture("hosted-redelivered-guess");
     // The unsent draft survives a process kill too.
     await driver.typeAnswer(seeded[0].slice(0, 2));
+    await driver.waitFor("committed second draft letter", node => node.id === "hosted-slot-1" && (node.label ?? "").endsWith(`2: ${seeded[0][1]}`));
+    driver.capture("hosted-draft-before-kill");
     driver.stop();
     driver.launch();
     await driver.waitForId("screen-hosted-home", 60_000);
     await driver.tapId("hosted-play-classic");
     await driver.waitForId("screen-hosted-game", 60_000);
     // Slots render letters in upper case, so read the slot's accessible description rather than its glyph.
-    await driver.waitFor("restored draft letter", (node) => node.id === "hosted-slot-0" && (node.label ?? "").endsWith(`1: ${seeded[0][0]}`));
+    await driver.waitFor("restored first draft letter", (node) => node.id === "hosted-slot-0" && (node.label ?? "").endsWith(`1: ${seeded[0][0]}`));
+    await driver.waitFor("restored second draft letter", (node) => node.id === "hosted-slot-1" && (node.label ?? "").endsWith(`2: ${seeded[0][1]}`));
     driver.capture("hosted-restored-draft");
     await driver.typeAnswer(seeded[0].slice(2));
     await driver.tapId("hosted-submit");
@@ -354,6 +393,7 @@ describe("Android app on device", () => {
     await driver.tapIdUntil("play-offline", "guess-row-0");
     driver.stop();
     driver.launch();
+    if (process.env.RIDDLE_QUEST_HOSTED_EMULATOR === "1") await driver.waitForId("screen-hosted-home", 60_000);
     await driver.tapIdUntil("play-offline", "riddle-text");
     await driver.waitForId("guess-row-0");
     driver.capture("restored");
@@ -362,4 +402,89 @@ describe("Android app on device", () => {
     assert.equal(await driver.readText("result-heading"), "Solved!");
     assert.match(await driver.readText("result-attempts"), /2$/u);
   });
+  it("plays a live match, recovers the exact seat and unsent input, and confirms quitting", {
+    skip: process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" && "set RIDDLE_QUEST_HOSTED_EMULATOR=1 with seeded Firebase emulators running",
+  }, async () => {
+    const driver = scenario("hosted-live-race");
+    await freshHosted(driver);
+    await driver.tapId("show-race");
+    await driver.waitForId("race-category-mixed", 60_000);
+    await driver.tapId("race-category-mixed");
+    await driver.tapId("race-start");
+    await driver.waitForId("race-riddle", 60_000);
+    driver.capture("live-race-ready");
+    const answer = answers.raceByClue[await driver.readText("race-riddle")];
+    assert.ok(answer, "every issued race clue comes from the reviewed emulator seed");
+    await driver.typeAnswer(answer);
+    await driver.tapId("race-submit");
+    await driver.waitFor("confirmed first race point", node => node.id === "race-player-score" && node.text === "1/10", 30_000);
+    const nextClue = await driver.readText("race-riddle");
+    const nextAnswer = answers.raceByClue[nextClue];
+    await driver.typeAnswer(nextAnswer.slice(0, 1));
+    driver.capture("live-race-draft");
+    driver.stop(); driver.launch();
+    await driver.waitForId("screen-hosted-home", 60_000);
+    await driver.tapId("show-race");
+    await driver.waitForId("race-riddle", 60_000);
+    assert.equal(await driver.readText("race-riddle"), nextClue, "cold recovery resumes the acknowledged seat's current question");
+    await driver.waitFor("restored race draft", node => node.id === "race-slot-0" && (node.label ?? "").endsWith(`1: ${nextAnswer[0]}`));
+    driver.capture("live-race-restored");
+    await driver.tapId("race-close");
+    await driver.waitForId("race-quit-confirm");
+    await driver.tapId("race-keep-playing");
+    await driver.waitForId("race-riddle");
+    await driver.tapId("race-close");
+    await driver.tapId("race-quit-confirm");
+    await driver.waitForId("screen-hosted-home", 60_000);
+  });
+
+  it("accepts a private invitation on a second device and settles one shared race result", {
+    skip: (process.env.RIDDLE_QUEST_HOSTED_EMULATOR !== "1" || !process.env.RIDDLE_QUEST_SECOND_SERIAL || !process.env.FIRESTORE_EMULATOR_HOST) &&
+      "set hosted/emulator variables and RIDDLE_QUEST_SECOND_SERIAL for two-device verification",
+  }, async () => {
+    const creator = scenario("two-device-race-creator");
+    const recipient = createDriver({serial: process.env.RIDDLE_QUEST_SECOND_SERIAL, evidenceDirectory: join(evidenceRoot, "two-device-race-recipient")});
+    if (process.env.RIDDLE_QUEST_SKIP_INSTALL !== "1") recipient.install(process.env.RIDDLE_QUEST_APK ?? defaultApk);
+    await freshHosted(creator); await freshHosted(recipient);
+    const createdAfter = Date.now();
+    await creator.tapId("show-race");
+    await creator.waitForId("race-category-mixed", 60_000);
+    await creator.tapId("race-category-mixed");
+    await creator.tapId("race-create-challenge");
+    await creator.waitForId("race-share", 60_000);
+    await creator.tapId("race-share");
+    await creator.waitFor("Android share sheet", node => /intentresolver|ResolverActivity/u.test(`${node.package ?? ""} ${node.class ?? ""}`), 15_000);
+    creator.capture("native-share-sheet");
+    creator.adb("shell", "input", "keyevent", "KEYCODE_BACK");
+    await creator.waitForId("race-share");
+    // The test reads only the local emulator to deliver the same opaque URL as Android's share sheet.
+    const requireFromFunctions = createRequire(join(repositoryRoot, "firebase-functions/package.json"));
+    const {getApps, initializeApp} = requireFromFunctions("firebase-admin/app");
+    const {getFirestore} = requireFromFunctions("firebase-admin/firestore");
+    const app = getApps().find(value => value.name === "android-device-race") ?? initializeApp({projectId: "riddle-quest-ec2b2"}, "android-device-race");
+    const tickets = await getFirestore(app).collection("liveRaceTickets").where("privateChallenge", "==", true).get();
+    const ticket = tickets.docs.filter(value => value.data().createdAtMs >= createdAfter && !value.data().cancelled)
+      .sort((left, right) => right.data().createdAtMs - left.data().createdAtMs)[0];
+    assert.ok(ticket, "creator has exactly an acknowledged private lobby in the emulator");
+    const challengeId = `live_${ticket.id}`;
+    recipient.adb("shell", "am", "start", "-W", "-a", "android.intent.action.VIEW", "-d", `riddlequest://race?challengeId=${challengeId}`, "com.roobsworld.riddlequest");
+    await recipient.waitForId(`race-accept-${challengeId}`, 60_000);
+    await recipient.tapId(`race-accept-${challengeId}`);
+    await Promise.all([creator.waitForId("race-riddle", 60_000), recipient.waitForId("race-riddle", 60_000)]);
+    assert.equal(await creator.readText("race-riddle"), await recipient.readText("race-riddle"), "both native devices receive the same authoritative first question");
+    creator.capture("paired"); recipient.capture("paired");
+    for (let index = 0; index < 10; index++) {
+      const clue = await creator.readText("race-riddle");
+      const answer = answers.raceByClue[clue];
+      assert.ok(answer, `seeded answer exists for ${clue}`);
+      await creator.typeAnswer(answer); await creator.tapId("race-submit");
+      if (index < 9) await creator.waitFor("next authoritative point", node => node.id === "race-player-score" && node.text === `${index + 1}/10`, 30_000);
+    }
+    assert.equal(await creator.readText("race-result-title"), "You win!");
+    assert.equal(await recipient.readText("race-result-title"), "Opponent wins");
+    assert.equal(await creator.readText("race-reward"), "+50 coins");
+    creator.capture("result"); recipient.capture("result");
+    await getFirestore(app).terminate();
+  });
+
 });

@@ -130,7 +130,7 @@ describeBrowser("Jest authentication integration", () => {
 
   afterAll(async () => {
     await browser?.close();
-    await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
+    if (server?.listening) await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
   });
 
   it("renders the preloaded next riddle before a delayed skip response returns", async () => {

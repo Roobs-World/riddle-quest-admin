@@ -17,8 +17,12 @@ A self-contained Web Target hosted by YouTube whose play state belongs only to t
 _Avoid_: YouTube app, YouTube account
 
 **Android App**:
-The bare React Native app in `packages/android` submitted to Google Play. It launches hosted-first like the Jest Web Target: the device signs in to its Global Game Account anonymously and plays server-issued Classic and Daily riddles through the shared host services, with copy from the same locale tables as the Playable plus a hosted-only table. Hosted drafts and in-flight guesses go through the shared Provisional Play journal over AsyncStorage, so a guess that fails in transit is redelivered with its original request id on the next launch. The self-contained game (bundled content pack, progress in app-private storage) remains one tap away as the Offline Surface. It still has no purchases, sharing, or multiplayer.
+The bare React Native client in `packages/android` for Google Play. It shares server-issued Classic, Daily, Race to 10, profiles, achievements and confirmed economy with the hosted game through shared controllers. Native adapters provide storage, lifecycle, Google account linking, avatar selection, sharing, notifications and Play Billing. Google linking preserves the Firebase uid and is required before new paid checkouts and rewarded referrals; the backend verifies every purchase and conversion. The explicitly selected Offline Surface has separate local progress and non-purchasable currency. Android never imports another target's provider SDK, ads or analytics.
 _Avoid_: Mobile build, native port, Play version of the web game
+
+**Android Google identity**:
+A Google subject verified in Firebase authentication claims and bound to an Android Global Game Account. A server-only subject hash preserves referral eligibility, replay protection and daily limits across account deletion and recreation. Linking Google to anonymous play preserves the existing Firebase uid and Play purchase binding.
+_Avoid_: Anonymous installation, referral token, Jest player
 
 **Shared Solo Logic**:
 The provider-neutral local solo play package `@riddle-quest/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.

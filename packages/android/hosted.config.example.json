@@ -6,7 +6,10 @@
     "messagingSenderId": "329028367192",
     "projectId": "riddle-quest-ec2b2",
     "functionsRegion": "us-central1",
-    "gameplayRegion": "europe-west1"
+    "gameplayRegion": "europe-west1",
+    "androidAppId": "1:329028367192:android:4c0af717dd9c0db1b7eb2d",
+    "androidApiKey": "AIzaSyAJWgoIAVNvwYwal5PEnpIDg7jhKm_EbUU",
+    "googleWebClientId": ""
   },
   "emulators": null
 }
