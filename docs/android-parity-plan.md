@@ -8,7 +8,7 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 
 - Implemented and verified: shared race extraction, native multiplayer/invitations, avatar upload, notification consent, durable account linking and Android-specific referral grants.
 - Verified release APK on both emulators: all 14 device scenarios pass, including two-device Race to 10, recovery, avatar upload and offline persistence. The production-config AAB builds for all four architectures.
-- In progress: final Jest release gate, backend deployment and inactive Jest upload. The release gate found a backend test alias missing after the shared extraction; it is being corrected before upload. Provider release gates remain unchecked below.
+- In progress: backend deployment and inactive Jest upload. The backend shared-source test alias is fixed and all 1,863 unit tests pass. Immutable release packaging needs dependency links and graph fingerprints for the extracted hosted/solo packages; that correction is in progress. Provider release gates remain unchecked below.
 - Firebase remains the Functions backend. The owner explicitly chose to retain the Firebase SDK for backend access.
 - Tests and emulator checks explicitly authorized by the owner on 20 November 2026.
 - External blocker confirmed by the owner: no Google Play developer account exists yet. Real purchase verification in 3.3, production Play Integrity and the Play portion of 4.3 cannot complete until the account and internal-testing configuration exist. Keep these tasks open.
@@ -33,7 +33,8 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 - [x] 2.3a Android: profile, username, leaderboards, achievements, account deletion (`HostedProfileScreen`, `useHostedProfile`).
 - [x] 2.3b Android: native document picker, bounded image decoding/cropping and server-validated avatar upload; real device selection and cold-relaunch persistence passed on 20 November 2026.
 - [x] 2.4a Android: native FCM bridge, separate invitation/Daily consent, token rotation, account-bound server delivery, deletion and reminder scheduler. Unit, native compile and isolated Firestore integration checks pass.
-- [ ] 2.4b Verify actual FCM delivery on a configured device against deployed endpoints. Firebase Android registration is complete; Play Integrity still needs its provider setup for production calls.
+- [x] 2.4b Verify actual native FCM transport on a configured emulator: explicit consent obtained a real token, a real provider message displayed, tapping it opened the intended private-race preview, deletion removed the old registration, and a message for the retired account was rejected after the same installation token moved to its replacement account. Backend authority used the local emulators; only transport used real FCM.
+- [ ] 2.4c Verify consent registration and FCM delivery through deployed endpoints with production App Check. Play Integrity still needs Play Console linkage and a recognized installation.
 - [x] 2.5 Verification: all 14 adb scenarios passed on the final release APK, including lobby, invitation, cold recovery, confirmed quit and a two-device race with complementary outcomes and one reward. Installed APK hashes match on both emulators; direct bytecode inspection confirms the post-provisioning profile refresh is present.
 
 - [x] 2.6a Rewarded referrals: Android-specific opaque issuance, explicit binding, first confirmed win settlement, durable Google-subject replay protection, daily caps, deletion cleanup and native invite UI. Anonymous users cannot accept rewarded acquisition. Fourteen real Firestore cases and native/shared UI/controller checks pass, including wrong-owner refusal and delete/recreate replay.
@@ -57,6 +58,9 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 - [ ] 4.3 Full gate: unit, hosted emulator e2e, two-device race, Play internal testing.
 
 ## Evidence
+
+- 2026-11-20, real native FCM: two real provider sends targeted only the owned emulator. The positive message displayed and opened the exact second-device private race. Account deletion removed the registration; the replacement account reused the token, and an old-account message did not display. Device screenshots and redacted verification evidence are under `artifacts/android-device-verification/real-fcm/`.
+- 2026-11-20, Cloud setup: `androidpublisher.googleapis.com`, `playintegrity.googleapis.com` and `fcm.googleapis.com` are enabled. Deployment environment validation passes with no reserved warm instances. Play Console permissions and app linkage remain unconfigured because no developer account exists.
 
 - 2026-11-20, exact artifacts: device APK SHA-256 `2cafeceb805d40b1eaee5e93d6dfc06cb58df33a10b643b1bf64330a2f4655ae`; production-config AAB SHA-256 `1420238435a53afee0ce142c1998711e785e758a22af9adf8af125f2447c153c`. The AAB contains arm64-v8a, armeabi-v7a, x86 and x86_64, no emulator host and no ads/analytics/other-platform SDKs. The external hierarchy reader is absent from both artifacts. Verification JSON and direct APK bytecode evidence are under ignored `artifacts/android-production-bundle/` and `artifacts/android-device-verification/`.
 
