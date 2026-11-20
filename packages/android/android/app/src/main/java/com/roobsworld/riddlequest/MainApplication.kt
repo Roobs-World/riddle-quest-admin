@@ -12,6 +12,7 @@ import com.roobsworld.riddlequest.auth.GoogleCredentialsPackage
 import com.roobsworld.riddlequest.avatar.AvatarPickerPackage
 import com.roobsworld.riddlequest.billing.PlayBillingPackage
 import com.roobsworld.riddlequest.integrity.PlayIntegrityPackage
+import com.roobsworld.riddlequest.installreferrer.InstallReferrerPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -25,6 +26,7 @@ class MainApplication : Application(), ReactApplication {
           add(PlayBillingPackage())
           add(NotificationPackage())
           add(PlayIntegrityPackage())
+          add(InstallReferrerPackage())
         },
     )
   }
