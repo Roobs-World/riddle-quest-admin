@@ -7,8 +7,8 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.test.ts", "!**/__tests__/**/*.it.test.ts", "!lib/**"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
-    // Shared-contract tests import portal source; see jest.portalTransform.js.
-    "/packages/portal/src/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
+    // Shared-contract tests follow portal re-exports into hosted source.
+    "/packages/(?:portal|hosted)/src/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
     "^.+\\.ts$": [
       "ts-jest",
       {
@@ -46,6 +46,8 @@ module.exports = {
     "src/gameplay/achievements.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
   },
   moduleNameMapper: {
+    "^@riddle-quest/hosted$": "<rootDir>/../packages/hosted/src/index.ts",
+    "^@riddle-quest/hosted/(.*)$": "<rootDir>/../packages/hosted/src/$1",
     "^jose$": "<rootDir>/__mocks__/jose.js",
     "^jwks-rsa$": "<rootDir>/__mocks__/jwks-rsa.js",
   },

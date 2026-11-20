@@ -52,12 +52,14 @@ async function clear() {
 }
 beforeAll(() => {
   if (
-    process.env.GCLOUD_PROJECT !== "demo-android-subscriptions" ||
-    process.env.FIRESTORE_EMULATOR_HOST !== "127.0.0.1:18199"
+    !/^demo-/.test(process.env.GCLOUD_PROJECT ?? "") ||
+    !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")
   )
     throw new Error("Dedicated Android subscription emulator required.");
-  if (!getApps().length) initializeApp({projectId: process.env.GCLOUD_PROJECT});
-  db = getFirestore();
+  /** This suite owns a separate demo namespace even under the standard shared coverage runner. */
+  const app = getApps().find(candidate => candidate.name === "[DEFAULT]") ?? initializeApp({projectId: "demo-android-subscriptions"});
+  if (app.options.projectId !== "demo-android-subscriptions") throw new Error("Dedicated Android subscription emulator required.");
+  db = getFirestore(app);
 });
 beforeEach(async () => {
   await clear();
