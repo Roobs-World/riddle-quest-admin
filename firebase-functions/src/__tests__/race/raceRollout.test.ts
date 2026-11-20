@@ -1,3 +1,4 @@
+import {RACE_SUPPORTED_LOCALES} from "@riddle-quest/core/race";
 import {
   assertRaceAccess,
   configureRaceRolloutCache,
@@ -89,6 +90,53 @@ describe("Race rollout cohort evaluation", () => {
       reason: "enabled",
     });
     expect(db.doc).toHaveBeenCalledWith("raceConfig/rollout");
+  });
+
+  /** Reads the canonical native profile separately from the actual rollout document. */
+  const createAndroidDb = (profile: unknown, rollout: unknown = {enabled: true, percentage: 100, allowlistHashes: []}) => ({
+    doc: jest.fn((path: string) => ({
+      get: jest.fn(async () => ({
+        exists: path.startsWith("users/") ? profile !== undefined : rollout !== null,
+        data: () => path.startsWith("users/") ? profile : rollout,
+      })),
+    })),
+  });
+
+  it.each(RACE_SUPPORTED_LOCALES)("applies canonical Android identity and actual rollout policy in %s", async locale => {
+    /** Native Firebase uid has no provider prefix, so profile authority must select Android. */
+    const uid = "a".repeat(28);
+    for (const androidProvider of ["anonymous", "google.com"]) {
+      /** Both native sign-in modes remain gated by the current server rollout. */
+      const enabled = createAndroidDb({androidProvider});
+      await expect(getRaceAccessForUser(uid, locale, enabled as never)).resolves.toEqual({enabled: true, locale, reason: "enabled"});
+      expect(enabled.doc.mock.calls.map(([path]) => path)).toEqual([`users/${uid}`, "raceConfig/rollout"]);
+    }
+    /** A canonical Android account does not bypass an emergency rollout disable. */
+    const disabled = createAndroidDb({androidProvider: "anonymous"}, {enabled: false, percentage: 100, allowlistHashes: []});
+    await expect(getRaceAccessForUser(uid, locale, disabled as never)).resolves.toEqual({enabled: false, locale, reason: "rollout_disabled"});
+    /** Zero-percent enrollment still rejects an otherwise valid native identity. */
+    const outsideCohort = createAndroidDb({androidProvider: "google.com"}, {enabled: true, percentage: 0, allowlistHashes: []});
+    await expect(getRaceAccessForUser(uid, locale, outsideCohort as never)).resolves.toEqual({enabled: false, locale, reason: "not_in_cohort"});
+    /** The normal hashed cohort override works without storing a raw Android uid in config. */
+    const allowlisted = createAndroidDb({androidProvider: "google.com"}, {enabled: true, percentage: 0, allowlistHashes: [hashRaceCohortUser(uid)]});
+    await expect(getRaceAccessForUser(uid, locale, allowlisted as never)).resolves.toEqual({enabled: true, locale, reason: "enabled"});
+  });
+
+  it.each([
+    {name: "missing account", profile: undefined},
+    {name: "missing provider marker", profile: {}},
+    {name: "null provider marker", profile: {androidProvider: null}},
+    {name: "another provider marker", profile: {androidProvider: "jest"}},
+    {name: "malformed provider marker", profile: {androidProvider: true}},
+  ])("refuses Android rollout before config access for $name", async ({profile}) => {
+    /** A Firebase-shaped uid alone must never authorize native multiplayer. */
+    const uid = "b".repeat(28);
+    for (const locale of RACE_SUPPORTED_LOCALES) {
+      /** Invalid canonical profiles must fail even when the configured rollout is open. */
+      const db = createAndroidDb(profile);
+      await expect(getRaceAccessForUser(uid, locale, db as never)).rejects.toMatchObject({code: "permission-denied"});
+      expect(db.doc.mock.calls.map(([path]) => path)).toEqual([`users/${uid}`]);
+    }
   });
 
   it("loads existing and missing authoritative rollout documents", async () => {
