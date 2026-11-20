@@ -4,6 +4,9 @@ import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
 import type {YouTubeLocale, YouTubeSdkPort} from "@riddle-quest/solo";
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {Linking} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {ANDROID_ENTRY_INBOX_KEY} from "@riddle-quest/hosted/androidEntryInbox";
+import {readPlayInstallReferrer} from "../hosted/playInstallReferrer";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";
 import type {HostedRaceScreenProps} from "../screens/HostedRaceScreen";
@@ -12,12 +15,15 @@ import {calls, createFakeHostServices, subscribers} from "../test/fakeHostServic
 import {contentSource, createPort, expectScreen, press} from "../test/harness";
 
 
+jest.mock("../hosted/playInstallReferrer", () => ({readPlayInstallReferrer: jest.fn(async () => null)}));
+
 /** Isolates navigation ownership; the race controller's retirement is verified by its dedicated native tests. */
 jest.mock("../screens/HostedRaceScreen", () => {
   /** Native primitives used by the isolated race-navigation boundary. */
   const {View, Text, Pressable} = require("react-native");
-  return {HostedRaceScreen: ({challengeId, onBack}: Pick<HostedRaceScreenProps, "challengeId" | "onBack">) => <View testID="route-race">
+  return {HostedRaceScreen: ({challengeId, onBack, onActivityChange}: Pick<HostedRaceScreenProps, "challengeId" | "onBack" | "onActivityChange">) => <View testID="route-race">
     <Text testID="route-race-challenge">{challengeId ?? "public"}</Text>
+    <Pressable testID="route-race-active" onPress={() => onActivityChange?.(true)}><Text>Join started</Text></Pressable>
     <Pressable testID="route-race-retired" onPress={onBack}><Text>Retirement confirmed</Text></Pressable>
   </View>};
 });
@@ -86,7 +92,10 @@ const renderRoot = async (client: HostedFirebaseClient, port: YouTubeSdkPort = c
 };
 
 describe("AndroidApp", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+    jest.mocked(readPlayInstallReferrer).mockResolvedValue(null);
+    jest.spyOn(Linking, "getInitialURL").mockResolvedValue(null);
     jest.spyOn(Linking, "addEventListener").mockImplementation(() => ({remove: () => undefined}));
     calls.length = 0;
     subscribers.clear();
@@ -215,11 +224,56 @@ describe("AndroidApp", () => {
       for (const listener of listeners) listener({url: `riddlequest://race?challengeId=${challengeId}`});
     });
     await receive(first); await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(first));
+    await press("route-race-active");
     await receive(second); await receive(first);
     expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(first);
     await press("route-race-retired");
     await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(second));
     listenerSpy.mockRestore();
+  });
+
+  it("restores an unaccepted Play invitation on ordinary cold launch and does not replay it after dismissal", async () => {
+    /** Opaque server-issued private lobby handle, independently checked before joining. */
+    const challengeId = `live_${"d".repeat(64)}`;
+    jest.mocked(readPlayInstallReferrer).mockResolvedValue(`rq_entry=${encodeURIComponent(`riddlequest://race?challengeId=${challengeId}`)}`);
+    await renderRoot(createClient({provisioning: [created]}));
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(challengeId));
+    await screen.unmount();
+    await renderRoot(createClient({provisioning: [created]}));
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(challengeId));
+    await press("route-race-retired"); await expectScreen("screen-hosted-home");
+    await screen.unmount();
+    await renderRoot(createClient({provisioning: [created]}));
+    await expectScreen("screen-hosted-home");
+    expect(screen.queryByTestId("route-race")).toBeNull();
+  });
+
+  it("replaces a restored unaccepted preview when a newer cold direct link arrives", async () => {
+    /** Stored preview must remain replaceable until an actual join begins. */
+    const previous = `live_${"1".repeat(64)}`, latest = `live_${"2".repeat(64)}`;
+    await AsyncStorage.setItem(ANDROID_ENTRY_INBOX_KEY, JSON.stringify({version: 1, pending: {id: "previous-preview", url: `riddlequest://race?challengeId=${previous}`}, consumedInstallEntryUrl: null}));
+    /** Native initial URL can resolve after persisted state is displayed. */
+    let deliver: (url: string | null) => void = () => {};
+    jest.spyOn(Linking, "getInitialURL").mockImplementation(() => new Promise(resolve => {deliver = resolve;}));
+    await renderRoot(createClient({provisioning: [created]}));
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(previous));
+    await act(() => {deliver(`riddlequest://race?challengeId=${latest}`);});
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(latest));
+  });
+
+  it("keeps hosted startup independent of a slow Play read and prioritizes a direct invitation", async () => {
+    /** Deferred optional Play read, deliberately resolved after a direct invitation. */
+    let deliver: (value: string | null) => void = () => {};
+    jest.mocked(readPlayInstallReferrer).mockImplementation(() => new Promise(resolve => {deliver = resolve;}));
+    /** Newer direct input that must outrank optional installation metadata. */
+    const direct = `live_${"e".repeat(64)}`, installed = `live_${"f".repeat(64)}`;
+    jest.spyOn(Linking, "getInitialURL").mockResolvedValue(`riddlequest://race?challengeId=${direct}`);
+    await renderRoot(createClient({provisioning: [created]}));
+    await waitFor(() => expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(direct));
+    await act(() => {deliver(`rq_entry=${encodeURIComponent(`riddlequest://race?challengeId=${installed}`)}`);});
+    expect(screen.getByTestId("route-race-challenge")).toHaveTextContent(direct);
+    await press("route-race-retired"); await expectScreen("screen-hosted-home");
+    expect(screen.queryByTestId("route-race")).toBeNull();
   });
 
   it("refreshes a pre-provision placeholder balance even when Play Billing is unavailable", async () => {
