@@ -15,7 +15,6 @@ import {
   readdirSync,
   renameSync,
   rmSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import {homedir} from "node:os";
@@ -30,6 +29,7 @@ import {
   createReleaseSandboxArguments,
   findUnresolvedUploadBarriers,
   fingerprintReleaseDependencies,
+  linkReleaseSnapshotDependencies,
   RIDDLE_QUEST_JEST_GAME_ID,
   resolveReleaseCredentialPath,
   resolveRiddleQuestJestGameId,
@@ -593,11 +593,7 @@ const materializeCommittedSource = () => {
   run("/usr/bin/tar", ["-xf", archive, "-C", immutableSourceDirectory], {env: gateEnvironment});
   rmSync(archive, {force: true});
 
-  for (const relativeDirectory of ["", join("packages", "core"), join("packages", "portal")]) {
-    const installedModules = join(repositoryDirectory, relativeDirectory, "node_modules");
-    const immutableModules = join(immutableSourceDirectory, relativeDirectory, "node_modules");
-    if (existsSync(installedModules)) symlinkSync(installedModules, immutableModules, "dir");
-  }
+  linkReleaseSnapshotDependencies({repositoryDirectory, immutableSourceDirectory});
 };
 
 const trustedScriptsDirectory = join(releaseSandboxDirectory, "trusted-scripts");
