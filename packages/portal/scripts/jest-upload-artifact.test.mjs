@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {mkdir, mkdtemp, readFile, stat, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
+import {createRequire} from "node:module";
 import path from "node:path";
 import test from "node:test";
 
@@ -27,6 +28,7 @@ import {
   createReleaseSandboxArguments,
   findUnresolvedUploadBarriers,
   fingerprintReleaseDependencies,
+  linkReleaseSnapshotDependencies,
   getUnresolvedUploadBarrierPath,
   RIDDLE_QUEST_JEST_GAME_ID,
   resolveReleaseCredentialPath,
@@ -448,6 +450,8 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     mkdir(path.join(directory, "firebase-functions", "node_modules"), {recursive: true}),
     mkdir(path.join(directory, "firebase-functions", "packages", "core"), {recursive: true}),
     mkdir(path.join(directory, "packages", "core", "node_modules"), {recursive: true}),
+    mkdir(path.join(directory, "packages", "hosted", "node_modules"), {recursive: true}),
+    mkdir(path.join(directory, "packages", "solo", "node_modules"), {recursive: true}),
     mkdir(path.join(directory, "packages", "portal", "node_modules"), {recursive: true}),
   ]);
   for (const [relativePath, contents] of [
@@ -458,10 +462,14 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     [path.join("firebase-functions", "package-lock.json"), "{\"lockfileVersion\":3}\n"],
     [path.join("firebase-functions", "packages", "core", "package.json"), "{\"name\":\"functions-core\"}\n"],
     [path.join("packages", "core", "package.json"), "{\"name\":\"core\"}\n"],
+    [path.join("packages", "hosted", "package.json"), "{\"name\":\"hosted\"}\n"],
+    [path.join("packages", "solo", "package.json"), "{\"name\":\"solo\"}\n"],
     [path.join("packages", "portal", "package.json"), "{\"name\":\"portal\"}\n"],
     [path.join("node_modules", "release-tool.js"), "export default 'stable';\n"],
     [path.join("firebase-functions", "node_modules", "functions-runtime.js"), "functions-runtime\n"],
     [path.join("packages", "core", "node_modules", "compiler.js"), "core-compiler\n"],
+    [path.join("packages", "hosted", "node_modules", "firebase.js"), "hosted-firebase\n"],
+    [path.join("packages", "solo", "node_modules", "react.js"), "solo-react\n"],
     [path.join("packages", "portal", "node_modules", "bundler.js"), "portal-bundler\n"],
   ]) {
     await writeFile(path.join(directory, relativePath), contents);
@@ -474,10 +482,54 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
   await writeFile(path.join(directory, "node_modules", "release-tool.js"), "export default 'stable';\n");
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
 
+  for (const relativePath of [
+    path.join("packages", "hosted", "package.json"),
+    path.join("packages", "solo", "package.json"),
+    path.join("packages", "hosted", "node_modules", "firebase.js"),
+    path.join("packages", "solo", "node_modules", "react.js"),
+  ]) {
+    const file = path.join(directory, relativePath);
+    const original = await readFile(file);
+    await writeFile(file, "changed dependency\n");
+    assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial, relativePath);
+    await writeFile(file, original);
+    assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  }
+
   const cacheDirectory = path.join(directory, "packages", "portal", "node_modules", ".vite");
   await mkdir(cacheDirectory);
   await writeFile(path.join(cacheDirectory, "generated-cache.js"), "mutable cache\n");
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+});
+
+test("immutable release sources resolve each workspace's installed dependencies", async (context) => {
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-release-snapshot-"));
+  context.after(async () => {
+    const {rm} = await import("node:fs/promises");
+    await rm(directory, {force: true, recursive: true});
+  });
+  const repositoryDirectory = path.join(directory, "repository");
+  const immutableSourceDirectory = path.join(directory, "snapshot");
+  for (const workspace of ["", "core", "hosted", "solo", "portal"]) {
+    const relativeDirectory = workspace ? path.join("packages", workspace) : "";
+    await mkdir(path.join(repositoryDirectory, relativeDirectory, "node_modules"), {recursive: true});
+    await mkdir(path.join(immutableSourceDirectory, relativeDirectory), {recursive: true});
+  }
+  for (const [workspace, modulePath] of [["hosted", "firebase/functions.js"], ["solo", "react/index.js"]]) {
+    const moduleFile = path.join(repositoryDirectory, "packages", workspace, "node_modules", modulePath);
+    await mkdir(path.dirname(moduleFile), {recursive: true});
+    await writeFile(moduleFile, `module.exports = ${JSON.stringify(workspace)};\n`);
+  }
+
+  const hosted = createRequire(path.join(immutableSourceDirectory, "packages", "hosted", "src", "gameFunctions.js"));
+  const solo = createRequire(path.join(immutableSourceDirectory, "packages", "solo", "src", "react", "boot.js"));
+  assert.throws(() => hosted("firebase/functions"), {code: "MODULE_NOT_FOUND"});
+  assert.throws(() => solo("react"), {code: "MODULE_NOT_FOUND"});
+
+  linkReleaseSnapshotDependencies({repositoryDirectory, immutableSourceDirectory});
+
+  assert.equal(hosted("firebase/functions"), "hosted");
+  assert.equal(solo("react"), "solo");
 });
 
 test("the game-and-build upload barrier is atomic, owner-private, and blocks retries", async (context) => {
@@ -857,6 +909,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(materializer, /sourceCommit/);
   assert.match(materializer, /immutableSourceDirectory/);
   assert.match(materializer, /run\("\/usr\/bin\/tar"/);
+  assert.match(materializer, /linkReleaseSnapshotDependencies\(\{repositoryDirectory, immutableSourceDirectory\}\)/);
   assert.match(releaseSource, /openSync\(lockPath,\s*"wx",\s*0o600\)/);
   assert.match(releaseSource, /finally\s*\{\s*releaseLock\(\);/);
   assert.match(releaseSource, /finalDependencyFingerprint !== dependencyFingerprint/);

@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import {existsSync, lstatSync, readFileSync, readdirSync, readlinkSync} from "node:fs";
+import {existsSync, lstatSync, readFileSync, readdirSync, readlinkSync, symlinkSync} from "node:fs";
 import {dirname, isAbsolute, join, relative, resolve, sep} from "node:path";
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -265,6 +265,8 @@ export const findUnresolvedUploadBarriers = ({receiptDirectory, sourceCommit}) =
 };
 
 const mutableDependencyCacheDirectories = new Set([".cache", ".rolldown", ".vite", ".vite-temp"]);
+const releaseWorkspacePackageDirectories = ["core", "hosted", "solo", "portal"]
+  .map((name) => join("packages", name));
 const dependencyInputs = [
   "package.json",
   "pnpm-lock.yaml",
@@ -272,13 +274,22 @@ const dependencyInputs = [
   join("firebase-functions", "package.json"),
   join("firebase-functions", "package-lock.json"),
   join("firebase-functions", "packages", "core", "package.json"),
-  join("packages", "core", "package.json"),
-  join("packages", "portal", "package.json"),
+  ...releaseWorkspacePackageDirectories.map((directory) => join(directory, "package.json")),
   "node_modules",
   join("firebase-functions", "node_modules"),
-  join("packages", "core", "node_modules"),
-  join("packages", "portal", "node_modules"),
+  ...releaseWorkspacePackageDirectories.map((directory) => join(directory, "node_modules")),
 ];
+
+/** Reuses only the fingerprinted workspace installations inside committed release sources. */
+export const linkReleaseSnapshotDependencies = ({repositoryDirectory, immutableSourceDirectory}) => {
+  for (const directory of ["", ...releaseWorkspacePackageDirectories]) {
+    symlinkSync(
+      join(repositoryDirectory, directory, "node_modules"),
+      join(immutableSourceDirectory, directory, "node_modules"),
+      "dir",
+    );
+  }
+};
 
 const portablePath = (value) => value.split(sep).join("/");
 
