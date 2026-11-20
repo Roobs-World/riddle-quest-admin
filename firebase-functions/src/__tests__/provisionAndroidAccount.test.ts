@@ -77,6 +77,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
     firestore: () => ({
       collection: (path: string) => mockCollection(path),
+      doc: (path: string) => ({kind: "document" as const, path}),
       runTransaction: (callback: (transaction: typeof mockTransaction) => unknown) => callback(mockTransaction),
     }),
   },
@@ -106,7 +107,7 @@ const invoke = (auth: CallableRequest["auth"]): Promise<ProvisionAndroidAccountR
   });
 /** Builds callable auth for a sign-in provider. */
 const authFor = (uid: string, provider: string) =>
-  ({uid, token: {firebase: {sign_in_provider: provider}}}) as unknown as CallableRequest["auth"];
+  ({uid, token: {firebase: {sign_in_provider: provider, ...(provider === "google.com" ? {identities: {"google.com": [`google-subject-${uid}`]}} : {})}}}) as unknown as CallableRequest["auth"];
 
 describe("createAndroidUser", () => {
   it("starts every Android account with the Jest balance, stats, and progress", () => {
@@ -176,8 +177,10 @@ describe("provisionAndroidAccount", () => {
   });
 
   it("returns the current balance of an existing account", async () => {
-    mockFirestoreDocuments.set("users/android-2", {userId: "android-2", coins: 1250});
-    await expect(invoke(authFor("android-2", "google.com"))).resolves.toEqual({uid: "android-2", created: false, coins: 1250});
+    /** Firebase-generated account identity carrying verified Google provider claims. */
+    const uid = "g".repeat(28);
+    mockFirestoreDocuments.set(`users/${uid}`, {...createAndroidUser(uid, "anonymous"), coins: 1250});
+    await expect(invoke(authFor(uid, "google.com"))).resolves.toEqual({uid, created: false, coins: 1250});
     expect(mockTransactionCreate).not.toHaveBeenCalled();
   });
 });

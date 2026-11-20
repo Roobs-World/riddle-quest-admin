@@ -1,3 +1,4 @@
+import {isAndroidAccountProvider} from "../android/androidUser";
 import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "./raceEngine";
 import {parseRaceInvitation} from "./raceInvitationRecord";
@@ -7,7 +8,7 @@ import {validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeck
 import {requestDocumentId, parseRunRecord, type Firestore, type RaceChallengeRecord} from "./raceSetupService";
 
 /** Provider scope derived exclusively from an authenticated game-owned identity. */
-export type RaceProviderScope = "jest" | "facebook" | "reddit";
+export type RaceProviderScope = "jest" | "facebook" | "reddit" | "android";
 /** Stable expected rejection reasons; storage failures propagate separately. */
 export type RaceEligibilityReason = "self" | "provider" | "locale" | "inactive" | "deleted" | "blocked" | "attempted" | "invitation" | "content";
 
@@ -15,7 +16,16 @@ export type RaceEligibilityReason = "self" | "provider" | "locale" | "inactive" 
 export function raceProviderScope(userId: string): RaceProviderScope | undefined {
   /** Provides match behavior. */
   const match = /^(jest|facebook|reddit)_[a-f0-9]{40}$/.exec(userId);
-  return match?.[1] as RaceProviderScope | undefined;
+  if (match?.[1] === "jest" || match?.[1] === "facebook" || match?.[1] === "reddit") return match[1];
+  // Android keeps Firebase-generated identities; canonical profile validation is required at entry.
+  return /^[A-Za-z0-9]{28}$/.test(userId) ? "android" : undefined;
+}
+
+/** Rejects an unprovisioned Firebase identity before it can create an Android race seat. */
+export function assertAndroidRaceAccount(userId: string, profile: FirebaseFirestore.DocumentData | undefined): void {
+  if (raceProviderScope(userId) === "android" && !isAndroidAccountProvider(profile?.androidProvider)) {
+    throw new HttpsError("permission-denied", "Android game account required.");
+  }
 }
 
 /**

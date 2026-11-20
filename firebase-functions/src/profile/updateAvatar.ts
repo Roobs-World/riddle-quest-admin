@@ -1,3 +1,4 @@
+import {isAndroidAccountProvider} from "../android/androidUser";
 import {randomUUID} from "node:crypto";
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions/v2";
@@ -20,7 +21,16 @@ export const updateAvatar = onCallWithSentry(
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
     if (request.auth.token.jestRegistered !== true) {
-      throw new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo.");
+      if (!isAndroidAccountProvider(request.auth.token.firebase?.sign_in_provider)) {
+        throw new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo.");
+      }
+      /** A signed native provider alone cannot create a game account or authorize profile uploads. */
+      const account = await admin.firestore().collection("users").doc(request.auth.uid).get();
+      /** Canonical provisioning binds the accepted provider and account generation to this uid. */
+      const profile = account.data();
+      if (!account.exists || profile?.userId !== request.auth.uid || !isAndroidAccountProvider(profile.androidProvider)) {
+        throw new HttpsError("permission-denied", "Android game account required.");
+      }
     }
 
     /** Provides {image data url} behavior. */

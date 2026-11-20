@@ -29,6 +29,7 @@ import {finalizeAuthoritativeSession} from "./singlePlayerSession";
 import {assertPlayableSinglePlayerAnswer} from "./singlePlayerAnswerPolicy";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 import {completionBindingMatches, getSinglePlayerCompletionBindingRef} from "./singlePlayerCompletionBinding";
+import {settleAndroidReferralAfterPlay} from "../android/androidReferrals";
 import {settleFacebookReferralAfterAuthoritativeWin} from "../facebook/facebookReferrals";
 import {settleRedditReferralAfterAuthoritativeWin} from "../reddit/redditReferrals";
 
@@ -477,6 +478,8 @@ async function commitAuthoritativeCompletion(
 
   // A failed settlement makes the callable retryable. On retry the completion
   // receipt replays safely and the referral transaction resumes idempotently.
+  /** Google-only conversion is proved by this committed completion receipt, including safe replay. */
+  const androidReferral = !auth.isAnonymous ? await settleAndroidReferralAfterPlay(db, auth.uid, {kind: "solo", receiptId}) : {inviteeCoins: 0, inviterCoins: 0, completionReceiptId: undefined};
   if (data.isCorrect) {
     /** Provides facebook referral behavior. */
     const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid, Date.now(), db, receiptId);
@@ -485,7 +488,8 @@ async function commitAuthoritativeCompletion(
     /** Provides referral behavior. */
     const referral = {
       inviteeCoins: (facebookReferral.completionReceiptId === receiptId ? facebookReferral.inviteeCoins : 0) +
-        (redditReferral.completionReceiptId === receiptId ? redditReferral.inviteeCoins : 0),
+        (redditReferral.completionReceiptId === receiptId ? redditReferral.inviteeCoins : 0) +
+        (androidReferral.completionReceiptId === receiptId ? androidReferral.inviteeCoins : 0),
     };
     if (referral.inviteeCoins > 0 && result.rewardBreakdown) {
       result = {

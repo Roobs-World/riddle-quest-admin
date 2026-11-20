@@ -50,6 +50,7 @@ export type PlayDeveloperApi = Readonly<{
 
 /** Play reported that the token does not exist for this package. */
 export class PlayPurchaseNotFoundError extends Error {
+  /** Creates a play purchase not found error instance. */
   constructor() {
     super("play-purchase-not-found");
   }
@@ -80,7 +81,11 @@ export type PlayDeveloperApiOptions = {
  */
 export function createMetadataAccessToken(fetchImpl: typeof fetch = fetch, scope: string = ANDROID_PUBLISHER_SCOPE): () => Promise<string> {
   /** Cached token and its expiry in epoch milliseconds. */
-  let cached: {token: string; expiresAt: number} | null = null;
+  let cached: {
+  /** Stores token. */
+  token: string;
+  /** Stores expires at. */
+  expiresAt: number} | null = null;
   return async () => {
     if (cached && cached.expiresAt > Date.now()) return cached.token;
     /** Metadata server response. */
@@ -89,7 +94,11 @@ export function createMetadataAccessToken(fetchImpl: typeof fetch = fetch, scope
     });
     if (!response.ok) throw new Error("play-api-unavailable");
     /** Token payload. */
-    const body = (await response.json()) as {access_token?: unknown; expires_in?: unknown};
+    const body = (await response.json()) as {
+    /** Stores access token. */
+    access_token?: unknown;
+    /** Stores expires in. */
+    expires_in?: unknown};
     if (typeof body.access_token !== "string") throw new Error("play-api-unavailable");
     /** Lifetime in seconds, refreshed a minute early. */
     const lifetime = typeof body.expires_in === "number" ? body.expires_in : 300;

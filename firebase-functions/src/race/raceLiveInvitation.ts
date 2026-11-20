@@ -1,3 +1,4 @@
+import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
 import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
@@ -5,7 +6,7 @@ import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
   type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
-import {raceProviderScope} from "./raceEligibility";
+import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
 import {liveOperationAtMs, liveRaceSearchEndsAtMs, liveRun, liveView, type LiveMatch, type LiveTicket} from "./raceLiveState";
 import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "./raceDeckCompatibility";
@@ -48,7 +49,7 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
   const ticket = snapshot.data() as LiveTicket | undefined;
   if (!isLiveRaceRetained(snapshot, nowMs) || !ticket?.privateChallenge || raceProviderScope(userId) !== raceProviderScope(ticket.userId) ||
     ticket.inviteRecipientId && ![ticket.userId, ticket.inviteRecipientId].includes(userId) ||
-    !(["jest", "facebook"].includes(raceProviderScope(userId) ?? "") ||
+    !(["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? "") ||
       raceProviderScope(userId) === "reddit" && ticket.rematchOfTicketId && ticket.inviteRecipientId))
     throw new HttpsError("not-found", "Invitation unavailable.");
   /** Account deletion and blocks are checked in the same transaction as acceptance. */
@@ -56,9 +57,11 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
     transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(getJestAccountDeletionRef(db, ticket.userId)),
     transaction.get(db.doc(`users/${userId}/blockedRivals/${ticket.userId}`)),
     transaction.get(db.doc(`users/${ticket.userId}/blockedRivals/${userId}`)),
-    transaction.getAll(db.doc(`users/${ticket.userId}`), db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl"]}),
+    transaction.getAll(db.doc(`users/${ticket.userId}`), db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]}),
   ]);
   assertJestAccountActive(viewerDeleted);
+  assertAndroidRaceAccount(userId, viewer.data());
+  assertAndroidRaceAccount(ticket.userId, creator.data());
   if (creatorDeleted.exists || blocked.exists || reverseBlocked.exists || !creator.exists || ticket.rematchOfTicketId && !viewer.exists)
     throw new HttpsError("not-found", "Invitation unavailable.");
   /** Rematch notices use current game-owned identity, while legacy invitations retain their established projection. */
@@ -201,6 +204,9 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       createdAtMs: nowMs, seenAtMs: nowMs, matchId: creatorId, run: match.runs[1]};
     /** Reuse the creator's retention policy for both seats. */
     const expiresAt = snapshot.data()!.expiresAt;
+    /** Accepting a native race closes acquisition before the recipient seat is published. */
+    const referralActivity = androidReferralPlayPatch(owner.data() ?? {});
+    if (referralActivity.androidReferralPlayed) transaction.update(owner.ref, referralActivity);
     transaction.update(snapshot.ref, {matchId: creatorId});
     transaction.create(db.doc(`liveRaceMatches/${creatorId}`), {...stripUndefined(match), expiresAt});
     transaction.create(db.doc(`liveRaceTickets/${ownId}`), {...stripUndefined(own), expiresAt});

@@ -53,6 +53,9 @@ import {
   verifyJestReferrals,
 } from "./jest/jestEndpoints";
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
+import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "./android/androidReferralCallables";
+import {deliverAndroidReferralPlay} from "./android/androidReferralDelivery";
+import {setAndroidPushSubscription, sendAndroidDailyReminders} from "./android/androidNotifications";
 import {provisionAndroidAccount} from "./android/provisionAndroidAccount";
 import {grantAndroidPurchase, syncAndroidSubscriptions} from "./android/androidPurchaseEndpoints";
 import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "./android/androidAttestation";
@@ -123,6 +126,12 @@ export {
   syncJestSubscriptions,
   verifyJestReferrals,
   provisionAndroidAccount,
+  setAndroidPushSubscription,
+  createAndroidReferral,
+  bindAndroidReferralEntry,
+  getAndroidReferralStatus,
+  deliverAndroidReferralPlay,
+  sendAndroidDailyReminders,
   grantAndroidPurchase,
   syncAndroidSubscriptions,
   issueAndroidAttestationNonce,
