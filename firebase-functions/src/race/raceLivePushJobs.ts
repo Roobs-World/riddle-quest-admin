@@ -1,3 +1,4 @@
+import {sendAndroidLiveChallengePush} from "../android/androidNotifications";
 import {z} from "zod";
 import {getMessaging} from "firebase-admin/messaging";
 import {createHash} from "node:crypto";
@@ -69,6 +70,9 @@ export const deliverLiveRaceChallengePush = onDocumentCreated({document: "liveRa
       if (raceProviderScope(delivery.event.recipientId) === "facebook") return sendFacebookLiveChallengePush(db, delivery, {
         appId: process.env.FACEBOOK_APP_ID ?? "", uidSecret: facebookUidSecret.value(), appAccessToken: facebookNotificationToken.value(),
         enabled: process.env.FACEBOOK_CHALLENGE_PUSH_ENABLED === "1",
+      });
+      if (raceProviderScope(delivery.event.recipientId) === "android") return sendAndroidLiveChallengePush(db, {
+        uid: delivery.event.recipientId, challengeId: delivery.event.challengeId, title: delivery.title, body: delivery.body, expiresAtMs: delivery.event.expiresAtMs,
       });
       if (process.env.JEST_CHALLENGE_PUSH_ENABLED !== "1" || !delivery.token) return "skipped";
       /** Consent rechecked immediately before contacting Firebase Messaging. */

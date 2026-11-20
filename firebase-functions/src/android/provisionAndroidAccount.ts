@@ -1,3 +1,4 @@
+import {androidGoogleIdentity, registerAndroidReferralIdentity} from "./androidReferralIdentity";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
@@ -42,7 +43,8 @@ export const provisionAndroidAccount = onCallWithSentry<Record<string, never> | 
     const firestore = admin.firestore();
     /** Canonical account document. */
     const userRef = firestore.collection("users").doc(uid);
-    return firestore.runTransaction(async (transaction) => {
+    /** Canonical provisioned account retained while optional Google replay identity is registered. */
+    const result = await firestore.runTransaction(async (transaction) => {
       /** Existing account, if any. */
       const snapshot = await transaction.get(userRef);
       if (snapshot.exists) {
@@ -55,5 +57,7 @@ export const provisionAndroidAccount = onCallWithSentry<Record<string, never> | 
       transaction.create(userRef, user);
       return {uid, created: true, coins: Number(user.coins)};
     });
+    if (provider === "google.com") await registerAndroidReferralIdentity(firestore, androidGoogleIdentity(uid, request.auth.token));
+    return result;
   },
 );

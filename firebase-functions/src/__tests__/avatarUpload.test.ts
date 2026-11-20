@@ -45,6 +45,25 @@ describe("avatar upload validation", () => {
     );
   });
 
+  it("uses local Storage only inside the Functions emulator and leaves production URLs unchanged", () => {
+    /** Environment values are restored even when an assertion fails. */
+    const beforeFunctions = process.env.FUNCTIONS_EMULATOR;
+    /** Existing emulator endpoint, if this suite was started under the emulator runner. */
+    const beforeStorage = process.env.FIREBASE_STORAGE_EMULATOR_HOST;
+    try {
+      process.env.FUNCTIONS_EMULATOR = "true";
+      process.env.FIREBASE_STORAGE_EMULATOR_HOST = "127.0.0.1:9199";
+      expect(avatarDownloadUrl("bucket", "avatars/player/profile", "token")).toBe(
+        "http://127.0.0.1:9199/v0/b/bucket/o/avatars%2Fplayer%2Fprofile?alt=media&token=token",
+      );
+      delete process.env.FUNCTIONS_EMULATOR;
+      expect(avatarDownloadUrl("bucket", "avatars/player/profile", "token")).toMatch(/^https:\/\/firebasestorage\.googleapis\.com\//u);
+    } finally {
+      if (beforeFunctions === undefined) delete process.env.FUNCTIONS_EMULATOR; else process.env.FUNCTIONS_EMULATOR = beforeFunctions;
+      if (beforeStorage === undefined) delete process.env.FIREBASE_STORAGE_EMULATOR_HOST; else process.env.FIREBASE_STORAGE_EMULATOR_HOST = beforeStorage;
+    }
+  });
+
   it("creates a tokenized Firebase Storage download URL", () => {
     expect(avatarDownloadUrl("bucket", "avatars/player one/profile", "token value")).toBe(
       "https://firebasestorage.googleapis.com/v0/b/bucket/o/" +

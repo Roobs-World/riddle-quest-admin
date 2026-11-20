@@ -36,7 +36,13 @@ export type PlayIntegrityDecoder = (integrityToken: string) => Promise<Integrity
 
 /** Creates the decoder for the app's package, authenticated as the runtime service account. */
 export function createPlayIntegrityDecoder(
-  options: {packageName?: string; fetch?: typeof fetch; getAccessToken?: () => Promise<string>} = {},
+  options: {
+  /** Stores package name. */
+  packageName?: string;
+  /** Stores fetch. */
+  fetch?: typeof fetch;
+  /** Stores get access token. */
+  getAccessToken?: () => Promise<string>} = {},
 ): PlayIntegrityDecoder {
   /** HTTP transport. */
   const fetchImpl = options.fetch ?? fetch;
@@ -53,7 +59,9 @@ export function createPlayIntegrityDecoder(
     });
     if (!response.ok) throw new Error("integrity-decode-failed");
     /** Decoded payload. */
-    const body = (await response.json()) as {tokenPayloadExternal?: IntegrityVerdict};
+    const body = (await response.json()) as {
+    /** Stores token payload external. */
+    tokenPayloadExternal?: IntegrityVerdict};
     if (!body.tokenPayloadExternal) throw new Error("integrity-decode-failed");
     return body.tokenPayloadExternal;
   };
@@ -69,7 +77,13 @@ export function createPlayIntegrityDecoder(
  */
 export function rejectIntegrityVerdict(
   verdict: IntegrityVerdict,
-  expected: {nonce: string; now: number; packageName?: string},
+  expected: {
+  /** Stores nonce. */
+  nonce: string;
+  /** Stores now. */
+  now: number;
+  /** Stores package name. */
+  packageName?: string},
 ): string | null {
   /** Expected package. */
   const packageName = expected.packageName ?? ANDROID_PACKAGE_NAME;

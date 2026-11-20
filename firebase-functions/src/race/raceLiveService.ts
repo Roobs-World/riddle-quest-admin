@@ -1,3 +1,5 @@
+import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
+import {androidReferralLiveEventId} from "../android/androidReferralDelivery";
 import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
@@ -6,7 +8,7 @@ import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
   type JoinLiveRace, type UpdateLiveRace} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
-import {raceProviderScope} from "./raceEligibility";
+import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./raceEngine";
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent,
   requestDocumentId, stripUndefined, prepareRaceAchievementEvent, type Firestore} from "./raceSetupService";
@@ -75,10 +77,11 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
   return db.runTransaction(async transaction => {
     /** Reads fresh recovery authority and only public identity fields before shared-pool locks or content queries. */
     const [intent, current, receipt, owner, deletion] = await Promise.all([readLiveJoinIntent(db, transaction, userId, input), transaction.get(pointer), transaction.get(ticketRef),
-      transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl"]}).then(([profile]) => profile),
+      transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]}).then(([profile]) => profile),
       transaction.get(getJestAccountDeletionRef(db, userId))]);
     assertJestAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
+    assertAndroidRaceAccount(userId, owner.data());
     /** Provides previous id behavior. */
     const previousId = current.data()?.ticketId as string | undefined;
     if (input.resumeTicketId && (previousId !== input.resumeTicketId ||
@@ -174,10 +177,13 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       ...(rematch ? {rematchOfTicketId: input.rematchOfTicketId, inviteRecipientId: rematch.recipientId} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
       run: liveRun({...deck, locale: input.locale, categoryId: input.categoryId}, userId, ticketId)};
     if (privateEntry) {
-      if (!rematch && !["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
+      if (!rematch && !["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? ""))
         throw new HttpsError("permission-denied", "Platform invitations unavailable.");
       /** Private seats are recoverable but cannot be selected by public searches. */
       const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
+      /** A new native private seat establishes play without changing another provider's account. */
+      const referralActivity = androidReferralPlayPatch(owner.data() ?? {});
+      if (referralActivity.androidReferralPlayed) transaction.update(owner.ref, referralActivity);
       transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
       claimLiveJoinIntent(transaction, intent, ticketRef, nowMs);
       transaction.set(pointer, {ticketId, expiresAt});
@@ -197,6 +203,9 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     /** Verified human match, or no match while the ticket remains searching. */
     const match = queue.match;
     queue.commit();
+    /** Native matchmaking establishes play atomically with the new public seat. */
+    const referralActivity = androidReferralPlayPatch(owner.data() ?? {});
+    if (referralActivity.androidReferralPlayed) transaction.update(owner.ref, referralActivity);
     /** Provides response behavior. */
     const response = liveView(ticketId, ticket, match, options.nowMs ?? Date.now());
     transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
@@ -354,7 +363,8 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   }
   if (!match && !ticket.privateChallenge && input.action === "poll" && nowMs < liveRaceSearchEndsAtMs(ticket)) {
     /** Public account identity required before a waiting seat re-enters the queue. */
-    const [ownerProfile] = await transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl"]});
+    const [ownerProfile] = await transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]});
+    assertAndroidRaceAccount(userId, ownerProfile.data());
     queue = await prepareLiveRaceQueue(db, transaction, {ticketId: input.ticketId, ticket, nowMs, expiresAt: snapshot.data()!.expiresAt, ownerProfile, ownerPointer});
     match = queue.match;
     matchChanged = Boolean(match);
@@ -522,7 +532,16 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
           ...pendingRaceDelivery(nowMs), expiresAt: snapshot.data()!.expiresAt});
       }
     }
-    for (const [profile, update] of profileUpdates) transaction.update(profile.ref, update);
+    for (const [profile, update] of profileUpdates) {
+      transaction.update(profile.ref, update);
+      if (raceProviderScope(profile.id) === "android" && typeof profile.data()?.androidGoogleSubjectHash === "string") {
+        /** The participant's immutable ticket selects its private terminal referral proof. */
+        const seat = match.runs.findIndex(run => run.userId === profile.id), sourceTicket = match.tickets[seat];
+        if (sourceTicket) transaction.create(db.doc(`androidReferralPlayOutbox/${androidReferralLiveEventId(profile.id, sourceTicket)}`), {
+          uid: profile.id, matchId: ticket.matchId, ticketId: sourceTicket, delivered: false, expiresAt: snapshot.data()!.expiresAt,
+        });
+      }
+    }
   }
   match.observedAtMs = nowMs;
   /** Provides response behavior. */

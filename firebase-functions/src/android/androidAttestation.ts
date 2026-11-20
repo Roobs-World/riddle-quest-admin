@@ -33,7 +33,11 @@ const attestationHttpOptions = {
 } satisfies HttpsOptions;
 
 /** Request counters per address for the current minute on this instance. */
-const requestCounts = new Map<string, {minute: number; count: number}>();
+const requestCounts = new Map<string, {
+/** Stores minute. */
+minute: number;
+/** Stores count. */
+count: number}>();
 /** Whether an address may make another attestation request. */
 export function allowAttestationRequest(address: string, now = Date.now()): boolean {
   /** Current minute. */
@@ -53,7 +57,11 @@ export function allowAttestationRequest(address: string, now = Date.now()): bool
 const nonceId = (nonce: string) => createHash("sha256").update(nonce).digest("hex");
 
 /** Issues one single-use nonce for a Play Integrity request. */
-export async function issueAndroidNonce(db: Firestore, now = Date.now()): Promise<{nonce: string; expiresAtMs: number}> {
+export async function issueAndroidNonce(db: Firestore, now = Date.now()): Promise<{
+/** Stores nonce. */
+nonce: string;
+/** Stores expires at ms. */
+expiresAtMs: number}> {
   /** URL-safe nonce Play Integrity accepts (16–500 characters). */
   const nonce = randomBytes(32).toString("base64url");
   /** Expiry. */
@@ -109,7 +117,11 @@ export type AttestationDependencies = Readonly<{
   /** Play Integrity decoder. */
   decode: PlayIntegrityDecoder;
   /** Mints an App Check token for the Android Firebase app. */
-  mint: () => Promise<{token: string; ttlMillis: number}>;
+  mint: () => Promise<{
+  /** Stores token. */
+  token: string;
+  /** Stores ttl millis. */
+  ttlMillis: number}>;
   /** Server clock. */
   now?: () => number;
 }>;

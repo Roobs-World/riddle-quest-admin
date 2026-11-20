@@ -41,7 +41,7 @@ export type RaceMatchExperimentAssignment = z.infer<typeof RaceMatchExperimentAs
 /** Admin configuration explicitly declares enrollment and complete arm policies. */
 export const RaceMatchExperimentSchema = z.object({kind: z.literal("experiment"), schemaVersion: z.literal(1),
   id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), revision: z.number().int().min(1).max(1000000),
-  salt: z.string().min(16).max(160), providers: z.array(z.enum(["jest", "facebook", "reddit"])).min(1).max(3),
+  salt: z.string().min(16).max(160), providers: z.array(z.enum(["jest", "facebook", "reddit", "android"])).min(1).max(4),
   locales: z.array(RaceLocaleSchema).min(1).max(17), fallbackPolicy: RaceMatchPolicySchema,
   arms: z.array(z.object({id: z.string().regex(/^[a-z][a-z0-9-]{0,31}$/), weightBasisPoints: z.number().int().min(1).max(9999),
     policy: RaceMatchPolicySchema}).strict()).min(2).max(4),
@@ -96,7 +96,7 @@ export function raceMatchContext(snapshot: RaceMatchPolicySnapshot, locale: Race
 /** Deterministic player-level assignment does not depend on request ID, category or retry timing. */
 export function selectRaceMatchConfiguration(value: unknown, identity?: {
   /** Authenticated provider account; never accepted from matching preferences. */ userId: string;
-  /** Authorized discovery pool derived from the account. */ provider: "jest" | "facebook" | "reddit";
+  /** Authorized discovery pool derived from the account. */ provider: "jest" | "facebook" | "reddit" | "android";
   /** Supported language used for explicit experiment enrollment. */ locale: RaceLocale;
 }): RaceMatchPolicySnapshot {
   if (typeof value !== "object" || value === null || !("kind" in value)) return raceMatchPolicySnapshot(value);
@@ -120,7 +120,7 @@ export function selectRaceMatchConfiguration(value: unknown, identity?: {
 /** Admin-only policy selection has no cache that could mix revisions within one lookup. */
 export async function loadRaceMatchPolicy(db: Firestore, identity?: {
   /** Authenticated provider account passed by the server lookup. */ userId: string;
-  /** Authorized discovery pool derived from the account. */ provider: "jest" | "facebook" | "reddit";
+  /** Authorized discovery pool derived from the account. */ provider: "jest" | "facebook" | "reddit" | "android";
   /** Supported language used for explicit experiment enrollment. */ locale: RaceLocale;
 }): Promise<RaceMatchPolicySnapshot> {
   /** A missing configuration uses the explicitly versioned baseline; storage errors propagate. */

@@ -8,6 +8,8 @@ const mockRecursiveDelete = jest.fn();
 const mockReferralVerificationDelete = jest.fn();
 /** Direct deletion mock for legacy document-ID-owned records. */
 const mockDirectDocumentDelete = jest.fn();
+/** Native raw subscription receipts must disappear with their owning account. */
+const mockAndroidCommerceDelete = jest.fn();
 /** Direct deletion mock for the provider-neutral Reddit player snapshot. */
 const mockRedditPlayerStorageDelete = jest.fn();
 /** Permanent pseudonymous Jest account-deletion guard write mock. */
@@ -169,6 +171,8 @@ jest.mock("../shared/firebaseAdmin", () => ({
               ? {delete: mockReferralVerificationDelete, path: `${collection}/${id}`}
               : collection === "redditPlayerStorage"
                 ? {delete: mockRedditPlayerStorageDelete, path: `${collection}/${id}`}
+                : collection === "androidCommerceAccounts"
+                  ? {delete: () => mockAndroidCommerceDelete(id), path: `${collection}/${id}`}
                 : collection === "tutorialProgress" ||
                     collection === "facebookCommerceAccounts" ||
                     collection === "redditCommerceAccounts" ||
@@ -576,6 +580,18 @@ describe("deleteAccount", () => {
       });
     }
     expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
+  });
+
+  it("removes Android purchase identity and order ids while preserving replay protection", async () => {
+    queryDocuments.set("androidPurchaseGrants:uid:user-1", [queryDocument("androidPurchaseGrants/token-hash", {
+      uid: "user-1", productId: "coinpack1", coins: 250, orderId: "GPA-private-order", grantedAt: "timestamp",
+    })]);
+    await expect((deleteAccount as unknown as (request: unknown) => Promise<unknown>)({auth: {uid: "user-1", token: {}}, data: {}}))
+      .resolves.toEqual({success: true});
+    expect(mockBatchSet).toHaveBeenCalledWith({path: "androidPurchaseGrants/token-hash"}, {
+      provider: "android", replayProtection: true, productId: "coinpack1", coins: 250, grantedAt: "timestamp",
+    });
+    expect(mockAndroidCommerceDelete).toHaveBeenCalledWith("user-1");
   });
 
   it("removes Jest referral identity while preserving anonymized anti-replay receipts", async () => {

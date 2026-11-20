@@ -1,3 +1,5 @@
+import {deleteAndroidReferralData} from "../../android/androidReferralDeletion";
+import {anonymizeAndroidPurchaseGrants} from "../../android/androidPurchaseDeletion";
 import {admin} from "../../shared/firebaseAdmin";
 import {createJestPurchaseGrantId} from "../../jest/jestPurchaseReceipts";
 import {createJestReferralVerificationId} from "../../jest/jestReferralReceipts";
@@ -297,10 +299,13 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
     db.collection("redditPlayerStorage").doc(userId).delete(),
     db.collection("redditCommerceAccounts").doc(userId).delete(),
     db.collection("facebookCommerceAccounts").doc(userId).delete(),
+    db.collection("androidCommerceAccounts").doc(userId).delete(),
     db.collection("facebookNotificationPromptLeases").doc(userId).delete(),
     db.collection("facebookReferralBindings").doc(userId).delete(),
     db.collection("redditReferralBindings").doc(userId).delete(),
     anonymizePurchaseGrantDocuments(userId),
+    anonymizeAndroidPurchaseGrants(userId),
+    deleteAndroidReferralData(userId),
     anonymizeFacebookCommerceDocuments("facebookCommerceReceipts", userId),
     anonymizeFacebookCommerceDocuments("facebookCommerceRefunds", userId),
     anonymizeRedditCommerceDocuments("redditCommerceReceipts", userId),

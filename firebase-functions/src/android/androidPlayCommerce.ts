@@ -1,14 +1,12 @@
 import {FieldValue, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
-import {resolvePremiumCoinGrant} from "../jest/jestProductCatalog";
 import {
   ANDROID_COIN_PRODUCTS,
-  ANDROID_SUBSCRIPTIONS,
   androidPlayAccountId,
   androidPurchaseGrantId,
 } from "./androidPlayCatalog";
-import {PlayPurchaseNotFoundError, type PlayDeveloperApi, type PlaySubscriptionPurchase} from "./playDeveloperApi";
+import {PlayPurchaseNotFoundError, type PlayDeveloperApi} from "./playDeveloperApi";
 
 /** Request of `grantAndroidPurchase`. */
 export type GrantAndroidPurchaseInput = {
@@ -66,13 +64,6 @@ export type AndroidCommerceDependencies = Readonly<{
 
 /** Upper bounds that keep callable payloads small. */
 export const ANDROID_COMMERCE_LIMITS = Object.freeze({productId: 128, purchaseToken: 4_096, subscriptionTokens: 8});
-
-/** Subscription states that still entitle the player until the line item expires. */
-const ENTITLED_SUBSCRIPTION_STATES = new Set([
-  "SUBSCRIPTION_STATE_ACTIVE",
-  "SUBSCRIPTION_STATE_IN_GRACE_PERIOD",
-  "SUBSCRIPTION_STATE_CANCELED",
-]);
 
 /** Returns whether a value is a non-empty string within a byte bound. */
 const isBoundedString = (value: unknown, max: number): value is string =>
@@ -158,7 +149,9 @@ export async function grantAndroidPlayPurchase(
     /** Whether this is the account's first purchase. */
     const firstPurchase = !unlocked.some(
       (achievement) => typeof achievement === "object" && achievement !== null
-        && (achievement as {achievementId?: unknown}).achievementId === "first_purchase",
+        && (achievement as {
+        /** Stores achievement id. */
+        achievementId?: unknown}).achievementId === "first_purchase",
     );
     /** Grant time. */
     const at = now();
@@ -188,74 +181,5 @@ export async function grantAndroidPlayPurchase(
   return {granted: true, productId, coinsAwarded: coins, consumed, ...outcome};
 }
 
-/** Subscription products a verified Play subscription currently entitles, or none. */
-export function entitledSubscriptionSkus(
-  subscription: PlaySubscriptionPurchase,
-  uid: string,
-  now: number,
-): string[] {
-  if (subscription.externalAccountIdentifiers?.obfuscatedExternalAccountId !== androidPlayAccountId(uid)) return [];
-  if (!ENTITLED_SUBSCRIPTION_STATES.has(subscription.subscriptionState ?? "")) return [];
-  return (subscription.lineItems ?? [])
-    .filter((item) => typeof item.productId === "string" && Object.hasOwn(ANDROID_SUBSCRIPTIONS, item.productId)
-      && Date.parse(item.expiryTime ?? "") > now)
-    .map((item) => item.productId as string);
-}
-
-/**
- * Verifies the device's Play subscriptions and mirrors them onto the account.
- *
- * @remarks
- * Mirrors `syncJestSubscriptions`: the account's Premium state comes only from
- * tokens Play confirms for this account, and an active Premium subscription
- * grants its coins once per 30 days. Pending acknowledgements are completed so
- * Play does not refund a subscription the player is using.
- */
-export async function syncAndroidPlaySubscriptions(
-  {firestore, play, now = Date.now}: AndroidCommerceDependencies,
-  uid: string,
-  {purchaseTokens}: SyncAndroidSubscriptionsInput,
-): Promise<SyncAndroidSubscriptionsOutput> {
-  /** Verification time. */
-  const at = now();
-  /** Entitled products across all tokens. */
-  const active = new Set<string>();
-  for (const token of purchaseTokens) {
-    /** Play's view of the subscription, or `null` when it does not exist. */
-    const subscription = await play.getSubscriptionPurchase(token).catch((error: unknown) => {
-      if (error instanceof PlayPurchaseNotFoundError) return null;
-      throw new HttpsError("unavailable", "play-api-unavailable");
-    });
-    if (!subscription) continue;
-    /** Products this token entitles. */
-    const skus = entitledSubscriptionSkus(subscription, uid, at);
-    for (const sku of skus) {
-      active.add(sku);
-      if (subscription.acknowledgementState === "ACKNOWLEDGEMENT_STATE_PENDING") {
-        await play.acknowledgeSubscription(sku, token).catch(() => undefined);
-      }
-    }
-  }
-  /** Sorted active products. */
-  const activeSkus = [...active].sort();
-  /** Account document. */
-  const userRef = firestore.collection("users").doc(uid);
-  return firestore.runTransaction(async (transaction) => {
-    /** Account snapshot. */
-    const userSnapshot = await transaction.get(userRef);
-    if (!userSnapshot.exists) throw new HttpsError("failed-precondition", "account-missing");
-    /** Account data. */
-    const user = userSnapshot.data() ?? {};
-    /** Premium coins owed for this period. */
-    const premiumCoinsAwarded = resolvePremiumCoinGrant(activeSkus.length > 0, user.premiumCoinsGrantedAt, at);
-    /** Balance after the sync. */
-    const newCoins = coinsOf(user) + premiumCoinsAwarded;
-    transaction.update(userRef, {
-      hasActiveSubscription: activeSkus.length > 0,
-      androidSubscriptions: {activeSkus, verifiedAt: FieldValue.serverTimestamp()},
-      lastLogin: at,
-      ...(premiumCoinsAwarded > 0 ? {coins: newCoins, premiumCoinsGrantedAt: at} : {}),
-    });
-    return {verified: true as const, activeSkus, premiumCoinsAwarded, newCoins};
-  });
-}
+/** Public subscription API remains stable while its receipts are owned by the server registry. */
+export {entitledSubscriptionSkus, syncAndroidPlaySubscriptions} from "./androidSubscriptionRegistry";

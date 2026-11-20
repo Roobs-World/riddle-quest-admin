@@ -59,7 +59,10 @@
     "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-context-retention.js",
     "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-nonce-retention.js",
     "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/reddit-profile-retention.js",
-    "postbuild": "node ../scripts/audit-function-capacity.mjs --built"
+    "postbuild": "node ../scripts/audit-function-capacity.mjs --built",
+    "test:android-notifications:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-notifications \"pnpm exec jest --config jest.android-notifications.config.js --runInBand\"",
+    "test:android-referrals:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-referrals \"pnpm exec jest --config jest.android-referrals.config.js --runInBand\"",
+    "test:android-subscriptions:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-subscriptions \"pnpm exec jest --config jest.android-subscriptions.config.js --runInBand\""
   },
   "engines": {
     "node": "22"

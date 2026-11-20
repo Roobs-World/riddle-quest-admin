@@ -32,8 +32,12 @@ function createMemoryFirestore() {
       const writes: Array<() => void> = [];
       /** Result. */
       const result = await callback({
-        get: async ({path}: {path: string}) => ({data: () => docs.get(path)}),
-        update: ({path}: {path: string}, data: Record<string, unknown>) => writes.push(() => docs.set(path, {...docs.get(path), ...data})),
+        get: async ({path}: {
+        /** Stores path. */
+        path: string}) => ({data: () => docs.get(path)}),
+        update: ({path}: {
+        /** Stores path. */
+        path: string}, data: Record<string, unknown>) => writes.push(() => docs.set(path, {...docs.get(path), ...data})),
       });
       writes.forEach((write) => write());
       return result;
@@ -52,18 +56,22 @@ const genuine = (nonce: string, overrides: Partial<IntegrityVerdict> = {}): Inte
 
 describe("Android attestation nonces", () => {
   it("issues URL-safe nonces that can be spent exactly once before they expire", async () => {
+    /** Retains {db, docs} for this operation. */
     const {db, docs} = createMemoryFirestore();
+    /** Retains {nonce, expires at ms} for this operation. */
     const {nonce, expiresAtMs} = await issueAndroidNonce(db, NOW);
     expect(nonce).toMatch(/^[A-Za-z0-9_-]{43}$/u);
     expect(expiresAtMs).toBe(NOW + ANDROID_NONCE_TTL_MS);
     expect([...docs.values()][0]).toMatchObject({consumedAtMs: null, expiresAtMs});
     expect(await consumeAndroidNonce(db, nonce, () => NOW + 1_000)).toBe(true);
     expect(await consumeAndroidNonce(db, nonce, () => NOW + 2_000)).toBe(false);
+    /** Retains late for this operation. */
     const late = await issueAndroidNonce(db, NOW);
     expect(await consumeAndroidNonce(db, late.nonce, () => NOW + ANDROID_NONCE_TTL_MS)).toBe(false);
   });
 
   it("refuses unknown and malformed nonces without a write", async () => {
+    /** Retains {db, docs} for this operation. */
     const {db, docs} = createMemoryFirestore();
     expect(await consumeAndroidNonce(db, "A".repeat(43), () => NOW)).toBe(false);
     expect(await consumeAndroidNonce(db, "short", () => NOW)).toBe(false);
@@ -90,21 +98,28 @@ describe("exchangeAndroidAttestationToken", () => {
   const mint = async () => ({token: "app-check-token", ttlMillis: 3_600_000});
 
   it("mints an App Check token for a genuine verdict bound to an issued nonce, once", async () => {
+    /** Retains {db} for this operation. */
     const {db} = createMemoryFirestore();
+    /** Retains {nonce} for this operation. */
     const {nonce} = await issueAndroidNonce(db, NOW);
+    /** Retains deps for this operation. */
     const deps = {db, decode: async () => genuine(nonce), mint, now: () => NOW};
     expect(await exchangeAndroidAttestationToken(deps, {nonce, integrityToken: "token"})).toEqual({ok: true, appCheckToken: "app-check-token", ttlMillis: 3_600_000});
     expect(await exchangeAndroidAttestationToken(deps, {nonce, integrityToken: "token"})).toEqual({ok: false, reason: "nonce-rejected"});
   });
 
   it("refuses malformed requests, undecodable tokens and failing verdicts without minting", async () => {
+    /** Retains {db} for this operation. */
     const {db} = createMemoryFirestore();
+    /** Retains minted for this operation. */
     const minted = jest.fn(mint);
     expect(await exchangeAndroidAttestationToken({db, decode: async () => genuine("x"), mint: minted}, null)).toEqual({ok: false, reason: "invalid-request"});
     expect(await exchangeAndroidAttestationToken({db, decode: async () => genuine("x"), mint: minted}, {nonce: "n", integrityToken: "x".repeat(16_385)})).toEqual({ok: false, reason: "invalid-request"});
+    /** Retains first for this operation. */
     const first = await issueAndroidNonce(db, NOW);
     expect(await exchangeAndroidAttestationToken({db, decode: async () => {throw new Error("bad");}, mint: minted, now: () => NOW}, {nonce: first.nonce, integrityToken: "t"}))
       .toEqual({ok: false, reason: "integrity-decode-failed"});
+    /** Retains second for this operation. */
     const second = await issueAndroidNonce(db, NOW);
     expect(await exchangeAndroidAttestationToken({db, decode: async () => genuine("someone-else"), mint: minted, now: () => NOW}, {nonce: second.nonce, integrityToken: "t"}))
       .toEqual({ok: false, reason: "nonce-mismatch"});
@@ -114,6 +129,7 @@ describe("exchangeAndroidAttestationToken", () => {
 
 describe("allowAttestationRequest", () => {
   it("limits each address per minute and resets the next minute", () => {
+    /** Retains at for this operation. */
     const at = NOW + 7 * 60_000;
     for (let index = 0; index < 30; index += 1) expect(allowAttestationRequest("203.0.113.9", at)).toBe(true);
     expect(allowAttestationRequest("203.0.113.9", at)).toBe(false);
@@ -124,8 +140,17 @@ describe("allowAttestationRequest", () => {
 
 describe("createPlayIntegrityDecoder", () => {
   it("decodes through the Play Integrity API with a playintegrity-scoped token", async () => {
-    const calls: Array<{url: string; body: string; auth: string}> = [];
+    /** Retains calls for this operation. */
+    const calls: Array<{
+    /** Stores url. */
+    url: string;
+    /** Stores body. */
+    body: string;
+    /** Stores auth. */
+    auth: string}> = [];
+    /** Fetches mock. */
     const fetchMock = jest.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      /** Retains headers for this operation. */
       const headers = (init?.headers ?? {}) as Record<string, string>;
       if (String(url).startsWith("http://metadata")) return new Response(JSON.stringify({access_token: "scoped", expires_in: 3600}), {status: 200});
       calls.push({url: String(url), body: String(init?.body), auth: headers.Authorization});
@@ -133,6 +158,7 @@ describe("createPlayIntegrityDecoder", () => {
       if (String(init?.body).includes("empty")) return new Response("{}", {status: 200});
       return new Response(JSON.stringify({tokenPayloadExternal: genuine("n")}), {status: 200});
     });
+    /** Retains decode for this operation. */
     const decode = createPlayIntegrityDecoder({fetch: fetchMock as unknown as typeof fetch});
     expect(await decode("good")).toEqual(genuine("n"));
     await expect(decode("bad")).rejects.toThrow("integrity-decode-failed");
