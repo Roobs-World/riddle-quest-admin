@@ -301,7 +301,7 @@ export const linkReleaseSnapshotDependencies = ({repositoryDirectory, immutableS
 
 const portablePath = (value) => value.split(sep).join("/");
 
-const hashDependencyEntry = (hash, root, absolutePath) => {
+const hashDependencyEntry = (hash, root, absolutePath, workspaceModulesDirectory) => {
   const entry = lstatSync(absolutePath);
   const name = portablePath(relative(root, absolutePath)) || ".";
   const mode = (entry.mode & 0o777).toString(8);
@@ -313,8 +313,12 @@ const hashDependencyEntry = (hash, root, absolutePath) => {
     hash.update(`directory\0${name}\0${mode}\0`);
     for (const child of readdirSync(absolutePath, {withFileTypes: true})
       .filter((candidate) => !mutableDependencyCacheDirectories.has(candidate.name))
+      .filter((candidate) => !(absolutePath === workspaceModulesDirectory && (
+        candidate.name === ".pnpm-task-run-state-v1" && candidate.isDirectory() ||
+        candidate.name === ".pnpm-workspace-state-v1.json" && candidate.isFile()
+      )))
       .sort((left, right) => left.name < right.name ? -1 : left.name > right.name ? 1 : 0)) {
-      hashDependencyEntry(hash, root, join(absolutePath, child.name));
+      hashDependencyEntry(hash, root, join(absolutePath, child.name), workspaceModulesDirectory);
     }
     return;
   }
@@ -336,7 +340,7 @@ export const fingerprintReleaseDependencies = ({repositoryDirectory}) => {
       throw new Error(`Missing release dependency input: ${absolutePath}`);
     }
     hash.update(`root\0${portablePath(input)}\0`);
-    hashDependencyEntry(hash, absolutePath, absolutePath);
+    hashDependencyEntry(hash, absolutePath, absolutePath, join(repositoryDirectory, "node_modules"));
   }
   return hash.digest("hex");
 };

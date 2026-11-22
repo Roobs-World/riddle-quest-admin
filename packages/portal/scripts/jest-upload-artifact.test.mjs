@@ -519,12 +519,17 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     [path.join("packages", "solo", "package.json"), "{\"name\":\"solo\"}\n"],
     [path.join("packages", "portal", "package.json"), "{\"name\":\"portal\"}\n"],
     [path.join("node_modules", "release-tool.js"), "export default 'stable';\n"],
+    [path.join("node_modules", ".modules.yaml"), "storeDir: /store\n"],
+    [path.join("node_modules", "runtime-package", "index.js"), "export default 'runtime';\n"],
+    [path.join("node_modules", "runtime-package", ".pnpm-workspace-state-v1.json"), "package-owned workspace state\n"],
+    [path.join("node_modules", "runtime-package", ".pnpm-task-run-state-v1", "run.jsonl"), "package-owned task state\n"],
     [path.join("firebase-functions", "node_modules", "functions-runtime.js"), "functions-runtime\n"],
     [path.join("packages", "core", "node_modules", "compiler.js"), "core-compiler\n"],
     [path.join("packages", "hosted", "node_modules", "firebase.js"), "hosted-firebase\n"],
     [path.join("packages", "solo", "node_modules", "react.js"), "solo-react\n"],
     [path.join("packages", "portal", "node_modules", "bundler.js"), "portal-bundler\n"],
   ]) {
+    await mkdir(path.dirname(path.join(directory, relativePath)), {recursive: true});
     await writeFile(path.join(directory, relativePath), contents);
   }
 
@@ -536,6 +541,13 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
 
   for (const relativePath of [
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    path.join("node_modules", ".modules.yaml"),
+    path.join("node_modules", "runtime-package", "index.js"),
+    path.join("node_modules", "runtime-package", ".pnpm-workspace-state-v1.json"),
+    path.join("node_modules", "runtime-package", ".pnpm-task-run-state-v1", "run.jsonl"),
     path.join("packages", "hosted", "package.json"),
     path.join("packages", "solo", "package.json"),
     path.join("packages", "hosted", "node_modules", "firebase.js"),
@@ -553,6 +565,47 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
   await mkdir(cacheDirectory);
   await writeFile(path.join(cacheDirectory, "generated-cache.js"), "mutable cache\n");
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  const taskState = path.join(directory, "node_modules", ".pnpm-task-run-state-v1");
+  const workspaceState = path.join(directory, "node_modules", ".pnpm-workspace-state-v1.json");
+  await mkdir(taskState);
+  await writeFile(path.join(taskState, "run.jsonl"), "completed task bookkeeping\n");
+  await writeFile(workspaceState, JSON.stringify({lastValidatedTimestamp: 1}));
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await writeFile(path.join(taskState, "latest.json"), "new task bookkeeping\n");
+  await writeFile(workspaceState, JSON.stringify({lastValidatedTimestamp: 2}));
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  const {chmod, rm, symlink} = await import("node:fs/promises");
+  const tool = path.join(directory, "node_modules", "release-tool.js");
+  const originalMode = (await stat(tool)).mode & 0o777;
+  await chmod(tool, originalMode ^ 0o100);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await chmod(tool, originalMode);
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  const link = path.join(directory, "node_modules", "runtime-link");
+  await symlink("release-tool.js", link);
+  const linked = fingerprintReleaseDependencies({repositoryDirectory: directory});
+  await rm(link);
+  await symlink("runtime-package/index.js", link);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), linked);
+  await rm(link);
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  await rm(workspaceState);
+  await mkdir(workspaceState);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await rm(workspaceState, {recursive: true});
+  await rm(taskState, {recursive: true});
+  await writeFile(taskState, "a file is not the generated task directory\n");
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await rm(taskState);
+  await symlink("runtime-package", taskState);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await rm(taskState);
+  await symlink("runtime-package/index.js", workspaceState);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
 });
 
 test("immutable release sources resolve each workspace's installed dependencies", async (context) => {

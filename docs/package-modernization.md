@@ -38,6 +38,8 @@ The standalone Sentry worker uses Sandbox 4.1.0 and Codex 0.171.0. Its narrow OI
 
 The immutable Jest release takes a consistent SQLite backup of pnpm's package index, including committed WAL pages, into its private license store. The operator's store stays read-only. License generation accepts both pnpm's native executable and its JavaScript entrypoint.
 
+The dependency fingerprint excludes pnpm 12's generated task-status directory and workspace-validation cache only at the workspace's top-level `node_modules`. Package contents, manifests, lockfiles, `.modules.yaml`, modes and symlink targets remain checked; same-named entries inside packages remain checked too.
+
 Jest resolves its locale loader to an English-only module before bundling, so unused translations no longer enter its archive. Other targets retain their catalogs. Its build also removes the unused Analytics script URL and Crashlytics version entry from Firebase's shared app metadata. Tests compare every remaining script URL and product mapping with the installed SDK, exercise its actual URL validator, and reject unexpected source changes. Artifact security and size limits remain unchanged.
 
 The audit has no production findings. Three moderate development-only advisories remain in the upstream Firebase/Jest tooling chains for OpenTelemetry, glob and minimatch. Their fixes require major-version changes to those transitive APIs; this update retains the versions selected by their current consumers.

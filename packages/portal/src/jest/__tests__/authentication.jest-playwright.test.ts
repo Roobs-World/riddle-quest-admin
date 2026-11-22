@@ -590,10 +590,10 @@ describeBrowser("Jest authentication integration", () => {
       await page.locator(".reward-continue").click();
     }
     for (let step = 0; step < 5; step += 1) {
+      await page.locator(".jest-registration-dialog, .tooltip-backdrop").first().waitFor({state: "visible", timeout: 5_000});
       if (await page.locator(".jest-registration-dialog").count()) break;
       /** Provides tooltip behavior. */
       const tooltip = page.locator(".tooltip-backdrop");
-      await tooltip.waitFor({state: "visible", timeout: 5_000});
       await tooltip.getByRole("button", {name: /^got it$/i}).click();
     }
     await page.getByText("Keep your progress", {exact: true}).waitFor({timeout: 5_000});
