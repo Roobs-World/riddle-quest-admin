@@ -33,6 +33,7 @@ import {
   RIDDLE_QUEST_JEST_GAME_ID,
   resolveReleaseCredentialPath,
   resolveRiddleQuestJestGameId,
+  snapshotPnpmStoreIndex,
 } from "./jest-release-safety.mjs";
 
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
@@ -345,7 +346,7 @@ const isolatedPnpmLicenseStoreDirectory = join(
   basename(operatorPnpmStoreDirectory),
 );
 mkdirSync(isolatedPnpmLicenseStoreDirectory, {mode: 0o700, recursive: true});
-copyFileSync(operatorPnpmStoreIndexPath, join(isolatedPnpmLicenseStoreDirectory, "index.db"));
+await snapshotPnpmStoreIndex(operatorPnpmStoreIndexPath, join(isolatedPnpmLicenseStoreDirectory, "index.db"));
 chmodSync(join(isolatedPnpmLicenseStoreDirectory, "index.db"), 0o600);
 addReadOnlyDirectoryBind(
   operatorPnpmStoreFilesDirectory,

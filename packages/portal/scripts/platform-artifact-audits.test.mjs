@@ -3,6 +3,8 @@ import {cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile} from "node:fs/prom
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
+import {createRequire} from "node:module";
+import {runInNewContext} from "node:vm";
 import {fileURLToPath} from "node:url";
 import test from "node:test";
 import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
@@ -46,6 +48,100 @@ const runBuildContract = (config, {
   assert.equal(typeof plugin.configResolved, "function");
   plugin.configResolved({root, build: {outDir}});
 };
+
+test("Jest bundles English copy without other targets' locale chunks", async () => {
+  /** The actual translation module must lose unreachable locale imports during production bundling. */
+  const {build} = await import("vite");
+  /** Target aliases prevent unsupported catalogs from entering the module graph. */
+  const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");
+  for (const target of ["jest", "facebook"]) {
+    /** Production target policy is shared with this in-memory translation build. */
+    const targetConfig = createWebTargetViteConfig({command: "build", mode: target, environment: {}});
+    /** In-memory builds inspect target elimination without replacing any game artifacts. */
+    const result = await build({
+      root: packageDirectory,
+      configFile: false,
+      publicDir: false,
+      logLevel: "silent",
+      define: targetConfig.define,
+      resolve: targetConfig.resolve,
+      build: {
+        write: false,
+        emptyOutDir: false,
+        lib: {entry: path.join(packageDirectory, "src/play/i18n.ts"), formats: ["es"]},
+        rolldownOptions: {external: ["react"]},
+      },
+    });
+    /** Emitted modules distinguish eliminated imports from merely hidden language controls. */
+    const modules = (Array.isArray(result) ? result : [result]).flatMap(({output}) => output
+      .filter(({type}) => type === "chunk")
+      .flatMap(({modules}) => Object.keys(modules).map(id => id.replaceAll("\\", "/"))));
+    assert.ok(modules.some(id => id.endsWith("/src/locales/en/settings.json")), target);
+    if (target === "jest") {
+      assert.equal(modules.some(id => /\/src\/locales\/(?!en\/)/u.test(id)), false);
+      assert.equal(modules.some(id => id.endsWith("/src/play/localeModules.ts")), false);
+    } else {
+      assert.ok(modules.some(id => id.endsWith("/src/locales/fr/settings.json")));
+      assert.ok(modules.some(id => id.endsWith("/src/play/localeModules.ts")));
+    }
+  }
+});
+
+test("Jest omits unused Firebase products while retaining every supported script URL and version mapping", async () => {
+  /** The installed SDK supplies the reviewed declaration and actual URL validation behavior. */
+  const require = createRequire(import.meta.url);
+  /** Resolve the app package through the same Firebase version used by the portal. */
+  const app = createRequire(require.resolve("firebase/app")).resolve("@firebase/app");
+  /** Actual vendor source ensures a dependency update cannot silently bypass this boundary. */
+  const source = await readFile(app, "utf8");
+  /** Production target configuration owns the narrowing transform. */
+  const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");
+  /** Select the target-only plugin without replacing the package or policy implementation. */
+  const plugin = createWebTargetViteConfig({command: "build", mode: "jest", environment: {}}).plugins.flat(Infinity)
+    .find(candidate => candidate?.name === "riddle-quest-jest-firebase-script-policy");
+  assert.ok(plugin);
+  /** Only the unused Analytics URL and Crashlytics metadata may disappear from the reviewed SDK. */
+  const result = plugin.transform(source, app);
+  assert.ok(result);
+  /** The SDK's validator executes with its unchanged Auth and App Check entries. */
+  const declaration = result.code.match(/const ALLOWED_SCRIPT_URLS = \[[\s\S]*?\n\];/u)?.[0];
+  /** This helper is independent of the rest of the Firebase runtime. */
+  const validator = result.code.match(/function _createTrustedScriptURL\(url\) \{[\s\S]*?^\}/mu)?.[0];
+  assert.ok(declaration);
+  assert.ok(validator);
+  /** Compare the entire policy so future supported URLs cannot be removed silently. */
+  const originalDeclaration = source.match(/const ALLOWED_SCRIPT_URLS = \[[\s\S]*?\n\];/u)?.[0];
+  assert.ok(originalDeclaration);
+  assert.deepEqual(Array.from(runInNewContext(`${declaration}\nALLOWED_SCRIPT_URLS`)),
+    Array.from(runInNewContext(`${originalDeclaration}\nALLOWED_SCRIPT_URLS`))
+      .filter(url => url !== "https://www.googletagmanager.com/gtag/js"));
+  /** Evaluate only the actual identifier constants and their pure platform-log dictionary. */
+  const platformLog = code => {
+    /** Product-name declarations supply the dictionary's computed property keys. */
+    const names = code.match(/const name[\w$]* = ["'][^"']+["'];/gu) ?? [];
+    /** This single dictionary is the only reviewed Crashlytics reference. */
+    const registration = code.match(/const PLATFORM_LOG_STRING = \{[\s\S]*?\n\};/u)?.[0];
+    assert.ok(registration);
+    return Object.fromEntries(Object.entries(runInNewContext(`${names.join("\n")}\n${registration}\nPLATFORM_LOG_STRING`)));
+  };
+  assert.deepEqual(platformLog(result.code), Object.fromEntries(Object.entries(platformLog(source))
+    .filter(([product]) => product !== "@firebase/crashlytics")));
+  /** An isolated context evaluates only the actual allowlist and its pure validator. */
+  const allow = runInNewContext(`${declaration}\n${validator}\n_createTrustedScriptURL`);
+  for (const url of ["https://apis.google.com/js/api.js", "https://www.google.com/recaptcha/api.js", "https://www.google.com/recaptcha/enterprise.js"]) {
+    assert.equal(allow(url), url);
+    assert.equal(allow(`${url}?key=fixture`), `${url}?key=fixture`);
+    assert.throws(() => allow(`${url}.evil.example`), /Refusing to load untrusted script URL/u);
+  }
+  assert.throws(() => allow("https://www.googletagmanager.com/gtag/js"), /Refusing to load untrusted script URL/u);
+  assert.equal(result.code.includes("googletagmanager.com"), false);
+  assert.equal(result.code.includes("@firebase/crashlytics"), false);
+  assert.equal(plugin.transform(source, app.replace("@firebase/app/", "@firebase/analytics/")), null);
+  assert.throws(() => plugin.transform(source.replace("const ALLOWED_SCRIPT_URLS", "const CHANGED_SCRIPT_URLS"), app), /source changed/u);
+  assert.throws(() => plugin.transform(source.replace("'fire-cls'", "'changed-fire-cls'"), app), /registration changed/u);
+  assert.equal(pluginNames(createWebTargetViteConfig({command: "build", mode: "facebook", environment: {}}).plugins)
+    .includes("riddle-quest-jest-firebase-script-policy"), false);
+});
 
 test("Vite configuration requires an explicit known Web Target for build and serve", async () => {
   const {createWebTargetViteConfig} = await import("../webTargetViteConfig.ts");

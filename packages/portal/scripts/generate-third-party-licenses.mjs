@@ -67,9 +67,10 @@ function readLicenseInventory(packageNames) {
   // Vercel sets npm_execpath to npm even when the install was performed by
   // pnpm. Only invoke it when it is actually a pnpm entrypoint; npm does not
   // implement `pnpm licenses list` and exits before producing JSON.
-  const usesPnpmExecutable = typeof npmExecutable === "string" && /(?:^|[/\\])pnpm(?:\.cjs)?$/.test(npmExecutable);
-  const command = usesPnpmExecutable ? process.execPath : "pnpm";
-  const prefixArguments = usesPnpmExecutable ? [npmExecutable] : [];
+  const usesPnpmExecutable = typeof npmExecutable === "string" && /(?:^|[/\\])pnpm(?:-native)?(?:\.[cm]?js|\.exe)?$/.test(npmExecutable);
+  const usesNodeEntrypoint = usesPnpmExecutable && /\.[cm]?js$/u.test(npmExecutable);
+  const command = usesNodeEntrypoint ? process.execPath : usesPnpmExecutable ? npmExecutable : "pnpm";
+  const prefixArguments = usesNodeEntrypoint ? [npmExecutable] : [];
   const output = execFileSync(
     command,
     [...prefixArguments, "--filter", licensePackage, "licenses", "list", ...(packageNames ? [] : ["--prod"]), "--json"],

@@ -2,7 +2,7 @@ import definitions from "./release-targets.json" with {type: "json"};
 /** Common packages are declarations, distinct from build/test dependencies. */
 const sharedRuntimePackages = ["react", "react-dom", "scheduler", "three", "zod", "@babel/runtime"];
 /** Packages permitted only in Firebase-backed provider adapters. */
-const firebaseRuntimePackages = ["firebase", "@firebase/*", "@sentry/browser", "@sentry/core", "@sentry/browser-utils", "@sentry/conventions", "@sentry/feedback", "@sentry/replay", "@sentry/replay-canvas", "web-vitals", "idb"];
+const firebaseRuntimePackages = ["firebase", "@firebase/*", "@sentry/browser", "@sentry/core", "@sentry/browser-utils", "@sentry/conventions", "@sentry/feedback", "@sentry/replay", "@sentry/replay-canvas", "web-vitals", "idb", "tslib"];
 const providerRuntimePackages = {jest: [...firebaseRuntimePackages, "html2canvas-pro"], facebook: firebaseRuntimePackages, reddit: ["@devvit/*", "valibot", "jwt-decode"]};
 /** Canonical build facts consumed by Vite, dependency enforcement and release evidence. */
 export const webBuildFacts = Object.freeze(Object.fromEntries(

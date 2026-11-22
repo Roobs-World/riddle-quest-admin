@@ -1,3 +1,4 @@
+import {setEmulatorSystemTime} from "../helpers/emulatorClock";
 import {initializeApp, deleteApp, getApps, type App} from "firebase-admin/app";
 import {createHmac} from "node:crypto";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
@@ -31,6 +32,7 @@ beforeAll(() => {
   app = initializeApp({projectId: PROJECT}, "live-history-fixture"); db = getFirestore(app);
 });
 beforeEach(clear);
+afterEach(() => jest.useRealTimers());
 afterAll(async () => {if (db) await clear(); if (app) await deleteApp(app); if (gatewayApp) await deleteApp(gatewayApp);});
 
 /** A real match settles a forfeit once; history observes rather than reproducing its grant. */
@@ -122,7 +124,7 @@ it("returns the exact history response through the real signed Reddit gateway an
     await db.doc(`providerIdentities/${redditProviderIdentityId("riddle-quest", userId)}`).set({provider: "reddit", appName: "riddle-quest",
       providerUserId: userId, accountGeneration: 1, status: "active", uid: ids[0]});
     await db.doc("raceConfig/rollout").set({enabled: true, percentage: 100, allowlistHashes: []});
-    jest.spyOn(Date, "now").mockReturnValue(NOW + 9000);
+    setEmulatorSystemTime(NOW + 9000);
     await send({locale: "en", limit: 20});
     expect(status).toBe(200);
     expect(body).toEqual({ok: true, result: await listLiveRaceHistoryForUser(ids[0], {locale: "en", limit: 20}, {db, nowMs: NOW + 9000})});
@@ -133,7 +135,7 @@ it("returns the exact history response through the real signed Reddit gateway an
     await send({locale: "en", limit: 20});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
   } finally {
-    jest.restoreAllMocks();
+    jest.restoreAllMocks(); jest.useRealTimers();
     for (const [key, value] of Object.entries(original)) {if (value === undefined) delete process.env[key]; else process.env[key] = value;}
   }
 });

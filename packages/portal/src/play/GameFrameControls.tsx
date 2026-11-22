@@ -54,7 +54,7 @@ export function GameHeader({
           className="coin-pill"
           data-tooltip="gameCoins"
           data-coin-meter
-          aria-label={tr("Navigation.BUY_COINS_BUTTON")}
+          aria-label={`${coinBalance.toLocaleString()} ${tr("CoinShop.COINS_SUFFIX")}. ${tr("Navigation.BUY_COINS_BUTTON")}`}
           onClick={onOpenShop}
         >
           <strong>{coinBalance.toLocaleString()}</strong>

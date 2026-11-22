@@ -569,6 +569,49 @@ function jestShaderIndentationPlugin(): Plugin {
   };
 }
 
+/** Omits known unused product metadata from Jest's Firebase app SDK. */
+function jestFirebaseScriptPolicyPlugin(): Plugin {
+  /** Firebase's shared policy also serves products that this target never loads. */
+  const analyticsScript = "https://www.googletagmanager.com/gtag/js";
+  return {
+    name: "riddle-quest-jest-firebase-script-policy",
+    apply: "build",
+    enforce: "pre",
+    /** Narrow only the reviewed policy declaration; changed vendor shapes fail the build. */
+    transform(source, id) {
+      /** Package-qualified paths keep application code and other Firebase products untouched. */
+      const filename = id.split("?", 1)[0];
+      if (!/[\\/]node_modules[\\/]@firebase[\\/]app[\\/]dist[\\/].+\.[cm]?js$/u.test(filename) ||
+        !source.includes(analyticsScript) && !source.includes("@firebase/crashlytics")) return null;
+      /** Keep every app, Auth and App Check operation while excluding unsupported products. */
+      let code = source;
+      if (code.includes(analyticsScript)) {
+        /** The current SDK declares Analytics first, followed by Auth and App Check URLs. */
+        const declaration = /const ALLOWED_SCRIPT_URLS = \[\s*(['"])https:\/\/www\.googletagmanager\.com\/gtag\/js\1\s*,\s*/u;
+        if (!declaration.test(code)) throw new Error("Jest Firebase script policy source changed.");
+        code = code.replace(declaration, "const ALLOWED_SCRIPT_URLS = [");
+        if (code.includes(analyticsScript)) throw new Error("Jest Firebase script policy contains an unexpected Analytics URL.");
+      }
+      if (code.includes("@firebase/crashlytics")) {
+        /** The version-log entry is metadata, not a supported Crashlytics service. */
+        const declaration = /const ([\w$]+) = (['"])@firebase\/crashlytics\2;/u.exec(code);
+        /** Only the known platform-version map may reference this product identifier. */
+        const registration = /const PLATFORM_LOG_STRING = \{[\s\S]*?\n\};/u.exec(code)?.[0];
+        if (!declaration || !registration) throw new Error("Jest Firebase product metadata source changed.");
+        /** Generated identifiers may contain dollars but no other regular-expression syntax. */
+        const identifier = declaration[1].replaceAll("$", "\\$");
+        /** Remove only the exact Crashlytics platform-log mapping. */
+        const entry = new RegExp(`\\[${identifier}\\]\\s*:\\s*(['"])fire-cls\\1\\s*,\\s*`, "u");
+        if (!entry.test(registration)) throw new Error("Jest Firebase product metadata registration changed.");
+        code = code.replace(registration, registration.replace(entry, "")).replace(declaration[0], "");
+        if (code.includes("@firebase/crashlytics") || new RegExp(`\\b${identifier}(?![\\w$])`, "u").test(code))
+          throw new Error("Jest Firebase product metadata contains an unexpected Crashlytics reference.");
+      }
+      return {code, map: null};
+    },
+  };
+}
+
 /** Creates one coherent Vite configuration for the selected compile-time Web Target. */
 export function createWebTargetViteConfig({
   command,
@@ -627,7 +670,7 @@ export function createWebTargetViteConfig({
     targetHtmlPlugin(profile),
     jestChallengePushWorkerPlugin(profile.id, command),
     webTargetDependencyPlugin(profile.id),
-    ...(profile.id === "jest" ? [jestShaderIndentationPlugin()] : []),
+    ...(profile.id === "jest" ? [jestShaderIndentationPlugin(), jestFirebaseScriptPolicyPlugin()] : []),
     react(),
     babel({presets: [reactCompilerPreset()]}),
     ...profile.createArtifactPlugins({allowYouTubeFixture, youtubeContent}),
@@ -682,6 +725,7 @@ export function createWebTargetViteConfig({
     resolve: {
       tsconfigPaths: true,
       alias: {
+        ...(profile.id === "jest" ? {"./localeModules": fileURLToPath(new URL("./src/jest/localeModules.ts", import.meta.url))} : {}),
         "#shop-modal-page": profile.shopEntry,
         "#youtube-content": ["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) ? playableContentModule : youtubeContent,
         "@riddle-quest/core/bridge/constants": fileURLToPath(new URL("../core/src/bridge/constants.ts", import.meta.url)),

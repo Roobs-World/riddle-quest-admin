@@ -12,7 +12,7 @@ const launchOptions={headless:true,args:engine==='chromium'?['--mute-audio']:[]}
 if(process.env.GIO_MODULE_DIR?.includes('/snap/code/')){launchOptions.env={...process.env};delete launchOptions.env.GIO_MODULE_DIR;}
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const out=path.resolve(process.env.JEST_SCREENSHOT_REPORT_DIR??path.join(root,'../../artifacts/jest-screenshot-review-2026-10-25'));await mkdir(out,{recursive:true});
-const vite=await createServer({root,configFile:false,server:{host:'127.0.0.1',port:0},logLevel:'error'});await vite.listen();const captureOrigin='http://127.0.0.1:'+vite.httpServer.address().port;
+const vite=await createServer({root,configFile:false,optimizeDeps:{noDiscovery:true},server:{host:'127.0.0.1',port:0},logLevel:'error'});await vite.listen();const captureOrigin='http://127.0.0.1:'+vite.httpServer.address().port;
 const artifact=process.env.PORTAL_JEST_BUILD_DIR??path.join(root,'../../builds/jest');const server=createHttpServer(async(req,res)=>{try{const p=new URL(req.url,'http://localhost').pathname;const file=path.join(artifact,p==='/'?'index.html':p);res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.html':'text/html','.json':'application/json','.svg':'image/svg+xml','.woff2':'font/woff2','.webp':'image/webp'})[path.extname(file)]??'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const entry='http://127.0.0.1:'+server.address().port;const results=[];const requestedModule=process.env.JEST_SCREENSHOT_CAPTURE_MODULE;
 const browser=await playwright[engine].launch(launchOptions);
 try{for(const viewport of [{width:390,height:844},{width:1280,height:900}]){

@@ -1,3 +1,4 @@
+import {setEmulatorSystemTime} from "./helpers/emulatorClock";
 import {createHash, createHmac} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
@@ -31,7 +32,7 @@ afterAll(async () => {
     db.recursiveDelete(db.collection("redditGatewayRateLimits")),
   ]);
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => {jest.restoreAllMocks(); jest.useRealTimers();});
 beforeEach(async () => {
   await Promise.all([db.recursiveDelete(db.collection("redditGatewayNonces")),
     db.recursiveDelete(db.collection("redditGatewayRateLimits"))]);
@@ -70,7 +71,7 @@ it.each(["guess", "hint", "skip", "leave"])("reaches live authority for %s after
   try {
     process.env.REDDIT_GATEWAY_SECRET = secret; process.env.REDDIT_UID_SECRET = uidSecret;
     process.env.REDDIT_DISABLED_FEATURES = "commerce,notifications";
-    jest.spyOn(Date, "now").mockReturnValue(NOW);
+    setEmulatorSystemTime(NOW);
     await db.doc(`redditGatewayRateLimits/${id}`).set({count: 120, resetAtMs: NOW + 60_000,
       expiresAt: new Date(NOW + 60_000 + 24 * 60 * 60 * 1000)});
     await provider.set({provider: "reddit", appName: "riddle-quest", providerUserId: userId,
@@ -264,14 +265,13 @@ it("rejects expiry after a real nonce write and preserves the spent replay recor
   const signature = createHmac("sha256", secret).update("riddle-quest-reddit-gateway-v1\0")
     .update(canonicalRedditGatewayAssertion(assertion)).digest("base64url");
   /** Persistence crosses the deadline without introducing a timing-dependent sleep. */
-  let nowMs = NOW;
-  jest.spyOn(Date, "now").mockImplementation(() => nowMs);
+  setEmulatorSystemTime(NOW);
   await expect(verifyRedditGatewayAssertion(assertion, signature, {
     gatewaySecret: secret, expectedAppName: assertion.appName, expectedOperation: assertion.operation,
     consumeNonce: async (value) => {
       /** This is an actual Admin SDK create in the local Firestore emulator. */
       const consumed = await consumeRedditGatewayNonce(value);
-      nowMs = NOW + 60_001;
+      jest.setSystemTime(NOW + 60_001);
       return consumed;
     },
   })).rejects.toThrow("stale-reddit-gateway-assertion");

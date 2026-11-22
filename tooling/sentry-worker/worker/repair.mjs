@@ -28,7 +28,7 @@ const agentEnv = {PATH: env.PATH, HOME: env.HOME, OPENAI_API_KEY: env.OPENAI_API
 const codexArchive = "/tmp/codex.tgz";
 const codexPlatformDirectory = "/tmp/package/vendor/x86_64-unknown-linux-musl";
 const codexExecutable = `${codexPlatformDirectory}/bin/codex`;
-await run("curl", ["--fail", "--silent", "--show-error", "--location", "https://registry.npmjs.org/@openai/codex/-/codex-0.155.1-linux-x64.tgz", "--output", codexArchive]);
+await run("curl", ["--fail", "--silent", "--show-error", "--location", "https://registry.npmjs.org/@openai/codex/-/codex-0.171.0-linux-x64.tgz", "--output", codexArchive]);
 await run("tar", ["-xzf", codexArchive, "-C", "/tmp", "package/vendor/x86_64-unknown-linux-musl"]);
 await run("chmod", ["700", codexExecutable]);
 await run(codexExecutable, ["login", "--with-api-key"], {cwd: env.REPO_DIR, env: agentEnv, input: env.OPENAI_API_KEY, capture: true});

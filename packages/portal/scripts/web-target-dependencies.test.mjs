@@ -47,6 +47,15 @@ test('transitive SDK packages and tooling fail closed on every artifact', () => 
   assert.equal(runtimePackage('/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), '@firebase/app');
 });
 
+test('Firestore TypeScript runtime helpers remain limited to Firebase-backed targets', () => {
+  const helper = '/node_modules/.pnpm/tslib@2.9.1/node_modules/tslib/tslib.es6.mjs';
+  assert.equal(runtimePackage(helper), 'tslib');
+  for (const target of targets) {
+    if (['jest', 'facebook'].includes(target)) assert.doesNotThrow(() => assertTargetDependency(target, helper));
+    else assert.throws(() => assertTargetDependency(target, helper), /undeclared runtime package tslib/u);
+  }
+});
+
 test('real bundler rejects aliased and lazy provider imports plus SDK packages before minification', async t => {
   const {mkdtemp,mkdir,writeFile,rm,access}=await import('node:fs/promises');
   const {tmpdir}=await import('node:os');

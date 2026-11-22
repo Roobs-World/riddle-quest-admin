@@ -1,3 +1,4 @@
+import {setEmulatorSystemTime} from "../helpers/emulatorClock";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "@riddle-quest/core/race";
@@ -60,6 +61,7 @@ beforeAll(async () => {
   db = getFirestore();
   await Promise.all(collections.map((name) => db.recursiveDelete(db.collection(name))));
 });
+afterEach(() => jest.useRealTimers());
 afterAll(async () => Promise.all(collections.map((name) => db.recursiveDelete(db.collection(name)))));
 
 it("converges concurrent locale-board submissions on the fastest score without economy writes", async () => {
@@ -247,7 +249,7 @@ it("leases the signed HTTP recorder until deletion can sweep its committed board
   try {
     process.env.REDDIT_GATEWAY_SECRET = gatewaySecret; process.env.REDDIT_UID_SECRET = uidSecret;
     process.env.REDDIT_DISABLED_FEATURES = "commerce,notifications";
-    jest.spyOn(Date, "now").mockReturnValue(START + 60000);
+    setEmulatorSystemTime(START + 60000);
     await db.doc(`users/${uid}`).set({coins: 300});
     await db.doc(`raceRuns/${value.runId}`).set(value);
     await db.doc(`raceDecks/${value.deckId}`).set({deckId: value.deckId, locale: value.locale,
@@ -277,15 +279,15 @@ it("leases the signed HTTP recorder until deletion can sweep its committed board
       "adjustedTimeMs", "completedAtMs", "improved", "locale", "rewardsEnabled", "runId", "sortOrder", "tournamentId",
     ]);
     expect((await entryRef.get()).exists).toBe(true);
-    jest.restoreAllMocks();
+    jest.restoreAllMocks(); jest.useRealTimers();
     await recordJestAccountDeletion(uid); await removeCrossUserRaceIdentitySnapshots(uid);
     expect((await entryRef.get()).exists).toBe(false);
-    jest.spyOn(Date, "now").mockReturnValue(START + 60000);
+    setEmulatorSystemTime(START + 60000);
     await redditGameplay(request("http_lease_after_" + "n".repeat(32)) as never, response as never);
     expect(status).toBe(401); expect((await entryRef.get()).exists).toBe(false);
     expect((await db.doc(`users/${uid}`).get()).data()?.coins).toBe(300);
   } finally {
-    release(); await pending; jest.restoreAllMocks();
+    release(); await pending; jest.restoreAllMocks(); jest.useRealTimers();
     for (const [key, setting] of Object.entries(originalEnvironment)) {
       if (setting === undefined) delete process.env[key]; else process.env[key] = setting;
     }

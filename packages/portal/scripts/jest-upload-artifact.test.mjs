@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {mkdir, mkdtemp, readFile, stat, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {createRequire} from "node:module";
+import {DatabaseSync} from "node:sqlite";
 import path from "node:path";
 import test from "node:test";
 
@@ -33,11 +34,63 @@ import {
   RIDDLE_QUEST_JEST_GAME_ID,
   resolveReleaseCredentialPath,
   resolveRiddleQuestJestGameId,
+  snapshotPnpmStoreIndex,
 } from "./jest-release-safety.mjs";
 
 const gameId = "019faa68-f3ec-755d-9ab5-c887fb426801";
 const versionId = "019faa68-f3ec-755d-9ab5-c887fb426802";
 const sourceCommit = "a".repeat(40);
+
+test("release store snapshot includes committed WAL records without modifying its source", async context => {
+  const {rm} = await import("node:fs/promises");
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-store-snapshot-"));
+  context.after(() => rm(directory, {recursive: true, force: true}));
+  const sourcePath = path.join(directory, "source.db");
+  const source = new DatabaseSync(sourcePath);
+  context.after(() => source.close());
+  source.exec("PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; CREATE TABLE packages (name TEXT PRIMARY KEY); INSERT INTO packages VALUES ('new-runtime');");
+  assert.ok((await stat(`${sourcePath}-wal`)).size > 0);
+  const before = await stat(sourcePath);
+  const destination = path.join(directory, "snapshot.db");
+  await snapshotPnpmStoreIndex(sourcePath, destination);
+  const snapshot = new DatabaseSync(destination, {readOnly: true});
+  try {
+    assert.deepEqual(snapshot.prepare("SELECT name FROM packages").all().map(row => row.name), ["new-runtime"]);
+  } finally {snapshot.close();}
+  assert.equal((await stat(sourcePath)).mtimeMs, before.mtimeMs);
+  assert.deepEqual(source.prepare("SELECT name FROM packages").all().map(row => row.name), ["new-runtime"]);
+});
+
+test("license notices use the active native or JavaScript pnpm executable without a global shim", async context => {
+  const {rm} = await import("node:fs/promises");
+  const {createNotice} = await import("./generate-third-party-licenses.mjs");
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-license-command-"));
+  context.after(() => rm(directory, {recursive: true, force: true}));
+  const original = {path: process.env.PATH, executable: process.env.npm_execpath, inventory: process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH};
+  context.after(() => {
+    for (const [key, value] of [["PATH", original.path], ["npm_execpath", original.executable], ["RIDDLE_QUEST_LICENSE_INVENTORY_PATH", original.inventory]])
+      if (value === undefined) delete process.env[key]; else process.env[key] = value;
+  });
+  delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  const dependency = path.join(directory, "dependency");
+  await mkdir(dependency);
+  await writeFile(path.join(dependency, "package.json"), JSON.stringify({name: "license-fixture", version: "1.0.0", license: "MIT"}));
+  await writeFile(path.join(dependency, "LICENSE"), "Fixture license text");
+  const inventory = JSON.stringify({MIT: [{paths: [dependency]}]});
+  for (const name of ["pnpm", "pnpm-native", "pnpm.cjs"]) {
+    const bin = path.join(directory, name.replaceAll(".", "-"));
+    await mkdir(bin);
+    const executable = path.join(bin, name);
+    const source = name.endsWith(".cjs") ? `process.stdout.write(${JSON.stringify(inventory)});`
+      : `#!/bin/sh\nprintf '%s\\n' '${inventory.replaceAll("'", "'\\''")}'\n`;
+    await writeFile(executable, source, {mode: 0o700});
+    process.env.npm_execpath = executable;
+    process.env.PATH = bin;
+    const notice = createNotice(new Set(["license-fixture"]));
+    assert.match(notice, /license-fixture@1\.0\.0/u, name);
+    assert.match(notice, /Fixture license text/u, name);
+  }
+});
 
 test("the release identity is fixed to the Riddle Quest Jest game", () => {
   assert.equal(RIDDLE_QUEST_JEST_GAME_ID, gameId);
@@ -1020,7 +1073,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   );
   assert.match(
     releaseSource,
-    /node_modules["'],\s*["']\.modules\.yaml["'][\s\S]*operatorPnpmStoreDirectory[\s\S]*copyFileSync\(operatorPnpmStoreIndexPath[\s\S]*addReadOnlyDirectoryBind\([\s\S]*operatorPnpmStoreFilesDirectory/,
+    /node_modules["'],\s*["']\.modules\.yaml["'][\s\S]*operatorPnpmStoreDirectory[\s\S]*snapshotPnpmStoreIndex\(operatorPnpmStoreIndexPath[\s\S]*addReadOnlyDirectoryBind\([\s\S]*operatorPnpmStoreFilesDirectory/,
   );
   assert.doesNotMatch(releaseSource, /pnpm_config_store_dir:\s*operatorPnpmStoreDirectory/);
   assert.match(

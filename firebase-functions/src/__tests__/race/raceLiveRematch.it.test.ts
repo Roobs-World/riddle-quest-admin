@@ -10,6 +10,7 @@ import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../reddit/redditSecurity";
 import type {RaceProviderScope} from "../../race/raceEligibility";
+import {setEmulatorSystemTime} from "../helpers/emulatorClock";
 
 /** Owned demo project prevents cleanup from touching another database. */
 const PROJECT = "demo-live-rematch-review";
@@ -33,6 +34,7 @@ async function clear() {
 }
 beforeAll(() => {app = initializeApp({projectId: PROJECT}, PROJECT); db = getFirestore(app);});
 beforeEach(clear);
+afterEach(() => jest.useRealTimers());
 afterAll(async () => {await clear(); if (gatewayApp) await deleteApp(gatewayApp); await deleteApp(app);});
 
 /** Uses real queue joins and authoritative forfeit settlement to create a retained human source. */
@@ -236,7 +238,7 @@ it("uses the real signed Reddit join/inbox/preview boundaries with strict public
       provider: "reddit", appName: "riddle-quest", providerUserId: subject, accountGeneration: 1, status: "active", uid: ids[index],
     });
     await db.doc("raceConfig/rollout").set({enabled: true, percentage: 100, allowlistHashes: []});
-    jest.spyOn(Date, "now").mockReturnValue(NOW + 10_000);
+    setEmulatorSystemTime(NOW + 10_000);
     /** Source selection uses only the creator's own opaque terminal ticket. */
     const input = {locale: "en", categoryId: "history", requestId: "signed-rematch-create", rematchOfTicketId: a.ticketId};
     await send("gameplay.race.live.join", input); expect(status).toBe(200);
@@ -258,7 +260,7 @@ it("uses the real signed Reddit join/inbox/preview boundaries with strict public
     await send("gameplay.race.live.inbox", {}, subjects[1]); expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
     expect((await db.collection("liveRacePushOutbox").get()).size).toBe(0);
   } finally {
-    jest.restoreAllMocks();
+    jest.useRealTimers();
     for (const [key, value] of Object.entries(original)) {if (value === undefined) delete process.env[key]; else process.env[key] = value;}
   }
 });

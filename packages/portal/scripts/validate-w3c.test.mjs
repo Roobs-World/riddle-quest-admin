@@ -4,9 +4,11 @@ import {mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync} from "node:f
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import {createRequire} from "node:module";
 import test from "node:test";
 
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
+const checkerVersion = createRequire(new URL("../package.json", import.meta.url))("vnu-jar/package.json").version;
 const script = fileURLToPath(new URL("./validate-w3c.mjs", import.meta.url));
 const check = (html, env = process.env) => {
   const directory = mkdtempSync(path.join(tmpdir(), "rq-html-check-"));
@@ -22,7 +24,7 @@ const check = (html, env = process.env) => {
 test("pinned Nu accepts a conforming document without a remote service", () => {
   const result = check('<!doctype html><html lang="en"><head><title>Game</title></head><body><main>Game</main></body></html>');
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /zero findings \(pinned Nu 26\.9\.30/);
+  assert.match(result.stdout, new RegExp(`zero findings \\(pinned Nu ${checkerVersion.replaceAll(".", "\\.")}\\b`));
 });
 
 test("a JVM options banner does not break the diagnostic report", () => {

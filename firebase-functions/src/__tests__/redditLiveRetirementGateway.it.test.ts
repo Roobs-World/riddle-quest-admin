@@ -5,6 +5,7 @@ import {redditGameplay} from "../reddit/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../reddit/redditEndpoints";
 import {canonicalRedditGatewayAssertion, hashRedditGatewayPayload, redditFirebaseUid} from "../reddit/redditSecurity";
 import {liveJoinIntentRef} from "../race/raceLiveJoinIntent";
+import {setEmulatorSystemTime} from "./helpers/emulatorClock";
 
 /** Gateway tests use real signature, nonce, quota, identity, callable and retirement authority. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "", NOW = Date.UTC(2026, 9, 6);
@@ -31,13 +32,13 @@ const clear = async () => {
   await db.recursiveDelete(db.collection("redditGatewayNonces")); await db.recursiveDelete(db.collection("redditGatewayRateLimits"));
 };
 beforeEach(async () => {
-  await clear(); jest.spyOn(Date, "now").mockReturnValue(NOW);
+  await clear(); setEmulatorSystemTime(NOW);
   await db.doc(`users/${OWNER}`).set({username: "Gateway player", coins: 500});
   await db.doc(`providerIdentities/${redditProviderIdentityId("riddle-quest", PERSON)}`).set({provider: "reddit", appName: "riddle-quest",
     providerUserId: PERSON, accountGeneration: 1, status: "active", uid: OWNER});
   await db.doc("raceConfig/rollout").set({enabled: true, percentage: 100, allowlistHashes: []});
 });
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => {jest.useRealTimers(); jest.restoreAllMocks();});
 afterAll(async () => {await clear(); for (const [key, value] of Object.entries(original)) {
   if (value === undefined) delete process.env[key]; else process.env[key] = value;
 }});

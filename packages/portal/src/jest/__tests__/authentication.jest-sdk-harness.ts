@@ -45,7 +45,9 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
           ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
           : selectedScenario === "returning-turkish"
             ? {locale: "tr", onboardingComplete: true}
-            : {};
+            : selectedScenario === "localized-coin-catalog"
+              ? {locale: "ar"}
+              : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */

@@ -1,8 +1,34 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {auditCiSecurity, auditWorkflowSource} from "./ci-security.mjs";
+import {auditSecurityConfiguration, hasPlaintextNetworkReference} from "./audit-security-config.mjs";
 
 const pinnedCheckout = "actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0";
+
+const metadataPath = "firebase-functions/src/android/playDeveloperApi.ts";
+const metadataSource = `const METADATA_TOKEN_URL =
+  "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token";`;
+const avatarPath = "firebase-functions/src/profile/avatarUpload.ts";
+const avatarSource = 'const emulator = process.env.FUNCTIONS_EMULATOR === "true" ? process.env.FIREBASE_STORAGE_EMULATOR_HOST : undefined;\n' +
+  'const origin = emulator ? new URL(`http://${emulator}`).origin : "https://firebasestorage.googleapis.com";';
+
+test("production security audit accepts its bounded metadata and emulator transport exceptions", () => {
+  assert.equal(hasPlaintextNetworkReference(metadataPath, metadataSource), false);
+  assert.equal(hasPlaintextNetworkReference(avatarPath, avatarSource), false);
+  assert.doesNotThrow(auditSecurityConfiguration);
+});
+
+test("plaintext exceptions cannot authorize external endpoints or unrelated source files", () => {
+  for (const [path, source] of [[metadataPath, metadataSource], [avatarPath, avatarSource]]) {
+    assert.equal(hasPlaintextNetworkReference("packages/portal/src/unsafe.ts", source), true);
+    for (const url of ["http://api.example.com", "ws://api.example.com/socket", "http://localhost.example.com", "http://127.0.0.1.example.com"]) {
+      assert.equal(hasPlaintextNetworkReference(path, `${source}\nfetch("${url}");`), true, url);
+    }
+  }
+  assert.equal(hasPlaintextNetworkReference(metadataPath, metadataSource.replace("metadata.google.internal", "metadata.google.internal.example.com")), true);
+  assert.equal(hasPlaintextNetworkReference(avatarPath, avatarSource.replace('process.env.FUNCTIONS_EMULATOR === "true"', "true")), true);
+  assert.equal(hasPlaintextNetworkReference(avatarPath, avatarSource.replace('"https://firebasestorage.googleapis.com"', '"http://firebasestorage.googleapis.com"')), true);
+});
 
 const safeWorkflow = (extra = "") => `name: Checks
 on:

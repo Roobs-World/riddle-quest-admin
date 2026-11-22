@@ -31,7 +31,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
       - name: Build the shared core package the targets import
@@ -99,7 +99,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
       - name: Build the shared core package the targets import
@@ -131,7 +131,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:

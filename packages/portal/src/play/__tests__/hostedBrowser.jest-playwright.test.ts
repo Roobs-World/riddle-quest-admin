@@ -904,9 +904,10 @@ describeBrowser("standalone Jest browser game", () => {
       const modalCloseBox = await page.locator(".modal-x").boundingBox();
       expect(modalCloseBox?.width).toBe(44);
       expect(modalCloseBox?.height).toBe(44);
-      for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
+      for (const text of [/sound/i, /reduced motion/i, /high contrast/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
+      expect(await page.getByRole("combobox", {name: "Language", exact: true}).count()).toBe(0);
       expect(await page.getByText(/show activity to rivals/i).count()).toBe(0);
       await expectAccessible(page, "settings");
       await expectModalCentered(page);

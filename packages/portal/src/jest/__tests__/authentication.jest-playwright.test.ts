@@ -5,6 +5,7 @@ import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {mkdir, readFile, writeFile} from "node:fs/promises";
 import path from "node:path";
+import type {HostToGameMessage} from "@riddle-quest/core/bridge";
 
 import {
   type AuthHarnessState,
@@ -129,7 +130,7 @@ describeBrowser("Jest authentication integration", () => {
     await verifySlowStartupWatchdog(page, pageErrors);
   }, 60_000);
 
-  it("uses the restored language for the first hosted game handshake after reload", async () => {
+  it("uses English for the first hosted game handshake despite a restored Turkish preference", async () => {
     /** Extracts the fixture or authority fields required by this transition. */
     const {context, page, pageErrors} = await openHarness(browser, {registered: true, scenario: "returning-turkish"});
     try {
@@ -144,8 +145,9 @@ describeBrowser("Jest authentication integration", () => {
       });
       await page.reload();
       await page.waitForFunction(() => sessionStorage.getItem("test:first-host-locale") !== null);
-      expect(await page.evaluate(() => sessionStorage.getItem("test:first-host-locale"))).toBe("tr");
-      expect(await page.locator("html").getAttribute("lang")).toBe("tr");
+      expect(await page.evaluate(() => sessionStorage.getItem("test:first-host-locale"))).toBe("en");
+      expect(await page.locator("html").getAttribute("lang")).toBe("en");
+      expect(await page.locator("html").getAttribute("dir")).toBe("ltr");
       expect(pageErrors).toEqual([]);
     } finally {await context.close();}
   });
@@ -164,30 +166,30 @@ describeBrowser("Jest authentication integration", () => {
     await verifyShortJestPreview((await openHarness(browser, {registered: true})).page);
   });
 
-  it("localizes Arabic coin-pack value without redundant descriptions", async () => {
+  it("keeps coin-pack labels, prices and buying power in English despite a restored Arabic preference", async () => {
     /** Isolated browser context and captured page errors for this player pathway. */
     const {page, pageErrors} = await openHarness(browser, {registered: true, scenario: "localized-coin-catalog"});
     await enterRegisteredGame(page);
     await page.getByRole("button", {name: "Settings", exact: true}).click();
-    await page.getByRole("combobox", {name: "Language", exact: true}).selectOption("ar");
-    await page.getByRole("button", {name: "شراء العملات المعدنية", exact: true}).first().click();
-    await page.getByText("أفضل قيمة", {exact: true}).waitFor();
+    expect(await page.getByRole("combobox", {name: "Language", exact: true}).count()).toBe(0);
+    await page.getByRole("button", {name: "Buy coins", exact: true}).first().click();
+    await page.getByText("BEST VALUE", {exact: true}).waitFor();
     /** The two provider consumables keep their issued names, grants and prices. */
     const cards = page.locator(".game-shop-grid article:not(.shop-subscription-card)");
     expect(await cards.count()).toBe(2);
     expect(await cards.locator(".shop-product-name").allTextContents()).toEqual(["coin pack 6", "coin pack 1"]);
-    expect(await cards.locator(".shop-product-amount").allTextContents()).toEqual(["7,000 عملات معدنية", "250 عملات معدنية"]);
+    expect((await cards.locator(".shop-product-amount").allTextContents()).map(text => text.replace(/\s+/gu, " ").trim())).toEqual(["7,000 coins", "250 coins"]);
     expect((await cards.getByRole("button").allTextContents()).map(text => text.match(/\$\d+\.\d{2}/gu))).toEqual([["$49.99"], ["$1.79"]]);
-    expect(await cards.locator("em").allTextContents()).toEqual(["أفضل قيمة", "للمبتدئين"]);
+    expect(await cards.locator("em").allTextContents()).toEqual(["BEST VALUE", "STARTER"]);
     expect(await cards.locator(".shop-product-description").allTextContents()).toEqual([
-      "حتى 280 تلميحًا أو 140 محاولة إضافية.", "حتى 10 تلميحًا أو 5 محاولة إضافية.",
+      "Up to 280 hints or 140 extra attempts.", "Up to 10 hints or 5 extra attempts.",
     ]);
-    expect(await page.getByText("أضف 7,000 عملة إلى رصيدك.", {exact: true}).count()).toBe(0);
+    expect(await page.getByText("Add 7,000 coins to your balance.", {exact: true}).count()).toBe(0);
     expect(await page.getByText("Provider custom description", {exact: true}).count()).toBe(0);
     expect(await page.locator(".shop-subscription-card .shop-product-description").allTextContents()).toEqual(["Premium membership"]);
-    expect(await page.getByText("BEST VALUE", {exact: true}).count()).toBe(0);
-    expect(await page.locator("html").getAttribute("lang")).toBe("ar");
-    expect(await page.locator("html").getAttribute("dir")).toBe("rtl");
+    expect(await page.getByText("أفضل قيمة", {exact: true}).count()).toBe(0);
+    expect(await page.locator("html").getAttribute("lang")).toBe("en");
+    expect(await page.locator("html").getAttribute("dir")).toBe("ltr");
     expect(pageErrors).toEqual([]);
   });
 

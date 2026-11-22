@@ -262,7 +262,7 @@ export function registerTargetLocaleNamespace(registration: TargetLocaleNamespac
 
 /** Provides import namespace behavior. */
 const importSharedNamespace = async (locale: Locale, namespace: SharedNamespace): Promise<NamespaceCatalog> => {
-  if (locale === "en") {
+  if (locale === "en" || isJestWebTarget) {
     return ENGLISH_NAMESPACE_BY_NAME[namespace];
   }
 
@@ -294,7 +294,7 @@ const loadLocaleCatalog = async (locale: Locale): Promise<RootCatalog> => {
   const nextLoad = Promise.all([
     ...SHARED_NAMESPACES.map((namespace) => importSharedNamespace(locale, namespace)),
     ...[...targetLocaleNamespaces.values()].map((registration) =>
-      locale === "en" ? registration.english : registration.load(locale),
+      locale === "en" || isJestWebTarget ? registration.english : registration.load(locale),
     ),
   ])
     .then((namespaces) => {
