@@ -19,6 +19,21 @@ test("health reports actual configuration presence without exposing credentials"
   assert.equal(body.workerEnabled, false);
   assert.deepEqual(body.authorityConfigured, {jestProduction: "public-live-iframe", jestPreviews: false, functions: false});
 });
+test("CLI deployments report their source when Vercel supplies an empty git revision", async () => {
+  const previousGit = process.env.VERCEL_GIT_COMMIT_SHA;
+  const previousSource = process.env.SENTRY_WORKER_SOURCE_SHA;
+  try {
+    process.env.VERCEL_GIT_COMMIT_SHA = "";
+    process.env.SENTRY_WORKER_SOURCE_SHA = "cc1a5c3bd";
+    const result = await request("GET");
+    assert.equal(JSON.parse(result.body).revision, "cc1a5c3bd");
+  } finally {
+    if (previousGit === undefined) delete process.env.VERCEL_GIT_COMMIT_SHA;
+    else process.env.VERCEL_GIT_COMMIT_SHA = previousGit;
+    if (previousSource === undefined) delete process.env.SENTRY_WORKER_SOURCE_SHA;
+    else process.env.SENTRY_WORKER_SOURCE_SHA = previousSource;
+  }
+});
 test("HEAD is reachable without a response body", async () => {
   const result = await request("HEAD");
   assert.equal(result.statusCode, 200);
