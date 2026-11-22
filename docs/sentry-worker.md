@@ -8,8 +8,16 @@ worker revision at that target before this change.
 The replacement project is `riddle-quest-sentry-worker`,
 `prj_Odf4SGWgXFCJGFMzp7mteljZIgbN`, on team
 `craig-beswethericks-projects-d44935d2`,
-`team_Q3bXo2jPBKdjs3tuoKLtqUe2`. Project creation alone does not configure or deploy
-the service. Record its verified deployment ID and source commit after deployment.
+`team_Q3bXo2jPBKdjs3tuoKLtqUe2`. The restored production deployment is
+`dpl_EBrJGvHmrTKa8Setaetcj4mZKMgN`, source `325e8616e`, at
+<https://riddle-quest-sentry-worker.vercel.app/api/sentry-webhook>.
+After explicit owner approval, service credentials were configured in this
+project. Live health reports `configured`, `workerEnabled: true`, and
+`autoMergeEnabled: false`. Unsigned webhooks are rejected; signed stale-preview
+webhooks and authenticated polling check current deployment identity and block
+stale events. The first manual poll checked eight issues and launched no paid work.
+The enabled Sentry app `riddle-quest-bb1edf` already points to this endpoint.
+An actual paid repair and Sentry-originated notification have not been exercised.
 
 The worker watches Sentry organization `roobs-world-limited`, project
 `riddle-quest`, numeric project `4511885926006864`, and repairs
