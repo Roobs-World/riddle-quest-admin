@@ -6,7 +6,8 @@
     "node": "24.x"
   },
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "check:configuration": "node worker/readiness.mjs"
   },
   "dependencies": {
     "@vercel/sandbox": "^4.1.0"
