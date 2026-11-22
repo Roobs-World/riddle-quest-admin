@@ -10,9 +10,7 @@ import {
 } from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
-import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
-import {isRedditFirebaseUid} from "../reddit/redditSecurity";
 
 /** Describes firestore. */
 type Firestore = FirebaseFirestore.Firestore;
@@ -68,9 +66,6 @@ export async function getRaceAccessForUser(
   locale: RaceLocale,
   dbInput?: Firestore,
 ): Promise<RaceAccessResponse> {
-  if (locale !== "en" && !isFacebookFirebaseUid(userId) && !isRedditFirebaseUid(userId) && raceProviderScope(userId) !== "android") {
-    return {enabled: false, locale, reason: "rollout_disabled"};
-  }
   /** Provides db behavior. */
   const db = dbInput ?? admin.firestore();
   if (raceProviderScope(userId) === "android") {

@@ -31,6 +31,7 @@ import {createJestBackend} from "./createJestBackend";
 import {JestAccountDeleted, JestStartupError, JestStartupProgress} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
+import {useJestPurchaseRecovery} from "./useJestPurchaseRecovery";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {
   ACCOUNT_DELETION_PENDING_PHASE,
@@ -284,6 +285,9 @@ export function JestPlayApp() {
     setProducts: setJestProducts,
     subscriptionsEnabled,
     trackFunnel,
+  });
+  useJestPurchaseRecovery({
+    purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, hostServices,
   });
   /** Provides authenticate jest identity behavior. */
   const authenticateJestIdentity = useCallback(

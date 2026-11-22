@@ -255,6 +255,26 @@ export function subscribeToPlayerReducedMotion(subscriber: () => void): () => vo
   };
 }
 
+/** Observes both accessibility choices, including platform restores and OS contrast changes. */
+export function subscribeToPlayerAccessibilityPreferences(subscriber: () => void): () => void {
+  /** Shared application notifications already cover changes to either preference. */
+  const stopObservingMotion = subscribeToPlayerReducedMotion(subscriber);
+  /** OS contrast changes matter until a platform or player choice overrides them. */
+  const contrastMedia = typeof window !== "undefined" && typeof window.matchMedia === "function"
+    ? [window.matchMedia("(prefers-contrast: more)"), window.matchMedia("(forced-colors: active)")] : [];
+  contrastMedia.forEach((media) => {
+    if (media.addEventListener) media.addEventListener("change", subscriber);
+    else media.addListener?.(subscriber);
+  });
+  return () => {
+    stopObservingMotion();
+    contrastMedia.forEach((media) => {
+      if (media.removeEventListener) media.removeEventListener("change", subscriber);
+      else media.removeListener?.(subscriber);
+    });
+  };
+}
+
 /** Removes exact app-owned browser state after authoritative account deletion. */
 export function clearBrowserPlayerState(): void {
   /** Removes keys. */

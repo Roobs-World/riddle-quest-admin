@@ -35,7 +35,12 @@ describe("Race rollout cohort evaluation", () => {
   });
 
   /** Creates db. */
-  const createDb = ({rollout = {enabled: true, percentage: 100, allowlistHashes: []}, duplicate = false} = {}) => {
+  const createDb = ({rollout = {enabled: true, percentage: 100, allowlistHashes: []}, duplicate = false}: {
+    /** Authoritative rollout fixture, including missing or malformed configuration. */
+    rollout?: unknown;
+    /** Whether the analytics receipt was already created. */
+    duplicate?: boolean;
+  } = {}) => {
     /** Provides create behavior. */
     const create = jest.fn(async () => {
       if (duplicate) throw Object.assign(new Error("already exists"), {code: 6});
@@ -65,11 +70,22 @@ describe("Race rollout cohort evaluation", () => {
     expect(db.runTransaction).not.toHaveBeenCalled();
   });
 
-  it("keeps non-English race disabled for Jest identities", async () => {
-    /** Provides {db} behavior. */
-    const {db} = createDb();
-    await expect(getRaceAccessForUser("player-1", "fr", db as never)).resolves.toMatchObject({enabled: false});
-    expect(db.doc).not.toHaveBeenCalled();
+  it.each(RACE_SUPPORTED_LOCALES)("applies actual rollout policy to Jest identities in %s", async locale => {
+    /** Verified Jest identities use the same supported locales as native accounts. */
+    const uid = `jest_${"c".repeat(40)}`;
+    /** Full enrollment enables the locale after reading authoritative configuration. */
+    const enabled = createDb();
+    await expect(getRaceAccessForUser(uid, locale, enabled.db as never)).resolves.toEqual({enabled: true, locale, reason: "enabled"});
+    expect(enabled.db.doc).toHaveBeenCalledWith("raceConfig/rollout");
+    /** An emergency disable remains effective for every locale. */
+    const disabled = createDb({rollout: {enabled: false, percentage: 100, allowlistHashes: []}});
+    await expect(getRaceAccessForUser(uid, locale, disabled.db as never)).resolves.toEqual({enabled: false, locale, reason: "rollout_disabled"});
+    /** A supported locale does not enroll a player outside the percentage cohort. */
+    const outsideCohort = createDb({rollout: {enabled: true, percentage: 0, allowlistHashes: []}});
+    await expect(getRaceAccessForUser(uid, locale, outsideCohort.db as never)).resolves.toEqual({enabled: false, locale, reason: "not_in_cohort"});
+    /** The configured hashed override applies to every supported locale. */
+    const allowlisted = createDb({rollout: {enabled: true, percentage: 0, allowlistHashes: [hashRaceCohortUser(uid)]}});
+    await expect(getRaceAccessForUser(uid, locale, allowlisted.db as never)).resolves.toEqual({enabled: true, locale, reason: "enabled"});
   });
 
   it("allows rollout-gated non-English race for Facebook and Reddit identities", async () => {
