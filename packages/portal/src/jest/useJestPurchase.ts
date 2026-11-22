@@ -61,7 +61,7 @@ export function useJestPurchase({
         let checkoutAvailable = false;
         /** Provides subscribed behavior. */
         const subscribed = await purchases.subscribe(productId, session.player.playerId, {
-          locale: navigator.language,
+          locale: "en",
           onCatalog: (catalog) => {
             catalogVerified = true;
             setProducts((current) => [...catalog, ...current.filter((entry) => entry.productType !== "subscription")]);

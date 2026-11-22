@@ -57,8 +57,8 @@ it.each(["locale", "profile"] as const)("starts reads together and waits for bot
   const commit = commitJestStartupSession({gate: f.gate, isActive: () => true,
     session, prepareSession: f.prepareSession, ...f.effects});
   await f.started.promise;
-  expect(setLocaleAndWait).toHaveBeenCalledWith("tr");
-  expect(f.prepareSession).toHaveBeenCalledWith(session, "tr");
+  expect(setLocaleAndWait).toHaveBeenCalledWith("en");
+  expect(f.prepareSession).toHaveBeenCalledWith({...session, preferences: {locale: "en"}}, "en");
   if (first === "locale") f.locale.resolve(); else f.profile.resolve(hydrated);
   await Promise.resolve();
   expect(f.effects.enablePlayerStateWrites).not.toHaveBeenCalled();
@@ -66,7 +66,7 @@ it.each(["locale", "profile"] as const)("starts reads together and waits for bot
   if (first === "locale") f.profile.resolve(hydrated); else f.locale.resolve();
   await expect(commit).resolves.toBe(true);
   expect(f.effects.enablePlayerStateWrites).toHaveBeenCalledWith(hydrated.playerData, hydrated.player.playerId);
-  expect(f.effects.setSession).toHaveBeenCalledWith(hydrated);
+  expect(f.effects.setSession).toHaveBeenCalledWith({...hydrated, preferences: {locale: "en"}});
   expect(f.effects.setEngagementProgress).toHaveBeenCalledWith({level: 7, winStreak: 3, wins: 12});
 });
 

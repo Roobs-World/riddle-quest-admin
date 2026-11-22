@@ -1,4 +1,5 @@
 import {LANGUAGE_OPTIONS, detectDeviceLanguage, setLocale, type Locale} from "./i18n";
+import {isJestWebTarget} from "../platform/webTargetEnvironment";
 import {
   readBrowserStorage,
   removeBrowserStorage,
@@ -133,7 +134,7 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   const storedLocale = parseLocale(safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale));
   /** Provides locale behavior. */
   const locale =
-    parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
+    isJestWebTarget ? "en" : parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
   /** Stores d sound enabled. */
   const storedSoundEnabled = readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled);
   /** Provides muted behavior. */
@@ -164,9 +165,11 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
 
 /** Persists and applies a locale selected by the player. */
 export function setPlayerLocale(locale: Locale): void {
-  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, locale);
-  setLocale(locale);
-  emitPreferenceChange({locale});
+  /** Platform persistence and the rendered locale must use the same target policy. */
+  const nextLocale = isJestWebTarget ? "en" : locale;
+  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, nextLocale);
+  setLocale(nextLocale);
+  emitPreferenceChange({locale: nextLocale});
 }
 
 /** Persists a sound preference when game state changes it. */

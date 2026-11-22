@@ -1,5 +1,5 @@
 import {confirmLiveGuessReceiptForUser} from "../../race/raceLiveGuessReceipt";
-import {LiveGuessReceiptQuerySchema, type RaceLocale} from "@riddle-quest/core/race";
+import {LiveGuessReceiptQuerySchema} from "@riddle-quest/core/race";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {requestDocumentId} from "../../race/raceSetupService";
@@ -41,16 +41,16 @@ beforeEach(async () => {
 });
 afterAll(clear);
 /** Provides join behavior. */
-const join = (user: string, requestId: string, nowMs = NOW, locale: RaceLocale = "en") => joinLiveRaceForUser(user, {locale, categoryId: "history", requestId}, {db, nowMs});
+const join = (user: string, requestId: string, nowMs = NOW) => joinLiveRaceForUser(user, {locale: "en", categoryId: "history", requestId}, {db, nowMs});
 /** Provides update behavior. */
 const update = (user: string, view: LiveRaceView, nowMs: number, action: "poll" | "leave" = "poll", requestId = `poll-${nowMs}`) =>
   updateLiveRaceForUser(user, {ticketId: view.ticketId, action, requestId}, {db, nowMs});
 /** Provides pair behavior. */
-async function pair(locale: RaceLocale = "en") {
+async function pair() {
   /** Provides a behavior. */
-  const a = await join(A, "join-alice-1", NOW, locale);
+  const a = await join(A, "join-alice-1");
   /** Provides b behavior. */
-  const b = await join(B, "join-bob-001", NOW + 1000, locale);
+  const b = await join(B, "join-bob-001", NOW + 1000);
   return {a: await update(A, a, NOW + 1000), b};
 }
 /** Reads the exact user-scoped immutable command receipt from the owned match. */
@@ -61,9 +61,9 @@ async function receipt(view: LiveRaceView, requestId: string) {
 }
 
 /** Creates a real accepted wrong attempt and its exact private locator. */
-async function accepted(locale: RaceLocale = "en") {
+async function accepted() {
   /** The second human seat joins the creator-owned match. */
-  const {a, b} = await pair(locale), active = await update(A, a, NOW + 7000);
+  const {a, b} = await pair(), active = await update(A, a, NOW + 7000);
   /** Original guess identity, not a submitted word, is the recovery locator. */
   const query = {ticketId: a.ticketId, requestId: "lookup-wrong-001", riddleId: active.run!.currentRiddle!.riddleId, position: 0, guessesUsedBefore: 0};
   await updateLiveRaceForUser(A, {ticketId: query.ticketId, requestId: query.requestId, riddleId: query.riddleId, action: "guess", guess: "zzzzzzz"}, {db, nowMs: NOW + 8000});
@@ -96,24 +96,6 @@ it("confirms only the current accepted attempt without mutating historical recei
   expect(await confirmLiveGuessReceiptForUser(A, {...query, requestId: "lookup-wrong-002", guessesUsedBefore: 1}, {db, nowMs: NOW + 10000})).toEqual({status: "accepted"});
   expect(await databaseState()).toEqual(before);
   expect((await stored.ref.get()).updateTime!.isEqual(stored.updateTime!)).toBe(true);
-});
-it("confirms a non-English Jest attempt while retaining locale, owner and rollout authority", async () => {
-  /** Reuse the bounded test corpus through the real localized content loader and scoring engine. */
-  const content = await db.collection("localizedRiddles/en/riddles").get(), batch = db.batch();
-  for (const riddle of content.docs) batch.set(db.doc(`localizedRiddles/fr/riddles/${riddle.id}`), riddle.data());
-  await batch.commit();
-  /** The canonical French match and immutable receipt are produced by ordinary gameplay. */
-  const {query, stored} = await accepted("fr");
-  /** Observing proof must preserve every authority document and receipt timestamp. */
-  const before = await databaseState();
-  expect(await confirmLiveGuessReceiptForUser(A, query, {db, nowMs: NOW + 10000})).toEqual({status: "accepted"});
-  expect(await confirmLiveGuessReceiptForUser(B, query, {db, nowMs: NOW + 10000})).toEqual({status: "unconfirmed"});
-  expect(await databaseState()).toEqual(before);
-  expect((await stored.ref.get()).updateTime!.isEqual(stored.updateTime!)).toBe(true);
-  await db.doc(`liveRaceTickets/${query.ticketId}`).update({pool: "0".repeat(64)});
-  expect(await confirmLiveGuessReceiptForUser(A, query, {db, nowMs: NOW + 10000})).toEqual({status: "unconfirmed"});
-  await db.doc("raceConfig/rollout").set({enabled: false, percentage: 100});
-  await expect(confirmLiveGuessReceiptForUser(A, query, {db, nowMs: NOW + 10000})).rejects.toMatchObject({code: "permission-denied"});
 });
 it.each(["requestId", "riddleId", "position", "guessesUsedBefore"] as const)("rejects a different %s without mutation", async field => {
   /** A same-question proof cannot be borrowed by another locator. */

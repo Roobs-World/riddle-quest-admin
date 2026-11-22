@@ -1,4 +1,5 @@
 import {useCallback, useSyncExternalStore} from "react";
+import {isJestWebTarget} from "../platform/webTargetEnvironment";
 import enAboutLegal from "../../../../src/locales/en/aboutLegal.json";
 import enAccessibility from "../../../../src/locales/en/accessibility.json";
 import enAchievements from "../../../../src/locales/en/achievements.json";
@@ -392,7 +393,9 @@ const commitLocale = (locale: Locale): void => {
 };
 
 /** Waits for translated copy before committing the requested locale. */
-export const setLocaleAndWait = async (locale: Locale): Promise<void> => {
+export const setLocaleAndWait = async (requestedLocale: Locale): Promise<void> => {
+  /** Saved and later locale requests obey the active target's supported language. */
+  const locale = isJestWebTarget ? "en" : requestedLocale;
   /** Requests version. */
   const requestVersion = ++localeRequestVersion;
   /** Provides previous locale behavior. */
@@ -422,7 +425,7 @@ export const setLocale = (locale: Locale): void => {
 /** Provides detect device language behavior. */
 export const detectDeviceLanguage = (locale?: string): Locale => {
   /** Resolves d. */
-  const resolved = normalizeLocale(locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en");
+  const resolved = isJestWebTarget ? "en" : normalizeLocale(locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en");
   setLocale(resolved);
   return resolved;
 };

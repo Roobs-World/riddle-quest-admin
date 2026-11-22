@@ -51,9 +51,9 @@ export function useJestProductCatalog({
     await withPlatformActivity(async () => {
       /** Independent provider catalogs share one background loading lifetime. */
       const [products, subscriptions] = await Promise.all([
-        purchases.getProducts(navigator.language),
+        purchases.getProducts("en"),
         subscriptionsEnabled
-          ? purchases.getSubscriptions(session.player.playerId, navigator.language)
+          ? purchases.getSubscriptions(session.player.playerId, "en")
           : Promise.resolve({status: "success", value: []} as const),
       ]);
       return {products, subscriptions};

@@ -1,6 +1,7 @@
 import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
 import {useContext, useSyncExternalStore, type ChangeEvent} from "react";
 import {resolveYouTubeLocale, youtubeText} from "@riddle-quest/solo";
+import {isJestWebTarget} from "../../../platform/webTargetEnvironment";
 import {ProfileSubscriptionContext} from "../profile/ProfileSubscriptionContext";
 import type {GameModal} from "@riddle-quest/hosted/play/gameSession";
 import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../i18n";
@@ -67,7 +68,7 @@ export function SettingsModalPage({
         <strong>{highContrast ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
       </button>
       <LiveRacePushConsent />
-      <label className="settings-row">
+      {!isJestWebTarget && <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
         <select value={locale} onChange={changeLocale}>
           {LANGUAGE_OPTIONS.map((language) => (
@@ -76,7 +77,7 @@ export function SettingsModalPage({
             </option>
           ))}
         </select>
-      </label>
+      </label>}
       <button className="settings-row" onClick={() => onOpenModal("instructions")}>
         <span>{tr("Settings.HELP_BUTTON")}</span>
         <strong aria-hidden="true">›</strong>

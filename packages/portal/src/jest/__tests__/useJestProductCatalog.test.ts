@@ -138,8 +138,8 @@ describe("useJestProductCatalog", () => {
     await flushCatalogLoad();
 
     expect(withPlatformActivity).toHaveBeenCalledTimes(1);
-    expect(getProducts).toHaveBeenCalledWith(expect.any(String));
-    expect(getSubscriptions).toHaveBeenCalledWith("player-1", expect.any(String));
+    expect(getProducts).toHaveBeenCalledWith("en");
+    expect(getSubscriptions).toHaveBeenCalledWith("player-1", "en");
     expect(mockSetProducts).toHaveBeenCalledWith([subscription, consumable]);
     expect(trackFunnel).not.toHaveBeenCalled();
   });
@@ -169,7 +169,7 @@ describe("useJestProductCatalog", () => {
 
     await flushCatalogLoad();
 
-    expect(getSubscriptions).toHaveBeenCalledWith("player-1", expect.any(String));
+    expect(getSubscriptions).toHaveBeenCalledWith("player-1", "en");
     expect(mockSetProducts).toHaveBeenCalledWith([subscription, consumable]);
   });
 

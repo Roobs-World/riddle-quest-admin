@@ -9,7 +9,7 @@ const session: JestSession = {
   player: {playerId: "player-1", registered: true},
   profile: null,
   entryIntent: {},
-  preferences: {locale: "fr"},
+  preferences: {locale: "en"},
   playerData: null,
   firebaseAuthenticated: true,
 };
@@ -22,7 +22,7 @@ const createCommitDependencies = () => ({
   trackFunnel: jest.fn(),
 });
 
-it("mounts returning hosted play only after its restored locale is ready", async () => {
+it("mounts returning Jest play in English despite a saved non-English locale", async () => {
   /** Controlled effects isolate persistence and startup sequencing. */
   const dependencies = createCommitDependencies();
   /** Observed hosted mounts verify language readiness before rendering. */
@@ -33,7 +33,8 @@ it("mounts returning hosted play only after its restored locale is ready", async
     deletionEpoch: () => null, requireCrossContextLock: false});
   await expect(commitJestStartupSession({gate, isActive: () => true,
     session: {...session, preferences: {locale: "tr"}}, ...dependencies})).resolves.toBe(true);
-  expect(mountedLocales).toEqual(["tr"]);
+  expect(mountedLocales).toEqual(["en"]);
+  expect(dependencies.setSession).toHaveBeenCalledWith(expect.objectContaining({preferences: {locale: "en"}}));
 });
 
 it("commits restored progress and attributed invite analytics", async () => {

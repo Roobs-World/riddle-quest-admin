@@ -16,7 +16,7 @@ const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator
 
 beforeAll(() => {
   Object.defineProperty(globalThis, "navigator", {configurable: true, value: {
-    language: "en-GB",
+    language: "de-DE",
     locks: {request: async (name: string, _options: LockOptions,
       operation: (lock: Pick<Lock, "name" | "mode">) => unknown) => operation({name, mode: "exclusive"})},
   }});
@@ -216,7 +216,7 @@ describe("useJestPurchase", () => {
       productId: "premium-monthly",
       purchaseType: "subscription",
     });
-    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1", {locale: navigator.language, onCatalog: expect.any(Function)});
+    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1", {locale: "en", onCatalog: expect.any(Function)});
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackPurchase).not.toHaveBeenCalled();
   });
@@ -380,7 +380,7 @@ describe("useJestPurchase", () => {
       {...monthly, subscriptionStatus: "active", trialEligible: false},
       consumable,
     ]);
-    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1", {locale: navigator.language, onCatalog: expect.any(Function)});
+    expect(subscribe).toHaveBeenCalledWith("premium-monthly", "player-1", {locale: "en", onCatalog: expect.any(Function)});
     expect(trackFunnel).toHaveBeenCalledWith("subscription_completed", {productId: "premium-monthly"});
     expect(mockTrackPurchase).toHaveBeenCalledWith({
       productId: "premium-monthly",

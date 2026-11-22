@@ -40,7 +40,7 @@ export async function confirmLiveGuessReceiptForUser(userId: string, request: Li
     if (!ticket || ticket.userId !== userId || ticket.deleted || ticket.cancelled || !retained(ticket, nowMs) ||
       ticket.run?.userId !== userId || ticket.run?.runId !== input.ticketId ||
       typeof ticket.matchId !== "string" || !/^[a-f0-9]{64}$/.test(ticket.matchId)) return {status: "unconfirmed"};
-    if (!evaluateRaceRollout(rollout.data(), userId, ticket.run.locale).enabled)
+    if ((provider === "jest" && ticket.run.locale !== "en") || !evaluateRaceRollout(rollout.data(), userId, ticket.run.locale).enabled)
       throw new HttpsError("permission-denied", "Live receipt unavailable.");
     if (ticket.pool !== createHash("sha256").update(`${provider}:${ticket.run.locale}:${ticket.run.categoryId}`).digest("hex"))
       return {status: "unconfirmed"};
