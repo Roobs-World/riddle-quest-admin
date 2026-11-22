@@ -22,11 +22,13 @@ Direct dependencies, security overrides, the standalone worker and native SDK pi
 | Portal compiler | Babel 8.1.3 | Vite and its React Compiler pipeline use Babel 8. |
 | Jest and Android Babel | Core 7.29.13; current Babel 7 native plugins | Jest's current-node-syntax preset and React Native's transformer still load Babel 7-only plugins. A scoped `babel-jest` package extension supplies its private Babel 7 dependency, preserving transformation and mock hoisting alongside Portal's Babel 8. |
 | Functions Firebase | `firebase` 12.19.0; app 0.16.2; app-compat 0.5.18; rules testing 5.0.2 | New Firebase 13 components require Node >=24.12.0. The production backend remains Node 22. Only firebase-admin's database-compat child is pinned to the compatible 2.1.7; client Firebase 13 keeps its own newer children. |
+| Firebase Realtime Database | Browser/native app 0.16.7; Functions app 0.16.2 | Database 1.1.6 imports app without declaring its peer. A package extension binds it to its caller's registry. Real SDK and compiled-browser regressions prevent a second app registry from entering the client. |
 | TypeScript tooling | Transformer API 6.0.2; compiler alias 7.0.2; typescript-eslint 8.72.2 | The transformer uses the classic TypeScript API. typescript-eslint 8.73 adds an optional native peer requiring a TypeScript 7.1 nightly, so the latest compatible stable parser/plugin family remains 8.72.2. |
 | React Native | 0.88.1 with CLI 20.2.0 and its matching Hermes compiler | The official CLI compatibility table pairs CLI 21 with React Native 0.89. Gradle, AGP and Kotlin remain matched to React Native. |
 | Android Google ID | 1.2.0 | Version 1.2.1 failed the real release compile because its Kotlin 2.4 metadata is incompatible with the current Kotlin 2.2 compiler. FCM updates to 26.0.2. |
 | Legacy gRPC web transport | Private google-protobuf 3.21.4 | The legacy gRPC package requires 3.x. Devvit keeps its separate current 4.x dependency. |
 | Hono | 4.13.19 | Version 4.13.20 was published inside pnpm's default 24-hour release-age window at review time. No release-age exception is retained. |
+| Sentry worker Sandbox | Exact 4.0.0 | 4.1.0 adds CommonJS-only Drives 1.0.0, which requires ESM-only workflow serde and crashes the actual Vercel Node 24 runtime. The failure was reproduced with `--no-experimental-require-module`; the real 4.0 SDK passes that runtime regression. |
 
 The [Firebase Functions runtime guide](https://firebase.google.com/docs/functions/manage-functions#set_nodejs_version), [React Native CLI compatibility table](https://github.com/react-native-community/cli#compatibility), [typescript-eslint native-backend documentation](https://typescript-eslint.io/packages/parser/#experimental-typescript-7-native-backend), and [pnpm dependency-resolution settings](https://pnpm.io/settings#minimumreleaseage) explain the relevant provider/tooling constraints. Exact package engines and dependency ranges were also checked in published npm metadata.
 
@@ -34,7 +36,7 @@ Devvit CLI 0.15.4 uses `image-size` 2.0.4, whose upstream HEIF, ICNS and JXL par
 
 The remaining braces 3.0.3 backport and its advisory exception stay paired with their existing regression check. Transitive security overrides use the newest releases within each consumer's compatible major family.
 
-The standalone Sentry worker uses Sandbox 4.1.0 and Codex 0.171.0. Its narrow OIDC 4.0.9 override removes the audited vulnerable transitive chain. Worker tests and the actual downloaded Codex binary's supported flags were checked.
+The standalone Sentry worker uses compatible Sandbox 4.0.0 and Codex 0.171.0. Its narrow OIDC 4.0.9 override removes the audited vulnerable transitive chain. The worker production audit has no findings. Worker tests, the actual SDK runtime and the downloaded Codex binary's supported flags were checked.
 
 The immutable Jest release takes a consistent SQLite backup of pnpm's package index, including committed WAL pages, into its private license store. The operator's store stays read-only. License generation accepts both pnpm's native executable and its JavaScript entrypoint.
 

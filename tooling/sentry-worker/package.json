@@ -10,7 +10,7 @@
     "check:configuration": "node worker/readiness.mjs"
   },
   "dependencies": {
-    "@vercel/sandbox": "^4.1.0"
+    "@vercel/sandbox": "4.0.0"
   },
   "overrides": {
     "@vercel/sandbox": {

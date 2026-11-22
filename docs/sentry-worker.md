@@ -122,6 +122,16 @@ Run `npm test` for focused behavior checks. Deploy with the dedicated project ro
 `node_modules/**`, including the local reader key. Inspect the current deployment
 before replacing it, then record the new deployment ID and source commit.
 
+The SDK is pinned exactly to `@vercel/sandbox@4.0.0`. Code deployment `23a748ed5`
+was READY but failed at runtime before handling requests: version 4.1.0 introduced
+CommonJS `@vercel/drives@1.0.0`, whose synchronous require of ESM-only
+`@workflow/serde` fails under Vercel's Node 24 instrumentation. Version 4.0.0 keeps
+the worker's create/writeFiles/runCommand APIs without that dependency. The
+regression test imports the actual installed SDK with
+`--no-experimental-require-module`, reproducing the deployed restriction. Revisit
+the pin when the upstream Drives module boundary is compatible, then verify the
+real deployed artifact before enabling repairs.
+
 After authorized deployment verify public health/source revision, invalid-signature
 rejection, a signed webhook with noncanonical JSON whitespace, and an authenticated
 poll. Health reports configuration presence rather than successful authentication;
