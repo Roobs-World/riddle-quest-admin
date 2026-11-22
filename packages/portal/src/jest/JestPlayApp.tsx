@@ -54,7 +54,7 @@ import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformO
 import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
 import {createJestHostedPlaySession} from "./JestHostedPlaySession";
-import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
+import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
 import {hasLiveRaceLobby} from "../play/race/logic/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../platform/startupWarmup";
@@ -152,7 +152,7 @@ export function JestPlayApp() {
       });
   }, [authHarness, mockRuntime, session]);
   /** Registration preserves the active lobby; the account owner keys actual identity replacement. */
-  const matchmaking = useMemo(() => !authHarness && !mockRuntime ? createFirebaseRaceMatchmaking() : undefined,
+  const matchmaking = useMemo(() => !authHarness && !mockRuntime ? createJestRaceMatchmaking() : undefined,
     [authHarness, mockRuntime]);
   /** Keeps host authority assembly stable while player progress and SDK activity update. */
   const platformCapabilities = useMemo(

@@ -1,17 +1,25 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, type JoinLiveRace} from "@riddle-quest/core/race";
 import {resolveLiveRaceSafetyTarget} from "../social/liveRaceSafetyTarget";
-import {raceProviderScope} from "./raceEligibility";
+import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {admin} from "../shared/firebaseAdmin";
 
 /** Validates retained source authority, safety and shared direct-invitation budgets before any writes. */
 export async function prepareLiveRaceRematch(tx: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,
   userId: string, input: JoinLiveRace, nowMs: number) {
-  if (!["facebook", "reddit"].includes(raceProviderScope(userId) ?? "") || !input.rematchOfTicketId ||
+  /** Only authenticated game-owned provider namespaces may reserve a rematch. */
+  const provider = raceProviderScope(userId);
+  if (!provider || !input.rematchOfTicketId ||
     !Number.isSafeInteger(nowMs) || nowMs < 0 || nowMs > 8.64e15)
     throw new HttpsError("permission-denied", "Live rematch unavailable.");
   /** Existing private-seat resolver checks independent human seats, provider scope and deletion. */
   const recipientId = await resolveLiveRaceSafetyTarget(tx, db, userId, input.rematchOfTicketId, nowMs);
+  if (provider === "android") {
+    /** Retained native tickets cannot authorize accounts that are no longer canonically provisioned. */
+    const [owner, recipient] = await tx.getAll(db.doc(`users/${userId}`), db.doc(`users/${recipientId}`));
+    assertAndroidRaceAccount(userId, owner.data());
+    assertAndroidRaceAccount(recipientId, recipient.data());
+  }
   /** Only committed terminal history in the original content selection may create a rematch. */
   const source = (await tx.get(db.doc(`liveRaceTickets/${input.rematchOfTicketId}`))).data()!;
   /** Settlement and retention are independent of the caller's current active-seat pointer. */

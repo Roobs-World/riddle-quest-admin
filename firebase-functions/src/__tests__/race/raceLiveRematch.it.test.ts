@@ -9,6 +9,7 @@ import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, LiveRaceC
 import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../reddit/redditSecurity";
+import type {RaceProviderScope} from "../../race/raceEligibility";
 
 /** Owned demo project prevents cleanup from touching another database. */
 const PROJECT = "demo-live-rematch-review";
@@ -35,9 +36,9 @@ beforeEach(clear);
 afterAll(async () => {await clear(); if (gatewayApp) await deleteApp(gatewayApp); await deleteApp(app);});
 
 /** Uses real queue joins and authoritative forfeit settlement to create a retained human source. */
-async function completed(provider: "facebook" | "reddit" | "jest", suffix = "source", suppliedIds?: string[]) {
+async function completed(provider: RaceProviderScope, suffix = "source", suppliedIds?: string[]) {
   /** Canonical provider-shaped fixture owners. */
-  const ids = suppliedIds ?? ["a", "b", "c"].map(letter => `${provider}_${letter.repeat(40)}`);
+  const ids = suppliedIds ?? ["a", "b", "c"].map(letter => provider === "android" ? letter.repeat(28) : `${provider}_${letter.repeat(40)}`);
   /** Eligible immutable content and canonical profiles are required by the real engine. */
   const batch = db.batch();
   for (let index = 0; index < 30; index++) batch.set(db.doc(`localizedRiddles/en/riddles/rematch-${index}`), {
@@ -45,7 +46,8 @@ async function completed(provider: "facebook" | "reddit" | "jest", suffix = "sou
     text: `Historical rematch question ${index} follows a unique trail`, answer: `a${String(index).padStart(6, "0")}`,
     difficultyBand: ["easy", "medium", "hard"][index % 3], raceEligible: true, qualityVersion: "human_review_v1",
   });
-  for (const [index, id] of ids.entries()) batch.set(db.doc(`users/${id}`), {username: ["Alice", "Bob", "Charlie"][index], coins: 100});
+  for (const [index, id] of ids.entries()) batch.set(db.doc(`users/${id}`), {username: ["Alice", "Bob", "Charlie"][index], coins: 100,
+    ...(provider === "android" ? {androidProvider: index === 0 ? "anonymous" : "google.com"} : {})});
   await batch.commit();
   /** Two actual queue seats converge on one private match. */
   const a = await joinLiveRaceForUser(ids[0], {locale: "en", categoryId: "history", requestId: `${suffix}-creator-join`}, {db, nowMs: NOW});
@@ -67,17 +69,7 @@ async function completed(provider: "facebook" | "reddit" | "jest", suffix = "sou
 const rematch = (userId: string, source: string, nowMs = NOW + 10_000, requestId = "private-rematch-001") =>
   joinLiveRaceForUser(userId, {locale: "en", categoryId: "history", requestId, rematchOfTicketId: source}, {db, nowMs});
 
-it("keeps ordinary Jest live play working while rejecting the Facebook/Reddit rematch extension", async () => {
-  /** Real legacy matchmaking and settlement remain available to the Jest provider. */
-  const {ids, a} = await completed("jest");
-  await expect(rematch(ids[0], a.ticketId)).rejects.toMatchObject({code: "permission-denied"});
-  expect((await db.collection("liveRaceTickets").get()).size).toBe(2);
-  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
-  expect((await db.collection(`users/${ids[1]}/liveRaceInvitations`).get()).empty).toBe(true);
-  expect((await db.collection("liveRacePushOutbox").get()).empty).toBe(true);
-});
-
-it.each(["facebook", "reddit"] as const)("reserves %s rematch only for the prior human and recovers concurrent retries once", async provider => {
+it.each(["facebook", "reddit", "jest", "android"] as const)("reserves %s rematch only for the prior human and recovers concurrent retries once", async provider => {
   /** Either terminal seat may ask its actual rival for a new race. */
   const {ids, a} = await completed(provider);
   /** Concurrent tabs converge on the existing active private lobby even with different request IDs. */
@@ -86,7 +78,7 @@ it.each(["facebook", "reddit"] as const)("reserves %s rematch only for the prior
   /** Only the public opaque handle leaves the creator's transport. */
   const lobby = outcomes[0];
   expect(lobby).toMatchObject({phase: "searching", opponent: null, run: null, rewardCoins: 0, challengeId: `live_${lobby.ticketId}`});
-  expect(JSON.stringify(lobby)).not.toMatch(/facebook_|reddit_|inviteRecipientId|rematchOfTicketId|answer/);
+  expect(JSON.stringify(lobby)).not.toMatch(/facebook_|reddit_|jest_|inviteRecipientId|rematchOfTicketId|answer/);
   expect((await db.doc(`liveRaceTickets/${lobby.ticketId}`).get()).data()).toMatchObject({
     privateChallenge: true, inviteRecipientId: ids[1], rematchOfTicketId: a.ticketId,
   });
@@ -107,7 +99,7 @@ it.each(["facebook", "reddit"] as const)("reserves %s rematch only for the prior
   expect((await db.doc(`users/${ids[1]}`).get()).data()?.coins).toBe(125);
 });
 
-it.each(["facebook", "reddit"] as const)("lets the losing %s seat rematch and revalidates safety before acceptance", async provider => {
+it.each(["facebook", "reddit", "jest", "android"] as const)("lets the losing %s seat rematch and revalidates safety before acceptance", async provider => {
   /** Authority fixture for this independent rematch gate. */
   const {ids, b} = await completed(provider);
   /** Original loser becomes the new creator; no winner-only privilege is introduced. */
@@ -117,6 +109,32 @@ it.each(["facebook", "reddit"] as const)("lets the losing %s seat rematch and re
   expect(await listLiveRaceChallengesForUser(db, ids[0], NOW + 12_000)).toEqual([]);
   await expect(joinLiveRaceForUser(ids[0], {locale: "en", categoryId: "history", requestId: "blocked-accept-rematch", challengeId: lobby.challengeId}, {db, nowMs: NOW + 12_000}))
     .rejects.toMatchObject({code: "not-found"});
+});
+
+it.each([
+  {seat: 0, owner: "creator", marker: "revoked"},
+  {seat: 0, owner: "creator", marker: "malformed"},
+  {seat: 1, owner: "recipient", marker: "revoked"},
+  {seat: 1, owner: "recipient", marker: "malformed"},
+])("rejects an Android rematch with a $marker $owner profile marker without changing authority", async ({seat, marker}) => {
+  /** Both profiles originally held valid native authority when their human match settled. */
+  const {ids, a, b} = await completed("android");
+  await db.doc(`users/${ids[seat]}`).update({androidProvider: marker === "revoked" ? FieldValue.delete() : true});
+  /** Preserve the complete source seats, settlement and canonical balances across rejection. */
+  const references = [db.doc(`liveRaceTickets/${a.ticketId}`), db.doc(`liveRaceTickets/${b.ticketId}`),
+    db.doc(`liveRaceMatches/${a.ticketId}`), db.doc(`users/${ids[0]}`), db.doc(`users/${ids[1]}`),
+    db.doc(`users/${ids[0]}/liveChallengeRate/current`), db.doc(`users/${ids[1]}/liveChallengeInboxRate/current`)];
+  /** Reads remain synthetic and local to this test's isolated emulator. */
+  const before = await db.getAll(...references);
+  await expect(rematch(ids[0], a.ticketId)).rejects.toMatchObject({code: "permission-denied"});
+  /** Even rewriting the same data would incorrectly advance its update timestamp. */
+  const after = await db.getAll(...references);
+  expect(after.map(snapshot => ({data: snapshot.data(), updateTime: snapshot.updateTime})))
+    .toEqual(before.map(snapshot => ({data: snapshot.data(), updateTime: snapshot.updateTime})));
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(2);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+  expect((await db.collection(`users/${ids[1]}/liveRaceInvitations`).get()).empty).toBe(true);
+  expect((await db.collection("liveRacePushOutbox").get()).empty).toBe(true);
 });
 
 it.each(["blocked", "reverse-blocked", "owner-deleted", "peer-deleted", "peer-missing", "expired", "future", "unsettled", "corrupt"])(
