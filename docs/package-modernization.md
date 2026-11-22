@@ -40,6 +40,8 @@ The immutable Jest release takes a consistent SQLite backup of pnpm's package in
 
 The dependency fingerprint excludes pnpm 12's generated task-status directory and workspace-validation cache only at the workspace's top-level `node_modules`. Package contents, manifests, lockfiles, `.modules.yaml`, modes and symlink targets remain checked; same-named entries inside packages remain checked too.
 
+Functions explicitly sets zero warm instances and preserves unspecified externally managed runtime options. The updated SDK otherwise emits reset values for omitted maximum-instance settings. The built-manifest capacity audit rejects those resets, so a package update cannot silently remove deployed capacity limits. Explicit source options still take precedence.
+
 Jest resolves its locale loader to an English-only module before bundling, so unused translations no longer enter its archive. Other targets retain their catalogs. Its build also removes the unused Analytics script URL and Crashlytics version entry from Firebase's shared app metadata. Tests compare every remaining script URL and product mapping with the installed SDK, exercise its actual URL validator, and reject unexpected source changes. Artifact security and size limits remain unchanged.
 
 The audit has no production findings. Three moderate development-only advisories remain in the upstream Firebase/Jest tooling chains for OpenTelemetry, glob and minimatch. Their fixes require major-version changes to those transitive APIs; this update retains the versions selected by their current consumers.

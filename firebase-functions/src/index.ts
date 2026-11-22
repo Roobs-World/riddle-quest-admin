@@ -11,7 +11,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {setGlobalOptions} from "firebase-functions/v2";
 
-setGlobalOptions({minInstances: 0});
+setGlobalOptions({minInstances: 0, preserveExternalChanges: true});
 
 // Initialize the Firebase Admin SDK once for all functions in this project.
 if (getApps().length === 0) initializeApp();

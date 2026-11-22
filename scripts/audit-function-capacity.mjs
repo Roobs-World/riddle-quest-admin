@@ -1,6 +1,7 @@
 import {createRequire} from "node:module";
 import {readdir, readFile} from "node:fs/promises";
-import {fileURLToPath} from "node:url";
+import {resolve} from "node:path";
+import {fileURLToPath, pathToFileURL} from "node:url";
 
 const require = createRequire(new URL("../firebase-functions/package.json", import.meta.url));
 const ts = require("typescript");
@@ -27,12 +28,23 @@ async function check(directory) {
   }
 }
 
-await check(root);
-if (process.argv.includes("--built")) {
-  const deployed = require("./lib/index.js");
-  for (const [name, handler] of Object.entries(deployed)) {
-    if ((handler.__endpoint?.minInstances ?? 0) !== 0) failures.push(`${name}: built function reserves warm instances.`);
+/** Checks the serialized SDK manifest that the deployment CLI receives. */
+export function builtFunctionCapacityFailures(functions) {
+  const failures = [];
+  for (const [name, handler] of Object.entries(functions)) {
+    if (!handler.__endpoint) continue;
+    const endpoint = JSON.parse(JSON.stringify(handler.__endpoint));
+    if (endpoint.minInstances !== 0) failures.push(`${name}: built function must explicitly set zero warm instances.`);
+    if (Object.hasOwn(endpoint, "maxInstances") && endpoint.maxInstances === null) {
+      failures.push(`${name}: built function resets externally managed maximum instances.`);
+    }
   }
+  return failures;
 }
-if (failures.length) throw new Error(failures.join("\n"));
-console.log("Function capacity audit passed: no reserved warm instances.");
+
+if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+  await check(root);
+  if (process.argv.includes("--built")) failures.push(...builtFunctionCapacityFailures(require("./lib/index.js")));
+  if (failures.length) throw new Error(failures.join("\n"));
+  console.log("Function capacity audit passed: explicit zero warm instances and no maximum-instance resets.");
+}
