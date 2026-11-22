@@ -35,6 +35,10 @@ const config = {
   resolver: {
     nodeModulesPaths: [path.join(__dirname, "node_modules"), path.join(repositoryRoot, "node_modules")],
     resolveRequest: (context, moduleName, platform) => {
+      // Shared workspace sources use the native app's React and Firebase instances.
+      if (moduleName === "react" || moduleName.startsWith("react/") || moduleName === "firebase" || moduleName.startsWith("firebase/")) {
+        return context.resolveRequest({...context, originModulePath: path.join(__dirname, "index.js")}, moduleName, platform);
+      }
       if (moduleName === "#hosted-config") return {type: "sourceFile", filePath: hostedConfigPath};
       if (moduleName.startsWith("@riddle-quest/hosted/")) {
         return {type: "sourceFile", filePath: path.join(repositoryRoot, "packages/hosted/src", `${moduleName.slice("@riddle-quest/hosted/".length)}.ts`)};

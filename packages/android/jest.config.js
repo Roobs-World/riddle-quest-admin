@@ -4,6 +4,10 @@ module.exports = {
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.(test|spec).(ts|tsx)"],
   moduleNameMapper: {
+    // Shared packages must use the native app's React and Firebase instances.
+    "^react$": require.resolve("react"),
+    "^react/(.*)$": "<rootDir>/node_modules/react/$1",
+    "^firebase/(.*)$": "<rootDir>/node_modules/firebase/$1",
     "^#solo-content$": "<rootDir>/../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
     "^#hosted-config$": "<rootDir>/hosted.config.example.json",
     "^@riddle-quest/core$": "<rootDir>/../core/src/index.ts",
