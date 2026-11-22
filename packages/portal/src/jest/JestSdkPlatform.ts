@@ -363,14 +363,30 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @returns Provider purchase data and its opaque aggregate signature.
    */
   async getIncompletePurchases() {
+    /** Retires late provider settlement without starting another read after the shared deadline. */
+    let active = true;
+    /** Both attempts share the existing recovery budget. */
+    const deadline = Date.now() + PURCHASE_RECOVERY_TIMEOUT_MS;
+    /** Retries only the exact negative response emitted by the current provider SDK. */
+    const read = async () => {
+      try {
+        return await this.getSdkModule("payments").getIncompletePurchases();
+      } catch (error) {
+        if (!active || Date.now() >= deadline || !(error instanceof Error) || error.name !== "Error" ||
+          error.message !== "Failed to fetch incomplete purchases") throw error;
+        return this.getSdkModule("payments").getIncompletePurchases();
+      }
+    };
     try {
       return success(await withTimeout(
-        this.getSdkModule("payments").getIncompletePurchases(),
+        read(),
         PURCHASE_RECOVERY_TIMEOUT_MS,
         "Jest incomplete purchase read timed out",
       ));
     } catch (e) {
       return failure(e);
+    } finally {
+      active = false;
     }
   }
   /**

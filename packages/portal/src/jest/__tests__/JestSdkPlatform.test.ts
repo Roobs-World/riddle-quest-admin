@@ -1,4 +1,5 @@
 import {JestSdkPlatform} from "../JestSdkPlatform";
+import {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} from "../../observability/browserErrorReporter";
 
 import type {BridgeProfile} from "@riddle-quest/core/bridge";
 
@@ -910,6 +911,101 @@ it.each([
   } finally {
     jest.useRealTimers();
   }
+});
+
+it("recovers one exact incomplete-purchase provider rejection before reporting a failure", async () => {
+  /** Observes only final failures from the provider boundary. */
+  const report = jest.fn();
+  configureBrowserErrorReporter(report);
+  try {
+    /** Returns the current SDK's negative response once, then the signed recovery envelope. */
+    const mock = sdk();
+    mock.payments.getIncompletePurchases.mockRejectedValueOnce(new Error("Failed to fetch incomplete purchases"))
+      .mockResolvedValue({purchases: [], purchasesSigned: "signed", hasMore: false});
+    await expect(new JestSdkPlatform(mock).getIncompletePurchases()).resolves.toEqual({
+      status: "success", value: {purchases: [], purchasesSigned: "signed", hasMore: false},
+    });
+    expect(mock.payments.getIncompletePurchases).toHaveBeenCalledTimes(2);
+    expect(report).not.toHaveBeenCalled();
+  } finally { resetBrowserErrorReporterForTests(); }
+});
+
+it("reports an exhausted incomplete-purchase provider retry exactly once", async () => {
+  /** Receives the final unrecovered provider error. */
+  const report = jest.fn();
+  configureBrowserErrorReporter(report);
+  try {
+    /** Models a provider refusal that does not recover. */
+    const mock = sdk();
+    mock.payments.getIncompletePurchases.mockRejectedValue(new Error("Failed to fetch incomplete purchases"));
+    await expect(new JestSdkPlatform(mock).getIncompletePurchases()).resolves.toEqual({
+      status: "retryable-failure", message: "Failed to fetch incomplete purchases",
+    });
+    expect(mock.payments.getIncompletePurchases).toHaveBeenCalledTimes(2);
+    expect(report).toHaveBeenCalledTimes(1);
+  } finally { resetBrowserErrorReporterForTests(); }
+});
+
+it.each([new Error("offline"), new TypeError("Failed to fetch incomplete purchases"), "Failed to fetch incomplete purchases"])(
+  "does not retry unrelated or untyped incomplete-purchase failures: %p", async error => {
+    /** Rejects outside the exact provider-negative classification. */
+    const mock = sdk();
+    mock.payments.getIncompletePurchases.mockRejectedValue(error);
+    await expect(new JestSdkPlatform(mock).getIncompletePurchases()).resolves.toMatchObject({status: "retryable-failure"});
+    expect(mock.payments.getIncompletePurchases).toHaveBeenCalledTimes(1);
+  },
+);
+
+it.each(["beginPurchase", "completePurchase"] as const)("does not retry the paid %s action", async operation => {
+  /** Uses the same error text without extending retry to a payment mutation. */
+  const mock = sdk();
+  mock.payments[operation].mockRejectedValue(new Error("Failed to fetch incomplete purchases"));
+  /** Calls the selected payment mutation once. */
+  const platform = new JestSdkPlatform(mock);
+  await expect(operation === "beginPurchase" ? platform.beginPurchase("sku") : platform.completePurchase("token"))
+    .resolves.toMatchObject({status: "retryable-failure"});
+  expect(mock.payments[operation]).toHaveBeenCalledTimes(1);
+});
+
+it("keeps both incomplete-purchase attempts inside the original 15-second deadline", async () => {
+  jest.useFakeTimers();
+  try {
+    /** Leaves only one millisecond for the second provider attempt. */
+    const mock = sdk();
+    mock.payments.getIncompletePurchases.mockImplementationOnce(() => new Promise((_resolve, reject) => {
+      setTimeout(() => reject(new Error("Failed to fetch incomplete purchases")), 14_999);
+    })).mockImplementationOnce(() => new Promise(() => undefined));
+    /** Records the single final outcome before advancing the shared deadline. */
+    const outcomes: unknown[] = [];
+    void new JestSdkPlatform(mock).getIncompletePurchases().then(value => outcomes.push(value));
+    await jest.advanceTimersByTimeAsync(14_999);
+    expect(mock.payments.getIncompletePurchases).toHaveBeenCalledTimes(2);
+    expect(outcomes).toEqual([]);
+    await jest.advanceTimersByTimeAsync(1);
+    expect(outcomes).toEqual([{status: "retryable-failure", message: "Jest incomplete purchase read timed out"}]);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally { jest.useRealTimers(); }
+});
+
+it.each([15_000, 16_000])("does not retry a provider-negative response arriving at %ims", async delay => {
+  jest.useFakeTimers();
+  /** Observes only the one final failure, including a late upstream rejection. */
+  const report = jest.fn();
+  configureBrowserErrorReporter(report);
+  try {
+    /** Reaches or exceeds the shared budget before rejecting its original read. */
+    const mock = sdk();
+    mock.payments.getIncompletePurchases.mockImplementationOnce(() => new Promise((_resolve, reject) => {
+      setTimeout(() => reject(new Error("Failed to fetch incomplete purchases")), delay);
+    }));
+    /** Awaits completion while advancing both the local and upstream timers. */
+    const pending = new JestSdkPlatform(mock).getIncompletePurchases();
+    await jest.advanceTimersByTimeAsync(delay);
+    await expect(pending).resolves.toMatchObject({status: "retryable-failure"});
+    expect(mock.payments.getIncompletePurchases).toHaveBeenCalledTimes(1);
+    expect(report).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
+  } finally { jest.useRealTimers(); resetBrowserErrorReporterForTests(); }
 });
 
 it("maps every purchase completion result", async () => {
