@@ -750,11 +750,18 @@ it("stops reconciliation on platform failures and enforces its page limit", asyn
     status: "success",
     value: {purchases: [], purchasesSigned: "signed", hasMore: true},
   }));
-  await expect(new JestPurchaseCoordinator(platform, {} as never).reconcile("p1")).resolves.toEqual({
-    status: "terminal-failure",
-    message: "Incomplete purchase pagination exceeded safety limit",
-  });
-  expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(100);
+  /** Captures the diagnostic emitted when the provider never finishes pagination. */
+  const reported: unknown[] = [];
+  configureBrowserErrorReporter((error, context) => {reported.push({error, context});});
+  try {
+    await expect(new JestPurchaseCoordinator(platform, {} as never).reconcile("p1")).resolves.toEqual({
+      status: "terminal-failure",
+      message: "Incomplete purchase pagination exceeded safety limit",
+    });
+    expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(100);
+    expect(reported).toEqual([{error: new Error("Incomplete purchase pagination exceeded safety limit"),
+      context: {component: "jest_purchases", operation: "reconcile_pagination"}}]);
+  } finally {resetBrowserErrorReporterForTests();}
 });
 
 it.each(["returned", "thrown", "cancelled"])("presents a durable grant and reconciles its pending confirmation once: %s", async mode => {

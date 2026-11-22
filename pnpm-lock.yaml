@@ -222,7 +222,7 @@ overrides:
   ws: 8.23.0
   zod@4: 4.6.7
 
-packageExtensionsChecksum: sha256-M44/cfYxRJcR5jXVpxbnofIu5RI0chiWRe2eb34CkYk=
+packageExtensionsChecksum: sha256-ET0SkqfVr2V7ka/5L4mAapgb6S9zIj+Yl20nU5Vm0uU=
 
 pnpmfileChecksum: sha256-YSl6cpVNPHAmAXlyGlAI84gOcMGNPuirGHOgVQOsYFY=
 
@@ -2100,6 +2100,8 @@ packages:
   '@firebase/database@1.1.6':
     resolution: {integrity: sha512-nPktjjCWA9TSJUc0KtStBRugI6AF1b53qOlDvXkHtueIBt1sOhPzCT7S2gtxrs07S9jGA2o7J5faEa/PFAXomg==}
     engines: {node: '>=24.12.0'}
+    peerDependencies:
+      '@firebase/app': 0.16.x
 
   '@firebase/firestore-compat@0.4.14':
     resolution: {integrity: sha512-HJ2HBNgNPrRsWIJ4E+Kc0u0h1U7HlF7If8AtYjie9HZXlMUmwYSJaXBj9VFm6gkSj5dlKZNcOQ0Ou25CVVG6rA==}
@@ -10377,7 +10379,7 @@ snapshots:
   '@firebase/database-compat@2.1.8(@firebase/app-compat@0.5.23)(@firebase/app@0.16.7)':
     dependencies:
       '@firebase/component': 0.7.5
-      '@firebase/database': 1.1.6
+      '@firebase/database': 1.1.6(@firebase/app@0.16.7)
       '@firebase/database-types': 1.0.22
       '@firebase/logger': 0.5.2
       '@firebase/util': 1.15.3
@@ -10401,8 +10403,9 @@ snapshots:
       faye-websocket: 0.11.4
       tslib: 2.9.1
 
-  '@firebase/database@1.1.6':
+  '@firebase/database@1.1.6(@firebase/app@0.16.7)':
     dependencies:
+      '@firebase/app': 0.16.7
       '@firebase/app-check-interop-types': 0.3.5
       '@firebase/auth-interop-types': 0.2.6
       '@firebase/component': 0.7.5
@@ -14317,7 +14320,7 @@ snapshots:
       '@firebase/auth-compat': 0.6.16(@firebase/app-compat@0.5.23)(@firebase/app-types@0.9.6)(@firebase/app@0.16.7)
       '@firebase/crashlytics': 0.2.0(@firebase/app-types@0.9.6)(@firebase/app@0.16.7)(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
       '@firebase/data-connect': 0.7.4(@firebase/app@0.16.7)
-      '@firebase/database': 1.1.6
+      '@firebase/database': 1.1.6(@firebase/app@0.16.7)
       '@firebase/database-compat': 2.1.8(@firebase/app-compat@0.5.23)(@firebase/app@0.16.7)
       '@firebase/firestore': 4.20.0(@firebase/app@0.16.7)
       '@firebase/firestore-compat': 0.4.18(@firebase/app-compat@0.5.23)(@firebase/app-types@0.9.6)(@firebase/app@0.16.7)

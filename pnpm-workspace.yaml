@@ -95,6 +95,10 @@ allowBuilds:
   vnu-jar: false
 
 packageExtensions:
+  # RTDB imports app without declaring it; bind each client to its caller's registry.
+  "@firebase/database@1.1.6":
+    peerDependencies:
+      "@firebase/app": "0.16.x"
   "babel-jest@30.5.2":
     dependencies:
       "@babel/core": "7.29.13"

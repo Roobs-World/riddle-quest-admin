@@ -271,6 +271,9 @@ export class JestPurchaseCoordinator {
       }
       if (!result.value.hasMore) return {status: "success", value: count};
     }
-    return {status: "terminal-failure", message: "Incomplete purchase pagination exceeded safety limit"};
+    /** Reports queue exhaustion at its origin, as SDK and grant failures are reported. */
+    const error = new Error("Incomplete purchase pagination exceeded safety limit");
+    captureBrowserException(error, {component: "jest_purchases", operation: "reconcile_pagination"});
+    return {status: "terminal-failure", message: error.message};
   }
 }

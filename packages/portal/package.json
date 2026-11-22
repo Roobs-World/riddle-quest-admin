@@ -34,7 +34,7 @@
     "release:facebook": "pnpm preflight:facebook-upload && pnpm facebook:draft begin",
     "release:jest": "node scripts/release-jest-timestamped.mjs",
     "release:jest:timestamped": "node scripts/release-jest-timestamped.mjs",
-    "test:release-scripts": "node --test --test-isolation=none scripts/jest-console-manifest.test.mjs scripts/jest-upload-artifact.test.mjs scripts/jest-payment-live-acceptance.test.mjs scripts/validate-w3c.test.mjs scripts/facebook-release-artifact.test.mjs scripts/facebook-release-state.test.mjs scripts/locale-audit-rules.test.mjs scripts/platform-artifact-audits.test.mjs scripts/playable-content-plugin.test.mjs scripts/content-protection.test.mjs scripts/youtube-release-artifact.test.mjs ../../scripts/release/platform-releases.test.mjs",
+    "test:release-scripts": "node --test --test-isolation=none scripts/firebase-sdk-instances.test.mjs scripts/jest-console-manifest.test.mjs scripts/jest-upload-artifact.test.mjs scripts/jest-payment-live-acceptance.test.mjs scripts/validate-w3c.test.mjs scripts/facebook-release-artifact.test.mjs scripts/facebook-release-state.test.mjs scripts/locale-audit-rules.test.mjs scripts/platform-artifact-audits.test.mjs scripts/playable-content-plugin.test.mjs scripts/content-protection.test.mjs scripts/youtube-release-artifact.test.mjs ../../scripts/release/platform-releases.test.mjs",
     "audit:jest-artifact": "node scripts/audit-jest-artifact.mjs",
     "audit:facebook-artifact": "node scripts/audit-facebook-artifact.mjs",
     "audit:reddit-artifact": "node scripts/audit-reddit-artifact.mjs",

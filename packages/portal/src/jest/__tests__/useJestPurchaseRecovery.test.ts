@@ -1,5 +1,7 @@
 import {afterAll, beforeAll, beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {JestPurchaseCoordinator} from "../purchases";
+import {JestPurchaseCoordinator} from "../purchases";
+import {MockJestPlatform} from "../MockJestPlatform";
+import {JestBackendClient} from "../backend";
 import type {JestSession} from "../types";
 import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 
@@ -18,6 +20,7 @@ jest.mock("react", () => ({
 }));
 jest.mock("../../observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));
 import {useJestPurchaseRecovery} from "../useJestPurchaseRecovery";
+import {captureBrowserException} from "../../observability/browserErrorReporter";
 
 /** Real event targets exercise browser signal registration and cleanup. */
 const browser = new EventTarget();
@@ -38,7 +41,7 @@ afterAll(() => {
   if (originalDocument) Object.defineProperty(globalThis, "document", originalDocument);
   else Reflect.deleteProperty(globalThis, "document");
 });
-beforeEach(() => {mockEffects.length = 0; mockRefs.length = 0; mockRefIndex = 0; page.visibilityState = "visible";});
+beforeEach(() => {mockEffects.length = 0; mockRefs.length = 0; mockRefIndex = 0; page.visibilityState = "visible"; jest.clearAllMocks();});
 
 /** Lets the shared recovery drain finish after an event dispatch. */
 const settle = () => new Promise<void>(resolve => setTimeout(resolve, 0));
@@ -132,6 +135,44 @@ describe("Jest purchase recovery after startup", () => {
     expect(context.reconcile).toHaveBeenCalledTimes(2);
     expect(context.loadProfile).toHaveBeenCalledTimes(1);
     context.cleanup?.();
+  });
+
+  it("reports a failed grant once and recovers its receipt on the next wake", async () => {
+    /** Ready account owns recovery across the failed and successful browser wakes. */
+    const context = harness();
+    /** Provider keeps the receipt pending until its authoritative grant succeeds. */
+    const platform = new MockJestPlatform();
+    jest.spyOn(platform, "getIncompletePurchases").mockResolvedValue({status: "success", value: {
+      purchases: [{purchaseToken: "pending-token", productSku: "coins"}],
+      purchasesSigned: "signed-pending", hasMore: false,
+    }});
+    /** A failed grant must leave provider completion untouched. */
+    const complete = jest.spyOn(platform, "completePurchase");
+    /** Grant responses are controlled without issuing an external request. */
+    const backend = new JestBackendClient("https://example.invalid");
+    /** The original grant exception must reach telemetry exactly once. */
+    const grantError = new Error("Grant temporarily unavailable");
+    jest.spyOn(backend, "grantPurchase").mockRejectedValueOnce(grantError).mockResolvedValue({
+      granted: true, purchaseToken: "pending-token", coinsAwarded: 250, newCoins: 550,
+    });
+    /** Real coordinator preserves reporting and grant-before-complete ordering. */
+    const purchases = new JestPurchaseCoordinator(platform, backend);
+    context.reconcile.mockImplementation(playerId => purchases.reconcile(playerId));
+    try {
+      browser.dispatchEvent(new Event("focus"));
+      await settle();
+      expect(captureBrowserException).toHaveBeenCalledTimes(1);
+      expect(captureBrowserException).toHaveBeenCalledWith(grantError, {
+        component: "jest_purchases", operation: "reconcile_purchase",
+      });
+      expect(complete).not.toHaveBeenCalled();
+      expect(context.loadProfile).not.toHaveBeenCalled();
+      browser.dispatchEvent(new Event("online"));
+      await settle();
+      expect(complete).toHaveBeenCalledWith("pending-token");
+      expect(context.loadProfile).toHaveBeenCalledWith("jest:player-1");
+      expect(captureBrowserException).toHaveBeenCalledTimes(1);
+    } finally {context.cleanup();}
   });
 
   it.each(["player", "firebase", "both"])("recovers a committed %s identity replacement after login dispatched early", async change => {

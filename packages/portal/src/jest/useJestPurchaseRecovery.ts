@@ -1,7 +1,6 @@
 import {useEffect, useRef, type MutableRefObject} from "react";
 import {createPurchaseRecovery} from "@riddle-quest/hosted/commerce/purchaseRecovery";
 import type {HostServices} from "@riddle-quest/hosted/hostTypes";
-import {captureBrowserException} from "../observability/browserErrorReporter";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
@@ -53,9 +52,7 @@ export function useJestPurchaseRecovery({purchases, session, sessionRef, gate, r
         const result = await purchases.reconcile(playerId);
         if (result.status !== "success") {
           /** A failed receipt stays in the provider queue for the next wake. */
-          const error = new Error("message" in result ? result.message : result.status);
-          captureBrowserException(error, {component: "jest_purchase_recovery"});
-          throw error;
+          throw new Error("message" in result ? result.message : result.status);
         }
       }),
       onRecovered: async () => {
