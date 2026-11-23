@@ -2,9 +2,12 @@ name: Release all platforms
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v*"
+    inputs:
+      confirm_runner_usage:
+        description: Run all platform releases using Actions allowance, up to 760 runner minutes
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: read
@@ -16,6 +19,7 @@ concurrency:
 jobs:
   verify-and-package:
     name: Verify and package every supported target
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     environment: jest-production
@@ -85,6 +89,7 @@ jobs:
 
   youtube:
     name: Verify and package the YouTube Playable
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     steps:
@@ -120,6 +125,7 @@ jobs:
 
   finalize:
     name: Verify every release target and publish the handoffs
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     needs: [verify-and-package, youtube]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -160,6 +166,7 @@ jobs:
 
   itch:
     name: Publish itch.io when configured
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     needs: finalize
     runs-on: ubuntu-24.04
     timeout-minutes: 10

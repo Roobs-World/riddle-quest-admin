@@ -2,6 +2,12 @@ name: Upload and activate Jest build
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_runner_usage:
+        description: Verify and activate a Jest build using Actions allowance, up to 360 runner minutes
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: read
@@ -13,7 +19,7 @@ concurrency:
 jobs:
   deploy:
     name: Verify, upload and activate Jest build
-    if: github.ref == 'refs/heads/jest'
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     environment: jest-production

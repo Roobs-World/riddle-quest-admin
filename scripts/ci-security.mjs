@@ -63,7 +63,7 @@ export function auditWorkflowSource(name, source) {
     if (!/^\s{4}environment:\s*[a-z0-9-]*production[a-z0-9-]*\s*$/mu.test(source)) {
       failures.push(`${name}: deployment jobs must use a protected production environment`);
     }
-    if (!/^\s{4}if:\s*github\.ref\s*==\s*'refs\/heads\/[a-z0-9._/-]+'\s*$/mu.test(source)) {
+    if (!/^\s{4}if:\s*github\.ref\s*==\s*'refs\/heads\/[a-z0-9._/-]+'(?:\s*&&\s*inputs\.confirm_runner_usage)?\s*$/mu.test(source)) {
       failures.push(`${name}: deployment jobs must be restricted to one explicit branch`);
     }
     if (!/^\s{2}cancel-in-progress:\s*false\s*$/mu.test(source)) {
@@ -76,20 +76,61 @@ export function auditWorkflowSource(name, source) {
   return failures;
 }
 
+/** Prevents hosted runner work from becoming an automatic side effect of a push. */
+export function auditWorkflowCostPolicy(name, source) {
+  const failures = [];
+  const lines = source.split(/\r?\n/u);
+  const block = key => {
+    const start = lines.indexOf(`${key}:`);
+    if (start < 0) return [];
+    let end = start + 1;
+    while (end < lines.length && (/^\s/u.test(lines[end]) || lines[end].trim() === "")) end += 1;
+    return lines.slice(start + 1, end);
+  };
+  const triggerLines = block("on");
+  const triggers = triggerLines.join("\n");
+  const eventKeys = triggerLines.filter(line => /^  \S/u.test(line) && !/^  #/u.test(line));
+  if (eventKeys.length !== 1 || eventKeys[0].trimEnd() !== "  workflow_dispatch:") {
+    failures.push(`${name}: hosted runner workflows must be manual-only`);
+  }
+  if (!/^      confirm_runner_usage:\n(?:        [^\n]*\n)*        type: boolean\n        required: true\n        default: false\s*$/mu.test(triggers)) {
+    failures.push(`${name}: manual runs must require an unchecked runner-usage confirmation`);
+  }
+  // Reject unsupported YAML keys rather than silently excluding them from the policy.
+  const jobKeys = block("jobs").filter(line => /^  \S/u.test(line) && !/^  #/u.test(line));
+  if (jobKeys.length === 0 || jobKeys.some(line => !/^  [a-zA-Z0-9_-]+:\s*$/u.test(line))) {
+    failures.push(`${name}: jobs must use canonical unquoted block keys so every job is audited`);
+  }
+  for (const job of readJobBlocks(source)) {
+    if (!/^    if: github\.ref == 'refs\/heads\/jest' && inputs\.confirm_runner_usage\s*$/mu.test(job.source)) {
+      failures.push(`${name}: job ${job.name} must require the Jest branch and runner-usage confirmation`);
+    }
+  }
+  if (!/^concurrency:\n  group: [^\n]+\n  cancel-in-progress: (?:true|false)\s*$/mu.test(source) ||
+      /group:.*github\.sha/u.test(source)) {
+    failures.push(`${name}: concurrency must group runs independently of the commit SHA`);
+  }
+  if (name === "production-readiness.yml" && /\bmatrix:|matrix\.shard/u.test(source)) {
+    failures.push(`${name}: the canonical browser suite must run once, without duplicating common suites in a matrix`);
+  }
+  return failures;
+}
+
 /** Audits every committed GitHub Actions workflow and throws on unsafe configuration. */
 export function auditCiSecurity() {
   const workflowNames = readdirSync(workflowDirectory)
     .filter((name) => /\.ya?ml$/u.test(name))
     .sort();
   if (workflowNames.length === 0) throw new Error("CI security audit found no GitHub Actions workflows");
-  const failures = workflowNames.flatMap((name) =>
-    auditWorkflowSource(name, readFileSync(`${workflowDirectory}/${name}`, "utf8")),
-  );
+  const failures = workflowNames.flatMap((name) => {
+    const source = readFileSync(`${workflowDirectory}/${name}`, "utf8");
+    return [...auditWorkflowSource(name, source), ...auditWorkflowCostPolicy(name, source)];
+  });
   if (failures.length > 0) throw new Error(`CI security audit failed:\n- ${failures.join("\n- ")}`);
   return workflowNames.length;
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   const workflowCount = auditCiSecurity();
-  console.log(`CI security audit passed: ${workflowCount} workflows use least privilege and immutable dependencies.`);
+  console.log(`CI security audit passed: ${workflowCount} manual, confirmed workflows use least privilege and bounded concurrency.`);
 }

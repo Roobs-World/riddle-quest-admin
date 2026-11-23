@@ -1,22 +1,25 @@
 name: Production readiness
 
 on:
-  pull_request:
-    branches: [jest]
-  push:
-    branches: [jest]
   workflow_dispatch:
+    inputs:
+      confirm_runner_usage:
+        description: Run full verification using Actions allowance, up to 445 runner minutes
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: production-readiness-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: production-readiness-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   workspace-node24:
     name: Jest and Facebook workspace (Node 24)
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -49,6 +52,7 @@ jobs:
 
   functions-node22:
     name: Firebase Functions (Node 22)
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -73,14 +77,11 @@ jobs:
       - run: pnpm --dir firebase-functions test:coverage
 
   browser-and-rules:
-    name: Jest and Facebook browser / shard ${{ matrix.shard }}
-    needs: workspace-node24
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
+    name: Jest and Facebook browser and rules
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
+    needs: [workspace-node24, functions-node22]
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -97,17 +98,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
       - run: pnpm test:e2e:jest-facebook
-        env:
-          JEST_FACEBOOK_BROWSER_SHARD: ${{ matrix.shard }}/4
       - run: pnpm --filter @riddle-quest/portal validate:w3c ../../builds/jest/index.html ../../builds/facebook/index.html
       - run: pnpm --filter @riddle-quest/portal preflight:jest-upload
-      - run: pnpm --filter @riddle-quest/portal preflight:facebook-upload
+      - name: Package the Facebook build already verified by the browser suite
+        run: node packages/portal/scripts/prepare-facebook-draft.mjs
       - run: pnpm check:facebook-progress
 
   development-progress:
     name: Record verified development progress
     needs: [workspace-node24, functions-node22, browser-and-rules]
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/jest'
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -131,4 +131,4 @@ jobs:
           name: development-progress-${{ github.sha }}
           path: artifacts/development-progress/
           if-no-files-found: error
-          retention-days: 90
+          retention-days: 7

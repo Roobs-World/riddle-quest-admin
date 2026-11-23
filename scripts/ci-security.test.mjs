@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {auditCiSecurity, auditWorkflowSource} from "./ci-security.mjs";
+import {auditCiSecurity, auditWorkflowSource, auditWorkflowCostPolicy} from "./ci-security.mjs";
 import {auditSecurityConfiguration, hasPlaintextNetworkReference} from "./audit-security-config.mjs";
 
 const pinnedCheckout = "actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0";
@@ -48,6 +48,33 @@ ${extra}`;
 
 test("committed workflows satisfy the CI security contract", () => {
   assert.ok(auditCiSecurity() >= 2);
+});
+
+test("runner cost policy rejects automatic triggers and missing manual confirmation", () => {
+  const failures = auditWorkflowCostPolicy("checks.yml", safeWorkflow()).join("\n");
+  assert.match(failures, /manual-only/u);
+  assert.match(failures, /unchecked runner-usage confirmation/u);
+  assert.match(failures, /job verify must require/u);
+});
+
+test("runner cost policy rejects commit-based concurrency and repeated browser suites", () => {
+  const failures = auditWorkflowCostPolicy("production-readiness.yml", `${safeWorkflow()}
+concurrency:
+  group: checks-\${{ github.sha }}
+  cancel-in-progress: true
+  matrix:
+    shard: [1, 2, 3, 4]
+`).join("\n");
+  assert.match(failures, /independently of the commit SHA/u);
+  assert.match(failures, /without duplicating common suites/u);
+});
+
+test("runner cost policy never ignores quoted event or job keys", () => {
+  const source = safeWorkflow().replace("  push:", "  workflow_dispatch:\n  'push':") +
+    "  'automatic':\n    runs-on: ubuntu-24.04\n    steps:\n      - run: echo expensive\n";
+  const failures = auditWorkflowCostPolicy("checks.yml", source).join("\n");
+  assert.match(failures, /manual-only/u);
+  assert.match(failures, /every job is audited/u);
 });
 
 test("rejects mutable actions, privileged triggers, and persisted checkout credentials", () => {

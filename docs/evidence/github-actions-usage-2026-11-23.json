@@ -1,0 +1,286 @@
+{
+  "repo": "Grindhead/riddle-quest",
+  "month": "2026-11",
+  "generatedAt": "2026-11-23T17:17:05.527Z",
+  "metric": "recorded_job_execution_estimate",
+  "durationSource": "Sum of completed_at minus started_at for completed, non-skipped jobs. Queue time is excluded. Each positive job duration is rounded up separately for roundedJobMinutes.",
+  "totals": {
+    "runs": 106,
+    "runConclusions": {
+      "failure": 76,
+      "success": 2,
+      "cancelled": 28
+    },
+    "jobs": 244,
+    "jobConclusions": {
+      "cancelled": 38,
+      "failure": 100,
+      "success": 106
+    },
+    "executionSeconds": 160181,
+    "roundedJobMinutes": 2786,
+    "excludedJobs": {
+      "skipped": 156,
+      "unfinished": 0,
+      "invalidOrZeroDuration": 34,
+      "duplicate": 0
+    },
+    "attemptsExpected": 106,
+    "attemptsFetched": 106,
+    "attemptsUnavailable": 0
+  },
+  "byWorkflow": [
+    {
+      "name": ".github/workflows/production-readiness.yml",
+      "runs": 106,
+      "runConclusions": {
+        "failure": 76,
+        "success": 2,
+        "cancelled": 28
+      },
+      "jobs": 244,
+      "jobConclusions": {
+        "cancelled": 38,
+        "failure": 100,
+        "success": 106
+      },
+      "executionSeconds": 160181,
+      "roundedJobMinutes": 2786,
+      "excludedJobs": {
+        "skipped": 156,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 34,
+        "duplicate": 0
+      },
+      "attemptsExpected": 106,
+      "attemptsFetched": 106,
+      "attemptsUnavailable": 0
+    }
+  ],
+  "byEvent": [
+    {
+      "name": "push",
+      "runs": 101,
+      "runConclusions": {
+        "failure": 75,
+        "success": 1,
+        "cancelled": 25
+      },
+      "jobs": 226,
+      "jobConclusions": {
+        "success": 99,
+        "failure": 96,
+        "cancelled": 31
+      },
+      "executionSeconds": 133469,
+      "roundedJobMinutes": 2331,
+      "excludedJobs": {
+        "skipped": 151,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 31,
+        "duplicate": 0
+      },
+      "attemptsExpected": 101,
+      "attemptsFetched": 101,
+      "attemptsUnavailable": 0
+    },
+    {
+      "name": "pull_request",
+      "runs": 5,
+      "runConclusions": {
+        "success": 1,
+        "cancelled": 3,
+        "failure": 1
+      },
+      "jobs": 18,
+      "jobConclusions": {
+        "cancelled": 7,
+        "failure": 4,
+        "success": 7
+      },
+      "executionSeconds": 26712,
+      "roundedJobMinutes": 455,
+      "excludedJobs": {
+        "skipped": 5,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 3,
+        "duplicate": 0
+      },
+      "attemptsExpected": 5,
+      "attemptsFetched": 5,
+      "attemptsUnavailable": 0
+    }
+  ],
+  "byBranch": [
+    {
+      "name": "jest",
+      "runs": 43,
+      "runConclusions": {
+        "failure": 34,
+        "success": 1,
+        "cancelled": 8
+      },
+      "jobs": 109,
+      "jobConclusions": {
+        "success": 54,
+        "failure": 43,
+        "cancelled": 12
+      },
+      "executionSeconds": 108423,
+      "roundedJobMinutes": 1861,
+      "excludedJobs": {
+        "skipped": 62,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 9,
+        "duplicate": 0
+      },
+      "attemptsExpected": 43,
+      "attemptsFetched": 43,
+      "attemptsUnavailable": 0
+    },
+    {
+      "name": "android-react-native",
+      "runs": 58,
+      "runConclusions": {
+        "failure": 41,
+        "cancelled": 17
+      },
+      "jobs": 117,
+      "jobConclusions": {
+        "success": 45,
+        "failure": 53,
+        "cancelled": 19
+      },
+      "executionSeconds": 25046,
+      "roundedJobMinutes": 470,
+      "excludedJobs": {
+        "skipped": 89,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 22,
+        "duplicate": 0
+      },
+      "attemptsExpected": 58,
+      "attemptsFetched": 58,
+      "attemptsUnavailable": 0
+    },
+    {
+      "name": "codex/sentry-144318429-c261157dbeb0-20261123",
+      "runs": 5,
+      "runConclusions": {
+        "success": 1,
+        "cancelled": 3,
+        "failure": 1
+      },
+      "jobs": 18,
+      "jobConclusions": {
+        "cancelled": 7,
+        "failure": 4,
+        "success": 7
+      },
+      "executionSeconds": 26712,
+      "roundedJobMinutes": 455,
+      "excludedJobs": {
+        "skipped": 5,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 3,
+        "duplicate": 0
+      },
+      "attemptsExpected": 5,
+      "attemptsFetched": 5,
+      "attemptsUnavailable": 0
+    }
+  ],
+  "warnings": [
+    "34 completed jobs had zero or invalid execution timestamps and were excluded.",
+    "Deleted or expired runs, attempts and jobs cannot be recovered through this report. Missing history can make the estimate incomplete.",
+    "Scope is runs created in the selected UTC month, including all available attempts. Jobs and later reruns are not clipped to the month, and reruns of older runs are outside this scope.",
+    "This is a recorded job execution estimate, not an invoice or billing quota. Account billing requires separate permissions. Runner prices, free allowances, multipliers and self-hosted runners are not applied."
+  ],
+  "largestRuns": [
+    {
+      "id": 45172788278,
+      "workflow": ".github/workflows/production-readiness.yml",
+      "name": "Production readiness",
+      "event": "push",
+      "branch": "jest",
+      "createdAt": "2026-11-23T12:16:50Z",
+      "url": "https://github.com/Grindhead/riddle-quest/actions/runs/45172788278",
+      "runs": 1,
+      "runConclusions": {
+        "success": 1
+      },
+      "jobs": 7,
+      "jobConclusions": {
+        "success": 7
+      },
+      "executionSeconds": 21746,
+      "roundedJobMinutes": 367,
+      "excludedJobs": {
+        "skipped": 0,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 0,
+        "duplicate": 0
+      },
+      "attemptsExpected": 1,
+      "attemptsFetched": 1,
+      "attemptsUnavailable": 0
+    },
+    {
+      "id": 45180137753,
+      "workflow": ".github/workflows/production-readiness.yml",
+      "name": "Production readiness",
+      "event": "pull_request",
+      "branch": "codex/sentry-144318429-c261157dbeb0-20261123",
+      "createdAt": "2026-11-23T13:03:29Z",
+      "url": "https://github.com/Grindhead/riddle-quest/actions/runs/45180137753",
+      "runs": 1,
+      "runConclusions": {
+        "success": 1
+      },
+      "jobs": 6,
+      "jobConclusions": {
+        "success": 6
+      },
+      "executionSeconds": 21244,
+      "roundedJobMinutes": 357,
+      "excludedJobs": {
+        "skipped": 1,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 0,
+        "duplicate": 0
+      },
+      "attemptsExpected": 1,
+      "attemptsFetched": 1,
+      "attemptsUnavailable": 0
+    },
+    {
+      "id": 45199291482,
+      "workflow": ".github/workflows/production-readiness.yml",
+      "name": "Production readiness",
+      "event": "push",
+      "branch": "jest",
+      "createdAt": "2026-11-23T14:54:43Z",
+      "url": "https://github.com/Grindhead/riddle-quest/actions/runs/45199291482",
+      "runs": 1,
+      "runConclusions": {
+        "failure": 1
+      },
+      "jobs": 6,
+      "jobConclusions": {
+        "success": 5,
+        "failure": 1
+      },
+      "executionSeconds": 18705,
+      "roundedJobMinutes": 315,
+      "excludedJobs": {
+        "skipped": 1,
+        "unfinished": 0,
+        "invalidOrZeroDuration": 0,
+        "duplicate": 0
+      },
+      "attemptsExpected": 1,
+      "attemptsFetched": 1,
+      "attemptsUnavailable": 0
+    }
+  ]
+}
