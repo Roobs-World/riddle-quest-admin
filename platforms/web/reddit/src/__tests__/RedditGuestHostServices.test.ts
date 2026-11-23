@@ -1,9 +1,9 @@
 import {createRedditGuestHostServices} from "../RedditGuestHostServices";
-import {computeFeedback} from "../../../../../src/core/game";
-import {createSavedGame} from "../../../../../src/hosted/play/GameSessionCheckpoints";
-import {createInitialGameSession, gameSessionReducer} from "../../../../../src/hosted/play/gameSession";
-import {BridgeRiddleSchema} from "../../../../../src/core/bridge";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
+import {computeFeedback} from "../../../../../src/gameplay/rules/computeFeedback";
+import {createSavedGame} from "../../../../../src/gameplay/session/checkpoints/GameSessionCheckpoints";
+import {createInitialGameSession, gameSessionReducer} from "../../../../../src/gameplay/session/gameSession";
+import {BridgeRiddleSchema} from "../../../../../src/platform/bridge/messages";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
 
 it.each([1, 5])("recovers an accepted win on attempt %s before completion delivery", async count => {
   /** Drives the actual authority, reducer and provider checkpoint before replacing the page. */

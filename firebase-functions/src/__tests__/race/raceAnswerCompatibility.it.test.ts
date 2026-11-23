@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RaceRunViewSchema} from "../../../../src/core/race/index.js";
+import {RaceRunViewSchema} from "../../../../src/races/contracts/index.js";
 import {buildDeterministicRaceDeck, loadEligibleContent, listRaceCategoriesForLocale} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {toRaceRunView} from "../../race/raceEngine";

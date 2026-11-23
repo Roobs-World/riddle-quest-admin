@@ -10,6 +10,7 @@ import {chromium} from '@playwright/test';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const output = path.resolve(process.env.KEYBOARD_TARGETS_REPORT_DIR ?? path.join(root, 'artifacts/keyboard-targets-20261020/tap-checks'));
 const baselineDirectory = process.env.KEYBOARD_BASELINE_DIR;
+const keyboardStyles = {"styles.puzzle.css": "src/gameplay/styles/puzzle.css", "styles.guidance.css": "src/onboarding/styles/guidance.css", "styles.race-gameplay.css": "src/races/styles/gameplay.css"};
 const allViewports = [
   {width: 320, height: 568},
   {width: 390, height: 844},
@@ -60,17 +61,17 @@ try {
   await writeFile(path.join(scratch, 'index.html'), '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/web/play/GameFrameApp.tsx'))};
-import {RaceGameplay} from ${JSON.stringify(path.join(root, 'src/web/play/race/components/RaceGameplay.tsx'))};
-import {useRaceGameplayFit} from ${JSON.stringify(path.join(root, 'src/web/play/race/hooks/useRaceGameplayFit.ts'))};
-import {editRaceInput} from ${JSON.stringify(path.join(root, 'src/web/play/race/logic/raceInput.ts'))};
-import {RACE_RULES, RaceRunViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, 'src/web/play/guidance/guidanceConfig.ts'))};
-import {setLocaleAndWait} from ${JSON.stringify(path.join(root, 'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.race-lobby.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.race-gameplay.css'))};
+import {GameFrameApp} from ${JSON.stringify(path.join(root, "src/gameplay/components/GameFrameApp.tsx"))};
+import {RaceGameplay} from ${JSON.stringify(path.join(root, "src/races/components/gameplay/RaceGameplay.tsx"))};
+import {useRaceGameplayFit} from ${JSON.stringify(path.join(root, "src/races/hooks/useRaceGameplayFit.ts"))};
+import {editRaceInput} from ${JSON.stringify(path.join(root, "src/races/rounds/raceInput.ts"))};
+import {RACE_RULES, RaceRunViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, "src/onboarding/browser/guidanceConfig.ts"))};
+import {setLocaleAndWait} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/gameplay.css"))};
 const query=new URL(location.href).searchParams, locale=query.get('locale')??'en',surface=query.get('surface')??'solo';
 window.__keyboardTapProbe=[];window.__actionProbe=[];window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 const owner='keyboard-targets-owner';applyPlayerPreferences({locale,onboardingComplete:true,muted:true,reducedMotion:true});
@@ -97,16 +98,19 @@ createRoot(document.querySelector('#root')).render(surface==='race'?<Race/>:<Gam
     await build({root: scratch, configFile: false, base: './', publicDir: path.join(root, 'public'), logLevel: 'error',
       define: {'process.env.NODE_ENV': JSON.stringify('production')},
       plugins: [{name: 'record-real-keyboard-callbacks', enforce: 'pre', async load(id) {
-        if (version === 'before' && id === path.join(root, 'src/web/styles.race-gameplay.css')) {
+        if (version === 'before' && id === path.join(root, "src/races/styles/gameplay.css")) {
           return readFile(path.join(baselineDirectory, 'styles.race-gameplay.css'), 'utf8');
         }
-        if (version === 'before' && id === path.join(root, 'src/web/styles.css')) {
+        if (version === 'before' && id === path.join(root, "src/app/styles/game.css")) {
           const entry = await readFile(id, 'utf8');
-          const names = [...entry.matchAll(/@import "\.\/([^";]+)";/g)].map(match => match[1]);
-          return (await Promise.all(names.map(name => readFile(path.join(
-            ['styles.puzzle.css', 'styles.guidance.css'].includes(name) ? baselineDirectory : path.join(root, 'src'), name), 'utf8')))).join('\n');
+          const imports = [...entry.matchAll(/@import "([^";]+)";/g)].map(match => match[1]);
+          return (await Promise.all(imports.map(relative => {
+            const current = path.resolve(path.dirname(id), relative);
+            const previousName = Object.entries(keyboardStyles).find(([,source]) => path.join(root,source) === current)?.[0];
+            return readFile(previousName ? path.join(baselineDirectory,previousName) : current, 'utf8');
+          }))).join('\n');
         }
-        if (id !== path.join(root, 'src/web/play/GameFrameControls.tsx')) return;
+        if (id !== path.join(root, "src/gameplay/components/GameFrameControls.tsx")) return;
         const source = await readFile(id, 'utf8');
         const letter = 'onClick={() => onLetter(letter)}';
         const backspace = 'onClick={onBackspace}';
@@ -256,7 +260,7 @@ createRoot(document.querySelector('#root')).render(surface==='race'?<Race/>:<Gam
   const hashes = {};
   const baselineHashes = {};
   for (const name of ['styles.puzzle.css', 'styles.guidance.css', 'styles.race-gameplay.css']) {
-    hashes[name] = createHash('sha256').update(await readFile(path.join(root, 'src', name))).digest('hex');
+    hashes[name] = createHash('sha256').update(await readFile(path.join(root, keyboardStyles[name]))).digest('hex');
     if (baselineDirectory) baselineHashes[name] = createHash('sha256').update(await readFile(path.join(baselineDirectory, name))).digest('hex');
   }
   await writeFile(path.join(output, 'observations.json'), JSON.stringify({totals, browserVersion, hashes, baselineHashes, baselineDirectory, scope: 'Full GameFrameApp with local bridge fixture, real RaceGameplay with real useRaceGameplayFit and fixture run. Test-only callback probes added to native shared keyboard handlers. Chromium native touchscreen dispatch, complete shared/solo/race CSS. Native touch adjustment in a seam may select zero or one immediate neighboring key. No hosted provider or backend journey.', observations}, null, 2));

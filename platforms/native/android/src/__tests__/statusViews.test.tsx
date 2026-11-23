@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {youtubeText, type YouTubeCopyKey} from "../../../../../src/solo";
+import {youtubeText, type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
 import {render, screen} from "@testing-library/react-native";
 import {AchievementRow, describeAchievement} from "../components/StatusViews";
 

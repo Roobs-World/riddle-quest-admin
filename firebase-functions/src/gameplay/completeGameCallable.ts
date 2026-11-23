@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "../../../src/core/validation/requestSchemas.js";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "../../../src/core/validation/requestSchemas.js";
+import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "../../../src/platform/contracts/requestSchemas.js";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {completeAuthoritativeGame} from "./completeGameLogic";
 import {gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";

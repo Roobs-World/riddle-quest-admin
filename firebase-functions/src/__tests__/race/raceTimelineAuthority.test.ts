@@ -1,4 +1,4 @@
-import {RACE_RULES, type RaceGhostEvent} from "../../../../src/core/race/index.js";
+import {RACE_RULES, type RaceGhostEvent} from "../../../../src/races/contracts/index.js";
 import {parseRunRecord, parseChallengeRecord} from "../../race/raceSetupService";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun, abandonRaceRun, type RaceRunRecord} from "../../race/raceEngine";
 import {buildRaceBotOpponent} from "../../race/raceBot";

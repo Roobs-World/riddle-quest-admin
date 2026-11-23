@@ -1,4 +1,4 @@
-import {RACE_DECK_SIZE, RACE_MAX_ADJUSTED_TIME_MS, RACE_TARGET_CORRECT, type RaceLocale} from "../../../../../src/core/race/index.js";
+import {RACE_DECK_SIZE, RACE_MAX_ADJUSTED_TIME_MS, RACE_TARGET_CORRECT, type RaceLocale} from "../../../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../../../../firebase-functions/src/shared/firebaseAdmin";
 import {isFacebookFirebaseUid} from "../facebookSecurity";

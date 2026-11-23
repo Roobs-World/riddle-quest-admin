@@ -12,11 +12,11 @@ await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.c
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-confirmation-'));
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/web/play/race/RaceTo10Game.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {RACE_RULES,LiveRaceViewSchema,LiveRaceChallengeSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {RACE_RULES,LiveRaceViewSchema,LiveRaceChallengeSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URLSearchParams(location.search).get('scenario')??'close',challengeId='live_'+'a'.repeat(64);
 window.probe={reads:[],joins:[],updates:[],confirmations:0,grants:[],events:[],errors:[],unhandled:[]};window.pendingDeliveryTimers=new Map();window.pollTimers=new Map();window.pollTicks=0;window.trackPoll=(callback,delay)=>{let id;id=window.setTimeout(()=>{window.pollTimers.delete(id);window.pollTicks++;callback();},delay);window.pollTimers.set(id,delay);return id;};

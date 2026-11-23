@@ -1,8 +1,8 @@
 import {z} from "zod";
-import {splitGraphemes} from "../../../src/core/game/index.js";
+import {splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceCategoryIdSchema, RaceLocaleSchema, RaceRunStatusSchema, RaceRulesSchema,
-  RaceGhostEventSchema, RaceOutcomeSchema, RACE_RULES_VERSION, RACE_RULES, RACE_NORMALIZED_TEXT_UNITS} from "../../../src/core/race/index.js";
+  RaceGhostEventSchema, RaceOutcomeSchema, RACE_RULES_VERSION, RACE_RULES, RACE_NORMALIZED_TEXT_UNITS} from "../../../src/races/contracts/index.js";
 import {raceTimelineAgrees} from "./raceStoredTimeline";
 import {raceHasLegacyTerminalGrant, RACE_START_LEAD_MS} from "./raceEngine";
 import {raceRewardAwardsAgree} from "./raceAchievements";

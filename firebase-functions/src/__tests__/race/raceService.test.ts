@@ -1,4 +1,4 @@
-import {RaceRunViewSchema, RACE_RULES, type RaceDifficultyBand, type RaceLocale} from "../../../../src/core/race/index.js";
+import {RaceRunViewSchema, RACE_RULES, type RaceDifficultyBand, type RaceLocale} from "../../../../src/races/contracts/index.js";
 import {liveRun} from "../../race/raceLiveState";
 import {toRaceRunView} from "../../race/raceEngine";
 import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";

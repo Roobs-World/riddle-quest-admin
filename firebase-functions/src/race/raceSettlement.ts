@@ -1,4 +1,4 @@
-import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type RaceOutcome} from "../../../src/core/race/index.js";
+import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type RaceOutcome} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {raceRewardAwardsAgree} from "./raceAchievements";

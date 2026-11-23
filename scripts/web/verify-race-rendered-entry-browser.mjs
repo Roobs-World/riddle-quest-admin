@@ -15,9 +15,9 @@ await writeFile(path.join(scratch,"index.html"),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,"main.tsx"),`
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
-import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/web/play/race/logic/racePresentation.ts"))};
+import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
 const now=Date.now(),run={runId:'old-run',role:'creator',status:'completed',categoryId:'mixed',locale:'en',rules:RACE_RULES,
  correctCount:10,wallElapsedMs:60000,totalPenaltyMs:0,adjustedElapsedMs:60000,currentRiddle:null,events:[],serverNowMs:now,startsAtMs:now-60000};
 const outcome=projectRaceOutcome(run,60000);
@@ -39,7 +39,7 @@ const app=<App/>;window.root=createRoot(document.getElementById('root'));window.
 let browser,server;const failures=[];
 try{
  await build({root:scratch,configFile:false,logLevel:"error",plugins:[{name:"expose-session",transform(code,id){
-  if(!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;
+  if(!id.endsWith('/races/hooks/useRaceSession.ts'))return null;
   assert(code.includes('const session = sessionRef.current;'));
   return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current; globalThis.testRaceSession = session;'),map:null};
  }}],build:{outDir:'dist'}});

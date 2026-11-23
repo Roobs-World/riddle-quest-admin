@@ -13,8 +13,8 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {useRaceSession} from ${JSON.stringify(path.join(root,'src/web/play/race/hooks/useRaceSession.ts'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {useRaceSession} from ${JSON.stringify(path.join(root,"src/races/hooks/useRaceSession.ts"))};
 const intervals=new Set(),bridge=new Set(),visibility=new Set();
 let intervalStarts=0,bridgeAdds=0,visibilityAdds=0,ticks=0;
 const setInterval=window.setInterval.bind(window),clearInterval=window.clearInterval.bind(window);
@@ -40,7 +40,7 @@ try{
  for(const runtime of ['production','development']){
   await build({root:scratch,configFile:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(runtime)},plugins:[{name:'resource-leak-negative-control',enforce:'pre',transform(code,id){
    const leak=process.env.RACE_RESOURCE_LEAK_BASELINE;
-   if(!leak||!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;
+   if(!leak||!id.endsWith('/races/hooks/useRaceSession.ts'))return null;
    assert(['1','interval','bridge','visibility'].includes(leak));
    for(const [kind,site] of [['interval','window.clearInterval(timer);'],['bridge','window.removeEventListener(HOST_TO_GAME_EVENT, handle);'],['visibility','document.removeEventListener("visibilitychange", visible);']]){
     if(leak==='1'||leak===kind){assert(code.includes(site));code=code.replace(site,'/* Deliberate negative-control resource leak. */');}

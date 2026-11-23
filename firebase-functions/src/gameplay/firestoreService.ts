@@ -4,7 +4,7 @@ import {captureException} from "../shared/sentry";
 import type {Player, PlayerStatsUpdate, UnlockedAchievement} from "../validation/firestoreSchemas";
 import {PlayerSchema} from "../validation/firestoreSchemas";
 import * as functions from "firebase-functions";
-import {type SupportedLocale} from "../../../src/core/validation/index.js";
+import {type SupportedLocale} from "../../../src/localization/locales.js";
 import {reserveUsernameForNewUser} from "../profile/usernameReservations";
 
 /** Defines the initial coins value. */

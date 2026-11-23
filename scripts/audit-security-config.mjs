@@ -95,8 +95,8 @@ const viteConfiguration = [
 const portalTargetSourceEntries = portalTargetSourceEntryPaths
   .map((path) => readFileSync(path, "utf8"))
   .join("\n");
-const analyticsAdapterPath = `${repositoryRoot}/src/web/analytics/firebaseAnalytics.ts`;
-const browserSentry = readFileSync(`${repositoryRoot}/src/web/observability/sentry.ts`, "utf8");
+const analyticsAdapterPath = `${repositoryRoot}/src/observability/analytics/firebaseAnalytics.ts`;
+const browserSentry = readFileSync(`${repositoryRoot}/src/observability/sentry.ts`, "utf8");
 const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
 const jestReleaseScript = readFileSync(
   `${repositoryRoot}/platforms/web/jest/scripts/release-jest-timestamped.mjs`,

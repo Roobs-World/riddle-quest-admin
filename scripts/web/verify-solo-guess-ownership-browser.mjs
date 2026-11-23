@@ -16,12 +16,12 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/web/play/GameFrameApp.tsx'))};
-import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {setLocaleAndWait} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
-import {computeFeedback} from ${JSON.stringify(path.resolve(root,'src/core/game/index.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {GameFrameApp} from ${JSON.stringify(path.join(root, "src/gameplay/components/GameFrameApp.tsx"))};
+import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {setLocaleAndWait} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
+import {computeFeedback} from ${JSON.stringify(path.join(root, "src/gameplay/rules/computeFeedback.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 let initialized=false, locale='en', generation=1, owner='guess-owner', held=[];
 const direct=new URL(location.href).searchParams.has('direct');
 const profile={username:'Player',coins:570,level:2,xp:150,winStreak:1,gamesPlayed:1,wins:1,achievements:[],classicIndex:1};

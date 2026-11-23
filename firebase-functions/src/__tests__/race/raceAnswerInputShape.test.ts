@@ -1,6 +1,6 @@
-import {splitGraphemes} from "../../../../src/core/game/index.js";
-import {RaceRiddlePromptSchema} from "../../../../src/core/race/index.js";
-import {editRaceInput} from "../../../../src/web/play/race/logic/raceInput.js";
+import {splitGraphemes} from "../../../../src/gameplay/input/graphemes.js";
+import {RaceRiddlePromptSchema} from "../../../../src/races/contracts/index.js";
+import {editRaceInput} from "../../../../src/races/rounds/raceInput.js";
 import {validateRacePool} from "../../race/raceContentValidation";
 import {assertRaceDeckCompatible, assertLiveRaceDeckCompatible} from "../../race/raceDeckCompatibility";
 import {applyRaceGuess} from "../../race/raceEngine";

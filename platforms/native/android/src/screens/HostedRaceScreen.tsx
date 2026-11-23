@@ -1,8 +1,9 @@
-import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "../../../../../src/core/race";
-import {createFirebaseLiveTransport} from "../../../../../src/hosted/live/firebaseLiveTransport";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
-import {formatRaceTime} from "../../../../../src/hosted/race/logic/racePresentation";
-import {canShowLatinShortcut, type YouTubeLocale} from "../../../../../src/solo";
+import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "../../../../../src/races/contracts/index";
+import {createFirebaseLiveTransport} from "../../../../../src/races/transport/firebaseLiveTransport";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
+import {formatRaceTime} from "../../../../../src/races/presentation/racePresentation";
+import {canShowLatinShortcut} from "../../../../../src/gameplay/input/localInput";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {BackHandler, Image, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";

@@ -1,9 +1,9 @@
-import type {BridgeRiddle} from "../../../../../src/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "../../../../../src/hosted/hostTypes";
-import {createInitialGameSession, gameSessionReducer} from "../../../../../src/hosted/play/gameSession";
-import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "../../../../../src/hosted/play/pendingGuessJournal";
-import {readPendingGuessJournal} from "../../../../../src/hosted/play/readPendingGuessJournal";
-import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "../../../../../src/solo";
+import type {BridgeRiddle} from "../../../../../src/platform/bridge/messages";
+import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "../../../../../src/platform/contracts/hostServices";
+import {createInitialGameSession, gameSessionReducer} from "../../../../../src/gameplay/session/gameSession";
+import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "../../../../../src/gameplay/session/journal/pendingGuessJournal";
+import {readPendingGuessJournal} from "../../../../../src/gameplay/session/journal/readPendingGuessJournal";
+import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "../../../../../src/gameplay/input/localInput";
 import type {AndroidPendingPlayStorage} from "./pendingPlayStorage";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 /** Positional colour of one accepted letter, matching the shared single-player feedback names. */

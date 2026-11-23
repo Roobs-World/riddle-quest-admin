@@ -1,7 +1,7 @@
 import {setEmulatorSystemTime} from "../../../../../../firebase-functions/src/__tests__/helpers/emulatorClock";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "../../../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../../../src/races/contracts/index.js";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/raceLiveService";
 import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/raceEngine";
 import {recordRedditTournamentRun} from "../../race/redditTournament";

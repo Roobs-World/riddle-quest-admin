@@ -3,7 +3,7 @@ import {createHash} from "node:crypto";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {chromium} from "@playwright/test";
-import {LiveRaceViewSchema} from "../../../../src/core/race";
+import {LiveRaceViewSchema} from "../../../../src/races/contracts/index";
 import {assertPrivateJestStorageState} from "../src/__tests__/deployedJestStorageState.ts";
 import {loadExactJestPaymentGame, verifyReloadedJestPaymentWallet} from "./jest-payment-live-acceptance.mjs";
 

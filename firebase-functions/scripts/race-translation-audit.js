@@ -4,7 +4,7 @@
 const {createHash} = require("node:crypto");
 const {readFile, readdir} = require("node:fs/promises");
 const path = require("node:path");
-const {RACE_SUPPORTED_LOCALES} = require("../lib/src/core/race");
+const {RACE_SUPPORTED_LOCALES} = require("../lib/src/races/contracts");
 const {createRaceTranslationMatrixPlan} = require("../lib/firebase-functions/src/race/raceTranslationValidation.js");
 
 const args = process.argv.slice(2);

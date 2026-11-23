@@ -1,2 +1,0 @@
-// Shim: the Playable's economy module now lives in src/solo so native targets share it verbatim.
-export {YOUTUBE_STARTING_COINS, YOUTUBE_HINT_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CLASSIC_WIN_COINS, YOUTUBE_DAILY_WIN_COINS, YOUTUBE_LEVEL_UP_COINS, YOUTUBE_ACHIEVEMENT_COINS, YOUTUBE_BASE_ATTEMPTS, YOUTUBE_CONTINUE_ATTEMPTS, getYouTubeLevelFromXp, getYouTubeWinXp, getYouTubeDailyStreakBonus, utcDay, previousUtcDay, nextYouTubeDailyStreak} from "../../solo";

@@ -1,12 +1,12 @@
 import {z} from "zod";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SUPPORTED_LOCALES} from "../../../../../src/core/validation/index.js";
+import {SUPPORTED_LOCALES} from "../../../../../src/localization/locales.js";
 import {
   ListFacebookContextBoardRequestSchema,
   ListFacebookContextBoardResponseSchema,
   RecordFacebookContextRunRequestSchema,
   RecordFacebookContextRunResponseSchema,
-} from "../../../../../src/core/race/index.js";
+} from "../../../../../src/races/contracts/index.js";
 import {browserCallableSecurityOptions} from "../../../../../firebase-functions/src/shared/callableSecurity";
 import {onCallWithSentry} from "../../../../../firebase-functions/src/shared/sentryHandlers";
 import {validateCallableRequest, validateCallableResponse} from "../../../../../firebase-functions/src/validation/callableValidation";

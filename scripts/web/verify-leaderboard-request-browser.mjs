@@ -18,10 +18,10 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React,{useCallback,useReducer,useRef,useState} from 'react';import {createRoot} from 'react-dom/client';
-import {GameModalView} from ${JSON.stringify(path.join(root, 'src/web/play/GameModalView.tsx'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root, 'src/hosted/play/gameSession.ts'))};
-import {useGameOperations} from ${JSON.stringify(path.join(root, 'src/web/play/game/hooks/useGameOperations.ts'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.css'))};
+import {GameModalView} from ${JSON.stringify(path.join(root, "src/app/modals/components/GameModalView.tsx"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root, "src/gameplay/session/gameSession.ts"))};
+import {useGameOperations} from ${JSON.stringify(path.join(root, "src/gameplay/hooks/browser/useGameOperations.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 const noop=()=>{};
 function Fixture(){
  const [state,dispatch]=useReducer(gameSessionReducer,undefined,createInitialGameSession);
@@ -44,7 +44,7 @@ function Fixture(){
 let browser, server;
 const cases = [];
 try {
- await build({root:scratch,configFile:false,plugins:[react(),babel({presets:[reactCompilerPreset()]})],logLevel:'error',resolve:{alias:{'#shop-modal-page':path.join(root,'src/web/play/modalPages/commerce/ShopModalPage.tsx')}},build:{outDir:'dist'}});
+ await build({root:scratch,configFile:false,plugins:[react(),babel({presets:[reactCompilerPreset()]})],logLevel:'error',resolve:{alias:{'#shop-modal-page':path.join(root,"src/commerce/components/ShopModalPage.tsx")}},build:{outDir:'dist'}});
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname;const file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});
  for(const width of [320,1280]){

@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {readyRaceRunForUser, resumeRaceRunForUser, startRaceRunForUser} from "../../race/raceService";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";

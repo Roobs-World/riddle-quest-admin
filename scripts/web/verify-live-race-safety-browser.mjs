@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const panel=path.join(root,'src/web/play/race/components/LiveRaceSafety.tsx');
+const panel=path.join(root,"src/races/components/gameplay/LiveRaceSafety.tsx");
 const baseline=process.env.LIVE_SAFETY_BASELINE_SOURCE;
 const output=path.resolve(process.env.LIVE_SAFETY_REPORT_DIR??path.join(root,'builds/test-evidence/game-live-safety-2026-10-03'));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
@@ -16,9 +16,9 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceSafety} from ${JSON.stringify(panel)};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
 window.probe={calls:[],pending:[],blocked:0,callbackFailure:null};
 function provider(generation){return {blockOpponent:input=>call('block',input,generation),reportOpponent:input=>call('report',input,generation)};}
 const call=(kind,input,generation)=>{window.probe.calls.push({kind,input:{...input},generation});return new Promise((resolve,reject)=>window.probe.pending.push({resolve,reject,kind}));};

@@ -16,8 +16,23 @@ import type {ConfigEnv, Plugin, PluginOption, UserConfig} from "vite";
 
 /** Provides portal package directory behavior. */
 const portalPackageDirectory = fileURLToPath(new URL("../../../", import.meta.url));
+/** Preserves the game-rule chunk membership after source files move into feature folders. */
+const gameRuleSources = new Set([
+  "src/gameplay/controllers/GameEngine.ts",
+  "src/progression/achievements/achievementMilestones.ts",
+  "src/progression/achievements/achievementRewards.ts",
+  "src/progression/rewards/localCompletionRewards.ts",
+  "src/gameplay/rules/computeFeedback.ts",
+  "src/gameplay/rules/computeLetterStates.ts",
+  "src/progression/economy/rewardRules.ts",
+  "src/gameplay/input/graphemes.ts",
+  "src/gameplay/rules/isValidGuess.ts",
+  "src/gameplay/rules/limits.ts",
+  "src/gameplay/input/singlePlayerKeyboard.ts",
+  "src/gameplay/contracts/scoring.ts",
+].map((file) => path.join(portalPackageDirectory, file)));
 /** Provides shared shop modal page behavior. */
-const sharedShopModalPage = fileURLToPath(new URL("../../../src/web/play/modalPages/commerce/ShopModalPage.tsx", import.meta.url));
+const sharedShopModalPage = fileURLToPath(new URL("../../../src/commerce/components/ShopModalPage.tsx", import.meta.url));
 /** Provides reddit shop modal page behavior. */
 const redditShopModalPage = fileURLToPath(new URL("../../../platforms/web/reddit/src/RedditShopModalPage.tsx", import.meta.url));
 /** Provides jest html entry behavior. */
@@ -38,7 +53,7 @@ const yahooHtmlEntry = fileURLToPath(new URL("../../../platforms/web/yahoo/index
 const gameSnacksHtmlEntry = fileURLToPath(new URL("../../../platforms/web/gamesnacks/index.html", import.meta.url));
 /** Provides youtube release content behavior. */
 const youtubeReleaseContent = fileURLToPath(
-  new URL("../../../src/web/playable/generated/youtube-content-v1.json", import.meta.url),
+  new URL("../../../src/content/generated/youtube-content-v1.json", import.meta.url),
 );
 /** Provides youtube fixture content behavior. */
 const youtubeFixtureContent = fileURLToPath(
@@ -611,13 +626,12 @@ export function createWebTargetViteConfig({
                 test: /node_modules[\/](?:@firebase|firebase)[\/]/,
                 priority: 20,
               },
-              {name: "app-i18n", test: /[\/]src[\/]i18n[\/]/, priority: 15},
               {
                 name: "core-bridge-constants",
-                test: /[\/]src[\/]core[\/]bridge[\/]constants\.ts$/,
+                test: /[\/]src[\/]platform[\/]bridge[\/]constants\.ts$/,
                 priority: 15,
               },
-              {name: "core-game", test: /[\/]src[\/]core[\/]game[\/]/, priority: 10},
+              {name: "core-game", test: (id: string) => gameRuleSources.has(id.split("?", 1)[0]), priority: 10},
             ],
           },
         },

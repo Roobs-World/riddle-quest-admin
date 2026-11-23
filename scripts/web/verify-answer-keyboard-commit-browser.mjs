@@ -19,7 +19,7 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useAnswerKeyboard} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useAnswerKeyboard.ts'))};
+import {useAnswerKeyboard} from ${JSON.stringify(path.join(root,"src/gameplay/hooks/browser/useAnswerKeyboard.ts"))};
 window.probe={actions:[],adds:0,removes:0,listeners:new Set(),retained:[],speculative:0,boundaries:[],errors:[],unhandled:[]};
 const nativeAdd=window.addEventListener.bind(window),nativeRemove=window.removeEventListener.bind(window);
 window.addEventListener=(type,fn,...rest)=>{if(type==='keydown'){window.probe.adds++;window.probe.listeners.add(fn);window.probe.retained.push(fn);}return nativeAdd(type,fn,...rest);};

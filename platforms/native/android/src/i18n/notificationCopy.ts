@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 /** Native notification settings in every supported locale. */
 const COPY = {
   en: {

@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "../../../../src/solo";
+import {type YouTubeLocale} from "../../../../src/gameplay/local/types";
 import {useCallback, useMemo, useRef} from "react";
 import {StatusBar} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";

@@ -1,4 +1,4 @@
-import type {PresenceCapability, PresenceState} from "../../../../src/web/platform/types";
+import type {PresenceCapability, PresenceState} from "../../../../src/platform/contracts/capabilities";
 
 /** Defines the reddit race poll ms value. */
 export const REDDIT_RACE_POLL_MS = 2_000;

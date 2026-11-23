@@ -1,10 +1,10 @@
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 /**
  * Copy that only the hosted (server-authoritative) Android screens need.
  *
  * @remarks
  * Keys shared with self-contained play (`submit`, `hint`, `victory`, …) stay in
- * `src/solo`'s tables; this table only adds the account, connectivity and
+ * `src/localization`'s tables; this table only adds the account, connectivity and
  * server-session strings so the YouTube artifact never carries them.
  */
 export type HostedCopyKey =

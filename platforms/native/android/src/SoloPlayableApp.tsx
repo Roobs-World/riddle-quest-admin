@@ -1,5 +1,7 @@
-import {youtubeText, type YouTubeContentSource, type YouTubeCopyKey, type YouTubeSdkPort} from "../../../../src/solo";
-import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "../../../../src/solo/react";
+import {youtubeText, type YouTubeCopyKey} from "../../../../src/localization/copy/localGameCopy";
+import {type YouTubeContentSource} from "../../../../src/content/catalog/bundledContent";
+import {type YouTubeSdkPort} from "../../../../src/gameplay/local/types";
+import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "../../../../src/gameplay/local/hooks/index";
 import {useRef, useState} from "react";
 import type {AnswerEditor} from "./screens/AnswerInput";
 import {FailureScreen, LoadingScreen, ResetScreen} from "./screens/BootScreens";
@@ -22,7 +24,7 @@ export type SoloPlayableAppProps = Readonly<{
  *
  * @remarks
  * Boot, recovery, and gameplay transitions come from the shared controllers in
- * `src/solo/react`; this component only maps their state to native screens.
+ * `src/gameplay/local/hooks`; this component only maps their state to native screens.
  */
 export function SoloPlayableApp({sdk, contentSource, online}: SoloPlayableAppProps) {
   /** Shared boot controller. */

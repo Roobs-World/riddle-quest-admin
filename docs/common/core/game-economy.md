@@ -1,6 +1,6 @@
 # Coin economy
 
-The solo economy is defined in `src/core/game/economy.ts`. Server gameplay, the injected commerce harness, and the self-contained YouTube, Netflix and Yahoo clients use the same rules.
+The solo economy is defined in `src/progression/economy/rewardRules.ts`. Server gameplay, the injected commerce harness, and the self-contained YouTube, Netflix and Yahoo clients use the same rules.
 
 ## Earning and spending
 

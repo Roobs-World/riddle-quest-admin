@@ -1,4 +1,4 @@
-import {RACE_SUPPORTED_LOCALES} from "../../../../src/core/race/index.js";
+import {RACE_SUPPORTED_LOCALES} from "../../../../src/races/contracts/index.js";
 import {
   assertRaceAccess,
   configureRaceRolloutCache,

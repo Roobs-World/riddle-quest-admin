@@ -1,4 +1,5 @@
-import {youtubeText, type YouTubeCopyKey, type YouTubeLocale} from "../../../../../src/solo";
+import {youtubeText, type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
 import {ActionButton, Heading, Notice, Screen} from "../components/Primitives";
 import {palette, spacing} from "../theme";

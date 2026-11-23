@@ -1,6 +1,6 @@
 import type {Firestore} from "firebase-admin/firestore";
 import * as functions from "firebase-functions";
-import {type SupportedLocale, SUPPORTED_LOCALES} from "../../../src/core/validation/index.js";
+import {type SupportedLocale, SUPPORTED_LOCALES} from "../../../src/localization/locales.js";
 import {admin} from "../shared/firebaseAdmin";
 import type {ClassicRiddle, DailyRiddle, FirestoreRiddle} from "../validation/firestoreSchemas";
 

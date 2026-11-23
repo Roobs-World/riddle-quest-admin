@@ -1,4 +1,7 @@
-import type {LocalSoloAuthority, YouTubeAuthoritySnapshot, YouTubeContent, YouTubeCopyKey, YouTubeLocale} from "../../../../../src/solo";
+import {type LocalSoloAuthority} from "../../../../../src/gameplay/local/LocalSoloAuthority";
+import {type YouTubeAuthoritySnapshot} from "../../../../../src/gameplay/local/LocalSoloAuthority.contract.ts";
+import {type YouTubeContent, type YouTubeLocale} from "../../../../../src/gameplay/local/types";
+import {type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
 import {StyleSheet, Switch, Text, View} from "react-native";
 import {ActionButton, Heading, Panel, Screen} from "../components/Primitives";
 import {AchievementRow, SaveBanner, StatusHeader} from "../components/StatusViews";

@@ -1,7 +1,7 @@
 import {JestSdkPlatform} from "../JestSdkPlatform";
-import {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} from "../../../../../src/web/observability/browserErrorReporter";
+import {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} from "../../../../../src/observability/browserErrorReporter";
 
-import type {BridgeProfile} from "../../../../../src/core/bridge";
+import type {BridgeProfile} from "../../../../../src/platform/bridge/messages";
 
 /** Completes profile. */
 const completeProfile: BridgeProfile = {
@@ -1252,7 +1252,7 @@ it("normalizes subscription cancellation without treating dismissal as success",
 
 it("reports bounded cancellation diagnostics without exposing provider responses", async () => {
   /** Extracts the fixture or authority fields required by this transition. */
-  const {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} = await import("../../../../../src/web/observability/browserErrorReporter");
+  const {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} = await import("../../../../../src/observability/browserErrorReporter");
   /** Captured delivery reports expose optional browser error reporting. */
   const reports: Array<{
     /** Original failure is preserved through reporting and recovery checks. */

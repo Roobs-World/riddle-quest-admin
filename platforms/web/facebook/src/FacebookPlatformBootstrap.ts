@@ -5,14 +5,14 @@ import type {
   PlatformSession,
   PlatformStorage,
   PlayerData,
-} from "../../../../src/web/platform/types";
-import {parsePlayerData} from "../../../../src/web/platform/playerDataValidation";
+} from "../../../../src/platform/contracts/capabilities";
+import {parsePlayerData} from "../../../../src/accounts/browser/playerState/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
 import {createFacebookLifecycle} from "./createFacebookLifecycle";
 import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
-import {createFirebaseRaceMatchmaking} from "../../../../src/web/play/firebaseRaceMatchmaking";
-import {LANGUAGE_OPTIONS} from "../../../../src/web/play/i18n";
+import {createFirebaseRaceMatchmaking} from "../../../../src/races/transport/browser/firebaseRaceMatchmaking";
+import {LANGUAGE_OPTIONS} from "../../../../src/localization/browser/i18n";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 
 /** Defines the preferences key value. */

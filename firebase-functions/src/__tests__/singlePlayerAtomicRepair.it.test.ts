@@ -1,4 +1,4 @@
-import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";

@@ -112,8 +112,7 @@ has its OpenAI key; the wrapper has a scoped, expiring repair ticket. The runner
 returns a bounded UTF-8 source patch and summary to the service. The service
 rechecks authority and source, then creates GitHub blobs/tree/commit and a PR.
 
-Automatic patches are limited to 12 files and 256 KiB under `src/core`,
-`src/solo`, `src/hosted`, or `src/web`, shared `firebase-functions/src`, and
+Automatic patches are limited to 12 files and 256 KiB under shared feature folders in `src/`, shared `firebase-functions/src`, and
 `platforms/web/jest` or `platforms/web/facebook` in their `src`, `server` or
 `scripts` directories. Native and every other provider root are rejected.
 Deletions, symlinks, binary

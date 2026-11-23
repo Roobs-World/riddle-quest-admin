@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import type {DocumentSnapshot, Firestore} from "firebase-admin/firestore";
-import {admin} from "../shared/firebaseAdmin";
-import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "../shared/callableSecurity";
+import {admin} from "./firebaseAdmin";
+import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
 
 /** Permanent, pseudonymous guard records for deleted game identities. */
 export const JEST_ACCOUNT_DELETION_COLLECTION = "jestAccountDeletionTombstones";

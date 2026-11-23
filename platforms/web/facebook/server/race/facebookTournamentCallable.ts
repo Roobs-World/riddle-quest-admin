@@ -3,7 +3,7 @@ import {
   ListFacebookTournamentResponseSchema,
   RecordFacebookTournamentRunRequestSchema,
   RecordFacebookTournamentRunResponseSchema,
-} from "../../../../../src/core/race/index.js";
+} from "../../../../../src/races/contracts/index.js";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {isFacebookFeatureEnabled} from "../facebookFeatureFlags";
 import {isFacebookFirebaseUid} from "../facebookSecurity";

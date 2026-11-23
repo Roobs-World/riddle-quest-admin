@@ -15,7 +15,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const mode='history',authority=createFakeRaceServices();window.commands=[];
 function reply(message,data){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceResume',ok:true,data}}}));}
 function postToHost(message){window.commands.push(message);if(message.type==='game:resumeRace'){if(message.payload.runId!==window.canonical.runId)throw Error('Wrong resume');reply(message,{run:window.canonical});}}

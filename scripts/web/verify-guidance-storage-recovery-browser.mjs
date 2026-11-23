@@ -14,7 +14,7 @@ const scratch=await mkdtemp(path.join(root,'node_modules/.cache/guidance-storage
 let browser,server;const observations=[];
 try {
  const source=`
-import {createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
+import {createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 window.guidanceKeys={game:createTooltipTourStorageKey('gameTour','reddit-guest'),profile:createTooltipTourStorageKey('profileTour','reddit-guest')};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 const local=window.localStorage,session=window.sessionStorage,nativeSet=Storage.prototype.setItem,nativeGet=Storage.prototype.getItem,key='riddleQuestRedditGuestV1';

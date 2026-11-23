@@ -7,7 +7,7 @@ import {createRequire} from "node:module";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 const require = createRequire(import.meta.url);
-const {RACE_RULES} = require("../../firebase-functions/lib/src/core/race/index.js");
+const {RACE_RULES} = require("../../firebase-functions/lib/src/races/contracts/index.js");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-delivery-"));
@@ -23,10 +23,10 @@ const commandLostOnly = process.env.LIVE_RACE_COMMAND_LOST_ONLY === "1";
 const commandRecoveryOnly = process.env.LIVE_RACE_COMMAND_RECOVERY_ONLY === "1" || commandLostOnly;
 const source = `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
-import {LIVE_RACE_JOIN_DEADLINE_MS} from ${JSON.stringify(path.join(root,"src/web/play/race/logic/liveRaceDeliveryDeadline.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
+import {LIVE_RACE_JOIN_DEADLINE_MS} from ${JSON.stringify(path.join(root,"src/races/live/liveRaceDeliveryDeadline.ts"))};
 window.liveJoinDeadlineMs=LIVE_RACE_JOIN_DEADLINE_MS;
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';
 window.deliveryCalls=[]; window.freezeJoinOnce=new URLSearchParams(location.search).get('fault')==='join';
@@ -75,8 +75,8 @@ function state(user) {
 }
 try {
  await build({plugins:[{name:"original-live-race-baseline",async load(id){
-  if(process.env.LIVE_RACE_BASELINE_FILE && id===path.join(root,"src/web/play/race/LiveRaceGame.tsx"))return await readFile(process.env.LIVE_RACE_BASELINE_FILE,"utf8");
-  if(renderOnly && id===path.join(root,"src/web/play/race/components/RaceGameplay.tsx"))return (await readFile(id,"utf8")).replace('const nativeInputRef =', 'globalThis.__gameplayRenders = (globalThis.__gameplayRenders ?? 0) + 1; const nativeInputRef =');
+  if(process.env.LIVE_RACE_BASELINE_FILE && id===path.join(root,"src/races/components/live/LiveRaceGame.tsx"))return await readFile(process.env.LIVE_RACE_BASELINE_FILE,"utf8");
+  if(renderOnly && id===path.join(root,"src/races/components/gameplay/RaceGameplay.tsx"))return (await readFile(id,"utf8")).replace('const nativeInputRef =', 'globalThis.__gameplayRenders = (globalThis.__gameplayRenders ?? 0) + 1; const nativeInputRef =');
  }}],root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',build:{outDir:'dist'}});
  server=createServer(async(request,response)=>{
   try {

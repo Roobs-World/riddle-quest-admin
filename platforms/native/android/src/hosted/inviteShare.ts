@@ -1,5 +1,5 @@
 import {androidInviteStoreUrl} from "../entries/androidEntryInbox";
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {Share} from "react-native";
 import {androidInviteGuidance} from "../i18n/inviteCopy";
 

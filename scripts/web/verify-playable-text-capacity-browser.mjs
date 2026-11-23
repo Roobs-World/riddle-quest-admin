@@ -18,14 +18,14 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,'src/web/playable/YouTubePlayableApp.tsx'))};
-import ${JSON.stringify(path.join(root,'src/web/playable/styles.css'))};
+import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalGameApp.tsx"))};
+import ${JSON.stringify(path.join(root,"src/gameplay/styles/local-game.css"))};
 window.probe={loads:0,saves:[],ready:0,errors:[],unhandled:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 const sdk={inPlayablesEnvironment:true,firstFrameReady(){},gameReady(){window.probe.ready++;},async loadData(){window.probe.loads++;return '';},async saveData(data){if(!window.probe.loads)throw Error('Save before load');window.probe.saves.push(data);},async getLanguage(){return 'en';},isAudioEnabled(){return false;},onAudioEnabledChange(){return ()=>{};},onPause(callback){window.pausePlayable=callback;return ()=>{};},onResume(callback){window.resumePlayable=callback;return ()=>{};},logError(){},logWarning(){}};
 createRoot(document.querySelector('#root')).render(<React.StrictMode><YouTubePlayableApp sdk={sdk}/></React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,logLevel:'error',resolve:{alias:{'#youtube-content':fixture}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'playable-ime-baseline',async load(id){if(process.env.PLAYABLE_CAPACITY_BASELINE_FILE&&id.endsWith('/playable/input.ts'))return readFile(process.env.PLAYABLE_CAPACITY_BASELINE_FILE,'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,logLevel:'error',resolve:{alias:{'#youtube-content':fixture}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'playable-ime-baseline',async load(id){if(process.env.PLAYABLE_CAPACITY_BASELINE_FILE&&id.endsWith('/gameplay/input/localInput.ts'))return readFile(process.env.PLAYABLE_CAPACITY_BASELINE_FILE,'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  server=createServer(async(req,res)=>{try{const url=new URL(req.url,'http://localhost');const file=path.join(scratch,'dist',url.pathname==='/'?'index.html':url.pathname);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.PLAYABLE_CAPACITY_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}

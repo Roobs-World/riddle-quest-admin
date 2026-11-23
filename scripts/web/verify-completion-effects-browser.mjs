@@ -7,9 +7,9 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const host=path.join(root,'src/web/play/PlayHostApp.tsx');
+const host=path.join(root,"src/app/components/PlayHostApp.tsx");
 const baseline=process.env.COMPLETION_EFFECTS_BASELINE_SOURCE;
-const handlers=path.join(root,'src/web/play/hostMessageHandlers.ts'),effects=path.join(root,'src/web/play/hostCompletionEffects.ts');
+const handlers=path.join(root,"src/platform/bridge/browser/hostMessageHandlers.ts"),effects=path.join(root,"src/progression/browser/hostCompletionEffects.ts");
 const handlersBaseline=process.env.COMPLETION_EFFECTS_HANDLERS_BASELINE_SOURCE,effectsBaseline=process.env.COMPLETION_EFFECTS_HELPER_BASELINE_SOURCE;
 const output=path.resolve(process.env.COMPLETION_EFFECTS_REPORT_DIR??path.join(root,'builds/test-evidence/game-completion-effects-2026-10-03'));
 await mkdir(output,{recursive:true});
@@ -19,11 +19,11 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.ts'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(host)};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {dispatchLocalBridge,GAME_TO_HOST_EVENT,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import {configurePlatformAnalytics} from ${JSON.stringify(path.join(root,'src/web/analytics/events.ts'))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {dispatchLocalBridge,GAME_TO_HOST_EVENT,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {configurePlatformAnalytics} from ${JSON.stringify(path.join(root,"src/observability/analytics/events.ts"))};
 window.probe={records:[],shows:[],acks:[],pending:[],holds:[],holdAuthority:false,holdRecord:false,rejectRecord:false,events:[],wins:[],guessAcks:[],guessPending:[],holdGuess:false,rejectWin:false};
 configurePlatformAnalytics((name,params)=>window.probe.events.push({name,params}));
 const base=createFakeHostServices();let original;const stop=base.auth.subscribe(value=>original=value);stop();

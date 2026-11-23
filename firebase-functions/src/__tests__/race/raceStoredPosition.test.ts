@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, abandonRaceRun, refreshRaceRun, type RaceRunRecord} from "../../race/raceEngine";
 import {parseRunRecord} from "../../race/raceSetupService";
 

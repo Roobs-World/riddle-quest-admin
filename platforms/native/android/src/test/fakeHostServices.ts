@@ -1,5 +1,5 @@
-import type {BridgeRiddle} from "../../../../../src/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "../../../../../src/hosted/hostTypes";
+import type {BridgeRiddle} from "../../../../../src/platform/bridge/messages";
+import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "../../../../../src/platform/contracts/hostServices";
 /** Server-issued riddle used by most scenarios. */
 export const issued = (overrides: Partial<BridgeRiddle> = {}): BridgeRiddle => ({
   riddleId: "race:history:01",

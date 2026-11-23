@@ -10,15 +10,16 @@ assert.ok(['development','production'].includes(mode));
 const output=path.resolve(process.env.PANEL_COMMIT_REPORT_DIR??path.join(root,'builds/test-evidence/live-panel-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-panel-commit-'));let browser,server;const observations=[];
-const components=['LiveRaceInbox','LiveRaceInvitationCard','LiveRaceDirectInvite','LiveRaceSafety'];
+const componentSources={"LiveRaceInbox": "src/races/components/invitations/LiveRaceInbox.tsx", "LiveRaceInvitationCard": "src/races/components/invitations/LiveRaceInvitationCard.tsx", "LiveRaceDirectInvite": "src/races/components/invitations/LiveRaceDirectInvite.tsx", "LiveRaceSafety": "src/races/components/gameplay/LiveRaceSafety.tsx"};
+const components=Object.keys(componentSources);
 try{
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-${components.map(name=>'import {'+name+'} from '+JSON.stringify(path.join(root,'src/web/play/race/components',name+'.tsx'))+';').join('\n')}
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
+${components.map(name=>'import {'+name+'} from '+JSON.stringify(path.join(root,componentSources[name]))+';').join('\n')}
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const kind=new URL(location.href).searchParams.get('kind')??'direct-input';window.probe={calls:[],reads:[],pending:[],accepted:[],blocked:[],suspended:0,errors:[],unhandled:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));

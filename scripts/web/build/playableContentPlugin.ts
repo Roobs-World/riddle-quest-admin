@@ -1,4 +1,4 @@
-import {protectContent} from "../../../src/core/contentProtection.ts";
+import {protectContent} from "../../../src/content/transport/contentProtection.ts";
 import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import type {Plugin} from "vite";
@@ -46,7 +46,7 @@ export function playableContentPlugin(contentPath: string): Plugin {
         return `${JSON.stringify(locale)}:loader(import.meta.ROLLUP_FILE_URL_${reference})`;
       }).join(",");
       return `
-        import {readProtectedContent} from ${JSON.stringify(fileURLToPath(new URL("../../../src/core/contentProtection.ts", import.meta.url)))};
+        import {readProtectedContent} from ${JSON.stringify(fileURLToPath(new URL("../../../src/content/transport/contentProtection.ts", import.meta.url)))};
         function loader(url) {
           let attempt = 0, pending;
           return () => pending ??= import(/* @vite-ignore */ attempt ? url + '?retry=' + attempt : url)

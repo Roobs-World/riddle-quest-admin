@@ -3,7 +3,7 @@ import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
-  type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "../../../src/core/race/index.js";
+  type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "../../../src/races/contracts/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";

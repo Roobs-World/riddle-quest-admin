@@ -1,6 +1,6 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SUPPORTED_LOCALES} from "../../../src/core/validation/index.js";
-import {ClassicRiddleBufferResponseSchema} from "../../../src/core/validation/requestSchemas.js";
+import {SUPPORTED_LOCALES} from "../../../src/localization/locales.js";
+import {ClassicRiddleBufferResponseSchema} from "../../../src/platform/contracts/requestSchemas.js";
 import {getUser} from "../gameplay/firestoreService";
 import {getPlayableClassicRiddle} from "../gameplay/classicRiddleFallback";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";

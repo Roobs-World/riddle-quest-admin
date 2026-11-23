@@ -16,8 +16,8 @@ try {
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {NativeAnswerInput} from ${JSON.stringify(path.join(root,'src/web/play/race/components/NativeAnswerInput.tsx'))};
-import {YouTubeNativeAnswerInput} from ${JSON.stringify(path.join(root,'src/web/playable/YouTubeNativeAnswerInput.tsx'))};
+import {NativeAnswerInput} from ${JSON.stringify(path.join(root,"src/races/components/gameplay/NativeAnswerInput.tsx"))};
+import {YouTubeNativeAnswerInput} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalAnswerInput.tsx"))};
 window.probe={deletions:[],text:[],errors:[],unhandled:[],speculative:0,added:0,removed:0,retained:[]};
 const nativeAdd=EventTarget.prototype.addEventListener,nativeRemove=EventTarget.prototype.removeEventListener;
 EventTarget.prototype.addEventListener=function(type,fn,...args){if(type==='beforeinput'&&this instanceof HTMLInputElement){window.probe.added++;window.probe.retained.push(fn);}return nativeAdd.call(this,type,fn,...args);};

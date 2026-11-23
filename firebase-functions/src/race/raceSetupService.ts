@@ -15,7 +15,7 @@ import {
   type RaceCategoryId,
   type RaceLocale,
   type RaceChallengePreview,
-} from "../../../src/core/race/index.js";
+} from "../../../src/races/contracts/index.js";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
 import {assertRaceStoredRecord} from "./raceStoredRecords";
 import {logger} from "firebase-functions";

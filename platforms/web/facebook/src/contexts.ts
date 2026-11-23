@@ -1,5 +1,5 @@
-import type {RaceLocale} from "../../../../src/core/race";
-import type {NativeSocialCapability, PlatformResult} from "../../../../src/web/platform/types";
+import type {RaceLocale} from "../../../../src/races/contracts/index";
+import type {NativeSocialCapability, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 
 /** Describes context value. */
 type ContextValue = {
@@ -38,7 +38,7 @@ class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
     /** Provides [{get functions, https callable}, {firebase app}] behavior. */
     const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
       import("firebase/functions"),
-      import("../../../../src/web/firebase"),
+      import("../../../../src/platform/firebase/browserClient"),
     ]);
     await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "joinFacebookContext")(input);
   }
@@ -51,7 +51,7 @@ class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
     /** Provides [{get functions, https callable}, {firebase app}] behavior. */
     const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
       import("firebase/functions"),
-      import("../../../../src/web/firebase"),
+      import("../../../../src/platform/firebase/browserClient"),
     ]);
     await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "leaveFacebookContext")(input);
   }

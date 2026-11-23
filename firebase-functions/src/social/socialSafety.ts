@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import type {ReportSocialRivalRequest} from "../../../src/core/race/index.js";
+import type {ReportSocialRivalRequest} from "../../../src/races/contracts/index.js";
 import {resolveLiveRaceSafetyTarget} from "./liveRaceSafetyTarget";
 import type {Database} from "firebase-admin/database";
 import {HttpsError} from "firebase-functions/v2/https";

@@ -3,8 +3,8 @@ import {
   RACE_SUPPORTED_LOCALES,
   type RaceCategoryId,
   type RaceDifficultyBand,
-} from "../../../src/core/race/index.js";
-import {type SupportedLocale} from "../../../src/core/validation/index.js";
+} from "../../../src/races/contracts/index.js";
+import {type SupportedLocale} from "../../../src/localization/locales.js";
 
 /** Existing localized riddle document considered by the race migration. */
 export type ExistingRaceContentRecord = {

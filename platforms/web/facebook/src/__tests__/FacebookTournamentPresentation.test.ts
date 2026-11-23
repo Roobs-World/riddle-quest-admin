@@ -1,7 +1,7 @@
 import {createFacebookTournamentPresentation} from "../FacebookTournamentPresentation";
 import type {FacebookInstantSdk, FacebookInstantTournament} from "../fbinstant";
-import type {ListFacebookTournamentResponse, RecordFacebookTournamentRunResponse} from "../../../../../src/core/race";
-import {setLocale} from "../../../../../src/web/play/i18n";
+import type {ListFacebookTournamentResponse, RecordFacebookTournamentRunResponse} from "../../../../../src/races/contracts/index";
+import {setLocale} from "../../../../../src/localization/browser/i18n";
 
 /** Official UTC window and identity-free best score, never supplied by a native payload. */
 const fixture = () => {
@@ -197,7 +197,7 @@ it.each(["deletion", "locale"])("retires recovered projection after %s while pro
   /** The fixture exposes the same changing deletion gate as the real adapter. */
   let active = true;
   /** Selected content locale is rechecked after provider work. */
-  let locale: import("../../../../../src/core/race").RaceLocale = "en";
+  let locale: import("../../../../../src/races/contracts/index").RaceLocale = "en";
   /** Controlled provider completion exercises retirement during an asynchronous lookup. */
   let resolve!: (native: FacebookInstantTournament) => void;
   jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(yes => {resolve = yes;}));

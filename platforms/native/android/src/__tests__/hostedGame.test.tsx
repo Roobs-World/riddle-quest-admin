@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {BridgeRiddle} from "../../../../../src/core/bridge";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
+import type {BridgeRiddle} from "../../../../../src/platform/bridge/messages";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {createHostedRequestId} from "../hosted/useHostedGame";

@@ -1,11 +1,11 @@
-import {openAuthenticationHarness} from "./authenticationHarness.jest-playwright.support";
+import {openAuthenticationHarness} from "./authenticationHarness.jest-playwright.support.ts";
 import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {mkdir, readFile, writeFile} from "node:fs/promises";
 import path from "node:path";
-import type {HostToGameMessage} from "../../../../../src/core/bridge";
+import type {HostToGameMessage} from "../../../../../src/platform/bridge/messages";
 
 import {
   type AuthHarnessState,
@@ -21,7 +21,7 @@ import {
   dismissDailyCompletionGuidance,
   verifyGuestStartupIdentity,
   openProfileAfterGuidance,
-} from "./authentication.jest-playwright.support";
+} from "./authentication.jest-playwright.support.ts";
 import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;

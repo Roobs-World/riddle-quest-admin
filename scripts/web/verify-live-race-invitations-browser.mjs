@@ -13,10 +13,10 @@ await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-invitations-"));
 const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/web/play/sharing/ReferralSharingCapability.tsx"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
 import {useJestSharing} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/sharing/useJestSharing.ts"))};
 import {createFacebookLiveRaceSharing} from ${JSON.stringify(path.join(root, "platforms/web/facebook/src/FacebookLiveRaceSharing.ts"))};
 import {parseEntryIntent,resolveRaceChallengeId} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/entryIntent.ts"))};

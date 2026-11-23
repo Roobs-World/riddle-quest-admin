@@ -1,4 +1,4 @@
-import {RaceRunResponseSchema, type RaceRunResponse} from "../../../src/core/race/index.js";
+import {RaceRunResponseSchema, type RaceRunResponse} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {toRaceRunView, type RaceRunRecord} from "./raceEngine";
 

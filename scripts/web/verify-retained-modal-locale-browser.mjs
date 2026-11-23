@@ -18,10 +18,10 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
-import {GameModalView} from ${JSON.stringify(path.join(root,'src/web/play/GameModalView.tsx'))};
-import {createInitialGameSession} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
-import {setLocaleAndWait,useLocale,tr} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {GameModalView} from ${JSON.stringify(path.join(root,"src/app/modals/components/GameModalView.tsx"))};
+import {createInitialGameSession} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
+import {setLocaleAndWait,useLocale,tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 const noop=()=>{};
 function Fixture(){
   const [modal,setModal]=useState(null);const [blocked,setBlocked]=useState(false);const locale=useLocale();
@@ -55,7 +55,7 @@ const keys={
 const requested=(process.env.RETAINED_MODAL_CASES??Object.keys(keys).map(modal=>modal+'-locale').concat(['profile-blocked','settings-blocked','profile-confirm']).join(',')).split(',');
 let browser,server;const cases=[];
 try{
-  await build({root:scratch,configFile:false,plugins:[react(),babel({presets:[reactCompilerPreset()]})],logLevel:'error',resolve:{alias:{'#shop-modal-page':path.join(root,'src/web/play/modalPages/commerce/ShopModalPage.tsx')}},build:{outDir:'dist'}});
+  await build({root:scratch,configFile:false,plugins:[react(),babel({presets:[reactCompilerPreset()]})],logLevel:'error',resolve:{alias:{'#shop-modal-page':path.join(root,"src/commerce/components/ShopModalPage.tsx")}},build:{outDir:'dist'}});
   server=createServer(async(req,res)=>{try{const file=path.join(scratch,'dist',new URL(req.url,'http://localhost').pathname==='/'?'index.html':new URL(req.url,'http://localhost').pathname);res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});
   for(const width of [320,1280]){

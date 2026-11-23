@@ -1,4 +1,4 @@
-import {getDailyDate, shiftDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {getDailyDate, shiftDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {getUser} from "../gameplay/firestoreService";
 import {getSinglePlayerCompletionKey} from "../gameplay/singlePlayerAnswerPolicy";
 import {recoverPendingAuthoritativeCompletion} from "../gameplay/singlePlayerTerminalRecovery";

@@ -1,4 +1,4 @@
-import {RaceEntryResponseSchema} from "../../../../src/core/race/index.js";
+import {RaceEntryResponseSchema} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {
@@ -10,7 +10,7 @@ import {
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   AbandonRaceRunResponseSchema,
-} from "../../../../src/core/race/index.js";
+} from "../../../../src/races/contracts/index.js";
 import {parseChallengeRecord, parseRunRecord} from "../../../../firebase-functions/src/race/raceSetupService";
 
 /** Describes reddit social profile. */

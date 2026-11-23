@@ -22,16 +22,16 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
 ${browserScope==='jest-facebook'?'':`import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'platforms/web/reddit/src/RedditGuestHostServices.ts'))};`}
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(root,'src/hosted/play/GameSessionCheckpoints.ts'))};
-import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'src/hosted/play/pendingGuessJournal.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
+import {createSavedGame} from ${JSON.stringify(path.join(root,"src/gameplay/session/checkpoints/GameSessionCheckpoints.ts"))};
+import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,"src/gameplay/session/journal/pendingGuessJournal.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
 const params=new URL(location.href).searchParams,attempts=Number(params.get('attempts')??1),provider=params.get('provider')??'missing',negative=params.has('negative'),prepare=params.has('prepare');

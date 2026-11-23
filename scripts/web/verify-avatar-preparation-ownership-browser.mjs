@@ -17,10 +17,10 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useGameOperations} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameOperations.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
-import {parseGameToHostMessage} from ${JSON.stringify(path.join(root, 'src/core/bridge'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {useGameOperations} from ${JSON.stringify(path.join(root,"src/gameplay/hooks/browser/useGameOperations.ts"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
+import {parseGameToHostMessage} from ${JSON.stringify(path.join(root, 'src/platform/bridge'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={sent:[],started:0,completed:0,closed:0,rejected:[],releases:[],errors:[],unhandled:[],owner:null};
 window.addEventListener('error',e=>probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>probe.unhandled.push(String(e.reason)));
 const bytes=await fetch('/source.webp').then(r=>r.blob());const file=new File([bytes],'fixture.webp',{type:'image/webp'});

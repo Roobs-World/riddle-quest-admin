@@ -13,15 +13,15 @@ await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.c
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-keyboard-'));
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={adds:0,removes:0,saves:[],guesses:0,completions:0,requests:[],errors:[],unhandled:[]};window.retiredKeys=[];window.activeKeys=new Set();window.retiredDeletes=[];
 window.keyboardObserveAdd=callback=>{window.probe.adds++;window.activeKeys.add(callback);};window.keyboardObserveRemove=callback=>{window.probe.removes++;window.activeKeys.delete(callback);window.retiredKeys.push(callback);};
@@ -50,7 +50,7 @@ let server,browser;const observations=[];
 try {
  await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'observe-native-input-ownership',enforce:'pre',async load(id){
   if(!['/useAnswerKeyboard.ts','/NativeAnswerInput.tsx','/useNativeAnswerBackspace.ts'].some(name=>id.endsWith(name)))return;
-  let code=await readFile(baseline?path.join(baseline,path.basename(id).replace(/\.tsx?$/,'.before.txt')):id,'utf8');
+  let code=await readFile(baseline?path.join(baseline,path.basename(id).replace('LocalGameApp','YouTubePlayableApp').replace('LocalAnswerInput','YouTubeNativeAnswerInput').replace('useLocalReadySession','useYouTubeReadySession').replace(/\.tsx?$/,'.before.txt')):id,'utf8');
   if(id.endsWith('/useAnswerKeyboard.ts'))code=code.replace('window.addEventListener("keydown", handleKeyDown);','window.keyboardObserveAdd(handleKeyDown);window.addEventListener("keydown", handleKeyDown);').replace('window.removeEventListener("keydown", handleKeyDown)','(window.keyboardObserveRemove(handleKeyDown),window.removeEventListener("keydown", handleKeyDown))');
   if(id.endsWith('/useNativeAnswerBackspace.ts'))code=code.replace('input.removeEventListener("beforeinput", beforeInput)','(window.deleteObserveRemove(input,beforeInput),input.removeEventListener("beforeinput", beforeInput))');return code;
  }}],build:{outDir:'dist',minify:false}});

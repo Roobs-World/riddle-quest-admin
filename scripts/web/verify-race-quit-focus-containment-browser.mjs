@@ -15,9 +15,9 @@ const output = path.resolve(root, "artifacts/race-quit-focus-containment");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
 const now=Date.now(),view={runId:'keyboard-run',role:'creator',status:'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,
  correctCount:0,wallElapsedMs:1000,totalPenaltyMs:0,adjustedElapsedMs:1000,
@@ -36,9 +36,9 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
-    if (process.env.RACE_QUIT_CONTAINMENT_BASELINE === "1" && id.endsWith("/play/race/hooks/useRaceDialogFocus.ts"))
+    if (process.env.RACE_QUIT_CONTAINMENT_BASELINE === "1" && id.endsWith("/races/hooks/useRaceDialogFocus.ts"))
       return readFile(path.join(output,"prior-dialog-focus.ts"),"utf8").then(code=>({code,map:null}));
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

@@ -1,7 +1,7 @@
 import {expect, it} from "@jest/globals";
 import {reconcileJestPlayerProjection} from "../reconcileJestPlayerProjection";
-import {createSavedGame} from "../../../../../src/hosted/play/GameSessionCheckpoints";
-import {createInitialGameSession, gameSessionReducer} from "../../../../../src/hosted/play/gameSession";
+import {createSavedGame} from "../../../../../src/gameplay/session/checkpoints/GameSessionCheckpoints";
+import {createInitialGameSession, gameSessionReducer} from "../../../../../src/gameplay/session/gameSession";
 
 /** Validated client checkpoint from the real reducer. */
 const checkpoint = (letters: string, savedAt: number, sessionToken = "00000000-0000-4000-8000-000000000001") => {

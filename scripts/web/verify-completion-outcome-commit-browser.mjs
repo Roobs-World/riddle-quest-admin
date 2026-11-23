@@ -17,13 +17,13 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useCompletionDelivery} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useCompletionDelivery.ts'))};
-import {useGameMessageRouter} from ${JSON.stringify(path.join(root,'src/web/play/useGameMessageRouter.ts'))};
-import {useGameMessageListener} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameBridgeLifecycle.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
-import {createGameMessageRouter} from ${JSON.stringify(path.join(root,'src/web/play/bridgeRouter.ts'))};
-import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {useCompletionDelivery} from ${JSON.stringify(path.join(root,"src/gameplay/hooks/browser/useCompletionDelivery.ts"))};
+import {useGameMessageRouter} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/useGameMessageRouter.ts"))};
+import {useGameMessageListener} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/useGameBridgeLifecycle.ts"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
+import {createGameMessageRouter} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/bridgeRouter.ts"))};
+import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 const params=new URL(location.href).searchParams,scenario=params.get('scenario')??'spec-loss',channel=params.get('channel')??'local';
 window.probe={messages:[],effects:[],results:[],suspended:0,errors:[],unhandled:[]};window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 const first={riddleId:'classic_1',text:'What has keys but cannot open doors?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000001',gameMode:'classic',index:1,attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false},next={...first,riddleId:'classic_2',sessionToken:'00000000-0000-4000-8000-000000000002',index:2};

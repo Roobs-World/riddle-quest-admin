@@ -8,7 +8,7 @@ import {
   type ListFacebookTournamentResponse,
   type RecordFacebookContextRunResponse,
   type RecordFacebookTournamentRunResponse,
-} from "../../../../src/core/race";
+} from "../../../../src/races/contracts/index";
 import type {FacebookPurchaseGrant} from "./FacebookPurchaseRecovery";
 
 /** Defines the facebook tournament duration ms value. */

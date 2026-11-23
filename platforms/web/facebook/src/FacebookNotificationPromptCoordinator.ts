@@ -1,4 +1,4 @@
-import type {NotificationCapability, PlatformStorage} from "../../../../src/web/platform/types";
+import type {NotificationCapability, PlatformStorage} from "../../../../src/platform/contracts/capabilities";
 import {
   recordFacebookNotificationPrompt,
   shouldPromptForFacebookNotifications,

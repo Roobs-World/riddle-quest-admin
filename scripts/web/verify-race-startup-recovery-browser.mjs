@@ -15,9 +15,9 @@ const output = path.resolve(root, "artifacts/race-startup-recovery");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 const key='riddleQuest:activeRaceRun',now=Date.now();
 const view={runId:'startup-run',role:'creator',status:'active',categoryId:'history',locale:'en',rules:RACE_RULES,
@@ -41,7 +41,7 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", transform(code, id) {
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

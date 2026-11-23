@@ -17,14 +17,14 @@ try {
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,'src/web/play/race/RaceTournamentEntry.tsx'))};
-import {ListLiveRaceHistoryResponseSchema,LiveRaceViewSchema} from ${JSON.stringify(path.join(portal, 'src/core/race'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(portal,'src/web/styles.css'))};
+import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,"src/races/components/lobby/RaceTournamentEntry.tsx"))};
+import {ListLiveRaceHistoryResponseSchema,LiveRaceViewSchema} from ${JSON.stringify(path.join(portal, "src/races/contracts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(portal,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 window.probe={reads:[],rematches:[],errors:[],unhandled:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 const [destination,scenario]=new URLSearchParams(location.search).get('scenario').split(':');window.probe.choices=0;
-const categorySource=await import(${JSON.stringify(path.join(portal,'src/web/play/race/testing/fakeRaceServices.ts'))});const catalog=await categorySource.createFakeRaceServices().listRaceCategories({locale:'en'});
+const categorySource=await import(${JSON.stringify(path.join(portal,"src/races/testing/browser/fakeRaceServices.ts"))});const catalog=await categorySource.createFakeRaceServices().listRaceCategories({locale:'en'});
 const live={history:async locale=>{window.probe.reads.push('history');return ListLiveRaceHistoryResponseSchema.parse({locale,serverNowMs:Date.now(),entries:[]});},join:async()=>{throw Error('Unexpected join');},update:async()=>{throw Error('Unexpected update');}};
 const withoutHistory={...live,history:undefined};
 const tournaments={list:async locale=>{window.probe.reads.push('tournaments');return {tournamentId:'fixture',locale,startsAtMs:Date.now()-1000,endsAtMs:Date.now()+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,standings:[]};},record:async()=>{throw Error('Unexpected record');}};

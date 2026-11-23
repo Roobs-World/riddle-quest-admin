@@ -1,6 +1,6 @@
-import {createFirebaseHostServices, type HostAuth} from "../../../../../src/hosted/hostServices";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {createFirebaseHostServices, type HostAuth} from "../../../../../src/platform/firebase/hostServices";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {translateHostCopy} from "../i18n/hostedCopy";
 import type {HostedFirebaseClient} from "./firebaseClient";
 /** Binds the device's Firebase Auth session to the shared host-auth surface. */

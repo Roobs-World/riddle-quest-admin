@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, type JoinLiveRace} from "../../../src/core/race/index.js";
+import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, type JoinLiveRace} from "../../../src/races/contracts/index.js";
 import {resolveLiveRaceSafetyTarget} from "../social/liveRaceSafetyTarget";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {admin} from "../shared/firebaseAdmin";

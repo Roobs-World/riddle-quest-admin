@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type {PendingPlayStorage} from "../../../../../src/hosted/play/pendingPlayAdapters";
+import type {PendingPlayStorage} from "../../../../../src/gameplay/session/journal/pendingPlayAdapters";
 /** Device key-value persistence; AsyncStorage satisfies it. */
 export type PendingPlayDeviceStore = Readonly<{
   /** Reads one value or `null` when the key is absent. */

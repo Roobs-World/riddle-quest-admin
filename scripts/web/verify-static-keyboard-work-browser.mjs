@@ -13,16 +13,16 @@ await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.c
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/static-keyboard-'));
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,'src/web/playable/YouTubePlayableApp.tsx'))};import ${JSON.stringify(path.join(root,'src/web/playable/styles.css'))};
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};import {computeFeedback} from ${JSON.stringify(path.join(root, 'src/core/game'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalGameApp.tsx"))};import ${JSON.stringify(path.join(root,"src/gameplay/styles/local-game.css"))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};import {computeFeedback} from ${JSON.stringify(path.join(root, "src/gameplay/rules/computeFeedback.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={keyboardSegments:0,keyboardSplits:0,saves:[],guesses:0,completions:0,requests:[],errors:[],unhandled:[]};const fixedRows=new Set(['QWERTYUIOP','ASDFGHJKL','ZXCVBNM','QWERTYUIOPASDFGHJKLZXCVBNM']);
 const segment=Intl.Segmenter.prototype.segment;Intl.Segmenter.prototype.segment=function(value,...args){if(fixedRows.has(String(value)))window.probe.keyboardSegments++;return segment.call(this,value,...args);};
@@ -46,7 +46,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
 await writeFile(path.join(scratch,'main.tsx'),source);await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 let server,browser;const observations=[];
 try {
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'#youtube-content':path.join(root,'firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json')}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'static-keyboard-baseline',enforce:'pre',async load(id){if(!baseline)return;if(id.endsWith('/GameFrameControls.tsx'))return readFile(path.join(baseline,'controls.before.txt'),'utf8');if(id.endsWith('/YouTubePlayableApp.tsx'))return readFile(path.join(baseline,'playable.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'#youtube-content':path.join(root,'firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json')}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'static-keyboard-baseline',enforce:'pre',async load(id){if(!baseline)return;if(id.endsWith('/GameFrameControls.tsx'))return readFile(path.join(baseline,'controls.before.txt'),'utf8');if(id.endsWith('/LocalGameApp.tsx'))return readFile(path.join(baseline,'playable.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false}});
  server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.STATIC_KEYBOARD_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
  else {

@@ -1,8 +1,8 @@
 import type {
   ListFacebookContextBoardRequest, ListFacebookContextBoardResponse,
   RecordFacebookContextRunRequest, RecordFacebookContextRunResponse,
-} from "../../../../src/core/race";
-import type {ContextBoardCapability} from "../../../../src/web/platform/types";
+} from "../../../../src/races/contracts/index";
+import type {ContextBoardCapability} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookContextCoordinator} from "./contexts";
 
 /** Authenticated callables retain validation and all board authority on the server. */

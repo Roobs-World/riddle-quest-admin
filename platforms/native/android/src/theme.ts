@@ -2,7 +2,7 @@
  * Visual constants mirroring the web Playable stylesheet so both surfaces read as one game.
  *
  * @remarks
- * Values come from `src/web/playable/styles.css`; keep them aligned when
+ * Values come from `src/gameplay/styles/local-game.css`; keep them aligned when
  * the web palette changes.
  */
 export const palette = Object.freeze({

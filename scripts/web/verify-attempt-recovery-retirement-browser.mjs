@@ -21,13 +21,13 @@ try {
   await writeFile(path.join(scratch, 'index.html'), '<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useAttemptRecovery} from ${JSON.stringify(path.join(portal, 'src/web/play/game/hooks/useAttemptRecovery.ts'))};
-import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal, 'src/hosted/play/gameSession.ts'))};
-import {ContinueModalPage} from ${JSON.stringify(path.join(portal, 'src/web/play/modalPages/commerce/ContinueActions.tsx'))};
-import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, 'src/web/play/GameFrameControls.tsx'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(portal, 'src/web/play/fakeServices.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, 'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(portal, 'src/web/styles.css'))};
+import {useAttemptRecovery} from ${JSON.stringify(path.join(portal, "src/gameplay/hooks/browser/useAttemptRecovery.ts"))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal, "src/gameplay/session/gameSession.ts"))};
+import {ContinueModalPage} from ${JSON.stringify(path.join(portal, "src/commerce/components/ContinueActions.tsx"))};
+import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, "src/gameplay/components/GameFrameControls.tsx"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(portal, "src/gameplay/fixtures/fakeServices.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, "src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(portal, "src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const [kind,outcome]=new URLSearchParams(location.search).get('scenario').split(':');
 window.probe={requests:[],actions:[],errors:[],unhandled:[],oldDone:false,newDone:false};

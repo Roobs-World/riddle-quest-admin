@@ -15,9 +15,9 @@ const output = path.resolve(root, "artifacts", process.env.RACE_DRAFT_OUTPUT_DIR
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
 const params=new URLSearchParams(location.search),role=params.get('role')||'creator',mode=params.get('mode')||'normal';
 const now=Date.now(),deck=Array.from({length:RACE_RULES.deckSize},(_,position)=>({riddleId:'question-'+position,text:'Question '+(position+1),answerLength:5,position,evaluation:{answer:position===0?'piano':'clock',locale:'en'}}));
@@ -46,19 +46,19 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
-    if (process.env.RACE_DRAFT_CONFIRMATION_BASELINE === "1" && id.endsWith("/play/race/logic/raceDraftStorage.ts"))
+    if (process.env.RACE_DRAFT_CONFIRMATION_BASELINE === "1" && id.endsWith("/races/browser/storage/raceDraftStorage.ts"))
       return readFile(path.resolve(root,"artifacts/race-draft-confirmation-recovery/prior-draft-storage.ts"),"utf8").then(code=>({code,map:null}));
-    if (process.env.RACE_DRAFT_WRITE_BASELINE === "1" && id.endsWith("/play/race/logic/raceDraftStorage.ts"))
+    if (process.env.RACE_DRAFT_WRITE_BASELINE === "1" && id.endsWith("/races/browser/storage/raceDraftStorage.ts"))
       return readFile(path.resolve(root,"artifacts/race-draft-write-recovery/prior-draft-storage.ts"),"utf8").then(code=>({code,map:null}));
-    if (process.env.RACE_SCHEDULED_DRAFT_BASELINE === "1" && id.endsWith("/play/race/RaceSession.ts"))
+    if (process.env.RACE_SCHEDULED_DRAFT_BASELINE === "1" && id.endsWith("/races/controllers/RaceSession.ts"))
       return readFile(path.resolve(root,"artifacts/race-scheduled-draft/prior-race-session.ts"),"utf8").then(code=>({code,map:null}));
-    if (process.env.RACE_SCHEDULED_DRAFT_BASELINE === "1" && id.endsWith("/play/race/logic/raceDraftStorage.ts"))
+    if (process.env.RACE_SCHEDULED_DRAFT_BASELINE === "1" && id.endsWith("/races/browser/storage/raceDraftStorage.ts"))
       return readFile(path.resolve(root,"artifacts/race-scheduled-draft/prior-draft-storage.ts"),"utf8").then(code=>({code,map:null}));
-    if (process.env.RACE_DRAFT_BASELINE === "1" && id.endsWith("/play/race/RaceSession.ts"))
+    if (process.env.RACE_DRAFT_BASELINE === "1" && id.endsWith("/races/controllers/RaceSession.ts"))
       return readFile(path.join(output,"prior-race-session.ts"),"utf8").then(code=>({code,map:null}));
-    if (process.env.RACE_DRAFT_READ_BASELINE === "1" && id.endsWith("/play/race/logic/raceDraftStorage.ts"))
+    if (process.env.RACE_DRAFT_READ_BASELINE === "1" && id.endsWith("/races/browser/storage/raceDraftStorage.ts"))
       return readFile(path.resolve(root,"artifacts/race-draft-storage-failure/prior-draft-storage.ts"),"utf8").then(code=>({code,map:null}));
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

@@ -1,5 +1,5 @@
 import {FACEBOOK_PRODUCTS} from "./commerce/facebookCatalog";
-import type {ProductSummary, PurchaseResult} from "../../../../src/hosted/hostTypes";
+import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
 import {FacebookCommerceCapability} from "./FacebookCommerceCapability";
 import type {FacebookInstantPayments, FacebookInstantSdk} from "./fbinstant";
 import type {FacebookPurchaseGrant} from "./FacebookPurchaseRecovery";

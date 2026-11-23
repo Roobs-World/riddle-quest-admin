@@ -15,10 +15,10 @@ const output = path.resolve(root, "artifacts/race-search-journal-observation");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import {RACE_RECOVERY_KEY} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {RACE_RECOVERY_KEY} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const authority=createFakeRaceServices(),originalRead=Storage.prototype.getItem;
 window.denied=false;Storage.prototype.getItem=function(key){if(window.denied&&key===RACE_RECOVERY_KEY)throw new Error('read denied');return originalRead.call(this,key);};
 function postToHost(message){if(message.type==='game:listRaceCategories')authority.listRaceCategories('en').then(data=>window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data}}})));}
@@ -36,7 +36,7 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

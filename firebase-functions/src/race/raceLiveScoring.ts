@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../src/races/contracts/index.js";
 import {raceClock, type RaceRunRecord} from "./raceEngine";
 import type {LiveMatch} from "./raceLiveState";
 

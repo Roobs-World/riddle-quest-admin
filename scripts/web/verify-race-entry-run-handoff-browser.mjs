@@ -14,8 +14,8 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {projectRaceOutcome} from ${JSON.stringify(path.join(root,'src/web/play/race/logic/racePresentation.ts'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const mode=new URLSearchParams(location.search).get('case'),authority=createFakeRaceServices();
 const initial=(await authority.startRace({locale:'en',categoryId:'mixed',requestId:'fixture',prepare:true,includeEvaluation:true})).run;
 const oldRun={...initial,runId:'old-run',role:'challenger',challengeId:'original',status:'completed',correctCount:10,currentRiddle:null,wallElapsedMs:60000,adjustedElapsedMs:60000,opponent:{displayName:'Nova',adjustedFinishMs:60000,events:[]},events:Array.from({length:10},(_,position)=>({sequence:position,type:'correct',riddlePosition:position,wallElapsedMs:60000,penaltyAddedMs:0,totalPenaltyMs:0,adjustedElapsedMs:60000,correctCount:position+1}))};
@@ -35,7 +35,7 @@ createRoot(document.getElementById('root')).render(<RaceTo10Game ownerId="owner-
 `);
 let browser,server;
 try{
- await build({plugins:[{name:'expose-start-selection-session',enforce:'pre',transform(code,id){if(!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;assert(code.includes('const session = sessionRef.current;'));return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current;globalThis.testRaceSession=session;'),map:null};}}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});
+ await build({plugins:[{name:'expose-start-selection-session',enforce:'pre',transform(code,id){if(!id.endsWith('/races/hooks/useRaceSession.ts'))return null;assert(code.includes('const session = sessionRef.current;'));return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current;globalThis.testRaceSession=session;'),map:null};}}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});
  server=createServer(async(request,response)=>{try{const url=new URL(request.url,'http://localhost'),file=path.join(scratch,'dist',url.pathname==='/'?'index.html':url.pathname);response.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');response.end(await readFile(file));}catch{response.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{})});

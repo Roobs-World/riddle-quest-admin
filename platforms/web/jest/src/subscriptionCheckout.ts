@@ -1,7 +1,7 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort} from "./types";
 import type {JestPurchaseCoordinator} from "./purchases";
-import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 
 /** Dependencies and account scope required for a serialized subscription checkout. */
 type SubscriptionCheckoutOptions = {

@@ -1,6 +1,6 @@
-import type {LiveRaceCapability} from "../../../../src/core/race";
-import {tr} from "../../../../src/web/play/i18n";
-import {captureVictoryShareImage} from "../../../../src/web/play/sharing/shareImages";
+import type {LiveRaceCapability} from "../../../../src/races/contracts/index";
+import {tr} from "../../../../src/localization/browser/i18n";
+import {captureVictoryShareImage} from "../../../../src/sharing/browser/shareImages";
 import type {FacebookInstantSdk} from "./fbinstant";
 import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";

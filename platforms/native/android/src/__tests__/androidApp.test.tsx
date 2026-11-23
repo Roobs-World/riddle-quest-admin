@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {BridgeProfile} from "../../../../../src/core/bridge";
-import type {AuthSnapshot, HostServices} from "../../../../../src/hosted/hostTypes";
-import type {YouTubeLocale, YouTubeSdkPort} from "../../../../../src/solo";
+import type {BridgeProfile} from "../../../../../src/platform/bridge/messages";
+import type {AuthSnapshot, HostServices} from "../../../../../src/platform/contracts/hostServices";
+import {type YouTubeLocale, type YouTubeSdkPort} from "../../../../../src/gameplay/local/types";
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {Linking} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";

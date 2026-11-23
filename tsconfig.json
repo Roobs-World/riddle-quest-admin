@@ -31,7 +31,7 @@
     ],
     "paths": {
       "#shop-modal-page": [
-        "./src/web/play/modalPages/commerce/ShopModalPage.tsx"
+        "./src/commerce/components/ShopModalPage.tsx"
       ],
       "#youtube-content": [
         "./firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json"

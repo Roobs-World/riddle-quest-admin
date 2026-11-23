@@ -18,12 +18,12 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {BridgeStartupRecovery} from ${JSON.stringify(path.join(root,'src/web/play/BridgeStartupRecovery.tsx'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
-import {dispatchLocalBridge,GAME_TO_HOST_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {BridgeStartupRecovery} from ${JSON.stringify(path.join(root,"src/app/components/recovery/BridgeStartupRecovery.tsx"))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,"src/observability/browserErrorReporter.ts"))};
+import {dispatchLocalBridge,GAME_TO_HOST_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={errors:[],paid:0,loads:0,playable:0,unavailable:0,reloads:0,ticks:0,intervals:new Set(),saved:[]};
 window.addEventListener('unhandledrejection',event=>window.probe.errors.push({operation:'unhandled',error:String(event.reason)}));
 configureBrowserErrorReporter((error,context)=>{window.probe.errors.push({...context,error:String(error)});});

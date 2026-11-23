@@ -39,7 +39,7 @@ test('transitive SDK packages and tooling fail closed on every artifact', () => 
   for (const target of targets) {
     assert.throws(() => assertTargetDependency(target, '/node_modules/jest/build/index.js'), /undeclared runtime/u);
     assert.throws(() => assertTargetDependency(target, '/node_modules/another-provider-sdk/index.js'), /undeclared runtime/u);
-    assert.throws(() => assertTargetDependency(target, '/workspace/src/web/test/harness.ts'), /test code/u);
+    assert.throws(() => assertTargetDependency(target, "/workspace/src/app/testing/mocks/harness.ts"), /test code/u);
     assert.doesNotThrow(() => assertTargetDependency(target, '/node_modules/.pnpm/react@19/node_modules/react/index.js'));
     if (!['jest','facebook'].includes(target)) assert.throws(() => assertTargetDependency(target,
       '/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), /undeclared runtime/u);
@@ -67,7 +67,7 @@ test('real bundler rejects aliased and lazy provider imports plus SDK packages b
   const root=await mkdtemp(path.join(tmpdir(),'target-dependency-build-'));
   t.after(()=>rm(root,{recursive:true,force:true}));
   const evidence=path.join(root,'evidence');
-  const entry=path.join(root,'src/web/shared/main.js');
+  const entry=path.join(root,'src/app/main.js');
   await mkdir(path.dirname(entry),{recursive:true});
   const sdk=path.join(root,'node_modules/jest-gaming-sdk');await mkdir(sdk,{recursive:true});
   await writeFile(path.join(sdk,'package.json'),JSON.stringify({name:'jest-gaming-sdk',main:'index.js'}));

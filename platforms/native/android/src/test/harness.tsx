@@ -1,11 +1,6 @@
-import {
-  createEmptyYouTubeSave,
-  createYouTubeContentSource,
-  serializeYouTubeSave,
-  type YouTubeContentEnvelope,
-  type YouTubeSaveV1,
-  type YouTubeSdkPort,
-} from "../../../../../src/solo";
+import {createEmptyYouTubeSave, serializeYouTubeSave} from "../../../../../src/gameplay/persistence/localSave";
+import {createYouTubeContentSource, type YouTubeContentEnvelope} from "../../../../../src/content/catalog/bundledContent";
+import {type YouTubeSaveV1, type YouTubeSdkPort} from "../../../../../src/gameplay/local/types";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider, type Metrics} from "react-native-safe-area-context";
 import fixture from "#solo-content";

@@ -1,4 +1,4 @@
-import {readProtectedContent} from '../../src/core/contentProtection.ts';
+import {readProtectedContent} from "../../src/content/transport/contentProtection.ts";
 import assert from 'node:assert/strict';
 import {mkdtemp, writeFile, rm} from 'node:fs/promises';
 import os from 'node:os';

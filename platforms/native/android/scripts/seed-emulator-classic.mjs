@@ -24,7 +24,7 @@ if (!process.env.FIRESTORE_EMULATOR_HOST) {
 }
 const count = Number(process.argv[2] ?? 20);
 const projectId = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
-const content = JSON.parse(readFileSync(join(repositoryRoot, "src/web/playable/generated/youtube-content-v1.json"), "utf8"));
+const content = JSON.parse(readFileSync(join(repositoryRoot, "src/content/generated/youtube-content-v1.json"), "utf8"));
 const english = content.packs.en;
 /** Hosted single-player answers must be one to seven Latin letters and must not appear in the clue. */
 const playable = content.classicOrder

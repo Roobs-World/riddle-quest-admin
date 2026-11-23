@@ -2,9 +2,9 @@ import {logger} from "firebase-functions/v2";
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {captureException} from "../shared/sentry";
-import {validateUsernameForProfanity} from "../../../src/core/validation/profanity.js";
+import {validateUsernameForProfanity} from "../../../src/accounts/validation/profanity.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {BasicSuccessMessageResponseSchema, UpdateUsernameRequestSchema} from "../../../src/core/validation/requestSchemas.js";
+import {BasicSuccessMessageResponseSchema, UpdateUsernameRequestSchema} from "../../../src/platform/contracts/requestSchemas.js";
 import {updateUsernameRecords} from "./leaderboardProfile";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 

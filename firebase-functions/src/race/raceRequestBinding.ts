@@ -1,12 +1,13 @@
 import {createHash} from "node:crypto";
 import {isDeepStrictEqual} from "node:util";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "../../../src/core/game/index.js";
+import {computeFeedback} from "../../../src/gameplay/rules/computeFeedback.js";
+import {lowerCaseGraphemes, splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {AbandonRaceRunResponseSchema, SubmitRaceGuessResponseSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema,
   type AbandonRaceRunRequest, type SubmitRaceGuessRequest, type RequestRaceHintRequest, type SkipRaceRiddleRequest,
   type StartRaceRunRequest, type PublishRaceChallengeRequest, type ReserveRaceInviteRequest, type CancelRaceInviteRequest,
-  type RaceRunView} from "../../../src/core/race/index.js";
+  type RaceRunView} from "../../../src/races/contracts/index.js";
 import {raceRules, type RaceRunRecord} from "./raceEngine";
 import {raceTimelineAgrees} from "./raceStoredTimeline";
 

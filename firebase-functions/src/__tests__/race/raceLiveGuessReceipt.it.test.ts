@@ -2,7 +2,7 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {RACE_RULES, type LiveRaceView} from "../../../../src/core/race/index.js";
+import {RACE_RULES, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import type {LiveMatch} from "../../race/raceLiveState";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 

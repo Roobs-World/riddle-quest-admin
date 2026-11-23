@@ -1,5 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import type {NotificationCapability, PlatformPreferences, PlatformStorage} from "../../../../../src/web/platform/types";
+import type {NotificationCapability, PlatformPreferences, PlatformStorage} from "../../../../../src/platform/contracts/capabilities";
 import {FacebookNotificationPromptCoordinator} from "../FacebookNotificationPromptCoordinator";
 
 /** Renders the week interface. */

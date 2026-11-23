@@ -1,4 +1,4 @@
-import {cloneProductPricingCatalog, DEFAULT_PRODUCT_PRICING} from "../../../../../../src/core/pricing/catalog";
+import {cloneProductPricingCatalog, DEFAULT_PRODUCT_PRICING} from "../../../../../../src/commerce/pricing/catalog";
 import {FACEBOOK_PRODUCTS, resolveFacebookProduct} from "../facebookCatalog";
 
 describe("shared Facebook product catalog", () => {
@@ -95,11 +95,11 @@ describe("shared Facebook product catalog", () => {
     const catalog = cloneProductPricingCatalog();
     mutate(catalog);
     jest.resetModules();
-    jest.doMock("../../../../../../src/core/pricing/catalog", () => ({DEFAULT_PRODUCT_PRICING: catalog}));
+    jest.doMock("../../../../../../src/commerce/pricing/catalog", () => ({DEFAULT_PRODUCT_PRICING: catalog}));
     try {
       expect(() => jest.isolateModules(() => jest.requireActual("../facebookCatalog"))).toThrow(expectedError);
     } finally {
-      jest.dontMock("../catalog");
+      jest.dontMock("../../../../../../src/commerce/pricing/catalog");
       jest.resetModules();
     }
   });

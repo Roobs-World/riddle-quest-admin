@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import en from "../../../../../src/locales/en/profile.json";
 import es from "../../../../../src/locales/es/profile.json";
 import pt from "../../../../../src/locales/pt/profile.json";

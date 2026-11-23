@@ -1,6 +1,6 @@
 import type {Player} from "../validation/firestoreSchemas";
 import {coerceToDate} from "./dailyStreak";
-import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 
 /** Defines the contract for daily challenge progress. */
 export interface DailyChallengeProgress {

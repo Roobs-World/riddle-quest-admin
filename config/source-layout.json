@@ -1,0 +1,517 @@
+{
+  "groups": {
+    "rules": {
+      "sources": [
+        "src/accounts/validation/**",
+        "src/commerce/pricing/**",
+        "src/content/transport/**",
+        "src/gameplay/__tests__/**",
+        "src/gameplay/contracts/__tests__/cloudFunctionsSchemas.test.ts",
+        "src/gameplay/contracts/acceptedGuesses.ts",
+        "src/gameplay/contracts/cloudFunctionsSchemas.ts",
+        "src/gameplay/contracts/revealedHints.ts",
+        "src/gameplay/contracts/scoring.ts",
+        "src/gameplay/controllers/**",
+        "src/gameplay/daily/**",
+        "src/gameplay/input/__tests__/graphemes.test.ts",
+        "src/gameplay/input/__tests__/singlePlayerInput.test.ts",
+        "src/gameplay/input/graphemes.ts",
+        "src/gameplay/input/singlePlayerInput.ts",
+        "src/gameplay/input/singlePlayerKeyboard.ts",
+        "src/gameplay/rules/**",
+        "src/localization/locales.ts",
+        "src/platform/bridge/__tests__/**",
+        "src/platform/bridge/constants.ts",
+        "src/platform/bridge/messages.ts",
+        "src/platform/contracts/__tests__/**",
+        "src/platform/contracts/firestoreSchemas.ts",
+        "src/platform/contracts/requestSchemas.ts",
+        "src/progression/achievements/__tests__/**",
+        "src/progression/achievements/achievementMilestones.ts",
+        "src/progression/achievements/achievementRewards.ts",
+        "src/progression/economy/__tests__/rewardRules.test.ts",
+        "src/progression/economy/rewardRules.ts",
+        "src/progression/rewards/__tests__/**",
+        "src/progression/rewards/localCompletionRewards.ts",
+        "src/races/contracts/**",
+        "platforms/web/jest/src/referrals/__tests__/referralCampaigns.test.ts",
+        "platforms/web/jest/src/referrals/referralCampaigns.ts"
+      ]
+    },
+    "local-game": {
+      "sources": [
+        "src/content/catalog/**",
+        "src/gameplay/input/localInput.ts",
+        "src/gameplay/local/LocalSoloAuthority.contract.ts",
+        "src/gameplay/local/LocalSoloAuthority.ts",
+        "src/gameplay/local/hooks/**",
+        "src/gameplay/local/limits.ts",
+        "src/gameplay/local/localSoloGameRules.ts",
+        "src/gameplay/local/types.ts",
+        "src/gameplay/persistence/YouTubeSaveGate.ts",
+        "src/gameplay/persistence/localSave.ts",
+        "src/localization/copy/localGameCopy.ts",
+        "src/progression/achievements/localAchievements.ts",
+        "src/progression/economy/localEconomy.ts"
+      ]
+    },
+    "services": {
+      "sources": [
+        "src/accounts/avatar/**",
+        "src/accounts/profile/**",
+        "src/commerce/recovery/**",
+        "src/gameplay/contracts/riddleResponse.ts",
+        "src/gameplay/session/**",
+        "src/platform/contracts/hostServices.ts",
+        "src/platform/firebase/__tests__/gameFunctions.test.ts",
+        "src/platform/firebase/gameFunctions.ts",
+        "src/platform/firebase/hostServices.ts",
+        "src/progression/rewards/completionRewardBreakdown.ts",
+        "src/races/controllers/RaceOwnedAuthority.ts",
+        "src/races/controllers/RacePlay.ts",
+        "src/races/controllers/RaceSession.ts",
+        "src/races/controllers/RaceSession.types.ts",
+        "src/races/controllers/RaceSessionAuthority.ts",
+        "src/races/controllers/__tests__/raceClock.test.ts",
+        "src/races/controllers/matchmaking.ts",
+        "src/races/controllers/raceClock.ts",
+        "src/races/drafts/liveRaceDraft.ts",
+        "src/races/drafts/liveRaceDraftCheckpoint.ts",
+        "src/races/drafts/liveRaceDraftStorage.ts",
+        "src/races/drafts/raceDraftStorage.ts",
+        "src/races/history/raceConfirmedHistory.ts",
+        "src/races/history/raceGuessHistory.ts",
+        "src/races/history/raceHintHistory.ts",
+        "src/races/live/LiveRaceController.ts",
+        "src/races/live/__tests__/LiveRaceController.test.ts",
+        "src/races/live/livePresentation.ts",
+        "src/races/live/liveRaceDeliveryDeadline.ts",
+        "src/races/live/liveRacePolling.ts",
+        "src/races/live/liveRaceRetirement.ts",
+        "src/races/matchmaking/raceDiscoveryRecovery.ts",
+        "src/races/matchmaking/raceEntrySelection.ts",
+        "src/races/matchmaking/raceMatchDiscovery.ts",
+        "src/races/matchmaking/raceRequestSelection.ts",
+        "src/races/matchmaking/raceStartDelivery.ts",
+        "src/races/presentation/raceBoardAttempts.ts",
+        "src/races/presentation/raceCountdown.ts",
+        "src/races/presentation/racePlayback.ts",
+        "src/races/presentation/racePresentation.ts",
+        "src/races/raceAnalytics.ts",
+        "src/races/recovery/**",
+        "src/races/rounds/raceInitialState.ts",
+        "src/races/rounds/raceInput.ts",
+        "src/races/rounds/raceOperations.ts",
+        "src/races/transport/firebaseLiveTransport.ts"
+      ]
+    },
+    "interface": {
+      "sources": [
+        "src/accounts/browser/**",
+        "src/accounts/components/**",
+        "src/accounts/hooks/**",
+        "src/accounts/styles/**",
+        "src/app/**",
+        "src/commerce/browser/**",
+        "src/commerce/components/**",
+        "src/commerce/styles/**",
+        "src/content/browser/**",
+        "src/content/generated/**",
+        "src/gameplay/browser/**",
+        "src/gameplay/components/**",
+        "src/gameplay/contracts/__tests__/riddleResponse.test.ts",
+        "src/gameplay/fixtures/**",
+        "src/gameplay/hooks/**",
+        "src/gameplay/input/__tests__/localInput.test.ts",
+        "src/gameplay/input/browser/**",
+        "src/gameplay/local/__tests__/**",
+        "src/gameplay/persistence/__tests__/**",
+        "src/gameplay/styles/**",
+        "src/leaderboards/**",
+        "src/locales/**",
+        "src/localization/browser/**",
+        "src/localization/copy/__tests__/**",
+        "src/notifications/**",
+        "src/observability/**",
+        "src/onboarding/**",
+        "src/platform/bridge/browser/**",
+        "src/platform/browser/**",
+        "src/platform/contracts/capabilities.ts",
+        "src/platform/contracts/localGamePolicy.ts",
+        "src/platform/firebase/__tests__/firebase.test.ts",
+        "src/platform/firebase/__tests__/firebaseCompletionDelivery.test.ts",
+        "src/platform/firebase/__tests__/firebaseGameplayDelivery.test.ts",
+        "src/platform/firebase/__tests__/firebaseRiddleOwnership.test.ts",
+        "src/platform/firebase/__tests__/firebaseServiceOwnership.test.ts",
+        "src/platform/firebase/__tests__/firebaseServices.test.ts",
+        "src/platform/firebase/browserClient.ts",
+        "src/platform/firebase/browserEnvironment.ts",
+        "src/platform/firebase/browserHostServices.ts",
+        "src/presence/**",
+        "src/progression/achievements/browser/**",
+        "src/progression/browser/**",
+        "src/progression/components/**",
+        "src/progression/economy/__tests__/localEconomy.test.ts",
+        "src/progression/hooks/**",
+        "src/progression/styles/**",
+        "src/races/__tests__/**",
+        "src/races/browser/**",
+        "src/races/components/**",
+        "src/races/controllers/__tests__/RaceSessionConfirmedOutcome.test.ts",
+        "src/races/controllers/__tests__/RaceSessionOutcome.test.ts",
+        "src/races/controllers/__tests__/RaceSessionOutcomeIsolation.test.ts",
+        "src/races/controllers/__tests__/RaceSessionReentry.test.ts",
+        "src/races/controllers/__tests__/RaceSessionTimeoutRecovery.test.ts",
+        "src/races/drafts/__tests__/**",
+        "src/races/history/__tests__/**",
+        "src/races/hooks/**",
+        "src/races/live/__tests__/liveRaceDeliveryDeadline.test.ts",
+        "src/races/live/__tests__/liveRacePolling.test.ts",
+        "src/races/live/__tests__/liveRaceRetirement.test.ts",
+        "src/races/matchmaking/__tests__/**",
+        "src/races/presentation/__tests__/**",
+        "src/races/rounds/__tests__/**",
+        "src/races/styles/**",
+        "src/races/testing/**",
+        "src/races/transport/browser/**",
+        "src/scenery/**",
+        "src/settings/**",
+        "src/sharing/**"
+      ],
+      "coverageExtras": [
+        "src/accounts/profile/**",
+        "src/gameplay/session/requestIds.ts",
+        "src/races/controllers/RaceOwnedAuthority.ts",
+        "src/races/controllers/RacePlay.ts",
+        "src/races/controllers/RaceSession.ts",
+        "src/races/controllers/RaceSession.types.ts",
+        "src/races/controllers/RaceSessionAuthority.ts",
+        "src/races/controllers/__tests__/raceClock.test.ts",
+        "src/races/controllers/matchmaking.ts",
+        "src/races/controllers/raceClock.ts",
+        "src/races/drafts/liveRaceDraft.ts",
+        "src/races/drafts/liveRaceDraftCheckpoint.ts",
+        "src/races/drafts/liveRaceDraftStorage.ts",
+        "src/races/drafts/raceDraftStorage.ts",
+        "src/races/history/raceConfirmedHistory.ts",
+        "src/races/history/raceGuessHistory.ts",
+        "src/races/history/raceHintHistory.ts",
+        "src/races/live/liveRaceDeliveryDeadline.ts",
+        "src/races/live/liveRacePolling.ts",
+        "src/races/live/liveRaceRetirement.ts",
+        "src/races/matchmaking/raceDiscoveryRecovery.ts",
+        "src/races/matchmaking/raceEntrySelection.ts",
+        "src/races/matchmaking/raceMatchDiscovery.ts",
+        "src/races/matchmaking/raceRequestSelection.ts",
+        "src/races/matchmaking/raceStartDelivery.ts",
+        "src/races/presentation/raceBoardAttempts.ts",
+        "src/races/presentation/raceCountdown.ts",
+        "src/races/presentation/racePlayback.ts",
+        "src/races/presentation/racePresentation.ts",
+        "src/races/raceAnalytics.ts",
+        "src/races/recovery/**",
+        "src/races/rounds/raceInitialState.ts",
+        "src/races/rounds/raceInput.ts",
+        "src/races/rounds/raceOperations.ts"
+      ],
+      "includePlatforms": true,
+      "coverageExcludes": [
+        "src/app/testing/mocks/fileMock.cjs",
+        "src/app/testing/mocks/firebaseEnvironmentMock.ts",
+        "src/app/testing/mocks/localeModulesMock.ts",
+        "src/app/testing/mocks/styleMock.cjs",
+        "src/app/testing/mocks/webTargetEnvironmentMock.ts"
+      ],
+      "mocks": {
+        "^(?:\\.\\.?/)+(?:[^/]+/)*webTargetEnvironment(?:\\.ts)?$": "<rootDir>/src/app/testing/mocks/webTargetEnvironmentMock.ts",
+        "^#youtube-content$": "<rootDir>/firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
+        "^\\./localeModules$": "<rootDir>/src/app/testing/mocks/localeModulesMock.ts",
+        "^(?:\\.\\.?/)+(?:[^/]+/)*browserEnvironment(?:\\.ts)?$": "<rootDir>/src/app/testing/mocks/firebaseEnvironmentMock.ts",
+        "\\.(css|less|scss)$": "<rootDir>/src/app/testing/mocks/styleMock.cjs",
+        "\\.(svg|png|jpg|jpeg|webp|webm|ogg|mp3|wav)$": "<rootDir>/src/app/testing/mocks/fileMock.cjs"
+      }
+    }
+  },
+  "coverage": {
+    "rules": {
+      "global": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      }
+    },
+    "interface": {
+      "global": {
+        "statements": 36,
+        "branches": 36,
+        "functions": 32,
+        "lines": 37
+      },
+      "src/app/startup/developmentFirstRun.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/app/testing/testHarness.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/observability/analytics/events.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/platform/bridge/browser/localBridge.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/accounts/profile/profileMapper.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/gameplay/session/requestIds.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/onboarding/browser/guidanceConfig.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/app/components/recovery/FatalErrorBoundary.tsx": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/accounts/browser/avatarImage.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/JestSdkPlatform.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/MockJestPlatform.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/entryIntent.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/milestone.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/sharing/screenshots.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/notifications/copy.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/notifications/engagement.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/notifications/useJestNotifications.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/purchases.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/useJestProductCatalog.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/useJestPurchase.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/jest/src/startup.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/app/layout/layoutReady.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/app/performance/mobileCapabilities.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/progression/achievements/browser/achievements.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/races/components/gameplay/RaceQuitDialog.tsx": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/races/raceAnalytics.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/races/browser/policy/raceFeatureFlag.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/races/presentation/racePresentation.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/races/controllers/RacePlay.ts": {
+        "statements": 90,
+        "branches": 80,
+        "functions": 90,
+        "lines": 90
+      },
+      "src/races/hooks/useRaceDialogFocus.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/races/hooks/useRaceGameplayFit.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/facebook/src/commerce/facebookCatalog.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/reddit/src/shared/redditCatalog.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      }
+    }
+  },
+  "raceCoverage": {
+    "rules": {
+      "sources": [
+        "src/races/contracts/**"
+      ],
+      "threshold": {
+        "statements": 95,
+        "branches": 95,
+        "functions": 70,
+        "lines": 95
+      }
+    },
+    "interface": {
+      "sources": [
+        "src/gameplay/components/__tests__/raceBoardAttempts.test.tsx",
+        "src/progression/achievements/browser/raceAchievementDefinitions.ts",
+        "src/races/__tests__/**",
+        "src/races/browser/controllers/**",
+        "src/races/browser/model/**",
+        "src/races/browser/policy/**",
+        "src/races/browser/presentation/**",
+        "src/races/browser/storage/**",
+        "src/races/browser/timing/**",
+        "src/races/components/**",
+        "src/races/controllers/**",
+        "src/races/drafts/**",
+        "src/races/history/**",
+        "src/races/hooks/__tests__/**",
+        "src/races/hooks/live/**",
+        "src/races/hooks/useRaceAnswerEditor.ts",
+        "src/races/hooks/useRaceDialogFocus.ts",
+        "src/races/hooks/useRaceGameplayFit.ts",
+        "src/races/hooks/useRaceRuntimeEffects.ts",
+        "src/races/hooks/useRaceSession.ts",
+        "src/races/live/__tests__/liveRaceDeliveryDeadline.test.ts",
+        "src/races/live/__tests__/liveRacePolling.test.ts",
+        "src/races/live/__tests__/liveRaceRetirement.test.ts",
+        "src/races/live/liveRaceDeliveryDeadline.ts",
+        "src/races/live/liveRacePolling.ts",
+        "src/races/live/liveRaceRetirement.ts",
+        "src/races/matchmaking/**",
+        "src/races/presentation/**",
+        "src/races/raceAnalytics.ts",
+        "src/races/recovery/**",
+        "src/races/rounds/**",
+        "src/races/testing/**"
+      ],
+      "exclude": [
+        "src/races/components/recorded/RaceTo10Game.tsx",
+        "src/races/components/gameplay/NativeAnswerInput.tsx",
+        "src/races/components/social/PlatformPlayerOverlay.tsx",
+        "src/races/hooks/live/**",
+        "src/races/hooks/useRaceAnswerEditor.ts",
+        "src/races/hooks/useRaceDialogFocus.ts",
+        "src/races/hooks/useRaceGameplayFit.ts",
+        "src/races/hooks/useRaceRuntimeEffects.ts",
+        "src/races/hooks/useRaceSession.ts"
+      ],
+      "threshold": {
+        "statements": 85,
+        "branches": 70,
+        "functions": 85,
+        "lines": 90
+      }
+    }
+  }
+}

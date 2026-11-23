@@ -1,4 +1,5 @@
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {StyleSheet, Text, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";

@@ -14,7 +14,7 @@ const output = path.resolve(process.env.ROCKET_REPORT_DIR ?? path.join(root, 'ar
 await mkdir(output, {recursive: true});
 const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/rocket-flight-'));
 const three = path.join(root, 'node_modules/three/src/Three.js');
-const sceneFile = path.join(root, 'src/web/play/SolarSystem.tsx');
+const sceneFile = path.join(root, "src/scenery/solar/components/SolarSystem.tsx");
 const facade = path.join(scratch, 'renderer.ts');
 let server, browser;
 const observations = [];
@@ -26,10 +26,10 @@ try {
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {SolarSystem} from ${JSON.stringify(sceneFile)};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root, 'src/web/observability/browserErrorReporter.ts'))};
-import {SOLAR_SYSTEM_CONFIG} from ${JSON.stringify(path.join(root, 'src/web/play/solarConfig.ts'))};
-import {createSolarGravityBodies} from ${JSON.stringify(path.join(root, 'src/web/play/solarGravity.ts'))};
-import {createRocketFlight} from ${JSON.stringify(path.join(root, 'src/web/play/solarRocketMotion.ts'))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root, "src/observability/browserErrorReporter.ts"))};
+import {SOLAR_SYSTEM_CONFIG} from ${JSON.stringify(path.join(root, "src/scenery/solar/model/solarConfig.ts"))};
+import {createSolarGravityBodies} from ${JSON.stringify(path.join(root, "src/scenery/solar/model/solarGravity.ts"))};
+import {createRocketFlight} from ${JSON.stringify(path.join(root, "src/scenery/solar/model/solarRocketMotion.ts"))};
 window.probe={errors:[],draws:0};
 window.observeGravity=()=>{const bodies=createSolarGravityBodies(SOLAR_SYSTEM_CONFIG),full=createRocketFlight({bodies,launchAt:0,variant:-1})(8);return bodies.filter(body=>body.name!=='Earth').map(body=>{const without=createRocketFlight({bodies:bodies.filter(other=>other!==body),launchAt:0,variant:-1})(8);return {body:body.name,displacementDifference:Math.hypot(full.x-without.x,full.y-without.y,full.z-without.z)};});};
 configureBrowserErrorReporter(error=>window.probe.errors.push(String(error)));

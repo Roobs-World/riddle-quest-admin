@@ -863,8 +863,8 @@ try {
   };
   if (!skipTests) {
     for (const testPath of [
-      "src/web/play/__tests__/hostedBrowser.jest-playwright.test.ts",
-      "src/web/play/__tests__/musicStart.jest-playwright.test.ts",
+      "src/app/components/__tests__/hostedBrowser.jest-playwright.test.ts",
+      "src/gameplay/hooks/browser/__tests__/musicStart.jest-playwright.test.ts",
       "platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
     ]) {
       runNode(

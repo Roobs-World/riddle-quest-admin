@@ -24,7 +24,7 @@ import {
   type StartRaceRunRequest,
   type SubmitRaceGuessRequest,
   type SubmitRaceGuessResponse,
-} from "../../../src/core/race/index.js";
+} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {assertRaceMatchOfferForStart} from "./raceMatchOffer";
 import {

@@ -14,13 +14,13 @@ const output = path.resolve(root, "artifacts/race-overlay-ownership");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {projectRaceOutcome} from ${JSON.stringify(path.join(root,'src/web/play/race/logic/racePresentation.ts'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
 import {RetainedRaceHarness} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {GameFrameApp} from ${JSON.stringify(path.join(root,'src/web/play/GameFrameApp.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
+import {GameFrameApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/GameFrameApp.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 const mode=new URL(location.href).searchParams.get('mode'),owner='overlay-owner';
 applyPlayerPreferences({locale:'en',onboardingComplete:mode==='reward',muted:true,reducedMotion:true});
 if(mode==='reward'){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',owner),'seen');localStorage.setItem(createTooltipTourStorageKey('gameTour',owner),'seen');}
@@ -45,13 +45,13 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
-    if (process.env.RACE_OVERLAY_BASELINE === "1" && id.endsWith('/play/GameFrameApp.tsx'))
+    if (process.env.RACE_OVERLAY_BASELINE === "1" && id.endsWith('/gameplay/components/GameFrameApp.tsx'))
       return readFile(path.join(output,'prior-game-frame.tsx'),'utf8').then(code=>({code:code.replace('const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);','const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession); window.frameState=state;'),map:null}));
-    if (process.env.RACE_OVERLAY_BASELINE === "1" && id.endsWith('/play/guidance/GuidanceOverlay.tsx'))
+    if (process.env.RACE_OVERLAY_BASELINE === "1" && id.endsWith('/onboarding/components/GuidanceOverlay.tsx'))
       return readFile(path.join(output,'prior-guidance.tsx'),'utf8').then(code=>({code:code.replace(/(const guidanceActive =[^;]+;)/,'$1 window.guidancePending=onboardingStep!==null;'),map:null}));
-    if(id.endsWith('/play/GameFrameApp.tsx'))return {code:code.replace('const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);','const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession); window.frameState=state;'),map:null};
-    if(id.endsWith('/play/guidance/GuidanceOverlay.tsx'))return {code:code.replace(/(const guidanceActive =[^;]+;)/,'$1 window.guidancePending=onboardingStep!==null;'),map:null};
-    if(id.endsWith('/play/SolarSystem.tsx'))return {code:'export function SolarSystem(){return null;}',map:null};
+    if(id.endsWith('/gameplay/components/GameFrameApp.tsx'))return {code:code.replace('const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);','const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession); window.frameState=state;'),map:null};
+    if(id.endsWith('/onboarding/components/GuidanceOverlay.tsx'))return {code:code.replace(/(const guidanceActive =[^;]+;)/,'$1 window.guidancePending=onboardingStep!==null;'),map:null};
+    if(id.endsWith('/scenery/solar/components/SolarSystem.tsx'))return {code:'export function SolarSystem(){return null;}',map:null};
     return null;
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});
   server = createServer(async (request, response) => {

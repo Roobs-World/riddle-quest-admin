@@ -1,4 +1,4 @@
-import type {OverlayCapability, PlatformResult} from "../../../../src/web/platform/types";
+import type {OverlayCapability, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantSdk, FacebookOverlayView} from "./fbinstant";
 
 /** Defines the profile picture style value. */

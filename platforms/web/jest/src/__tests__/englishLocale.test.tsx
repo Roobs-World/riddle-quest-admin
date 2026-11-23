@@ -3,9 +3,9 @@ import {renderToString} from "react-dom/server";
 
 jest.mock("../../platform/webTargetEnvironment", () => ({isFacebookWebTarget: false, isJestWebTarget: true}));
 
-import {detectDeviceLanguage, getCurrentLocale, setLocaleAndWait} from "../../../../../src/web/play/i18n";
-import {applyPlayerPreferences, PLAYER_PREFERENCE_STORAGE_KEYS, setPlayerLocale, subscribeToPlayerPreferenceChanges} from "../../../../../src/web/play/playerPreferences";
-import {SettingsModalPage} from "../../../../../src/web/play/modalPages/settings/SettingsModalPage";
+import {detectDeviceLanguage, getCurrentLocale, setLocaleAndWait} from "../../../../../src/localization/browser/i18n";
+import {applyPlayerPreferences, PLAYER_PREFERENCE_STORAGE_KEYS, setPlayerLocale, subscribeToPlayerPreferenceChanges} from "../../../../../src/settings/browser/playerPreferences";
+import {SettingsModalPage} from "../../../../../src/settings/components/SettingsModalPage";
 
 /** Browser storage keeps restoration and later persistence observable. */
 class MemoryStorage implements Storage {

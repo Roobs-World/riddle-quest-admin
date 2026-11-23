@@ -1,7 +1,8 @@
 import {palette} from "../theme";
 import {AndroidReferralController} from "../referrals/androidReferralController";
 import type {AndroidReferralBackend} from "../referrals/androidReferrals";
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useEffect, useMemo, useSyncExternalStore} from "react";
 import {Text} from "react-native";
 import {shareAndroidInvite} from "../hosted/inviteShare";

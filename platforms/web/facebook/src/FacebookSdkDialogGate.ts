@@ -1,4 +1,4 @@
-import type {PlatformResult} from "../../../../src/web/platform/types";
+import type {PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantSdk} from "./fbinstant";
 
 /** Provider UI occupancy is scoped to the SDK instance, never another platform. */

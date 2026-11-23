@@ -1,1 +1,1 @@
-import "../../../../src/web/standalone/main";
+import "../../../../src/app/standalone/main";

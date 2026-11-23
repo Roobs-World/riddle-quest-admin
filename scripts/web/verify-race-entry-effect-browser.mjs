@@ -30,11 +30,11 @@ createRoot(document.getElementById('root')).render(<RaceTo10Game ownerId="owner-
 let browser,server;
 try{
  await build({plugins:[{name:'expose-entry-effect-session',enforce:'pre',transform(code,id){
-  if(process.env.RACE_ENTRY_EFFECT_NEGATIVE_CONTROL==='1'&&id.endsWith('/play/race/RaceSession.ts')){
+  if(process.env.RACE_ENTRY_EFFECT_NEGATIVE_CONTROL==='1'&&id.endsWith('/races/controllers/RaceSession.ts')){
    const guard='this.analytics("race_link_entered");\n        if (!current()) return;';
    assert(code.includes(guard));return {code:code.replace(guard,'this.analytics("race_link_entered");'),map:null};
   }
-  if(!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;
+  if(!id.endsWith('/races/hooks/useRaceSession.ts'))return null;
   assert(code.includes('const session = sessionRef.current;'));
   return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current;globalThis.testRaceSession=session;'),map:null};
  }}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});

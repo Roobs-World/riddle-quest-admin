@@ -14,7 +14,7 @@ jest.mock("firebase/app-check", () => ({
   },
   setTokenAutoRefreshEnabled: (...args: unknown[]) => mockSetTokenAutoRefreshEnabled(...args),
 }));
-jest.mock("../../firebase", () => ({firebaseApp: {name: "firebase-app"}}));
+jest.mock("../../../../../src/platform/firebase/browserClient", () => ({firebaseApp: {name: "firebase-app"}}));
 
 describe("Jest Firebase App Check adapter", () => {
   /** Provides environment behavior. */
@@ -38,7 +38,7 @@ describe("Jest Firebase App Check adapter", () => {
       __RIDDLE_QUEST_BROWSER_TEST__?: boolean;
     },
   ) => {
-    jest.doMock("../../test/firebaseEnvironmentMock", () => ({
+    jest.doMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock", () => ({
       firebaseEnvironment: {...environment, ...overrides},
     }));
     if (windowValue) {
@@ -61,7 +61,7 @@ describe("Jest Firebase App Check adapter", () => {
 
   afterEach(() => {
     Reflect.deleteProperty(globalThis, "window");
-    jest.dontMock("../../test/firebaseEnvironmentMock");
+    jest.dontMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock");
   });
 
   it("attests before enabling token refresh", async () => {
@@ -126,7 +126,7 @@ describe("Jest Firebase App Check adapter", () => {
 describe("Jest Firebase App Check warm-up", () => {
   /** Loads a fresh adapter with production attestation configured. */
   const loadWarmAdapter = async () => {
-    jest.doMock("../../test/firebaseEnvironmentMock", () => ({
+    jest.doMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock", () => ({
       firebaseEnvironment: {appCheckSiteKey: "site-key", jestRuntime: "1", platformTarget: "jest", production: true},
     }));
     Object.defineProperty(globalThis, "window", {configurable: true, value: {location: {search: ""}}});
@@ -142,7 +142,7 @@ describe("Jest Firebase App Check warm-up", () => {
 
   afterEach(() => {
     Reflect.deleteProperty(globalThis, "window");
-    jest.dontMock("../../test/firebaseEnvironmentMock");
+    jest.dontMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock");
   });
 
   it("shares one early attestation with the authenticated readiness gate", async () => {

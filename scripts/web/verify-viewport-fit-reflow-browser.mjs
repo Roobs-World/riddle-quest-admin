@@ -10,7 +10,7 @@ const mode=process.env.FIT_REFLOW_REACT_MODE??'development',baseline=process.env
 const output=path.resolve(process.env.FIT_REFLOW_REPORT_DIR??path.join(root,'builds/test-evidence/viewport-fit-reflow-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/fit-reflow-'));
-const stylesEntry=baseline?path.join(scratch,'styles-baseline.css'):path.join(root,'src/web/styles.css');
+const stylesEntry=baseline?path.join(scratch,'styles-baseline.css'):path.join(root,"src/app/styles/game.css");
 if(baseline){
  // CSS @imports are read by Vite's CSS pipeline, bypassing module load hooks.
  for(const name of ['foundation','guidance']){
@@ -27,14 +27,14 @@ import {commitJestStartupSession} from ${JSON.stringify(path.join(root,'platform
 import {JestSdkPlatform} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/JestSdkPlatform.ts'))};
 import {createNotificationOperationGate} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/notifications/operationGate.ts'))};
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,'src/web/play/PlayerSaveRecoveryLayout.tsx'))};
-import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {applyPlayerPreferences,setPlayerHighContrast,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
+import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,"src/accounts/components/recovery/PlayerSaveRecoveryLayout.tsx"))};
+import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {applyPlayerPreferences,setPlayerHighContrast,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
 import ${JSON.stringify(stylesEntry)};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;const fixtureLocale=new URL(location.href).searchParams.get('locale')??'en';const fixtureReducedMotion=new URL(location.href).searchParams.get('motion')!=='normal';window.copy=()=>({message:tr('GameScreenAlerts.PROGRESS_UNSAVED_MESSAGE'),retry:tr('CommonButtons.RETRY')});
 window.probe={saves:[],guesses:0,completions:0,errors:[],unhandled:[]};
@@ -68,12 +68,12 @@ const hosted=createHostedPlaySession({hostServices:services,economyAvailable:fal
 return <div data-host-epoch={epoch} style={{height:"100%"}}>{ready?<PlayerSaveRecoveryLayout recovery={new URL(location.href).searchParams.has('unsaved')?layoutRecovery:writes.recovery}><PlayHostApp key={epoch} session={hosted}/></PlayerSaveRecoveryLayout>:<p>Initializing fixture SDK</p>}</div>;
 }
 
-import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,'src/web/platform/PlayerSaveRecovery.ts'))};
+import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};
 const layoutRecovery=new PlayerSaveRecovery(async()=>{},()=>false);layoutRecovery.attach();window.layoutRecovery=layoutRecovery;
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
-import {RaceGameplay} from ${JSON.stringify(path.join(root,'src/web/play/race/components/RaceGameplay.tsx'))};
-import {useRaceGameplayFit} from ${JSON.stringify(path.join(root,'src/web/play/race/hooks/useRaceGameplayFit.ts'))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
+import {RaceGameplay} from ${JSON.stringify(path.join(root,"src/races/components/gameplay/RaceGameplay.tsx"))};
+import {useRaceGameplayFit} from ${JSON.stringify(path.join(root,"src/races/hooks/useRaceGameplayFit.ts"))};
 function RaceFixture(){const screenRef=React.useRef(null),viewportRef=React.useRef(null),gameplayRef=React.useRef(null);const [ready,setReady]=React.useState(false),[letters,setLetters]=React.useState([]);React.useEffect(()=>{void setLocaleAndWait(fixtureLocale).then(()=>setReady(true));},[]);useRaceGameplayFit({active:ready,screenRef,viewportRef,gameplayRef});
 const run={runId:'layout-race',role:'creator',status:'active',rules:{targetCorrect:10,hintPenaltyMs:30000,skipPenaltyMs:30000},serverNowMs:Date.now(),startsAtMs:Date.now(),locale:fixtureLocale,correctCount:0,totalPenaltyMs:0,wallElapsedMs:0,adjustedElapsedMs:0,events:[],opponent:{displayName:'Opponent',events:[],adjustedFinishMs:0},currentRiddle:{riddleId:'layout-riddle',text:'What has keys but cannot open doors?',answerLength:5,position:0,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]}};
 window.raceLetters=()=>letters;const add=text=>setLetters(prior=>[...prior,...text.toUpperCase()].slice(0,5));return <section ref={screenRef} className='race-screen race-screen-gameplay' role='dialog'>{ready?<RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef} run={run} adjustedNow={0} opponentCorrect={0} feedback={null} coins={100} currentLetters={letters} activeSlotIndex={letters.length} guesses={[]} letterStates={{}} pending={false} allowTypingWhilePending={false} onClose={()=>{}} onSelectSlot={()=>{}} onLetter={add} onText={add} onBackspace={()=>setLetters(x=>x.slice(0,-1))} onHint={()=>{}} onSubmit={()=>window.probe.guesses++} onSkip={()=>{}}/>:null}</section>;}

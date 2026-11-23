@@ -115,7 +115,7 @@ import {
   type SinglePlayerSessionState,
 } from "../gameplay/singlePlayerSession";
 import {getCompletionBoundAuthoritativeSession} from "../gameplay/singlePlayerCompletionBinding";
-import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 
 /** Defines the user id value. */
 const USER_ID = "player-1";

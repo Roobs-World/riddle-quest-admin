@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 /** Invite copy for every supported device language. */
 const COPY = {
   "en": {

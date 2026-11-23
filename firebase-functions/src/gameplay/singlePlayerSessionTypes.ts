@@ -1,9 +1,9 @@
-import type {EconomyDifficulty} from "../../../src/core/game/index.js";
+import {type EconomyDifficulty} from "../../../src/progression/economy/rewardRules.js";
 import type {PlayerProgress} from "../validation/firestoreSchemas";
 import type {
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 
 /** Authoritative response for one replay-safe hint purchase. */
 export type AuthoritativeHintResult = {

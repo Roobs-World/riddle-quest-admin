@@ -91,12 +91,12 @@ The individual commands remain useful while diagnosing a failed gate:
 
 ```bash
 pnpm build:jest
-PORTAL_BROWSER_TESTS=1 pnpm exec jest --selectProjects web \
+PORTAL_BROWSER_TESTS=1 pnpm exec jest --selectProjects interface \
   --config jest.config.cjs \
-  src/web/play/__tests__/hostedBrowser.jest-playwright.test.ts \
+  src/app/components/__tests__/hostedBrowser.jest-playwright.test.ts \
   --runInBand
-pnpm test:web
-pnpm test:core
+pnpm test:interface
+pnpm test:rules
 pnpm --dir firebase-functions test
 pnpm --dir firebase-functions lint
 pnpm build

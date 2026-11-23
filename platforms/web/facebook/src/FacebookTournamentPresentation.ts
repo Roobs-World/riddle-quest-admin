@@ -1,7 +1,7 @@
-import type {ListFacebookTournamentResponse, RaceLocale, RecordFacebookTournamentRunResponse} from "../../../../src/core/race";
-import type {PlatformResult} from "../../../../src/web/platform/types";
-import {tr} from "../../../../src/web/play/i18n";
-import {captureVictoryShareImage} from "../../../../src/web/play/sharing/shareImages";
+import type {ListFacebookTournamentResponse, RaceLocale, RecordFacebookTournamentRunResponse} from "../../../../src/races/contracts/index";
+import type {PlatformResult} from "../../../../src/platform/contracts/capabilities";
+import {tr} from "../../../../src/localization/browser/i18n";
+import {captureVictoryShareImage} from "../../../../src/sharing/browser/shareImages";
 import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import type {FacebookInstantSdk, FacebookInstantTournament} from "./fbinstant";
 import {parseFacebookTournamentResponse, parseFacebookTournamentRecordResponse} from "./facebookCallableResponses";

@@ -12,7 +12,7 @@
       ".build-source",
       "coverage",
       "artifacts",
-      "content",
+      "**/firebase-functions/content",
       "__tests__",
       "__mocks__",
       "scripts",

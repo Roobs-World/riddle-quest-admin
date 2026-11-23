@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
-import {LiveRaceViewSchema, type JoinLiveRace} from "../../../../../src/core/race";
+import {LiveRaceViewSchema, type JoinLiveRace} from "../../../../../src/races/contracts/index";
 
 /** Exercises chosen-context private play through the built Facebook entry, SDK and authenticated transport. */
 export async function verifyContextChallenges(page: Page): Promise<void> {

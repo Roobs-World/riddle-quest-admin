@@ -1,5 +1,7 @@
-import type {HostServices, WebGameMode} from "../../../../../src/hosted/hostTypes";
-import {canShowLatinShortcut, youtubeText, type YouTubeCopyKey, type YouTubeLocale} from "../../../../../src/solo";
+import type {HostServices, WebGameMode} from "../../../../../src/platform/contracts/hostServices";
+import {canShowLatinShortcut} from "../../../../../src/gameplay/input/localInput";
+import {youtubeText, type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useRef} from "react";
 import {Pressable, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";

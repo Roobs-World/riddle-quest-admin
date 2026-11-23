@@ -14,16 +14,16 @@ try{
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useGameMessageRouter} from ${JSON.stringify(path.join(portal,'src/web/play/useGameMessageRouter.ts'))};
-import {useGameMessageListener} from ${JSON.stringify(path.join(portal,'src/web/play/game/hooks/useGameBridgeLifecycle.ts'))};
-import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(portal,'src/web/play/localBridge.ts'))};
-import {useProvisionalPlayRecovery} from ${JSON.stringify(path.join(portal,'src/web/play/game/hooks/useProvisionalPlayRecovery.ts'))};
-import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'src/hosted/play/gameSession.ts'))};
-import {createPendingPlayJournalStorage} from ${JSON.stringify(path.join(portal,'src/hosted/play/pendingPlayJournalDiagnostics.ts'))};
-import {pendingPlayScope} from ${JSON.stringify(path.join(portal,'src/hosted/play/pendingGuessJournal.ts'))};
-import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal,'src/web/play/GameFrameControls.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(portal,'src/web/styles.css'))};
+import {useGameMessageRouter} from ${JSON.stringify(path.join(portal,"src/platform/bridge/browser/useGameMessageRouter.ts"))};
+import {useGameMessageListener} from ${JSON.stringify(path.join(portal,"src/platform/bridge/browser/useGameBridgeLifecycle.ts"))};
+import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(portal,"src/platform/bridge/browser/localBridge.ts"))};
+import {useProvisionalPlayRecovery} from ${JSON.stringify(path.join(portal,"src/gameplay/hooks/browser/useProvisionalPlayRecovery.ts"))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,"src/gameplay/session/gameSession.ts"))};
+import {createPendingPlayJournalStorage} from ${JSON.stringify(path.join(portal,"src/gameplay/session/journal/pendingPlayJournalDiagnostics.ts"))};
+import {pendingPlayScope} from ${JSON.stringify(path.join(portal,"src/gameplay/session/journal/pendingGuessJournal.ts"))};
+import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal,"src/gameplay/components/GameFrameControls.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(portal,"src/app/styles/game.css"))};
 window.setTime=value=>{now=value;};window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const [replacement,operation]=new URLSearchParams(location.search).get('scenario').split(':');window.probe={messages:[],journalWrites:[],routed:0,leases:[],intervals:[],timeouts:[],actions:[],errors:[],unhandled:[],passiveRetired:false};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 const user={uid:'Alice',isAnonymous:true,accountGeneration:1},profile={username:'Alice',coins:570,level:2,xp:100,winStreak:1,gamesPlayed:2,wins:1,achievements:[],classicIndex:1};const first={riddleId:'classic_1',text:'What has keys but cannot open doors?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000001',gameMode:'classic',index:1,attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false,evaluation:{answer:'piano',locale:'en'}};

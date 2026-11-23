@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
-import type {RaceLocale} from "../../../../../src/core/race/index.js";
+import type {RaceLocale} from "../../../../../src/races/contracts/index.js";
 import {facebookContextKey} from "./facebookContextCompetition";
 import {parseFacebookContextCompetition} from "./facebookContextService";
 import {isFacebookFirebaseUid} from "../facebookSecurity";

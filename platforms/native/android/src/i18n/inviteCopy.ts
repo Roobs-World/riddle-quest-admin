@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 
 /** Shared race and referral guidance keeps the original link available after installation. */
 const guidance = {

@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const panel=path.join(root,'src/web/play/race/components/LiveRaceDirectInvite.tsx');
+const panel=path.join(root,"src/races/components/invitations/LiveRaceDirectInvite.tsx");
 const baseline=process.env.LIVE_DIRECT_INVITE_BASELINE_SOURCE;
 const output=path.resolve(process.env.LIVE_DIRECT_INVITE_REPORT_DIR??path.join(root,'builds/test-evidence/game-live-invite-2026-10-03'));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
@@ -16,8 +16,8 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceDirectInvite} from ${JSON.stringify(panel)};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
 window.probe={calls:[],pending:[]};
 function provider(generation){return {sendChallenge:input=>{window.probe.calls.push({input:{...input},generation});
   return new Promise((resolve,reject)=>window.probe.pending.push({resolve,reject}));}};}

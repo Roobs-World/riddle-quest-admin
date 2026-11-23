@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue, Timestamp} from "firebase-admin/firestore";
-import {RACE_RULES, RACE_ACHIEVEMENT_IDS} from "../../../../src/core/race/index.js";
+import {RACE_RULES, RACE_ACHIEVEMENT_IDS} from "../../../../src/races/contracts/index.js";
 import {getRaceOutcomeForUser, resumeRaceRunForUser, publishRaceChallengeForUser} from "../../race/raceService";
 import {raceOutcome, type RaceRunRecord} from "../../race/raceEngine";
 import {deliverRaceSettlement} from "../../race/raceSettlementDelivery";

@@ -17,11 +17,11 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {observeFirebaseLiveRace} from ${JSON.stringify(path.join(root,'src/web/play/firebaseLiveRaceSignals.ts'))};
-import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {liveRacePollInterval} from ${JSON.stringify(path.join(root,'src/web/play/race/logic/liveRacePolling.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {observeFirebaseLiveRace} from ${JSON.stringify(path.join(root,"src/races/transport/browser/firebaseLiveRaceSignals.ts"))};
+import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {liveRacePollInterval} from ${JSON.stringify(path.join(root,"src/races/live/liveRacePolling.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 const scenario=new URLSearchParams(location.search).get('scenario')??'eof',revision='aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 window.probe={streams:[],notifications:0,statuses:[],calls:[],joins:0,releases:[],errors:[],unhandled:[],view:null};
 window.addEventListener('error',e=>probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>probe.unhandled.push(String(e.reason)));
@@ -38,7 +38,7 @@ const transport={join:async()=>{probe.joins++;return snapshot();},update:async i
 function App(){const [mounted,setMounted]=React.useState(true),[epoch,setEpoch]=React.useState(0);return <><nav style={{position:'fixed',bottom:0,left:0,zIndex:10000,background:'white'}}><button data-parent onClick={()=>setEpoch(x=>x+1)}>Update parent</button><button data-break onClick={()=>{probe.breakStream=true;}}>Break stream</button><button data-retire onClick={()=>setMounted(false)}>Retire race</button><span>{epoch}</span></nav>{mounted?<LiveRaceGame transport={transport} locale='en' categoryId='mixed' ownerId='Alice' coins={100} onClose={()=>setMounted(false)}/>:<p data-retired>Retired fixture</p>}</>;}
 createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'live-watchdog-injection',enforce:'pre',async load(id){if(id===path.join(root,'src/web/firebase.ts'))return 'export const updateLiveRace={stream:(...args)=>window.fixtureStream(...args)};';if(id.endsWith('/firebaseLiveRaceSignals.ts')){const source=await readFile(baseline??id,'utf8');assert(source.includes('15_000'));assert(source.includes('500 * 2'));return source.replaceAll('15_000','300').replace('500 * 2','40 * 2');}if(id.endsWith('/useLiveRaceSignals.ts')){const source=await readFile(id,'utf8');assert(source.includes('return connected;'));return source.replace('return connected;','window.signalRef=connected;return connected;');}}}],build:{outDir:'dist',minify:false}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'live-watchdog-injection',enforce:'pre',async load(id){if(id===path.join(root,"src/platform/firebase/browserClient.ts"))return 'export const updateLiveRace={stream:(...args)=>window.fixtureStream(...args)};';if(id.endsWith('/firebaseLiveRaceSignals.ts')){const source=await readFile(baseline??id,'utf8');assert(source.includes('15_000'));assert(source.includes('500 * 2'));return source.replaceAll('15_000','300').replace('500 * 2','40 * 2');}if(id.endsWith('/useLiveRaceSignals.ts')){const source=await readFile(id,'utf8');assert(source.includes('return connected;'));return source.replace('return connected;','window.signalRef=connected;return connected;');}}}],build:{outDir:'dist',minify:false}});
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('content-type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});const url='http://127.0.0.1:'+server.address().port;
  if(process.env.LIVE_WATCHDOG_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}

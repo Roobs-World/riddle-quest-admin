@@ -1,5 +1,5 @@
-import {AcceptedGuessesSchema} from "../../../src/core/validation/acceptedGuesses.js";
-import {splitGraphemes} from "../../../src/core/game/index.js";
+import {AcceptedGuessesSchema} from "../../../src/gameplay/contracts/acceptedGuesses.js";
+import {splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {baseAttemptLimit} from "./singlePlayerGuessTransition";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";

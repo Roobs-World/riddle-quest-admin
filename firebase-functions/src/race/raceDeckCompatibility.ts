@@ -1,5 +1,5 @@
-import {splitGraphemes} from "../../../src/core/game/index.js";
-import {RACE_ANSWER_TEXT_UNITS, RACE_DECK_SIZE, RaceLocaleSchema, RacePreloadedRiddleSchema, type RaceLocale} from "../../../src/core/race/index.js";
+import {splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
+import {RACE_ANSWER_TEXT_UNITS, RACE_DECK_SIZE, RaceLocaleSchema, RacePreloadedRiddleSchema, type RaceLocale} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import type {RaceRiddleSnapshot, RaceRunRecord} from "./raceEngine";
 

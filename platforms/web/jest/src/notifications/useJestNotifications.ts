@@ -7,7 +7,7 @@ import {
   RACE_RESULTS_REMINDER_ID,
   replaceEngagementReminders,
 } from "./engagement";
-import {captureBrowserException} from "../../../../../src/web/observability/browserErrorReporter";
+import {captureBrowserException} from "../../../../../src/observability/browserErrorReporter";
 import {notificationAsset} from "./inlineAsset";
 
 /** Describes with platform activity. */

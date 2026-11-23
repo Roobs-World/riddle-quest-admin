@@ -15,11 +15,11 @@ const output = path.resolve(root, "artifacts/race-provider-confirmed-outcome");
 await mkdir(output, {recursive: true});
 const source = `
 import React,{useState,useEffect} from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
-import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/web/play/race/logic/racePresentation.ts"))};
+import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
 const now=Date.now(),view={runId:'unconfirmed-run',role:'challenger',status:'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,
  challengeId:'recorded-challenge',correctCount:0,wallElapsedMs:1000,totalPenaltyMs:0,adjustedElapsedMs:1000,
  currentRiddle:{riddleId:'question-0',text:'A clue',answerLength:5,position:0,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[]},
@@ -45,7 +45,7 @@ try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
     if (process.env.RACE_PROVIDER_OUTCOME_BASELINE === "1" && id.endsWith("/scripts/fixtures/RetainedRaceHarness.tsx"))
       return readFile(path.join(output,"prior-race-game.tsx"),"utf8").then(code=>({code,map:null}));
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

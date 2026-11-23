@@ -1,4 +1,4 @@
-import type {YouTubeSdkPort} from "../../../../src/web/playable/types";
+import type {YouTubeSdkPort} from "../../../../src/platform/contracts/localGamePolicy";
 /** Describes you tube sdk global. */
 type YouTubeSdkGlobal = Readonly<{
   /** Stores in playables env. */

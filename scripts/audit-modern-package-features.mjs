@@ -11,7 +11,7 @@ const [viteEntry, webTargetViteConfig, projectPackage, projectJest, functionsJes
     read("firebase-functions/jest.config.js"),
     read("firebase-functions/package.json"),
     read("firebase-functions/src/riddles/openaiService.ts"),
-    read("src/core/race/raceSchemas.ts"),
+    read("src/races/contracts/raceSchemas.ts"),
   ]);
 
 const failures = [];

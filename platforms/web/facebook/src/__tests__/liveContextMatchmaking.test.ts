@@ -1,6 +1,6 @@
 import {createFacebookContextMatchmaking} from "../liveContextMatchmaking";
-import type {JoinLiveRace, RaceLocale} from "../../../../../src/core/race";
-import type {MatchmakingCapability} from "../../../../../src/web/platform/types";
+import type {JoinLiveRace, RaceLocale} from "../../../../../src/races/contracts/index";
+import type {MatchmakingCapability} from "../../../../../src/platform/contracts/capabilities";
 
 /** Real target wrapper exercises immutable preparation independently of transport delivery. */
 function fixture() {

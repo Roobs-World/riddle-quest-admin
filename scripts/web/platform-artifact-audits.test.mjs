@@ -70,7 +70,7 @@ test("Jest bundles English copy without other targets' locale chunks", async () 
       build: {
         write: false,
         emptyOutDir: false,
-        lib: {entry: path.join(packageDirectory, "src/web/play/i18n.ts"), formats: ["es"]},
+        lib: {entry: path.join(packageDirectory, "src/localization/browser/i18n.ts"), formats: ["es"]},
         rolldownOptions: {external: ["react"]},
       },
     });
@@ -81,10 +81,10 @@ test("Jest bundles English copy without other targets' locale chunks", async () 
     assert.ok(modules.some(id => id.endsWith("/src/locales/en/settings.json")), target);
     if (target === "jest") {
       assert.equal(modules.some(id => /\/src\/locales\/(?!en\/)/u.test(id)), false);
-      assert.equal(modules.some(id => id.endsWith("/src/web/play/localeModules.ts")), false);
+      assert.equal(modules.some(id => id.endsWith("/src/localization/browser/localeModules.ts")), false);
     } else {
       assert.ok(modules.some(id => id.endsWith("/src/locales/fr/settings.json")));
-      assert.ok(modules.some(id => id.endsWith("/src/web/play/localeModules.ts")));
+      assert.ok(modules.some(id => id.endsWith("/src/localization/browser/localeModules.ts")));
     }
   }
 });

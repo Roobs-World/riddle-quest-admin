@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES, type SubmitRaceGuessResponse} from "../../../../src/core/race/index.js";
+import {RACE_RULES, type SubmitRaceGuessResponse} from "../../../../src/races/contracts/index.js";
 import {submitRaceGuessForUser} from "../../race/raceService";
 import {requestDocumentId} from "../../race/raceSetupService";
 

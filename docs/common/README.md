@@ -5,10 +5,10 @@ These modules and operations support the platform targets. Provider-specific SDK
 | Module | Documentation |
 | --- | --- |
 | Project | [Setup and development](project/README.md), [task tracker](project/todo.html) |
-| Core | [Domain glossary, game economy and evidence](core/README.md) |
-| Solo | [Solo controller documentation and evidence](solo/README.md) |
+| Domain and economy | [Domain glossary, game economy and evidence](core/README.md) |
+| Solo | [Local gameplay documentation and evidence](solo/README.md) |
 | Hosted | [Race architecture, multiplayer operations and evidence](hosted/README.md) |
-| Web game | [Browser UI, visual parity and evidence](web-game/README.md) |
+| Web game | [Feature components, visual parity and evidence](web-game/README.md) |
 | Firebase Functions | [Backend layout, operations and evidence](firebase-functions/README.md) |
 | Architecture | [Platform ownership, integration matrix and decisions](architecture/README.md) |
 | Development | [Packages, CI cost controls and task declarations](development/README.md) |

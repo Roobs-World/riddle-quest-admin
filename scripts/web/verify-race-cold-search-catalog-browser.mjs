@@ -13,10 +13,10 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {raceMatchFailure} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {raceMatchFailure} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
-import {RACE_RECOVERY_KEY,RACE_RECOVERY_TTL_MS} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
+import {RACE_RECOVERY_KEY,RACE_RECOVERY_TTL_MS} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 const field=new URLSearchParams(location.search).get('case'),authority=createFakeRaceServices();
 window.calls=[];window.provider={find:async request=>{window.calls.push(request);if(field==='retired'){window.currentProvider=undefined;return {status:'cancelled'};}if(field==='empty')return {status:'success',value:{status:'empty',locale:'en'}};if(field==='failure')return {status:'retryable-failure',failure:raceMatchFailure('temporarily-unavailable',1000)};return {status:'cancelled'};}};
 window.currentProvider=window.provider;window.failResolver=false;window.newer=false;window.recoveryKey=RACE_RECOVERY_KEY;
@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')).render(<RaceTo10Game ownerId="owner-
 `);
 let browser,server;
 try{
- await build({plugins:[{name:'expose-existing-attempt-session',enforce:'pre',transform(code,id){if(!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;assert(code.includes('const session = sessionRef.current;'));return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current;globalThis.testRaceSession=session;').replace('getMatchmaking: () => optionsRef.current.getMatchmaking?.(),','getMatchmaking: () => globalThis.lookup(),'),map:null};}}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});
+ await build({plugins:[{name:'expose-existing-attempt-session',enforce:'pre',transform(code,id){if(!id.endsWith('/races/hooks/useRaceSession.ts'))return null;assert(code.includes('const session = sessionRef.current;'));return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current;globalThis.testRaceSession=session;').replace('getMatchmaking: () => optionsRef.current.getMatchmaking?.(),','getMatchmaking: () => globalThis.lookup(),'),map:null};}}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});
  server=createServer(async(request,response)=>{try{const url=new URL(request.url,'http://localhost'),file=path.join(scratch,'dist',url.pathname==='/'?'index.html':url.pathname);response.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');response.end(await readFile(file));}catch{response.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{})});

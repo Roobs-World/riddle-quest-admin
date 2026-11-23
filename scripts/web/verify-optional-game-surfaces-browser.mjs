@@ -18,16 +18,16 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,'src/web/FatalErrorBoundary.tsx'))};
-import {useGameSurfaces} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameSurfaces.ts'))};
-import {applyPlayerPreferences,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,"src/app/components/recovery/FatalErrorBoundary.tsx"))};
+import {useGameSurfaces} from ${JSON.stringify(path.join(root,"src/app/hooks/useGameSurfaces.ts"))};
+import {applyPlayerPreferences,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,"src/observability/browserErrorReporter.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={errors:[],unhandled:[],saves:[],guesses:0,completions:0,sceneRenders:0,raceImports:0,hookRenders:0,playable:0};
 window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
@@ -59,10 +59,10 @@ try{
  for(const variant of ['download','render','healthy']){
   await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(reactMode)},
    plugins:[{name:'optional-surface-fixture',enforce:'pre',async load(id){
-    if(baseline&&id===path.join(root,'src/web/play/GameFrameApp.tsx'))return readFile(path.join(baseline,'GameFrameApp.before.txt'),'utf8');
-    if(baseline&&id===path.join(root,'src/web/play/game/hooks/useGameSurfaces.ts'))return readFile(path.join(baseline,'useGameSurfaces.before.txt'),'utf8');
-    if(id===path.join(root,'src/web/play/race/RaceTo10Game.tsx'))return `window.probe.raceImports++;export function RaceTo10Game(){return null;}`;
-    if(id===path.join(root,'src/web/play/SolarSystem.tsx')&&variant!=='download')return variant==='render'
+    if(baseline&&id===path.join(root,"src/gameplay/components/GameFrameApp.tsx"))return readFile(path.join(baseline,'GameFrameApp.before.txt'),'utf8');
+    if(baseline&&id===path.join(root,"src/app/hooks/useGameSurfaces.ts"))return readFile(path.join(baseline,'useGameSurfaces.before.txt'),'utf8');
+    if(id===path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))return `window.probe.raceImports++;export function RaceTo10Game(){return null;}`;
+    if(id===path.join(root,"src/scenery/solar/components/SolarSystem.tsx")&&variant!=='download')return variant==='render'
      ?`export function SolarSystem(){window.probe.sceneRenders++;throw Error('decorative-render-failed');}`
      :`import React from 'react';export function SolarSystem({paused}){window.probe.sceneRenders++;return React.createElement('div',{'data-testid':'solar-system','data-paused':paused?'yes':'no'});}`;
    }}],build:{outDir:'dist',minify:false}});

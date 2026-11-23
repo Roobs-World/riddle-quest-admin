@@ -1,5 +1,5 @@
 import {Timestamp} from "firebase-admin/firestore";
-import {RACE_DECK_SIZE} from "../../../../src/core/race/index.js";
+import {RACE_DECK_SIZE} from "../../../../src/races/contracts/index.js";
 import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {updateLiveRaceForUser} from "../../race/raceLiveService";

@@ -1,10 +1,4 @@
-import {
-  DAILY_STREAK_BONUS,
-  SOLO_BONUS_COINS,
-  SOLO_COIN_COSTS,
-  SOLO_WIN_COINS,
-  getDailyStreakBonusCoins,
-} from "../../../src/core/game/index.js";
+import {DAILY_STREAK_BONUS, SOLO_BONUS_COINS, SOLO_COIN_COSTS, SOLO_WIN_COINS, getDailyStreakBonusCoins} from "../../../src/progression/economy/rewardRules.js";
 
 /** Server game constants share the provider-independent solo economy with the client. */
 
@@ -112,4 +106,4 @@ export const RIDDLE_GENERATION_THRESHOLD = 1;
 export const RIDDLE_GENERATION_BATCH_SIZE = 5;
 
 /** Maximum characters allowed in generated riddle answers. */
-export {MAX_RIDDLE_ANSWER_CHARACTERS} from "../../../src/core/game/index.js";
+export {MAX_RIDDLE_ANSWER_CHARACTERS} from "../../../src/gameplay/rules/limits.js";

@@ -16,8 +16,8 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useGameAudio} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameAudio.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
+import {useGameAudio} from ${JSON.stringify(path.join(root,"src/gameplay/hooks/browser/useGameAudio.ts"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
 import musicUrl from ${JSON.stringify(path.resolve(root,'assets/audio-web/music.webm'))};
 const scenario=new URL(location.href).searchParams.get('scenario')??'spec-unmute';window.probe={plays:0,pauses:0,rejected:[],suspended:0,boundaries:[],errors:[],unhandled:[]};
 const play=HTMLMediaElement.prototype.play,pause=HTMLMediaElement.prototype.pause;

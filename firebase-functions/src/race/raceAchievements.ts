@@ -1,4 +1,4 @@
-import {RACE_ACHIEVEMENT_IDS, type RaceAchievementId} from "../../../src/core/race/index.js";
+import {RACE_ACHIEVEMENT_IDS, type RaceAchievementId} from "../../../src/races/contracts/index.js";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
 
 /** Authoritative multiplayer event that can advance achievement progress. */

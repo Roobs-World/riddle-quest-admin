@@ -15,12 +15,12 @@ await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, "index.html"), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, "main.tsx"), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {BridgeLeaderboardEntrySchema, GameLoadLeaderboardMessageSchema} from ${JSON.stringify(path.join(root, 'src/core/bridge'))};
-import {LeaderboardModalPage} from ${JSON.stringify(path.join(root, "src/web/play/modalPages/leaderboard/LeaderboardModalPage.tsx"))};
-import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/web/play/i18n.ts"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.modal-shell.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.account.css"))};
+import {BridgeLeaderboardEntrySchema, GameLoadLeaderboardMessageSchema} from ${JSON.stringify(path.join(root, 'src/platform/bridge'))};
+import {LeaderboardModalPage} from ${JSON.stringify(path.join(root, "src/leaderboards/components/LeaderboardModalPage.tsx"))};
+import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/app/modals/styles/modal-shell.css"))};
+import ${JSON.stringify(path.join(root, "src/accounts/styles/account.css"))};
 const entries = Array.from({length:23}, (_, index) => BridgeLeaderboardEntrySchema.parse({
   userId:'player-'+index, username:'Player '+index, level:2, xp:100, totalWins:100-index,
   bestStreak:3, multiplayerWins:42-index}));

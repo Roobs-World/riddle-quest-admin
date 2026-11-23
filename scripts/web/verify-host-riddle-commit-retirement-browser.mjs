@@ -22,13 +22,13 @@ try {
   await writeFile(path.join(scratch, 'index.html'), '<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useHostRiddleLifecycle} from ${JSON.stringify(path.join(portal, 'src/web/play/useHostRiddleLifecycle.ts'))};
-import {GameFrameApp} from ${JSON.stringify(path.join(portal, 'src/web/play/GameFrameApp.tsx'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(portal, 'src/web/play/fakeServices.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, 'src/web/play/playerPreferences.ts'))};
-import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(portal, 'src/web/play/localBridge.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(portal, 'src/web/play/guidance/guidanceConfig.ts'))};
-import ${JSON.stringify(path.join(portal, 'src/web/styles.css'))};
+import {useHostRiddleLifecycle} from ${JSON.stringify(path.join(portal, "src/gameplay/hooks/browser/useHostRiddleLifecycle.ts"))};
+import {GameFrameApp} from ${JSON.stringify(path.join(portal, "src/gameplay/components/GameFrameApp.tsx"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(portal, "src/gameplay/fixtures/fakeServices.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, "src/settings/browser/playerPreferences.ts"))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(portal, "src/platform/bridge/browser/localBridge.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(portal, "src/onboarding/browser/guidanceConfig.ts"))};
+import ${JSON.stringify(path.join(portal, "src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URLSearchParams(location.search).get('scenario'),[kind,outcome]=scenario.split(':');
 window.probe={posts:[],operations:[],notices:[],reads:[],errors:[],unhandled:[],activity:0,retired:false};

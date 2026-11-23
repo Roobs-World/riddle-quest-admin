@@ -21,8 +21,8 @@ await writeFile(path.join(scratch,'index.html'),'<!doctype html><html lang="en">
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {JestPlayApp} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/JestPlayApp.tsx'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,"src/observability/browserErrorReporter.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.caught=[];configureBrowserErrorReporter((error,context)=>window.caught.push({message:String(error),context}));
 createRoot(document.getElementById('root')).render(<JestPlayApp/>);

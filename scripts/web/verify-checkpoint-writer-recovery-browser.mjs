@@ -19,17 +19,17 @@ try {
   await writeFile(path.join(scratch, 'index.html'), '<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(portal, 'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(portal, 'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(portal, 'src/web/play/fakeServices.ts'))};
-import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(portal, 'src/web/platform/PlayerProjectionPersistence.ts'))};
-import {useGameSessionPersistence} from ${JSON.stringify(path.join(portal, 'src/web/play/game/hooks/useGameSessionPersistence.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(portal, 'src/hosted/play/GameSessionCheckpoints.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(portal, 'src/hosted/play/gameSession.ts'))};
-import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, 'src/web/play/GameFrameControls.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, 'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(portal, 'src/web/play/guidance/guidanceConfig.ts'))};
-import ${JSON.stringify(path.join(portal, 'src/web/styles.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(portal, "src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(portal, "src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(portal, "src/gameplay/fixtures/fakeServices.ts"))};
+import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(portal, "src/accounts/browser/playerState/PlayerProjectionPersistence.ts"))};
+import {useGameSessionPersistence} from ${JSON.stringify(path.join(portal, "src/gameplay/hooks/browser/useGameSessionPersistence.ts"))};
+import {createSavedGame} from ${JSON.stringify(path.join(portal, "src/gameplay/session/checkpoints/GameSessionCheckpoints.ts"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(portal, "src/gameplay/session/gameSession.ts"))};
+import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, "src/gameplay/components/GameFrameControls.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, "src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(portal, "src/onboarding/browser/guidanceConfig.ts"))};
+import ${JSON.stringify(path.join(portal, "src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 for(const uid of ['jest-guest']){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');for(const key of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+key,uid),'seen');}
 const scenario=new URLSearchParams(location.search).get('scenario');

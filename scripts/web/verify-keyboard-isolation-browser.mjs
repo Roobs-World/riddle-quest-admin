@@ -18,16 +18,16 @@ try {
   await writeFile(path.join(scratch, 'index.html'), '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root, 'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root, 'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root, 'src/web/play/fakeServices.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root, 'src/web/play/guidance/guidanceConfig.ts'))};
-import {RaceGameplay} from ${JSON.stringify(path.join(root, 'src/web/play/race/components/RaceGameplay.tsx'))};
-import {useRaceGameplayFit} from ${JSON.stringify(path.join(root, 'src/web/play/race/hooks/useRaceGameplayFit.ts'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.race-lobby.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.race-gameplay.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root, "src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root, "src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root, "src/gameplay/fixtures/fakeServices.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root, "src/onboarding/browser/guidanceConfig.ts"))};
+import {RaceGameplay} from ${JSON.stringify(path.join(root, "src/races/components/gameplay/RaceGameplay.tsx"))};
+import {useRaceGameplayFit} from ${JSON.stringify(path.join(root, "src/races/hooks/useRaceGameplayFit.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/gameplay.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={saves:[],guesses:[],completions:[],spends:[],actions:[],errors:[],unhandled:[],hold:false};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
@@ -42,7 +42,7 @@ const run={runId:'keyboard-isolation-race',role:'creator',status:'active',rules:
 const action=kind=>window.probe.actions.push(kind);return <section ref={screenRef} className='race-screen race-screen-gameplay' role='dialog' aria-label='Keyboard isolation race'><RaceGameplay live viewportRef={viewportRef} gameplayRef={gameplayRef} run={run} adjustedNow={0} opponentCorrect={0} feedback={null} coins={100} currentLetters={letters} activeSlotIndex={0} guesses={[]} letterStates={{}} pending={pending} allowTypingWhilePending={projected} onClose={()=>action('close')} onSelectSlot={()=>action('slot')} onLetter={letter=>{action(letter);setLetters(x=>[letter,...x.slice(1)]);}} onText={text=>action(text)} onBackspace={()=>{action('backspace');setLetters(x=>x.slice(0,-1));}} onHint={()=>action('hint')} onSubmit={()=>action('submit')} onSkip={()=>action('skip')}/></section>;}
 createRoot(document.querySelector('#root')).render(new URL(location.href).searchParams.has('race')?<RaceFixture/>:<PlayHostApp session={session}/>);
 `);
-  await build({root: scratch, configFile: false, publicDir: path.join(root, 'public'), logLevel: 'error', define: {'process.env.NODE_ENV': '"production"'}, resolve: {alias: {'#shop-modal-page': path.join(root, 'src/web/play/modalPages/commerce/ShopModalPage.tsx')}}, build: {outDir: 'dist', minify: false}});
+  await build({root: scratch, configFile: false, publicDir: path.join(root, 'public'), logLevel: 'error', define: {'process.env.NODE_ENV': '"production"'}, resolve: {alias: {'#shop-modal-page': path.join(root, "src/commerce/components/ShopModalPage.tsx")}}, build: {outDir: 'dist', minify: false}});
   server = createServer(async (req, res) => {
     try {
       const pathname = new URL(req.url, 'http://localhost').pathname;

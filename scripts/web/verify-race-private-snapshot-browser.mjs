@@ -15,13 +15,13 @@ const output = path.resolve(root, "artifacts/race-private-snapshot");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
 import {flushSync} from 'react-dom';
-import {RACE_RULES, SubmitRaceGuessResponseSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {RaceSession} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceSession.ts"))};
+import {RACE_RULES, SubmitRaceGuessResponseSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {RaceSession} from ${JSON.stringify(path.join(root, "src/races/browser/controllers/RaceSession.ts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 const catalog=createFakeRaceServices();
 for(const method of ['getItem','setItem','removeItem']) Storage.prototype[method]=()=>{throw new DOMException('Storage denied','SecurityError');};
 const deck=Array.from({length:15},(_,position)=>({riddleId:'q-'+position,text:'Question '+(position+1),answerLength:5,
@@ -67,7 +67,7 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", transform(code, id) {
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

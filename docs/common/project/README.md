@@ -11,9 +11,12 @@ All development, releases, Jest uploads and monitoring repairs use `main`. Confi
 | `platforms/web/<provider>` | Target HTML, composition, SDK adapters, provider-only server integration, assets, tests and release scripts |
 | `platforms/web/reddit` | Reddit browser adapter, trusted Devvit `/api/*` gateway, package validation and release receipts; Firebase authority lives separately in `server` |
 | `platforms/native/android` | Bare React Native app, native views and device bridges; Android-only Firebase authority lives in `server` |
-| `src/web` | Shared browser presentation and browser test support; common build tools live in `scripts/web` |
-| `src/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
-| `src/solo`, `src/hosted` | Shared solo and hosted controllers used by web and Android |
+| `src/gameplay`, `src/races` | Shared rules, controllers, components, persistence, and runtime adapters for play and multiplayer |
+| `src/accounts`, `src/commerce`, `src/progression` | Account, shop, economy, achievement, and reward features |
+| `src/content`, `src/localization` | Bundled content, content transport, locale helpers, and shared copy |
+| `src/app`, `src/platform` | Application composition, shared capability contracts, iframe bridge, and Firebase adapters |
+| `src/scenery`, `src/onboarding`, `src/settings` | Rendering, guidance, preferences, and their components |
+| `src/observability`, `src/presence`, `src/sharing`, `src/leaderboards`, `src/notifications` | Shared reporting, presence, social, and notification support |
 | `firebase-functions` | Shared authoritative gameplay and infrastructure, deployed export composition, and archive-local compiled server output |
 | `tooling/sentry-worker` | Background Sentry repair worker with signed deployment checks and bounded Jest/Facebook repair paths |
 | `src/locales` | All user-facing translations: 16 locales across target-specific namespaces |
@@ -375,8 +378,8 @@ pnpm test:race:coverage
 Useful focused checks:
 
 ```bash
-pnpm test:core
-pnpm test:web
+pnpm test:rules
+pnpm test:interface
 pnpm test:jest-local:playwright
 pnpm test:mobile-soak
 pnpm --dir firebase-functions test:race:rules

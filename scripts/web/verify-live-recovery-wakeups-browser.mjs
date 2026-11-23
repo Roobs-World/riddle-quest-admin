@@ -16,10 +16,10 @@ try {
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URL(location.href).searchParams.get('scenario')??'online-poll';window.probe={requests:[],joins:[],errors:[],unhandled:[],releases:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));

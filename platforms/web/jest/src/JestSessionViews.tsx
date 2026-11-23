@@ -1,5 +1,5 @@
-import {SpinningWheelLoader} from "../../../../src/web/play/SpinningWheelLoader";
-import {tr} from "../../../../src/web/play/i18n";
+import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
+import {tr} from "../../../../src/localization/browser/i18n";
 import type {JestStartupUpdate} from "./startup";
 
 /** Provides jest startup error behavior. */

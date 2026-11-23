@@ -1,5 +1,5 @@
-import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "../../../src/core/race/index.js";
-import {RaceEntryRequestSchema} from "../../../src/core/race/index.js";
+import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "../../../src/races/contracts/index.js";
+import {RaceEntryRequestSchema} from "../../../src/races/contracts/index.js";
 import {getRaceEntryForUser, cancelRaceInviteForUser} from "./raceInvitation";
 import {
   AbandonRaceRunRequestSchema,
@@ -31,7 +31,7 @@ import {
   ReadyRaceRunRequestSchema,
   SubmitRaceGuessRequestSchema,
   SubmitRaceGuessResponseSchema,
-} from "../../../src/core/race/index.js";
+} from "../../../src/races/contracts/index.js";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {

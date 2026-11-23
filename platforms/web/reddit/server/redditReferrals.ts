@@ -4,7 +4,7 @@ import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {isRedditFeatureEnabled} from "./redditFeatureFlags";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../../src/core/validation/index.js";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../../src/localization/locales.js";
 
 /** Defines the reddit referral reward coins value. */
 export const REDDIT_REFERRAL_REWARD_COINS = 100;

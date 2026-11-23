@@ -14,9 +14,9 @@ await writeFile(path.join(scratch, "index.html"), '<!doctype html><html><body><d
 await writeFile(path.join(scratch, "main.tsx"), `
 import React, {useCallback, useReducer, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {createInitialGameSession, gameSessionReducer} from ${JSON.stringify(path.join(root, "src/hosted/play/gameSession.ts"))};
-import {useGameSessionPersistence} from ${JSON.stringify(path.join(root, "src/web/play/game/hooks/useGameSessionPersistence.ts"))};
-import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(root, "src/web/platform/PlayerProjectionPersistence.ts"))};
+import {createInitialGameSession, gameSessionReducer} from ${JSON.stringify(path.join(root, "src/gameplay/session/gameSession.ts"))};
+import {useGameSessionPersistence} from ${JSON.stringify(path.join(root, "src/gameplay/hooks/browser/useGameSessionPersistence.ts"))};
+import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(root, "src/accounts/browser/playerState/PlayerProjectionPersistence.ts"))};
 const awaiting = new URLSearchParams(location.search).has('awaiting');
 const riddle = {riddleId:'checkpoint-1',sessionToken:'00000000-0000-4000-8000-000000000001',
  text:'Clue',answerLength:5,gameMode:'classic',attemptsUsed:awaiting?5:0,hasUsedContinue:false,awaitingContinue:awaiting};

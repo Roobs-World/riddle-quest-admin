@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "../../../../../src/solo";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {Share} from "react-native";
 import {liveRaceInvitationUrl} from "../entries/invitations";
 import {shareAndroidInvite} from "./inviteShare";

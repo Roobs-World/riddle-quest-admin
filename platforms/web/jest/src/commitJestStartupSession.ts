@@ -1,5 +1,5 @@
-import {applyPlayerPreferences} from "../../../../src/web/play/playerPreferences";
-import {setLocaleAndWait, type Locale} from "../../../../src/web/play/i18n";
+import {applyPlayerPreferences} from "../../../../src/settings/browser/playerPreferences";
+import {setLocaleAndWait, type Locale} from "../../../../src/localization/browser/i18n";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestEngagementProgress, JestPlayerData, JestSession} from "./types";
 

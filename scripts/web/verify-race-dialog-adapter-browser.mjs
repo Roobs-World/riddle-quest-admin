@@ -15,11 +15,11 @@ await writeFile(path.join(scratch,"index.html"),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,"main.tsx"),`
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,"src/web/play/sharing/ReferralSharingCapability.tsx"))};
-import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/web/play/race/logic/racePresentation.ts"))};
-import {tr} from ${JSON.stringify(path.join(root,"src/web/play/i18n.ts"))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,"src/sharing/components/ReferralSharingCapability.tsx"))};
+import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
+import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 const mode=new URLSearchParams(location.search).get('mode'),now=Date.now();
 window.calls=[];window.commands=[];window.sessionSetups=0;window.sessionCleanups=0;window.liveSessions=0;
 window.labels={context:tr('RaceTo10.CHOOSE_CONTEXT'),match:tr('RaceTo10.MATCH_PLAYER'),tournament:tr('RaceTo10.SHARE_TOURNAMENT'),referral:'Fixture share'};
@@ -44,7 +44,7 @@ const app=<App/>;window.root=createRoot(document.getElementById('root'));window.
 let browser,server;const failures=[];
 try{
  await build({root:scratch,configFile:false,logLevel:"error",define:{"process.env.NODE_ENV":JSON.stringify(reactRuntime)},plugins:[{name:"expose-session",enforce:"pre",transform(code,id){
-  if(!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;
+  if(!id.endsWith('/races/hooks/useRaceSession.ts'))return null;
   assert(code.includes('const session = sessionRef.current;'));
   assert(code.includes('session.enter(entry);')&&code.includes('session.dispose(); window.removeEventListener'));
   return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current; globalThis.testRaceSession = session;').replace('session.enter(entry);','globalThis.sessionSetups++;globalThis.liveSessions++;session.enter(entry);').replace('session.dispose(); window.removeEventListener','globalThis.sessionCleanups++;globalThis.liveSessions--;session.dispose(); window.removeEventListener'),map:null};

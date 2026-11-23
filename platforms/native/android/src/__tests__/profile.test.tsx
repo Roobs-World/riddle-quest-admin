@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "@jest/globals";
-import type {BridgeLeaderboardEntry} from "../../../../../src/core/bridge";
-import type {HostServices, LeaderboardType} from "../../../../../src/hosted/hostTypes";
-import type {YouTubeLocale} from "../../../../../src/solo";
+import type {BridgeLeaderboardEntry} from "../../../../../src/platform/bridge/messages";
+import type {HostServices, LeaderboardType} from "../../../../../src/platform/contracts/hostServices";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";

@@ -1,15 +1,15 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {LiveRaceView} from "../../../../src/core/race";
-import type {ProductSummary, PurchaseResult} from "../../../../src/hosted/hostTypes";
-import type {RaceTo10GameProps} from "../../../../src/web/play/race/RaceTo10Game.types";
-import {SpinningWheelLoader} from "../../../../src/web/play/SpinningWheelLoader";
-import {PlayHostApp} from "../../../../src/web/play/PlayHostApp";
-import {getCurrentLocale, tr} from "../../../../src/web/play/i18n";
-import type {PlatformSession, PlayerData, PlayerDataUpdate} from "../../../../src/web/platform/types";
+import type {LiveRaceView} from "../../../../src/races/contracts/index";
+import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
+import type {RaceTo10GameProps} from "../../../../src/races/components/recorded/RaceTo10Game.types.ts";
+import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
+import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
+import {getCurrentLocale, tr} from "../../../../src/localization/browser/i18n";
+import type {PlatformSession, PlayerData, PlayerDataUpdate} from "../../../../src/platform/contracts/capabilities";
 import {FacebookPlatformBootstrap} from "./FacebookPlatformBootstrap";
 import {authenticateFacebook} from "./authenticate";
 import {requireFacebookInstant} from "./fbinstant";
-import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 import {bindFacebookEntryReferral, facebookLaunchFromEntryData} from "./referrals";
 import {createFacebookReferralSharing} from "./FacebookReferralSharing";
 import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
@@ -24,22 +24,22 @@ import {FacebookCommerceSession, facebookPaymentsAvailable} from "./FacebookComm
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
 import {FacebookNotificationPromptCoordinator} from "./FacebookNotificationPromptCoordinator";
 import {createFacebookNotificationCapability} from "./FacebookNotificationCapability";
-import {LocalAccountDeletionGate} from "../../../../src/web/play/LocalAccountDeletionGate";
+import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletion/LocalAccountDeletionGate";
 import {
   applyPlayerPreferences,
   clearBrowserPlayerState,
   subscribeToPlayerPreferenceChanges,
-} from "../../../../src/web/play/playerPreferences";
+} from "../../../../src/settings/browser/playerPreferences";
 import {settleFacebookPause, settleFacebookPresenceResume} from "./settleFacebookPause";
-import {reconcilePresenceOptIn} from "../../../../src/web/presence/reconcilePresenceOptIn";
-import {startOptionalPresence} from "../../../../src/web/presence/startOptionalPresence";
-import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../../../../src/web/play/services";
-import {PlayerProjectionPersistence} from "../../../../src/web/platform/PlayerProjectionPersistence";
-import {usePlayerProjectionRecovery} from "../../../../src/web/platform/usePlayerProjectionRecovery";
-import {PlayerSaveRecoveryLayout} from "../../../../src/web/play/PlayerSaveRecoveryLayout";
-import {createHostedPlaySession} from "../../../../src/web/play/HostedPlaySession";
+import {reconcilePresenceOptIn} from "../../../../src/presence/reconcilePresenceOptIn";
+import {startOptionalPresence} from "../../../../src/presence/startOptionalPresence";
+import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../../../../src/app/services/gameServices";
+import {PlayerProjectionPersistence} from "../../../../src/accounts/browser/playerState/PlayerProjectionPersistence";
+import {usePlayerProjectionRecovery} from "../../../../src/accounts/hooks/usePlayerProjectionRecovery";
+import {PlayerSaveRecoveryLayout} from "../../../../src/accounts/components/recovery/PlayerSaveRecoveryLayout";
+import {createHostedPlaySession} from "../../../../src/app/session/HostedPlaySession";
 import {installFacebookAnalytics} from "./analytics";
-import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/web/platform/startupWarmup";
+import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
 
 /** Native tournament presentation loads only when Facebook multiplayer opens. */
 const FacebookRaceSurface = lazy(() => import("./FacebookRaceEntry").then(module => ({default: module.FacebookRaceEntry})));
@@ -67,7 +67,7 @@ type StartupState =
       /** Stores player data. */
       playerData: PlayerData | null;
       /** Target-owned native sharing, absent when Meta or the server disallows it. */
-      referralSharing?: import("../../../../src/web/play/sharing/ReferralSharingCapability").ReferralSharingCapability;
+      referralSharing?: import("../../../../src/sharing/components/ReferralSharingCapability").ReferralSharingCapability;
       /** Bounded launch hints; competitive authority remains on the server. */
       launch: ReturnType<typeof facebookLaunchFromEntryData>;
     }
@@ -95,7 +95,7 @@ function warmFacebookFirebaseStartup(): void {
   // Warm-up failures are retried and reported by the authenticated startup path.
   void import("firebase/auth").catch(() => undefined);
   void import("./FacebookFirebaseAppCheck").catch(() => undefined);
-  void import("../../../../src/web/play/firebaseServices").catch(() => undefined);
+  void import("../../../../src/platform/firebase/browserHostServices").catch(() => undefined);
 }
 
 /** Facebook-only application composed by the Facebook target entry. */
@@ -124,7 +124,7 @@ export function FacebookPlatformEntry() {
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<Awaited<ReturnType<PlatformSession["storage"]["readPreferences"]>>>({});
   /** Provides presence ref behavior. */
-  const presenceRef = useRef<import("../../../../src/web/presence/PlatformPresenceSession").PlatformPresenceSession | null>(null);
+  const presenceRef = useRef<import("../../../../src/presence/PlatformPresenceSession").PlatformPresenceSession | null>(null);
   /** Provides notification prompt ref behavior. */
   const notificationPromptRef = useRef<FacebookNotificationPromptCoordinator | null>(null);
   /** Provides deletion gate ref behavior. */
@@ -177,7 +177,7 @@ export function FacebookPlatformEntry() {
         /** Latest verified ad-removal entitlement passed to the ad adapter. */
         let removeInterstitialAds: boolean | undefined;
         /** Facebook-only continuation capability bound to the current authenticated session. */
-        let attemptRecovery: import("../../../../src/web/platform/types").AttemptRecoveryCapability | undefined;
+        let attemptRecovery: import("../../../../src/platform/contracts/capabilities").AttemptRecoveryCapability | undefined;
         /** Provides tournaments behavior. */
         let tournaments = undefined;
         /** Provides notifications enabled behavior. */
@@ -291,13 +291,13 @@ export function FacebookPlatformEntry() {
               list: async locale => (await listFacebookTournament({locale})).data,
               reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
-              list: async (locale: import("../../../../src/core/race").RaceLocale) => {
+              list: async (locale: import("../../../../src/races/contracts/index").RaceLocale) => {
                 /** Validated official standings for the exact player locale and UTC window. */
                 const board = (await listFacebookTournament({locale})).data;
                 if (presentation) void presentation.projectBoard(board);
                 return board;
               },
-              record: async (runId: string, locale: import("../../../../src/core/race").RaceLocale) => {
+              record: async (runId: string, locale: import("../../../../src/races/contracts/index").RaceLocale) => {
                 /** Official success is returned independently of provider score delivery. */
                 const result = (await recordFacebookTournament({runId, locale})).data;
                 if (presentation) void presentation.projectRecord(result);
@@ -423,7 +423,7 @@ export function FacebookPlatformEntry() {
         /** Provides notification storage behavior. */
         const notificationStorage = {
           readPreferences: () => deletionGateRef.current.run(() => session.storage.readPreferences()),
-          writePreferences: (value: import("../../../../src/web/platform/types").PlatformPreferences) =>
+          writePreferences: (value: import("../../../../src/platform/contracts/capabilities").PlatformPreferences) =>
             deletionGateRef.current.run(() => session.storage.writePreferences(value)),
           readPlayerData: () => deletionGateRef.current.run(() => session.storage.readPlayerData()),
           writePlayerData: (value: PlayerData) =>
@@ -447,8 +447,8 @@ export function FacebookPlatformEntry() {
         if (presenceCapabilityEnabled) {
           /** Provides [{firebase presence transport}, {platform presence session}] behavior. */
           const [{FirebasePresenceTransport}, {PlatformPresenceSession}] = await Promise.all([
-            import("../../../../src/web/presence/FirebasePresenceTransport"),
-            import("../../../../src/web/presence/PlatformPresenceSession"),
+            import("../../../../src/presence/FirebasePresenceTransport"),
+            import("../../../../src/presence/PlatformPresenceSession"),
           ]);
           /** Provides presence behavior. */
           const presence = new PlatformPresenceSession(new FirebasePresenceTransport(userId), {
@@ -563,7 +563,7 @@ export function FacebookPlatformEntry() {
             },
             setConsent: async (enabled) => {
               /** Provides {set presence consent} behavior. */
-              const {setPresenceConsent} = await import("../../../../src/web/firebase");
+              const {setPresenceConsent} = await import("../../../../src/platform/firebase/browserClient");
               await setPresenceConsent({enabled});
             },
           });
@@ -597,7 +597,7 @@ export function FacebookPlatformEntry() {
   }, [startup]);
 
   /** Sets presence state. */
-  const setPresenceState = useCallback((state: import("../../../../src/web/presence/PlatformPresenceSession").ActivePresenceState) => {
+  const setPresenceState = useCallback((state: import("../../../../src/presence/PlatformPresenceSession").ActivePresenceState) => {
     void presenceRef.current?.setState(state).catch((error) => {
       captureBrowserException(error, {component: "facebook_presence", operation: "state"});
     });
@@ -623,9 +623,9 @@ export function FacebookPlatformEntry() {
         /** Stores riddle id. */
         riddleId: string; /** Stores game mode. */
         /** Stores game mode. */
-        gameMode: import("../../../../src/hosted/hostTypes").WebGameMode;
+        gameMode: import("../../../../src/platform/contracts/hostServices").WebGameMode;
       },
-      result: import("../../../../src/hosted/hostTypes").CompletionResult,
+      result: import("../../../../src/platform/contracts/hostServices").CompletionResult,
     ) => {
       try {
         await notificationPromptRef.current?.afterAuthoritativeCompletion(result.isCorrect);
@@ -640,7 +640,7 @@ export function FacebookPlatformEntry() {
   );
 
   /** Handles authoritative race result. */
-  const handleAuthoritativeRaceResult = useCallback(async (result: import("../../../../src/core/race").RaceOutcome) => {
+  const handleAuthoritativeRaceResult = useCallback(async (result: import("../../../../src/races/contracts/index").RaceOutcome) => {
     try {
       await notificationPromptRef.current?.afterAuthoritativeCompletion(result.result === "player_win");
     } catch (error) {

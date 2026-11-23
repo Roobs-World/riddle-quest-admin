@@ -1,6 +1,7 @@
 import {googleIdentityCopy} from "../i18n/googleIdentityCopy";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useCallback} from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
@@ -9,7 +10,7 @@ import type {PlayBillingPort, PlayProduct} from "../billing/playBilling";
 import {useShop, type ShopNotice} from "../billing/useShop";
 import {useAuthSnapshot} from "../hosted/useAuthSnapshot";
 import {shopText, type ShopCopyKey} from "../i18n/shopCopy";
-import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../../../src/core/pricing/catalog";
+import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../../../src/commerce/pricing/catalog";
 import {palette, spacing} from "../theme";
 /** Props for {@link HostedShopScreen}. */
 export type HostedShopScreenProps = Readonly<{

@@ -29,16 +29,16 @@ try {
   await writeFile(path.join(scratch, "main.tsx"), `
 import React from "react";
 import {createRoot} from "react-dom/client";
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/web/play/sharing/ReferralSharingCapability.tsx"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
 import {useJestSharing} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/sharing/useJestSharing.ts"))};
 import {JestSdkPlatform} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/JestSdkPlatform.ts"))};
 import {createNotificationOperationGate} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/notifications/operationGate.ts"))};
 import {useJestPlatformActivity} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/useJestPlatformOperations.ts"))};
 import {parseEntryIntent} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/entryIntent.ts"))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/web/play/playerPreferences.ts"))};
-import {createLiveRaceLobbyStorage} from ${JSON.stringify(path.join(root, "src/web/play/race/logic/liveRaceLobbyStorage.ts"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
+import {createLiveRaceLobbyStorage} from ${JSON.stringify(path.join(root, "src/races/browser/storage/liveRaceLobbyStorage.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
 applyPlayerPreferences({locale: "en", muted: true, reducedMotion: true, onboardingComplete: true});
 window.probe = {shares: [], joins: [], events: [], initialized: false, inClick: false};

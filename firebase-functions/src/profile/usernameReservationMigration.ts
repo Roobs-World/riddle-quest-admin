@@ -1,6 +1,6 @@
 import {FieldPath, type Firestore, type Query, type QueryDocumentSnapshot} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {UsernameSchema} from "../../../src/core/validation/requestSchemas.js";
+import {UsernameSchema} from "../../../src/platform/contracts/requestSchemas.js";
 import {
   createUsernameReservationFields,
   reservationIdForUserData,

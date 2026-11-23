@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const component=path.join(root,'src/web/play/game/hooks/useGameBridgeLifecycle.ts');
+const component=path.join(root,"src/platform/bridge/browser/useGameBridgeLifecycle.ts");
 const baseline=process.env.GAME_READY_BASELINE_SOURCE;
 const reactMode=process.env.GAME_READY_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
@@ -18,7 +18,7 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameReadyReporter} from ${JSON.stringify(component)};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={ready:[],messages:[],ticks:0,intervals:new Map(),observers:[]};
 window.watch=()=>{const schedule=window.setInterval.bind(window),clear=window.clearInterval.bind(window),NativeObserver=window.ResizeObserver;
   window.setInterval=(callback,delay,...args)=>{if(delay!==750)return schedule(callback,delay,...args);

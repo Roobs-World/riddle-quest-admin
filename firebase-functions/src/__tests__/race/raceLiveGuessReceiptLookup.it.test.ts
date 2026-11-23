@@ -1,10 +1,10 @@
 import {confirmLiveGuessReceiptForUser} from "../../race/raceLiveGuessReceipt";
-import {LiveGuessReceiptQuerySchema} from "../../../../src/core/race/index.js";
+import {LiveGuessReceiptQuerySchema} from "../../../../src/races/contracts/index.js";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {type LiveRaceView} from "../../../../src/core/race/index.js";
+import {type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import type {LiveMatch} from "../../race/raceLiveState";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 

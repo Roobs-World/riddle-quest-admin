@@ -1,4 +1,4 @@
-import {LiveRaceChallengeIdSchema} from "../../../../../src/core/race";
+import {LiveRaceChallengeIdSchema} from "../../../../../src/races/contracts/index";
 
 /** Creates a native invitation only for an opaque server-issued private lobby. */
 export const liveRaceInvitationUrl = (challengeId: string): string =>

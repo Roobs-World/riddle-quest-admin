@@ -16,7 +16,7 @@ jest.mock("react", () => ({
 
 import {createNotificationOperationGate} from "../notifications/operationGate";
 import {useJestPlayerStateWrites} from "../useJestPlayerStateWrites";
-import {setPlayerMuted, setPlayerHighContrast, setPlayerReducedMotion} from "../../../../../src/web/play/playerPreferences";
+import {setPlayerMuted, setPlayerHighContrast, setPlayerReducedMotion} from "../../../../../src/settings/browser/playerPreferences";
 
 /** Provides session behavior. */
 const session = (): JestSession => ({

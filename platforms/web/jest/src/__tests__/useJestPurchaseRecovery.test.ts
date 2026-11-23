@@ -3,7 +3,7 @@ import {JestPurchaseCoordinator} from "../purchases";
 import {MockJestPlatform} from "../MockJestPlatform";
 import {JestBackendClient} from "../backend";
 import type {JestSession} from "../types";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
 
 /** Captures the browser adapter lifetime without mounting unrelated game UI. */
 const mockEffects: Array<() => (() => void) | undefined> = [];
@@ -18,9 +18,9 @@ jest.mock("react", () => ({
   useEffect: (effect: () => (() => void) | undefined) => mockEffects.push(effect),
   useRef: (current: unknown) => mockRefs[mockRefIndex++] ?? (mockRefs[mockRefIndex - 1] = {current}),
 }));
-jest.mock("../../../../../src/web/observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));
+jest.mock("../../../../../src/observability/browserErrorReporter", () => ({captureBrowserException: jest.fn()}));
 import {useJestPurchaseRecovery} from "../useJestPurchaseRecovery";
-import {captureBrowserException} from "../../../../../src/web/observability/browserErrorReporter";
+import {captureBrowserException} from "../../../../../src/observability/browserErrorReporter";
 
 /** Real event targets exercise browser signal registration and cleanup. */
 const browser = new EventTarget();

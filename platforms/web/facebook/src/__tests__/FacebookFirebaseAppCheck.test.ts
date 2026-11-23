@@ -31,12 +31,12 @@ jest.mock("firebase/app-check", () => ({
   initializeAppCheck: (...args: unknown[]) => mockInitializeAppCheck(...args),
   setTokenAutoRefreshEnabled: (...args: unknown[]) => mockSetTokenAutoRefreshEnabled(...args),
 }));
-jest.mock("../../firebase", () => ({firebaseApp: {name: "firebase-app"}}));
+jest.mock("../../../../../src/platform/firebase/browserClient", () => ({firebaseApp: {name: "firebase-app"}}));
 
 describe("Facebook Firebase App Check adapter", () => {
   /** Loads adapter. */
   const loadAdapter = async (platformTarget: "facebook" | "jest" = "facebook") => {
-    jest.doMock("../../test/firebaseEnvironmentMock", () => ({
+    jest.doMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock", () => ({
       firebaseEnvironment: {platformTarget},
     }));
     /** Loads ed. */
@@ -52,7 +52,7 @@ describe("Facebook Firebase App Check adapter", () => {
     mockGetToken.mockResolvedValue({token: "attested"});
   });
 
-  afterEach(() => jest.dontMock("../../test/firebaseEnvironmentMock"));
+  afterEach(() => jest.dontMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock"));
 
   it("replaces the renewable callback without recreating the custom provider", async () => {
     /** Provides adapter behavior. */

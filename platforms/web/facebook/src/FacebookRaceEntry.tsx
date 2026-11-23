@@ -1,6 +1,6 @@
-import {RaceTournamentEntry} from "../../../../src/web/play/race/RaceTournamentEntry";
-import type {RaceTo10GameProps} from "../../../../src/web/play/race/RaceTo10Game.types";
-import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import {RaceTournamentEntry} from "../../../../src/races/components/lobby/RaceTournamentEntry";
+import type {RaceTo10GameProps} from "../../../../src/races/components/recorded/RaceTo10Game.types.ts";
+import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 
 /** Facebook owns native tournament capability and diagnostics at its platform boundary. */
 const presentation = {titleId: "facebook-tournament-title", analyticsScreen: "facebook_tournament",

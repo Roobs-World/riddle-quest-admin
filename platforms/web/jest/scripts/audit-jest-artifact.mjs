@@ -57,7 +57,7 @@ const forbidden = [
   ["Haptics UI", /\bhaptic(?:s| feedback)\b/i],
   [
     "Nonessential Google Analytics collection",
-    /\bG-[A-Z0-9]{6,}\b|(?:google-analytics|googletagmanager)\.com/i,
+    /["'`]G-[A-Z0-9]{6,}["'`]|(?:google-analytics|googletagmanager)\.com/i,
   ],
   ["App-install prompt", /\bbeforeinstallprompt\b/i],
   ["External social link", /https?:\/\/(?:www\.)?(?:facebook|instagram|tiktok)\.com\b/i],

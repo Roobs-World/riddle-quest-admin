@@ -216,7 +216,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
   },
 }));
 
-import {deleteAccount} from "../profile/accountDeletion";
+import {deleteAccount} from "../profile/accountDeletion/index";
 import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
 import {createJestPurchaseGrantId} from "../../../platforms/web/jest/server/jestPurchaseReceipts";
 import {createUsernameReservationId} from "../profile/usernameReservations";

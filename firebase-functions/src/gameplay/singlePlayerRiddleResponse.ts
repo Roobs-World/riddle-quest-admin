@@ -1,5 +1,5 @@
-import {splitGraphemes} from "../../../src/core/game/index.js";
-import type {GetCurrentDailyChallengeResponse} from "../../../src/core/validation/requestSchemas.js";
+import {splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
+import type {GetCurrentDailyChallengeResponse} from "../../../src/platform/contracts/requestSchemas.js";
 import {projectPublicSinglePlayerSession} from "./singlePlayerPublicSession";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 

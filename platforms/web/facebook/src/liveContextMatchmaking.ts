@@ -1,5 +1,5 @@
-import type {JoinLiveRace, RaceLocale} from "../../../../src/core/race";
-import type {MatchmakingCapability} from "../../../../src/web/platform/types";
+import type {JoinLiveRace, RaceLocale} from "../../../../src/races/contracts/index";
+import type {MatchmakingCapability} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookContextCoordinator} from "./contexts";
 
 /** Captures one synchronized SDK destination per join attempt while the server owns membership and score authority. */

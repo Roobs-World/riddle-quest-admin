@@ -17,11 +17,11 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {TooltipOverlay} from ${JSON.stringify(path.join(root,'src/web/play/guidance/TooltipOverlay.tsx'))};
-import {setLocaleAndWait,tr,useLocale} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
-import {TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {TooltipOverlay} from ${JSON.stringify(path.join(root,"src/onboarding/components/TooltipOverlay.tsx"))};
+import {setLocaleAndWait,tr,useLocale} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
+import {TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 const params=new URL(location.href).searchParams;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});await setLocaleAndWait(params.get('locale')??'en');
 window.probe={reads:0,adds:0,removes:0,observers:new Set(),activations:0,errors:[],unhandled:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));

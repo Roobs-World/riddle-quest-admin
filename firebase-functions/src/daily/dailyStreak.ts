@@ -1,4 +1,4 @@
-import {getDailyDate, shiftDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {getDailyDate, shiftDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 /** Describes timestamp like. */
 type TimestampLike = {
   /** Stores to date. */

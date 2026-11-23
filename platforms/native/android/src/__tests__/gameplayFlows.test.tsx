@@ -1,13 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
-import {
-  getYouTubeDailyRiddleId,
-  parseYouTubeSave,
-  utcDay,
-  YOUTUBE_BASE_ATTEMPTS,
-  YOUTUBE_CLASSIC_SKIP_COST,
-  YOUTUBE_CONTINUE_COST,
-  YOUTUBE_HINT_COST,
-} from "../../../../../src/solo";
+import {getYouTubeDailyRiddleId} from "../../../../../src/gameplay/local/localSoloGameRules";
+import {parseYouTubeSave} from "../../../../../src/gameplay/persistence/localSave";
+import {utcDay, YOUTUBE_BASE_ATTEMPTS, YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "../../../../../src/progression/economy/localEconomy";
 import {fireEvent, screen, waitFor} from "@testing-library/react-native";
 import {contentSource, createPort, expectScreen, press, renderApp, seedSave, startMode, submitWrongGuess, typeAnswer} from "../test/harness";
 

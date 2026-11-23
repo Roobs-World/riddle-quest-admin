@@ -1,7 +1,7 @@
 import {afterAll, beforeAll, beforeEach, describe, expect, it, jest} from "@jest/globals";
 
 import type {Dispatch, SetStateAction} from "react";
-import type {ProductSummary} from "../../../../../src/hosted/hostTypes";
+import type {ProductSummary} from "../../../../../src/platform/contracts/hostServices";
 import {JestPurchaseCoordinator} from "../purchases";
 import {MockJestPlatform} from "../MockJestPlatform";
 import {JestBackendClient} from "../backend";
@@ -31,7 +31,7 @@ jest.mock("react", () => ({
   useCallback: (callback: unknown) => callback,
 }));
 
-jest.mock("../../analytics/events", () => ({
+jest.mock("../../../../../src/observability/analytics/events", () => ({
   trackEvent: mockTrackEvent,
   trackPurchase: mockTrackPurchase,
 }));

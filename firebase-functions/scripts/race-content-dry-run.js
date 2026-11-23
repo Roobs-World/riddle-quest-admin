@@ -3,7 +3,7 @@
 
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
-const {RACE_SUPPORTED_LOCALES} = require("../lib/src/core/race");
+const {RACE_SUPPORTED_LOCALES} = require("../lib/src/races/contracts");
 const {createRaceContentDryRun} = require("../lib/firebase-functions/src/race/raceContentMigration.js");
 
 const projectId = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;

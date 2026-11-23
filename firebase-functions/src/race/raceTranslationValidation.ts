@@ -6,8 +6,8 @@ import {
   RaceDifficultyBandSchema,
   type RaceCategoryId,
   type RaceLocale,
-} from "../../../src/core/race/index.js";
-import {graphemeLength} from "../../../src/core/game/index.js";
+} from "../../../src/races/contracts/index.js";
+import {graphemeLength} from "../../../src/gameplay/input/graphemes.js";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {RaceContentImportFileSchema, createRaceContentImportPlan, type RaceContentImportFile} from "./raceContentImport";

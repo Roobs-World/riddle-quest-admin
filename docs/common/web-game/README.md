@@ -1,6 +1,6 @@
 # Shared browser game
 
-The shared browser UI lives in `src/web`. Common browser build tools live in `scripts/web` and use the root configuration. Read [platform ownership](../architecture/platform-layout.md) before adding provider-specific behavior.
+Shared browser components and adapters live beside their features under `src/`, including gameplay, races, accounts, and progression. Application composition lives in `src/app`. Common browser build tools live in `scripts/web` and use the root configuration. Read [platform ownership](../architecture/platform-layout.md) before adding provider-specific behavior.
 
 - [Visual parity acceptance pack](visual-parity/README.md)
 - [Reference screenshots](reference-screenshots/README.md)

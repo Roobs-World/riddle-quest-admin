@@ -17,8 +17,8 @@ let browser,server;const observations=[];
 try {
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><main><h1>Session retention fixture</h1><button id="checkout">Check current checkout</button><output id="result"></output></main><script type="module" src="/main.ts"></script></body></html>');
  await writeFile(path.join(scratch,'main.ts'),`
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
 window.probe={errors:[],unhandled:[],refreshes:0};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 window.provider=createFakeHostServices();window.references=[];

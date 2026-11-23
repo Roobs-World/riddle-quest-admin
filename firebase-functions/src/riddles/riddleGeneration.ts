@@ -1,10 +1,10 @@
-import type {EconomyDifficulty} from "../../../src/core/game/index.js";
+import {type EconomyDifficulty} from "../../../src/progression/economy/rewardRules.js";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "./openaiService";
 import {captureException} from "../shared/sentry";
 import {RiddleCollections} from "../validation/firestoreSchemas";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/core/validation/index.js";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/localization/locales.js";
 import {
   areLocalizedClassicRiddlesSeeded,
   areLocalizedClassicRiddlesSeededForLocale,

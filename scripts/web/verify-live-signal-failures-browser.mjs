@@ -18,11 +18,11 @@ try{
  const viewFixture="function view(seat){const now=Date.now();return LiveRaceViewSchema.parse({ticketId:seat.id,phase:seat.left?'cancelled':'racing',serverNowMs:now,searchEndsAtMs:seat.start+60000,startsAtMs:seat.start,player:{displayName:seat.owner,avatarUrl:null,bot:false,correctCount:seat.correct},opponent:{displayName:'Rival',avatarUrl:null,bot:false,correctCount:0},result:null,rewardCoins:0,run:seat.left?null:{runId:seat.id,role:'creator',status:'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:seat.correct,wallElapsedMs:now-seat.start,totalPenaltyMs:0,adjustedElapsedMs:now-seat.start,events:[],serverNowMs:now,startsAtMs:seat.start,currentRiddle:{riddleId:'q'+seat.correct,text:'What has keys but cannot open doors?',answerLength:5,position:seat.correct,guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},opponent:{displayName:'Rival',avatarUrl:null,adjustedFinishMs:300000,events:[]}}});}\n";
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {liveRacePollInterval} from ${JSON.stringify(path.join(root,'src/web/play/race/logic/liveRacePolling.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {liveRacePollInterval} from ${JSON.stringify(path.join(root,"src/races/live/liveRacePolling.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URL(location.href).searchParams.get('scenario')??'register';
 window.probe={requests:[],joins:[],adds:[],removes:[],refreshes:[],retained:[],errors:[],unhandled:[],views:{}};window.signalRefs={};

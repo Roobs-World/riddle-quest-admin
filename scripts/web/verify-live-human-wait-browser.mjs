@@ -20,12 +20,12 @@ try {
   await writeFile(path.join(scratch, "main.tsx"), `
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/web/play/race/LiveRaceGame.tsx"))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/web/play/playerPreferences.ts"))};
-import {LiveRaceViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.race-lobby.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.race-gameplay.css"))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/races/components/live/LiveRaceGame.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
+import {LiveRaceViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/gameplay.css"))};
 applyPlayerPreferences({locale:'en', muted:true, reducedMotion:true, onboardingComplete:true});
 const scenario = new URLSearchParams(location.search).get('scenario');
 const challengeId = 'live_' + 'b'.repeat(64);

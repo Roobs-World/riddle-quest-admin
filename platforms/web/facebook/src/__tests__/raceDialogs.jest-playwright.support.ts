@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
-import {RACE_CHALLENGE_TTL_MS, type ListFacebookContextBoardResponse} from "../../../../../src/core/race";
+import {RACE_CHALLENGE_TTL_MS, type ListFacebookContextBoardResponse} from "../../../../../src/races/contracts/index";
 
 /** Supplies valid server-window semantics to immediate and deliberately held context responses. */
 export function createRaceContextBoardFixture(locale: ListFacebookContextBoardResponse["locale"], adjustedTimeMs: number): ListFacebookContextBoardResponse {

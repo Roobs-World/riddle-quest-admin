@@ -6,7 +6,7 @@ import {
   playableTranslatedAnswerIssue,
   raceTranslationCanonicalHash,
 } from "../../race/raceTranslationValidation";
-import {RACE_SUPPORTED_LOCALES} from "../../../../src/core/race/index.js";
+import {RACE_SUPPORTED_LOCALES} from "../../../../src/races/contracts/index.js";
 
 /** Creates bundle. */
 const createBundle = () => ({

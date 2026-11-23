@@ -23,7 +23,7 @@
     ],
     "paths": {
       "#solo-content": [
-        "../../../src/web/playable/generated/youtube-content-v1.json"
+        "../../../src/content/generated/youtube-content-v1.json"
       ],
       "#hosted-config": [
         "./hosted.config.example.json"

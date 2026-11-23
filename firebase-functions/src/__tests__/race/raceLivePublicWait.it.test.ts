@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS, type LiveRaceView} from "../../../../src/core/race/index.js";
+import {LIVE_RACE_WAIT_MS, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";

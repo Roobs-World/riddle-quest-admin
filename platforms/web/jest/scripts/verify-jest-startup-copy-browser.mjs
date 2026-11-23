@@ -18,8 +18,8 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {JestPlayApp} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/JestPlayApp.tsx'))};
-import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.JestSDK={init:async()=>{throw new Error('Jest SDK internal request conversation-test-private failed');},markGameLoaded:()=>{},setLoadingProgress:()=>{}};
 await setLocaleAndWait(new URLSearchParams(location.search).get('locale')??'en');
@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')).render(<JestPlayApp/>);
 `);
 let browser,server;const cases=[];
 try{
- await build({root:scratch,configFile:false,plugins:[react(),babel({presets:[reactCompilerPreset()]})],logLevel:'error',resolve:{alias:{'#shop-modal-page':path.join(root,'src/web/play/modalPages/commerce/ShopModalPage.tsx')}},build:{outDir:'dist',target:'esnext'}});
+ await build({root:scratch,configFile:false,plugins:[react(),babel({presets:[reactCompilerPreset()]})],logLevel:'error',resolve:{alias:{'#shop-modal-page':path.join(root,"src/commerce/components/ShopModalPage.tsx")}},build:{outDir:'dist',target:'esnext'}});
  const types={'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.wasm':'application/wasm','.json':'application/json','.html':'text/html'};
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname;const file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('Content-Type',types[path.extname(file)]??'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});

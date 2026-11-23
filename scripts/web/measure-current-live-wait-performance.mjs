@@ -12,22 +12,22 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const require=createRequire(import.meta.url);
-const {RACE_RULES,LiveRaceViewSchema}=require('../../firebase-functions/lib/src/core/race/index.js');
+const {RACE_RULES,LiveRaceViewSchema}=require("../../firebase-functions/lib/src/races/contracts/index.js");
 const output=path.resolve(process.env.LIVE_WAIT_PERFORMANCE_REPORT_DIR??path.join(root,'artifacts/performance-current-20261019/client'));
 await mkdir(output,{recursive:true});
 const baseline=await readFile(path.join(output,'liveRacePolling.before.ts'),'utf8');
 const candidate=baseline.replace('Partial<Pick<LiveRaceView, "run">>)','Partial<Pick<LiveRaceView, "run" | "waitForPlayer" | "challengeId">>)').replace('  if (!visible || view?.phase', '  if (visible && pushConnected && view?.phase === "searching" && (view.waitForPlayer || view.challengeId)) return 4_000;\n  if (!visible || view?.phase');
 assert.notEqual(candidate,baseline);
-assert.equal(await readFile(path.join(root,'src/web/play/race/logic/liveRacePolling.ts'),'utf8'),candidate,'The candidate must match the current production source');
+assert.equal(await readFile(path.join(root,"src/races/live/liveRacePolling.ts"),'utf8'),candidate,'The candidate must match the current production source');
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-wait-perf-'));
 let server,browser;
 const matches=new Map();
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
 const p=new URLSearchParams(location.search);window.__stats={requests:[],storage:{get:0,set:0,remove:0,ms:0},longtasks:[],renders:0,signalAt:null,signalPaintMs:null};
 for(const [method,count] of [['getItem','get'],['setItem','set'],['removeItem','remove']]){const original=Storage.prototype[method];Storage.prototype[method]=function(...args){const start=performance.now();try{return original.apply(this,args);}finally{window.__stats.storage[count]++;window.__stats.storage.ms+=performance.now()-start;}};}
 try{new PerformanceObserver(list=>window.__stats.longtasks.push(...list.getEntries().map(e=>({start:e.startTime,ms:e.duration})))).observe({type:'longtask',buffered:true});}catch{}

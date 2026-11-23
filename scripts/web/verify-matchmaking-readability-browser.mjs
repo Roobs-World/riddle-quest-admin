@@ -17,12 +17,12 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {LIVE_RACE_WAIT_MS,RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {LIVE_RACE_WAIT_MS,RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {setLocaleAndWait,tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
 const params=new URLSearchParams(location.search),locale=params.get('locale')??'en',mode=params.get('mode')??'racing';
 await setLocaleAndWait(locale);window.expectedCopy=key=>tr(key);
 const initial=Date.now(),created=initial-LIVE_RACE_WAIT_MS/2,starts=mode==='countdown'?initial+3500:initial-5000;

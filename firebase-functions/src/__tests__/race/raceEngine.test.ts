@@ -1,4 +1,4 @@
-import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {
   abandonRaceRun,
   applyRaceGuess,

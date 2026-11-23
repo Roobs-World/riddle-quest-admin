@@ -27,7 +27,7 @@ import {
   GetLeaderboardResponseSchema,
   LeaderboardEntry,
   LeaderboardType,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 
 /** Defines the level weight value. */

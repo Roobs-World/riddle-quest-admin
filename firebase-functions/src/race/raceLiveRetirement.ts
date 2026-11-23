@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import type {RetireLiveRaceJoin, RetireLiveRaceJoinResponse} from "../../../src/core/race/index.js";
+import type {RetireLiveRaceJoin, RetireLiveRaceJoinResponse} from "../../../src/races/contracts/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "./raceEligibility";

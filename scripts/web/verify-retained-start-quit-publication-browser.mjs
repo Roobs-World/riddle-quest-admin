@@ -13,8 +13,8 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RetainedRaceHarness} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,'src/web/play/sharing/ReferralSharingCapability.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,"src/sharing/components/ReferralSharingCapability.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const failure=new URLSearchParams(location.search).get('failure'),authority=createFakeRaceServices();
 window.commands=[];window.authorityRuns=[];window.closeCount=0;window.shares=[];window.publishedIds=[];let damaged=false,quitLost=false,resumeLost=false,publishLost=false;
 function reply(message,operation,data,ok=true){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation,ok,...(ok?{data}:{error:'RaceTo10.ERROR_GENERIC'})}}}));}

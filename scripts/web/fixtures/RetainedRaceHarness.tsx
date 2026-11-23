@@ -1,24 +1,25 @@
 /** Test-only recorded-race integration from 6ee7da15e, adapted to the current retained controller and view.
  * The public RaceTo10Game entry remains live PvP; this fixture never enters a platform artifact. */
-import {raceEntryView} from "../../../src/web/play/race/logic/raceEntrySelection";
-import {needsRaceCatalog} from "../../../src/web/play/race/logic/raceDiscoveryRecovery";
+import {raceEntryView} from "../../../src/races/matchmaking/raceEntrySelection";
+import {needsRaceCatalog} from "../../../src/races/matchmaking/raceDiscoveryRecovery";
 import {useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore} from "react";
-import "../../../src/web/styles.race-lobby.css";
-import "../../../src/web/styles.race-gameplay.css";
-import type {PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceInboxItem} from "../../../src/core/race";
-import {tr} from "../../../src/web/play/i18n";
-import {useReferralSharing} from "../../../src/web/play/sharing/ReferralSharingCapability";
-import {createRaceAnalyticsMessage} from "../../../src/hosted/race/logic/raceAnalytics";
-import {getGhostCorrectCount} from "../../../src/hosted/race/logic/racePlayback";
-import {getRaceLetterStates} from "../../../src/hosted/race/logic/racePresentation";
-import {useRaceDialogFocus, useRaceGameplayFit} from "../../../src/web/play/race/hooks";
-import {useAnswerKeyboard} from "../../../src/web/play/game/hooks/useAnswerKeyboard";
-import {useRaceSession} from "../../../src/web/play/race/hooks/useRaceSession";
-import {useRaceEntryTracking} from "../../../src/web/play/race/hooks/useRaceRuntimeEffects";
-import {RaceTo10View} from "../../../src/web/play/race/RaceTo10View";
-import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "../../../src/web/play/race/RaceTo10Game.types";
-import type {RaceSessionEffect} from "../../../src/web/play/race/RaceSession.types";
-import {RaceProviderViews} from "../../../src/web/play/race/RaceProviderViews";
+import "../../../src/races/styles/lobby.css";
+import "../../../src/races/styles/gameplay.css";
+import type {PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceInboxItem} from "../../../src/races/contracts/index";
+import {tr} from "../../../src/localization/browser/i18n";
+import {useReferralSharing} from "../../../src/sharing/components/ReferralSharingCapability";
+import {createRaceAnalyticsMessage} from "../../../src/races/raceAnalytics";
+import {getGhostCorrectCount} from "../../../src/races/presentation/racePlayback";
+import {getRaceLetterStates} from "../../../src/races/presentation/racePresentation";
+import {useRaceDialogFocus} from "../../../src/races/hooks/useRaceDialogFocus";
+import {useRaceGameplayFit} from "../../../src/races/hooks/useRaceGameplayFit";
+import {useAnswerKeyboard} from "../../../src/gameplay/hooks/browser/useAnswerKeyboard";
+import {useRaceSession} from "../../../src/races/hooks/useRaceSession";
+import {useRaceEntryTracking} from "../../../src/races/hooks/useRaceRuntimeEffects";
+import {RaceTo10View} from "../../../src/races/components/recorded/RaceTo10View";
+import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "../../../src/races/components/recorded/RaceTo10Game.types.ts";
+import {type RaceSessionEffect} from "../../../src/races/controllers/RaceSession.types.ts";
+import {RaceProviderViews} from "../../../src/races/browser/controllers/RaceProviderViews";
 
 /** Replaces the whole rendered journey before a changed entry can display preceding authority. */
 export function RetainedRaceHarness(props: RaceTo10GameProps) {

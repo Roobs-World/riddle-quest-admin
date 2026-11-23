@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {startRaceRunForUser, publishRaceChallengeForUser} from "../../race/raceService";
 import {inspectRaceChallengeEligibility} from "../../race/raceEligibility";
 import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";

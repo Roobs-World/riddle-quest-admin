@@ -1,4 +1,4 @@
-import type {HostServices} from "../../../../src/hosted/hostTypes";
+import type {HostServices} from "../../../../src/platform/contracts/hostServices";
 
 /** Starts the current Classic fallback before Daily's launch decision completes. */
 export function createJestStartupRiddlePreload<Services extends Pick<HostServices, "loadRiddle">>(

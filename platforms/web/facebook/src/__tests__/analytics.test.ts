@@ -1,4 +1,4 @@
-import {resetAnalyticsForTests, trackEvent, trackPurchase} from "../../../../../src/web/analytics/events";
+import {resetAnalyticsForTests, trackEvent, trackPurchase} from "../../../../../src/observability/analytics/events";
 import {installFacebookAnalytics} from "../analytics";
 import type {FacebookInstantSdk} from "../fbinstant";
 

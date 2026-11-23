@@ -4,7 +4,7 @@ import {
   SubmitSinglePlayerGuessResponseDataSchema,
   type SubmitSinglePlayerGuessRequestData,
   type SubmitSinglePlayerGuessResponseData,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";

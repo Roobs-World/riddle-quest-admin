@@ -7,7 +7,7 @@ import {createRequire} from "node:module";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 const require = createRequire(import.meta.url);
-const {RACE_RULES} = require("../../firebase-functions/lib/src/core/race/index.js");
+const {RACE_RULES} = require("../../firebase-functions/lib/src/races/contracts/index.js");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-seat-recovery-"));
@@ -18,9 +18,9 @@ const fixtureRequire = createRequire(path.join(root,"firebase-functions/package.
 const fixtureDb = fixtureRequire("firebase-admin/firestore").getFirestore();
 const source = `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';
 const call=async (action,input)=>{const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})}); if(!response.ok) throw new Error('Harness transport failed'); return response.json();};
 const matchmaking={find:async()=>({status:'cancelled'}), live:{join:input=>call('join',input),update:input=>call('update',input)}};

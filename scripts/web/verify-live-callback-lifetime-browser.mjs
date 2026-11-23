@@ -12,13 +12,13 @@ await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.c
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-callback-'));
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/web/play/race/RaceTo10Game.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-gameplay.css'))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/gameplay.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 window.probe={requests:[],joins:[],adds:0,removes:0,active:0,renderedEpochs:[],completions:[],closes:[],events:[],errors:[],unhandled:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));

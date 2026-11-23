@@ -6,6 +6,10 @@ import {webApplications, platformServerRoots} from "./platform-layout.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const failures = [];
 const read = name => JSON.parse(readFileSync(resolve(root, name), "utf8"));
+const sourceGroups = Object.entries(read("config/source-layout.json").groups);
+for (const layer of ["core", "solo", "hosted", "web"]) {
+  if (existsSync(resolve(root, "src", layer))) failures.push(`Organize src/${layer} by game feature.`);
+}
 if (existsSync(resolve(root, "packages"))) {
   for (const entry of readdirSync(resolve(root, "packages"))) {
     failures.push(`Move ${entry} out of packages; shared source belongs under src and platform source under platforms.`);
@@ -21,6 +25,11 @@ function inspectSharedConfiguration(directory) {
       inspectSharedConfiguration(file);
     } else if (sharedConfiguration.test(entry.name)) {
       failures.push(`Shared source uses root project configuration; remove ${relative(root, file)}.`);
+    } else {
+      const source = relative(root, file).replaceAll("\\", "/");
+      const groups = sourceGroups.filter(([, group]) => group.sources.some(pattern =>
+        pattern.endsWith("/**") ? source.startsWith(pattern.slice(0, -2)) : source === pattern));
+      if (groups.length !== 1) failures.push(`Assign ${source} to exactly one source responsibility in config/source-layout.json.`);
     }
   }
 }

@@ -1,4 +1,4 @@
-import {normalizeLatinShortcutKey} from "../../../../../src/solo";
+import {normalizeLatinShortcutKey} from "../../../../../src/gameplay/input/localInput";
 import type {ComponentRef, RefObject} from "react";
 import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {palette, radius, spacing} from "../theme";

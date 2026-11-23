@@ -1,8 +1,8 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort, PlatformResult} from "./types";
-import {DEFAULT_PRODUCT_PRICING} from "../../../../src/core/pricing/catalog";
-import type {ProductSummary} from "../../../../src/hosted/hostTypes";
-import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import {DEFAULT_PRODUCT_PRICING} from "../../../../src/commerce/pricing/catalog";
+import type {ProductSummary} from "../../../../src/platform/contracts/hostServices";
+import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 
 /** Represents a page read from Jest's incomplete-purchase recovery queue. */
 type IncompletePurchasePage = {

@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, expect, it, jest} from "@jest/globals";
-import type {ShopSubscriptionContext} from "../../../../../src/web/play/modalPages/commerce/ShopSubscriptionContext";
+import type {ShopSubscriptionContext} from "../../../../../src/commerce/browser/ShopSubscriptionContext";
 import type {ContextType} from "react";
 
 /** Controlled subscription effects expose refresh and cancellation calls. */
@@ -13,7 +13,7 @@ jest.mock("react", () => ({
   useRef: (current: unknown) => ({current}),
   useState: (initial: unknown) => [initial, jest.fn()],
 }));
-import {useSubscriptionManagement} from "../../../../../src/web/play/modalPages/commerce/useSubscriptionManagement";
+import {useSubscriptionManagement} from "../../../../../src/commerce/browser/useSubscriptionManagement";
 
 /** Original global browser surface is restored after each fixture. */
 const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");

@@ -1,4 +1,4 @@
-import {LIVE_RACE_COUNTDOWN_MS} from "../../../src/core/race/index.js";
+import {LIVE_RACE_COUNTDOWN_MS} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef} from "../shared/accountDeletion";

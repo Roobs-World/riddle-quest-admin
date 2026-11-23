@@ -1,4 +1,4 @@
-import {LIVE_RACE_WIN_COINS} from "../../../../src/core/race/index.js";
+import {LIVE_RACE_WIN_COINS} from "../../../../src/races/contracts/index.js";
 import {randomBytes} from "node:crypto";
 import {Timestamp, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";

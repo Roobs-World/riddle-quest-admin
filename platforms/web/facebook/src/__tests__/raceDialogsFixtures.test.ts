@@ -1,7 +1,7 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {RACE_CHALLENGE_TTL_MS} from "../../../../../src/core/race";
+import {RACE_CHALLENGE_TTL_MS} from "../../../../../src/races/contracts/index";
 import {parseFacebookContextBoardResponse} from "../facebookCallableResponses";
-import {createRaceContextBoardFixture} from "./raceDialogs.jest-playwright.support";
+import {createRaceContextBoardFixture} from "./raceDialogs.jest-playwright.support.ts";
 
 describe("Facebook context standings fixtures", () => {
   it.each([2000, 4500, 9000, 27000])("preserves the exact server window with an advancing clock for %i ms standings", adjustedTimeMs => {

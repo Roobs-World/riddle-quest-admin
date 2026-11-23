@@ -25,7 +25,7 @@ A Google subject verified in Firebase authentication claims and bound to an Andr
 _Avoid_: Anonymous installation, referral token, Jest player
 
 **Shared Solo Logic**:
-The provider-neutral local solo play folder `src/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
+The provider-neutral local play rules and controllers under the gameplay, content, progression, and localization feature folders. Web Playable targets and the Android App consume the same content parsing, save schema, economy, achievements, copy, input editing, local authority, and shared React controllers.
 _Avoid_: YouTube module, playable folder, duplicated native rules
 
 **Bundled Content Pack**:

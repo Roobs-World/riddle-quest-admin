@@ -1,7 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {splitGraphemes, isValidGuess} from "../../../../src/core/game/index.js";
-import {SubmitRaceGuessRequestSchema, UpdateLiveRaceSchema} from "../../../../src/core/race/index.js";
+import {splitGraphemes} from "../../../../src/gameplay/input/graphemes.js";
+import {isValidGuess} from "../../../../src/gameplay/rules/isValidGuess.js";
+import {SubmitRaceGuessRequestSchema, UpdateLiveRaceSchema} from "../../../../src/races/contracts/index.js";
 import {startRaceRunForUser, submitRaceGuessForUser, requestRaceHintForUser, resumeRaceRunForUser} from "../../race/raceService";
 import {parseRunRecord} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";

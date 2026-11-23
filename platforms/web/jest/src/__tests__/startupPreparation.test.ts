@@ -1,10 +1,10 @@
 import {commitJestStartupSession} from "../commitJestStartupSession";
 import {createNotificationOperationGate} from "../notifications/operationGate";
-import {setLocaleAndWait} from "../../../../../src/web/play/i18n";
+import {setLocaleAndWait} from "../../../../../src/localization/browser/i18n";
 import type {JestSession} from "../types";
 
-jest.mock("../../../../../src/web/play/i18n", () => ({
-  ...jest.requireActual("../../../../../src/web/play/i18n"),
+jest.mock("../../../../../src/localization/browser/i18n", () => ({
+  ...jest.requireActual("../../../../../src/localization/browser/i18n"),
   setLocaleAndWait: jest.fn(),
 }));
 

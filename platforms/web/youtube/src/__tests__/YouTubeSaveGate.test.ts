@@ -1,5 +1,5 @@
-import {createEmptyYouTubeSave} from "../../../../../src/web/playable/save";
-import {YouTubeSaveBlockedError, YouTubeSaveGate} from "../../../../../src/web/playable/YouTubeSaveGate";
+import {createEmptyYouTubeSave} from "../../../../../src/gameplay/persistence/localSave";
+import {YouTubeSaveBlockedError, YouTubeSaveGate} from "../../../../../src/gameplay/persistence/YouTubeSaveGate";
 
 describe("YouTubeSaveGate", () => {
   it("retains and retries the exact serialized revision after response uncertainty", async () => {

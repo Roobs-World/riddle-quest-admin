@@ -7,7 +7,7 @@ import {createRequire} from "node:module";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 const require = createRequire(import.meta.url);
-const {RACE_RULES} = require("../../firebase-functions/lib/src/core/race/index.js");
+const {RACE_RULES} = require("../../firebase-functions/lib/src/races/contracts/index.js");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-stale-clock-"));
@@ -16,9 +16,9 @@ await mkdir(output, {recursive:true});
 const authority = null;
 const source = `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';
 window.deliveryCalls=[];window.joinReleases=[];
 const call=async(action,input)=>{
@@ -60,7 +60,7 @@ function state(user) {
  result:winner===null?null:winner===user?'win':'loss',rewardCoins:winner===user?50:0,...(winner===user?{newCoins:150}:{})};
 }
 try {
- await build({plugins:[{name:"original-live-race-baseline",async load(id){if(process.env.LIVE_RACE_BASELINE_FILE && id===path.join(root,"src/web/play/race/LiveRaceGame.tsx"))return await readFile(process.env.LIVE_RACE_BASELINE_FILE,"utf8");}}],root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',build:{outDir:'dist'}});
+ await build({plugins:[{name:"original-live-race-baseline",async load(id){if(process.env.LIVE_RACE_BASELINE_FILE && id===path.join(root,"src/races/components/live/LiveRaceGame.tsx"))return await readFile(process.env.LIVE_RACE_BASELINE_FILE,"utf8");}}],root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',build:{outDir:'dist'}});
  server=createServer(async(request,response)=>{
   try {
    const url=new URL(request.url,'http://localhost');

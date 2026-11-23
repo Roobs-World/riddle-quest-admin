@@ -18,8 +18,8 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,'src/web/playable/YouTubePlayableApp.tsx'))};
-import ${JSON.stringify(path.join(root,'src/web/playable/styles.css'))};
+import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalGameApp.tsx"))};
+import ${JSON.stringify(path.join(root,"src/gameplay/styles/local-game.css"))};
 window.probe={loads:0,saves:[],ready:0,errors:[],unhandled:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 const sdk={inPlayablesEnvironment:true,firstFrameReady(){},gameReady(){window.probe.ready++;},async loadData(){window.probe.loads++;return '';},async saveData(data){if(!window.probe.loads)throw Error('Save before load');window.probe.saves.push(data);if(window.rejectSaveOnce){window.rejectSaveOnce=false;throw Error('Injected save failure');}if(window.holdSaveOnce){window.holdSaveOnce=false;await new Promise(resolve=>window.releaseSave=resolve);}},async getLanguage(){return 'en';},isAudioEnabled(){return false;},onAudioEnabledChange(){return ()=>{};},onPause(callback){window.pausePlayable=callback;return ()=>{};},onResume(callback){window.resumePlayable=callback;return ()=>{};},logError(){},logWarning(){}};

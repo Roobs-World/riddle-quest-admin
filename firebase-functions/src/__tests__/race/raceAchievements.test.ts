@@ -1,4 +1,4 @@
-import {RACE_ACHIEVEMENT_IDS} from "../../../../src/core/race/index.js";
+import {RACE_ACHIEVEMENT_IDS} from "../../../../src/races/contracts/index.js";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../shared/constants";
 import {evaluateRaceAchievementEvent, raceRewardAwardsAgree} from "../../race/raceAchievements";
 

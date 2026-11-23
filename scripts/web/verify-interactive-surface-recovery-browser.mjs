@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const {SOLO_COIN_COSTS}=await import(path.join(root,'src/core/game/economy.ts'));
+const {SOLO_COIN_COSTS}=await import(path.join(root,"src/progression/economy/rewardRules.ts"));
 const continueCost=SOLO_COIN_COSTS.continue;
 const mode=process.env.INTERACTIVE_RECOVERY_REACT_MODE??'development';
 const baseline=process.env.INTERACTIVE_RECOVERY_BASELINE_DIR;
@@ -19,14 +19,14 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,'src/web/FatalErrorBoundary.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,"src/app/components/recovery/FatalErrorBoundary.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,"src/observability/browserErrorReporter.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={errors:[],unhandled:[],windowErrors:[],saves:[],guesses:0,completions:0,completionRequests:[],completionReceipts:[],guessReceipts:[],spends:[],skips:[],hints:[],loads:[],sceneRenders:0,customRenders:0};
 window.addEventListener('riddle-quest:game-to-host',event=>{const m=event.detail;if(m?.type==='game:completeGame')window.probe.completionRequests.push({requestId:m.requestId,payload:m.payload});});
@@ -55,9 +55,9 @@ try{
  browser=process.env.INTERACTIVE_RECOVERY_SERVE_ONLY==='1'?undefined:await chromium.launch({headless:true});
  for(const variant of (process.env.INTERACTIVE_RECOVERY_SERVE_ONLY==='1'?['modal-download']:['modal-download','modal-render','race-download','race-render','provider-render'])){
   await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'interactive-recovery-fixture',enforce:'pre',async load(id){
-   if(baseline&&id===path.join(root,'src/web/play/GameFrameApp.tsx'))return readFile(path.join(baseline,'GameFrameApp.before.txt'),'utf8');
-   if(variant==='modal-render'&&id===path.join(root,'src/web/play/GameModalView.tsx'))return `export function GameModalView(){throw Error('modal surface render failed');}`;
-   if(variant==='race-render'&&id===path.join(root,'src/web/play/race/RaceTo10Game.tsx'))return `export function RaceTo10Game(){throw Error('race surface render failed');}`;
+   if(baseline&&id===path.join(root,"src/gameplay/components/GameFrameApp.tsx"))return readFile(path.join(baseline,'GameFrameApp.before.txt'),'utf8');
+   if(variant==='modal-render'&&id===path.join(root,"src/app/modals/components/GameModalView.tsx"))return `export function GameModalView(){throw Error('modal surface render failed');}`;
+   if(variant==='race-render'&&id===path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))return `export function RaceTo10Game(){throw Error('race surface render failed');}`;
   }}],build:{outDir:'dist',minify:false}});
   const assets=await readdir(path.join(scratch,'dist/assets'));
   const modalAsset=assets.find(file=>file.startsWith('GameModalView-')&&file.endsWith('.js'));

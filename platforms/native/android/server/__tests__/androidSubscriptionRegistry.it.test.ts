@@ -7,7 +7,7 @@ import {
   type PlayDeveloperApi,
   type PlaySubscriptionPurchase,
 } from "../playDeveloperApi";
-import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../../../src/core/pricing/catalog.js";
+import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../../../src/commerce/pricing/catalog.js";
 
 /** One synthetic native account in an exclusively owned demo project. */
 const UID = "a".repeat(28),

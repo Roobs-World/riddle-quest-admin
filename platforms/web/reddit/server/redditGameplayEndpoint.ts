@@ -29,7 +29,7 @@ import {
   RecordFacebookTournamentRunResponseSchema,
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
-} from "../../../../src/core/race/index.js";
+} from "../../../../src/races/contracts/index.js";
 import {joinLiveRace, retireLiveRaceJoin, confirmLiveGuessReceipt, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../../../../firebase-functions/src/race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../../../../firebase-functions/src/race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
@@ -61,7 +61,7 @@ import {disconnectRedditPresence, pollRedditPresence} from "./redditPresence";
 import {blockRival, reportRival} from "../../../../firebase-functions/src/social/socialSafetyCallables";
 import {grantVerifiedRedditOrder, refundVerifiedRedditOrder} from "./redditCommerceLedger";
 import {bindRedditReferralToken, issueRedditReferralToken} from "./redditReferrals";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../../src/core/validation/index.js";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../../src/localization/locales.js";
 
 /** Provides gateway secret behavior. */
 const gatewaySecret = defineSecret("REDDIT_GATEWAY_SECRET");

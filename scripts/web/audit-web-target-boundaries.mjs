@@ -3,7 +3,7 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 import ts from "typescript";
 
-const defaultSourceDirectory = fileURLToPath(new URL("../../src/web", import.meta.url));
+const defaultSourceDirectory = fileURLToPath(new URL("../../src", import.meta.url));
 const targetOwners = new Set(["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]);
 const repositoryDirectory = fileURLToPath(new URL("../../", import.meta.url));
 const sharedOwner = "shared";
@@ -64,7 +64,7 @@ const collectProductionSources = async (sourceDirectory) => {
         throw new TypeError(`Web Target source tree must not contain symbolic links: ${absolute}`);
       }
       if (metadata.isDirectory()) {
-        if (entry.name === "__tests__" || entry.name === "server") continue;
+        if (entry.name === "__tests__" || entry.name === "server" || entry.name === "mocks") continue;
         if (relativeSegments.length === 0 && entry.name === "test") continue;
         await walk(absolute, [...relativeSegments, entry.name]);
         continue;

@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import {z} from "zod";
-import {RaceCategoryIdSchema, RaceLocaleSchema, RACE_RULES_VERSION} from "../../../src/core/race/index.js";
+import {RaceCategoryIdSchema, RaceLocaleSchema, RACE_RULES_VERSION} from "../../../src/races/contracts/index.js";
 import {raceProviderScope, type RaceProviderScope} from "./raceEligibility";
 import type {RaceChallengeRecord} from "./raceSetupService";
 import {raceDifficultyAdjustedMs, RACE_MATCH_NORMALIZATION_VERSION} from "./raceMatchPerformance";

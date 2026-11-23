@@ -14,7 +14,7 @@ import {
   SpendCoinsResponseSchema,
   GetHintRequestSchema,
   GetHintResponseSchema,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {gameplayCallableOptions, gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
@@ -23,7 +23,7 @@ import {
   purchaseAuthoritativeHint,
   skipAuthoritativeRiddle,
 } from "./singlePlayerSession";
-import type {SupportedLocale} from "../../../src/core/validation/index.js";
+import {type SupportedLocale} from "../../../src/localization/locales.js";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 /**

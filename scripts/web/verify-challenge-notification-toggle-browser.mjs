@@ -13,15 +13,15 @@ await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/push-toggle-"));
 await writeFile(path.join(scratch, "main.tsx"), `
 import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {LiveRacePushConsent} from ${JSON.stringify(path.join(root, "src/web/play/race/components/LiveRacePushConsent.tsx"))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/web/play/sharing/ReferralSharingCapability.tsx"))};
-import {SettingsModalPage} from ${JSON.stringify(path.join(root, "src/web/play/modalPages/settings/SettingsModalPage.tsx"))};
-import {ProfileModalPage} from ${JSON.stringify(path.join(root, "src/web/play/modalPages/profile/ProfileModalPage.tsx"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.modal-shell.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.account.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.modal-rewards.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.profile-details.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {LiveRacePushConsent} from ${JSON.stringify(path.join(root, "src/races/components/social/LiveRacePushConsent.tsx"))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
+import {SettingsModalPage} from ${JSON.stringify(path.join(root, "src/settings/components/SettingsModalPage.tsx"))};
+import {ProfileModalPage} from ${JSON.stringify(path.join(root, "src/accounts/components/ProfileModalPage.tsx"))};
+import ${JSON.stringify(path.join(root, "src/app/modals/styles/modal-shell.css"))};
+import ${JSON.stringify(path.join(root, "src/accounts/styles/account.css"))};
+import ${JSON.stringify(path.join(root, "src/progression/styles/rewards.css"))};
+import ${JSON.stringify(path.join(root, "src/accounts/styles/profile-details.css"))};
 window.calls=[];
 const capability={setLiveRacePush:enabled=>{window.calls.push(enabled);return new Promise((resolve,reject)=>{window.finish=resolve;window.fail=reject;});}};
 function App(){const [surface,setSurface]=useState('multiplayer');window.setSurface=setSurface;return <ReferralSharingProvider capability={location.search.includes('unsupported')?null:capability}><div className="game-modal-backdrop"><div className={"game-modal modal-"+surface}>{surface==='settings'?<SettingsModalPage locale="en" muted={false} onOpenModal={()=>{}} onToggleMute={()=>{}} commerceAvailable={false}/>:surface==='profile'?<ProfileModalPage profile={null} onOpenModal={()=>{}} onUpdateAvatar={async()=>{}} onDeleteAccount={()=>{}}/>:<LiveRacePushConsent/>}</div></div></ReferralSharingProvider>;}

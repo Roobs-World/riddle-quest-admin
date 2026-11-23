@@ -1,5 +1,5 @@
 import {FACEBOOK_PRODUCTS} from "./commerce/facebookCatalog";
-import type {CommerceCapability, CommerceProduct, PlatformResult} from "../../../../src/web/platform/types";
+import type {CommerceCapability, CommerceProduct, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import {
   FacebookPurchaseRecovery,
   parseFacebookUnconsumedPurchases,

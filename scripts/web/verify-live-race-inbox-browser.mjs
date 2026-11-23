@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const component=path.join(root,'src/web/play/race/components/LiveRaceInbox.tsx');
+const component=path.join(root,"src/races/components/invitations/LiveRaceInbox.tsx");
 const baseline=process.env.LIVE_INBOX_BASELINE_SOURCE;
 const reactMode=process.env.LIVE_INBOX_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
@@ -18,8 +18,8 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceInbox} from ${JSON.stringify(component)};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
 window.probe={calls:[],pending:[],accepted:[],challengeReads:0,timers:new Set()};
 window.watchTimers=()=>{const schedule=window.setTimeout.bind(window),clear=window.clearTimeout.bind(window);
   window.setTimeout=(callback,delay,...args)=>{if(delay!==8000)return schedule(callback,delay,...args);

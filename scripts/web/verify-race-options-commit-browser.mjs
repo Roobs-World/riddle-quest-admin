@@ -16,7 +16,7 @@ try {
  await writeFile(path.join(scratch,'index.html'),'<div id="root"></div><script type="module" src="/main.tsx"></script>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React,{Suspense,startTransition} from 'react';import {createRoot} from 'react-dom/client';
-import {useRaceSession} from ${JSON.stringify(path.join(portal,'src/web/play/race/hooks/useRaceSession.ts'))};
+import {useRaceSession} from ${JSON.stringify(path.join(portal,"src/races/hooks/useRaceSession.ts"))};
 window.commands=[];window.attempts=[];const stalled=new Promise(()=>{});
 function Surface({adapter}){const {session,state}=useRaceSession({ownerId:'owner',locale:'en'},{postToHost:message=>{window.commands.push({adapter,type:message.type});if(message.type==='game:listRaceCategories')queueMicrotask(()=>window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:false,error:'RaceTo10.ERROR_GENERIC'}}})));}});window.attempts.push(adapter);if(adapter==='speculative')throw stalled;return <div data-committed={adapter}><button onClick={()=>session.retry()}>Retry</button><p>{state.error}</p></div>;}
 function App(){const [adapter,setAdapter]=React.useState('original');window.speculate=()=>startTransition(()=>setAdapter('speculative'));window.commit=()=>setAdapter('replacement');return <Suspense fallback={<p>Waiting</p>}><Surface adapter={adapter}/></Suspense>;}

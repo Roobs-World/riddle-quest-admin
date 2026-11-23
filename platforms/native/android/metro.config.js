@@ -26,7 +26,7 @@ const config = {
       }
       if (moduleName === "#hosted-config") return {type: "sourceFile", filePath: hostedConfigPath};
       if (moduleName === "#solo-content") {
-        return {type: "sourceFile", filePath: path.join(repositoryRoot, "src/web/playable/generated/youtube-content-v1.json")};
+        return {type: "sourceFile", filePath: path.join(repositoryRoot, "src/content/generated/youtube-content-v1.json")};
       }
       return context.resolveRequest(context, moduleName, platform);
     },

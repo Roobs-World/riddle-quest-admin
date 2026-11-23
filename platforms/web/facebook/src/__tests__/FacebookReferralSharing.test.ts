@@ -2,7 +2,7 @@ import {createFacebookReferralSharing} from "../FacebookReferralSharing";
 import type {FacebookInstantSdk, FacebookSharePayload} from "../fbinstant";
 import {createFacebookNotificationCapability} from "../FacebookNotificationCapability";
 import type {FacebookReferralToken} from "../referrals";
-import {setLocale} from "../../../../../src/web/play/i18n";
+import {setLocale} from "../../../../../src/localization/browser/i18n";
 
 /** Target-local SDK boundary with no Jest platform or DOM identity involved. */
 const fixture = () => {

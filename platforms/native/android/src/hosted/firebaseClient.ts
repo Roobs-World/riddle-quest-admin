@@ -17,7 +17,7 @@ import {
 } from "firebase/auth";
 import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} from "firebase/firestore/lite";
 import {connectFunctionsEmulator, getFunctions, httpsCallable, type Functions} from "firebase/functions";
-import {createGameFunctionsClient, type GameFunctionsClient} from "../../../../../src/hosted";
+import {createGameFunctionsClient, type GameFunctionsClient} from "../../../../../src/platform/firebase/gameFunctions";
 import {createAndroidAccountFunctions} from "./androidAccountFunctions";
 import type {AndroidReferralBackend, AndroidReferralStatus, AndroidReferralToken, AndroidReferralBinding} from "../referrals/androidReferrals";
 import type {AndroidNotificationBackend, AndroidNotificationPreferences} from "../notifications/androidNotificationController";

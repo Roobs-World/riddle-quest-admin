@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
-import {installTournamentPresentation} from "./tournaments.jest-playwright.support";
+import {installTournamentPresentation} from "./tournaments.jest-playwright.support.ts";
 
 /** Reload recovers an official score into the existing Meta context without a browser run receipt. */
 export async function verifyTournamentScoreRecovery(page: Page, origin: string): Promise<void> {

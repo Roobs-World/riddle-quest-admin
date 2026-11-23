@@ -2,11 +2,10 @@ import {lstat, readFile, readdir} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import ts from "typescript";
-import {serverRoots, sharedSourceRoots} from "./stage-platform-source.js";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../src", import.meta.url));
-const providerSourceDirectories = [...serverRoots, ...sharedSourceRoots]
-  .map((relative) => fileURLToPath(new URL(`../../${relative}`, import.meta.url)));
+const functionsDirectory = fileURLToPath(new URL("..", import.meta.url));
+const stagedDirectory = path.join(functionsDirectory, ".build-source");
 const compilerOptions = Object.freeze({
   allowJs: true,
   module: ts.ModuleKind.NodeNext,
@@ -60,6 +59,20 @@ const collectProductionModules = async (sourceDirectory) => {
   modules.sort(compareText);
   return modules;
 };
+
+/** Uses the compiler's reachable deployment graph instead of scanning unrelated feature code. */
+function collectDeploymentModules() {
+  const filename = path.join(functionsDirectory, "tsconfig.json");
+  const loaded = ts.readConfigFile(filename, ts.sys.readFile);
+  if (loaded.error) throw new Error(ts.flattenDiagnosticMessageText(loaded.error.messageText, "\n"));
+  const config = ts.parseJsonConfigFileContent(loaded.config, ts.sys, functionsDirectory);
+  if (!config.fileNames.length) throw new Error("Prepare deployment source before auditing module cycles.");
+  const program = ts.createProgram(config.fileNames, {...config.options, noEmit: true});
+  return program.getSourceFiles()
+    .map(source => path.resolve(source.fileName))
+    .filter(filename => filename.startsWith(`${stagedDirectory}${path.sep}`) && isProductionModule(filename))
+    .sort(compareText);
+}
 
 const literalModuleName = (node) =>
   node && (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
@@ -166,10 +179,8 @@ export async function auditProductionModuleCycles({sourceDirectory = defaultSour
     throw new TypeError("sourceDirectory must be a non-empty string");
   }
   const root = path.resolve(sourceDirectory);
-  const sourceDirectories = root === path.resolve(defaultSourceDirectory)
-    ? [root, ...providerSourceDirectories]
-    : [root];
-  const modules = (await Promise.all(sourceDirectories.map(collectProductionModules))).flat().sort(compareText);
+  const deployment = root === path.resolve(defaultSourceDirectory);
+  const modules = deployment ? collectDeploymentModules() : await collectProductionModules(root);
   const moduleSet = new Set(modules);
   const resolutionCache = ts.createModuleResolutionCache(root, (value) => value, compilerOptions);
   const graph = new Map(modules.map((module) => [module, []]));
@@ -193,7 +204,7 @@ export async function auditProductionModuleCycles({sourceDirectory = defaultSour
   }
 
   const cycles = findCyclicComponents(graph).map((component) =>
-    component.map((module) => toPortablePath(path.relative(root, module)))
+    component.map((module) => toPortablePath(path.relative(deployment ? stagedDirectory : root, module)))
   );
   if (cycles.length > 0) throw new ModuleCycleAuditError(cycles);
   return Object.freeze({modulesScanned: modules.length, referencesChecked, sourceDirectory: root});

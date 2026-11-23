@@ -1,4 +1,4 @@
-import {JEST_REFERRAL_REWARD_COINS} from "../../../../src/core/referrals/index.js";
+import {JEST_REFERRAL_REWARD_COINS} from "../src/referrals/referralCampaigns.js";
 import type {Firestore} from "firebase-admin/firestore";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";

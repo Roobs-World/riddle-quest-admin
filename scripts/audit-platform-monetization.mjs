@@ -40,7 +40,7 @@ export async function auditPlatformMonetization() {
   if (redditConfig.permissions?.payments !== true || !redditConfig.payments?.endpoints?.fulfillOrder || !redditConfig.payments?.endpoints?.refundOrder) failures.push("Reddit payment permissions and handlers must be configured.");
   if (!Array.isArray(redditProducts.products) || redditProducts.products.length < 1 || !/purchase\(productId/u.test(redditClient)) failures.push("Reddit Gold products or client purchase flow is missing.");
   if (!/purchase integration/u.test(youtubeAudit)) failures.push("YouTube artifact audit must continue rejecting purchase integration.");
-  if (!/src\/web\/standalone\/main/u.test(yahooEntry)) failures.push("Yahoo candidate must use the provider-neutral standalone entry.");
+  if (!/src\/app\/standalone\/main/u.test(yahooEntry)) failures.push("Yahoo candidate must use the provider-neutral standalone entry.");
   if (!/commerce or advertising/u.test(standaloneAudit) || !/checkout/u.test(standaloneAudit)) failures.push("Yahoo and Netflix candidate audits must reject checkout integration.");
   if (failures.length) throw new Error(`Platform monetization audit failed:\n- ${failures.join("\n- ")}`);
   return rows;

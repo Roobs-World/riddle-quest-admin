@@ -865,7 +865,7 @@
                 Add race category, create/start, guess, hint, skip, resume, publish, preview, outcome, and inbox
                 messages.
               </td>
-              <td><code>src/core/bridge</code></td>
+              <td><code>src/platform/bridge</code></td>
             </tr>
             <tr>
               <td>Host services</td>
@@ -1264,7 +1264,7 @@ result → counter_challenge → categories</code></pre>
               <td>Freeze and document <code>race10_v1</code> rules and penalty constants.</td>
               <td><span class="pill status-done">Done</span></td>
               <td class="evidence">
-                <code>src/core/race/raceSchemas.ts</code> freezes <code>race10_v1</code>; core contract tests
+                <code>src/races/contracts/raceSchemas.ts</code> freezes <code>race10_v1</code>; core contract tests
                 pass.
               </td>
               <td class="issues">Completed 2026-07-31. No rule-contract errors encountered.</td>
@@ -1275,7 +1275,7 @@ result → counter_challenge → categories</code></pre>
               <td>Define shared Zod schemas for categories, runs, events, challenges, attempts, and outcomes.</td>
               <td><span class="pill status-done">Done</span></td>
               <td class="evidence">
-                Shared strict schemas and inferred types live under <code>src/core/race</code>; 10 focused contract
+                Shared strict schemas and inferred types live under <code>src/races/contracts</code>; 10 focused contract
                 tests pass.
               </td>
               <td class="issues">Completed 2026-07-31. No schema blockers encountered.</td>
@@ -1815,7 +1815,7 @@ result → counter_challenge → categories</code></pre>
               <td><span class="pill status-done">Resolved</span></td>
               <td>
                 The first live dry run failed with <code>ERR_PACKAGE_PATH_NOT_EXPORTED</code> for
-                <code>src/core/race</code>.
+                <code>src/races/contracts</code>.
               </td>
               <td>
                 The installed Functions file dependency had a stale export map. The dry-run script now executes

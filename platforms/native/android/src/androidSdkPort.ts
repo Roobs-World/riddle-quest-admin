@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type {YouTubeSdkPort} from "../../../../src/solo";
+import {type YouTubeSdkPort} from "../../../../src/gameplay/local/types";
 import {AppState, I18nManager, type AppStateStatus, type NativeEventSubscription} from "react-native";
 /** Storage key holding the single local save document. */
 export const ANDROID_SAVE_KEY = "riddle-quest:android:save-v1";

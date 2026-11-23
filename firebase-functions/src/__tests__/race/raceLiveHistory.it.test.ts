@@ -5,7 +5,7 @@ import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {listLiveRaceHistoryForUser} from "../../race/raceLiveHistory";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
-import {LIVE_RACE_HISTORY_MS} from "../../../../src/core/race/index.js";
+import {LIVE_RACE_HISTORY_MS} from "../../../../src/races/contracts/index.js";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../../../platforms/web/reddit/server/redditSecurity";

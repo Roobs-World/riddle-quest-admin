@@ -13,10 +13,10 @@ await mkdir(output,{recursive:true});
 const source=`
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
-import {RaceHubTabs} from ${JSON.stringify(path.join(root,'src/web/play/race/components/RaceHubTabs.tsx'))};
-import {setLocale,useLocale} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
+import {RaceHubTabs} from ${JSON.stringify(path.join(root,"src/races/components/lobby/RaceHubTabs.tsx"))};
+import {setLocale,useLocale} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 window.changeLocale=setLocale;window.selectEvents=[];
 function App(){useLocale();const [active,setActive]=useState('play');const [tournaments,setTournaments]=useState(true);
  window.setTournamentCapability=setTournaments;

@@ -1,6 +1,6 @@
 import {describe, expect, test} from "@jest/globals";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory, resolveFacebookCapabilityVisibility} from "../FacebookCapabilityPolicy";
-import type {PlatformCapabilities} from "../../../../../src/web/platform/types";
+import type {PlatformCapabilities} from "../../../../../src/platform/contracts/capabilities";
 
 describe("Facebook optional capability visibility", () => {
   test("removes context and matchmaking together when the authenticated server gate is closed", () => {

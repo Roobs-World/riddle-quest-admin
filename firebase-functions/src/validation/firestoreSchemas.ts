@@ -1,7 +1,13 @@
 import type {FieldValue} from "firebase-admin/firestore";
-import {type PlayerStats} from "../../../src/core/validation/index.js";
+import {type PlayerStats} from "../../../src/platform/contracts/firestoreSchemas.js";
 
-export * from "../../../src/core/validation/index.js";
+export {BackendGameModeSchema, CompleteGameInputSchema, SubmitSinglePlayerGuessInputSchema, CompleteGameOutputSchema, type CompleteGameInput, type CompleteGameOutput, type SubmitSinglePlayerGuessInput, SubmitSinglePlayerGuessOutputSchema, type SubmitSinglePlayerGuessOutput, DailyChallengeQuestionSchema} from "../../../src/gameplay/contracts/cloudFunctionsSchemas.js";
+export {type ProductPricing, type RegionalPrice, type SpecialOffer} from "../../../src/commerce/pricing/types.js";
+export {PlayerProgressSchema, PlayerStatsSchema, UnlockedAchievementSchema, type UnlockedAchievement, PlayerSchema, type Player, FirestoreRiddleSchema, type FirestoreRiddle, ClassicRiddleSchema, type ClassicRiddle, DailyRiddleSchema, type DailyRiddle, RiddleCollections, RegionalPriceSchema, SpecialOfferSchema, ProductPricingSchema, type PlayerProgress, type PlayerStats} from "../../../src/platform/contracts/firestoreSchemas.js";
+export {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/localization/locales.js";
+export {containsProfanity, validateUsernameForProfanity} from "../../../src/accounts/validation/profanity.js";
+export {normalizeUsernameDisplay, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_RAW_MAX_LENGTH, UsernameSchema, BasicSuccessMessageResponseSchema, FeedbackColorValueSchema, type FeedbackColorValue, FeedbackItemSchema, type FeedbackItem, SubmitGuessRequestDataSchema, type SubmitGuessRequestData, SubmitGuessAuthContextSchema, type SubmitGuessAuthContext, SubmitGuessResponseDataSchema, type SubmitGuessResponseData, SubmitSinglePlayerGuessRequestDataSchema, type SubmitSinglePlayerGuessRequestData, SubmitSinglePlayerGuessResponseDataSchema, type SubmitSinglePlayerGuessResponseData, CompleteGameRequestDataSchema, type CompleteGameRequestData, CompleteGameResponseDataSchema, type CompleteGameResponseData, DailyChallengeDataSchema, GetCurrentDailyChallengeResponseSchema, type GetCurrentDailyChallengeResponse, ClassicRiddleBufferResponseSchema, type ClassicRiddleBufferResponse, SkipRiddleRequestSchema, type SkipRiddleRequest, SkipRiddleResponseSchema, type SkipRiddleResponse, SpendCoinsRequestSchema, type SpendCoinsRequest, SpendCoinsResponseSchema, GetHintRequestSchema, GetHintResponseSchema, UpdateUsernameRequestSchema, UpdateAvatarRequestSchema, UpdateAvatarResponseSchema, LeaderboardTypeSchema, type LeaderboardType, GetLeaderboardRequestSchema, type GetLeaderboardRequest, LeaderboardEntrySchema, type LeaderboardEntry, GetLeaderboardResponseSchema, type GetLeaderboardResponse} from "../../../src/platform/contracts/requestSchemas.js";
+export {getDailyTimeZone, getDailyDate, shiftDailyDate, getDailyStart, isDailyGenerationDue, DAILY_LOCALE_TIME_ZONES} from "../../../src/gameplay/daily/dailyCalendar.js";
 
 /** Describes player stats update. */
 export type PlayerStatsUpdate = {

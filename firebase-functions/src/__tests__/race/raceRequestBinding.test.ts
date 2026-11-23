@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {bindRaceRequest, assertRaceRequestReplay, assertRaceMutationReceipt, assertLegacyRaceStart, type RaceReceiptCommand} from "../../race/raceRequestBinding";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, abandonRaceRun, toRaceRunView, type RaceRunRecord} from "../../race/raceEngine";
 

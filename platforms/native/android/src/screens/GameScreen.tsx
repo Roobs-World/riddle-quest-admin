@@ -1,16 +1,10 @@
-import {
-  canShowLatinShortcut,
-  YOUTUBE_CLASSIC_SKIP_COST,
-  YOUTUBE_CONTINUE_COST,
-  YOUTUBE_HINT_COST,
-  type LocalSoloAuthority,
-  type YouTubeActiveGame,
-  type YouTubeAuthoritySnapshot,
-  type YouTubeCopyKey,
-  type YouTubeLocale,
-  type YouTubeRiddle,
-} from "../../../../../src/solo";
-import type {Feedback} from "../../../../../src/core/game";
+import {canShowLatinShortcut} from "../../../../../src/gameplay/input/localInput";
+import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "../../../../../src/progression/economy/localEconomy";
+import {type LocalSoloAuthority} from "../../../../../src/gameplay/local/LocalSoloAuthority";
+import {type YouTubeActiveGame, type YouTubeLocale, type YouTubeRiddle} from "../../../../../src/gameplay/local/types";
+import {type YouTubeAuthoritySnapshot} from "../../../../../src/gameplay/local/LocalSoloAuthority.contract.ts";
+import {type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
+import {type Feedback} from "../../../../../src/gameplay/contracts/scoring";
 import type {RefObject} from "react";
 import {Pressable, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Screen} from "../components/Primitives";

@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const component=path.join(root,'src/web/play/race/components/LiveRaceInvitationCard.tsx');
+const component=path.join(root,"src/races/components/invitations/LiveRaceInvitationCard.tsx");
 const baseline=process.env.LIVE_PREVIEW_BASELINE_SOURCE;
 const reactMode=process.env.LIVE_PREVIEW_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
@@ -18,8 +18,8 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceInvitationCard} from ${JSON.stringify(component)};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
 window.probe={calls:[],pending:[],accepted:[],commits:[],timers:new Set(),timerAllocations:0};
 window.row=(name='Alice',letter='a',status='available',categoryId='mixed',locale='en')=>({challengeId:'live_'+letter.repeat(64),locale,categoryId,
   creator:{displayName:name,avatarUrl:null,bot:false,correctCount:0},expiresAtMs:Date.now()+900000,status});

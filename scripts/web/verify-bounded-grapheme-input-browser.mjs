@@ -7,8 +7,8 @@ import {createRequire} from 'node:module';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const require=createRequire(import.meta.url);
-const {RACE_RULES,LiveRaceViewSchema}=require('../../firebase-functions/lib/src/core/race/index.js');
-const {computeFeedback}=require('../../firebase-functions/lib/src/core/game/index.js');
+const {RACE_RULES,LiveRaceViewSchema}=require("../../firebase-functions/lib/src/races/contracts/index.js");
+const {computeFeedback}=require('../../firebase-functions/lib/src/gameplay/rules/computeFeedback.js');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.BOUNDED_GRAPHEME_REACT_MODE??'development';
 const fixture=path.join(root,'firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json');
@@ -21,10 +21,10 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,'src/web/playable/YouTubePlayableApp.tsx'))};import ${JSON.stringify(path.join(root,'src/web/playable/styles.css'))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/web/play/race/RaceTo10Game.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalGameApp.tsx"))};import ${JSON.stringify(path.join(root,"src/gameplay/styles/local-game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const services=createFakeRaceServices(),user=new URLSearchParams(location.search).get('user')??'Alice';
 window.probe={calls:[],saves:[],loads:0,errors:[],unhandled:[]};window.probe.segmentYields=0;window.probe.countSegments=false;
 const segment=Intl.Segmenter.prototype.segment;
@@ -43,7 +43,7 @@ const app=createRoot(document.querySelector('#root'));
 const sdk={inPlayablesEnvironment:true,firstFrameReady(){},gameReady(){},async loadData(){window.probe.loads++;return '';},async saveData(data){if(!window.probe.loads)throw Error('Save before load');window.probe.saves.push(data);},async getLanguage(){return 'en';},isAudioEnabled(){return false;},onAudioEnabledChange(){return ()=>{};},onPause(){return ()=>{};},onResume(){return ()=>{};},logError(){},logWarning(){}};
 app.render(<React.StrictMode>{new URLSearchParams(location.search).has('playable')?<YouTubePlayableApp sdk={sdk}/>:<RaceTo10Game locale="en" ownerId={user} coins={100} matchmaking={adapter(user)} postToHost={postToHost} onClose={()=>{}}/>}</React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'#youtube-content':fixture}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'bounded-grapheme-baseline',async load(id){if(process.env.BOUNDED_GRAPHEME_BASELINE_DIR&&['/NativeAnswerInput.tsx','/raceInput.ts','/input.ts'].some(name=>id.endsWith(name)))return readFile(path.join(process.env.BOUNDED_GRAPHEME_BASELINE_DIR,id.endsWith('/raceInput.ts')?'raceInput.before.txt':id.endsWith('/input.ts')?'playable-input.before.txt':'NativeAnswerInput.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'#youtube-content':fixture}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'bounded-grapheme-baseline',async load(id){if(process.env.BOUNDED_GRAPHEME_BASELINE_DIR&&['/NativeAnswerInput.tsx','/raceInput.ts','/localInput.ts'].some(name=>id.endsWith(name)))return readFile(path.join(process.env.BOUNDED_GRAPHEME_BASELINE_DIR,id.endsWith('/raceInput.ts')?'raceInput.before.txt':id.endsWith('/localInput.ts')?'playable-input.before.txt':'NativeAnswerInput.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  const state=user=>{
   const ticket=tickets.get(user),rival=[...tickets.values()].find(t=>t.user!==user),now=Date.now(),phase=ticket.left?'cancelled':started?'racing':'searching';
   const identity=t=>({displayName:t.user,avatarUrl:null,bot:false,correctCount:t.count});

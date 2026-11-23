@@ -1,5 +1,5 @@
 import {describe, expect, jest, test} from "@jest/globals";
-import type {PlatformResult} from "../../../../../src/web/platform/types";
+import type {PlatformResult} from "../../../../../src/platform/contracts/capabilities";
 import {createFacebookContextBoard, type FacebookContextBoardBackend} from "../contextBoard";
 
 /** Native context result owns the destination; caller locale/run data cannot select another one. */

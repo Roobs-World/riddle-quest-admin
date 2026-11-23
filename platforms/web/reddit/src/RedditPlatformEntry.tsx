@@ -6,21 +6,21 @@ import type {
   PlatformSession,
   PlayerData,
   PlayerDataUpdate,
-} from "../../../../src/web/platform/types";
-import type {ProductSummary} from "../../../../src/hosted/hostTypes";
+} from "../../../../src/platform/contracts/capabilities";
+import type {ProductSummary} from "../../../../src/platform/contracts/hostServices";
 import {resolveRedditGoldProduct} from "./shared/redditCatalog";
-import {PlayHostApp} from "../../../../src/web/play/PlayHostApp";
-import {detectDeviceLanguage, tr, useLocale} from "../../../../src/web/play/i18n";
-import {applyPlayerPreferences, subscribeToPlayerPreferenceChanges} from "../../../../src/web/play/playerPreferences";
+import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
+import {detectDeviceLanguage, tr, useLocale} from "../../../../src/localization/browser/i18n";
+import {applyPlayerPreferences, subscribeToPlayerPreferenceChanges} from "../../../../src/settings/browser/playerPreferences";
 import {RedditPlatformBootstrap} from "./RedditPlatformBootstrap";
 import {createRedditHostServices} from "./RedditHostServices";
 import {createRedditGuestHostServices} from "./RedditGuestHostServices";
 import {RedditPollingPresence} from "./RedditPollingPresence";
-import {readBrowserStorage} from "../../../../src/web/platform/browserStorage";
-import {PlayerProjectionPersistence} from "../../../../src/web/platform/PlayerProjectionPersistence";
-import {usePlayerProjectionRecovery} from "../../../../src/web/platform/usePlayerProjectionRecovery";
-import {PlayerSaveRecoveryLayout} from "../../../../src/web/play/PlayerSaveRecoveryLayout";
-import {createHostedPlaySession} from "../../../../src/web/play/HostedPlaySession";
+import {readBrowserStorage} from "../../../../src/platform/browser/storage/browserStorage";
+import {PlayerProjectionPersistence} from "../../../../src/accounts/browser/playerState/PlayerProjectionPersistence";
+import {usePlayerProjectionRecovery} from "../../../../src/accounts/hooks/usePlayerProjectionRecovery";
+import {PlayerSaveRecoveryLayout} from "../../../../src/accounts/components/recovery/PlayerSaveRecoveryLayout";
+import {createHostedPlaySession} from "../../../../src/app/session/HostedPlaySession";
 
 /** Load the provider-owned board only when multiplayer is opened. */
 const RedditRaceEntry = lazy(() => import("./RedditRaceEntry").then(module => ({default: module.RedditRaceEntry})));

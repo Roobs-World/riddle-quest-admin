@@ -10,18 +10,18 @@ import {collectFirebaseFixtureExports} from "./firebase-fixture-exports.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const mode = process.env.GAMEPLAY_RECEIPT_REACT_MODE ?? "production";
 assert.ok(["development", "production"].includes(mode));
-const adapterPath = path.join(root, "src/web/play/firebaseServices.ts");
+const adapterPath = path.join(root, "src/platform/firebase/browserHostServices.ts");
 const output = path.resolve(process.env.GAMEPLAY_RECEIPT_REPORT_DIR ?? path.join(root, "builds/test-evidence/game-authority-2026-10-03"));
 const baseline = process.env.GAMEPLAY_RECEIPT_BASELINE_SOURCE;
 const contentBaseline = process.env.GAMEPLAY_CONTENT_BASELINE_SOURCE;
 const paidBaseline = process.env.GAMEPLAY_PAID_BASELINE_SOURCE;
 const activityBaseline = process.env.GAMEPLAY_ACTIVITY_BASELINE_SOURCE;
-const activityPath=path.join(root,"src/web/play/useHostOperations.ts");
+const activityPath=path.join(root,"src/gameplay/hooks/browser/useHostOperations.ts");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/gameplay-receipts-"));
 await mkdir(output, {recursive: true});
 const source = await readFile(adapterPath, "utf8");
-const imports = collectFirebaseFixtureExports({adapterSource: source, firebaseModulePath: path.join(root, "src/web/firebase.ts")});
+const imports = collectFirebaseFixtureExports({adapterSource: source, firebaseModulePath: path.join(root, "src/platform/firebase/browserClient.ts")});
 const receipt = {attempts: 1, isCorrect: true, coinsEarned: 50, newlyUnlockedAchievementIds: [],
   rewardBreakdown: {newBalance: 350, totalAwarded: 50}};
 await writeFile(path.join(scratch, "firebase.ts"), `
@@ -63,7 +63,7 @@ await writeFile(path.join(scratch, "main.ts"), `
 import {createFirebaseHostServices} from ${JSON.stringify(adapterPath)};
 import {auth} from './firebase';
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useHostAuthSession} from ${JSON.stringify(path.join(root,"src/web/play/useHostAuthSession.ts"))};
+import {useHostAuthSession} from ${JSON.stringify(path.join(root,"src/accounts/hooks/useHostAuthSession.ts"))};
 import {useHostOperations} from ${JSON.stringify(activityPath)};
 window.probe={reads:[],pending:[],observers:[],stops:0,delayMs:0,hold:false,fail:false,snapshots:[],index:17,contentCalls:[],pendingContent:[],bufferCalls:[],pendingBuffers:[],holdContent:false,holdBuffer:false,authorityCalls:0,holdAuthority:false,pendingAuthority:[]};
 window.services=createFirebaseHostServices();

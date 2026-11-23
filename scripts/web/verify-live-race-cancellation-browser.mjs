@@ -14,10 +14,10 @@ await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-cancellation-"));
 const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.race-lobby.css"))};
-import ${JSON.stringify(path.join(root, "src/web/styles.race-gameplay.css"))};
-import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/web/play/race/LiveRaceGame.tsx"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/lobby.css"))};
+import ${JSON.stringify(path.join(root, "src/races/styles/gameplay.css"))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/races/components/live/LiveRaceGame.tsx"))};
 const params=new URLSearchParams(location.search), expired=params.has('expired'), privateLobby=!params.has('public'), rejected=params.has('rejected');
 const terminal={ticketId:'a'.repeat(64),phase:'cancelled',serverNowMs:expired?900001:1000,searchEndsAtMs:900000,
  startsAtMs:null,player:{displayName:'Fixture player',avatarUrl:null,bot:false,correctCount:0},

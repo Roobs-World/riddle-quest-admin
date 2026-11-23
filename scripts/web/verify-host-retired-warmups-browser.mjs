@@ -16,7 +16,7 @@ try {
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useHostRiddleLifecycle} from ${JSON.stringify(path.join(portal,'src/web/play/useHostRiddleLifecycle.ts'))};
+import {useHostRiddleLifecycle} from ${JSON.stringify(path.join(portal,"src/gameplay/hooks/browser/useHostRiddleLifecycle.ts"))};
 const scenario=new URLSearchParams(location.search).get('scenario'),initial=scenario==='retired-start';
 window.probe={reads:[],warmups:[],posts:[],recoveries:0,errors:[],unhandled:[],renders:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));

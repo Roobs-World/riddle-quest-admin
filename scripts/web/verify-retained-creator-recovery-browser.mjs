@@ -13,10 +13,10 @@ await mkdir(path.join(root,"node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root,"node_modules/.cache/retained-creator-"));
 const source = `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {useRaceSession} from ${JSON.stringify(path.join(root,'src/web/play/race/hooks/useRaceSession.ts'))};
-import {RaceChallengePanel} from ${JSON.stringify(path.join(root,'src/web/play/race/components/RaceLobbyPanels.tsx'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
+import {useRaceSession} from ${JSON.stringify(path.join(root,"src/races/hooks/useRaceSession.ts"))};
+import {RaceChallengePanel} from ${JSON.stringify(path.join(root,"src/races/components/lobby/RaceLobbyPanels.tsx"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
 const kind=new URL(location.href).searchParams.get('kind');
 const invitation={claimState:'unclaimed',publicationState:'published',role:'creator',canCancel:true,expiresAtMs:Date.now()+60000};
 window.commands=[];

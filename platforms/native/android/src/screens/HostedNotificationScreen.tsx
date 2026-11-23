@@ -1,6 +1,7 @@
 import {palette} from "../theme";
 import type {createAndroidNotificationController} from "../notifications/androidNotificationController";
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import type {AndroidNotificationPreferences} from "../notifications/androidNotificationController";
 import {useEffect, useState} from "react";
 import {Text, View} from "react-native";

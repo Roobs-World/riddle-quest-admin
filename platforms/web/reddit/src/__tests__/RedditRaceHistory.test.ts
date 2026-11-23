@@ -1,6 +1,6 @@
 import {expect, it, jest, afterEach} from "@jest/globals";
 import {createRedditHostServices} from "../RedditHostServices";
-import {createFakeRaceServices} from "../../../../../src/web/play/race/testing/fakeRaceServices";
+import {createFakeRaceServices} from "../../../../../src/races/testing/browser/fakeRaceServices";
 
 /** Fetch replacement is confined to each target-adapter contract scenario. */
 const originalFetch = global.fetch;

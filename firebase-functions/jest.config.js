@@ -8,8 +8,8 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.test.ts", "!**/__tests__/**/*.it.test.ts", "!**/lib/**", "!**/.build-source/**"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
-    // Shared-contract tests follow portal re-exports into hosted source.
-    "/src/(?:web|hosted)/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
+    // Shared contract checks use the root feature source.
+    "/src/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
     "^.+\\.ts$": [
       "ts-jest",
       {

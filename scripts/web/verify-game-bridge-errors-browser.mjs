@@ -7,8 +7,8 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const component=path.join(root,'src/web/play/game/hooks/useGameBridgeLifecycle.ts');
-const reporter=path.join(root,'src/web/observability/browserErrorReporter.ts');
+const component=path.join(root,"src/platform/bridge/browser/useGameBridgeLifecycle.ts");
+const reporter=path.join(root,"src/observability/browserErrorReporter.ts");
 const baseline=process.env.GAME_BRIDGE_ERRORS_BASELINE_SOURCE;
 const reporterBaseline=process.env.GAME_BRIDGE_REPORTER_BASELINE_SOURCE;
 const reactMode=process.env.GAME_BRIDGE_ERRORS_REACT_MODE??'development';
@@ -21,10 +21,10 @@ await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameMessageListener} from ${JSON.stringify(component)};
 import {configureBrowserErrorReporter} from ${JSON.stringify(reporter)};
-import {tr} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
+import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 window.expectedFallback=tr('WebPortal.BRIDGE_ERROR');
-import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={calls:[],messages:[],reports:[],errors:[],pending:new Map(),reporterMode:'normal',senderMode:'normal'};
 window.addEventListener('error',event=>{window.probe.errors.push(event.message);event.preventDefault();});
 window.addEventListener('unhandledrejection',event=>{window.probe.errors.push(String(event.reason));event.preventDefault();});

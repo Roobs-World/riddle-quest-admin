@@ -1,5 +1,5 @@
 import type {Page} from "@playwright/test";
-import type {AuthHarnessState} from "./authentication.jest-playwright.support";
+import type {AuthHarnessState} from "./authentication.jest-playwright.support.ts";
 
 /** Provides install jest sdk harness behavior. */
 export const installJestSdkHarness = async (page: Page, scenario = "success") => {

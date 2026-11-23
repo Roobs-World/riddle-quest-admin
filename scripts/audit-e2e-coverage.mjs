@@ -40,7 +40,7 @@ const emulatorConfig = (await Promise.all([...emulatorConfigurations]
   .map(name => readFile(path.join(root, "firebase-functions", name), "utf8")))).join("\n");
 const workflow = await readFile(path.join(root, ".github/workflows/production-readiness.yml"), "utf8");
 
-const browserRoots = ["src/web", ...(jestFacebook ? ["jest", "facebook"] : webApplications)
+const browserRoots = ["src", ...(jestFacebook ? ["jest", "facebook"] : webApplications)
   .map(target => `platforms/web/${target}/src`)];
 const browserSuites = (await Promise.all(browserRoots.map(directory => collect(path.join(root, directory),
   name => name.endsWith(".jest-playwright.test.ts"))))).flat();

@@ -1,6 +1,6 @@
 import {useEffect, useRef, type MutableRefObject} from "react";
-import {createPurchaseRecovery} from "../../../../src/hosted/commerce/purchaseRecovery";
-import type {HostServices} from "../../../../src/hosted/hostTypes";
+import {createPurchaseRecovery} from "../../../../src/commerce/recovery/purchaseRecovery";
+import type {HostServices} from "../../../../src/platform/contracts/hostServices";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";

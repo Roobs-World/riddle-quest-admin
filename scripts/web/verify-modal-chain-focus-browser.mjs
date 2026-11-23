@@ -16,9 +16,9 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React, {useState} from 'react'; import {createRoot} from 'react-dom/client';
-import {GameModalView} from ${JSON.stringify(path.join(root,'src/web/play/GameModalView.tsx'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {GameModalView} from ${JSON.stringify(path.join(root,"src/app/modals/components/GameModalView.tsx"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 const noop=()=>{};
 function Fixture(){
   const [state,setState]=useState(createInitialGameSession);
@@ -44,7 +44,7 @@ let browser, server;
 const cases=[];
 try {
   await build({root:scratch,configFile:false,logLevel:'error',resolve:{alias:{
-    '#shop-modal-page':path.join(root,'src/web/play/modalPages/commerce/ShopModalPage.tsx'),
+    '#shop-modal-page':path.join(root,"src/commerce/components/ShopModalPage.tsx"),
   }},build:{outDir:'dist'}});
   server=createServer(async(request,response)=>{
     try {

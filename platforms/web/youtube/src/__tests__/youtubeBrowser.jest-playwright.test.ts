@@ -2,14 +2,14 @@ import {afterAll, beforeAll, describe, expect, it} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import {expectWebStandards} from "../../../../../src/web/play/__tests__/webStandards.jest-playwright.support";
-import {createEmptyYouTubeSave} from "../../../../../src/web/playable/save";
+import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
+import {createEmptyYouTubeSave} from "../../../../../src/gameplay/persistence/localSave";
 import {
   installYouTubeSdkHarness,
   startYouTubeArtifactServer,
   youtubeHarnessSnapshot,
   type YouTubeArtifactServer,
-} from "./youtubeBrowser.jest-playwright.support";
+} from "./youtubeBrowser.jest-playwright.support.ts";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Describes the artifact fields needed by the browser harness. */

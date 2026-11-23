@@ -1,4 +1,4 @@
-import type {RaceLocale} from "../../../../src/core/race/index.js";
+import type {RaceLocale} from "../../../../src/races/contracts/index.js";
 import {assertRaceDeckCompatible} from "../../race/raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "../../race/raceEngine";
 

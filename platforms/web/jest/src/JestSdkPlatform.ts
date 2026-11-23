@@ -1,6 +1,6 @@
 import {parseEntryIntent} from "./entryIntent";
 import type {JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
-import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 import {isValidNotificationAsset} from "./notifications/inlineAsset";
 import {invokeSdkOperation, type JestSdkBoundary} from "./sdkBoundary";
 
@@ -261,7 +261,7 @@ export class JestSdkPlatform implements JestPlatformPort {
     /** Provides value behavior. */
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
     if (value === null || value === undefined) return null;
-    return (await import("../../../../src/web/platform/playerDataValidation")).parsePlayerData(value);
+    return (await import("../../../../src/accounts/browser/playerState/playerDataValidation")).parsePlayerData(value);
   }
   /**
    * Replaces the app-owned player snapshot and waits for the SDK flush.
@@ -526,7 +526,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @param name - Stable event name.
    * @param properties - Primitive, non-sensitive event dimensions.
    */
-  captureEvent(name: string, properties?: import("../../../../src/web/analytics/events").SanitizedAnalyticsParams) {
+  captureEvent(name: string, properties?: import("../../../../src/observability/analytics/events").SanitizedAnalyticsParams) {
     this.sdk.captureEvent?.(name, properties);
   }
   /** @returns The normalized result of the provider's idempotent first-milestone signal. */

@@ -1,14 +1,14 @@
-import {verifyImmediateSoloFeedback} from "../../../../../src/web/play/__tests__/instantFeedback.jest-playwright.support";
-import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
-import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support";
-import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
-import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support";
-import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support";
-import {installLiveMultiplayerJourney} from "../../../../../src/web/play/__tests__/liveMultiplayer.jest-playwright.support";
+import {verifyImmediateSoloFeedback} from "../../../../../src/app/testing/browser/__tests__/instantFeedback.jest-playwright.support.ts";
+import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support.ts";
+import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support.ts";
+import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support.ts";
+import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support.ts";
+import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support.ts";
+import {installLiveMultiplayerJourney} from "../../../../../src/app/testing/browser/__tests__/liveMultiplayer.jest-playwright.support.ts";
 import {describe, expect, it} from "@jest/globals";
-import {expectWebStandards} from "../../../../../src/web/play/__tests__/webStandards.jest-playwright.support";
+import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
 import {chromium} from "@playwright/test";
-import type {PlayerData} from "../../../../../src/web/platform/types";
+import type {PlayerData} from "../../../../../src/platform/contracts/capabilities";
 
 /** Documents global. */
 declare global {

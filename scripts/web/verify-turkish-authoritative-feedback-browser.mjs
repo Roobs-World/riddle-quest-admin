@@ -16,11 +16,11 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<!doctype html><html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/web/play/GameFrameApp.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, 'src/web/play/guidance/guidanceConfig.ts'))};
-import {setLocaleAndWait} from ${JSON.stringify(path.join(root, 'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.css'))};
+import {GameFrameApp} from ${JSON.stringify(path.join(root, "src/gameplay/components/GameFrameApp.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, "src/onboarding/browser/guidanceConfig.ts"))};
+import {setLocaleAndWait} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 const owner='keyboard-owner'; let initialized=false;window.sentGuesses=[];window.addEventListener('riddle-quest:game-to-host',event=>{if(event.detail.type==='game:submitGuess'){window.sentGuesses.push(event.detail);setTimeout(()=>host({type:'host:operationResult',requestId:event.detail.requestId,payload:{operation:'guess',ok:true,data:{feedback:[...'izmir'].map(letter=>({letter,status:'green'})),attempts:1,isCorrect:true,gameOver:true,canContinue:false}}}),50);}});
 applyPlayerPreferences({locale:'tr',onboardingComplete:true,muted:true,reducedMotion:true});
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',owner),'seen');

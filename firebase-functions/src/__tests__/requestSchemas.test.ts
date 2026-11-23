@@ -5,7 +5,7 @@ import {
   CompleteGameResponseDataSchema,
   SubmitGuessRequestDataSchema,
   SubmitGuessResponseDataSchema,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 
 // Import types and interfaces to test
 import type {
@@ -14,7 +14,7 @@ import type {
   SubmitGuessRequestData,
   SubmitGuessAuthContext,
   SubmitGuessResponseData,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 
 describe("Request Schemas", () => {
   describe("Zod callable contracts", () => {

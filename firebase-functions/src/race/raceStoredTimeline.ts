@@ -1,4 +1,4 @@
-import {RACE_RULES, type RaceGhostEvent} from "../../../src/core/race/index.js";
+import {RACE_RULES, type RaceGhostEvent} from "../../../src/races/contracts/index.js";
 
 /** Retained aggregate authority constrains known history without inventing missing legacy events. */
 type TimelineAuthority = {

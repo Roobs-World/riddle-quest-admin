@@ -9,7 +9,7 @@ jest.mock("firebase/firestore/lite", () => ({
   doc: (...args: unknown[]) => mockDoc(...(args as [unknown, string, string])),
   getDoc: (...args: unknown[]) => mockGetDoc(...args),
 }));
-jest.mock("../../firebase", () => ({firebaseFirestore: mockFirestore}));
+jest.mock("../../../../../src/platform/firebase/browserClient", () => ({firebaseFirestore: mockFirestore}));
 
 import {loadNotificationCopy} from "../notifications/firebaseCopy";
 

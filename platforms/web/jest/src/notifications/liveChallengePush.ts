@@ -1,5 +1,5 @@
 import workerUrl from "./liveChallengePushWorker.js?url";
-import {auth} from "../../../../../src/web/firebase";
+import {auth} from "../../../../../src/platform/firebase/browserClient";
 
 /** A newer opt-out or account switch supersedes an older browser registration attempt. */
 let latestIntent = 0;
@@ -11,7 +11,7 @@ export async function setJestLiveChallengePush(enabled: boolean): Promise<boolea
   if (!owner) return false;
   if (!enabled) {
     /** Validated dependencies and server state for this operation. */
-    const {setLiveRacePushSubscription} = await import("../../../../../src/web/firebase");
+    const {setLiveRacePushSubscription} = await import("../../../../../src/platform/firebase/browserClient");
     await setLiveRacePushSubscription({enabled: false});
     return true;
   }
@@ -22,7 +22,7 @@ export async function setJestLiveChallengePush(enabled: boolean): Promise<boolea
   if (await Notification.requestPermission() !== "granted") return false;
   /** Local presentation state for this mounted invitation or consent flow. */
   const [{getMessaging, getToken, isSupported}, {firebaseApp, setLiveRacePushSubscription}] = await Promise.all([
-    import("firebase/messaging"), import("../../../../../src/web/firebase"),
+    import("firebase/messaging"), import("../../../../../src/platform/firebase/browserClient"),
   ]);
   if (!await isSupported()) return false;
   /** Clicks return through the approved Jest game route instead of opening a standalone SDK iframe URL. */

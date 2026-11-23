@@ -33,8 +33,8 @@ test("namespace fixtures include runtime declarations and re-exports without exe
 
 test("the current namespace-forwarding adapter exposes its shared host callable surface", async () => {
   const root = fileURLToPath(new URL("../../", import.meta.url));
-  const names = collectFirebaseFixtureExports({adapterSource: await readFile(path.join(root, "src/web/play/firebaseServices.ts"), "utf8"),
-    firebaseModulePath: path.join(root, "src/web/firebase.ts")});
+  const names = collectFirebaseFixtureExports({adapterSource: await readFile(path.join(root, "src/platform/firebase/browserHostServices.ts"), "utf8"),
+    firebaseModulePath: path.join(root, "src/platform/firebase/browserClient.ts")});
   for (const name of ["auth", "loadUserDocument", "getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer", "completeGame", "spendCoins"])
     assert.ok(names.includes(name), `Missing real host dependency ${name}`);
   assert.ok(!names.includes("CurrentRiddleResponse"));

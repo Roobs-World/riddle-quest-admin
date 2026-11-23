@@ -6,7 +6,8 @@ import {createAndroidNotificationController} from "../notifications/androidNotif
 import {clearAndroidNotificationAccount, createAndroidNotificationDevice} from "../notifications/androidNotifications";
 import {HostedNotificationScreen} from "../screens/HostedNotificationScreen";
 import {notificationCopy} from "../i18n/notificationCopy";
-import {YOUTUBE_COPY, resolveYouTubeLocale} from "../../../../../src/solo";
+import {YOUTUBE_COPY} from "../../../../../src/localization/copy/localGameCopy";
+import {resolveYouTubeLocale} from "../../../../../src/content/catalog/bundledContent";
 
 jest.mock("../hosted/hostedConfig", () => ({
   hostedConfig: {

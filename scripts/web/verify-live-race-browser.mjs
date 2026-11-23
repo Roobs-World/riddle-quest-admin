@@ -8,7 +8,7 @@ import {createRequire} from "node:module";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 const require = createRequire(import.meta.url);
-const {RACE_RULES} = require("../../firebase-functions/lib/src/core/race/index.js");
+const {RACE_RULES} = require("../../firebase-functions/lib/src/races/contracts/index.js");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-race-"));
@@ -20,10 +20,10 @@ const broadcast = () => {for(const response of streams.values())response.write("
 const authority = process.env.LIVE_RACE_USE_EMULATOR === "1" ? await (await import("./live-race-emulator.mjs")).createLiveRaceEmulator() : null;
 const source = `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {observeFirebaseLiveRace} from ${JSON.stringify(path.join(root, 'src/web/play/firebaseLiveRaceSignals.ts'))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {observeFirebaseLiveRace} from ${JSON.stringify(path.join(root, "src/races/transport/browser/firebaseLiveRaceSignals.ts"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 window.livePushEvents=0;window.bridgeCalls=[];window.legacyFindCalls=0;window.liveSnapshots=[];window.liveRequests=[];
 const params=new URLSearchParams(location.search);
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';

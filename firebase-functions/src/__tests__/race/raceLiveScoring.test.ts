@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {liveRun, advanceLiveBot, type LiveMatch} from "../../race/raceLiveState";
 import {settleLiveFinish} from "../../race/raceLiveScoring";
 

@@ -16,17 +16,17 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {ShopModalPage} from ${JSON.stringify(path.join(root, 'src/web/play/modalPages/commerce/ShopModalPage.tsx'))};
-import {ShopSubscriptionContext} from ${JSON.stringify(path.join(root, 'src/web/play/modalPages/commerce/ShopSubscriptionContext.ts'))};
-import {GameFrameApp} from ${JSON.stringify(path.join(root, 'src/web/play/GameFrameApp.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, 'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
+import {ShopModalPage} from ${JSON.stringify(path.join(root, "src/commerce/components/ShopModalPage.tsx"))};
+import {ShopSubscriptionContext} from ${JSON.stringify(path.join(root, "src/commerce/browser/ShopSubscriptionContext.ts"))};
+import {GameFrameApp} from ${JSON.stringify(path.join(root, "src/gameplay/components/GameFrameApp.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 import {useJestProductCatalog} from ${JSON.stringify(path.join(root, 'platforms/web/jest/src/useJestProductCatalog.ts'))};
-import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, 'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.modal-shell.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.modal-rewards.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.modal-commerce.css'))};
+import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/app/modals/styles/modal-shell.css"))};
+import ${JSON.stringify(path.join(root, "src/progression/styles/rewards.css"))};
+import ${JSON.stringify(path.join(root, "src/commerce/styles/modals.css"))};
 const shellMode=new URL(location.href).searchParams.get('shell');
 let mode=shellMode?'failure':'healthy', subscriptionMode=shellMode?'failure':'healthy', held=[];
 const owner='catalog-owner';

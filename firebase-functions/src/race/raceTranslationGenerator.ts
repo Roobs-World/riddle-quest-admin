@@ -1,4 +1,4 @@
-import {RACE_SUPPORTED_LOCALES, type RaceLocale} from "../../../src/core/race/index.js";
+import {RACE_SUPPORTED_LOCALES, type RaceLocale} from "../../../src/races/contracts/index.js";
 import {createHash} from "node:crypto";
 import {z} from "zod";
 import {

@@ -44,7 +44,7 @@ The Node checklist exercises the library fallback because it has no canvas. The 
 ```sh
 PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 \
   JEST_NOTIFICATION_IMAGE_REPORT_DIR=/tmp/riddle-quest-inline-cards \
-  pnpm test:web --runInBand \
+  pnpm test:interface --runInBand \
   platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts \
   -t 'schedules decodable inline daily and race cards'
 ```

@@ -1,7 +1,8 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "../../../src/core/game/index.js";
-import type {SubmitSinglePlayerGuessResponseData} from "../../../src/core/validation/requestSchemas.js";
+import {computeFeedback} from "../../../src/gameplay/rules/computeFeedback.js";
+import {lowerCaseGraphemes, splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
+import type {SubmitSinglePlayerGuessResponseData} from "../../../src/platform/contracts/requestSchemas.js";
 import {MAX_ATTEMPTS_CHALLENGE, MAX_ATTEMPTS_CLASSIC} from "../shared/constants";
 import type {GuessTransition, GuessTransitionInput, SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 

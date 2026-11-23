@@ -1,5 +1,5 @@
 import {describe, expect, jest, test} from "@jest/globals";
-import type {NativeSocialCapability, PlatformResult} from "../../../../../src/web/platform/types";
+import type {NativeSocialCapability, PlatformResult} from "../../../../../src/platform/contracts/capabilities";
 import {FacebookContextCoordinator, type FacebookContextBackendPort} from "../contexts";
 
 /** Describes context. */
@@ -20,7 +20,7 @@ const fixture = () => {
   /** Provides current behavior. */
   let current = ok("context-a");
   /** Provides locale behavior. */
-  let locale: import("../../../../../src/core/race").RaceLocale = "ja";
+  let locale: import("../../../../../src/races/contracts/index").RaceLocale = "ja";
   /** Provides sdk behavior. */
   const sdk: NativeSocialCapability = {
     currentContext: () => current,
@@ -41,7 +41,7 @@ const fixture = () => {
     setCurrent: (value: PlatformResult<Context>) => {
       current = value;
     },
-    setLocale: (value: import("../../../../../src/core/race").RaceLocale) => {
+    setLocale: (value: import("../../../../../src/races/contracts/index").RaceLocale) => {
       locale = value;
     },
   };

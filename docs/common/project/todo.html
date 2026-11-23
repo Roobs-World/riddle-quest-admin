@@ -110,7 +110,7 @@ const AUDIT = [
 
 const AGENT = [
   {id: "agent:jest-upload-2", t: "Jest upload: translation build", a: "The inactive upload of the 899-string fix (e496a3be) is running its release gate. Confirm the \"Build ready\" email when it arrives."},
-  {id: "agent:android-race", t: "Android: Race to 10 multiplayer (plan 2.1, 2.2, 2.5)", a: "Move RaceSession and live-race logic into src/hosted and build native lobby, countdown, live play and results. Large: the web race is several thousand lines."},
+  {id: "agent:android-race", t: "Android: Race to 10 multiplayer (plan 2.1, 2.2, 2.5)", a: "Keep RaceSession and live-race controllers together under src/races and build native lobby, countdown, live play and results. Large: the web race is several thousand lines."},
   {id: "agent:android-push", t: "Android: push notifications (plan 2.4)", a: "Firebase Cloud Messaging native module for race invitations and daily reminders. Needs google-services.json from the Firebase Android app registration."},
   {id: "agent:android-avatar", t: "Android: avatar upload", a: "Needs an image-picker native module; the profile otherwise matches Jest."},
   {id: "agent:android-data-safety", t: "Android: Data safety form and privacy notice (plan 4.2)", a: "The app now stores an account id, progress and purchase history; the Play form and privacy notice need updating before release."},

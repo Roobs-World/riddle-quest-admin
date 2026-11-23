@@ -8,7 +8,7 @@ import {processRaceDeliveryQueue} from "../../../../../../firebase-functions/src
 import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/raceDeliveryRecovery";
 import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {Timestamp} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS} from "../../../../../../src/core/race/index.js";
+import {LIVE_RACE_WAIT_MS} from "../../../../../../src/races/contracts/index.js";
 import {requestDocumentId} from "../../../../../../firebase-functions/src/race/raceSetupService";
 
 /** Real local authority; no production or non-emulated account access is allowed. */

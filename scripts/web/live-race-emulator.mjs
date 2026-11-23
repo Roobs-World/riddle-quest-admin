@@ -17,7 +17,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   const {getLiveRaceChallengeForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/raceLiveInvitation.js"));
   const {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/raceLiveChallengeNotifications.js"));
   const {createUsernameReservationFields} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/profile/usernameReservations.js"));
-  const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require(path.join(root, "firebase-functions/lib/src/core/race/index.js"));
+  const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require(path.join(root, "firebase-functions/lib/src/races/contracts/index.js"));
   const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
   const tickets = new Map();
   let clockOffsetMs = 0, lastCommitAtMs = 0;

@@ -13,9 +13,9 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {tr} from ${JSON.stringify(path.join(root,'src/web/play/i18n.ts'))};
+import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 window.commands=[];window.finds=[];window.label=tr('RaceTo10.MATCH_PLAYER');
 function reply(message,operation,data){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation,ok:true,data}}}));}
 function postToHost(message){window.commands.push(message);if(message.type==='game:listRaceCategories')reply(message,'raceCategories',{categories:[],rules:RACE_RULES});}
@@ -31,7 +31,7 @@ createRoot(document.getElementById('root')).render(<App/>);
 `);
 let browser,server;
 try{
- await build({plugins:[{name:'expose-owned-discovery',enforce:'pre',transform(code,id){if(process.env.RACE_DISCOVERY_UNOWNED_BASELINE==='1'&&id.endsWith('/play/race/RaceSession.ts')){const original='const ownsAdapter = () => !this.options.getMatchmaking || this.options.getMatchmaking() === intent.adapter;';assert(code.includes(original));return {code:code.replace(original,'const ownsAdapter = () => true;'),map:null};}if(!id.endsWith('/play/race/hooks/useRaceSession.ts'))return null;assert(code.includes('const session = sessionRef.current;'));return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current; globalThis.testRaceSession = session;'),map:null};}}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});
+ await build({plugins:[{name:'expose-owned-discovery',enforce:'pre',transform(code,id){if(process.env.RACE_DISCOVERY_UNOWNED_BASELINE==='1'&&id.endsWith('/races/controllers/RaceSession.ts')){const original='const ownsAdapter = () => !this.options.getMatchmaking || this.options.getMatchmaking() === intent.adapter;';assert(code.includes(original));return {code:code.replace(original,'const ownsAdapter = () => true;'),map:null};}if(!id.endsWith('/races/hooks/useRaceSession.ts'))return null;assert(code.includes('const session = sessionRef.current;'));return {code:code.replace('const session = sessionRef.current;','const session = sessionRef.current; globalThis.testRaceSession = session;'),map:null};}}],root:scratch,configFile:false,logLevel:'error',build:{outDir:'dist'}});
  server=createServer(async(request,response)=>{try{const url=new URL(request.url,'http://localhost'),file=path.join(scratch,'dist',url.pathname==='/'?'index.html':url.pathname);response.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');response.end(await readFile(file));}catch{response.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{})});

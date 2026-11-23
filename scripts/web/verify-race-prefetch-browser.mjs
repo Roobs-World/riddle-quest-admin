@@ -15,8 +15,8 @@ await writeFile(path.join(scratch, "index.html"), '<html><body><div id="root"></
 await writeFile(path.join(scratch, "main.tsx"), `
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {useHostRaceCoordination} from ${JSON.stringify(path.join(root, "src/web/play/useHostRaceCoordination.ts"))};
-import {useHostAuthSession} from ${JSON.stringify(path.join(root, "src/web/play/useHostAuthSession.ts"))};
+import {useHostRaceCoordination} from ${JSON.stringify(path.join(root, "src/races/hooks/useHostRaceCoordination.ts"))};
+import {useHostAuthSession} from ${JSON.stringify(path.join(root, "src/accounts/hooks/useHostAuthSession.ts"))};
 const users={'owner-1':{uid:'owner-1',isAnonymous:false},'owner-2':{uid:'owner-2',isAnonymous:false}};
 window.accesses=[];window.catalogs=[];window.frames=[];
 const failureMode=new URLSearchParams(location.search).get('scenario');

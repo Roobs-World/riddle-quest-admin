@@ -1,13 +1,13 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {LiveRaceChallengeSchema, LiveRaceViewSchema, RACE_RULES, type LiveRaceCapability, type ListRaceCategoriesResponse} from "../../../../../src/core/race";
+import {LiveRaceChallengeSchema, LiveRaceViewSchema, RACE_RULES, type LiveRaceCapability, type ListRaceCategoriesResponse} from "../../../../../src/races/contracts/index";
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {BackHandler} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {HostedRaceView} from "../screens/HostedRaceScreen";
 import {createFakeHostServices} from "../test/fakeHostServices";
 import {raceText} from "../i18n/raceCopy";
-import {SUPPORTED_LOCALES} from "../../../../../src/core/validation/locales";
+import {SUPPORTED_LOCALES} from "../../../../../src/localization/locales";
 
 /** Schema-valid multiplayer catalog exposed through the native selection UI. */
 const catalog: ListRaceCategoriesResponse = {categories: [{categoryId: "mixed", nameKey: "RaceTo10.CATEGORY_MIXED_NAME",

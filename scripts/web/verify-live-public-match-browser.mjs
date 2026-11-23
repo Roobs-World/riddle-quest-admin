@@ -21,9 +21,9 @@ try {
   await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;background:#142234"><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await writeFile(path.join(scratch, "main.tsx"), `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceTo10Game.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 const user=new URLSearchParams(location.search).get('user');
 const services=createFakeRaceServices();window.views=[];window.invites=0;window.challengeReads=0;window.legacyFinds=0;
 const call=async(operation,input)=>{const response=await fetch('/live/'+operation,{method:'POST',body:JSON.stringify({user,...input})});

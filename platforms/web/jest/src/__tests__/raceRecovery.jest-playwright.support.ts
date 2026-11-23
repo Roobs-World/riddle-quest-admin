@@ -2,7 +2,7 @@ import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
 import {mkdir} from "node:fs/promises";
 import path from "node:path";
-import {solveFakeRace} from "./authentication.jest-playwright.support";
+import {solveFakeRace} from "./authentication.jest-playwright.support.ts";
 
 /** Completes real gameplay, corrupts only the outcome transport, and recovers without replaying answers. */
 export async function verifyOutcomeConfirmationRecovery(page: Page): Promise<void> {

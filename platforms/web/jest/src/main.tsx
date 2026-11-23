@@ -1,11 +1,11 @@
 import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
-import {installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "../../../../src/web/analytics/events";
-import {resetDevelopmentFirstRunState} from "../../../../src/web/developmentFirstRun";
-import {FatalErrorBoundary} from "../../../../src/web/FatalErrorBoundary";
-import {initializeBrowserSentryFromEnvironment} from "../../../../src/web/observability/sentryEnvironment";
+import {installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "../../../../src/observability/analytics/events";
+import {resetDevelopmentFirstRunState} from "../../../../src/app/startup/developmentFirstRun";
+import {FatalErrorBoundary} from "../../../../src/app/components/recovery/FatalErrorBoundary";
+import {initializeBrowserSentryFromEnvironment} from "../../../../src/observability/sentryEnvironment";
 import {JestPlayApp} from "./JestPlayApp";
-import "../../../../src/web/styles.css";
+import "../../../../src/app/styles/game.css";
 import "./styles.css";
 
 void initializeBrowserSentryFromEnvironment();

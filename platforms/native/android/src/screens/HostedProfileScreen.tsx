@@ -1,5 +1,6 @@
-import type {HostServices, LeaderboardType} from "../../../../../src/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import type {HostServices, LeaderboardType} from "../../../../../src/platform/contracts/hostServices";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useState} from "react";
 import {StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";

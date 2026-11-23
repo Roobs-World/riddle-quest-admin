@@ -17,7 +17,7 @@ import {
 import {startJestSession} from "../startup";
 import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 import {createNotificationOperationGate, type NotificationCrossContextLock} from "../notifications/operationGate";
-import {PLAYER_PREFERENCE_STORAGE_KEYS, safeBrowserStorageSet} from "../../../../../src/web/play/playerPreferences";
+import {PLAYER_PREFERENCE_STORAGE_KEYS, safeBrowserStorageSet} from "../../../../../src/settings/browser/playerPreferences";
 
 /** In-memory browser storage used to model cleanup across page instances. */
 class MemoryStorage implements Storage {

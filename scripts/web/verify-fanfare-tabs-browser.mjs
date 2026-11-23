@@ -64,7 +64,7 @@ function App(){const [state,setState]=React.useState({...loaded,profile:{coins:1
 if(params.has('rtl'))await setLocaleAndWait('ar');
 createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
 `);
-  await build({root:scratch,configFile:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},resolve:{alias:{'#shop-modal-page':path.join(root,'src/web/play/modalPages/commerce/ShopModalPage.tsx')}},build:{outDir:'dist',target:'esnext'}});
+  await build({root:scratch,configFile:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},resolve:{alias:{'#shop-modal-page':path.join(root,"src/commerce/components/ShopModalPage.tsx")}},build:{outDir:'dist',target:'esnext'}});
   server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);
     const mime={'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2'};
     res.setHeader('Content-Type',mime[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});

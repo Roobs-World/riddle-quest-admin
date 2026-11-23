@@ -1,7 +1,7 @@
 import {AndroidEntryInboxEnvelopeSchema, type AndroidEntryInboxEnvelope} from "./androidEntryInboxSchema";
 import {parseAndroidReferralUrl} from "../referrals/androidReferrals";
 import {parseLiveRaceInvitationUrl} from "./invitations";
-import {createRequestId} from "../../../../../src/hosted/play/requestIds";
+import {createRequestId} from "../../../../../src/gameplay/session/requestIds";
 
 /** Validated navigation intent carries no acceptance, account selector or reward. */
 export type AndroidInviteEntry =

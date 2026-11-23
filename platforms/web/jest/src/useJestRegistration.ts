@@ -7,9 +7,9 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import {CompletionPresentation} from "../../../../src/hosted/play/completionPresentation";
-import {tr} from "../../../../src/web/play/i18n";
-import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import {CompletionPresentation} from "../../../../src/gameplay/session/completion/completionPresentation";
+import {tr} from "../../../../src/localization/browser/i18n";
+import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 import type {JestBackendPort} from "./backend";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import type {JestPlatformPort, JestRegistrationOverlayHandle, JestSession} from "./types";

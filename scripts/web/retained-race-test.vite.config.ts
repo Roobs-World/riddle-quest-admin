@@ -11,7 +11,7 @@ config.plugins = [{
   enforce: "pre",
   /** Replace only the default test surface; the current host and controller remain real. */
   transform(code: string, id: string) {
-    if (!id.endsWith("/play/GameFrameApp.tsx")) return;
+    if (!id.endsWith("/gameplay/components/GameFrameApp.tsx")) return;
     if (!code.includes("  raceSurface,")) throw new Error("Retained race test injection seam changed");
     return {code: `import {RetainedRaceHarness} from ${JSON.stringify(fileURLToPath(new URL("./fixtures/RetainedRaceHarness.tsx", import.meta.url)))};\n` +
       code.replace("  raceSurface,", "  raceSurface = RetainedRaceHarness,"), map: null};

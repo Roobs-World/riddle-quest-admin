@@ -1,4 +1,4 @@
-import type {NotificationCapability, PlatformResult} from "../../../../src/web/platform/types";
+import type {NotificationCapability, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantSdk} from "./fbinstant";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 

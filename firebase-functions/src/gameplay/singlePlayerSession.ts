@@ -1,16 +1,16 @@
 import {androidReferralPlayPatch} from "../../../platforms/native/android/server/androidReferralIdentity";
-import {normalizeEconomyDifficulty} from "../../../src/core/game/index.js";
-import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {normalizeEconomyDifficulty} from "../../../src/progression/economy/rewardRules.js";
+import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {coerceToDate} from "../daily/dailyStreak";
-import {countCoinRewardAchievements} from "../../../src/core/game/index.js";
+import {countCoinRewardAchievements} from "../../../src/progression/achievements/achievementRewards.js";
 import {createHash, randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {splitGraphemes} from "../../../src/core/game/index.js";
+import {splitGraphemes} from "../../../src/gameplay/input/graphemes.js";
 import type {
   GetHintRequestSchema,
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "../../../src/core/validation/requestSchemas.js";
+} from "../../../src/platform/contracts/requestSchemas.js";
 import type {z} from "zod";
 import type {Player, PlayerProgress} from "../validation/firestoreSchemas";
 import {admin} from "../shared/firebaseAdmin";

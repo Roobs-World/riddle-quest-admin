@@ -1,4 +1,7 @@
-import {getYouTubeAchievementIcon, youtubeText, type YouTubeAuthoritySnapshot, type YouTubeCopyKey, type YouTubeLocale} from "../../../../../src/solo";
+import {getYouTubeAchievementIcon} from "../../../../../src/progression/achievements/localAchievements";
+import {youtubeText, type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeAuthoritySnapshot} from "../../../../../src/gameplay/local/LocalSoloAuthority.contract.ts";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {StyleSheet, Text, View} from "react-native";
 import {palette, radius, spacing} from "../theme";
 import {Banner} from "./Primitives";

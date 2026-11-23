@@ -7,8 +7,8 @@ import {createRequire} from 'node:module';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const require=createRequire(import.meta.url);
-const {RACE_RULES,LiveRaceViewSchema}=require('../../firebase-functions/lib/src/core/race/index.js');
-const {computeFeedback}=require('../../firebase-functions/lib/src/core/game/index.js');
+const {RACE_RULES,LiveRaceViewSchema}=require("../../firebase-functions/lib/src/races/contracts/index.js");
+const {computeFeedback}=require('../../firebase-functions/lib/src/gameplay/rules/computeFeedback.js');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.LIVE_DRAFT_REACT_MODE??'development';
 const output=path.resolve(process.env.LIVE_DRAFT_REPORT_DIR??path.join(root,'builds/test-evidence/live-reconnect-input-2026-10-03',mode));
@@ -20,9 +20,9 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/web/play/race/RaceTo10Game.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const services=createFakeRaceServices(),user=new URLSearchParams(location.search).get('user')??'Alice';
 window.probe={calls:[],errors:[],unhandled:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 function adapter(owner){return {find:async()=>({status:'cancelled'}),live:{join:input=>call(owner,'join',input),update:input=>call(owner,'update',input)}};}

@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {splitGraphemes} from "../../../../src/core/game/index.js";
-import {SubmitRaceGuessRequestSchema} from "../../../../src/core/race/index.js";
+import {splitGraphemes} from "../../../../src/gameplay/input/graphemes.js";
+import {SubmitRaceGuessRequestSchema} from "../../../../src/races/contracts/index.js";
 import type {RaceRunRecord} from "../../race/raceEngine";
 import {startRaceRunForUser, submitRaceGuessForUser, requestRaceHintForUser} from "../../race/raceService";
 

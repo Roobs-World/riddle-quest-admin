@@ -1,9 +1,10 @@
 import {useAuthSnapshot} from "./hosted/useAuthSnapshot";
 import {HostedReferralScreen} from "./screens/HostedReferralScreen";
-import {createPurchaseRecovery} from "../../../../src/hosted/commerce/purchaseRecovery";
+import {createPurchaseRecovery} from "../../../../src/commerce/recovery/purchaseRecovery";
 import {AppState, BackHandler} from "react-native";
-import type {HostServices, WebGameMode} from "../../../../src/hosted/hostTypes";
-import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "../../../../src/solo";
+import type {HostServices, WebGameMode} from "../../../../src/platform/contracts/hostServices";
+import {resolveYouTubeLocale, type YouTubeContentSource} from "../../../../src/content/catalog/bundledContent";
+import {type YouTubeLocale, type YouTubeSdkPort} from "../../../../src/gameplay/local/types";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {createAndroidCommerce} from "./billing/androidCommerce";
 import type {PlayBillingPort} from "./billing/playBilling";

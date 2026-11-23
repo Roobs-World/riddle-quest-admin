@@ -1,4 +1,4 @@
-import {configurePlatformAnalytics, trackEvent} from "../../../../src/web/analytics/events";
+import {configurePlatformAnalytics, trackEvent} from "../../../../src/observability/analytics/events";
 import type {FacebookInstantSdk} from "./fbinstant";
 
 /** Connects Meta's native event API after authenticated 13+ audience startup. */

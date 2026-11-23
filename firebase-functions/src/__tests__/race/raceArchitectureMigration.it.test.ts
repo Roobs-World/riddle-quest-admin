@@ -1,7 +1,7 @@
 import {logger} from "firebase-functions";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {migrateRaceArchitecturePage} from "../../race/raceArchitectureMigration";
 import {raceChallengeEligibility} from "../../race/raceEligibility";
 import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";

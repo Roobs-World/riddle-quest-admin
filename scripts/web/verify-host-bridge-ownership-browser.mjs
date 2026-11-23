@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const component=path.join(root,'src/web/play/useHostBridgeLifecycle.ts');
+const component=path.join(root,"src/platform/bridge/browser/useHostBridgeLifecycle.ts");
 const baseline=process.env.HOST_BRIDGE_BASELINE_SOURCE;
 const reactMode=process.env.HOST_BRIDGE_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
@@ -18,11 +18,11 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useHostBridgeLifecycle} from ${JSON.stringify(component)};
-import {useHostAuthSession} from ${JSON.stringify(path.join(root,'src/web/play/useHostAuthSession.ts'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
-import {getHostErrorMessage} from ${JSON.stringify(path.join(root,'src/web/play/hostMessageHandlers.ts'))};
-import {GAME_TO_HOST_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {useHostAuthSession} from ${JSON.stringify(path.join(root,"src/accounts/hooks/useHostAuthSession.ts"))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,"src/observability/browserErrorReporter.ts"))};
+import {getHostErrorMessage} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/hostMessageHandlers.ts"))};
+import {GAME_TO_HOST_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={calls:[],messages:[],notices:[],reports:[],errors:[],pending:new Map(),reporterMode:'normal',senderMode:'normal',noticeMode:'normal',auths:[],lifecycles:[],bridgeAdds:0,bridgeRemoves:0,visibilityAdds:0,visibilityRemoves:0};
 window.addEventListener('error',event=>{window.probe.errors.push(event.message);event.preventDefault();});
 window.addEventListener('unhandledrejection',event=>{window.probe.errors.push(String(event.reason));event.preventDefault();});

@@ -1,4 +1,4 @@
-import {LiveRaceViewSchema} from "../../../../src/core/race/index.js";
+import {LiveRaceViewSchema} from "../../../../src/races/contracts/index.js";
 import {getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import type {LiveMatch, LiveTicket} from "../../../../firebase-functions/src/race/raceLiveState";
 import {readRedditSocialProfile} from "./redditSocialProfile";

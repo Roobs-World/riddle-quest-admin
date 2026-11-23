@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {parseRunRecord} from "../../race/raceSetupService";
 
 /** An untouched scheduled record must not carry scoring even when history was omitted. */

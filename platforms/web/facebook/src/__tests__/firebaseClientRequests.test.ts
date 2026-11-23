@@ -9,7 +9,7 @@ const mockInvoke = jest.fn<(name: string, data: unknown) => Promise<{
 jest.mock("firebase/functions", () => ({
   httpsCallable: (_functions: unknown, name: string) => (data: unknown) => mockInvoke(name, data),
 }));
-jest.mock("../../firebase", () => ({firebaseFunctions: {}}));
+jest.mock("../../../../../src/platform/firebase/browserClient", () => ({firebaseFunctions: {}}));
 
 import {
   acceptFacebookNotificationPermissionPrompt,

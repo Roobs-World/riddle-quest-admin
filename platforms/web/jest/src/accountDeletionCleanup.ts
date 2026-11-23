@@ -1,5 +1,5 @@
-import {tr} from "../../../../src/web/play/i18n";
-import {clearBrowserPlayerState, safeBrowserStorageGet} from "../../../../src/web/play/playerPreferences";
+import {tr} from "../../../../src/localization/browser/i18n";
+import {clearBrowserPlayerState, safeBrowserStorageGet} from "../../../../src/settings/browser/playerPreferences";
 import {PLAYER_NOTIFICATION_IDS} from "./notifications/engagement";
 import type {JestPlatformPort} from "./types";
 

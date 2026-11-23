@@ -5,8 +5,8 @@ import {chromium} from "@playwright/test";
 
 test("scored keyboard keys use the same background as their board tiles on phones", async () => {
   const styles = await Promise.all(
-    ["styles.foundation.css", "styles.shared-ui.css", "styles.puzzle.css", "styles.guidance.css", "styles.race-gameplay.css"].map((file) =>
-      readFile(new URL(`../../src/web/${file}`, import.meta.url), "utf8"),
+    ["src/app/styles/foundation.css", "src/app/styles/shared-controls.css", "src/gameplay/styles/puzzle.css", "src/onboarding/styles/guidance.css", "src/races/styles/gameplay.css"].map((file) =>
+      readFile(new URL(`../../${file}`, import.meta.url), "utf8"),
     ),
   );
   const browser = await chromium.launch({headless: true});

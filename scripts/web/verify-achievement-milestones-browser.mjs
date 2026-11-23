@@ -15,15 +15,15 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {ACHIEVEMENT_MILESTONES} from ${JSON.stringify(path.join(root, 'src/core/game'))};
-import {AchievementsModalPage} from ${JSON.stringify(path.join(root, 'src/web/play/modalPages/profile/ProfileStatsModalPages.tsx'))};
-import {AchievementFanfare} from ${JSON.stringify(path.join(root, 'src/web/play/modalPages/fanfare/FanfareModalContent.tsx'))};
-import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, 'src/web/play/i18n.ts'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.modal-shell.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.account.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.profile-details.css'))};
-import ${JSON.stringify(path.join(root, 'src/web/styles.modal-rewards.css'))};
+import {ACHIEVEMENT_MILESTONES} from ${JSON.stringify(path.join(root, "src/progression/achievements/achievementMilestones.ts"))};
+import {AchievementsModalPage} from ${JSON.stringify(path.join(root, "src/progression/components/ProfileStatsModalPages.tsx"))};
+import {AchievementFanfare} from ${JSON.stringify(path.join(root, "src/progression/components/rewards/FanfareModalContent.tsx"))};
+import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
+import ${JSON.stringify(path.join(root, "src/app/modals/styles/modal-shell.css"))};
+import ${JSON.stringify(path.join(root, "src/accounts/styles/account.css"))};
+import ${JSON.stringify(path.join(root, "src/accounts/styles/profile-details.css"))};
+import ${JSON.stringify(path.join(root, "src/progression/styles/rewards.css"))};
 const root = createRoot(document.getElementById('root'));
 window.injectAchievementProfile = async (locale, unlocked) => {
   await setLocaleAndWait(locale);

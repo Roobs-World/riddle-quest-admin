@@ -1,4 +1,4 @@
-import {contentProtectionRequest, protectContent} from "../../../src/core/contentProtection.js";
+import {contentProtectionRequest, protectContent} from "../../../src/content/transport/contentProtection.js";
 import type {
   CallableFunction,
   CallableOptions,

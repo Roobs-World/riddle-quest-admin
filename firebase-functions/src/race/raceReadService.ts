@@ -8,7 +8,7 @@ import {
   type ListRaceInboxResponse,
   type RaceChallengePreview,
   type RaceOutcome,
-} from "../../../src/core/race/index.js";
+} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {validateCallableResponse} from "../validation/callableValidation";
 import {getJestAccountDeletionRef} from "../shared/accountDeletion";

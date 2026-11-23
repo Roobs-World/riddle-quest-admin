@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
-import type {StartRaceRunRequest} from "../../../src/core/race/index.js";
+import type {StartRaceRunRequest} from "../../../src/races/contracts/index.js";
 import type {RaceRunRecord} from "./raceEngine";
 import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
 import {racePerformanceSample} from "./raceMatchPerformance";

@@ -1,6 +1,7 @@
-import {createAvatarUploadController} from "../../../../../src/hosted/avatarUpload";
-import type {HostServices} from "../../../../../src/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import {createAvatarUploadController} from "../../../../../src/accounts/avatar/avatarUpload";
+import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useEffect, useMemo, useSyncExternalStore} from "react";
 import {Image, StyleSheet, View} from "react-native";
 import {pickAvatar} from "../avatar/pickAvatar";

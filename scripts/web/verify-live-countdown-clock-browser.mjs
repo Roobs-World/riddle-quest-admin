@@ -17,9 +17,9 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
+import {RACE_RULES,LiveRaceViewSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={samples:0,wakeups:0,slots:[],active:new Map(),calls:[],errors:[],unhandled:[],offset:0,joins:0};
 window.addEventListener('error',e=>probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>probe.unhandled.push(String(e.reason)));
 let hidden=new URLSearchParams(location.search).has('hidden');Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>hidden?'hidden':'visible'});Object.defineProperty(document,'hidden',{configurable:true,get:()=>hidden});

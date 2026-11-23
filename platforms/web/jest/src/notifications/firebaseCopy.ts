@@ -1,5 +1,5 @@
 import {doc, getDoc} from "firebase/firestore/lite";
-import {firebaseFirestore} from "../../../../../src/web/firebase";
+import {firebaseFirestore} from "../../../../../src/platform/firebase/browserClient";
 import {parseNotificationCopyDocument, type NotificationCopy} from "./copy";
 
 /** Loads Jest notification copy from the connected-game authority. */

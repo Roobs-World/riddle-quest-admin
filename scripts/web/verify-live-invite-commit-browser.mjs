@@ -15,10 +15,10 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {LiveRaceInviteShare} from ${JSON.stringify(path.join(root,'src/web/play/race/components/LiveRaceInviteShare.tsx'))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,'src/web/play/sharing/ReferralSharingCapability.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};import ${JSON.stringify(path.join(root,'src/web/styles.race-lobby.css'))};
+import {LiveRaceInviteShare} from ${JSON.stringify(path.join(root,"src/races/components/invitations/LiveRaceInviteShare.tsx"))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,"src/sharing/components/ReferralSharingCapability.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};import ${JSON.stringify(path.join(root,"src/races/styles/lobby.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const kind=new URL(location.href).searchParams.get('scenario')??'spec-transport';window.probe={shares:[],joins:[],suspended:0,errors:[],unhandled:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));

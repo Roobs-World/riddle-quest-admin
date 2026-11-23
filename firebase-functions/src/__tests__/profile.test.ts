@@ -184,7 +184,7 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {syncJestAvatar, updateAvatar, updateUsername} from "../profile";
+import {syncJestAvatar, updateAvatar, updateUsername} from "../profile/index";
 import {jestFirebaseUid} from "../../../platforms/web/jest/server/jestSecurity";
 import {syncLeaderboardProfileFields} from "../profile/leaderboardProfile";
 import {createUsernameReservationId} from "../profile/usernameReservations";

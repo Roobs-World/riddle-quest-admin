@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
-const require=createRequire(import.meta.url),{RACE_RULES}=require('../../firebase-functions/lib/src/core/race/index.js');
+const require=createRequire(import.meta.url),{RACE_RULES}=require("../../firebase-functions/lib/src/races/contracts/index.js");
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-leave-'));
@@ -14,8 +14,8 @@ const output=path.resolve(process.env.LIVE_RACE_REPORT_DIR??path.join(root,'arti
 await mkdir(output,{recursive:true});
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
-import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/web/play/race/LiveRaceGame.tsx'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {LiveRaceGame} from ${JSON.stringify(path.join(root,"src/races/components/live/LiveRaceGame.tsx"))};
 const scenario=new URLSearchParams(location.search).get('scenario'),ticketId='a'.repeat(64),started=Date.now()-1000;
 let settled=false;window.closeCalls=0;window.leaveCalls=[];window.completed=0;
 const identity={displayName:'Fixture',avatarUrl:null,bot:false,correctCount:0};

@@ -1,4 +1,4 @@
-import {DEFAULT_PRODUCT_PRICING} from "../../../../../src/core/pricing/catalog";
+import {DEFAULT_PRODUCT_PRICING} from "../../../../../src/commerce/pricing/catalog";
 /** Google Play package that owns every purchase. */
 export const ANDROID_PACKAGE_NAME = "com.roobsworld.riddlequest";
 /** Badge shown on a featured coin pack. */

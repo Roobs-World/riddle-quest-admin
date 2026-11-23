@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {parseRunRecord, parseChallengeRecord} from "../../race/raceSetupService";
 
 /** A valid legacy run exercises every engine input without depending on Firestore. */

@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_HISTORY_MS, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema,
-  LiveRaceHistoryEntrySchema, RaceCategoryIdSchema, type ListLiveRaceHistoryRequest, type LiveRaceHistoryEntry} from "../../../src/core/race/index.js";
+  LiveRaceHistoryEntrySchema, RaceCategoryIdSchema, type ListLiveRaceHistoryRequest, type LiveRaceHistoryEntry} from "../../../src/races/contracts/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {resolveLiveRaceSafetyTarget} from "../social/liveRaceSafetyTarget";

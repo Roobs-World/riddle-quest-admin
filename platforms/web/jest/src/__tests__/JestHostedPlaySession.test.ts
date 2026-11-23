@@ -1,4 +1,4 @@
-import {createFakeHostServices} from "../../../../../src/web/play/fakeServices";
+import {createFakeHostServices} from "../../../../../src/gameplay/fixtures/fakeServices";
 import {createJestHostedPlaySession} from "../JestHostedPlaySession";
 
 it.each([undefined, "classic" as const, "challenge" as const])("checks today's Daily before solo play for entry mode %s", initialGameMode => {

@@ -129,7 +129,7 @@ test("selected browser harnesses import extracted game session modules from curr
     "verify-journal-write-work-browser.mjs"
 ];
   const legacy = /(["'])src\/play\/(?:gameSession|GameSessionCheckpoints|pendingGuessJournal|pendingPlayJournalDiagnostics)\.ts\1/u;
-  const current = /(["'])(src\/hosted\/play\/(?:gameSession|GameSessionCheckpoints|pendingGuessJournal|pendingPlayJournalDiagnostics)\.ts)\1/gu;
+  const current = /(["'])(src\/gameplay\/session\/(?:journal\/|persistence\/)?(?:gameSession|GameSessionCheckpoints|pendingGuessJournal|pendingPlayJournalDiagnostics)\.ts)\1/gu;
   assert.equal(harnesses.length, 24);
   for (const harness of harnesses) {
     const source = readFileSync(new URL(harness, import.meta.url), "utf8");

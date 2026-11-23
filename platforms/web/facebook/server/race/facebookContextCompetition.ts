@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import {RACE_CHALLENGE_TTL_MS, type RaceLocale} from "../../../../../src/core/race/index.js";
+import {RACE_CHALLENGE_TTL_MS, type RaceLocale} from "../../../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {isFacebookFirebaseUid} from "../facebookSecurity";
 

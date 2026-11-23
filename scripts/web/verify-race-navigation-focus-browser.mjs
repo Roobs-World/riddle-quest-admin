@@ -12,10 +12,10 @@ try{
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RaceTournamentEntry} from ${JSON.stringify(path.join(root,'src/web/play/race/RaceTournamentEntry.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {RaceTournamentEntry} from ${JSON.stringify(path.join(root,"src/races/components/lobby/RaceTournamentEntry.tsx"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 window.probe={adds:0,removes:0,listeners:new Set(),closes:0,commands:[],reads:[],records:[],errors:[],unhandled:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 const nativeFrame=window.requestAnimationFrame.bind(window),nativeCancel=window.cancelAnimationFrame.bind(window);let held=false,nextFrame=-1;const frames=new Map();window.probe.holdFrames=()=>{held=true;};window.requestAnimationFrame=callback=>{if(!held||!String(callback).includes("tabs.current"))return nativeFrame(callback);const id=nextFrame--;frames.set(id,callback);return id;};window.cancelAnimationFrame=id=>{if(frames.has(id))frames.delete(id);else nativeCancel(id);};window.probe.flushFrames=()=>new Promise(resolve=>{held=false;nativeFrame(time=>{const queued=[...frames.values()];frames.clear();if(!${process.env.RACE_NAV_DROP_FRAMES === "1"})queued.forEach(callback=>callback(time));resolve();});});window.probe.pendingFrames=()=>frames.size;

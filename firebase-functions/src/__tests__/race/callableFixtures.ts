@@ -1,4 +1,4 @@
-import {RACE_RULES} from "../../../../src/core/race/index.js";
+import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 
 /** Provides race callable user id behavior. */
 export const raceCallableUserId = "player-1";

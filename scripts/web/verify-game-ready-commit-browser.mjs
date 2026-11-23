@@ -13,13 +13,13 @@ const baseline=process.env.READY_COMMIT_BASELINE_DIR;
 const output=path.resolve(process.env.READY_COMMIT_REPORT_DIR??path.join(root,'builds/test-evidence/game-ready-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/ready-commit-'));
-const component=path.join(root,'src/web/play/game/hooks/useGameBridgeLifecycle.ts');
+const component=path.join(root,"src/platform/bridge/browser/useGameBridgeLifecycle.ts");
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
 await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameReadyReporter} from ${JSON.stringify(component)};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 const scenario=new URL(location.href).searchParams.get('scenario')??'speculative';
 window.probe={ready:[],messages:[],intervals:new Map(),retained:[],observers:[],suspended:0,errors:[],unhandled:[],width:window.innerWidth};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));

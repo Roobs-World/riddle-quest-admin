@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {EventEmitter} from "node:events";
 import {Script} from "node:vm";
 import test from "node:test";
-import {JEST_COIN_PRODUCTS} from "../../../../platforms/web/jest/server/jestProductCatalog.ts";
+import {JEST_COIN_PRODUCTS} from "../server/jestProductCatalog.ts";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../../firebase-functions/src/shared/constants.ts";
 import {
   assertCompletedJestPaymentSettlement, assertNoRelevantJestPaymentErrors, assertSandboxJestCheckout,

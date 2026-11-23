@@ -14,11 +14,11 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {GameFrameApp} from ${JSON.stringify(path.join(root,'src/web/play/GameFrameApp.tsx'))};
-import {BridgeStartupRecovery} from ${JSON.stringify(path.join(root,'src/web/play/BridgeStartupRecovery.tsx'))};
-import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,'src/web/play/PlayerSaveRecoveryLayout.tsx'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {GameFrameApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/GameFrameApp.tsx"))};
+import {BridgeStartupRecovery} from ${JSON.stringify(path.join(root,"src/app/components/recovery/BridgeStartupRecovery.tsx"))};
+import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,"src/accounts/components/recovery/PlayerSaveRecoveryLayout.tsx"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const params=new URL(location.href).searchParams,surface=params.get('surface')??'frame',scenario=params.get('scenario')??'disconnect',noop=()=>{};
 window.probe={changes:[],onlineListeners:new Set(),offlineListeners:new Set(),adds:0,removes:0,reloads:0,wakes:0,commands:[],errors:[],unhandled:[]};window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
@@ -35,7 +35,7 @@ function App(){const [stage,setStage]=React.useState(0),[epoch,setEpoch]=React.u
 }
 createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},resolve:{alias:{'#shop-modal-page':path.join(root,'src/web/play/modalPages/commerce/ShopModalPage.tsx')}},plugins:[{name:'captured-online-baseline',enforce:'pre',async load(id){if(baseline&&id.endsWith('/useOnlineStatus.ts'))return readFile(path.join(baseline,'online.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},resolve:{alias:{'#shop-modal-page':path.join(root,"src/commerce/components/ShopModalPage.tsx")}},plugins:[{name:'captured-online-baseline',enforce:'pre',async load(id){if(baseline&&id.endsWith('/useOnlineStatus.ts'))return readFile(path.join(baseline,'online.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  server=createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',name==='/'?'index.html':name);res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.woff2':'font/woff2','.webp':'image/webp','.json':'application/json'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.ONLINE_COMMIT_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
  else{browser=await chromium.launch({headless:true});

@@ -1,13 +1,13 @@
 /** Recorded scenarios retained from 6ee7da15e, bound to the current host and controller through a private test artifact. */
-import {openAuthenticationHarness} from "./authenticationHarness.jest-playwright.support";
+import {openAuthenticationHarness} from "./authenticationHarness.jest-playwright.support.ts";
 import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import type {GameToHostMessage, HostToGameMessage} from "../../../../../src/core/bridge";
-import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
+import type {GameToHostMessage, HostToGameMessage} from "../../../../../src/platform/bridge/messages";
+import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support.ts";
 
 import {
   type AuthHarnessState,
@@ -23,7 +23,7 @@ import {
   verifyGuestStartupIdentity,
   openProfileAfterGuidance,
   solveFakeRace,
-} from "./authentication.jest-playwright.support";
+} from "./authentication.jest-playwright.support.ts";
 import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;

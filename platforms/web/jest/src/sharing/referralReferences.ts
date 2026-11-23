@@ -1,4 +1,4 @@
-import {createJestReferralShareReference, type JestPersonalizedReferralReference} from "../../../../../src/core/referrals";
+import {createJestReferralShareReference, type JestPersonalizedReferralReference} from "../referrals/referralCampaigns";
 
 /** Per-page counter used only when Web Crypto is unavailable. */
 let fallbackSequence = 0;

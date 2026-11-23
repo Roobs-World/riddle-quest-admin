@@ -12,9 +12,10 @@ const serverRoots = [
   "platforms/web/yahoo/server",
 ];
 const sharedSourceRoots = [
-  "src/core",
+  "src",
   "platforms/web/facebook/src/commerce/facebookCatalog.ts",
   "platforms/web/reddit/src/shared/redditCatalog.ts",
+  "platforms/web/jest/src/referrals/referralCampaigns.ts",
 ];
 
 /** Recreates the repository-relative source graph inside the Functions archive boundary. */

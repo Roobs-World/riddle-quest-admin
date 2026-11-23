@@ -1,4 +1,4 @@
-import type {PlatformResult} from "../../../../src/web/platform/types";
+import type {PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantPayments, FacebookInstantPurchase} from "./fbinstant";
 
 /** Defines the max purchases value. */

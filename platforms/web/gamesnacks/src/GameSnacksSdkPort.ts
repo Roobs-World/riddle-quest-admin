@@ -1,4 +1,4 @@
-import type {YouTubeSdkPort} from "../../../../src/web/playable/types";
+import type {YouTubeSdkPort} from "../../../../src/platform/contracts/localGamePolicy";
 /** Describes game snacks runtime. */
 type GameSnacksRuntime = Readonly<{
   /** Stores audio. */

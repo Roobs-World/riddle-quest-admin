@@ -6,7 +6,7 @@
  * so clients cannot fake achievements.
  */
 
-import {ACHIEVEMENT_MILESTONES} from "../../../src/core/game/index.js";
+import {ACHIEVEMENT_MILESTONES} from "../../../src/progression/achievements/achievementMilestones.js";
 import * as functions from "firebase-functions";
 import {getUser, appendUnlockedAchievements} from "./firestoreService";
 import {captureException} from "../shared/sentry";

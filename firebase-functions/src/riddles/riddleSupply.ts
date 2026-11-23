@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
-import type {SupportedLocale} from "../../../src/core/validation/index.js";
+import {type SupportedLocale} from "../../../src/localization/locales.js";
 import {RIDDLE_GENERATION_THRESHOLD} from "../shared/constants";
 import {captureException} from "../shared/sentry";
 

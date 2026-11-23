@@ -1,6 +1,7 @@
 import {createGoogleAccountController} from "../auth/androidGoogleIdentity";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
-import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
+import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useEffect, useMemo, useSyncExternalStore} from "react";
 import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {googleIdentityCopy} from "../i18n/googleIdentityCopy";

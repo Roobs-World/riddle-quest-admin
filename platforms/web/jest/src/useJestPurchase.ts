@@ -1,7 +1,7 @@
 import {useCallback, type Dispatch, type SetStateAction} from "react";
-import {tr} from "../../../../src/web/play/i18n";
-import {trackEvent, trackPurchase} from "../../../../src/web/analytics/events";
-import type {ProductSummary, PurchaseResult} from "../../../../src/hosted/hostTypes";
+import {tr} from "../../../../src/localization/browser/i18n";
+import {trackEvent, trackPurchase} from "../../../../src/observability/analytics/events";
+import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
 

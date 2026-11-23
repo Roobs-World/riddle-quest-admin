@@ -14,7 +14,7 @@ for (const target of ['youtube', 'netflix', 'yahoo']) {
   if (!loaded) throw new Error('Missing Vite configuration');
   const config = loaded.config;
   config.plugins = config.plugins.filter(plugin => plugin?.name !== 'riddle-quest-playable-content');
-  config.resolve.alias['#youtube-content'] = path.join(root,'src/web/playable/generated/youtube-content-v1.json');
+  config.resolve.alias['#youtube-content'] = path.join(root,"src/content/generated/youtube-content-v1.json");
   await build({...config, root, mode:target, configFile:false});
   await cp(path.join(root, `builds/${target}`), path.join(output, `dist-${target}`), {recursive:true, force:true});
 }

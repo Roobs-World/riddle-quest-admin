@@ -1,6 +1,6 @@
 import coinUrl from "../../../../assets/images/coin.svg";
-import type {ProductSummary} from "../../../../src/hosted/hostTypes";
-import {tr} from "../../../../src/web/play/i18n";
+import type {ProductSummary} from "../../../../src/platform/contracts/hostServices";
+import {tr} from "../../../../src/localization/browser/i18n";
 
 /** Describes props. */
 type Props = {

@@ -1,4 +1,4 @@
-import {BlockSocialRivalRequestSchema, ReportSocialRivalRequestSchema} from "../../../src/core/race/index.js";
+import {BlockSocialRivalRequestSchema, ReportSocialRivalRequestSchema} from "../../../src/races/contracts/index.js";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";

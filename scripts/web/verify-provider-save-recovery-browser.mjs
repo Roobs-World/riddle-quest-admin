@@ -23,16 +23,16 @@ try {
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {${provider==='facebook'?'FacebookPlatformBootstrap':'RedditPlatformBootstrap'}} from ${JSON.stringify(path.join(root,'src',provider,provider==='facebook'?'FacebookPlatformBootstrap.ts':'RedditPlatformBootstrap.ts'))};
 ${provider==='reddit'?"import {getWebViewMode} from '@devvit/client';":''}
-import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(root,'src/web/platform/PlayerProjectionPersistence.ts'))};
-import {usePlayerProjectionRecovery} from ${JSON.stringify(path.join(root,'src/web/platform/usePlayerProjectionRecovery.ts'))};
-import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,'src/web/play/PlayerSaveRecoveryLayout.tsx'))};
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {LocalAccountDeletionGate} from ${JSON.stringify(path.join(root,'src/web/play/LocalAccountDeletionGate.ts'))};
-import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges,setPlayerHighContrast} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerProjectionPersistence.ts"))};
+import {usePlayerProjectionRecovery} from ${JSON.stringify(path.join(root,"src/accounts/hooks/usePlayerProjectionRecovery.ts"))};
+import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,"src/accounts/components/recovery/PlayerSaveRecoveryLayout.tsx"))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {LocalAccountDeletionGate} from ${JSON.stringify(path.join(root,"src/accounts/browser/deletion/LocalAccountDeletionGate.ts"))};
+import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges,setPlayerHighContrast} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={writes:[],preferences:[],failures:[],errors:[],unhandled:[],flushes:0,guesses:0,completions:0,pauseConsumers:0,resumeConsumers:0,initializations:0,nativePauseRegistrations:0,nativeResumeRegistrations:0,paths:[],failDraft:0,failPreferences:0,holdNext:false,holding:false};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
@@ -72,7 +72,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
 window.preference=()=>setPlayerHighContrast(true);window.draft=()=>Array.from(document.querySelector('.guess-row')?.querySelectorAll('.cell')??[]).map(x=>x.textContent.trim()).join('');
 `;
   await writeFile(path.join(dir,'main.tsx'),source);await writeFile(path.join(dir,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(dir,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
-  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,'src/web/platform/PlayerSaveRecovery.ts'))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
+  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
  }
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,parts=pathname.split('/').filter(Boolean),provider=parts.shift();if(!providers.includes(provider))throw new Error('unknown-fixture');const file=path.join(scratch,provider,'dist',parts.join('/')||'index.html');res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.PROVIDER_RECOVERY_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(r=>{process.once('SIGINT',r);process.once('SIGTERM',r);});}

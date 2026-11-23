@@ -9,7 +9,7 @@ import {clearGoogleCredentialState, googleCredentialsAvailable, pickGoogleCreden
 import {googleIdentityCopy} from "../i18n/googleIdentityCopy";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
 import type {HostedAccountController} from "../hosted/useHostedAccount";
-import {createGameFunctionsClient} from "../../../../../src/hosted";
+import {createGameFunctionsClient} from "../../../../../src/platform/firebase/gameFunctions";
 import {getApps, initializeApp} from "firebase/app";
 import {getFunctions} from "firebase/functions";
 

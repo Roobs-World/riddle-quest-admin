@@ -1,4 +1,4 @@
-export {captureVictoryShareImage} from "../../../../../src/web/play/sharing/shareImages";
+export {captureVictoryShareImage} from "../../../../../src/sharing/browser/shareImages";
 import type {ScreenshotProvider} from "../types";
 
 /** Jest limits the complete ASCII data URL, including its prefix and base64 expansion. */

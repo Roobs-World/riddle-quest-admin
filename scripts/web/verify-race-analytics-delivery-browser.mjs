@@ -15,9 +15,9 @@ const output = path.resolve(root, "artifacts/race-analytics-delivery-isolation")
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/web/play/race/testing/fakeRaceServices.ts'))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const authority=createFakeRaceServices(),mode=new URL(location.href).searchParams.get('mode');window.commands=[];
 function reply(message,operation,data){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation,ok:true,data}}}));}
 function postToHost(message){window.commands.push(message);
@@ -35,7 +35,7 @@ try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
     if(process.env.RACE_ANALYTICS_DELIVERY_BASELINE==='1'&&id.endsWith('/scripts/fixtures/RetainedRaceHarness.tsx'))
       return readFile(path.join(output,'prior-game.tsx'),'utf8').then(code=>({code,map:null}));
-    if (!id.endsWith("/play/race/hooks/useRaceSession.ts")) return null;
+    if (!id.endsWith("/races/hooks/useRaceSession.ts")) return null;
     assert(code.includes("const session = sessionRef.current;"));
     return {code: code.replace("const session = sessionRef.current;", "const session = sessionRef.current; globalThis.testRaceSession = session;"), map: null};
   }}], root: scratch, configFile: false, publicDir: path.join(root, "public"), logLevel: "error", build: {outDir: "dist"}});

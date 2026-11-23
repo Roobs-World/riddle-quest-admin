@@ -1,5 +1,5 @@
 import {JestBackendClient, type JestBackendPort} from "./backend";
-import {readBrowserStorage, writeBrowserStorage} from "../../../../src/web/platform/browserStorage";
+import {readBrowserStorage, writeBrowserStorage} from "../../../../src/platform/browser/storage/browserStorage";
 
 /** Describes auth harness state. */
 type AuthHarnessState = {

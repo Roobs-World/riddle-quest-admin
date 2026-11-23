@@ -1,4 +1,4 @@
-import type {AdsCapability, PlatformResult} from "../../../../src/web/platform/types";
+import type {AdsCapability, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantSdk} from "./fbinstant";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 import {

@@ -72,7 +72,7 @@ if (isMain) {
     name: path.slice(root.length),
     source: readFileSync(path, "utf8"),
   }));
-  const browserPaths = collectFiles(`${root}/src/web`, (name) => /\.(?:ts|tsx|js|jsx)$/u.test(name));
+  const browserPaths = collectFiles(`${root}/src`, (name) => /\.(?:ts|tsx|js|jsx)$/u.test(name));
   browserPaths.push(
     `${root}/platforms/web/jest/index.html`,
     `${root}/platforms/web/facebook/index.html`,

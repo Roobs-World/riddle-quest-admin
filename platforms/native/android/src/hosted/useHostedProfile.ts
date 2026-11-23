@@ -1,5 +1,5 @@
-import type {BridgeLeaderboardEntry} from "../../../../../src/core/bridge";
-import type {HostServices, LeaderboardType} from "../../../../../src/hosted/hostTypes";
+import type {BridgeLeaderboardEntry} from "../../../../../src/platform/bridge/messages";
+import type {HostServices, LeaderboardType} from "../../../../../src/platform/contracts/hostServices";
 import {useCallback, useEffect, useRef, useState} from "react";
 /** Leaderboards the profile shows, in tab order. */
 export const PROFILE_LEADERBOARDS: readonly LeaderboardType[] = ["xp", "totalWins", "bestStreak"];

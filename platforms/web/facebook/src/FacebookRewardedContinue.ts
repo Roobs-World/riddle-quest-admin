@@ -1,5 +1,5 @@
-import type {AdsCapability, AttemptRecoveryCapability} from "../../../../src/web/platform/types";
-import {createRequestId} from "../../../../src/hosted/play/requestIds";
+import type {AdsCapability, AttemptRecoveryCapability} from "../../../../src/platform/contracts/capabilities";
+import {createRequestId} from "../../../../src/gameplay/session/requestIds";
 
 /** Sequences SDK completion before one bounded server attempt, never a coin grant. */
 export function createFacebookRewardedContinue({ads, claim, isActive}: {

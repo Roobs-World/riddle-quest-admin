@@ -1,5 +1,5 @@
 import {jest} from "@jest/globals";
-import {UsernameSchema} from "../../../../../src/core/validation/requestSchemas.js";
+import {UsernameSchema} from "../../../../../src/platform/contracts/requestSchemas.js";
 import {createJestUser, createReservedJestUser} from "../jestUser";
 
 describe("Jest user defaults", () => {

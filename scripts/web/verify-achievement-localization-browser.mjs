@@ -16,10 +16,10 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {ACHIEVEMENT_DEFINITIONS} from ${JSON.stringify(path.join(root, 'src/web/play/achievements.ts'))};
-import {AchievementsModalPage} from ${JSON.stringify(path.join(root, 'src/web/play/modalPages/profile/ProfileStatsModalPages.tsx'))};
-import {AchievementFanfare} from ${JSON.stringify(path.join(root, 'src/web/play/modalPages/fanfare/FanfareModalContent.tsx'))};
-import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, 'src/web/play/i18n.ts'))};
+import {ACHIEVEMENT_DEFINITIONS} from ${JSON.stringify(path.join(root, "src/progression/achievements/browser/achievements.ts"))};
+import {AchievementsModalPage} from ${JSON.stringify(path.join(root, "src/progression/components/ProfileStatsModalPages.tsx"))};
+import {AchievementFanfare} from ${JSON.stringify(path.join(root, "src/progression/components/rewards/FanfareModalContent.tsx"))};
+import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
 ${['styles.css','styles.modal-shell.css','styles.account.css','styles.profile-details.css','styles.modal-rewards.css'].map(name => 'import '+JSON.stringify(path.join(root,'src',name))+';').join('\n')}
 const root = createRoot(document.getElementById('root'));
 window.injectAchievementProfile = async (locale, unlocked) => {

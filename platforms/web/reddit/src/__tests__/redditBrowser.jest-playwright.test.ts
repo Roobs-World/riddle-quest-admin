@@ -1,10 +1,10 @@
-import {protectContent} from "../../../../../src/core/contentProtection";
-import {installLiveMultiplayerJourney} from "../../../../../src/web/play/__tests__/liveMultiplayer.jest-playwright.support";
-import {verifyImmediateSoloFeedback} from "../../../../../src/web/play/__tests__/instantFeedback.jest-playwright.support";
-import {verifyRedditBrowserRedirects} from "./redditRedirect.jest-playwright.support";
-import {verifyRedditTournamentBoard, verifyRedditTournamentLiveResult} from "./redditTournament.jest-playwright.support";
+import {protectContent} from "../../../../../src/content/transport/contentProtection";
+import {installLiveMultiplayerJourney} from "../../../../../src/app/testing/browser/__tests__/liveMultiplayer.jest-playwright.support.ts";
+import {verifyImmediateSoloFeedback} from "../../../../../src/app/testing/browser/__tests__/instantFeedback.jest-playwright.support.ts";
+import {verifyRedditBrowserRedirects} from "./redditRedirect.jest-playwright.support.ts";
+import {verifyRedditTournamentBoard, verifyRedditTournamentLiveResult} from "./redditTournament.jest-playwright.support.ts";
 import {describe, expect, it} from "@jest/globals";
-import {expectWebStandards} from "../../../../../src/web/play/__tests__/webStandards.jest-playwright.support";
+import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
 import {chromium, type Page} from "@playwright/test";
 
 /** Documents global. */

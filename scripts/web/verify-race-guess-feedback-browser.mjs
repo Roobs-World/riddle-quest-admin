@@ -15,13 +15,13 @@ const output = path.resolve(root, "artifacts/race-guess-feedback");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
 import {flushSync} from 'react-dom';
-import {RACE_RULES, SubmitRaceGuessResponseSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
-import {RaceSession} from ${JSON.stringify(path.join(root, "src/web/play/race/RaceSession.ts"))};
+import {RACE_RULES, SubmitRaceGuessResponseSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
+import {RaceSession} from ${JSON.stringify(path.join(root, "src/races/browser/controllers/RaceSession.ts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 const catalog=createFakeRaceServices();
 for(const method of ['getItem','setItem','removeItem']) Storage.prototype[method]=()=>{throw new DOMException('Storage denied','SecurityError');};
 const deck=Array.from({length:15},(_,position)=>({riddleId:'q-'+position,text:'Question '+(position+1),answerLength:5,

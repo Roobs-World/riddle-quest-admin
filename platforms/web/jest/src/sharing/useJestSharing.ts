@@ -1,12 +1,12 @@
 import {useCallback, useEffect, useMemo} from "react";
-import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "../../../../../src/core/referrals";
-import {tr} from "../../../../../src/web/play/i18n";
+import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "../referrals/referralCampaigns";
+import {tr} from "../../../../../src/localization/browser/i18n";
 import type {
   ReferralRaceShareInput,
   ReferralResultShareInput,
   ReferralShareOutcome,
   ReferralSharingCapability,
-} from "../../../../../src/web/play/sharing/ReferralSharingCapability";
+} from "../../../../../src/sharing/components/ReferralSharingCapability";
 import type {JestBackendPort} from "../backend";
 import type {JestPlatformPort, JestSession} from "../types";
 import {createUniqueJestReferralReference} from "./referralReferences";

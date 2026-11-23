@@ -1,5 +1,5 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "../../../../src/core/validation/requestSchemas.js";
+import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "../../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../../../../firebase-functions/src/validation/callableValidation";
 import {browserCallableSecurityOptions} from "../../../../firebase-functions/src/shared/callableSecurity";
 import {onCallWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";

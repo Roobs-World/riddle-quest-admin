@@ -20,7 +20,7 @@ import {getHint, spendCoins, skipRiddle} from "./gameplay/gameLogic";
 import {grantFacebookRewardedContinue} from "../../platforms/web/facebook/server/facebookRewardedContinueCallable";
 import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
 import {getClassicRiddleBuffer} from "./daily/classicRiddleBuffer";
-import {deleteAccount, syncJestAvatar, updateAvatar, updateUsername} from "./profile";
+import {deleteAccount, syncJestAvatar, updateAvatar, updateUsername} from "./profile/index";
 import {completeGame} from "./gameplay/completeGameCallable";
 import {submitSinglePlayerGuess} from "./gameplay/submitSinglePlayerGuessCallable";
 import {dailyChallengeScheduler} from "./daily/dailyScheduler";

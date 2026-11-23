@@ -1,4 +1,4 @@
-import {RaceLocaleSchema, type RaceLocale} from "../../../../src/core/race";
+import {RaceLocaleSchema, type RaceLocale} from "../../../../src/races/contracts/index";
 
 /** Reads only a live, bounded native-tournament destination; no entry field supplies authority. */
 export function facebookTournamentLocaleFromEntryData(value: unknown, nowMs = Date.now()): RaceLocale | undefined {

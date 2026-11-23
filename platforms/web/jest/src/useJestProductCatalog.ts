@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import type {ProductSummary} from "../../../../src/hosted/hostTypes";
+import type {ProductSummary} from "../../../../src/platform/contracts/hostServices";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
 

@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import type {Firestore, Transaction} from "firebase-admin/firestore";
-import {normalizeUsernameDisplay, UsernameSchema} from "../../../src/core/validation/requestSchemas.js";
+import {normalizeUsernameDisplay, UsernameSchema} from "../../../src/platform/contracts/requestSchemas.js";
 import {admin} from "../shared/firebaseAdmin";
 
 /** Server-only collection that serializes normalized username ownership. */

@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import {RACE_CATEGORY_IDS} from "../../../../src/core/race/index.js";
+import {RACE_CATEGORY_IDS} from "../../../../src/races/contracts/index.js";
 
 /** Provides mock generate behavior. */
 const mockGenerate = jest.fn();

@@ -29,21 +29,21 @@ const output=path.resolve(process.env.SOLAR_ANIMATION_REPORT_DIR??path.join(root
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/solar-animation-'));
 const originalThree=path.join(root,'node_modules/three/src/Three.js');
-const scene=path.join(root,'src/web/play/SolarSystem.tsx');
+const scene=path.join(root,"src/scenery/solar/components/SolarSystem.tsx");
 const facade=path.join(scratch,'three-fixture.ts');
 // Real host, authority, checkpoint and keyboard setup; only the graphics driver is controlled.
 const commonSource=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
-import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
-import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
-import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,'src/web/FatalErrorBoundary.tsx'))};
-import {useGameSurfaces} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameSurfaces.ts'))};
-import {applyPlayerPreferences,setPlayerReducedMotion,subscribeToPlayerPreferenceChanges} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
-import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,"src/app/components/recovery/FatalErrorBoundary.tsx"))};
+import {useGameSurfaces} from ${JSON.stringify(path.join(root,"src/app/hooks/useGameSurfaces.ts"))};
+import {applyPlayerPreferences,setPlayerReducedMotion,subscribeToPlayerPreferenceChanges} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,"src/observability/browserErrorReporter.ts"))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={errors:[],unhandled:[],saves:[],guesses:0,completions:0,sceneRenders:0,raceImports:0,hookRenders:0,playable:0};
 window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
@@ -146,7 +146,7 @@ await writeFile(path.join(scratch,'main.tsx'),main);
 let browser,server;const observations=[];
 try{
  await writeFile(facade,createSolarRendererSource({nativeRenderer,contextChecks,sizingChecks,resourceChecks,originalThree}));
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'controlled-solar-renderer',enforce:'pre',async load(id){if(contextChecks&&nativeRenderer&&id.endsWith('/three/src/renderers/WebGLRenderer.js'))return (await readFile(id,'utf8')).replace('function onContextRestore( /* event */ ) {','function onContextRestore( /* event */ ) { window.probe.driverRestores++;').replace('function onContextLost( event ) {','function onContextLost( event ) { window.probe.driverLosses++;');if(motionChecks&&baseline&&(id===path.join(root,'src/web/play/GameFrameApp.tsx')||id===path.join(root,'src/web/play/DecorativeSolarSystem.tsx')))return readFile(path.join(baseline,path.basename(id,'.tsx')+'.before.txt'),'utf8');if(!layoutChecks&&!contextChecks&&!initializationChecks&&!motionChecks&&resourceChecks&&baseline&&id===path.join(root,'src/web/play/performance/mobileCapabilities.ts'))return readFile(path.join(baseline,'mobileCapabilities.before.txt'),'utf8');if(id===scene){const source=await readFile(baseline&&!motionChecks?path.join(baseline,'SolarSystem.before.txt'):scene,'utf8');return (initializationChecks?'window.probe.solarImports=(window.probe.solarImports??0)+1;\n':'')+source.replace('"three/src/Three.js"',JSON.stringify(facade));}}}],build:{outDir:'dist',minify:false}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'controlled-solar-renderer',enforce:'pre',async load(id){if(contextChecks&&nativeRenderer&&id.endsWith('/three/src/renderers/WebGLRenderer.js'))return (await readFile(id,'utf8')).replace('function onContextRestore( /* event */ ) {','function onContextRestore( /* event */ ) { window.probe.driverRestores++;').replace('function onContextLost( event ) {','function onContextLost( event ) { window.probe.driverLosses++;');if(motionChecks&&baseline&&(id===path.join(root,"src/gameplay/components/GameFrameApp.tsx")||id===path.join(root,"src/scenery/solar/components/DecorativeSolarSystem.tsx")))return readFile(path.join(baseline,path.basename(id,'.tsx')+'.before.txt'),'utf8');if(!layoutChecks&&!contextChecks&&!initializationChecks&&!motionChecks&&resourceChecks&&baseline&&id===path.join(root,"src/app/performance/mobileCapabilities.ts"))return readFile(path.join(baseline,'mobileCapabilities.before.txt'),'utf8');if(id===scene){const source=await readFile(baseline&&!motionChecks?path.join(baseline,'SolarSystem.before.txt'):scene,'utf8');return (initializationChecks?'window.probe.solarImports=(window.probe.solarImports??0)+1;\n':'')+source.replace('"three/src/Three.js"',JSON.stringify(facade));}}}],build:{outDir:'dist',minify:false}});
  const sceneAsset=initializationChecks?(await readdir(path.join(scratch,'dist/assets'))).find(file=>file.startsWith('SolarSystem-')&&file.endsWith('.js')):undefined;
  if(initializationChecks)assert.ok(sceneAsset,'SolarSystem remains a genuinely separate lazy native module');
  await writeFile(path.join(output,'lazy-scene-asset.txt'),sceneAsset??'not applicable');

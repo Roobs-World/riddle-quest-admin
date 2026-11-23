@@ -1,4 +1,4 @@
-import type {EconomyDifficulty} from "../../../src/core/game/index.js";
+import {type EconomyDifficulty} from "../../../src/progression/economy/rewardRules.js";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import type {DocumentReference} from "firebase-admin/firestore";
@@ -6,7 +6,7 @@ import {captureException} from "../shared/sentry";
 import type {ClassicRiddle, DailyRiddle} from "../validation/firestoreSchemas";
 import {RiddleCollections} from "../validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/core/validation/index.js";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/localization/locales.js";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 /** Provides riddle exists behavior. */

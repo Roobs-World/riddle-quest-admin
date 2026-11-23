@@ -1,4 +1,4 @@
-import {type ReadyRaceRunRequest, type RaceRunResponse} from "../../../src/core/race/index.js";
+import {type ReadyRaceRunRequest, type RaceRunResponse} from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";

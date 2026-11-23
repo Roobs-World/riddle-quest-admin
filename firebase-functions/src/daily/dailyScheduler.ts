@@ -1,5 +1,5 @@
-import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/core/validation/index.js";
-import {getDailyDate, isDailyGenerationDue} from "../../../src/core/validation/dailyCalendar.js";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/localization/locales.js";
+import {getDailyDate, isDailyGenerationDue} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {type ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {DailyGenerationIncompleteError, generateLocalizedDailyChallengeForDate} from "./dailyRiddleGeneration";
 import * as functions from "firebase-functions";

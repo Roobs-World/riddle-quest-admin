@@ -11,13 +11,13 @@ const output=path.resolve(process.env.GAME_RETIRE_REPORT_DIR??path.join(root,'bu
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-retire-'));
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {useGameMessageListener} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameBridgeLifecycle.ts'))};
-import {useCompletionDelivery} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useCompletionDelivery.ts'))};
-import {useGameMessageRouter} from ${JSON.stringify(path.join(root,'src/web/play/useGameMessageRouter.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/hosted/play/gameSession.ts'))};
-import {createGameMessageRouter} from ${JSON.stringify(path.join(root,'src/web/play/bridgeRouter.ts'))};
-import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
-import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+import {useGameMessageListener} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/useGameBridgeLifecycle.ts"))};
+import {useCompletionDelivery} from ${JSON.stringify(path.join(root,"src/gameplay/hooks/browser/useCompletionDelivery.ts"))};
+import {useGameMessageRouter} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/useGameMessageRouter.ts"))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
+import {createGameMessageRouter} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/bridgeRouter.ts"))};
+import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
+import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.probe={effects:[],messages:[],errors:[],unhandled:[],adds:0,removes:0,retained:[],suspended:0,acknowledgementAt:null,immediateAck:null};window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 const params=new URL(location.href).searchParams,scenario=params.get('scenario')??'retire',channel=params.get('channel')??'local';
 const add=window.addEventListener.bind(window),remove=window.removeEventListener.bind(window);

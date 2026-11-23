@@ -1,4 +1,4 @@
-import {readProtectedContent} from "../../../src/core/contentProtection.js";
+import {readProtectedContent} from "../../../src/content/transport/contentProtection.js";
 import {jest} from "@jest/globals";
 
 /** Captures exceptions routed through the handler wrappers. */

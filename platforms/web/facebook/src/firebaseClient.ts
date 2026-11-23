@@ -4,8 +4,8 @@ import type {
   RecordFacebookTournamentRunRequest,
   ListFacebookContextBoardRequest,
   RecordFacebookContextRunRequest,
-} from "../../../../src/core/race";
-import {firebaseFunctions} from "../../../../src/web/firebase";
+} from "../../../../src/races/contracts/index";
+import {firebaseFunctions} from "../../../../src/platform/firebase/browserClient";
 import {
   parseFacebookClientConfiguration,
   parseFacebookPurchaseGrant,

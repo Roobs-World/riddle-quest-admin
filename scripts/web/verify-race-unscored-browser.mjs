@@ -15,11 +15,11 @@ const output = path.resolve(root, "artifacts/race-unscored");
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
-import ${JSON.stringify(path.join(root, "src/web/styles.css"))};
+import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES, RaceRunResponseSchema} from ${JSON.stringify(path.join(root, 'src/core/race'))};
+import {RACE_RULES, RaceRunResponseSchema} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
-import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/web/play/race/testing/fakeRaceServices.ts"))};
+import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 const catalog = createFakeRaceServices();
 const deck = Array.from({length:15}, (_, position) => ({riddleId:'q-'+position, text:'Question '+(position+1),
  answerLength:5, position, evaluation:{answer:'piano',locale:'en'}, hint:{index:0,letter:'p'}}));

@@ -1,18 +1,9 @@
-import {readProtectedContent} from "../../../../src/core/contentProtection";
-import {RaceEntryResponseSchema} from "../../../../src/core/race";
-import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "../../../../src/core/bridge";
-import {
-  ClassicRiddleBufferResponseSchema,
-  CompleteGameResponseDataSchema,
-  GetCurrentDailyChallengeResponseSchema,
-  GetHintResponseSchema,
-  GetLeaderboardResponseSchema,
-  SkipRiddleResponseSchema,
-  SpendCoinsResponseSchema,
-  SubmitSinglePlayerGuessResponseDataSchema,
-} from "../../../../src/core/validation";
-import type {AuthSnapshot, HostServices} from "../../../../src/hosted/hostTypes";
-import {tr} from "../../../../src/web/play/i18n";
+import {readProtectedContent} from "../../../../src/content/transport/contentProtection";
+import {RaceEntryResponseSchema} from "../../../../src/races/contracts/index";
+import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "../../../../src/platform/bridge/messages";
+import {ClassicRiddleBufferResponseSchema, CompleteGameResponseDataSchema, GetCurrentDailyChallengeResponseSchema, GetHintResponseSchema, GetLeaderboardResponseSchema, SkipRiddleResponseSchema, SpendCoinsResponseSchema, SubmitSinglePlayerGuessResponseDataSchema} from "../../../../src/platform/contracts/requestSchemas";
+import type {AuthSnapshot, HostServices} from "../../../../src/platform/contracts/hostServices";
+import {tr} from "../../../../src/localization/browser/i18n";
 import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
 import {
   AbandonRaceRunResponseSchema,
@@ -26,7 +17,7 @@ import {
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   SubmitRaceGuessResponseSchema,
-} from "../../../../src/core/race";
+} from "../../../../src/races/contracts/index";
 
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>

@@ -17,11 +17,11 @@ try{
  await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,'src/web/play/race/RaceTournamentEntry.tsx'))};
+import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,"src/races/components/lobby/RaceTournamentEntry.tsx"))};
 import {createFacebookTournamentPresentation} from ${JSON.stringify(path.join(portal,'platforms/web/facebook/src/FacebookTournamentPresentation.ts'))};
-import {ListFacebookTournamentResponseSchema} from ${JSON.stringify(path.join(portal, 'src/core/race'))};
-import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/web/play/playerPreferences.ts'))};
-import ${JSON.stringify(path.join(portal,'src/web/styles.css'))};
+import {ListFacebookTournamentResponseSchema} from ${JSON.stringify(path.join(portal, "src/races/contracts"))};
+import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,"src/settings/browser/playerPreferences.ts"))};
+import ${JSON.stringify(path.join(portal,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URLSearchParams(location.search).get('scenario');
 window.probe={reads:[],shares:[],native:[],diagnostics:[],errors:[],unhandled:[],renders:[]};

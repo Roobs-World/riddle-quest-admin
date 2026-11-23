@@ -1,4 +1,4 @@
-import {DEFAULT_PRODUCT_PRICING} from "../../../../../src/core/pricing/catalog";
+import {DEFAULT_PRODUCT_PRICING} from "../../../../../src/commerce/pricing/catalog";
 
 /** Describes facebook product. */
 export type FacebookProduct = Readonly<{

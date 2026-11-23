@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceLocaleSchema, RACE_CATEGORY_IDS, type RaceLocale} from "../../../src/core/race/index.js";
+import {RaceLocaleSchema, RACE_CATEGORY_IDS, type RaceLocale} from "../../../src/races/contracts/index.js";
 import type {Firestore} from "./raceSetupService";
 
 /** Validated duration priors for one language; user histories remain language-specific. */

@@ -1,5 +1,5 @@
 import {describe, expect, jest, test} from "@jest/globals";
-import type {NativeSocialCapability, PlatformResult} from "../../../../../src/web/platform/types";
+import type {NativeSocialCapability, PlatformResult} from "../../../../../src/platform/contracts/capabilities";
 import {FacebookContextCoordinator, type FacebookContextBackendPort} from "../contexts";
 
 /** Validated SDK context snapshot, independent of the notification payload. */
