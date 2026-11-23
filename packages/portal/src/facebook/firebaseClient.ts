@@ -18,10 +18,18 @@ import {
   parseFacebookTournamentResponse,
 } from "./facebookCallableResponses";
 
-const grantFacebookPurchaseRaw = httpsCallable<{signedRequest: string}, unknown>(firebaseFunctions, "grantFacebookPurchase");
+/** Callable transport for server verification of Facebook signed receipts. */
+const grantFacebookPurchaseRaw = httpsCallable<{
+  /** Facebook-signed purchase payload sent unchanged to the server. */
+  signedRequest: string
+}, unknown>(firebaseFunctions, "grantFacebookPurchase");
 
 /** Sends only Meta's signed receipt to the verified purchase boundary. */
-export const grantFacebookPurchase = async (input: {signedRequest: string}) => {
+export const grantFacebookPurchase = async (input: {
+  /** Facebook-signed purchase payload sent unchanged to the server. */
+  signedRequest: string
+}) => {
+  /** Callable result validated before exposing a purchase grant to the client. */
   const result = await grantFacebookPurchaseRaw(input);
   return {...result, data: parseFacebookPurchaseGrant(result.data)};
 };

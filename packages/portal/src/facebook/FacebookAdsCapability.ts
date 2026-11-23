@@ -58,6 +58,7 @@ export function createFacebookAdsCapability({
   if (!interstitialAvailable && !rewardedAvailable) return undefined;
   /** Provides state behavior. */
   const hasAdFreeEntitlement = () => typeof adFree === "function" ? adFree() : adFree;
+  /** Current interstitial readiness, cooldown, and entitlement state. */
   let state: FacebookInterstitialState = createFacebookInterstitialState(hasAdFreeEntitlement());
   /** Provides showing interstitial behavior. */
   let showingInterstitial = false;

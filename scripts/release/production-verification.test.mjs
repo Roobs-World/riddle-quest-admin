@@ -50,6 +50,7 @@ test("Jest and Facebook readiness preserves parked targets while bounding its ru
   assert.match(workflow, /pnpm test:e2e:jest-facebook/u);
   assert.match(workflow, /JEST_FACEBOOK_BROWSER_SHARD: \$\{\{ matrix\.shard \}\}\/4/u);
   assert.match(workflow, /fail-fast: false/u);
+  assert.ok(workflow.includes("group: production-readiness-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}"));
   assert.match(workflow, /DEVELOPMENT_TARGETS: '\["jest","facebook"\]'/u);
   assert.doesNotMatch(workflow, /pnpm (?:check:types|test:coverage|build|test:e2e)\s*$/mu);
   assert.doesNotMatch(workflow, /reddit-app build|test:youtube-content|check:youtube-progress/u);
