@@ -20,7 +20,9 @@ const mockOpenAI = jest.fn().mockImplementation(() => ({
 
 jest.mock("openai", () => ({
   __esModule: true,
-  default: mockOpenAI,
+  default: Object.assign(mockOpenAI, {
+    APIConnectionTimeoutError: jest.requireActual<typeof import("openai")>("openai").APIConnectionTimeoutError,
+  }),
 }));
 
 import {GeneratedRiddleSchema, generateUniqueRiddle, resetOpenAIClient} from "../riddles/openaiService";
@@ -577,6 +579,31 @@ describe("OpenAI Service", () => {
       });
     });
 
+    test.each(["sdk timeout", "response abort"])("lets background Daily retry a %s without capturing the attempt", async (failure) => {
+      /** Simulates the transport interrupt without making a network request. */
+      const abort = new DOMException("private transport details", "AbortError");
+      /** Uses the real SDK error type so the fixture keeps its prototype. */
+      const {APIConnectionTimeoutError} = jest.requireActual<typeof import("openai")>("openai");
+      /** Models either the wrapped timeout or a direct response abort. */
+      const error = failure === "sdk timeout"
+        ? Object.assign(new APIConnectionTimeoutError(), {cause: abort})
+        : abort;
+      mockParse.mockRejectedValueOnce(error);
+      mockApprovedRiddle("What flies without wings?", "time");
+
+      await expect(generateUniqueRiddle("en", [], {mode: "daily", background: true})).resolves.toBeNull();
+      expect(mockLogger.warn).toHaveBeenCalledWith("OpenAI daily riddle request interrupted.", {
+        model: expect.any(String),
+        operation: "generate",
+        locale: "en",
+        errorClass: failure === "sdk timeout" ? "APIConnectionTimeoutError" : "AbortError",
+      });
+      await expect(generateUniqueRiddle("en", [], {mode: "daily", background: true}))
+        .resolves.toEqual(["What flies without wings?", "time", "easy"]);
+      expect(mockParse).toHaveBeenCalledTimes(4);
+      expect(mockCaptureException).not.toHaveBeenCalled();
+    });
+
     test.each([1, 2, 3])("rejects a candidate when model call %i times out and permits a later recovery", async (failedCall) => {
       /** Models the SDK timeout without including provider request data in telemetry. */
       const timeout = Object.assign(new Error("private timeout details"), {
@@ -624,7 +651,7 @@ describe("OpenAI Service", () => {
         }
         mockParse.mockRejectedValueOnce(apiError);
 
-        await expect(generateUniqueRiddle("fr")).resolves.toBeNull();
+        await expect(generateUniqueRiddle("fr", [], {mode: "daily", background: true})).resolves.toBeNull();
         expect(mockParse).toHaveBeenCalledTimes(["generate", "blind-solve", "review"].indexOf(operation) + 1);
         expect(mockCaptureException).toHaveBeenCalledWith(apiError, {
           operation,

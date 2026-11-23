@@ -547,6 +547,19 @@ export async function generateUniqueRiddle(
   } catch (error) {
     /** Identifies the failed stage without including prompts or generated content. */
     const diagnostics = {operation, locale, ...getSafeErrorMetadata(error)};
+    // Daily retries candidates and reports exhausted locales at the scheduler boundary.
+    if (
+      options.mode === "daily" && options.background &&
+      (error instanceof loadOpenAI().APIConnectionTimeoutError ||
+        (error instanceof DOMException && error.name === "AbortError"))
+    ) {
+      functions.logger.warn("OpenAI daily riddle request interrupted.", {
+        model,
+        ...diagnostics,
+        errorClass: error instanceof DOMException ? "AbortError" : "APIConnectionTimeoutError",
+      });
+      return null;
+    }
     functions.logger.error("OpenAI riddle generation failed.", {model, ...diagnostics});
     captureException(error, diagnostics);
     return null; // Return null on error to prevent breaking the loop
