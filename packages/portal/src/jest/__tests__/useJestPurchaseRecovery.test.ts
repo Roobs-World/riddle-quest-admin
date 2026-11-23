@@ -59,6 +59,8 @@ function harness(current: JestSession | null = session()) {
   const reconcile = jest.fn<JestPurchaseCoordinator["reconcile"]>().mockResolvedValue({status: "success", value: 1});
   /** Records catalog and entitlement refreshes after recovery. */
   const refreshProducts = jest.fn<() => Promise<void>>().mockResolvedValue();
+  /** Routine browser wakes use the catalog's bounded background freshness policy. */
+  const refreshBackgroundProducts = jest.fn<() => Promise<void>>().mockResolvedValue();
   /** Records authoritative profile publication for the owning account. */
   const loadProfile = jest.fn<HostServices["loadProfile"]>().mockResolvedValue(null);
   /** Closing the deletion gate retires later work. */
@@ -72,15 +74,90 @@ function harness(current: JestSession | null = session()) {
     mockRefIndex = 0;
     mockEffects.length = 0;
     useJestPurchaseRecovery({purchases: {reconcile}, session: next, sessionRef,
-      gate: {isOpen: () => open, run: operation => operation()}, refreshProducts, hostServices: {loadProfile}});
+      gate: {isOpen: () => open, run: operation => operation()}, refreshProducts, refreshBackgroundProducts, hostServices: {loadProfile}});
     cleanup = mockEffects[0]();
   };
   render(current);
-  return {sessionRef, reconcile, refreshProducts, loadProfile, cleanup: () => cleanup?.(),
+  return {sessionRef, reconcile, refreshProducts, refreshBackgroundProducts, loadProfile, cleanup: () => cleanup?.(),
     rerender: render, close: () => {open = false;}};
 }
 
 describe("Jest purchase recovery after startup", () => {
+  it("keeps durable receipt recovery on every focus while using background catalog refresh", async () => {
+    /** Empty receipt queues must not force a fresh signed subscription request on every focus. */
+    const context = harness();
+    context.reconcile.mockResolvedValue({status: "success", value: 0});
+    for (let wake = 0; wake < 12; wake++) {
+      browser.dispatchEvent(new Event("focus"));
+      await settle();
+    }
+    expect(context.reconcile).toHaveBeenCalledTimes(12);
+    expect(context.loadProfile).toHaveBeenCalledTimes(12);
+    expect(context.refreshBackgroundProducts).toHaveBeenCalledTimes(12);
+    expect(context.refreshProducts).not.toHaveBeenCalled();
+    context.cleanup();
+  });
+
+  it.each(["online", "riddle-quest:registration-prompt-closed"])("forces fresh entitlement state after %s", async signal => {
+    /** Empty receipt recovery does not hide the external identity or connectivity change. */
+    const context = harness();
+    context.reconcile.mockResolvedValue({status: "success", value: 0});
+    browser.dispatchEvent(new Event(signal));
+    await settle();
+    expect(context.reconcile).toHaveBeenCalledTimes(1);
+    expect(context.refreshProducts).toHaveBeenCalledTimes(1);
+    expect(context.refreshBackgroundProducts).not.toHaveBeenCalled();
+    expect(context.loadProfile).toHaveBeenCalledTimes(1);
+    context.cleanup();
+  });
+
+  it.each(["online", "riddle-quest:registration-prompt-closed"])("retains a hidden %s event's fresh-read requirement until foreground", async signal => {
+    /** Recent ordinary recovery cannot consume an external-change freshness requirement. */
+    const context = harness();
+    context.reconcile.mockResolvedValue({status: "success", value: 0});
+    browser.dispatchEvent(new Event("focus"));
+    await settle();
+    expect(context.refreshBackgroundProducts).toHaveBeenCalledTimes(1);
+    page.visibilityState = "hidden";
+    browser.dispatchEvent(new Event(signal));
+    await settle();
+    expect(context.reconcile).toHaveBeenCalledTimes(1);
+    expect(context.refreshProducts).not.toHaveBeenCalled();
+    page.visibilityState = "visible";
+    browser.dispatchEvent(new Event("focus"));
+    await settle();
+    expect(context.reconcile).toHaveBeenCalledTimes(2);
+    expect(context.refreshProducts).toHaveBeenCalledTimes(1);
+    expect(context.refreshBackgroundProducts).toHaveBeenCalledTimes(1);
+    context.cleanup();
+  });
+
+  it("finishes admitted receipt recovery while deferring hidden catalog work until foreground", async () => {
+    /** Recovery starts while the account is visible. */
+    const context = harness();
+    /** Grants an admitted receipt after the player backgrounds the document. */
+    let finish: ((result: Awaited<ReturnType<JestPurchaseCoordinator["reconcile"]>>) => void) | undefined;
+    context.reconcile.mockImplementationOnce(() => new Promise(resolve => {finish = resolve;}));
+    browser.dispatchEvent(new Event("focus"));
+    await settle();
+    page.visibilityState = "hidden";
+    if (!finish) throw new Error("Durable recovery did not start");
+    finish({status: "success", value: 1});
+    await settle();
+    expect(context.loadProfile).toHaveBeenCalledTimes(1);
+    expect(context.refreshProducts).not.toHaveBeenCalled();
+    expect(context.refreshBackgroundProducts).not.toHaveBeenCalled();
+    context.reconcile.mockResolvedValue({status: "success", value: 0});
+    page.visibilityState = "visible";
+    page.dispatchEvent(new Event("visibilitychange"));
+    await settle();
+    expect(context.reconcile).toHaveBeenCalledTimes(2);
+    expect(context.refreshProducts).toHaveBeenCalledTimes(1);
+    expect(context.refreshBackgroundProducts).not.toHaveBeenCalled();
+    expect(context.loadProfile).toHaveBeenCalledTimes(2);
+    context.cleanup();
+  });
+
   it("recovers after login and foreground signals without duplicating initial recovery", async () => {
     /** Ready session has already completed its startup reconciliation. */
     const context = harness();

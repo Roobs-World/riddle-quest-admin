@@ -253,7 +253,7 @@ export function JestPlayApp() {
     authHarness,
   });
   /** Provides [jest products, set jest products] behavior. */
-  const [jestProducts, setJestProducts, refreshProducts, catalogState] = useJestProductCatalog({
+  const [jestProducts, setJestProducts, refreshProducts, catalogState, refreshBackgroundProducts] = useJestProductCatalog({
     purchases,
     session,
     subscriptionsEnabled,
@@ -287,7 +287,7 @@ export function JestPlayApp() {
     trackFunnel,
   });
   useJestPurchaseRecovery({
-    purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, hostServices,
+    purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, refreshBackgroundProducts, hostServices,
   });
   /** Provides authenticate jest identity behavior. */
   const authenticateJestIdentity = useCallback(

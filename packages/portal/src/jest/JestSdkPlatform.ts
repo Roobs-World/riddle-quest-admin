@@ -85,6 +85,36 @@ const withTimeout = async <T>(operation: Promise<T>, timeoutMs: number, message:
   }
 };
 
+/** Retries one exact provider-negative payment read within the existing recovery budget. */
+const readPaymentData = async <T>({read, providerRejection, timeoutMessage}: {
+  /** Reads provider state without opening checkout or acknowledging a receipt. */
+  read: () => Promise<T>;
+  /** Exact plain Error message emitted by the current SDK for a negative parent reply. */
+  providerRejection: string;
+  /** Identifies the read whose shared deadline expired. */
+  timeoutMessage: string;
+}): Promise<T> => {
+  /** Prevents late provider settlement from starting another read. */
+  let active = true;
+  /** Both attempts consume one recovery budget. */
+  const deadline = Date.now() + PURCHASE_RECOVERY_TIMEOUT_MS;
+  /** Returns the first successful read or retries its exact provider-negative reply once. */
+  const attempt = async () => {
+    try {
+      return await read();
+    } catch (error) {
+      if (!active || Date.now() >= deadline || !(error instanceof Error) || error.name !== "Error" ||
+        error.message !== providerRejection) throw error;
+      return read();
+    }
+  };
+  try {
+    return await withTimeout(attempt(), PURCHASE_RECOVERY_TIMEOUT_MS, timeoutMessage);
+  } finally {
+    active = false;
+  }
+};
+
 /**
  * Production adapter that confines the dynamically loaded Jest SDK behind
  * {@link JestPlatformPort}.
@@ -329,7 +359,11 @@ export class JestSdkPlatform implements JestPlatformPort {
   async getProducts() {
     try {
       /** Provider catalog whose nullable descriptions are normalized for game display. */
-      const products = await this.getSdkModule("payments").getProducts();
+      const products = await readPaymentData({
+        read: () => this.getSdkModule("payments").getProducts(),
+        providerRejection: "Failed to fetch products",
+        timeoutMessage: "Jest product catalog read timed out",
+      });
       return success(products.map((product) => ({...product, description: product.description ?? undefined})));
     } catch (e) {
       return failure(e);
@@ -363,30 +397,14 @@ export class JestSdkPlatform implements JestPlatformPort {
    * @returns Provider purchase data and its opaque aggregate signature.
    */
   async getIncompletePurchases() {
-    /** Retires late provider settlement without starting another read after the shared deadline. */
-    let active = true;
-    /** Both attempts share the existing recovery budget. */
-    const deadline = Date.now() + PURCHASE_RECOVERY_TIMEOUT_MS;
-    /** Retries only the exact negative response emitted by the current provider SDK. */
-    const read = async () => {
-      try {
-        return await this.getSdkModule("payments").getIncompletePurchases();
-      } catch (error) {
-        if (!active || Date.now() >= deadline || !(error instanceof Error) || error.name !== "Error" ||
-          error.message !== "Failed to fetch incomplete purchases") throw error;
-        return this.getSdkModule("payments").getIncompletePurchases();
-      }
-    };
     try {
-      return success(await withTimeout(
-        read(),
-        PURCHASE_RECOVERY_TIMEOUT_MS,
-        "Jest incomplete purchase read timed out",
-      ));
+      return success(await readPaymentData({
+        read: () => this.getSdkModule("payments").getIncompletePurchases(),
+        providerRejection: "Failed to fetch incomplete purchases",
+        timeoutMessage: "Jest incomplete purchase read timed out",
+      }));
     } catch (e) {
       return failure(e);
-    } finally {
-      active = false;
     }
   }
   /**
@@ -425,7 +443,11 @@ export class JestSdkPlatform implements JestPlatformPort {
   async getSubscriptions() {
     try {
       /** Provides result behavior. */
-      const result = await this.getSdkModule("payments").getSubscriptions();
+      const result = await readPaymentData({
+        read: () => this.getSdkModule("payments").getSubscriptions(),
+        providerRejection: "Failed to fetch subscriptions",
+        timeoutMessage: "Jest subscription catalog read timed out",
+      });
       return success({
         subscriptions: result.subscriptions,
         subscriptionsSigned: result.signed,

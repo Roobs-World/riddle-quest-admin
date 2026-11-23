@@ -913,6 +913,125 @@ it.each([
   }
 });
 
+describe.each<["getProducts" | "getSubscriptions", string, string]>([
+  ["getProducts", "Failed to fetch products", "Jest product catalog read timed out"],
+  ["getSubscriptions", "Failed to fetch subscriptions", "Jest subscription catalog read timed out"],
+])("%s catalog recovery", (operation, providerRejection, timeoutMessage) => {
+  it("recovers one provider-negative reply and preserves its successful catalog", async () => {
+    /** Receives only unrecovered SDK failures. */
+    const report = jest.fn();
+    configureBrowserErrorReporter(report);
+    try {
+      /** Models the parent bridge refusing one read before it recovers. */
+      const mock = sdk();
+      /** Retains provider prices, descriptions and opaque signatures through retry. */
+      const providerValue = operation === "getProducts"
+        ? [{sku: "coins", name: "Coins", description: null, price: 0.99, currency: "USD"}]
+        : {subscriptions: [{sku: "premium", status: "active"}], signed: "catalog.signed"};
+      mock.payments[operation].mockRejectedValueOnce(new Error(providerRejection)).mockResolvedValue(providerValue);
+      /** Applies the actual public adapter read to the provider fixture. */
+      const result = await new JestSdkPlatform(mock)[operation]();
+      expect(result).toEqual({
+        status: "success",
+        value: operation === "getProducts"
+          ? [{sku: "coins", name: "Coins", description: undefined, price: 0.99, currency: "USD"}]
+          : {subscriptions: [{sku: "premium", status: "active"}], subscriptionsSigned: "catalog.signed"},
+      });
+      expect(mock.payments[operation]).toHaveBeenCalledTimes(2);
+      expect(report).not.toHaveBeenCalled();
+    } finally { resetBrowserErrorReporterForTests(); }
+  });
+
+  it("reports a persistent provider rejection once after its only retry", async () => {
+    /** Observes the final failure rather than each attempted read. */
+    const report = jest.fn();
+    configureBrowserErrorReporter(report);
+    try {
+      /** Refuses both catalog attempts with the current SDK's exact error. */
+      const mock = sdk();
+      mock.payments[operation].mockRejectedValue(new Error(providerRejection));
+      await expect(new JestSdkPlatform(mock)[operation]()).resolves.toEqual({
+        status: "retryable-failure", message: providerRejection,
+      });
+      expect(mock.payments[operation]).toHaveBeenCalledTimes(2);
+      expect(report).toHaveBeenCalledTimes(1);
+    } finally { resetBrowserErrorReporterForTests(); }
+  });
+
+  it.each(["unrelated", "typed", "untyped", "terminal"])("does not retry a %s failure", async kind => {
+    /** Makes only the exact plain provider-negative error eligible for another read. */
+    const error = kind === "typed" ? new TypeError(providerRejection)
+      : kind === "untyped" ? providerRejection
+        : new Error(kind === "terminal" ? "INVALID_ARGUMENTS: invalid sku" : "offline");
+    /** Rejects before any successful provider catalog exists. */
+    const mock = sdk();
+    mock.payments[operation].mockRejectedValue(error);
+    await expect(new JestSdkPlatform(mock)[operation]()).resolves.toMatchObject({
+      status: kind === "terminal" ? "terminal-failure" : "retryable-failure",
+    });
+    expect(mock.payments[operation]).toHaveBeenCalledTimes(1);
+  });
+
+  it("bounds a permanently pending catalog read at 15 seconds", async () => {
+    jest.useFakeTimers();
+    try {
+      /** Models a parent response that never arrives. */
+      const mock = sdk();
+      mock.payments[operation].mockImplementation(() => new Promise(() => undefined));
+      /** Records the public result before and at its deadline. */
+      const outcomes: unknown[] = [];
+      void new JestSdkPlatform(mock)[operation]().then(value => outcomes.push(value));
+      await jest.advanceTimersByTimeAsync(14_999);
+      expect(outcomes).toEqual([]);
+      await jest.advanceTimersByTimeAsync(1);
+      expect(outcomes).toEqual([{status: "retryable-failure", message: timeoutMessage}]);
+      expect(mock.payments[operation]).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally { jest.useRealTimers(); }
+  });
+
+  it("keeps both catalog attempts inside one 15-second deadline", async () => {
+    jest.useFakeTimers();
+    try {
+      /** Leaves one millisecond for the second attempt. */
+      const mock = sdk();
+      mock.payments[operation].mockImplementationOnce(() => new Promise((_resolve, reject) => {
+        setTimeout(() => reject(new Error(providerRejection)), 14_999);
+      })).mockImplementationOnce(() => new Promise(() => undefined));
+      /** Observes the deadline shared by the initial read and its retry. */
+      const outcomes: unknown[] = [];
+      void new JestSdkPlatform(mock)[operation]().then(value => outcomes.push(value));
+      await jest.advanceTimersByTimeAsync(14_999);
+      expect(mock.payments[operation]).toHaveBeenCalledTimes(2);
+      expect(outcomes).toEqual([]);
+      await jest.advanceTimersByTimeAsync(1);
+      expect(outcomes).toEqual([{status: "retryable-failure", message: timeoutMessage}]);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally { jest.useRealTimers(); }
+  });
+
+  it.each([15_000, 16_000])("does not start a retry after a provider rejection at %ims", async delay => {
+    jest.useFakeTimers();
+    /** Captures one public failure even when the provider settles after the deadline. */
+    const report = jest.fn();
+    configureBrowserErrorReporter(report);
+    try {
+      /** Delays the first negative reply beyond the available read budget. */
+      const mock = sdk();
+      mock.payments[operation].mockImplementationOnce(() => new Promise((_resolve, reject) => {
+        setTimeout(() => reject(new Error(providerRejection)), delay);
+      }));
+      /** Settles through the public adapter before inspecting provider call count. */
+      const pending = new JestSdkPlatform(mock)[operation]();
+      await jest.advanceTimersByTimeAsync(delay);
+      await expect(pending).resolves.toMatchObject({status: "retryable-failure"});
+      expect(mock.payments[operation]).toHaveBeenCalledTimes(1);
+      expect(report).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally { jest.useRealTimers(); resetBrowserErrorReporterForTests(); }
+  });
+});
+
 it("recovers one exact incomplete-purchase provider rejection before reporting a failure", async () => {
   /** Observes only final failures from the provider boundary. */
   const report = jest.fn();
@@ -956,15 +1075,20 @@ it.each([new Error("offline"), new TypeError("Failed to fetch incomplete purchas
   },
 );
 
-it.each(["beginPurchase", "completePurchase"] as const)("does not retry the paid %s action", async operation => {
-  /** Uses the same error text without extending retry to a payment mutation. */
+it.each<["beginPurchase" | "completePurchase" | "beginSubscription"]>([
+  ["beginPurchase"], ["completePurchase"], ["beginSubscription"],
+])("does not retry the paid %s action for any provider-negative read error", async operation => {
+  /** Uses read-error messages without extending retry to a payment mutation. */
   const mock = sdk();
-  mock.payments[operation].mockRejectedValue(new Error("Failed to fetch incomplete purchases"));
   /** Calls the selected payment mutation once. */
   const platform = new JestSdkPlatform(mock);
-  await expect(operation === "beginPurchase" ? platform.beginPurchase("sku") : platform.completePurchase("token"))
-    .resolves.toMatchObject({status: "retryable-failure"});
-  expect(mock.payments[operation]).toHaveBeenCalledTimes(1);
+  for (const message of ["Failed to fetch products", "Failed to fetch subscriptions", "Failed to fetch incomplete purchases"]) {
+    mock.payments[operation].mockClear().mockRejectedValueOnce(new Error(message));
+    await expect(operation === "beginPurchase" ? platform.beginPurchase("sku")
+      : operation === "completePurchase" ? platform.completePurchase("token") : platform.beginSubscription("premium"))
+      .resolves.toMatchObject({status: "retryable-failure"});
+    expect(mock.payments[operation]).toHaveBeenCalledTimes(1);
+  }
 });
 
 it("keeps both incomplete-purchase attempts inside the original 15-second deadline", async () => {
