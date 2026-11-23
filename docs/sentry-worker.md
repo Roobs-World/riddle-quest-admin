@@ -9,11 +9,15 @@ The replacement project is `riddle-quest-sentry-worker`,
 `prj_Odf4SGWgXFCJGFMzp7mteljZIgbN`, on team
 `craig-beswethericks-projects-d44935d2`,
 `team_Q3bXo2jPBKdjs3tuoKLtqUe2`. The restored production deployment is
-`dpl_EBrJGvHmrTKa8Setaetcj4mZKMgN`, source `325e8616e`, at
+`dpl_H5dbHryqQCsJJkECzyycvpC1dSVW`, source `a19ef13e9`, at
 <https://riddle-quest-sentry-worker.vercel.app/api/sentry-webhook>.
 After explicit owner approval, service credentials were configured in this
 project. Live health reports `configured`, `workerEnabled: true`, and
-`autoMergeEnabled: false`. Unsigned webhooks are rejected; signed stale-preview
+`autoMergeEnabled: true`. On 2026-11-23 the owner explicitly requested automatic
+merging of repair PRs. The existing merge path was enabled through production
+configuration without changing its CI or deployment checks. Live health verified
+the enabled flag and exact source revision at 00:13 UTC. No Sentry repair PRs were
+open when it was enabled. Unsigned webhooks are rejected; signed stale-preview
 webhooks and authenticated polling check current deployment identity and block
 stale events. The first manual poll checked eight issues and launched no paid work.
 The enabled Sentry app `riddle-quest-bb1edf` already points to this endpoint.
@@ -78,13 +82,15 @@ Automatic patches are limited to 12 files and 256 KiB under package `src`, `test
 or `tests` directories and `firebase-functions/src`. Deletions, symlinks, binary
 files, dot paths and nested agent instruction files are rejected. Repairs needing
 other paths require manual work. The coding process cannot directly push or merge.
-A later poll checks the exact successful Production readiness PR head after fresh
-deployment/base checks. By default it reports `ready_for_review` and
-`releaseWorkPending: true`; it never merges. The required Jest upload, source
-branch synchronization and applicable backend release remain review work.
-Expired or stale tickets block progress. `SENTRY_WORKER_AUTO_MERGE=1` is a separate
-opt-in that requires an authorized release coordinator covering those obligations.
-Leave it unset for the restored service.
+A later poll automatically squash-merges the exact successful Production readiness
+PR head after fresh deployment/base checks. Production explicitly sets
+`SENTRY_WORKER_AUTO_MERGE=1` under the owner's 2026-11-23 instruction. Expired or
+stale tickets block merging. Without that flag the code defaults to
+`ready_for_review` and `releaseWorkPending: true`.
+
+The merge flag does not perform the required Jest upload, source-branch
+synchronization or applicable backend release. These remain separate release
+operations; no post-merge coordinator is currently configured.
 
 The service never deploys Functions, uploads or activates Jest, publishes the game,
 submits review, or marks Sentry issues resolved. Release operations remain separate.
@@ -108,7 +114,7 @@ Store secrets only in the dedicated service project. Never log their values.
 | `NODEJS_HELPERS` | Set `0` to preserve raw webhook bytes. |
 | `SENTRY_WORKER_SOURCE_SHA` | Nonsecret committed source SHA for CLI deployments without Git integration. Health prefers Vercel's Git SHA when present. |
 | `TARGET_BRANCH` | Optional, only `jest` is accepted. |
-| `SENTRY_WORKER_AUTO_MERGE` | Leave unset. Default prepares checked PRs for review. Value `1` requires separate authorization and a complete release coordinator. |
+| `SENTRY_WORKER_AUTO_MERGE` | Production is `1`, explicitly authorized on 2026-11-23. Merges only after the exact CI head and current deployment/base checks pass. Unset defaults to review-only. Release operations remain separate. |
 
 Jest access tokens expire after one hour. This service does not store or rotate
 OAuth refresh credentials. Preview repairs expire closed when their token expires;
