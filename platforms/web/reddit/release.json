@@ -14,7 +14,7 @@
     ]
   },
   "handoff": "Remote ingestion remains blocked until an exact-byte Devvit adapter or equivalent proof is available.",
-  "runbook": "docs/reddit-games-operations.md",
+  "runbook": "docs/reddit/reddit-games-operations.md",
   "displayName": "Reddit",
   "delivery": "web-target"
 }

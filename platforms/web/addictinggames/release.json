@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Submit the hosted game URL and retain build-addictinggames-review.zip if the reviewer requests files.",
-  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Addicting Games",
   "delivery": "neutral-html5",
   "artifact": "build-addictinggames-review.zip",

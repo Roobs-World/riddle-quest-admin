@@ -2,7 +2,7 @@
 set -euo pipefail
 
 runtime_dir="/tmp/riddle-agent-runtime"
-output_dir="docs/visual-parity/current"
+output_dir="docs/common/web-game/visual-parity/current"
 url="http://127.0.0.1:4173/riddle-quest/?harness=jest"
 
 mkdir -p "$runtime_dir" "$output_dir"

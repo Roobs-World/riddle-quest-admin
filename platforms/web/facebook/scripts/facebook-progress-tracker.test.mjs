@@ -3,7 +3,7 @@ import {readFileSync} from "node:fs";
 import test from "node:test";
 import {validateProgressTracker} from "./validate-facebook-progress.mjs";
 
-const tracker = readFileSync(new URL("../../../../docs/facebook-instant-games-progress.html", import.meta.url), "utf8");
+const tracker = readFileSync(new URL("../../../../docs/facebook/facebook-instant-games-progress.html", import.meta.url), "utf8");
 
 test("accepts the evidence-backed 53-task tracker", () => {
   const {updatedAt, ...counts} = validateProgressTracker(tracker);

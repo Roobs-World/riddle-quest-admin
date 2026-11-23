@@ -9,7 +9,7 @@ const repositoryDirectory = path.resolve(packageDirectory, "../../..");
 
 /** Verifies that hosted Reddit evidence names the exact retained candidate handoff. */
 export async function verifyRedditPromotion({
-  evidencePath = path.join(repositoryDirectory, "docs/evidence/reddit-hosted-evidence.json"),
+  evidencePath = path.join(repositoryDirectory, "docs/reddit/evidence/reddit-hosted-evidence.json"),
   receiptPath = path.join(packageDirectory, ".reddit-release-receipts/gated-artifact.json"),
   receiptsDirectory = path.dirname(receiptPath),
 } = {}) {

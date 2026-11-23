@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Send the demo and request written advertising, revenue-share and commerce terms before integration.",
-  "runbook": "docs/research/additional-release-targets-round-9-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-9-2026-09-21.md",
   "displayName": "OzoGames",
   "delivery": "neutral-html5",
   "artifact": "build-ozogames-review.zip",

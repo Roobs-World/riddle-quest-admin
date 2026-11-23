@@ -4,7 +4,7 @@ import path from "node:path";
 import {fileURLToPath, pathToFileURL} from "node:url";
 
 const defaultRepositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
-const defaultManifestPath = path.join(defaultRepositoryDirectory, "docs/jest-developer-console.json");
+const defaultManifestPath = path.join(defaultRepositoryDirectory, "docs/jest/jest-developer-console.json");
 const expectedGameId = "019faa68-f3ec-755d-9ab5-c887fb426801";
 const expectedSlug = "riddle-q";
 const expectedSupportEmail = "grindheadgames@gmail.com";

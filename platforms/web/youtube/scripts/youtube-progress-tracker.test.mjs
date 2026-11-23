@@ -3,7 +3,7 @@ import {readFile} from "node:fs/promises";
 import test from "node:test";
 import {validateYouTubeProgressTracker} from "./validate-youtube-playables-progress.mjs";
 
-const trackerUrl = new URL("../../../../docs/youtube-playables-progress.html", import.meta.url);
+const trackerUrl = new URL("../../../../docs/youtube/youtube-playables-progress.html", import.meta.url);
 
 test("accepts the tracked YouTube delivery contract", async () => {
   const source = await readFile(trackerUrl, "utf8");
@@ -15,7 +15,7 @@ test("accepts the tracked YouTube delivery contract", async () => {
 test("rejects false completion evidence and blockers without reasons", async () => {
   const source = await readFile(trackerUrl, "utf8");
   const falseCompletion = source.replace(
-    '"docs/youtube-playables-progress.html created with 41 validated task rows; pnpm check:youtube-progress passed 2026-08-20","","Complete"',
+    '"docs/youtube/youtube-playables-progress.html created with 41 validated task rows; pnpm check:youtube-progress passed 2026-08-20","","Complete"',
     '"TODO: prove it","","Complete"',
   );
   assert.ok(validateYouTubeProgressTracker(falseCompletion).errors.some((error) => error.includes("completed evidence")));
@@ -33,8 +33,8 @@ test("rejects missing IDs and unsupported status values", async () => {
   assert.ok(validateYouTubeProgressTracker(missingTask).errors.some((error) => error.includes("missing task Y6-05")));
 
   const unsupportedStatus = source.replace(
-    '"docs/youtube-playables-progress.html created with 41 validated task rows; pnpm check:youtube-progress passed 2026-08-20","","Complete"',
-    '"docs/youtube-playables-progress.html created with 41 validated task rows; pnpm check:youtube-progress passed 2026-08-20","","Waiting"',
+    '"docs/youtube/youtube-playables-progress.html created with 41 validated task rows; pnpm check:youtube-progress passed 2026-08-20","","Complete"',
+    '"docs/youtube/youtube-playables-progress.html created with 41 validated task rows; pnpm check:youtube-progress passed 2026-08-20","","Waiting"',
   );
   assert.ok(validateYouTubeProgressTracker(unsupportedStatus).errors.some((error) => error.includes("unsupported status")));
 });

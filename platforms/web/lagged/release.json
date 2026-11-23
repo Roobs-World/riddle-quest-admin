@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Apply with the production playable URL and retain build-lagged-review.zip for provider review.",
-  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Lagged",
   "delivery": "neutral-html5",
   "artifact": "build-lagged-review.zip",

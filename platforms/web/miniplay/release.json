@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Request credentials and written non-exclusive terms before implementing an isolated Miniplay adapter.",
-  "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-3-2026-09-21.md",
   "displayName": "Miniplay",
   "delivery": "neutral-html5",
   "artifact": "build-miniplay-review.zip",

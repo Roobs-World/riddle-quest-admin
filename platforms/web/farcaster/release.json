@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Reserve a stable domain and sign the initial association before publishing the isolated Mini App.",
-  "runbook": "docs/research/additional-release-targets-round-5-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-5-2026-09-21.md",
   "displayName": "Farcaster Mini Apps",
   "delivery": "neutral-html5",
   "artifact": "build-farcaster-mini-app-review.zip",

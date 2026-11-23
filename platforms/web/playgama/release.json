@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Review partner syndication overlap before implementing the isolated Playgama Bridge adapter.",
-  "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-html5-release-targets-2026-09-21.md",
   "displayName": "Playgama",
   "delivery": "neutral-html5",
   "artifact": "build-playgama-review.zip",

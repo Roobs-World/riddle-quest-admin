@@ -24,9 +24,9 @@ async function filesBelow(root, directory = root) {
 }
 
 await mkdir(path.join(output, "marketing"), {recursive: true});
-await copyFile(path.join(repository, "docs/facebook-assets/icon-1024.png"), path.join(output, "marketing/icon.png"));
-await copyFile(path.join(repository, "docs/jest-assets/riddle-quest-hero.png"), path.join(output, "marketing/horizontal.png"));
-await copyFile(path.join(repository, "docs/visual-parity/current/05-game.png"), path.join(output, "marketing/vertical.png"));
+await copyFile(path.join(repository, "docs/facebook/assets/icon-1024.png"), path.join(output, "marketing/icon.png"));
+await copyFile(path.join(repository, "docs/jest/assets/riddle-quest-hero.png"), path.join(output, "marketing/horizontal.png"));
+await copyFile(path.join(repository, "docs/common/web-game/visual-parity/current/05-game.png"), path.join(output, "marketing/vertical.png"));
 
 const allFiles = (await filesBelow(output)).filter((file) => file !== "game.json");
 let totalBytes = 0;

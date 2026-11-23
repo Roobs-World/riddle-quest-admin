@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Review renewal, sublicensing, termination and fee clauses before integrating the isolated SDK.",
-  "runbook": "docs/research/further-html5-release-targets-2026-09-21.md",
+  "runbook": "docs/common/releases/research/further-html5-release-targets-2026-09-21.md",
   "displayName": "WGPlayground",
   "delivery": "neutral-html5",
   "artifact": "build-wgplayground-review.zip",

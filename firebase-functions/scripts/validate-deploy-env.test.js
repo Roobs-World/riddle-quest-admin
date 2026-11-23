@@ -155,7 +155,7 @@ test("binds the Reddit backend command to the complete backend release unit", ()
 });
 
 test("documents an unambiguous production Functions deploy command", () => {
-  const readme = fs.readFileSync(path.resolve(__dirname, "../../readme.md"), "utf8");
+  const readme = fs.readFileSync(path.resolve(__dirname, "../../docs/common/project/README.md"), "utf8");
   assert.match(
     readme,
     new RegExp(`pnpm --dir firebase-functions run deploy --project ${PROJECT_ID}`),

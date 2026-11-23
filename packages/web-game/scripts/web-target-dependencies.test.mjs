@@ -268,9 +268,9 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
     await copyFile(path.join(repository, relative), destination);
   }
   for (const relative of [
-    'docs/facebook-assets/icon-1024.png',
-    'docs/jest-assets/riddle-quest-hero.png',
-    'docs/visual-parity/current/05-game.png',
+    'docs/facebook/assets/icon-1024.png',
+    'docs/jest/assets/riddle-quest-hero.png',
+    'docs/common/web-game/visual-parity/current/05-game.png',
     'node_modules/.modules.yaml',
   ]) {
     const destination = path.join(root, relative);

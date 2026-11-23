@@ -11,7 +11,7 @@ import {
 } from "./validate-jest-console-manifest.mjs";
 
 const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
-const manifestPath = path.join(repositoryDirectory, "docs/jest-developer-console.json");
+const manifestPath = path.join(repositoryDirectory, "docs/jest/jest-developer-console.json");
 const readManifest = async () => JSON.parse(await readFile(manifestPath, "utf8"));
 
 test("the desired Jest Console manifest matches repository assets and SDK configuration", async () => {
@@ -26,7 +26,7 @@ test("the owner-approved manifest passes strict release readiness", async () => 
 
 test("submission guidance cannot pin a historical build as the current active version", async () => {
   const readiness = await readFile(
-    path.join(repositoryDirectory, "docs/jest-submission-readiness.html"),
+    path.join(repositoryDirectory, "docs/jest/jest-submission-readiness.html"),
     "utf8",
   );
   const requiredSection = readiness.match(

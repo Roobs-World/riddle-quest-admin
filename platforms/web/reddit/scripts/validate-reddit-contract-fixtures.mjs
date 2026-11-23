@@ -25,7 +25,7 @@ export async function validateRedditContractFixtureDirectory(directory) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const directory = path.resolve(process.argv[2] ?? "docs/evidence/reddit-contracts");
+  const directory = path.resolve(process.argv[2] ?? "docs/reddit/evidence/reddit-contracts");
   const result = await validateRedditContractFixtureDirectory(directory);
   console.log(`Reddit contract fixtures passed: ${result.files} files covering ${result.types} required types`);
 }

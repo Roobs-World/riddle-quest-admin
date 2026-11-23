@@ -220,7 +220,7 @@ pause "Confirm the app slug in platforms/web/reddit/devvit.json is owned by this
 stage "Prepare platform prerequisites"
 say "Open https://developers.reddit.com/ in the authenticated owner account."
 say "Reddit submits the exact HTTP domain and products automatically during playtest/upload."
-step "Verify README.md explains why the Devvit server needs the single Firebase Functions host."
+step "Verify docs/reddit/README.md explains why the Devvit server needs the single Firebase Functions host."
 step "Keep production commerce and notifications disabled until their separate approval evidence exists."
 step "Before public review, add the privacy, deletion/contact, and owner-approved Terms URLs in app details."
 warn "A private upload requests review; it does not prove domain, product, payment, policy, or notification approval."
@@ -285,7 +285,7 @@ stage "Capture contracts and device evidence"
 say "Exercise multiple developer, moderator, regular, anonymous, inviter, invitee, buyer, and refund accounts."
 step "Capture sanitized auth, post-entry, payment, refund, realtime, and notification payloads."
 say 'Pipe each raw JSON payload through: pnpm --filter @riddle-quest/reddit-app capture:contract <type> -'
-say 'Store only sanitized output under docs/evidence/reddit-contracts, then run: pnpm --filter @riddle-quest/reddit-app validate:contracts'
+say 'Store only sanitized output under docs/reddit/evidence/reddit-contracts, then run: pnpm --filter @riddle-quest/reddit-app validate:contracts'
 step "Run inline/expanded, login reload, visibility, deletion, recovery, race, referral, and payment journeys."
 step "Repeat the required matrix on Reddit web and physical iOS and Android devices."
 warn "Never save raw secrets, session tokens, Reddit IDs, or unsanitized payment records in the repository."

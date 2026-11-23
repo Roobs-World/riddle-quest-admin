@@ -24,7 +24,7 @@ const usage = () => [
   "  pnpm release:plan",
   "",
   "The combined command verifies once, then preserves every target's own external boundary.",
-  "See docs/all-target-release.md for provider delivery behavior.",
+  "See docs/common/releases/all-target-release.md for provider delivery behavior.",
 ].join("\n");
 
 /** Runs the release command-line interface. */

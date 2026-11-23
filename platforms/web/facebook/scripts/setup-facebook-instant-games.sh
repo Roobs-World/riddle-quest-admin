@@ -247,10 +247,10 @@ pause "Press Enter after a second person has checked that the fixture set is bot
 
 stage "Evidence and tracker handoff"
 step "Store approval records, dashboard exports, network logs, device captures, and secret-version evidence outside the repository in access-controlled storage."
-step "For each P0 row, add a redacted evidence link or reproducible command and its UTC timestamp to docs/facebook-instant-games-progress.html."
+step "For each P0 row, add a redacted evidence link or reproducible command and its UTC timestamp to docs/facebook/facebook-instant-games-progress.html."
 step "Run: pnpm check:facebook-progress"
 step "Mark a row Complete only after its acceptance criteria pass. Keep P0-01 deferred until final approval, and keep any failed or absent external proof Blocked/In Progress."
-step "Before draft upload, run the exact-byte handoff documented in docs/facebook-instant-games-operations.md."
+step "Before draft upload, run the exact-byte handoff documented in docs/facebook/facebook-instant-games-operations.md."
 # ──────────────────────────────────────────────────────────────────────────
 
 finish

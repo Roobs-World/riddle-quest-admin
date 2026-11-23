@@ -11,7 +11,7 @@ test("repository documentation satisfies the Reddit operational contract", async
 
 test("audit rejects missing contract text", async () => {
   const fixture = await mkdtemp(path.join(tmpdir(), "rq-reddit-docs-"));
-  for (const relative of ["AGENTS.md", "readme.md", "docs/privacy-data-inventory.md", "docs/credential-rotation-runbook.md", "docs/reddit-games-operations.md", "docs/reddit-incident-response.md", "docs/reddit-moderation-runbook.md"]) {
+  for (const relative of ["AGENTS.md", "docs/common/project/README.md", "docs/common/security/privacy-data-inventory.md", "docs/common/security/credential-rotation-runbook.md", "docs/reddit/reddit-games-operations.md", "docs/reddit/reddit-incident-response.md", "docs/reddit/reddit-moderation-runbook.md"]) {
     await mkdir(path.dirname(path.join(fixture, relative)), {recursive: true});
     await writeFile(path.join(fixture, relative), "incomplete\n");
   }

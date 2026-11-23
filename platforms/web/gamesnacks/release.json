@@ -12,7 +12,7 @@
     ]
   },
   "handoff": "Complete the GameSnacks licensing agreement, then upload build-gamesnacks.zip in the Developer Console.",
-  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Google GameSnacks",
   "delivery": "web-target",
   "artifact": "build-gamesnacks.zip"

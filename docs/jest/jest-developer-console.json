@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "slug": "riddle-q",
+  "displayName": "Riddle-Q",
+  "publicUrl": "https://jest.com/g/riddle-q",
+  "supportEmail": "grindheadgames@gmail.com",
+  "shortDescription": "Solve multilingual riddles with Wordle-style color clues in Riddle Quest, an HTML5 word puzzle on Jest.",
+  "keywords": ["riddles"],
+  "loadingScreenMode": "manual",
+  "supportedOrientation": "both",
+  "desiredVisibility": "public",
+  "desiredReviewStatus": "approved",
+  "ownerApprovedValues": {
+    "publisherDisplayName": "Jest",
+    "privacyPolicyUrl": "https://roobsworld.com/privacy"
+  },
+  "assets": {
+    "logo": {
+      "repositoryPath": "assets/images/icon.png",
+      "sha256": "ec2c74b24655e37388d607aead335a5a32cdd76bbf0962ffcc181e89822b0354",
+      "width": 1254,
+      "height": 1254
+    },
+    "hero": {
+      "repositoryPath": "docs/jest/assets/riddle-quest-hero.png",
+      "sha256": "af5520b4e2e36b2252d2abe4cf8b51ba4d9b4aebb58ad9f7aecccde116996eac",
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "consumableSkus": [
+    "com.roobsworld.riddlequest.coinpack1",
+    "com.roobsworld.riddlequest.coinpack2",
+    "com.roobsworld.riddlequest.coinpack3",
+    "com.roobsworld.riddlequest.coinpack4",
+    "com.roobsworld.riddlequest.coinpack5",
+    "com.roobsworld.riddlequest.coinpack6"
+  ],
+  "sandboxOnlySubscriptionSkus": [
+    "com.roobsworld.riddlequest.premium.monthly"
+  ],
+  "onboardingSlugs": []
+}

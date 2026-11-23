@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Confirm UK eligibility and non-exclusive terms before building the isolated RPK wrapper or enabling services.",
-  "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-3-2026-09-21.md",
   "displayName": "Huawei Quick Game",
   "delivery": "neutral-html5",
   "artifact": "build-huawei-quick-game-review.zip",

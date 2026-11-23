@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Submit the canonical HTTPS playable after cross-origin iframe verification.",
-  "runbook": "docs/research/additional-release-targets-round-12-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-12-2026-09-21.md",
   "displayName": "Rando.gg",
   "delivery": "neutral-html5",
   "artifact": "build-rando-review.zip",

@@ -13,8 +13,8 @@ const selected = new Set(process.argv.slice(2));
 if (!selected.size) throw new Error("Specify exact development check IDs to run");
 const commands = new Map();
 const artifactPaths = new Set();
-for (const name of (await readdir(path.join(root, "docs/development-tasks"))).filter(name => name.endsWith(".json"))) {
-  const task = JSON.parse(await readFile(path.join(root, "docs/development-tasks", name), "utf8"));
+for (const name of (await readdir(path.join(root, "docs/common/development/development-tasks"))).filter(name => name.endsWith(".json"))) {
+  const task = JSON.parse(await readFile(path.join(root, "docs/common/development/development-tasks", name), "utf8"));
   for (const artifact of task.artifacts ?? []) artifactPaths.add(artifact.file);
   for (const check of task.checks ?? []) {
     if (!selected.has(check.id)) continue;

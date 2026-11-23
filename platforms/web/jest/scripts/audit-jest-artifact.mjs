@@ -30,7 +30,7 @@ if (configuredConsoleManifestPath !== undefined && !path.isAbsolute(configuredCo
   throw new Error("JEST_CONSOLE_MANIFEST_PATH must be absolute when provided");
 }
 const consoleManifest = JSON.parse(await readFile(
-  configuredConsoleManifestPath ?? new URL("../../../../docs/jest-developer-console.json", import.meta.url),
+  configuredConsoleManifestPath ?? new URL("../../../../docs/jest/jest-developer-console.json", import.meta.url),
   "utf8",
 ));
 const forbidden = [

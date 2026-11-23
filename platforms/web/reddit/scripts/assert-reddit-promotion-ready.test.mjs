@@ -6,7 +6,7 @@ import path from "node:path";
 import test from "node:test";
 
 const script = new URL("./assert-reddit-promotion-ready.mjs", import.meta.url);
-const tracker = new URL("../../../../docs/reddit-games-progress.html", import.meta.url);
+const tracker = new URL("../../../../docs/reddit/reddit-games-progress.html", import.meta.url);
 
 test("promotion guard rejects current blockers and accepts only R6-06 remaining", async () => {
   assert.throws(() => execFileSync(process.execPath, [script.pathname, tracker.pathname], {stdio: "pipe"}),

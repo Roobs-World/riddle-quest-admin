@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Submit build-y8-review.zip without external monetization, then add an isolated Y8 SDK adapter only after approval.",
-  "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-html5-release-targets-2026-09-21.md",
   "displayName": "Y8",
   "delivery": "neutral-html5",
   "artifact": "build-y8-review.zip",

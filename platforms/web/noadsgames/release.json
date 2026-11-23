@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Submit the hosted HTTPS URL or ZIP only after confirming the artifact contains no advertising code.",
-  "runbook": "docs/research/additional-release-targets-round-10-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-10-2026-09-21.md",
   "displayName": "NoAdsGames",
   "delivery": "neutral-html5",
   "artifact": "build-noadsgames-review.zip",

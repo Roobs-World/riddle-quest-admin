@@ -30,7 +30,7 @@ const game = JSON.parse(readFileSync(path.join(repository, "src/locales", locale
 /** Localized race copy used by the production fallback. */
 const race = JSON.parse(readFileSync(path.join(repository, "src/locales", locale, "race.json"), "utf8")).RaceTo10;
 /** Declared Jest listing identity. */
-const manifest = JSON.parse(readFileSync(path.join(repository, "docs/jest-developer-console.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(path.join(repository, "docs/jest/jest-developer-console.json"), "utf8"));
 /** Optional operator-exported config/notifications document. */
 const copyFile = process.env.JEST_NOTIFICATION_COPY_FILE;
 /** Source label prevents bundled-copy results being mistaken for a live configuration check. */
@@ -140,7 +140,7 @@ it("audits actual engagement and race payloads against the supplied Jest Fund ch
       "# Jest Fund notification test", "", `Locale: ${locale}. Source: ${copySource}.`, "",
       `Configured asset reference: ${assetReference || "MISSING"}.`, "",
       "Asset exists in Jest library: **UNVERIFIED**. Asset approved: **UNVERIFIED**.",
-      "No real messages were sent. SDK acceptance, approval, and delivery require the sandbox procedure in docs/jest-notification-testing.md.", "",
+      "No real messages were sent. SDK acceptance, approval, and delivery require the sandbox procedure in docs/jest/jest-notification-testing.md.", "",
       "Basic characters uses conservative printable ASCII (U+0020-U+007E); non-Latin copy needs review, not automatic removal.", "",
       "| Scenario | Identifier | Day | Title | Body | Characters | Failed checks |",
       "| --- | --- | --- | --- | --- | --- | --- |",

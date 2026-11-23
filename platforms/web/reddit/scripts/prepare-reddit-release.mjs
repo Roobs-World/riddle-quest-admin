@@ -36,7 +36,7 @@ try {
     cp(path.join(packageDirectory, "dist"), path.join(staging, "dist"), {recursive: true, dereference: false}),
     cp(path.join(packageDirectory, "devvit.json"), path.join(staging, "devvit.json")),
     cp(path.join(packageDirectory, "products.json"), path.join(staging, "products.json")),
-    cp(path.join(packageDirectory, "README.md"), path.join(staging, "README.md")),
+    cp(path.join(repository, "docs/reddit/README.md"), path.join(staging, "README.md")),
     cp(path.join(packageDirectory, "third-party-licenses.reddit.txt"), path.join(staging, "third-party-licenses.reddit.txt")),
   ]);
   await rm(archivePath, {force: true});

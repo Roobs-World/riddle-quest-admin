@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Confirm contracting eligibility and obtain Console access before building the isolated mandatory SDK adapter.",
-  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Yandex Games",
   "delivery": "neutral-html5",
   "artifact": "build-yandex-review.zip",

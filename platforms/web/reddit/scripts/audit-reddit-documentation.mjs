@@ -6,12 +6,12 @@ export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 
 const requirements = new Map([
   ["AGENTS.md", ["Jest", "Facebook Instant Games", "Reddit Devvit Web", "same-origin under `/api/*`", "Facebook-only"]],
-  ["readme.md", ["Reddit Devvit Web", "platforms/web/reddit", "docs/reddit-games-operations.md"]],
-  ["docs/privacy-data-inventory.md", ["### Reddit Devvit platform data", "reddit_<40 hex>", "Devvit Redis is not used as canonical"]],
-  ["docs/credential-rotation-runbook.md", ["REDDIT_GATEWAY_SECRET", "REDDIT_UID_SECRET", "redditGatewaySecret"]],
-  ["docs/reddit-games-operations.md", ["same-origin `/api/*`", "exchangeRedditIdentity", "release:gate", "physical iOS and Android"]],
-  ["docs/reddit-incident-response.md", ["REDDIT_DISABLED_FEATURES", "uncertain upload", "UID-secret exposure"]],
-  ["docs/reddit-moderation-runbook.md", ["not yet implemented", "must not create duplicate", "will not add chat"]],
+  ["docs/common/project/README.md", ["Reddit Devvit Web", "platforms/web/reddit", "docs/reddit/reddit-games-operations.md"]],
+  ["docs/common/security/privacy-data-inventory.md", ["### Reddit Devvit platform data", "reddit_<40 hex>", "Devvit Redis is not used as canonical"]],
+  ["docs/common/security/credential-rotation-runbook.md", ["REDDIT_GATEWAY_SECRET", "REDDIT_UID_SECRET", "redditGatewaySecret"]],
+  ["docs/reddit/reddit-games-operations.md", ["same-origin `/api/*`", "exchangeRedditIdentity", "release:gate", "physical iOS and Android"]],
+  ["docs/reddit/reddit-incident-response.md", ["REDDIT_DISABLED_FEATURES", "uncertain upload", "UID-secret exposure"]],
+  ["docs/reddit/reddit-moderation-runbook.md", ["not yet implemented", "must not create duplicate", "will not add chat"]],
 ]);
 
 export async function auditDocumentation(base = root) {

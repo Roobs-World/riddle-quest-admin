@@ -778,7 +778,7 @@ try {
     JEST_ARCHIVE_PATH: archivePath,
     JEST_ARTIFACT_AUDIT_SCRIPT: trustedScript("audit-jest-artifact.mjs"),
     JEST_BUILD_DIRECTORY: releaseBuildDirectory,
-    JEST_CONSOLE_MANIFEST_PATH: join(immutableSourceDirectory, "docs", "jest-developer-console.json"),
+    JEST_CONSOLE_MANIFEST_PATH: join(immutableSourceDirectory, "docs", "jest", "jest-developer-console.json"),
     JEST_GATE_RECEIPT_PATH: gateReceiptPath,
     JEST_PACKAGE_DIRECTORY: immutablePackageDirectory,
     JEST_RECEIPT_DIRECTORY: receiptDirectory,

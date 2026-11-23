@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "artifact": {"sha256": "REPLACE_WITH_64_HEX", "sourceCommit": "REPLACE_WITH_40_HEX", "version": "0.0.0-rc.1", "receipt": "docs/common/web-game/evidence/reddit-artifact.json"},
+  "deployment": {"project": "riddle-quest-ec2b2", "verifiedAt": "2026-08-20T20:00:00.000Z", "receipt": "docs/common/web-game/evidence/reddit-firebase.json", "functions": ["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay", "redditProfileRetentionScheduler"], "rules": ["firestore", "firestore-indexes", "realtime-database", "storage"]},
+  "clients": [
+    {"client": "web", "physical": false, "status": "pass", "testedAt": "2026-08-20T20:00:00.000Z", "roles": ["developer", "moderator", "regular", "anonymous"], "journeys": ["inline-expanded", "login-reload", "visibility", "payments", "deletion", "recovery"], "evidence": ["docs/common/web-game/evidence/reddit-web.json"]},
+    {"client": "ios", "physical": true, "status": "pass", "testedAt": "2026-08-20T20:00:00.000Z", "roles": ["developer", "moderator", "regular", "anonymous"], "journeys": ["inline-expanded", "login-reload", "visibility", "payments", "deletion", "recovery"], "evidence": ["docs/common/web-game/evidence/reddit-ios.json"]},
+    {"client": "android", "physical": true, "status": "pass", "testedAt": "2026-08-20T20:00:00.000Z", "roles": ["developer", "moderator", "regular", "anonymous"], "journeys": ["inline-expanded", "login-reload", "visibility", "payments", "deletion", "recovery"], "evidence": ["docs/common/web-game/evidence/reddit-android.json"]}
+  ],
+  "approvals": [
+    {"approval": "fetch", "status": "approved", "reviewedAt": "2026-08-20T20:00:00.000Z", "evidence": "docs/common/web-game/evidence/reddit-fetch.json"},
+    {"approval": "payments", "status": "approved", "reviewedAt": "2026-08-20T20:00:00.000Z", "evidence": "docs/common/web-game/evidence/reddit-payments.json"},
+    {"approval": "policy", "status": "approved", "reviewedAt": "2026-08-20T20:00:00.000Z", "evidence": "docs/common/web-game/evidence/reddit-policy.json"},
+    {"approval": "security", "status": "approved", "reviewedAt": "2026-08-20T20:00:00.000Z", "evidence": "docs/common/web-game/evidence/reddit-security.json"}
+  ]
+}

@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const trackerPath = process.argv[2]
   ? path.resolve(process.cwd(), process.argv[2])
-  : path.join(repository, "docs/reddit-games-progress.html");
+  : path.join(repository, "docs/reddit/reddit-games-progress.html");
 const source = fs.readFileSync(trackerPath, "utf8");
 const statuses = new Set(["Not Started", "In Progress", "Blocked", "Complete"]);
 const taskLines = source.split("\n").filter((line) => /^\s*t\("R\d-\d{2}"/.test(line));

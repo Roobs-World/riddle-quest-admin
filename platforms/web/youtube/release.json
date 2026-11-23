@@ -14,7 +14,7 @@
     ]
   },
   "handoff": "Upload build-youtube.zip and retain its manifest and test report for manual certification.",
-  "runbook": "docs/youtube-playables-operations.md",
+  "runbook": "docs/youtube/youtube-playables-operations.md",
   "displayName": "YouTube",
   "delivery": "web-target"
 }

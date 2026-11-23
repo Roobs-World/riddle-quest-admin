@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Create the provider game record, obtain its GameId, then integrate and validate the SDK before activation.",
-  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "GameMonetize",
   "delivery": "neutral-html5",
   "artifact": "build-gamemonetize-review.zip",

@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Send the canonical HTTPS playable and review ZIP through the official contact route.",
-  "runbook": "docs/research/additional-release-targets-round-11-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-11-2026-09-21.md",
   "displayName": "YalGames",
   "delivery": "neutral-html5",
   "artifact": "build-yalgames-review.zip",

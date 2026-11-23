@@ -1,0 +1,398 @@
+# Reddit Games operations
+
+As of 16 October 2026, the hourly Reddit profile-retention schedule is removed. Social reads still suppress logically expired profiles, and the bounded operator retention command remains available. Untouched expired records are not guaranteed automatic physical deletion. Analytics does not perform this deletion.
+
+For first-time app/community provisioning, secrets, a non-promotable private
+playtest, and the sandbox Firebase deployment, run the resumable guarded wizard:
+
+```bash
+./platforms/web/reddit/scripts/setup-reddit-games.sh
+```
+
+It requires confirmation before external mutations and never writes either Reddit
+Firebase secret to an environment file or repository. Its `playtest:upload` is a
+bootstrap artifact only; it is not an immutable production candidate or promotion
+receipt.
+
+Last updated: 2026-10-02
+
+## Release state
+
+Reddit is a separate compile-time target packaged as a Devvit Web app. Private
+prerelease `0.0.1.23` is installed in `r/riddle_quest_dev`; it still calls the
+denied Cloud Functions hostname. The current local package calls the first-party
+`www.roobsworld.com` proxy. The public route now passes the unsigned-request
+check, returning JSON `signature-required`; authenticated forwarding and Reddit's
+host approval still require hosted evidence. Run
+`pnpm --filter @riddle-quest/reddit-app check:hosted-gateway` before a private upload.
+Production approval and publication are not complete. HTTP-fetch
+approval for the current host, payment eligibility, policy review, multi-role
+playtests, physical iOS/Android tests, hosted evidence, and exact-artifact release
+verification remain outstanding. Notifications remain disabled unless separately
+approved. See [the current review check](../common/releases/evidence/facebook-reddit-review-followup-2026-10-01.md).
+
+The game Terms are now published at https://roobsworld.com/riddle-quest/terms.
+The Reddit app details contain that Terms URL and the general website Privacy
+Policy URL. Both public pages now include Reddit game coverage and return HTTP
+200; publication does not establish Reddit approval. Current local Gold
+checkout coverage is recorded in [the currency verification](evidence/reddit-gold-2026-09-19.md).
+
+For another private bootstrap upload, choose an unused numeric prerelease version
+from the app dashboard and pass it explicitly:
+
+```bash
+pnpm --filter @riddle-quest/reddit-app playtest:upload <major.minor.patch.prerelease>
+```
+
+Devvit 0.14.1 computes `upload --bump prerelease` from the latest stable version,
+ignoring existing prereleases, which caused a duplicate-version failure on
+2026-09-17. The wrapper validates the package and requires an explicit prerelease;
+it never retries an uncertain upload. Inspect that exact version with
+`devvit view riddle-quest@<version>` before deciding whether to retry. Upload does
+not update an existing installation: use `devvit install <test-subreddit>
+riddle-quest@<version>` to install the confirmed private version.
+
+The private uploader now holds `.reddit-release-receipts/playtest.lock` through
+validation and transmission. It persists an immutable attempt before invoking
+Devvit and retains the CLI outcome separately. An uncertain or interrupted attempt
+blocks every later version, and an attempted version is never reused. A failed
+local package check creates no attempt. These records are private bootstrap
+evidence, not an immutable production candidate or proof of installed bytes.
+
+After inspecting the exact provider version, record its authoritative outcome
+without uploading anything:
+
+```bash
+pnpm --filter @riddle-quest/reddit-app playtest:resolve <version> accepted --confirm-version <version>
+```
+
+Use `confirmed-absent` only when Reddit definitively confirms no such version was
+created; a timeout, authentication failure or unavailable dashboard does not prove
+absence. Resolution appends a separate immutable record and preserves the original
+attempt and uncertain outcome. Choose a new unused version for the next upload.
+If an interrupted process leaves the lock behind, inspect its recorded PID and
+confirm the owning process is terminal before removing only `playtest.lock`.
+The retained attempt still requires outcome resolution. Do not delete journal
+records to bypass the barrier; malformed or orphaned evidence needs investigation.
+See [private upload recovery evidence](evidence/reddit-playtest-recovery-2026-10-01.md).
+
+## Canonical game-post creation
+
+Install, upgrade and moderator requests share the installation-local Redis key
+`riddle-quest:canonical-post:v1`. Existing `t3_` references remain compatible. New
+creation atomically claims that key with `creation-pending:v1` using the real
+Devvit SDK's `set(..., {nx: true})`, then replaces the marker with Reddit's returned
+post ID after a successful submission. There is no process-local lock or expiry
+that could authorize a duplicate submission after a timeout.
+
+An overlapping request may fail temporarily while the winner is working; retrying
+after successful completion reuses the retained post. A pending or corrupt record,
+an unavailable retained post, or an ambiguous provider/Redis response does not
+authorize replacement. Inspect the exact installation and Reddit post outcome.
+For an uncertain submission, recover the confirmed existing `t3_` reference through
+a reviewed installation-scoped maintenance action. Clear a pending marker only
+after Reddit positively confirms no post was created and every original execution
+is terminal. An unavailable dashboard or a timeout does not prove absence. This
+repository exposes no automatic reset or public recovery endpoint; provider
+inspection and any maintenance action remain operator work. Never roll back to
+the old implementation while a pending marker exists: it deletes non-`t3_` values
+and can submit another post.
+
+The [canonical post test](evidence/reddit-canonical-post-2026-10-01.md) records the
+three-submission reproduction and local concurrency/failure checks. Hosted
+install/upgrade/moderator acceptance remains required before review.
+
+## Trust and network boundary
+
+The webview contains only the Reddit adapter and calls same-origin `/api/*` routes.
+It must not contain the Firebase browser SDK, JestSDK, FBInstant, private credentials,
+or external browser endpoints. The request-scoped Devvit server obtains trusted
+`userId`, post, subreddit, and app context, then signs one-operation assertions to
+`www.roobsworld.com/api/reddit-gateway/*`. That exact hostname is the only
+external domain in `devvit.json`; Reddit approval of it is required before release.
+
+The [2 October gateway transport check](evidence/reddit-gateway-transport-2026-10-02.md)
+binds all four existing function routes to that fixed HTTPS prefix. Redirects are
+not followed, actual streamed response bytes are capped at 64 KiB before retention,
+and invalid UTF-8/JSON is rejected. One ten-second deadline covers headers and
+body reads; late responses and stalled cancellation cannot extend it. The server
+returns fixed diagnostics without exposing signed assertions or provider bodies,
+preserves valid JSON/error statuses, and never retries a transport attempt.
+A timeout is not proof that a remote economic or account mutation failed.
+The complete package's 51 tests pass on Node 24 and pinned Node 22, with all six
+isolated client builds passing. Hosted signed forwarding remains unverified.
+
+The [browser redirect check](evidence/reddit-browser-redirects-2026-10-02.md) also
+rejects redirects at all three browser Fetch sites before another origin or an
+unrelated route can receive a request. Native HTTP and built-artifact Chromium
+regressions verify zero destination requests; ordinary responses retain their
+existing schemas and single-attempt behavior. A failed request does not establish
+whether its initial server mutation committed. All 76 Reddit adapter tests and
+149 Jest SDK/purchase/notification/matchmaking tests pass; Facebook/Jest bytes and
+self-contained target content remain unchanged. All six private artifact audits
+and the full Devvit package contract pass. Hosted approval remains separate.
+
+Gateway assertions must remain fresh through replay-record persistence. The
+[1 October verifier check](evidence/reddit-assertion-expiry-2026-10-01.md) rejects
+requests that expire while their nonce is being written. A successfully written
+nonce remains spent after that rejection; obtain a fresh server-signed request
+rather than reusing the old assertion. Physical nonce cleanup remains separate
+from the 60-second logical acceptance window.
+
+The exact signed `gameplay.presence.poll` operation now has a server-owned quota
+of 60 requests per user per UTC minute. This supports the required two-second race
+polling plus bounded state changes and consent revocation. Other operations
+retain their 20-request limit except Live PvP: its background update budget and
+valid player-command budget are independently capped at 120 per minute. Requests are still signature-verified and replay
+checked before quota consumption, and the larger budget cannot be selected by a
+browser payload. The [presence quota check](evidence/reddit-presence-quota-2026-10-01.md)
+records the reproduced failure and passing emulator tests. This backend fix is
+prepared locally and needs the complete reviewed deployment unit before hosted
+testing can prove the behavior. Rolling back to the old 20-request implementation
+also requires handling any existing polling bucket above 20; the old validator
+rejects those records even after the minute boundary until they are removed.
+
+
+The [2 October live-action quota evidence](evidence/reddit-live-action-quota-2026-10-02.md)
+reproduces player commands refused after exhausted polling. Valid signed guesses,
+hints, skips and leaving now use a separate bounded internal quota; malformed
+inputs retain the original budget. In-flight same-row updates are serialized
+within each runtime while Firestore transactions remain the distributed authority.
+The existing 64-request presence contention case passes with its cap intact;
+failed turns release the queue. No client SDK, public operation or retention
+change is required. Ship the reviewed backend unit before hosted verification.
+
+The [1 October backend metadata review](../common/firebase-functions/evidence/provider-backend-readiness-2026-10-01.md)
+found no deployed TTL on `redditGatewayNonces.expiresAt` or
+`redditGatewayRateLimits.expiresAt`. Both unindexed policies are now committed for
+the complete reviewed deployment unit. Nonce deadlines are 24 hours after issue;
+quota deadlines are 24 hours after the current one-minute reset. Verify policy
+activation and actual asynchronous deletion after rollout. The nested Reddit
+profile cache now has a prepared field-only cleanup scheduler; never apply a TTL
+to its enclosing `providerIdentities` record. See the profile cleanup runbook below.
+
+Firebase is the authoritative global identity, profile, economy, riddle, and race
+store. Devvit Redis may cache installation/post state but must never be the canonical
+balance, receipt, entitlement, or global account store. Logged-out players may use
+local solo play only; valuable persistence and social actions require trusted Reddit
+identity. Login reloads the post, so guest state must be preserved before prompting.
+
+Devvit owns the webview CSP. Keep client requests same-origin and validate the built
+package with `pnpm --filter @riddle-quest/reddit-app validate`; do not weaken the boundary
+with a permissive HTML meta policy.
+
+## Build and local verification
+
+```bash
+pnpm --filter @riddle-quest/portal build:reddit
+pnpm --filter @riddle-quest/reddit-app build
+pnpm --filter @riddle-quest/reddit-app validate
+pnpm --filter @riddle-quest/reddit-app playtest
+```
+
+The package must retain the inline localized launch entry, regular game entry, CJS
+server bundle, generated licenses, reciprocal SDK/endpoint audit, critical-load
+budget below 5 MB, and individual files below 100 MB. Browser evidence must use the
+injected Reddit harness; Devvit playtest and uploaded evidence require multiple role
+accounts on Reddit web and physical iOS and Android devices.
+
+## Secrets and configuration
+
+Only initial provisioning for a genuinely account-free app generates unrelated
+high-entropy values for `REDDIT_GATEWAY_SECRET` and `REDDIT_UID_SECRET`. Store both in Firebase Secret Manager. The UID key is fixed
+account identity material: current code has no key-version fallback or migration.
+Never rotate it in place for existing accounts or deleted-generation mappings.
+The setup wizard now checks existing UID metadata and preserves that key; initial
+provisioning requires a separately reviewed account-free setup. Store only the matching
+gateway value in the Devvit global secret setting `redditGatewaySecret`; the UID
+secret never leaves Firebase. Never reuse historical Meta/Jest credentials.
+Set the non-secret Devvit global setting `redditEnvironment` to exactly `sandbox`
+for playtest builds or `production` for reviewed releases. Referral requests fail
+closed when it is missing or invalid; the browser cannot override it.
+
+`REDDIT_DISABLED_FEATURES` is the provider-scoped emergency deny list.
+`REDDIT_APPROVED_FEATURES` is a second gate for approval-bound `commerce` and
+`notifications`. An approval flag does not substitute for code, contract fixtures,
+review, or device evidence. Ads are unsupported and must remain absent.
+
+`REDDIT_COMMERCE_SANDBOX_ENABLED` must be explicitly `0` or `1`. A value of `1`
+accepts commerce only when the signed Devvit session identifies the environment as
+`sandbox`; it never enables production purchases. Production commerce additionally
+requires `commerce` in `REDDIT_APPROVED_FEATURES`.
+
+## Firebase deployment unit
+
+The Reddit gateway depends on `exchangeRedditIdentity`, `deleteRedditAccount`,
+`redditStorage`, and `redditGameplay`. The supporting
+`redditProfileRetentionScheduler` is the fifth required Reddit export. Its indexed
+field cleanup must ship with the complete reviewed backend release. Before uploading the Devvit package, run the
+full Functions type, lint, unit/integration, rules, and deployment preflight, set the
+two Reddit secrets, and deploy every new or changed Function in one reviewed release.
+Record the project, revision, source commit, command output, and post-deploy probes.
+Do not deploy a public gateway before the Devvit app identity and matching secret are
+configured; an unusable public endpoint is not completion evidence.
+
+## Hosted contract fixtures
+
+Live PvP first-win referrals now use the existing `racePerformanceOutbox` event
+and bounded recovery queue. A `reddit_live` receipt and immutable private match
+binding commit with the normal win grant. Delivery rechecks provider ownership,
+the private human winner, committed reward, retention, account deletion and the
+Reddit referral switch before the idempotent 100/100 ledger. A solo or multiplayer
+win can settle a previously verified binding; established multiplayer accounts
+cannot create a new binding. Facebook keeps its own domain/binding/ledger, and
+Jest creates neither live referral receipt. Deploy the producer and consumer
+together and collect real signed post-entry/first-win acceptance; local emulator
+and injected browser checks do not establish hosted approval. See
+[Live PvP referral evidence](evidence/reddit-live-referrals-2026-10-02.md).
+
+Capture each real `auth`, `payment`, `refund`, `post-entry`, `realtime`, and
+`notification` JSON payload without writing its raw bytes to the repository. Pipe
+it through `pnpm --filter @riddle-quest/reddit-app capture:contract <type> -` and store
+only the resulting sanitized JSON under `docs/reddit/evidence/reddit-contracts`. The
+capture command strips credentials, provider IDs, profiles, and URL query data and
+records a source digest and timestamp. Run
+`pnpm --filter @riddle-quest/reddit-app validate:contracts`; the immutable release gate
+will fail until all six provenance-bound fixture types pass validation.
+
+Create the immutable candidate only after the contract fixtures pass:
+
+```bash
+pnpm release:reddit
+```
+
+The command always rebuilds the Reddit client and server from the same clean commit;
+it never stages an older ignored client artifact. Remote ingestion is currently
+blocked because the installed Devvit CLI rebuilds and has no documented prebuilt
+archive input. Do not treat the bootstrap playtest upload as release evidence.
+
+After an approved exact-byte ingestion path exists and the retained candidate has
+been reviewed, populate `docs/common/web-game/evidence/reddit-hosted-evidence.json` from the adjacent
+example. `pnpm --filter @riddle-quest/reddit-app release:promotion` requires the immutable
+artifact hash/version/commit, proves the hash and commit match the gated receipt and
+read-only handoff, validates the complete five-Function and four-rules Firebase
+deployment, fetch/payment/policy/security approvals, all four roles, all six critical
+journeys, and passing Reddit web plus physical iOS and Android evidence.
+
+## Deletion and privacy
+
+In-game deletion is signed by trusted Devvit context. Firebase advances the provider
+account generation before cleanup, removes the generation's account data and cached
+profile, and makes stale retries unable to delete a recreated generation. A fresh
+explicit start creates the next generation with 300 coins. Provider identity records
+are server-readable only. Reddit ID and sanitized profile cache never enter browser
+responses; the profile cache expires after 24 hours and accepts only approved HTTPS
+Reddit image hosts. See `privacy-data-inventory.md` for retention caveats.
+
+## Reddit profile cleanup
+
+The [1 October retention evidence](evidence/reddit-profile-retention-2026-10-01.md)
+records the new cleanup and emulator verification. The scheduler is prepared locally
+and runs at minute 29 of each UTC hour after deployment. It selects at most 50
+expired Reddit caches, re-reads each mapping in a transaction, and removes only
+`redditProfile`. Concurrent refreshes, deleted mappings, account generation, raw
+provider identity, Firebase UID and every other provider remain intact.
+
+Before rollout, verify the `providerIdentities` composite index for ascending
+`provider` and ascending `redditProfile.expiresAt` is READY. The emulator does not
+prove production index readiness. Record the scheduler's deployed revision and
+actual field removal in the reviewed release receipt; the scheduler is absent
+from the 1 October deployed-function listing. The initial metadata index read was
+rejected; the follow-up using the API-supported default page size completed and
+confirmed the required index is absent. See the [access and index review](../common/firebase-functions/evidence/provider-iam-readiness-2026-10-01.md).
+
+The operator command defaults to a read-only dry run and requires an explicit
+project. Apply requires the same project confirmation and accepts no clock override:
+
+```bash
+pnpm --dir firebase-functions reddit:profiles:retention --project riddle-quest-ec2b2
+pnpm --dir firebase-functions reddit:profiles:retention --project riddle-quest-ec2b2 --apply --confirm-project riddle-quest-ec2b2 --limit 50
+```
+
+Only aggregate counts are emitted. An `invalid` count requires investigation of
+malformed state or failed transactions; do not discard a mapping to clear a cache.
+`complete: false` means the bounded page has a backlog or failure. Monitor those
+counts and repeat bounded apply pages as required. The 50-record operator-page budget
+makes no exact physical deletion deadline; social reads already suppress the cache
+at its 24-hour logical expiry. Missing/malformed expiry fields need separate
+operator inspection. Never configure identity/account TTL or recreate missing rows.
+
+## Release and retry barrier
+
+Run `pnpm release:reddit` only from a clean committed worktree. It creates a
+SHA-256/commit-bound receipt and read-only candidate handoff, then stops. The legacy
+package `release:gate` delegates to the same candidate command for one migration
+cycle. Package-level `release:upload` and `release:publish` commands fail closed: the
+installed Devvit upload builds again, and `devvit publish` creates and uploads a new
+version rather than proving promotion of reviewed bytes.
+
+No production transmission command is currently approved. Before adding one, it must
+verify the exact read-only handoff, create the existing transmitting barrier before
+calling Devvit, and preserve ambiguous outcomes until Reddit gives an authoritative
+result. Publication must promote the already reviewed exact version rather than
+create another version. Until those capabilities are proven, Reddit remote release is
+blocked. Roll back a future release by disabling affected features and selecting a
+previously verified version, never by editing accepted bytes.
+
+## Monitoring and incidents
+
+Follow `reddit-incident-response.md`. Watch structured gateway failures, signature
+rejections, rate-limit spikes, deletion retries, upstream latency/timeouts, and
+unexpected capability exposure. Logs must not contain raw Reddit IDs, assertions,
+gateway secrets, profile names/photos, guesses, or purchase material.
+
+
+## Live account-deletion verification
+
+The [2 October live-data cleanup evidence](../common/hosted/evidence/live-race-deletion-2026-10-02.md)
+covers real server matchmaking, deletion and surviving-player economy/referrals.
+The guard and lease drain precede the live-data sweep. Searching tickets, active
+pointers, queue references, copied match identity/progress, invitations, challenge
+push metadata and game-owned board entries are covered. Unfinished matches close
+without a new grant; already committed surviving results remain intact. An
+anonymous cancelled creator deck preserves independent Facebook score validation.
+
+Ship the live participant index, cleanup, native score validator and Firestore
+TTL/collection-group policies together. Historical unindexed records are paged;
+missing root expiries are restored from their original source deadline or accepted
+start, without extending retention from deletion time. Verify deployed indexes,
+TTL readiness and an actual deletion retry in the reviewed backend release.
+The emulator does not prove provider-side erasure or message/score retraction.
+
+The later [Facebook score recovery regression run](../facebook/evidence/facebook-live-score-recovery-2026-10-02.md)
+also passes the existing Reddit live referral ledger, deletion and shared gameplay
+cases. Facebook tournament recording and referral switches are independent;
+Reddit retains its own referral switch and hash domain. The fresh Reddit artifact
+passes its explicit provider-boundary audit and injected browser journey.
+
+
+The [Reddit Live PvP tournament follow-up](evidence/reddit-live-tournaments-2026-10-02.md)
+restores the authenticated daily board and eligible private live scoring for both
+winning seats. The existing winner outbox records before referral settlement and
+acknowledgement, with independently controlled tournament/referral switches,
+full frozen-source validation, original expiry and no additional currency grant.
+The signed HTTP recorder now returns only strict public fields and holds the
+same account-operation lease as delivery; deletion drains and sweeps its entry.
+The shared board contains no SDK; Facebook native presentation stays in its own
+adapter. Real cross-provider/gateway/deletion checks pass 119 cases, both injected
+provider browsers and all six isolated artifact audits pass. Ship the reviewed
+backend/client unit and verify hosted signed forwarding and device acceptance.
+
+The [recent Live PvP history follow-up](../common/hosted/evidence/live-race-history-2026-10-02.md)
+restores Activity alongside Play and the game-owned Tournaments board. The
+browser reads only `/api/game/race.live.history`; the trusted signed gateway
+returns a bounded locale-bound public projection without rival account IDs,
+answers, copied stale identity or new grants. Owner deletion rejects the read;
+bilateral blocks and unavailable accounts retire opponent presentation/actions.
+History uses the existing default gateway budget, with no additional host or
+Firebase browser SDK. Local emulator/browser checks and all six isolated builds
+pass. The [live rematch follow-up](../common/hosted/evidence/live-race-rematches-2026-10-03.md)
+adds a prior-human reserved lobby and explicit in-game inbox acceptance through
+the existing signed same-origin join/inbox/preview routes and account-operation
+lease. It adds no provider notification outbox or browser SDK. Stable retries,
+strict public projections, bilateral blocks and real cleanup for either deleting
+player pass in 64 emulator cases; both provider browser journeys, six selected
+Jest regressions and all six isolated builds/audits pass. Hosted signed forwarding,
+index readiness, deployed-source equivalence and device acceptance remain pending.
+
+For the shared presence mirror rollout, use the [presence permission reconciliation runbook](../common/hosted/presence-visibility-reconciliation.md) after the matching backend/rules are staged and older writers have drained. Its local verification does not establish hosted inventory coverage or acceptance.

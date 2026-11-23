@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Send the playable build and accept only a compatible non-exclusive publishing offer.",
-  "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-3-2026-09-21.md",
   "displayName": "Kizi",
   "delivery": "neutral-html5",
   "artifact": "build-kizi-pitch.zip",

@@ -4,7 +4,7 @@ import process from "node:process";
 import {fileURLToPath} from "node:url";
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
-const DEFAULT_TRACKER = path.join(repository, "docs/youtube-playables-progress.html");
+const DEFAULT_TRACKER = path.join(repository, "docs/youtube/youtube-playables-progress.html");
 const STATUSES = new Set(["Not Started", "In Progress", "Blocked", "Complete"]);
 const EXPECTED_IDS = [
   ...Array.from({length: 6}, (_, index) => `Y0-${String(index + 1).padStart(2, "0")}`),

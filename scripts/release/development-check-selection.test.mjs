@@ -11,11 +11,11 @@ const repository=fileURLToPath(new URL('../..',import.meta.url));
 test('a selected command retains artifact evidence for tasks using another alias',async()=>{
  const root=await mkdtemp(path.join(tmpdir(),'development-check-alias-'));
  try{
-  await mkdir(path.join(root,'docs/development-tasks'),{recursive:true});
+  await mkdir(path.join(root,'docs/common/development/development-tasks'),{recursive:true});
   await mkdir(path.join(root,'artifacts'),{recursive:true});
   const args=['-e','process.stdout.write(process.env.CHECK_SELECTION_MESSAGE)'];
   for(const name of ['first','second']){
-   await writeFile(path.join(root,'docs/development-tasks',name+'.json'),JSON.stringify({taskId:name,checks:[{id:name,executable:process.execPath,args}],artifacts:[{file:'artifacts/'+name+'.json'}]}));
+   await writeFile(path.join(root,'docs/common/development/development-tasks',name+'.json'),JSON.stringify({taskId:name,checks:[{id:name,executable:process.execPath,args}],artifacts:[{file:'artifacts/'+name+'.json'}]}));
    await writeFile(path.join(root,'artifacts',name+'.json'),JSON.stringify({name}));
   }
   let source=await readFile(path.join(repository,'scripts/release/verify-development-checks.mjs'),'utf8');

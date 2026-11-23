@@ -54,7 +54,7 @@ export function validateProgressTracker(source, {requireComplete = false} = {}) 
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
-  const path = fileURLToPath(new URL("../../../../docs/facebook-instant-games-progress.html", import.meta.url));
+  const path = fileURLToPath(new URL("../../../../docs/facebook/facebook-instant-games-progress.html", import.meta.url));
   const result = validateProgressTracker(readFileSync(path, "utf8"), {
     requireComplete: process.argv.includes("--require-complete"),
   });

@@ -14,7 +14,7 @@
     ]
   },
   "handoff": "Upload only the printed read-only archive to Meta as a non-production Draft.",
-  "runbook": "docs/facebook-instant-games-operations.md",
+  "runbook": "docs/facebook/facebook-instant-games-operations.md",
   "displayName": "Facebook",
   "delivery": "web-target"
 }

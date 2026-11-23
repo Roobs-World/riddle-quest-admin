@@ -13,7 +13,7 @@
     ]
   },
   "handoff": "Obtain official SDK documentation and confirm its ad behavior is compatible before isolated integration.",
-  "runbook": "docs/research/additional-release-targets-round-4-2026-09-21.md",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-4-2026-09-21.md",
   "displayName": "Shockwave",
   "delivery": "neutral-html5",
   "artifact": "build-shockwave-review.zip",

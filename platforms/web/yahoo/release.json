@@ -12,7 +12,7 @@
     ]
   },
   "handoff": "Use builds/yahoo with the Yahoo partner delivery tooling.",
-  "runbook": "docs/netflix-yahoo-candidate-builds.md",
+  "runbook": "docs/common/releases/netflix-yahoo-candidate-builds.md",
   "displayName": "Yahoo",
   "delivery": "web-target"
 }
