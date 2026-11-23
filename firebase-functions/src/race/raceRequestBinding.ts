@@ -1,12 +1,12 @@
 import {createHash} from "node:crypto";
 import {isDeepStrictEqual} from "node:util";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "../../../src/core/game/index.js";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {AbandonRaceRunResponseSchema, SubmitRaceGuessResponseSchema, RequestRaceHintResponseSchema, SkipRaceRiddleResponseSchema,
   type AbandonRaceRunRequest, type SubmitRaceGuessRequest, type RequestRaceHintRequest, type SkipRaceRiddleRequest,
   type StartRaceRunRequest, type PublishRaceChallengeRequest, type ReserveRaceInviteRequest, type CancelRaceInviteRequest,
-  type RaceRunView} from "@riddle-quest/core/race";
+  type RaceRunView} from "../../../src/core/race/index.js";
 import {raceRules, type RaceRunRecord} from "./raceEngine";
 import {raceTimelineAgrees} from "./raceStoredTimeline";
 

@@ -112,9 +112,8 @@ has its OpenAI key; the wrapper has a scoped, expiring repair ticket. The runner
 returns a bounded UTF-8 source patch and summary to the service. The service
 rechecks authority and source, then creates GitHub blobs/tree/commit and a PR.
 
-Automatic patches are limited to 12 files and 256 KiB under `packages/core`,
-`packages/solo`, `packages/hosted` or `packages/web-game` in their `src`, `test`
-or `tests` directories, shared `firebase-functions/src`, and
+Automatic patches are limited to 12 files and 256 KiB under `src/core`,
+`src/solo`, `src/hosted`, or `src/web`, shared `firebase-functions/src`, and
 `platforms/web/jest` or `platforms/web/facebook` in their `src`, `server` or
 `scripts` directories. Native and every other provider root are rejected.
 Deletions, symlinks, binary
@@ -145,7 +144,7 @@ readiness workflow runs the complete browser suite once, without a shard matrix.
 The plan command can still list one shard without launching it:
 
 ```sh
-pnpm --filter @riddle-quest/portal exec node scripts/run-jest-facebook-browser.mjs --shard 1/4 --dry-run
+pnpm exec node scripts/web/run-jest-facebook-browser.mjs --shard 1/4 --dry-run
 ```
 
 Only the two production artifacts are built and passed to HTML validation.

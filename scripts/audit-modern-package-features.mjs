@@ -1,18 +1,17 @@
 import {readFile} from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [viteEntry, webTargetViteConfig, portalPackage, portalJest, coreJest, functionsJest, functionsPackage,
+const [viteEntry, webTargetViteConfig, projectPackage, projectJest, functionsJest, functionsPackage,
   openAIService, raceSchemas] =
   await Promise.all([
-    read("packages/web-game/vite.config.ts"),
-    read("packages/web-game/webTargetViteConfig.ts"),
-    read("packages/web-game/package.json"),
-    read("packages/web-game/jest.config.cjs"),
-    read("packages/core/jest.config.js"),
+    read("vite.config.ts"),
+    read("scripts/web/build/webTargetViteConfig.ts"),
+    read("package.json"),
+    read("jest.config.cjs"),
     read("firebase-functions/jest.config.js"),
     read("firebase-functions/package.json"),
     read("firebase-functions/src/riddles/openaiService.ts"),
-    read("packages/core/src/race/raceSchemas.ts"),
+    read("src/core/race/raceSchemas.ts"),
   ]);
 
 const failures = [];
@@ -45,14 +44,13 @@ requireText(
   'devtools: command === "serve"',
   "Vite 8 integrated development tools must remain enabled for development without affecting production builds.",
 );
-requireText(portalPackage, '"babel-plugin-react-compiler"', "The stable React Compiler must remain pinned.");
+requireText(projectPackage, '"babel-plugin-react-compiler"', "The stable React Compiler must remain pinned.");
 
 for (const [name, config] of [
-  ["portal", portalJest],
-  ["core", coreJest],
+  ["shared source", projectJest],
   ["functions", functionsJest],
 ]) {
-  requireText(config, 'globalsCleanup: "on"', `Jest 30 globals cleanup must remain enabled for ${name}.`);
+  if (!/globalsCleanup["']?\s*:\s*["']on["']/u.test(config)) failures.push(`Jest 30 globals cleanup must remain enabled for ${name}.`);
 }
 
 requireText(openAIService, "openai.responses.parse", "OpenAI generation must use the current Responses API.");

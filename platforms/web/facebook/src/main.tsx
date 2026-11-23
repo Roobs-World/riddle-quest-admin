@@ -1,11 +1,11 @@
 import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
-import {installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "../../../../packages/web-game/src/analytics/events";
-import {resetDevelopmentFirstRunState} from "../../../../packages/web-game/src/developmentFirstRun";
-import {FatalErrorBoundary} from "../../../../packages/web-game/src/FatalErrorBoundary";
-import {initializeBrowserSentryFromEnvironment} from "../../../../packages/web-game/src/observability/sentryEnvironment";
+import {installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "../../../../src/web/analytics/events";
+import {resetDevelopmentFirstRunState} from "../../../../src/web/developmentFirstRun";
+import {FatalErrorBoundary} from "../../../../src/web/FatalErrorBoundary";
+import {initializeBrowserSentryFromEnvironment} from "../../../../src/web/observability/sentryEnvironment";
 import {FacebookPlatformEntry} from "./FacebookPlatformEntry";
-import "../../../../packages/web-game/src/styles.css";
+import "../../../../src/web/styles.css";
 
 void initializeBrowserSentryFromEnvironment();
 

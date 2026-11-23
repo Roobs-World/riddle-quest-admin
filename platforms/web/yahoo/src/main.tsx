@@ -1,1 +1,1 @@
-import "../../../../packages/web-game/src/standalone/main";
+import "../../../../src/web/standalone/main";

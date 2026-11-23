@@ -1,4 +1,4 @@
-import {youtubeText, type YouTubeCopyKey, type YouTubeLocale} from "@riddle-quest/solo";
+import {youtubeText, type YouTubeCopyKey, type YouTubeLocale} from "../../../../../src/solo";
 import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
 import {ActionButton, Heading, Notice, Screen} from "../components/Primitives";
 import {palette, spacing} from "../theme";

@@ -20,7 +20,7 @@ export const repositoryRoot = resolve(packageDirectory, "../../..");
 /** Release APK produced by `assembleRelease`. */
 export const defaultApk = join(packageDirectory, "android/app/build/outputs/apk/release/app-release.apk");
 /** Bundled content pack shared with the web Playable targets. */
-const contentPath = join(repositoryRoot, "packages/web-game/src/playable/generated/youtube-content-v1.json");
+const contentPath = join(repositoryRoot, "src/web/playable/generated/youtube-content-v1.json");
 
 const adbExecutable = process.env.ANDROID_HOME ? join(process.env.ANDROID_HOME, "platform-tools/adb") : "adb";
 const decode = (value) =>

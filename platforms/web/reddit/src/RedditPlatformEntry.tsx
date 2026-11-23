@@ -6,21 +6,21 @@ import type {
   PlatformSession,
   PlayerData,
   PlayerDataUpdate,
-} from "../../../../packages/web-game/src/platform/types";
-import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
-import {resolveRedditGoldProduct} from "@riddle-quest/core/pricing/redditCatalog";
-import {PlayHostApp} from "../../../../packages/web-game/src/play/PlayHostApp";
-import {detectDeviceLanguage, tr, useLocale} from "../../../../packages/web-game/src/play/i18n";
-import {applyPlayerPreferences, subscribeToPlayerPreferenceChanges} from "../../../../packages/web-game/src/play/playerPreferences";
+} from "../../../../src/web/platform/types";
+import type {ProductSummary} from "../../../../src/hosted/hostTypes";
+import {resolveRedditGoldProduct} from "./shared/redditCatalog";
+import {PlayHostApp} from "../../../../src/web/play/PlayHostApp";
+import {detectDeviceLanguage, tr, useLocale} from "../../../../src/web/play/i18n";
+import {applyPlayerPreferences, subscribeToPlayerPreferenceChanges} from "../../../../src/web/play/playerPreferences";
 import {RedditPlatformBootstrap} from "./RedditPlatformBootstrap";
 import {createRedditHostServices} from "./RedditHostServices";
 import {createRedditGuestHostServices} from "./RedditGuestHostServices";
 import {RedditPollingPresence} from "./RedditPollingPresence";
-import {readBrowserStorage} from "../../../../packages/web-game/src/platform/browserStorage";
-import {PlayerProjectionPersistence} from "../../../../packages/web-game/src/platform/PlayerProjectionPersistence";
-import {usePlayerProjectionRecovery} from "../../../../packages/web-game/src/platform/usePlayerProjectionRecovery";
-import {PlayerSaveRecoveryLayout} from "../../../../packages/web-game/src/play/PlayerSaveRecoveryLayout";
-import {createHostedPlaySession} from "../../../../packages/web-game/src/play/HostedPlaySession";
+import {readBrowserStorage} from "../../../../src/web/platform/browserStorage";
+import {PlayerProjectionPersistence} from "../../../../src/web/platform/PlayerProjectionPersistence";
+import {usePlayerProjectionRecovery} from "../../../../src/web/platform/usePlayerProjectionRecovery";
+import {PlayerSaveRecoveryLayout} from "../../../../src/web/play/PlayerSaveRecoveryLayout";
+import {createHostedPlaySession} from "../../../../src/web/play/HostedPlaySession";
 
 /** Load the provider-owned board only when multiplayer is opened. */
 const RedditRaceEntry = lazy(() => import("./RedditRaceEntry").then(module => ({default: module.RedditRaceEntry})));

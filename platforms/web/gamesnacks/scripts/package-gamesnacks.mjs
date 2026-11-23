@@ -5,12 +5,12 @@ import {copyFile, mkdir, readFile, readdir, stat, unlink, writeFile} from "node:
 import {promisify} from "node:util";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
-import {targetDependencyEvidencePath} from "../../../../packages/web-game/webTargetDependencies.ts";
+import {targetDependencyEvidencePath} from "../../../../scripts/web/build/webTargetDependencies.ts";
 
 const execute = promisify(execFile);
-const portal = fileURLToPath(new URL("../../../../packages/web-game", import.meta.url));
+const portal = fileURLToPath(new URL("../../../..", import.meta.url));
 const repository = fileURLToPath(new URL("../../../..", import.meta.url));
-const output = path.join(portal, "../../builds/gamesnacks");
+const output = path.join(portal, "builds/gamesnacks");
 
 async function filesBelow(root, directory = root) {
   const entries = await readdir(directory, {withFileTypes: true});

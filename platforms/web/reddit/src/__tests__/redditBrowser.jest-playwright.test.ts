@@ -1,10 +1,10 @@
-import {protectContent} from "@riddle-quest/core/contentProtection";
-import {installLiveMultiplayerJourney} from "../../../../../packages/web-game/src/play/__tests__/liveMultiplayer.jest-playwright.support";
-import {verifyImmediateSoloFeedback} from "../../../../../packages/web-game/src/play/__tests__/instantFeedback.jest-playwright.support";
+import {protectContent} from "../../../../../src/core/contentProtection";
+import {installLiveMultiplayerJourney} from "../../../../../src/web/play/__tests__/liveMultiplayer.jest-playwright.support";
+import {verifyImmediateSoloFeedback} from "../../../../../src/web/play/__tests__/instantFeedback.jest-playwright.support";
 import {verifyRedditBrowserRedirects} from "./redditRedirect.jest-playwright.support";
 import {verifyRedditTournamentBoard, verifyRedditTournamentLiveResult} from "./redditTournament.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
-import {expectWebStandards} from "../../../../../packages/web-game/src/play/__tests__/webStandards.jest-playwright.support";
+import {expectWebStandards} from "../../../../../src/web/play/__tests__/webStandards.jest-playwright.support";
 import {chromium, type Page} from "@playwright/test";
 
 /** Documents global. */
@@ -70,7 +70,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
     if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-      execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:reddit"], {
+      execFileSync("pnpm", ["--filter", "riddle-quest", "build:reddit"], {
         cwd: path.resolve(packageRoot, "../.."),
         stdio: "inherit",
       });

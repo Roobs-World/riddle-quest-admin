@@ -1,6 +1,6 @@
 import {clearAndroidNotificationAccount} from "../notifications/androidNotifications";
-import type {GoogleAccountChange} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
-import type {AndroidGoogleIdentity} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
+import type {GoogleAccountChange} from "../auth/androidGoogleIdentity";
+import type {AndroidGoogleIdentity} from "../auth/androidGoogleIdentity";
 import {createFirebaseGoogleIdentity} from "../auth/firebaseGoogleIdentity";
 import {clearGoogleCredentialState} from "../auth/googleCredentials";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,9 +17,10 @@ import {
 } from "firebase/auth";
 import {connectFirestoreEmulator, doc, getDoc, getFirestore, type Firestore} from "firebase/firestore/lite";
 import {connectFunctionsEmulator, getFunctions, httpsCallable, type Functions} from "firebase/functions";
-import {createAndroidAccountFunctions, createGameFunctionsClient, type GameFunctionsClient} from "@riddle-quest/hosted";
-import type {AndroidReferralBackend, AndroidReferralStatus, AndroidReferralToken, AndroidReferralBinding} from "@riddle-quest/hosted/androidReferrals";
-import type {AndroidNotificationBackend, AndroidNotificationPreferences} from "@riddle-quest/hosted/androidNotifications";
+import {createGameFunctionsClient, type GameFunctionsClient} from "../../../../../src/hosted";
+import {createAndroidAccountFunctions} from "./androidAccountFunctions";
+import type {AndroidReferralBackend, AndroidReferralStatus, AndroidReferralToken, AndroidReferralBinding} from "../referrals/androidReferrals";
+import type {AndroidNotificationBackend, AndroidNotificationPreferences} from "../notifications/androidNotificationController";
 import type {AndroidPurchaseBackend} from "../billing/androidCommerce";
 import {enableAndroidAppCheck} from "./appCheck";
 import type {HostedConfig} from "./hostedConfig";

@@ -1,7 +1,7 @@
 import {createHash, randomUUID} from "node:crypto";
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceMatchResponseSchema, RACE_CHALLENGE_TTL_MS, RACE_RULES, type RaceMatchRequest, type RaceMatchResponse} from "@riddle-quest/core/race";
+import {RaceMatchResponseSchema, RACE_CHALLENGE_TTL_MS, RACE_RULES, type RaceMatchRequest, type RaceMatchResponse} from "../../../src/core/race/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {inspectRaceChallengeEligibility, readRaceEligibilityDocuments, raceProviderScope, type RaceEligibilityReason} from "./raceEligibility";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, scoreRaceCandidate, raceDifficultyAdjustedMs, racePerformanceExpectation} from "./raceMatchPerformance";
@@ -10,7 +10,7 @@ import {challengePreview, parseChallengeRecord, requestDocumentId, type RaceChal
 import {searchRaceCandidates, RACE_MATCH_READ_BUDGET} from "./raceCandidateSearch";
 import {assertRaceMatchReadBudget, RACE_MATCH_LOOKUP_MS, withMeteredRaceTransaction, RACE_MATCH_DOCUMENT_READ_BUDGET, type RaceMatchReadMeter} from "./raceMatchReadMeter";
 import {parseRaceMatchCandidate, projectRaceMatchCandidate, raceMatchCandidateEquals, type RaceMatchCandidate} from "./raceMatchCandidates";
-import {classifyRaceMatchFailure, raceMatchFailure} from "@riddle-quest/core/race";
+import {classifyRaceMatchFailure, raceMatchFailure} from "../../../src/core/race/index.js";
 
 import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
 import {raceCandidateNeedsFreshness, raceFreshnessInspectionBatch, selectRaceFreshCandidate} from "./raceMatchFreshness";

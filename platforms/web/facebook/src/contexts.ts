@@ -1,5 +1,5 @@
-import type {RaceLocale} from "@riddle-quest/core/race";
-import type {NativeSocialCapability, PlatformResult} from "../../../../packages/web-game/src/platform/types";
+import type {RaceLocale} from "../../../../src/core/race";
+import type {NativeSocialCapability, PlatformResult} from "../../../../src/web/platform/types";
 
 /** Describes context value. */
 type ContextValue = {
@@ -38,7 +38,7 @@ class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
     /** Provides [{get functions, https callable}, {firebase app}] behavior. */
     const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
       import("firebase/functions"),
-      import("../../../../packages/web-game/src/firebase"),
+      import("../../../../src/web/firebase"),
     ]);
     await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "joinFacebookContext")(input);
   }
@@ -51,7 +51,7 @@ class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
     /** Provides [{get functions, https callable}, {firebase app}] behavior. */
     const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
       import("firebase/functions"),
-      import("../../../../packages/web-game/src/firebase"),
+      import("../../../../src/web/firebase"),
     ]);
     await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "leaveFacebookContext")(input);
   }

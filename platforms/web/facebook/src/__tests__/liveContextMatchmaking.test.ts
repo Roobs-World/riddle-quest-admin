@@ -1,6 +1,6 @@
 import {createFacebookContextMatchmaking} from "../liveContextMatchmaking";
-import type {JoinLiveRace, RaceLocale} from "@riddle-quest/core/race";
-import type {MatchmakingCapability} from "../../../../../packages/web-game/src/platform/types";
+import type {JoinLiveRace, RaceLocale} from "../../../../../src/core/race";
+import type {MatchmakingCapability} from "../../../../../src/web/platform/types";
 
 /** Real target wrapper exercises immutable preparation independently of transport delivery. */
 function fixture() {

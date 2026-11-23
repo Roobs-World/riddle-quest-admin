@@ -29,7 +29,7 @@ const collectProductionFiles = (directory) => {
   }
 };
 
-collectProductionFiles(`${repositoryRoot}/packages/web-game/src`);
+collectProductionFiles(`${repositoryRoot}/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
 for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
   collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/src`);
@@ -61,8 +61,10 @@ const plaintextNetworkReferences = productionFiles.flatMap((path) => {
 
 const portalEnvironmentDirectory = `${repositoryRoot}/platforms/web/jest`;
 const jestEnvironment = readFileSync(`${portalEnvironmentDirectory}/.env.jest`, "utf8");
-const legacyPortalEnvironmentFiles = readdirSync(`${repositoryRoot}/packages/web-game`)
-  .filter((name) => name === ".env" || name.startsWith(".env."));
+const legacyPortalDirectory = `${repositoryRoot}/packages/web-game`;
+const legacyPortalEnvironmentFiles = existsSync(legacyPortalDirectory)
+  ? readdirSync(legacyPortalDirectory).filter((name) => name === ".env" || name.startsWith(".env."))
+  : [];
 const jestBackendUrl = /^VITE_JEST_FUNCTIONS_BASE_URL=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
 const appCheckSiteKey = /^VITE_FIREBASE_APP_CHECK_SITE_KEY=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
 const sentryDsn = /^VITE_SENTRY_DSN=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
@@ -87,14 +89,14 @@ const encryptedSentryDsn = (() => {
 })();
 
 const viteConfiguration = [
-  readFileSync(`${repositoryRoot}/packages/web-game/vite.config.ts`, "utf8"),
-  readFileSync(`${repositoryRoot}/packages/web-game/webTargetViteConfig.ts`, "utf8"),
+  readFileSync(`${repositoryRoot}/vite.config.ts`, "utf8"),
+  readFileSync(`${repositoryRoot}/scripts/web/build/webTargetViteConfig.ts`, "utf8"),
 ].join("\n");
 const portalTargetSourceEntries = portalTargetSourceEntryPaths
   .map((path) => readFileSync(path, "utf8"))
   .join("\n");
-const analyticsAdapterPath = `${repositoryRoot}/packages/web-game/src/analytics/firebaseAnalytics.ts`;
-const browserSentry = readFileSync(`${repositoryRoot}/packages/web-game/src/observability/sentry.ts`, "utf8");
+const analyticsAdapterPath = `${repositoryRoot}/src/web/analytics/firebaseAnalytics.ts`;
+const browserSentry = readFileSync(`${repositoryRoot}/src/web/observability/sentry.ts`, "utf8");
 const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
 const jestReleaseScript = readFileSync(
   `${repositoryRoot}/platforms/web/jest/scripts/release-jest-timestamped.mjs`,
@@ -110,7 +112,7 @@ const contentSecurityPolicy = headerValues.get("content-security-policy") ?? "";
 const requirements = [
   [legacyPortalEnvironmentFiles.length === 0,
     `Legacy portal-root environment files must be removed: ${legacyPortalEnvironmentFiles.join(", ")}`],
-  [viteConfiguration.includes('new URL(`../../platforms/web/${profile.id}/`, import.meta.url)') &&
+  [viteConfiguration.includes('new URL(`../../../platforms/web/${profile.id}/`, import.meta.url)') &&
     /envDir:\s*targetRoot/u.test(viteConfiguration),
   "Vite must load browser configuration only from the selected platform directory."],
   [Number(/max-age=(\d+)/i.exec(hsts)?.[1] ?? 0) >= 31_536_000,

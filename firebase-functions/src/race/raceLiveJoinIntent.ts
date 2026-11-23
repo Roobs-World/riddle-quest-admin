@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import type {JoinLiveRace} from "@riddle-quest/core/race";
+import type {JoinLiveRace} from "../../../src/core/race/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {requestDocumentId, type Firestore} from "./raceSetupService";
 

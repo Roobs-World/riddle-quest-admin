@@ -1,1 +1,1 @@
-export * from "@riddle-quest/hosted/commerce/playCatalog";
+export * from "./playCatalog";

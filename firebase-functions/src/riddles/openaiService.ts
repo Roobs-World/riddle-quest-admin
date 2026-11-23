@@ -1,11 +1,11 @@
 import type OpenAI from "openai";
-import type {RaceCategoryId} from "@riddle-quest/core/race";
+import type {RaceCategoryId} from "../../../src/core/race/index.js";
 import * as functions from "firebase-functions";
 import {z} from "zod";
 import {captureException, withSentrySpan} from "../shared/sentry";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
-import {type SupportedLocale} from "@riddle-quest/core/validation";
+import {type SupportedLocale} from "../../../src/core/validation/index.js";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 /**

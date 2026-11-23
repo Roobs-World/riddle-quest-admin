@@ -7,7 +7,7 @@ import {
   YOUTUBE_CLASSIC_SKIP_COST,
   YOUTUBE_CONTINUE_COST,
   YOUTUBE_HINT_COST,
-} from "@riddle-quest/solo";
+} from "../../../../../src/solo";
 import {fireEvent, screen, waitFor} from "@testing-library/react-native";
 import {contentSource, createPort, expectScreen, press, renderApp, seedSave, startMode, submitWrongGuess, typeAnswer} from "../test/harness";
 

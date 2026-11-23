@@ -1,7 +1,4 @@
-// ts-jest caches one compiler configuration per Jest project, so a second
-// ts-jest entry cannot give workspace client sources different options. Portal's
-// "type": "module" package makes the shared NodeNext config emit ESM, which
-// CommonJS tests cannot load; this transpiles portal and extracted hosted source as CommonJS.
+// Functions contract checks import browser-facing source with bundler syntax.
 const {createHash} = require("node:crypto");
 const ts = require("typescript");
 

@@ -6,7 +6,7 @@ import {
 } from "../RedditPlatformBootstrap";
 import {purchase} from "@devvit/payments/client";
 import {getWebViewMode} from "@devvit/client";
-import {raceMatchFailure} from "@riddle-quest/core/race";
+import {raceMatchFailure} from "../../../../../src/core/race";
 
 jest.mock("@devvit/payments/client", () => ({purchase: jest.fn()}));
 jest.mock("@devvit/client", () => ({getWebViewMode: jest.fn(() => "expanded")}));

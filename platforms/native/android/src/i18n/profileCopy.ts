@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {YouTubeLocale} from "../../../../../src/solo";
 /**
  * Copy for the hosted profile, leaderboard and account deletion.
  *

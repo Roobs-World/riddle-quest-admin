@@ -11,13 +11,18 @@ const serverRoots = [
   "platforms/web/reddit/server",
   "platforms/web/yahoo/server",
 ];
+const sharedSourceRoots = [
+  "src/core",
+  "platforms/web/facebook/src/commerce/facebookCatalog.ts",
+  "platforms/web/reddit/src/shared/redditCatalog.ts",
+];
 
 /** Recreates the repository-relative source graph inside the Functions archive boundary. */
 function stagePlatformSource() {
   fs.rmSync(stagedRoot, {recursive: true, force: true});
   fs.mkdirSync(stagedRoot, {recursive: true});
   fs.writeFileSync(path.join(stagedRoot, "package.json"), '{"private":true,"type":"commonjs"}\n');
-  for (const sourceRoot of ["firebase-functions/src", ...serverRoots]) {
+  for (const sourceRoot of ["firebase-functions/src", ...serverRoots, ...sharedSourceRoots]) {
     const target = path.join(stagedRoot, sourceRoot);
     fs.mkdirSync(path.dirname(target), {recursive: true});
     fs.cpSync(path.join(repositoryRoot, sourceRoot), target, {
@@ -32,5 +37,5 @@ function stagePlatformSource() {
   return stagedRoot;
 }
 
-module.exports = {stagePlatformSource, serverRoots};
+module.exports = {stagePlatformSource, serverRoots, sharedSourceRoots};
 if (require.main === module) console.log(`Prepared platform source at ${stagePlatformSource()}`);

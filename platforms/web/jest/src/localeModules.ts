@@ -1,4 +1,4 @@
-import type {Locale, NamespaceCatalog, SharedNamespace} from "../../../../packages/web-game/src/play/i18n";
+import type {Locale, NamespaceCatalog, SharedNamespace} from "../../../../src/web/play/i18n";
 
 /** Keeps unsupported catalogs outside Jest's graph; its public locale policy always selects English. */
 export async function loadNonEnglishNamespace(

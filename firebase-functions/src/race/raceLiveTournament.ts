@@ -1,4 +1,4 @@
-import {LIVE_RACE_COUNTDOWN_MS, RACE_TARGET_CORRECT} from "@riddle-quest/core/race";
+import {LIVE_RACE_COUNTDOWN_MS, RACE_TARGET_CORRECT} from "../../../src/core/race/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {isFacebookFirebaseUid} from "../../../platforms/web/facebook/server/facebookSecurity";
 import {parseRunRecord} from "./raceSetupService";

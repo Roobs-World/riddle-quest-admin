@@ -3,9 +3,9 @@ import {readdir, readFile, writeFile} from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-const requireFromPortal = createRequire(path.join(root, "packages/web-game/package.json"));
+const requireFromPortal = createRequire(path.join(root, "package.json"));
 const ts = requireFromPortal("typescript");
-const sourceRoots = ["packages/core/src", "packages/solo/src", "packages/hosted/src", "platforms", "packages/web-game", "firebase-functions/src"];
+const sourceRoots = ["src", "platforms", "firebase-functions/src"];
 const ignoredDirectories = new Set(["coverage", "dist", "dist-jest", "lib", "node_modules"]);
 const fix = process.argv.includes("--fix");
 

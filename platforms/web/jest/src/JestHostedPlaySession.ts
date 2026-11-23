@@ -1,4 +1,4 @@
-import {createHostedPlaySession} from "../../../../packages/web-game/src/play/HostedPlaySession";
+import {createHostedPlaySession} from "../../../../src/web/play/HostedPlaySession";
 
 /** Assembles the Jest launch policy independently of other Web Targets. */
 export function createJestHostedPlaySession(input: Parameters<typeof createHostedPlaySession>[0]) {

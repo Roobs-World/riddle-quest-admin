@@ -5,14 +5,14 @@ import type {
   PlatformSession,
   PlatformStorage,
   PlayerData,
-} from "../../../../packages/web-game/src/platform/types";
-import {parsePlayerData} from "../../../../packages/web-game/src/platform/playerDataValidation";
+} from "../../../../src/web/platform/types";
+import {parsePlayerData} from "../../../../src/web/platform/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
 import {createFacebookLifecycle} from "./createFacebookLifecycle";
 import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
-import {createFirebaseRaceMatchmaking} from "../../../../packages/web-game/src/play/firebaseRaceMatchmaking";
-import {LANGUAGE_OPTIONS} from "../../../../packages/web-game/src/play/i18n";
+import {createFirebaseRaceMatchmaking} from "../../../../src/web/play/firebaseRaceMatchmaking";
+import {LANGUAGE_OPTIONS} from "../../../../src/web/play/i18n";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 
 /** Defines the preferences key value. */

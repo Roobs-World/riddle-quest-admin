@@ -1,5 +1,5 @@
-import {AcceptedGuessesSchema} from "@riddle-quest/core/validation/acceptedGuesses";
-import {splitGraphemes} from "@riddle-quest/core/game";
+import {AcceptedGuessesSchema} from "../../../src/core/validation/acceptedGuesses.js";
+import {splitGraphemes} from "../../../src/core/game/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {baseAttemptLimit} from "./singlePlayerGuessTransition";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";

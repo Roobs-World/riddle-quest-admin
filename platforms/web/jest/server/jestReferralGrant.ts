@@ -1,4 +1,4 @@
-import {JEST_REFERRAL_REWARD_COINS} from "@riddle-quest/core/referrals";
+import {JEST_REFERRAL_REWARD_COINS} from "../../../../src/core/referrals/index.js";
 import type {Firestore} from "firebase-admin/firestore";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";

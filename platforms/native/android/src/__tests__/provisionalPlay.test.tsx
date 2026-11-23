@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {HostServices} from "@riddle-quest/hosted/hostTypes";
+import type {HostServices} from "../../../../../src/hosted/hostTypes";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {createAndroidPendingPlayStorage, type PendingPlayDeviceStore} from "../hosted/pendingPlayStorage";

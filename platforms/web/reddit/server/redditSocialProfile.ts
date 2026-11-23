@@ -1,4 +1,4 @@
-import {RaceEntryResponseSchema} from "@riddle-quest/core/race";
+import {RaceEntryResponseSchema} from "../../../../src/core/race/index.js";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {
@@ -10,7 +10,7 @@ import {
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   AbandonRaceRunResponseSchema,
-} from "@riddle-quest/core/race";
+} from "../../../../src/core/race/index.js";
 import {parseChallengeRecord, parseRunRecord} from "../../../../firebase-functions/src/race/raceSetupService";
 
 /** Describes reddit social profile. */

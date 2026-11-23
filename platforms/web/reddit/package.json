@@ -7,15 +7,14 @@
     "node": ">=22.0.0 <25.0.0"
   },
   "scripts": {
-    "build:client": "pnpm --filter @riddle-quest/portal build:reddit && node scripts/stage-client.mjs",
+    "build:client": "pnpm --filter riddle-quest build:reddit:client && node scripts/stage-client.mjs",
     "stage:client": "node scripts/stage-client.mjs",
-    "prebuild:server": "pnpm --filter @riddle-quest/core build",
     "build:server": "vite build",
     "build": "pnpm build:client && pnpm build:server",
     "build:package": "pnpm build:client && pnpm build:server && pnpm validate",
     "build:package:from-client": "pnpm stage:client && pnpm build:server && pnpm validate",
-    "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@riddle-quest/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../../../packages/web-game/scripts/generate-third-party-licenses.mjs --write",
-    "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@riddle-quest/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../../../packages/web-game/scripts/generate-third-party-licenses.mjs --check",
+    "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@riddle-quest/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../../../scripts/web/generate-third-party-licenses.mjs --write",
+    "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@riddle-quest/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../../../scripts/web/generate-third-party-licenses.mjs --check",
     "audit:performance": "node scripts/audit-performance.mjs",
     "check:types": "tsc6 -p tsconfig.json --noEmit && tsc6 -p tsconfig.client.json --noEmit",
     "test": "node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs",
@@ -38,14 +37,10 @@
   "dependencies": {
     "@devvit/web": "0.15.4",
     "@hono/node-server": "2.1.11",
-    "@riddle-quest/core": "workspace:*",
     "devvit": "0.15.4",
     "hono": "4.13.19",
-    "@riddle-quest/hosted": "workspace:*",
-    "@riddle-quest/solo": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "@riddle-quest/portal": "workspace:*",
     "@devvit/client": "0.15.4",
     "@devvit/payments": "0.15.4"
   },

@@ -6,9 +6,25 @@ import {webApplications, platformServerRoots} from "./platform-layout.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const failures = [];
 const read = name => JSON.parse(readFileSync(resolve(root, name), "utf8"));
-for (const old of ["packages/portal", "packages/android", "packages/reddit-app"]) {
-  if (existsSync(resolve(root, old))) failures.push(`Move platform sources out of ${old}.`);
+if (existsSync(resolve(root, "packages"))) {
+  for (const entry of readdirSync(resolve(root, "packages"))) {
+    failures.push(`Move ${entry} out of packages; shared source belongs under src and platform source under platforms.`);
+  }
 }
+const sharedConfiguration = /^(?:package(?:-lock)?\.json|pnpm-(?:workspace|lock)\.yaml|(?:tsconfig|jsconfig)(?:\.[^/]+)?\.json|(?:vite|vitest|jest|babel|metro|eslint)\.config\.[cm]?[jt]s)$/u;
+function inspectSharedConfiguration(directory) {
+  for (const entry of readdirSync(directory, {withFileTypes: true})) {
+    const file = resolve(directory, entry.name);
+    if (lstatSync(file).isSymbolicLink()) {
+      failures.push(`Shared source cannot use symlinks: ${relative(root, file)}`);
+    } else if (entry.isDirectory()) {
+      inspectSharedConfiguration(file);
+    } else if (sharedConfiguration.test(entry.name)) {
+      failures.push(`Shared source uses root project configuration; remove ${relative(root, file)}.`);
+    }
+  }
+}
+inspectSharedConfiguration(resolve(root, "src"));
 for (const target of webApplications) {
   const base = `platforms/web/${target}`;
   for (const file of ["package.json", "index.html", "src/main.tsx", "release.json"]) {
@@ -44,6 +60,6 @@ function inspect(directory) {
     }
   }
 }
-for (const directory of ["packages/core/src", "packages/solo/src", "packages/hosted/src", "packages/web-game/src", ...webApplications.map(target => `platforms/web/${target}/src`), "platforms/native/android/src"]) inspect(resolve(root, directory));
+for (const directory of ["src", ...webApplications.map(target => `platforms/web/${target}/src`), "platforms/native/android/src"]) inspect(resolve(root, directory));
 if (failures.length) throw new Error(failures.join("\n"));
 console.log(`Platform layout passed: ${webApplications.length} web apps, ${targets.length} release owners and Android.`);

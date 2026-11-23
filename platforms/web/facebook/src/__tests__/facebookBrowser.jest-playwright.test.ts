@@ -1,14 +1,14 @@
-import {verifyImmediateSoloFeedback} from "../../../../../packages/web-game/src/play/__tests__/instantFeedback.jest-playwright.support";
+import {verifyImmediateSoloFeedback} from "../../../../../src/web/play/__tests__/instantFeedback.jest-playwright.support";
 import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support";
 import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support";
 import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support";
 import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support";
-import {installLiveMultiplayerJourney} from "../../../../../packages/web-game/src/play/__tests__/liveMultiplayer.jest-playwright.support";
+import {installLiveMultiplayerJourney} from "../../../../../src/web/play/__tests__/liveMultiplayer.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
-import {expectWebStandards} from "../../../../../packages/web-game/src/play/__tests__/webStandards.jest-playwright.support";
+import {expectWebStandards} from "../../../../../src/web/play/__tests__/webStandards.jest-playwright.support";
 import {chromium} from "@playwright/test";
-import type {PlayerData} from "../../../../../packages/web-game/src/platform/types";
+import type {PlayerData} from "../../../../../src/web/platform/types";
 
 /** Documents global. */
 declare global {
@@ -50,7 +50,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     // builds cannot silently disable the platform capabilities under test.
     /** Provides dist directory behavior. */
     const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
-    execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:facebook"], {
+    execFileSync("pnpm", ["--filter", "riddle-quest", "build:facebook"], {
       cwd: path.resolve(packageRoot, "../.."),
       env: {
         ...process.env,

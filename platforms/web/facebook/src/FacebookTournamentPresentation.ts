@@ -1,7 +1,7 @@
-import type {ListFacebookTournamentResponse, RaceLocale, RecordFacebookTournamentRunResponse} from "@riddle-quest/core/race";
-import type {PlatformResult} from "../../../../packages/web-game/src/platform/types";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
-import {captureVictoryShareImage} from "../../../../packages/web-game/src/play/sharing/shareImages";
+import type {ListFacebookTournamentResponse, RaceLocale, RecordFacebookTournamentRunResponse} from "../../../../src/core/race";
+import type {PlatformResult} from "../../../../src/web/platform/types";
+import {tr} from "../../../../src/web/play/i18n";
+import {captureVictoryShareImage} from "../../../../src/web/play/sharing/shareImages";
 import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import type {FacebookInstantSdk, FacebookInstantTournament} from "./fbinstant";
 import {parseFacebookTournamentResponse, parseFacebookTournamentRecordResponse} from "./facebookCallableResponses";

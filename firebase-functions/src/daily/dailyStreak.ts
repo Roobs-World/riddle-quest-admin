@@ -1,4 +1,4 @@
-import {getDailyDate, shiftDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
+import {getDailyDate, shiftDailyDate} from "../../../src/core/validation/dailyCalendar.js";
 /** Describes timestamp like. */
 type TimestampLike = {
   /** Stores to date. */

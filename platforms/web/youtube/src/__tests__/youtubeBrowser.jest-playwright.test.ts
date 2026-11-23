@@ -2,8 +2,8 @@ import {afterAll, beforeAll, describe, expect, it} from "@jest/globals";
 import {chromium, type Browser, type Page} from "@playwright/test";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import {expectWebStandards} from "../../../../../packages/web-game/src/play/__tests__/webStandards.jest-playwright.support";
-import {createEmptyYouTubeSave} from "../../../../../packages/web-game/src/playable/save";
+import {expectWebStandards} from "../../../../../src/web/play/__tests__/webStandards.jest-playwright.support";
+import {createEmptyYouTubeSave} from "../../../../../src/web/playable/save";
 import {
   installYouTubeSdkHarness,
   startYouTubeArtifactServer,

@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {YouTubeLocale} from "../../../../../src/solo";
 
 /** Native durable-account copy is complete in every supported locale. */
 const copy = {

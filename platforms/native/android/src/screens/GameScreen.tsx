@@ -9,8 +9,8 @@ import {
   type YouTubeCopyKey,
   type YouTubeLocale,
   type YouTubeRiddle,
-} from "@riddle-quest/solo";
-import type {Feedback} from "@riddle-quest/core/game";
+} from "../../../../../src/solo";
+import type {Feedback} from "../../../../../src/core/game";
 import type {RefObject} from "react";
 import {Pressable, StyleSheet, Text, useWindowDimensions, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Screen} from "../components/Primitives";

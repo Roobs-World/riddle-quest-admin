@@ -1,4 +1,4 @@
-import {DEFAULT_PRODUCT_PRICING} from "@riddle-quest/core/pricing/catalog";
+import {DEFAULT_PRODUCT_PRICING} from "../../../../src/core/pricing/catalog.js";
 
 /** Server-owned Stripe representation of one Yahoo coin product. */
 export type YahooStripeProduct = Readonly<{

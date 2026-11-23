@@ -108,7 +108,7 @@ export async function startYouTubeArtifactServer(
   const distDirectory = path.resolve(requestedDirectory || fixtureDirectory || path.join(packageRoot, `../../builds/${target}`));
   if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
     try {
-      execFileSync("pnpm", ["--filter", "@riddle-quest/portal", target === "youtube" ? "build:youtube:fixture" : `build:${target}`], {
+      execFileSync("pnpm", ["--filter", "riddle-quest", target === "youtube" ? "build:youtube:fixture" : `build:${target}`], {
         cwd: path.resolve(packageRoot, "../.."), stdio: "inherit",
         env: {...process.env, [`${target.toUpperCase()}_BUILD_OUT_DIR`]: distDirectory},
       });

@@ -3,23 +3,22 @@ import {readFile} from "node:fs/promises";
 import test from "node:test";
 
 const root = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-const portal = JSON.parse(await readFile(new URL("../../packages/web-game/package.json", import.meta.url), "utf8"));
 const functions = JSON.parse(await readFile(new URL("../../firebase-functions/package.json", import.meta.url), "utf8"));
 
 test("production verification uses the canonical release E2E gate without downgrading content to a fixture", () => {
   const command = root.scripts["verify:production"];
   assert.match(command, /&& pnpm test:e2e &&/u);
   assert.doesNotMatch(command, /build:youtube:fixture|test:.*:playwright/u);
-  assert.match(portal.scripts["test:e2e:local"], /pnpm verify:all-targets/u);
-  assert.match(portal.scripts["verify:all-targets"], /pnpm build:all-targets/u);
+  assert.match(root.scripts["test:e2e:local"], /pnpm verify:all-targets/u);
+  assert.match(root.scripts["verify:all-targets"], /pnpm build:all-targets/u);
   for (const target of ["youtube", "netflix", "yahoo"]) {
-    assert.match(portal.scripts["build:all-targets"], new RegExp(`pnpm build:${target}(?: &&|$)`, "u"));
-    assert.match(portal.scripts[`build:${target}`], /check:youtube-content:release/u);
+    assert.match(root.scripts["build:all-targets"], new RegExp(`pnpm build:${target}(?: &&|$)`, "u"));
+    assert.match(root.scripts[`build:${target}`], /check:youtube-content:release/u);
   }
-  for (const target of ["jest", "facebook", "reddit"]) {
-    assert.match(portal.scripts["build:web"], new RegExp(`pnpm build:${target}(?: &&|$)`, "u"));
+  for (const target of ["jest", "facebook", "reddit:client"]) {
+    assert.match(root.scripts["build:web"], new RegExp(`pnpm build:${target}(?: &&|$)`, "u"));
   }
-  assert.match(portal.scripts["verify:all-targets"], /test:standalone:playwright/u);
+  assert.match(root.scripts["verify:all-targets"], /test:standalone:playwright/u);
 });
 
 test("backend production coverage retains the unit thresholds and includes the emulator paths", async () => {
@@ -46,7 +45,7 @@ test("Jest and Facebook readiness preserves parked targets while bounding its ru
     assert.doesNotMatch(root.scripts[script], /@riddle-quest\/(?:android|reddit-app)|build:(?:web|all-targets|reddit|youtube|netflix|yahoo|gamesnacks)(?:\s|$)/u);
   }
   assert.match(root.scripts["test:coverage"], /@riddle-quest\/android test:coverage/u);
-  assert.match(portal.scripts["verify:all-targets"], /pnpm build:all-targets/u);
+  assert.match(root.scripts["verify:all-targets"], /pnpm build:all-targets/u);
   assert.match(workflow, /pnpm test:e2e:jest-facebook/u);
   assert.doesNotMatch(workflow, /JEST_FACEBOOK_BROWSER_SHARD|matrix\.shard/u);
   assert.match(workflow, /needs: \[workspace-node24, functions-node22\]/u);

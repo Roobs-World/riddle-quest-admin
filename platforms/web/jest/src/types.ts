@@ -1,7 +1,7 @@
-import type {PlayerData, PlayerDataUpdate, PlatformPreferences, SavedGame} from "../../../../packages/web-game/src/platform/types";
-import type {PlatformResult} from "../../../../packages/web-game/src/platform/types";
+import type {PlayerData, PlayerDataUpdate, PlatformPreferences, SavedGame} from "../../../../src/web/platform/types";
+import type {PlatformResult} from "../../../../src/web/platform/types";
 
-export type {PlatformResult} from "../../../../packages/web-game/src/platform/types";
+export type {PlatformResult} from "../../../../src/web/platform/types";
 
 /** Stable, target-scoped identity fields returned directly by the Jest SDK. */
 type JestPlayer = {
@@ -399,7 +399,7 @@ export interface JestPlatformPort {
     }>
   >;
   /** Sends one low-cardinality event through the optional Jest analytics surface. */
-  captureEvent(name: string, properties?: import("../../../../packages/web-game/src/analytics/events").SanitizedAnalyticsParams): void;
+  captureEvent(name: string, properties?: import("../../../../src/web/analytics/events").SanitizedAnalyticsParams): void;
   /** Idempotently reports the provider-defined first gameplay milestone. */
   markFirstMilestone(): Promise<PlatformResult<void>>;
   /** Reports provider loading progress on the inclusive 0-100 scale. */

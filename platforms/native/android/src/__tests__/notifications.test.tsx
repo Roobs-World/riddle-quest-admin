@@ -2,11 +2,11 @@ import {afterEach, describe, expect, it, jest} from "@jest/globals";
 import {render, screen, fireEvent, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {NativeModules, PermissionsAndroid, Platform} from "react-native";
-import {createAndroidNotificationController} from "@riddle-quest/hosted/androidNotifications";
+import {createAndroidNotificationController} from "../notifications/androidNotificationController";
 import {clearAndroidNotificationAccount, createAndroidNotificationDevice} from "../notifications/androidNotifications";
 import {HostedNotificationScreen} from "../screens/HostedNotificationScreen";
 import {notificationCopy} from "../i18n/notificationCopy";
-import {YOUTUBE_COPY, resolveYouTubeLocale} from "@riddle-quest/solo";
+import {YOUTUBE_COPY, resolveYouTubeLocale} from "../../../../../src/solo";
 
 jest.mock("../hosted/hostedConfig", () => ({
   hostedConfig: {

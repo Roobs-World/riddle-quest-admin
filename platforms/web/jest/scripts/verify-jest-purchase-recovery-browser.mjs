@@ -6,7 +6,7 @@ import {pathToFileURL,fileURLToPath} from 'node:url';
 import path from 'node:path';
 
 // Supporting injected full-app E2E; uploaded Jest sandbox validation remains separate.
-const root=fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const root=fileURLToPath(new URL("../../../../", import.meta.url));
 const require=createRequire(path.join(root,'package.json'));
 const {build}=await import(pathToFileURL(require.resolve('vite')));
 const {chromium}=require('@playwright/test');
@@ -20,9 +20,9 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="icon" href="data:,"></head><body><div id="root"></div><div id="host-loading" style="position:fixed;inset:0;z-index:9999;background:#111;color:white">Host loading</div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {JestPlayApp} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/JestPlayApp.tsx'))};
-import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/observability/browserErrorReporter.ts'))};
-import ${JSON.stringify(path.join(root,'src/styles.css'))};
+import {JestPlayApp} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/JestPlayApp.tsx'))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
+import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.caught=[];configureBrowserErrorReporter((error,context)=>window.caught.push({message:String(error),context}));
 createRoot(document.getElementById('root')).render(<JestPlayApp/>);
@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')).render(<JestPlayApp/>);
 
 // Compose the maintained SDK fixture with injected external purchase outcomes.
 // Application modules, request deadlines and the downstream game remain real.
-const sdkSource=await readFile(path.join(root,'../../platforms/web/jest/src/__tests__/authentication.jest-sdk-harness.ts'),'utf8');
+const sdkSource=await readFile(path.join(root,'platforms/web/jest/src/__tests__/authentication.jest-sdk-harness.ts'),'utf8');
 const sdkFixture=path.join(scratch,'sdk-fixture.mjs');
 await writeFile(sdkFixture,ts.transpileModule(sdkSource,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText);
 const {installJestSdkHarness}=await import(pathToFileURL(sdkFixture));
@@ -69,14 +69,14 @@ const sourcePaths=JSON.parse(await readFile(path.join(root,'tsconfig.json'),'utf
 const aliases=Object.entries(sourcePaths).filter(([key])=>!key.includes('*')).sort((a,b)=>b[0].length-a[0].length).map(([key,values])=>({find:new RegExp('^'+key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$'),replacement:path.resolve(root,values[0])}));
 const sourceHashes={};
 const {createHash}=await import('node:crypto');
-for(const name of ['JestPlayApp.tsx','JestSdkPlatform.ts','startup.ts','backend.ts','purchases.ts','createJestBackend.ts'])sourceHashes[name]=createHash('sha256').update(await readFile(path.join(root,'../../platforms/web/jest/src',name))).digest('hex');
+for(const name of ['JestPlayApp.tsx','JestSdkPlatform.ts','startup.ts','backend.ts','purchases.ts','createJestBackend.ts'])sourceHashes[name]=createHash('sha256').update(await readFile(path.join(root,'platforms/web/jest/src',name))).digest('hex');
 let browser,server;
 const authority=new Map();
 const cases=[];
 const types={'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.webm':'audio/webm','.ttf':'font/ttf','.json':'application/json','.html':'text/html'};
 const sockets=new Set();
 try {
-  await build({root:scratch,configFile:false,logLevel:'error',plugins:[react(),{name:'test-purchase-authority-boundary',enforce:'pre',resolveId(id,importer){if(importer===path.join(root,'../../platforms/web/jest/src/JestPlayApp.tsx')&&id==='./createJestBackend')return '\0purchase-authority';},load(id){if(id==='\0purchase-authority')return `import {JestBackendClient} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/backend.ts'))};export const createJestBackend=()=>new JestBackendClient('/__authority/'+new URLSearchParams(location.search).get('case'));`;}}],define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},resolve:{alias:aliases},build:{outDir:path.join(scratch,'dist'),target:'esnext'}});
+  await build({root:scratch,configFile:false,logLevel:'error',plugins:[react(),{name:'test-purchase-authority-boundary',enforce:'pre',resolveId(id,importer){if(importer===path.join(root,'platforms/web/jest/src/JestPlayApp.tsx')&&id==='./createJestBackend')return '\0purchase-authority';},load(id){if(id==='\0purchase-authority')return `import {JestBackendClient} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/backend.ts'))};export const createJestBackend=()=>new JestBackendClient('/__authority/'+new URLSearchParams(location.search).get('case'));`;}}],define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},resolve:{alias:aliases},build:{outDir:path.join(scratch,'dist'),target:'esnext'}});
   server=createServer(async(req,res)=>{
     const url=new URL(req.url,'http://localhost');
     if(url.pathname.startsWith('/__authority/')){
@@ -177,7 +177,7 @@ try {
     await writeFile(path.join(evidence,'results.json'),JSON.stringify({status:'running',supportingInjectedChecks:true,hostedE2E:false,sourceHashes,cases},null,2));
     console.log('PASS '+outcome+' '+width+'px: real app startup/recovery, original token retained, no unexpected browser errors.');
   }
-  for(const [name,hash]of Object.entries(sourceHashes))assert.equal(createHash('sha256').update(await readFile(path.join(root,'../../platforms/web/jest/src',name))).digest('hex'),hash,'Source changed while the browser gate ran: '+name);
+  for(const [name,hash]of Object.entries(sourceHashes))assert.equal(createHash('sha256').update(await readFile(path.join(root,'platforms/web/jest/src',name))).digest('hex'),hash,'Source changed while the browser gate ran: '+name);
   await writeFile(path.join(evidence,'results.json'),JSON.stringify({status:baseline?'red-baseline':'passed',supportingInjectedChecks:true,hostedE2E:false,sourceHashes,cases},null,2));
   if(baseline)process.exitCode=1;
   console.log('EVIDENCE '+evidence);

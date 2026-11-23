@@ -1,13 +1,13 @@
-import {getSoloWinCoins, normalizeEconomyDifficulty, type EconomyDifficulty} from "@riddle-quest/core/game";
-import {getDailyDate, getDailyStart, shiftDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
-import {countCoinRewardAchievements} from "@riddle-quest/core/game";
+import {getSoloWinCoins, normalizeEconomyDifficulty, type EconomyDifficulty} from "../../../src/core/game/index.js";
+import {getDailyDate, getDailyStart, shiftDailyDate} from "../../../src/core/validation/dailyCalendar.js";
+import {countCoinRewardAchievements} from "../../../src/core/game/index.js";
 import * as functions from "firebase-functions";
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
 import {HttpsError} from "firebase-functions/v2/https";
 import {prepareUserDocumentCompletion} from "./firestoreService";
 import type {Player, PlayerStats} from "../validation/firestoreSchemas";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "@riddle-quest/core/validation/requestSchemas";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "../../../src/core/validation/requestSchemas.js";
 import {findNewAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "../shared/sentry";
@@ -21,10 +21,10 @@ import {
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
 } from "../shared/constants";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/core/validation/index.js";
 import {computeNextDailyWinStreak, getCompletionDay} from "../daily/dailyStreak";
 import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
-import {lowerCaseGraphemes} from "@riddle-quest/core/game";
+import {lowerCaseGraphemes} from "../../../src/core/game/index.js";
 import {finalizeAuthoritativeSession} from "./singlePlayerSession";
 import {assertPlayableSinglePlayerAnswer} from "./singlePlayerAnswerPolicy";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";

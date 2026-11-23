@@ -12,26 +12,6 @@
     "noUnusedLocals": true,
     "outDir": "lib",
     "rootDir": ".build-source",
-    "paths": {
-      "@riddle-quest/core": [
-        "../packages/core/dist/index.d.ts"
-      ],
-      "@riddle-quest/core/game": [
-        "../packages/core/dist/game/index.d.ts"
-      ],
-      "@riddle-quest/core/race": [
-        "../packages/core/dist/race/index.d.ts"
-      ],
-      "@riddle-quest/core/pricing/facebookCatalog": [
-        "../packages/core/dist/pricing/facebookCatalog.d.ts"
-      ],
-      "@riddle-quest/core/validation": [
-        "../packages/core/dist/validation/index.d.ts"
-      ],
-      "@riddle-quest/core/validation/*": [
-        "../packages/core/dist/validation/*"
-      ]
-    },
     "sourceMap": true,
     "strict": true,
     "lib": [
@@ -53,7 +33,10 @@
   "include": [
     ".build-source/firebase-functions/src/**/*.ts",
     ".build-source/firebase-functions/src/**/*.js",
-    ".build-source/platforms/**/server/**/*.ts"
+    ".build-source/platforms/**/server/**/*.ts",
+    ".build-source/src/core/**/*.ts",
+    ".build-source/platforms/web/facebook/src/commerce/facebookCatalog.ts",
+    ".build-source/platforms/web/reddit/src/shared/redditCatalog.ts"
   ],
   "exclude": [
     "node_modules",

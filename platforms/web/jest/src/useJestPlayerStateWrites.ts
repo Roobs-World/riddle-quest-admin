@@ -7,11 +7,11 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import {subscribeToPlayerPreferenceChanges} from "../../../../packages/web-game/src/play/playerPreferences";
+import {subscribeToPlayerPreferenceChanges} from "../../../../src/web/play/playerPreferences";
 import type {JestEngagementProgress, JestPlayerData, JestPlayerDataUpdate, JestSession} from "./types";
 import type {JestPlatformPort} from "./types";
 import type {NotificationOperationGate} from "./notifications/operationGate";
-import {PlayerSaveRecovery} from "../../../../packages/web-game/src/platform/PlayerSaveRecovery";
+import {PlayerSaveRecovery} from "../../../../src/web/platform/PlayerSaveRecovery";
 import {reconcileJestPlayerProjection} from "./reconcileJestPlayerProjection";
 
 /** Owns every queued app-state SDK write so deletion can quiesce and drain them together. */

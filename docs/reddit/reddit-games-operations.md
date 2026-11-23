@@ -184,7 +184,7 @@ with a permissive HTML meta policy.
 ## Build and local verification
 
 ```bash
-pnpm --filter @riddle-quest/portal build:reddit
+pnpm build:reddit
 pnpm --filter @riddle-quest/reddit-app build
 pnpm --filter @riddle-quest/reddit-app validate
 pnpm --filter @riddle-quest/reddit-app playtest

@@ -1,4 +1,4 @@
-import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@riddle-quest/core/pricing/catalog";
+import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../src/core/pricing/catalog.js";
 
 /** Shared Google Play and Jest SKU grants; provider receipt verification stays in each adapter. */
 export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freeze({

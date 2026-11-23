@@ -44,12 +44,12 @@ The Node checklist exercises the library fallback because it has no canvas. The 
 ```sh
 PORTAL_BROWSER_TESTS=1 PORTAL_USE_EXISTING_BUILD=1 \
   JEST_NOTIFICATION_IMAGE_REPORT_DIR=/tmp/riddle-quest-inline-cards \
-  pnpm --filter @riddle-quest/portal test --runInBand \
-  src/jest/__tests__/authentication.jest-playwright.test.ts \
+  pnpm test:web --runInBand \
+  platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts \
   -t 'schedules decodable inline daily and race cards'
 ```
 
-Run `pnpm --filter @riddle-quest/portal build:jest` first. The optional report directory saves the three daily cards and race card for visual review. The existing library-reference Fund rules may need Jest's updated inline-image checklist; inspect the SDK `asset` payload and Console assets as evidence for this path.
+Run `pnpm build:jest` first. The optional report directory saves the three daily cards and race card for visual review. The existing library-reference Fund rules may need Jest's updated inline-image checklist; inspect the SDK `asset` payload and Console assets as evidence for this path.
 
 If every Simulator rule stays Waiting, load `http://localhost:3000/index.html` directly and reload the Simulator session. The root development redirect must preserve the host-provided `sid` and `tce` query parameters. Earlier versions dropped them, causing the SDK to select its local mock and bypass the Simulator checklist. The redirect now preserves the original query string. Do not invent a session ID; let the Simulator supply it.
 

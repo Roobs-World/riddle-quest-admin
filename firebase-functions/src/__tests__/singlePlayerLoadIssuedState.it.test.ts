@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
+import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../daily/dailyChallenge";
 import {ensureAuthoritativeSession, submitAuthoritativeGuess, finalizeAuthoritativeSession} from "../gameplay/singlePlayerSession";
 import {baseAttemptLimit} from "../gameplay/singlePlayerGuessTransition";

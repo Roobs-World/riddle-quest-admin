@@ -1,6 +1,6 @@
-import {RACE_ANSWER_TEXT_UNITS, RACE_CATEGORY_IDS, RacePreloadedRiddleSchema, RaceRiddlePromptSchema, type RaceCategoryId, type RaceDifficultyBand} from "@riddle-quest/core/race";
-import {splitGraphemes} from "@riddle-quest/core/game";
-import {type SupportedLocale} from "@riddle-quest/core/validation";
+import {RACE_ANSWER_TEXT_UNITS, RACE_CATEGORY_IDS, RacePreloadedRiddleSchema, RaceRiddlePromptSchema, type RaceCategoryId, type RaceDifficultyBand} from "../../../src/core/race/index.js";
+import {splitGraphemes} from "../../../src/core/game/index.js";
+import {type SupportedLocale} from "../../../src/core/validation/index.js";
 import {clueContainsLiteralAnswer} from "../riddles/riddleQuality";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";

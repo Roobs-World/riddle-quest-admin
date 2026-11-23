@@ -25,7 +25,7 @@ A Google subject verified in Firebase authentication claims and bound to an Andr
 _Avoid_: Anonymous installation, referral token, Jest player
 
 **Shared Solo Logic**:
-The provider-neutral local solo play package `@riddle-quest/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
+The provider-neutral local solo play folder `src/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
 _Avoid_: YouTube module, playable folder, duplicated native rules
 
 **Bundled Content Pack**:

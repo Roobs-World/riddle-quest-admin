@@ -5,8 +5,8 @@ import {
   setTokenAutoRefreshEnabled,
   type AppCheck,
 } from "firebase/app-check";
-import {firebaseApp} from "../../../../packages/web-game/src/firebase";
-import {firebaseEnvironment} from "../../../../packages/web-game/src/firebaseEnvironment";
+import {firebaseApp} from "../../../../src/web/firebase";
+import {firebaseEnvironment} from "../../../../src/web/firebaseEnvironment";
 
 /** Facebook-owned custom attestation instance. */
 let appCheck: AppCheck | null = null;

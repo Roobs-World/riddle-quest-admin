@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {YouTubeLocale} from "../../../../../src/solo";
 import en from "../../../../../src/locales/en/race.json";
 import es from "../../../../../src/locales/es/race.json";
 import pt from "../../../../../src/locales/pt/race.json";

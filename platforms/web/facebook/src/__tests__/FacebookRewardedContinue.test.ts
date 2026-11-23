@@ -1,5 +1,5 @@
 import {createFacebookRewardedContinue} from "../FacebookRewardedContinue";
-import type {AdsCapability, PlatformResult} from "../../../../../packages/web-game/src/platform/types";
+import type {AdsCapability, PlatformResult} from "../../../../../src/web/platform/types";
 
 /** Canonical session-bound continuation request used by the test. */
 const input = {gameMode: "classic" as const, riddleId: "classic-1", sessionToken: "session-token-00000001"};

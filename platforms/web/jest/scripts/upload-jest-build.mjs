@@ -25,7 +25,7 @@ import {
   resolveRiddleQuestJestGameId,
 } from "./jest-release-safety.mjs";
 
-const defaultPackageDirectory = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const defaultPackageDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const packageDirectory = resolveAbsolutePathOverride({
   fallback: defaultPackageDirectory,
   name: "JEST_PACKAGE_DIRECTORY",
@@ -47,7 +47,7 @@ const receiptDirectory = resolveAbsolutePathOverride({
   value: process.env.JEST_RECEIPT_DIRECTORY,
 });
 const buildDirectory = resolveAbsolutePathOverride({
-  fallback: join(packageDirectory, "../../builds/jest"),
+  fallback: join(packageDirectory, "builds/jest"),
   name: "JEST_BUILD_DIRECTORY",
   value: process.env.JEST_BUILD_DIRECTORY,
 });
@@ -67,7 +67,7 @@ const artifactAuditScript = resolveAbsolutePathOverride({
   value: process.env.JEST_ARTIFACT_AUDIT_SCRIPT,
 });
 const w3cValidatorScript = resolveAbsolutePathOverride({
-  fallback: join(packageDirectory, "scripts", "validate-w3c.mjs"),
+  fallback: join(packageDirectory, "scripts", "web", "validate-w3c.mjs"),
   name: "JEST_W3C_VALIDATOR_SCRIPT",
   value: process.env.JEST_W3C_VALIDATOR_SCRIPT,
 });

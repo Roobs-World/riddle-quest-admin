@@ -24,7 +24,7 @@ import {
   DEFAULT_PRODUCT_PRICING,
   PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS,
   PREMIUM_SUBSCRIPTION_MONTHLY_COINS,
-} from "@riddle-quest/core/pricing/catalog";
+} from "../../../../../src/core/pricing/catalog.js";
 
 /** Provides request behavior. */
 const request = (input: {

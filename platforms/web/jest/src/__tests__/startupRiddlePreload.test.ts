@@ -1,6 +1,6 @@
 import {createJestStartupRiddlePreload} from "../startupRiddlePreload";
-import type {HostServices} from "@riddle-quest/hosted/hostTypes";
-import type {BridgeRiddle} from "@riddle-quest/core/bridge";
+import type {HostServices} from "../../../../../src/hosted/hostTypes";
+import type {BridgeRiddle} from "../../../../../src/core/bridge";
 
 /** Controls optional authority requests independently from actual game loading. */
 const deferred = () => {

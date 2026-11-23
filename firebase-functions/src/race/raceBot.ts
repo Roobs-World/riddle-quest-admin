@@ -2,7 +2,7 @@ import {createHash} from "node:crypto";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceCategoryIdSchema, RaceLocaleSchema, RACE_CHALLENGE_TTL_MS, RACE_RULES,
-  raceMatchFailure, type RaceMatchRequest, type StartRaceRunRequest} from "@riddle-quest/core/race";
+  raceMatchFailure, type RaceMatchRequest, type StartRaceRunRequest} from "../../../src/core/race/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {requestDocumentId, listRaceCategoriesForLocale, type Firestore} from "./raceSetupService";
 import {racePerformanceExpectation, type RaceMatchProfile} from "./raceMatchPerformance";

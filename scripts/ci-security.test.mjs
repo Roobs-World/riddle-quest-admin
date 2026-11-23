@@ -20,7 +20,7 @@ test("production security audit accepts its bounded metadata and emulator transp
 
 test("plaintext exceptions cannot authorize external endpoints or unrelated source files", () => {
   for (const [path, source] of [[metadataPath, metadataSource], [avatarPath, avatarSource]]) {
-    assert.equal(hasPlaintextNetworkReference("packages/web-game/src/unsafe.ts", source), true);
+    assert.equal(hasPlaintextNetworkReference("src/web/unsafe.ts", source), true);
     for (const url of ["http://api.example.com", "ws://api.example.com/socket", "http://localhost.example.com", "http://127.0.0.1.example.com"]) {
       assert.equal(hasPlaintextNetworkReference(path, `${source}\nfetch("${url}");`), true, url);
     }

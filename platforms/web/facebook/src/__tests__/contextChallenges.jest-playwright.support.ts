@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
-import {LiveRaceViewSchema, type JoinLiveRace} from "@riddle-quest/core/race";
+import {LiveRaceViewSchema, type JoinLiveRace} from "../../../../../src/core/race";
 
 /** Exercises chosen-context private play through the built Facebook entry, SDK and authenticated transport. */
 export async function verifyContextChallenges(page: Page): Promise<void> {

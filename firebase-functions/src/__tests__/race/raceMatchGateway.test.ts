@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {raceMatchFailure} from "@riddle-quest/core/race";
+import {raceMatchFailure} from "../../../../src/core/race/index.js";
 
 /** Authenticated gateway verification is controlled without contacting providers. */
 const verify = jest.fn();

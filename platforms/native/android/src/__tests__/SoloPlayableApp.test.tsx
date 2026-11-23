@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {createYouTubeContentSource, parseYouTubeSave, type YouTubeContentEnvelope, type YouTubeSdkPort} from "@riddle-quest/solo";
+import {createYouTubeContentSource, parseYouTubeSave, type YouTubeContentEnvelope, type YouTubeSdkPort} from "../../../../../src/solo";
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider, type Metrics} from "react-native-safe-area-context";
 import fixture from "#solo-content";

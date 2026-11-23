@@ -6,10 +6,10 @@ import {fileURLToPath} from "node:url";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 
-const root = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const root = fileURLToPath(new URL("../../../../", import.meta.url));
 const adapter = path.join(root, "../../platforms/web/reddit/src/RedditHostServices.ts");
 const baseline = process.env.REDDIT_DELIVERY_BASELINE_SOURCE;
-const output = path.resolve(process.env.REDDIT_DELIVERY_REPORT_DIR ?? path.join(root, "../../builds/test-evidence/game-reddit-receipts-2026-10-03"));
+const output = path.resolve(process.env.REDDIT_DELIVERY_REPORT_DIR ?? path.join(root, "builds/test-evidence/game-reddit-receipts-2026-10-03"));
 await mkdir(output, {recursive: true});
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/reddit-delivery-"));

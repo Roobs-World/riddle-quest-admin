@@ -1,5 +1,5 @@
 import {useRef} from "react";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
+import {tr} from "../../../../src/web/play/i18n";
 import type {JestSession} from "./types";
 import {useJestRegistrationDialogFocus} from "./useJestRegistrationDialogFocus";
 

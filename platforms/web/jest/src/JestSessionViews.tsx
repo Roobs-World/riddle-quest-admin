@@ -1,5 +1,5 @@
-import {SpinningWheelLoader} from "../../../../packages/web-game/src/play/SpinningWheelLoader";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
+import {SpinningWheelLoader} from "../../../../src/web/play/SpinningWheelLoader";
+import {tr} from "../../../../src/web/play/i18n";
 import type {JestStartupUpdate} from "./startup";
 
 /** Provides jest startup error behavior. */

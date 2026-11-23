@@ -17,9 +17,9 @@ import {
 const isEndToEndGate = ({args}) => args[0] === "scripts/release/verify-packaged-games.mjs" || args.at(-1) === "test:reddit:playwright";
 
 const expectedCommands = new Map([
-  ["jest", ["--filter", "@riddle-quest/portal", "release:jest:timestamped"]],
-  ["facebook", ["--filter", "@riddle-quest/portal", "release:facebook"]],
-  ["youtube", ["--filter", "@riddle-quest/portal", "preflight:youtube-upload"]],
+  ["jest", ["--filter", "riddle-quest", "release:jest:timestamped"]],
+  ["facebook", ["--filter", "riddle-quest", "release:facebook:handoff"]],
+  ["youtube", ["--filter", "riddle-quest", "preflight:youtube-upload"]],
   ["reddit", ["--filter", "@riddle-quest/reddit-app", "release:candidate"]],
   ["netflix", ["build:netflix"]],
   ["yahoo", ["build:yahoo"]],
@@ -253,18 +253,18 @@ test("the combined release verifies once before running every adapter", async ()
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {
   const portalPackage = JSON.parse(await readFile(
-    new URL("../../packages/web-game/package.json", import.meta.url),
+    new URL("../../package.json", import.meta.url),
     "utf8",
   ));
   assert.equal(
-    portalPackage.scripts["release:facebook"],
+    portalPackage.scripts["release:facebook:handoff"],
     "pnpm preflight:facebook-upload && pnpm facebook:draft begin",
   );
   assert.equal(
     portalPackage.scripts["preflight:facebook-upload"],
-    "pnpm build:facebook && pnpm test:facebook:playwright && node scripts/prepare-facebook-draft.mjs",
+    "pnpm build:facebook && pnpm test:facebook:playwright && node platforms/web/facebook/scripts/prepare-facebook-draft.mjs",
   );
-  assert.equal(portalPackage.scripts["facebook:draft"], "node scripts/facebook-draft-evidence.mjs");
+  assert.equal(portalPackage.scripts["facebook:draft"], "node platforms/web/facebook/scripts/facebook-draft-evidence.mjs");
 
   const invocations = [];
   const result = await runPlatformRelease("facebook", {
@@ -305,7 +305,7 @@ test("execution delegates once, plays the produced artifact, then reports the pl
   assert.equal(invocations.length, 2);
   assert.equal(invocations[0].executable, "pnpm");
   assert.deepEqual(invocations[0].args, expectedCommands.get("reddit"));
-  assert.deepEqual(invocations[1].args, ["--filter", "@riddle-quest/portal", "test:reddit:playwright"]);
+  assert.deepEqual(invocations[1].args, ["--filter", "riddle-quest", "test:reddit:playwright"]);
   assert.equal(result.status, "handoff-ready");
   assert.match(lines.join("\n"), /immutable Reddit handoff|Release handoff ready/u);
 });

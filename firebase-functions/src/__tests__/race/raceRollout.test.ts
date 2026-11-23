@@ -1,4 +1,4 @@
-import {RACE_SUPPORTED_LOCALES} from "@riddle-quest/core/race";
+import {RACE_SUPPORTED_LOCALES} from "../../../../src/core/race/index.js";
 import {
   assertRaceAccess,
   configureRaceRolloutCache,

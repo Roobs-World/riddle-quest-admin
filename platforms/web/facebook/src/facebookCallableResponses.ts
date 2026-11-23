@@ -8,7 +8,7 @@ import {
   type ListFacebookTournamentResponse,
   type RecordFacebookContextRunResponse,
   type RecordFacebookTournamentRunResponse,
-} from "@riddle-quest/core/race";
+} from "../../../../src/core/race";
 import type {FacebookPurchaseGrant} from "./FacebookPurchaseRecovery";
 
 /** Defines the facebook tournament duration ms value. */

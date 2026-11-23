@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LiveGuessReceiptQuerySchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult} from "@riddle-quest/core/race";
+import {LiveGuessReceiptQuerySchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult} from "../../../src/core/race/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "./raceEligibility";

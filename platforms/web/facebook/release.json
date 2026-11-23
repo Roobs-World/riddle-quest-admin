@@ -9,8 +9,8 @@
     "executable": "pnpm",
     "args": [
       "--filter",
-      "@riddle-quest/portal",
-      "release:facebook"
+      "riddle-quest",
+      "release:facebook:handoff"
     ]
   },
   "handoff": "Upload only the printed read-only archive to Meta as a non-production Draft.",

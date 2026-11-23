@@ -1,7 +1,7 @@
 import {DeviceEventEmitter, Linking, NativeModules} from "react-native";
 import {ANDROID_PACKAGE_NAME} from "./catalog";
-export type {PlayProductType, PlayProduct, PlayPurchase, PlayCheckoutResult, PlayBillingPort} from "@riddle-quest/hosted/commerce/playBillingTypes";
-import type {PlayProductType, PlayProduct, PlayPurchase, PlayBillingPort} from "@riddle-quest/hosted/commerce/playBillingTypes";
+export type {PlayProductType, PlayProduct, PlayPurchase, PlayCheckoutResult, PlayBillingPort} from "./playBillingTypes";
+import type {PlayProductType, PlayProduct, PlayPurchase, PlayBillingPort} from "./playBillingTypes";
 /** Shape of the `RiddleQuestPlayBilling` native module. */
 type NativePlayBilling = {
   /** See {@link PlayBillingPort.getProducts}. */

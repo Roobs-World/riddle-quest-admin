@@ -1,5 +1,5 @@
 import enRedditPlatform from "../../../../src/locales/en/redditPlatform.json";
-import {registerTargetLocaleNamespace, type Locale, type NamespaceCatalog} from "../../../../packages/web-game/src/play/i18n";
+import {registerTargetLocaleNamespace, type Locale, type NamespaceCatalog} from "../../../../src/web/play/i18n";
 
 /** Lazily loads the Reddit-owned namespace for each non-English locale. */
 const nonEnglishRedditPlatformModules = import.meta.glob<NamespaceCatalog>(

@@ -1,5 +1,4 @@
 packages:
-  - "packages/*"
   - "platforms/native/*"
   - "platforms/web/*"
   - "firebase-functions"

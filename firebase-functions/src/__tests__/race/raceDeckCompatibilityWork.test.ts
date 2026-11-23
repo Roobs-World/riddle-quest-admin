@@ -1,4 +1,4 @@
-import type {RaceLocale} from "@riddle-quest/core/race";
+import type {RaceLocale} from "../../../../src/core/race/index.js";
 import {assertRaceDeckCompatible} from "../../race/raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "../../race/raceEngine";
 

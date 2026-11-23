@@ -72,14 +72,14 @@ if (isMain) {
     name: path.slice(root.length),
     source: readFileSync(path, "utf8"),
   }));
-  const browserPaths = collectFiles(`${root}/packages/web-game/src`, (name) => /\.(?:ts|tsx|js|jsx)$/u.test(name));
+  const browserPaths = collectFiles(`${root}/src/web`, (name) => /\.(?:ts|tsx|js|jsx)$/u.test(name));
   browserPaths.push(
     `${root}/platforms/web/jest/index.html`,
     `${root}/platforms/web/facebook/index.html`,
     `${root}/platforms/web/reddit/index.html`,
     `${root}/platforms/web/reddit/reddit-inline.html`,
     `${root}/platforms/web/youtube/index.html`,
-    `${root}/packages/web-game/vite.config.ts`,
+    `${root}/vite.config.ts`,
   );
   for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) browserPaths.push(...collectFiles(`${root}/platforms/web/${target}/src`, name => /\.(?:ts|tsx|js|jsx)$/u.test(name)));
   const envPaths = ["jest", "facebook", "reddit", "yahoo"].map(target => `${root}/platforms/web/${target}/.env.${target}`);

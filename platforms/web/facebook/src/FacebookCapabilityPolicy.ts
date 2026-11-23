@@ -1,4 +1,4 @@
-import type {PlatformCapabilities} from "../../../../packages/web-game/src/platform/types";
+import type {PlatformCapabilities} from "../../../../src/web/platform/types";
 
 /** Describes facebook age category. */
 export type FacebookAgeCategory = "13_plus" | "unknown";

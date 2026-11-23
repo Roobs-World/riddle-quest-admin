@@ -7,7 +7,7 @@ import {createFacebookNotificationDispatchLedger} from "../../../platforms/web/f
 import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
 import {raceProviderScope} from "./raceEligibility";
 import {type LiveChallengePushEvent} from "./raceLiveChallengeNotifications";
-import {LIVE_RACE_INVITE_MS} from "@riddle-quest/core/race";
+import {LIVE_RACE_INVITE_MS} from "../../../src/core/race/index.js";
 import {type LiveTicket} from "./raceLiveState";
 import {liveChallengePushCopy} from "./raceLivePushCopy";
 

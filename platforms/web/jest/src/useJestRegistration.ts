@@ -7,9 +7,9 @@ import {
   type MutableRefObject,
   type SetStateAction,
 } from "react";
-import {CompletionPresentation} from "@riddle-quest/hosted/play/completionPresentation";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
-import {captureBrowserException} from "../../../../packages/web-game/src/observability/browserErrorReporter";
+import {CompletionPresentation} from "../../../../src/hosted/play/completionPresentation";
+import {tr} from "../../../../src/web/play/i18n";
+import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
 import type {JestBackendPort} from "./backend";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import type {JestPlatformPort, JestRegistrationOverlayHandle, JestSession} from "./types";

@@ -1,5 +1,5 @@
-import {splitGraphemes} from "@riddle-quest/core/game";
-import type {GetCurrentDailyChallengeResponse} from "@riddle-quest/core/validation/requestSchemas";
+import {splitGraphemes} from "../../../src/core/game/index.js";
+import type {GetCurrentDailyChallengeResponse} from "../../../src/core/validation/requestSchemas.js";
 import {projectPublicSinglePlayerSession} from "./singlePlayerPublicSession";
 import type {SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 

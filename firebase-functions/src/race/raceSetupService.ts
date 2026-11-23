@@ -15,7 +15,7 @@ import {
   type RaceCategoryId,
   type RaceLocale,
   type RaceChallengePreview,
-} from "@riddle-quest/core/race";
+} from "../../../src/core/race/index.js";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
 import {assertRaceStoredRecord} from "./raceStoredRecords";
 import {logger} from "firebase-functions";

@@ -1,4 +1,4 @@
-import type {NotificationCapability, PlatformStorage} from "../../../../packages/web-game/src/platform/types";
+import type {NotificationCapability, PlatformStorage} from "../../../../src/web/platform/types";
 import {
   recordFacebookNotificationPrompt,
   shouldPromptForFacebookNotifications,

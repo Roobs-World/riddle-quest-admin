@@ -1,5 +1,5 @@
 import {GoogleAuthProvider, getIdTokenResult, linkWithCredential, reauthenticateWithCredential, signInWithCredential, type Auth, type User} from "firebase/auth";
-import {createAndroidGoogleIdentity, type GoogleAccountChange} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
+import {createAndroidGoogleIdentity, type GoogleAccountChange} from "./androidGoogleIdentity";
 import {googleCredentialsAvailable, pickGoogleCredential} from "./googleCredentials";
 
 /** Binds the shared durable-account workflow to the native credential and Firebase adapters. */

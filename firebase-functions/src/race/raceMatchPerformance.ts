@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import {z} from "zod";
-import {RACE_CATEGORY_IDS, type RaceCategoryId} from "@riddle-quest/core/race";
+import {RACE_CATEGORY_IDS, type RaceCategoryId} from "../../../src/core/race/index.js";
 import type {RaceRiddleSnapshot, RaceRunRecord} from "./raceEngine";
 import {RacePerformancePriorsSchema, DEFAULT_RACE_MATCH_CONTEXT, type RacePerformancePriors, type RaceMatchContext,
   type RaceMatchPolicy} from "./raceMatchPolicy";

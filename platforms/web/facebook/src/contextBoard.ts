@@ -1,8 +1,8 @@
 import type {
   ListFacebookContextBoardRequest, ListFacebookContextBoardResponse,
   RecordFacebookContextRunRequest, RecordFacebookContextRunResponse,
-} from "@riddle-quest/core/race";
-import type {ContextBoardCapability} from "../../../../packages/web-game/src/platform/types";
+} from "../../../../src/core/race";
+import type {ContextBoardCapability} from "../../../../src/web/platform/types";
 import type {FacebookContextCoordinator} from "./contexts";
 
 /** Authenticated callables retain validation and all board authority on the server. */

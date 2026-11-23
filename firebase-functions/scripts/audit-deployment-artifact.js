@@ -67,18 +67,9 @@ async function inspectUploadFiles() {
   for (const filename of runtimeFiles) expectFile(filename);
   expectFile(path.join(functionsRoot, "package.json"));
   expectFile(path.join(functionsRoot, "package-lock.json"));
-  expectFile(path.join(functionsRoot, "packages/core/package.json"));
-  const inspectCore = (directory) => {
-    for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
-      const filename = path.join(directory, entry.name);
-      if (entry.isDirectory()) inspectCore(filename);
-      else expectFile(filename);
-    }
-  };
-  inspectCore(path.join(functionsRoot, "packages/core/dist"));
   for (const name of uploadNames) {
     if (name === "package.json" || name === "package-lock.json") continue;
-    if (!name.startsWith("lib/") && !name.startsWith("packages/core/")) {
+    if (!name.startsWith("lib/")) {
       throw new Error(`Source-only or local file enters Functions upload: ${name}`);
     }
   }

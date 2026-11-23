@@ -1,5 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {RACE_CHALLENGE_TTL_MS} from "@riddle-quest/core/race";
+import {RACE_CHALLENGE_TTL_MS} from "../../../../../src/core/race";
 import {parseFacebookContextBoardResponse} from "../facebookCallableResponses";
 import {createRaceContextBoardFixture} from "./raceDialogs.jest-playwright.support";
 

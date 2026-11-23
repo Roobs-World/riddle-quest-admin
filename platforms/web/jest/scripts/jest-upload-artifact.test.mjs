@@ -63,7 +63,7 @@ test("release store snapshot includes committed WAL records without modifying it
 
 test("license notices use the active native or JavaScript pnpm executable without a global shim", async context => {
   const {rm} = await import("node:fs/promises");
-  const {createNotice} = await import("../../../../packages/web-game/scripts/generate-third-party-licenses.mjs");
+  const {createNotice} = await import("../../../../scripts/web/generate-third-party-licenses.mjs");
   const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-license-command-"));
   context.after(() => rm(directory, {recursive: true, force: true}));
   const original = {path: process.env.PATH, executable: process.env.npm_execpath, inventory: process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH};
@@ -274,10 +274,10 @@ test("release child processes receive only the allowlist and isolated runtime pa
 
 test("Vite loads public browser values from the selected platform outside the shared game package", async () => {
   const [viteConfiguration, publicEnvironment] = await Promise.all([
-    readFile(new URL("../../../../packages/web-game/webTargetViteConfig.ts", import.meta.url), "utf8"),
+    readFile(new URL("../../../../scripts/web/build/webTargetViteConfig.ts", import.meta.url), "utf8"),
     readFile(new URL("../.env.jest", import.meta.url), "utf8"),
   ]);
-  assert.ok(viteConfiguration.includes('new URL(`../../platforms/web/${profile.id}/`, import.meta.url)'));
+  assert.ok(viteConfiguration.includes('new URL(`../../../platforms/web/${profile.id}/`, import.meta.url)'));
   assert.match(viteConfiguration, /envDir:\s*targetRoot/u);
   const environmentKeys = publicEnvironment
     .split(/\r?\n/u)
@@ -313,7 +313,7 @@ test("release sandbox mount order hides credentials and preserves read-only prov
     ],
     repositoryDirectory: "/home/release-operator/source/riddle-quest",
     sandboxDirectory: "/tmp/release-sandbox",
-    workingDirectory: "/home/release-operator/source/riddle-quest/packages/web-game",
+    workingDirectory: "/home/release-operator/source/riddle-quest/.",
   });
   const sequenceIndex = (...values) => {
     for (let index = 0; index <= sandboxArguments.length - values.length; index += 1) {
@@ -405,7 +405,7 @@ test("release sandbox mount order hides credentials and preserves read-only prov
 
 test("post-gate sandbox protects source and artifact while only receipts remain writable", () => {
   const repository = "/workspace/riddle-quest";
-  const receiptDirectory = `${repository}/packages/web-game/.jest-upload-receipts`;
+  const receiptDirectory = `${repository}/./.jest-upload-receipts`;
   const gateReceipt = `${receiptDirectory}/build.gated.json`;
   const sandboxArguments = createReleaseSandboxArguments({
     additionalMaskedDirectoryPaths: [receiptDirectory],
@@ -422,7 +422,7 @@ test("post-gate sandbox protects source and artifact while only receipts remain 
     repositoryDirectory: repository,
     repositoryReadOnly: true,
     sandboxDirectory: "/tmp/release",
-    workingDirectory: `${repository}/packages/web-game`,
+    workingDirectory: `${repository}/.`,
     writableBinds: [{source: receiptDirectory, destination: receiptDirectory}],
   });
   const sequenceIndex = (...values) => {
@@ -500,35 +500,21 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
   await Promise.all([
     mkdir(path.join(directory, "node_modules"), {recursive: true}),
     mkdir(path.join(directory, "firebase-functions", "node_modules"), {recursive: true}),
-    mkdir(path.join(directory, "firebase-functions", "packages", "core"), {recursive: true}),
-    mkdir(path.join(directory, "packages", "core", "node_modules"), {recursive: true}),
-    mkdir(path.join(directory, "packages", "hosted", "node_modules"), {recursive: true}),
-    mkdir(path.join(directory, "packages", "solo", "node_modules"), {recursive: true}),
-    mkdir(path.join(directory, "packages", "web-game", "node_modules"), {recursive: true}),
     ...platformPackageDirectories.map((platformDirectory) =>
       mkdir(path.join(directory, platformDirectory, "node_modules"), {recursive: true})),
   ]);
   for (const [relativePath, contents] of [
     ["package.json", "{\"name\":\"fixture\"}\n"],
     ["pnpm-lock.yaml", "lockfileVersion: '9.0'\n"],
-    ["pnpm-workspace.yaml", "packages: ['packages/*', 'platforms/web/*']\n"],
+    ["pnpm-workspace.yaml", "packages: ['platforms/web/*']\n"],
     [path.join("firebase-functions", "package.json"), "{\"name\":\"functions\"}\n"],
     [path.join("firebase-functions", "package-lock.json"), "{\"lockfileVersion\":3}\n"],
-    [path.join("firebase-functions", "packages", "core", "package.json"), "{\"name\":\"functions-core\"}\n"],
-    [path.join("packages", "core", "package.json"), "{\"name\":\"core\"}\n"],
-    [path.join("packages", "hosted", "package.json"), "{\"name\":\"hosted\"}\n"],
-    [path.join("packages", "solo", "package.json"), "{\"name\":\"solo\"}\n"],
-    [path.join("packages", "web-game", "package.json"), "{\"name\":\"portal\"}\n"],
     [path.join("node_modules", "release-tool.js"), "export default 'stable';\n"],
     [path.join("node_modules", ".modules.yaml"), "storeDir: /store\n"],
     [path.join("node_modules", "runtime-package", "index.js"), "export default 'runtime';\n"],
     [path.join("node_modules", "runtime-package", ".pnpm-workspace-state-v1.json"), "package-owned workspace state\n"],
     [path.join("node_modules", "runtime-package", ".pnpm-task-run-state-v1", "run.jsonl"), "package-owned task state\n"],
     [path.join("firebase-functions", "node_modules", "functions-runtime.js"), "functions-runtime\n"],
-    [path.join("packages", "core", "node_modules", "compiler.js"), "core-compiler\n"],
-    [path.join("packages", "hosted", "node_modules", "firebase.js"), "hosted-firebase\n"],
-    [path.join("packages", "solo", "node_modules", "react.js"), "solo-react\n"],
-    [path.join("packages", "web-game", "node_modules", "bundler.js"), "portal-bundler\n"],
     ...platformPackageDirectories.flatMap((platformDirectory) => [
       [path.join(platformDirectory, "package.json"), `${JSON.stringify({name: path.basename(platformDirectory)})}\n`],
       [path.join(platformDirectory, "node_modules", "runtime.js"), "platform-runtime\n"],
@@ -553,10 +539,6 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     path.join("node_modules", "runtime-package", "index.js"),
     path.join("node_modules", "runtime-package", ".pnpm-workspace-state-v1.json"),
     path.join("node_modules", "runtime-package", ".pnpm-task-run-state-v1", "run.jsonl"),
-    path.join("packages", "hosted", "package.json"),
-    path.join("packages", "solo", "package.json"),
-    path.join("packages", "hosted", "node_modules", "firebase.js"),
-    path.join("packages", "solo", "node_modules", "react.js"),
     ...platformPackageDirectories.flatMap((platformDirectory) => [
       path.join(platformDirectory, "package.json"),
       path.join(platformDirectory, "node_modules", "runtime.js"),
@@ -570,7 +552,7 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
   }
 
-  const cacheDirectory = path.join(directory, "packages", "web-game", "node_modules", ".vite");
+  const cacheDirectory = path.join(directory, "node_modules", ".vite");
   await mkdir(cacheDirectory);
   await writeFile(path.join(cacheDirectory, "generated-cache.js"), "mutable cache\n");
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
@@ -617,7 +599,7 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
   assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
 });
 
-test("immutable release sources resolve each workspace's installed dependencies", async (context) => {
+test("immutable release sources resolve root and platform dependencies", async (context) => {
   const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-release-snapshot-"));
   context.after(async () => {
     const {rm} = await import("node:fs/promises");
@@ -625,26 +607,24 @@ test("immutable release sources resolve each workspace's installed dependencies"
   });
   const repositoryDirectory = path.join(directory, "repository");
   const immutableSourceDirectory = path.join(directory, "snapshot");
-  for (const workspace of ["", "core", "hosted", "solo", "portal"]) {
-    const relativeDirectory = workspace ? path.join("packages", workspace) : "";
+  const platformDirectories = ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
+    .map(target => path.join("platforms", "web", target));
+  for (const relativeDirectory of ["", ...platformDirectories]) {
     await mkdir(path.join(repositoryDirectory, relativeDirectory, "node_modules"), {recursive: true});
     await mkdir(path.join(immutableSourceDirectory, relativeDirectory), {recursive: true});
   }
-  for (const [workspace, modulePath] of [["hosted", "firebase/functions.js"], ["solo", "react/index.js"]]) {
-    const moduleFile = path.join(repositoryDirectory, "packages", workspace, "node_modules", modulePath);
+  for (const [modulePath, contents] of [["firebase/functions.js", "firebase"], ["react/index.js", "react"]]) {
+    const moduleFile = path.join(repositoryDirectory, "node_modules", modulePath);
     await mkdir(path.dirname(moduleFile), {recursive: true});
-    await writeFile(moduleFile, `module.exports = ${JSON.stringify(workspace)};\n`);
+    await writeFile(moduleFile, `module.exports = ${JSON.stringify(contents)};\n`);
   }
-
-  const hosted = createRequire(path.join(immutableSourceDirectory, "packages", "hosted", "src", "gameFunctions.js"));
-  const solo = createRequire(path.join(immutableSourceDirectory, "packages", "solo", "src", "react", "boot.js"));
+  const hosted = createRequire(path.join(immutableSourceDirectory, "src", "hosted", "gameFunctions.js"));
+  const solo = createRequire(path.join(immutableSourceDirectory, "src", "solo", "react", "boot.js"));
   assert.throws(() => hosted("firebase/functions"), {code: "MODULE_NOT_FOUND"});
   assert.throws(() => solo("react"), {code: "MODULE_NOT_FOUND"});
-
   linkReleaseSnapshotDependencies({repositoryDirectory, immutableSourceDirectory});
-
-  assert.equal(hosted("firebase/functions"), "hosted");
-  assert.equal(solo("react"), "solo");
+  assert.equal(hosted("firebase/functions"), "firebase");
+  assert.equal(solo("react"), "react");
 });
 
 test("the game-and-build upload barrier is atomic, owner-private, and blocks retries", async (context) => {
@@ -948,7 +928,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     readFile(new URL("./jest-release-safety.mjs", import.meta.url), "utf8"),
     readFile(new URL("./release-jest-timestamped.mjs", import.meta.url), "utf8"),
     readFile(new URL("./upload-jest-build.mjs", import.meta.url), "utf8"),
-    readFile(new URL("../../../../packages/web-game/webTargetViteConfig.ts", import.meta.url), "utf8"),
+    readFile(new URL("../../../../scripts/web/build/webTargetViteConfig.ts", import.meta.url), "utf8"),
   ]);
 
   const findAfter = (pattern, start = 0) => {
@@ -968,7 +948,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     unresolvedBarrierIndex,
   );
   const consoleReadinessIndex = findAfter(
-    /\[\s*["']--filter["']\s*,\s*["']@riddle-quest\/portal["']\s*,\s*["']check:jest-console:release["']\s*\]/,
+    /\[\s*["']check:jest-console:release["']\s*\]/,
     dependencyCaptureIndex,
   );
   const gateIndex = findAfter(/\[\s*["']verify:production:extended["']\s*\]/, consoleReadinessIndex);
@@ -1148,7 +1128,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(releaseSource, /source: frozenLicenseInventoryPath, destination: frozenLicenseInventoryPath/);
   assert.ok(releaseSource.indexOf('const frozenLicenseInventoryPath =') < releaseSource.indexOf('const credentials = loadReleaseCredentials()'));
   const licenseGeneratorSource = await readFile(
-    new URL("../../../../packages/web-game/scripts/generate-third-party-licenses.mjs", import.meta.url),
+    new URL("../../../../scripts/web/generate-third-party-licenses.mjs", import.meta.url),
     "utf8",
   );
   assert.match(licenseGeneratorSource, /node_modules\/\.modules\.yaml/);

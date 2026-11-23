@@ -3,7 +3,7 @@ import {
   JEST_REFERRAL_REFERENCES,
   isJestRewardedReferralReference,
   type JestReferralReference,
-} from "@riddle-quest/core/referrals";
+} from "../../../../src/core/referrals/index.js";
 
 /** Maximum platform player-ID bytes accepted from a signed referral snapshot. */
 const MAX_REFERRAL_PLAYER_ID_BYTES = 512;

@@ -1,5 +1,5 @@
-import type {JoinLiveRace, RaceLocale} from "@riddle-quest/core/race";
-import type {MatchmakingCapability} from "../../../../packages/web-game/src/platform/types";
+import type {JoinLiveRace, RaceLocale} from "../../../../src/core/race";
+import type {MatchmakingCapability} from "../../../../src/web/platform/types";
 import type {FacebookContextCoordinator} from "./contexts";
 
 /** Captures one synchronized SDK destination per join attempt while the server owns membership and score authority. */

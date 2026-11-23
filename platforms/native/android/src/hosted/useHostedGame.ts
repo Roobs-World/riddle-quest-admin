@@ -1,9 +1,9 @@
-import type {BridgeRiddle} from "@riddle-quest/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
-import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
-import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "@riddle-quest/hosted/play/pendingGuessJournal";
-import {readPendingGuessJournal} from "@riddle-quest/hosted/play/readPendingGuessJournal";
-import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "@riddle-quest/solo";
+import type {BridgeRiddle} from "../../../../../src/core/bridge";
+import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "../../../../../src/hosted/hostTypes";
+import {createInitialGameSession, gameSessionReducer} from "../../../../../src/hosted/play/gameSession";
+import {capturePendingBase, clearPendingGuessJournal, pendingPlayScope, writePendingGuessJournal, type PendingGuessJournal, type QueuedGuess} from "../../../../../src/hosted/play/pendingGuessJournal";
+import {readPendingGuessJournal} from "../../../../../src/hosted/play/readPendingGuessJournal";
+import {deleteYouTubeAnswerLetter, insertYouTubeAnswerText} from "../../../../../src/solo";
 import type {AndroidPendingPlayStorage} from "./pendingPlayStorage";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 /** Positional colour of one accepted letter, matching the shared single-player feedback names. */

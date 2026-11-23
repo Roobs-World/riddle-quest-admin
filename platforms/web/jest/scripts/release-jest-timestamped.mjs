@@ -36,7 +36,7 @@ import {
   snapshotPnpmStoreIndex,
 } from "./jest-release-safety.mjs";
 
-const packageDirectory = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const packageDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const gitExecutable = "/usr/bin/git";
 const receiptDirectory = join(packageDirectory, ".jest-upload-receipts");
@@ -59,15 +59,12 @@ const ignoredSensitiveFilePaths = [repositoryDirectory, join(repositoryDirectory
     .filter((name) => /^(?:firebase|firestore)-debug(?:\.\d+)?\.log$/u.test(name))
     .map((name) => join(directory, name)))
   .filter((path) => !releaseDebugLogDestinationSet.has(path));
-const legacyViteEnvironmentPaths = [...new Set([
-  ".env",
-  ".env.local",
-  ".env.jest",
-  ".env.jest.local",
-  ".env.jest-upload.local",
-  ...readdirSync(packageDirectory)
-    .filter((name) => name === ".env" || name.startsWith(".env.")),
-].map((name) => join(packageDirectory, name)))];
+const legacyPackageDirectory = join(repositoryDirectory, "packages", "web-game");
+const legacyViteEnvironmentPaths = existsSync(legacyPackageDirectory)
+  ? readdirSync(legacyPackageDirectory)
+    .filter((name) => name === ".env" || name.startsWith(".env."))
+    .map((name) => join(legacyPackageDirectory, name))
+  : [];
 const operatorHomeDirectory = homedir();
 if (process.platform !== "linux") {
   throw new Error("Secure Jest releases require Linux and functional bubblewrap; refusing an unsandboxed fallback");
@@ -504,7 +501,7 @@ const skipTests = process.env.JEST_RELEASE_SKIP_TESTS === "true";
 const activationRequested = process.env.JEST_RELEASE_INACTIVE !== "true";
 const workspaceDirectory = join(workspaceRoot, buildVersion);
 const immutableSourceDirectory = join(workspaceDirectory, "source");
-const immutablePackageDirectory = join(immutableSourceDirectory, "packages", "web-game");
+const immutablePackageDirectory = immutableSourceDirectory;
 const releaseBuildDirectory = join(workspaceDirectory, "build");
 const verifiedBuildDirectory = join(workspaceDirectory, "verified");
 const archivePath = join(workspaceDirectory, `${buildVersion}.zip`);
@@ -569,7 +566,7 @@ mkdirSync(gatePreflightDirectory, {mode: 0o700});
 Object.assign(gateEnvironment, {
   RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: join(gatePreflightDirectory, "target-dependencies"),
   JEST_ARCHIVE_PATH: join(gatePreflightDirectory, "build.zip"),
-  JEST_BUILD_DIRECTORY: join(packageDirectory, "../../builds/jest"),
+  JEST_BUILD_DIRECTORY: join(packageDirectory, "builds/jest"),
   JEST_GATE_RECEIPT_PATH: join(gatePreflightDirectory, "gated-artifact.json"),
   JEST_RECEIPT_DIRECTORY: gatePreflightDirectory,
 });
@@ -600,11 +597,11 @@ const materializeCommittedSource = () => {
 const trustedScriptsDirectory = join(releaseSandboxDirectory, "trusted-scripts");
 const trustedScriptPaths = new Map([
   ["audit-jest-artifact.mjs", "platforms/web/jest/scripts/audit-jest-artifact.mjs"],
-  ["web-target-artifact-inventory.mjs", "packages/web-game/scripts/web-target-artifact-inventory.mjs"],
+  ["web-target-artifact-inventory.mjs", "scripts/web/web-target-artifact-inventory.mjs"],
   ["jest-release-safety.mjs", "platforms/web/jest/scripts/jest-release-safety.mjs"],
   ["jest-upload-artifact.mjs", "platforms/web/jest/scripts/jest-upload-artifact.mjs"],
   ["upload-jest-build.mjs", "platforms/web/jest/scripts/upload-jest-build.mjs"],
-  ["validate-w3c.mjs", "packages/web-game/scripts/validate-w3c.mjs"],
+  ["validate-w3c.mjs", "scripts/web/validate-w3c.mjs"],
 ]);
 const snapshotTrustedReleaseScripts = () => {
   mkdirSync(trustedScriptsDirectory, {mode: 0o700});
@@ -709,7 +706,7 @@ try {
   // Known Console metadata and assets are part of ordinary builds. A real
   // timestamped release additionally requires the two owner-approved identity
   // decisions before this process reads credentials or can transmit bytes.
-  runPnpm(["--filter", "@riddle-quest/portal", "check:jest-console:release"], gateEnvironment);
+  runPnpm(["check:jest-console:release"], gateEnvironment);
 
   // The long gate receives metadata only: no upload token, email, credential
   // path, Sentry token, or unrelated ambient environment. Release credentials
@@ -719,7 +716,7 @@ try {
   // Capture the installed graph while the read-only package store is available.
   // The credential-bearing rebuild consumes this frozen input without querying pnpm.
   const frozenLicenseInventoryPath = join(gatePreflightDirectory, "license-inventory.json");
-  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "@riddle-quest/portal", "licenses", "list", "--json"], {
+  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "riddle-quest", "licenses", "list", "--json"], {
     captureOutput: true,
     env: {...gateEnvironment, pnpm_config_store_dir: isolatedPnpmLicenseStoreDirectory},
   }).stdout);
@@ -792,7 +789,7 @@ try {
     JEST_UPLOAD_DRY_RUN: "false",
   };
 
-  runNode(join(immutablePackageDirectory, "scripts", "audit-locales.mjs"), [], immutableEnvironment, immutablePackageDirectory);
+  runNode(join(immutablePackageDirectory, "scripts", "web", "audit-locales.mjs"), [], immutableEnvironment, immutablePackageDirectory);
   // Invoke the resolved committed tool directly. `pnpm exec` performs a
   // dependency-state check that writes beside node_modules and is incompatible
   // with the intentionally read-only immutable release tree.
@@ -866,9 +863,9 @@ try {
   };
   if (!skipTests) {
     for (const testPath of [
-      "src/play/__tests__/hostedBrowser.jest-playwright.test.ts",
-      "src/play/__tests__/musicStart.jest-playwright.test.ts",
-      "../../platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
+      "src/web/play/__tests__/hostedBrowser.jest-playwright.test.ts",
+      "src/web/play/__tests__/musicStart.jest-playwright.test.ts",
+      "platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
     ]) {
       runNode(
         resolveJestCli(),

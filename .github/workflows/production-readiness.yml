@@ -45,10 +45,10 @@ jobs:
       - run: pnpm check:facebook-secrets
       - run: pnpm check:facebook-copy
       - run: pnpm test:coverage:jest-facebook
-      - run: pnpm --filter @riddle-quest/portal test:release-scripts
+      - run: pnpm --filter riddle-quest test:release-scripts
       - run: pnpm test:architecture
       - run: pnpm build:jest-facebook
-      - run: git diff --exit-code -- firebase-functions/packages/core/package.json
+      - run: git diff --exit-code -- firebase-functions/package.json
 
   functions-node22:
     name: Firebase Functions (Node 22)
@@ -96,10 +96,10 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
+      - run: pnpm --filter riddle-quest exec playwright install --with-deps chromium
       - run: pnpm test:e2e:jest-facebook
-      - run: pnpm --filter @riddle-quest/portal validate:w3c ../../builds/jest/index.html ../../builds/facebook/index.html
-      - run: pnpm --filter @riddle-quest/portal preflight:jest-upload
+      - run: pnpm --filter riddle-quest validate:w3c builds/jest/index.html builds/facebook/index.html
+      - run: pnpm --filter riddle-quest preflight:jest-upload
       - name: Package the Facebook build already verified by the browser suite
         run: node platforms/web/facebook/scripts/prepare-facebook-draft.mjs
       - run: pnpm check:facebook-progress

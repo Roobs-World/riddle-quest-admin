@@ -1,6 +1,6 @@
-import {tr} from "../../../../packages/web-game/src/play/i18n";
-import {captureVictoryShareImage} from "../../../../packages/web-game/src/play/sharing/shareImages";
-import type {ReferralSharingCapability, ReferralShareOutcome} from "../../../../packages/web-game/src/play/sharing/ReferralSharingCapability";
+import {tr} from "../../../../src/web/play/i18n";
+import {captureVictoryShareImage} from "../../../../src/web/play/sharing/shareImages";
+import type {ReferralSharingCapability, ReferralShareOutcome} from "../../../../src/web/play/sharing/ReferralSharingCapability";
 import type {FacebookInstantSdk, FacebookSharePayload} from "./fbinstant";
 import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookReferralToken, parseFacebookReferralTokenResponse} from "./referrals";

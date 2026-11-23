@@ -1,6 +1,6 @@
 # Shared browser game
 
-The shared browser UI and build infrastructure live in `packages/web-game`. Read [platform ownership](../architecture/platform-layout.md) before adding provider-specific behavior.
+The shared browser UI lives in `src/web`. Common browser build tools live in `scripts/web` and use the root configuration. Read [platform ownership](../architecture/platform-layout.md) before adding provider-specific behavior.
 
 - [Visual parity acceptance pack](visual-parity/README.md)
 - [Reference screenshots](reference-screenshots/README.md)

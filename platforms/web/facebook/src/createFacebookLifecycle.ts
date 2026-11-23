@@ -1,4 +1,4 @@
-import type {LifecycleCapability} from "../../../../packages/web-game/src/platform/types";
+import type {LifecycleCapability} from "../../../../src/web/platform/types";
 import type {FacebookInstantSdk} from "./fbinstant";
 
 /** One native registration fans out pause/resume to independently owned app consumers. */

@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceCategoryIdSchema} from "@riddle-quest/core/race";
+import {RaceCategoryIdSchema} from "../../../src/core/race/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {FacebookLiveContextBindingSchema} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 

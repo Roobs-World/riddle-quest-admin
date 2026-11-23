@@ -1,4 +1,4 @@
-import {type ReadyRaceRunRequest, type RaceRunResponse} from "@riddle-quest/core/race";
+import {type ReadyRaceRunRequest, type RaceRunResponse} from "../../../src/core/race/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";

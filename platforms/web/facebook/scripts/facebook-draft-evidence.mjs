@@ -15,7 +15,7 @@ import {
 
 import {assertFacebookHandoffsSettled, loadFacebookHandoff, withFacebookReleaseLock} from "./facebook-release-state.mjs";
 
-const packageDirectory = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const packageDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const archivePath = path.join(packageDirectory, "build-facebook.zip");
 const receiptDirectory = path.join(packageDirectory, ".facebook-upload-receipts");

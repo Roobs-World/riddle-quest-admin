@@ -23,7 +23,7 @@ export interface FacebookFirebaseAuthRuntime {
 const defaultFirebaseRuntime = async (): Promise<FacebookFirebaseAuthRuntime> => {
   /** Provides [firebase, {initialize facebook app check}, {sign in with custom token}] behavior. */
   const [firebase, {initializeFacebookAppCheck}, {signInWithCustomToken}] = await Promise.all([
-    import("../../../../packages/web-game/src/firebase"),
+    import("../../../../src/web/firebase"),
     import("./FacebookFirebaseAppCheck"),
     import("firebase/auth"),
   ]);

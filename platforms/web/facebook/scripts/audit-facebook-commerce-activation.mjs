@@ -55,7 +55,7 @@ if (isMain) {
     `${root}/platforms/web/facebook/src/FacebookCommerceCapability.ts`,
     `${root}/platforms/web/facebook/src/FacebookPurchaseRecovery.ts`,
   ]);
-  const paths = collect(`${root}/packages/web-game/src`).filter((path) => !excluded.has(path));
+  const paths = collect(`${root}/src/web`).filter((path) => !excluded.has(path));
   const failures = auditFacebookCommerceActivation({
     runtimeSources: paths.map((path) => ({name: path.slice(root.length), source: readFileSync(path, "utf8")})),
     bootstrapSource: readFileSync(bootstrapPath, "utf8"),

@@ -1,5 +1,5 @@
 import {REDDIT_HUB_POLL_MS, REDDIT_RACE_POLL_MS, RedditPollingPresence} from "../RedditPollingPresence";
-import type {PresenceCapability} from "../../../../../packages/web-game/src/platform/types";
+import type {PresenceCapability} from "../../../../../src/web/platform/types";
 
 /** Held provider result used to verify that old rival projections cannot outlive consent. */
 type HeldRivalResult = {

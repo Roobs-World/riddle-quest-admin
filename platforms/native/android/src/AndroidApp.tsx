@@ -1,9 +1,9 @@
 import {useAuthSnapshot} from "./hosted/useAuthSnapshot";
 import {HostedReferralScreen} from "./screens/HostedReferralScreen";
-import {createPurchaseRecovery} from "@riddle-quest/hosted/commerce/purchaseRecovery";
+import {createPurchaseRecovery} from "../../../../src/hosted/commerce/purchaseRecovery";
 import {AppState, BackHandler} from "react-native";
-import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
-import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "@riddle-quest/solo";
+import type {HostServices, WebGameMode} from "../../../../src/hosted/hostTypes";
+import {resolveYouTubeLocale, type YouTubeContentSource, type YouTubeLocale, type YouTubeSdkPort} from "../../../../src/solo";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {createAndroidCommerce} from "./billing/androidCommerce";
 import type {PlayBillingPort} from "./billing/playBilling";

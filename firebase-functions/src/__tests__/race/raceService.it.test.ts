@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {logger} from "firebase-functions";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_CHALLENGE_TTL_MS} from "@riddle-quest/core/race";
+import {RACE_CHALLENGE_TTL_MS} from "../../../../src/core/race/index.js";
 import {
   abandonRaceRunForUser,
   getRaceOutcomeForUser,

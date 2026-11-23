@@ -5,7 +5,7 @@ import {
   CompleteGameResponseDataSchema,
   SubmitGuessRequestDataSchema,
   SubmitGuessResponseDataSchema,
-} from "@riddle-quest/core/validation/requestSchemas";
+} from "../../../src/core/validation/requestSchemas.js";
 
 // Import types and interfaces to test
 import type {
@@ -14,7 +14,7 @@ import type {
   SubmitGuessRequestData,
   SubmitGuessAuthContext,
   SubmitGuessResponseData,
-} from "@riddle-quest/core/validation/requestSchemas";
+} from "../../../src/core/validation/requestSchemas.js";
 
 describe("Request Schemas", () => {
   describe("Zod callable contracts", () => {

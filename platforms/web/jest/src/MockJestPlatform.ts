@@ -7,7 +7,7 @@ import type {
   ScreenshotProvider,
 } from "./types";
 import {parseEntryIntent} from "./entryIntent";
-import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../../../packages/web-game/src/platform/browserStorage";
+import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../../../src/web/platform/browserStorage";
 
 /** Provides ok behavior. */
 const ok = <T>(value: T): PlatformResult<T> => ({status: "success", value});
@@ -37,7 +37,7 @@ export class MockJestPlatform implements JestPlatformPort {
     /** Stores name. */
     name: string; /** Stores properties. */
     /** Stores properties. */
-    properties?: import("../../../../packages/web-game/src/analytics/events").SanitizedAnalyticsParams;
+    properties?: import("../../../../src/web/analytics/events").SanitizedAnalyticsParams;
   }> = [];
   /** Stores subscription active. */
   subscriptionActive = false;
@@ -231,7 +231,7 @@ export class MockJestPlatform implements JestPlatformPort {
     return ok(undefined);
   };
   /** Captures event. */
-  captureEvent = (name: string, properties?: import("../../../../packages/web-game/src/analytics/events").SanitizedAnalyticsParams) => {
+  captureEvent = (name: string, properties?: import("../../../../src/web/analytics/events").SanitizedAnalyticsParams) => {
     this.capturedEvents.push({name, properties});
   };
   /** Provides mark first milestone behavior. */

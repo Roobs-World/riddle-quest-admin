@@ -5,7 +5,7 @@ import {fileURLToPath} from "node:url";
 import {dirname, resolve} from "node:path";
 import {deleteApp, initializeApp} from "firebase/app";
 import {connectAuthEmulator, deleteUser, getAuth, getIdTokenResult, GoogleAuthProvider, linkWithCredential, reauthenticateWithCredential, signInAnonymously, signInWithCredential, signOut} from "firebase/auth";
-import {createAndroidGoogleIdentity} from "../../../../packages/hosted/src/identity/androidGoogleIdentity.ts";
+import {createAndroidGoogleIdentity} from "../src/auth/androidGoogleIdentity.ts";
 
 /** This proof refuses to contact Firebase production or a remote authentication service. */
 const host = process.env.FIREBASE_AUTH_EMULATOR_HOST;

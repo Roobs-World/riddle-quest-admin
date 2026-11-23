@@ -1,5 +1,5 @@
 import {jest} from "@jest/globals";
-import {UsernameSchema} from "@riddle-quest/core/validation/requestSchemas";
+import {UsernameSchema} from "../../../../../src/core/validation/requestSchemas.js";
 import {createJestUser, createReservedJestUser} from "../jestUser";
 
 describe("Jest user defaults", () => {

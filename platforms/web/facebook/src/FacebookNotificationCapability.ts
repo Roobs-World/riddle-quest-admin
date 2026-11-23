@@ -1,4 +1,4 @@
-import type {NotificationCapability, PlatformResult} from "../../../../packages/web-game/src/platform/types";
+import type {NotificationCapability, PlatformResult} from "../../../../src/web/platform/types";
 import type {FacebookInstantSdk} from "./fbinstant";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 

@@ -1,4 +1,4 @@
-import {getYouTubeAchievementIcon, youtubeText, type YouTubeAuthoritySnapshot, type YouTubeCopyKey, type YouTubeLocale} from "@riddle-quest/solo";
+import {getYouTubeAchievementIcon, youtubeText, type YouTubeAuthoritySnapshot, type YouTubeCopyKey, type YouTubeLocale} from "../../../../../src/solo";
 import {StyleSheet, Text, View} from "react-native";
 import {palette, radius, spacing} from "../theme";
 import {Banner} from "./Primitives";

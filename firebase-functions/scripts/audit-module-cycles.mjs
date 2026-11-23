@@ -2,15 +2,11 @@ import {lstat, readFile, readdir} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import ts from "typescript";
+import {serverRoots, sharedSourceRoots} from "./stage-platform-source.js";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../src", import.meta.url));
-const providerSourceDirectories = [
-  "../../platforms/native/android/server",
-  "../../platforms/web/jest/server",
-  "../../platforms/web/facebook/server",
-  "../../platforms/web/reddit/server",
-  "../../platforms/web/yahoo/server",
-].map((relative) => fileURLToPath(new URL(relative, import.meta.url)));
+const providerSourceDirectories = [...serverRoots, ...sharedSourceRoots]
+  .map((relative) => fileURLToPath(new URL(`../../${relative}`, import.meta.url)));
 const compilerOptions = Object.freeze({
   allowJs: true,
   module: ts.ModuleKind.NodeNext,
@@ -42,6 +38,7 @@ const isProductionModule = (name) =>
   !/\.(?:test|spec)\.(?:[cm]?js|tsx?)$/u.test(name);
 
 const collectProductionModules = async (sourceDirectory) => {
+  if ((await lstat(sourceDirectory)).isFile()) return [sourceDirectory];
   const modules = [];
   const walk = async (directory) => {
     const entries = await readdir(directory, {withFileTypes: true});

@@ -1,8 +1,8 @@
 import {useCallback, useEffect, useRef, type Dispatch, type MutableRefObject, type SetStateAction} from "react";
-import {captureBrowserException} from "../../../../packages/web-game/src/observability/browserErrorReporter";
-import type {ActivePresenceState, PlatformPresenceSession} from "../../../../packages/web-game/src/presence/PlatformPresenceSession";
-import {reconcilePresenceOptIn} from "../../../../packages/web-game/src/presence/reconcilePresenceOptIn";
-import {startOptionalPresence} from "../../../../packages/web-game/src/presence/startOptionalPresence";
+import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
+import type {ActivePresenceState, PlatformPresenceSession} from "../../../../src/web/presence/PlatformPresenceSession";
+import {reconcilePresenceOptIn} from "../../../../src/web/presence/reconcilePresenceOptIn";
+import {startOptionalPresence} from "../../../../src/web/presence/startOptionalPresence";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestPlatformPort, JestSession} from "./types";
 
@@ -44,8 +44,8 @@ export function useJestPresence({
     void (async () => {
       /** Provides [{firebase presence transport}, {platform presence session}] behavior. */
       const [{FirebasePresenceTransport}, {PlatformPresenceSession}] = await Promise.all([
-        import("../../../../packages/web-game/src/presence/FirebasePresenceTransport"),
-        import("../../../../packages/web-game/src/presence/PlatformPresenceSession"),
+        import("../../../../src/web/presence/FirebasePresenceTransport"),
+        import("../../../../src/web/presence/PlatformPresenceSession"),
       ]);
       if (!active) return;
       /** Provides presence behavior. */
@@ -115,7 +115,7 @@ export function useJestPresence({
           stop: () => presence.stop(),
           setConsent: async (enabled) => {
             /** Provides {set presence consent} behavior. */
-            const {setPresenceConsent} = await import("../../../../packages/web-game/src/firebase");
+            const {setPresenceConsent} = await import("../../../../src/web/firebase");
             await setPresenceConsent({enabled});
           },
         });

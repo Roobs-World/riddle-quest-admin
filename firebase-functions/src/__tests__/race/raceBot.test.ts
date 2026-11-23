@@ -1,4 +1,4 @@
-import {RaceGhostEventSchema, RACE_RULES} from "@riddle-quest/core/race";
+import {RaceGhostEventSchema, RACE_RULES} from "../../../../src/core/race/index.js";
 import {buildRaceBotOpponent, parseRaceBotOffer, type RaceBotOffer} from "../../race/raceBot";
 import {toRaceRunView, refreshRaceRun, raceDeadlineAtMs, type RaceRunRecord} from "../../race/raceEngine";
 

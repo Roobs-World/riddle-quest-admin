@@ -1,9 +1,9 @@
 import {type Browser} from "@playwright/test";
 import {installJestSdkHarness} from "./authentication.jest-sdk-harness";
 import {installJestSdkRequestRoute} from "./authentication.jest-playwright.support";
-import {createFakeRaceServices} from "../../../../../packages/web-game/src/play/race/testing/fakeRaceServices";
-import {projectRaceOutcome} from "../../../../../packages/web-game/src/play/race/logic/racePresentation";
-import type {RaceRunView} from "@riddle-quest/core/race";
+import {createFakeRaceServices} from "../../../../../src/web/play/race/testing/fakeRaceServices";
+import {projectRaceOutcome} from "../../../../../src/web/play/race/logic/racePresentation";
+import type {RaceRunView} from "../../../../../src/core/race";
 
 /** Creates an isolated authenticated page with optional race authority fixtures. */
 export const openAuthenticationHarness = async (

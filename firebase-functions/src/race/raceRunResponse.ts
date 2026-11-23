@@ -1,4 +1,4 @@
-import {RaceRunResponseSchema, type RaceRunResponse} from "@riddle-quest/core/race";
+import {RaceRunResponseSchema, type RaceRunResponse} from "../../../src/core/race/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {toRaceRunView, type RaceRunRecord} from "./raceEngine";
 

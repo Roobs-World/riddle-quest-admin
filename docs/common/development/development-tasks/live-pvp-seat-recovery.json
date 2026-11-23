@@ -650,7 +650,7 @@
         "--config",
         "jest.config.cjs",
         "--runInBand",
-        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
         "--testNamePattern=opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge|refreshes subscription changes|starts a guest through signed"
       ]
     },
@@ -1123,7 +1123,7 @@
         "@qwordly/portal",
         "test",
         "--runInBand",
-        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
         "--testNamePattern=starts a guest through signed identity|opens the live PvP intro for ordinary multiplayer|opens the live PvP intro for retired results inbox|opens the live PvP intro for retired recorded challenge"
       ]
     },
@@ -1138,7 +1138,7 @@
         "@qwordly/portal",
         "test",
         "--runInBand",
-        "src/jest/__tests__/authentication.jest-playwright.test.ts",
+        "platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
         "--testNamePattern=keeps unavailable Daily visible"
       ]
     },

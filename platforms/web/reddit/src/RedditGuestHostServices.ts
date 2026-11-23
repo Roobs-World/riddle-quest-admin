@@ -1,9 +1,9 @@
-import {readProtectedContent} from "@riddle-quest/core/contentProtection";
-import {computeFeedback, splitGraphemes} from "@riddle-quest/core/game";
-import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@riddle-quest/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "@riddle-quest/hosted/hostTypes";
-import type {SavedGame} from "../../../../packages/web-game/src/platform/types";
-import {parseSavedGame} from "../../../../packages/web-game/src/platform/playerDataValidation";
+import {readProtectedContent} from "../../../../src/core/contentProtection";
+import {computeFeedback, splitGraphemes} from "../../../../src/core/game";
+import type {BridgeProfile, BridgeRiddle, BridgeUser} from "../../../../src/core/bridge";
+import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "../../../../src/hosted/hostTypes";
+import type {SavedGame} from "../../../../src/web/platform/types";
+import {parseSavedGame} from "../../../../src/web/platform/playerDataValidation";
 
 /** Encrypted non-economic guest examples; answers are decoded only when guest play needs them. */
 const protectedRiddles = {"contentProtection":1,"iv":"7597a7068e78eb9259c77597","data":"21f77dd0362498d4f59c8133811546203d6cf9fed6924dd55c289801fc128e5f260cc79a96b70dcf48b456ba1f5927593aa6ec7dec48069ac0e7cd29bfa5666f70739aa0718679626d77658f51acb6c934739158a036fa1f226b60e5540d90600b208afc3f06b014c1fc92046f1871b3b795c221f3adec5beaf5d8f8b4c4242c0649afffeb0723422e4337c3fcec15807daf02e95dadd4433c2d7e76151f80583c43ac284142d5d9a38c50edf0c51cf6fd71f6a872685f768fc26bbd94e2376c97"};

@@ -5,7 +5,7 @@ import {
   type YouTubeContentEnvelope,
   type YouTubeSaveV1,
   type YouTubeSdkPort,
-} from "@riddle-quest/solo";
+} from "../../../../../src/solo";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider, type Metrics} from "react-native-safe-area-context";
 import fixture from "#solo-content";

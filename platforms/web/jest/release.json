@@ -9,7 +9,7 @@
     "executable": "pnpm",
     "args": [
       "--filter",
-      "@riddle-quest/portal",
+      "riddle-quest",
       "release:jest:timestamped"
     ]
   },

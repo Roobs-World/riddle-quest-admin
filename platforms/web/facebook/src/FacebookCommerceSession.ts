@@ -1,5 +1,5 @@
-import {FACEBOOK_PRODUCTS} from "@riddle-quest/core/pricing/facebookCatalog";
-import type {ProductSummary, PurchaseResult} from "@riddle-quest/hosted/hostTypes";
+import {FACEBOOK_PRODUCTS} from "./commerce/facebookCatalog";
+import type {ProductSummary, PurchaseResult} from "../../../../src/hosted/hostTypes";
 import {FacebookCommerceCapability} from "./FacebookCommerceCapability";
 import type {FacebookInstantPayments, FacebookInstantSdk} from "./fbinstant";
 import type {FacebookPurchaseGrant} from "./FacebookPurchaseRecovery";

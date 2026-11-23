@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {YouTubeLocale} from "../../../../../src/solo";
 /** Native notification settings in every supported locale. */
 const COPY = {
   en: {

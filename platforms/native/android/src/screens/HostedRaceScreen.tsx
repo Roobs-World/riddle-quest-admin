@@ -1,8 +1,8 @@
-import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "@riddle-quest/core/race";
-import {createFirebaseLiveTransport} from "@riddle-quest/hosted/live/firebaseLiveTransport";
-import type {HostServices} from "@riddle-quest/hosted/hostTypes";
-import {formatRaceTime} from "@riddle-quest/hosted/race/logic/racePresentation";
-import {canShowLatinShortcut, type YouTubeLocale} from "@riddle-quest/solo";
+import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "../../../../../src/core/race";
+import {createFirebaseLiveTransport} from "../../../../../src/hosted/live/firebaseLiveTransport";
+import type {HostServices} from "../../../../../src/hosted/hostTypes";
+import {formatRaceTime} from "../../../../../src/hosted/race/logic/racePresentation";
+import {canShowLatinShortcut, type YouTubeLocale} from "../../../../../src/solo";
 import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {BackHandler, Image, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";

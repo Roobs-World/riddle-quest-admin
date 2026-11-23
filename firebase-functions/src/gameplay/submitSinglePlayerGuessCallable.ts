@@ -4,7 +4,7 @@ import {
   SubmitSinglePlayerGuessResponseDataSchema,
   type SubmitSinglePlayerGuessRequestData,
   type SubmitSinglePlayerGuessResponseData,
-} from "@riddle-quest/core/validation/requestSchemas";
+} from "../../../src/core/validation/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";

@@ -1,4 +1,4 @@
-import {UpdateAvatarRequestSchema} from "@riddle-quest/core/validation/requestSchemas";
+import {UpdateAvatarRequestSchema} from "../../../../../src/core/validation/requestSchemas";
 import {NativeModules} from "react-native";
 
 /** Reads the prepared avatar from Android's system picker, without media-library permissions. */

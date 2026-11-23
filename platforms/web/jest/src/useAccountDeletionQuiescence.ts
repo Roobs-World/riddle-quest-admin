@@ -5,7 +5,7 @@ import {
   isAccountDeletionCleanupPending,
 } from "./accountDeletionCleanup";
 import type {NotificationOperationGate} from "./notifications/operationGate";
-import {installBrowserPlayerStateMutationGuard} from "../../../../packages/web-game/src/play/playerPreferences";
+import {installBrowserPlayerStateMutationGuard} from "../../../../src/web/play/playerPreferences";
 
 /** Permanently quiesces a live tab when another same-origin tab requests deletion. */
 export function useAccountDeletionQuiescence(gate: NotificationOperationGate): boolean {

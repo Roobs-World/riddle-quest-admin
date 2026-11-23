@@ -1,7 +1,7 @@
-import type {LiveRaceCapability, RaceLocale} from "@riddle-quest/core/race";
+import type {LiveRaceCapability, RaceLocale} from "../../../../src/core/race";
 import english from "../../../../src/locales/en/race.json";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
-import {captureVictoryShareImage} from "../../../../packages/web-game/src/play/sharing/shareImages";
+import {tr} from "../../../../src/web/play/i18n";
+import {captureVictoryShareImage} from "../../../../src/web/play/sharing/shareImages";
 import type {FacebookContextCoordinator} from "./contexts";
 import type {FacebookInstantSdk} from "./fbinstant";
 import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";

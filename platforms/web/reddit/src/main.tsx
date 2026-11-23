@@ -2,7 +2,7 @@ import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
 import "./localeNamespace";
 import {RedditPlatformEntry} from "./RedditPlatformEntry";
-import "../../../../packages/web-game/src/styles.css";
+import "../../../../src/web/styles.css";
 
 /** Provides root behavior. */
 const root = document.getElementById("root");

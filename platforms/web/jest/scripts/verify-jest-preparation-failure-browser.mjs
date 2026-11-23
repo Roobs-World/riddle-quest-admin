@@ -7,8 +7,8 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
-const root = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
-const evidence = path.resolve(process.env.JEST_PREPARATION_FAILURE_EVIDENCE ?? path.join(root, '../../artifacts/jest-preparation-failure'));
+const root = fileURLToPath(new URL("../../../../", import.meta.url));
+const evidence = path.resolve(process.env.JEST_PREPARATION_FAILURE_EVIDENCE ?? path.join(root, 'artifacts/jest-preparation-failure'));
 await mkdir(evidence, {recursive: true});
 await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
 const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/jest-preparation-failure-'));
@@ -16,7 +16,7 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><div id="host-loading" style="position:fixed;inset:0;background:#333;color:white;z-index:9999">Host loading</div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {JestPlayApp} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/JestPlayApp.tsx'))};
+import {JestPlayApp} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/JestPlayApp.tsx'))};
 window.fixture={calls:[],reads:0};
 createRoot(document.getElementById('root')).render(<JestPlayApp/>);
 `);
@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')).render(<JestPlayApp/>);
 // app, startup/commit boundary, failure view, locale loading and gate stay intact.
 const overrides = {
   './runtimeMode': `export const resolveJestRuntimeMode=()=>({authHarness:false,mockBackend:false,useSdkPlatform:false});export const shouldEnableJestSubscriptions=()=>false;`,
-  './MockJestPlatform': `import {MockJestPlatform as Base} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/MockJestPlatform.ts'))};
+  './MockJestPlatform': `import {MockJestPlatform as Base} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/MockJestPlatform.ts'))};
 export class MockJestPlatform extends Base{constructor(){super(false);window.fixture.platform=this;
 const progress=this.setLoadingProgress;this.setLoadingProgress=value=>{window.fixture.calls.push(['progress',value]);progress(value);};
 const loaded=this.markGameLoaded;this.markGameLoaded=()=>{window.fixture.calls.push(['loaded']);loaded();document.getElementById('host-loading')?.remove();};
@@ -46,10 +46,10 @@ try {
   await build({root:scratch,configFile:false,logLevel:'error',
     define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},
     plugins:[{name:'isolated-startup-authority',enforce:'pre',
-      resolveId(id,importer){if(importer===path.join(root,'../../platforms/web/jest/src/JestPlayApp.tsx')&&id in overrides)return '\0startup-fixture:'+id;},
+      resolveId(id,importer){if(importer===path.join(root,'platforms/web/jest/src/JestPlayApp.tsx')&&id in overrides)return '\0startup-fixture:'+id;},
       load(id){if(id.startsWith('\0startup-fixture:'))return overrides[id.slice('\0startup-fixture:'.length)];},
     }],
-    resolve:{alias:{'@riddle-quest/core/referrals':path.join(root,'../core/src/referrals/index.ts'),'@riddle-quest/core/bridge/constants':path.join(root,'../core/src/bridge/constants.ts'),'@riddle-quest/core/race':path.join(root,'../core/src/race/index.ts')}},
+
     build:{outDir:'dist'},
   });
   server=createServer(async(request,response)=>{

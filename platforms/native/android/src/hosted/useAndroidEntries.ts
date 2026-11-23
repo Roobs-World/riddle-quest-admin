@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AndroidEntryInbox, parseAndroidInviteEntry, type AndroidInviteEntry} from "@riddle-quest/hosted/androidEntryInbox";
+import {AndroidEntryInbox, parseAndroidInviteEntry, type AndroidInviteEntry} from "../entries/androidEntryInbox";
 import {useEffect, useRef, useState, useSyncExternalStore} from "react";
 import {Linking} from "react-native";
 import {readPlayInstallReferrer} from "./playInstallReferrer";

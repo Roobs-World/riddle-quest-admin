@@ -1,4 +1,4 @@
-import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
+import type {AuthSnapshot, HostServices} from "../../../../../src/hosted/hostTypes";
 import {useEffect, useState} from "react";
 /** Subscribes to the shared services' account snapshot so screens show the server-confirmed balance. */
 export function useAuthSnapshot(services: HostServices): AuthSnapshot {

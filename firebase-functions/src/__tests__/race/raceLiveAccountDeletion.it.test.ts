@@ -9,7 +9,7 @@ import {deliverRacePerformance} from "../../race/racePerformanceDelivery";
 import {recordFacebookTournamentRun} from "../../../../platforms/web/facebook/server/race/facebookTournament";
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../../../platforms/web/facebook/server/facebookReferrals";
 import {issueRedditReferralToken, bindRedditReferralToken} from "../../../../platforms/web/reddit/server/redditReferrals";
-import {LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
+import {LIVE_RACE_WAIT_MS} from "../../../../src/core/race/index.js";
 import {FieldValue, Timestamp} from "firebase-admin/firestore";
 import {sendLiveRaceChallengeForUser} from "../../race/raceLiveChallengeNotifications";
 import {createUsernameReservationId} from "../../profile/usernameReservations";

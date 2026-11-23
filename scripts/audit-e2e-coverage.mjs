@@ -1,5 +1,6 @@
 import {readdir, readFile} from "node:fs/promises";
 import path from "node:path";
+import {webApplications, platformServerRoots} from "./platform-layout.mjs";
 
 const root = process.cwd();
 const arguments_ = process.argv.slice(2);
@@ -27,45 +28,51 @@ async function collect(directory, predicate) {
   return files;
 }
 
-const portalPackage = JSON.parse(await readFile(path.join(root, "packages/web-game/package.json"), "utf8"));
 const rootPackage = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
-const portalScripts = Object.values(portalPackage.scripts ?? {}).join("\n");
-const rulesConfig = await readFile(path.join(root, "firebase-functions/jest.rules.config.js"), "utf8");
+const projectScripts = Object.values(rootPackage.scripts ?? {}).join("\n");
+const serverPackage = JSON.parse(await readFile(path.join(root, "firebase-functions/package.json"), "utf8"));
+const emulatorConfigurations = new Set(["jest.rules.config.js"]);
+for (const script of Object.values(serverPackage.scripts ?? {})) {
+  if (!script.includes("emulators:exec")) continue;
+  for (const match of script.matchAll(/--config\s+(jest[\w.-]+\.config\.js)/gu)) emulatorConfigurations.add(match[1]);
+}
+const emulatorConfig = (await Promise.all([...emulatorConfigurations]
+  .map(name => readFile(path.join(root, "firebase-functions", name), "utf8")))).join("\n");
 const workflow = await readFile(path.join(root, ".github/workflows/production-readiness.yml"), "utf8");
 
-const browserSuites = await collect(path.join(root, "packages/web-game/src"), (name) =>
-  name.endsWith(".jest-playwright.test.ts"),
-);
-const integrationSuites = await collect(path.join(root, "firebase-functions/src"), (name) =>
-  name.endsWith(".it.test.ts"),
-);
+const browserRoots = ["src/web", ...(jestFacebook ? ["jest", "facebook"] : webApplications)
+  .map(target => `platforms/web/${target}/src`)];
+const browserSuites = (await Promise.all(browserRoots.map(directory => collect(path.join(root, directory),
+  name => name.endsWith(".jest-playwright.test.ts"))))).flat();
+const integrationSuites = (await Promise.all(["firebase-functions/src", ...platformServerRoots]
+  .map(directory => collect(path.join(root, directory), name => name.endsWith(".it.test.ts"))))).flat();
 
-const missingBrowserSuites = browserSuites.filter((file) => !portalScripts.includes(path.basename(file)));
+const missingBrowserSuites = browserSuites.filter((file) => !projectScripts.includes(path.basename(file)));
 const selectedIntegrationSuites = integrationSuites.filter(file => !jestFacebook ||
   !nativeIntegrationSuites.has(path.relative(root, file).split(path.sep).join("/")));
-const missingIntegrationSuites = selectedIntegrationSuites.filter((file) => !rulesConfig.includes(path.basename(file)));
+const missingIntegrationSuites = selectedIntegrationSuites.filter((file) => !emulatorConfig.includes(path.basename(file)));
 const failures = [];
 
 if (missingBrowserSuites.length > 0) {
   failures.push(
-    `Playwright suites missing from portal scripts: ${missingBrowserSuites.map((file) => path.relative(root, file)).join(", ")}`,
+    `Playwright suites missing from root scripts: ${missingBrowserSuites.map((file) => path.relative(root, file)).join(", ")}`,
   );
 }
 if (missingIntegrationSuites.length > 0) {
   failures.push(
-    `Emulator integration suites missing from jest.rules.config.js: ${missingIntegrationSuites.map((file) => path.relative(root, file)).join(", ")}`,
+    `Emulator integration suites missing from registered configurations: ${missingIntegrationSuites.map((file) => path.relative(root, file)).join(", ")}`,
   );
 }
 if (!String(rootPackage.scripts?.["test:e2e"] ?? "").includes("test:e2e:local")) {
-  failures.push("The root test:e2e interface must invoke the portal test:e2e:local interface.");
+  failures.push("The root test:e2e interface must invoke test:e2e:local.");
 }
 if (!/^\s*- run: pnpm test:e2e(?::jest-facebook)?\s*$/mu.test(workflow)) {
   failures.push("Production readiness must invoke a canonical test:e2e interface.");
 }
 if (workflow.includes("pnpm test:e2e:jest-facebook")) {
   const scoped = String(rootPackage.scripts?.["test:e2e:jest-facebook"] ?? "");
-  if (!scoped.includes("check:e2e-coverage") || !scoped.includes("test:race:rules") || !scoped.includes("@riddle-quest/portal test:e2e:jest-facebook")) {
-    failures.push("Jest/Facebook E2E must retain coverage auditing, backend rules, and the scoped portal interface.");
+  if (!scoped.includes("check:e2e-coverage") || !scoped.includes("test:race:rules") || !scoped.includes("pnpm test:e2e:jest-facebook:web")) {
+    failures.push("Jest/Facebook E2E must retain coverage auditing, backend rules, and the scoped browser interface.");
   }
 }
 if (/pnpm .*test:(?:race:rules|[^\s]+:playwright|mobile-soak)/u.test(workflow)) {

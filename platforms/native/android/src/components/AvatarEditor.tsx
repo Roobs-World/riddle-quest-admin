@@ -1,6 +1,6 @@
-import {createAvatarUploadController} from "@riddle-quest/hosted/avatarUpload";
-import type {HostServices} from "@riddle-quest/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
+import {createAvatarUploadController} from "../../../../../src/hosted/avatarUpload";
+import type {HostServices} from "../../../../../src/hosted/hostTypes";
+import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
 import {useEffect, useMemo, useSyncExternalStore} from "react";
 import {Image, StyleSheet, View} from "react-native";
 import {pickAvatar} from "../avatar/pickAvatar";

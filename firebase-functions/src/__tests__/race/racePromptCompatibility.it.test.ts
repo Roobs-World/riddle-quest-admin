@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";
-import {RaceRunViewSchema} from "@riddle-quest/core/race";
+import {RaceRunViewSchema} from "../../../../src/core/race/index.js";
 import {buildDeterministicRaceDeck, loadEligibleContent, listRaceCategoriesForLocale} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {toRaceRunView} from "../../race/raceEngine";

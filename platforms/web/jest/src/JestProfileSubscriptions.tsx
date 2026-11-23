@@ -1,5 +1,5 @@
-import {tr} from "../../../../packages/web-game/src/play/i18n";
-import {useSubscriptionManagement} from "../../../../packages/web-game/src/play/modalPages/commerce/useSubscriptionManagement";
+import {tr} from "../../../../src/web/play/i18n";
+import {useSubscriptionManagement} from "../../../../src/web/play/modalPages/commerce/useSubscriptionManagement";
 
 /** Shares subscription management across Profile and Settings using the target's authoritative entitlement catalog. */
 export function JestProfileSubscriptions() {

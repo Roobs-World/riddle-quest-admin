@@ -6,7 +6,7 @@ import {jestFirebaseUid, verifyJestSigned} from "./jestSecurity";
 import {resolveJestConflictingSubscriptionSkus, resolveJestSignedPurchase, resolveJestSignedSubscriptions, type VerifiedJestSubscription} from "./jestProductCatalog";
 import {JEST_SUBSCRIPTIONS, resolvePremiumCoinGrant} from "../../../../firebase-functions/src/shared/productCatalog";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../../firebase-functions/src/shared/constants";
-import {JEST_REFERRAL_REWARD_COINS} from "@riddle-quest/core/referrals";
+import {JEST_REFERRAL_REWARD_COINS} from "../../../../src/core/referrals/index.js";
 import {captureException, flushSentry} from "../../../../firebase-functions/src/shared/sentry";
 import {onRequestWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
 import {

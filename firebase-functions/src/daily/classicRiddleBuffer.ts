@@ -1,6 +1,6 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SUPPORTED_LOCALES} from "@riddle-quest/core/validation";
-import {ClassicRiddleBufferResponseSchema} from "@riddle-quest/core/validation/requestSchemas";
+import {SUPPORTED_LOCALES} from "../../../src/core/validation/index.js";
+import {ClassicRiddleBufferResponseSchema} from "../../../src/core/validation/requestSchemas.js";
 import {getUser} from "../gameplay/firestoreService";
 import {getPlayableClassicRiddle} from "../gameplay/classicRiddleFallback";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";

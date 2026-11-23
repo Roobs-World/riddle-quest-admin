@@ -3,7 +3,7 @@ import {MockJestPlatform} from "../MockJestPlatform";
 import {JestPurchaseCoordinator} from "../purchases";
 import {JestBackendClient} from "../backend";
 import type {JestPlatformPort} from "../types";
-import {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} from "../../../../../packages/web-game/src/observability/browserErrorReporter";
+import {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} from "../../../../../src/web/observability/browserErrorReporter";
 
 /** Simulates browser-owned cross-tab checkout exclusion for coordinator fixtures. */
 const checkoutLocks = new Set<string>();

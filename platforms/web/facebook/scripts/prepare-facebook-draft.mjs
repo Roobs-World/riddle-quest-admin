@@ -10,9 +10,9 @@ import {
 
 import {assertFacebookHandoffsSettled, withFacebookReleaseLock} from "./facebook-release-state.mjs";
 
-const packageDirectory = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const packageDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
-const buildDirectory = path.join(packageDirectory, "../../builds/facebook");
+const buildDirectory = path.join(packageDirectory, "builds/facebook");
 const archivePath = path.join(packageDirectory, "build-facebook.zip");
 const receiptDirectory = path.join(packageDirectory, ".facebook-upload-receipts");
 const receiptPath = path.join(receiptDirectory, "gated-artifact.json");

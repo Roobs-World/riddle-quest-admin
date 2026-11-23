@@ -1,9 +1,9 @@
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import {inspectWebTargetArtifact} from "../../../../packages/web-game/scripts/web-target-artifact-inventory.mjs";
+import {inspectWebTargetArtifact} from "../../../../scripts/web/web-target-artifact-inventory.mjs";
 
 const inventory = await inspectWebTargetArtifact({
-  rootDirectory: process.argv[2] || process.env.REDDIT_BUILD_OUT_DIR?.trim() || "../../builds/reddit",
+  rootDirectory: process.argv[2] || process.env.REDDIT_BUILD_OUT_DIR?.trim() || "builds/reddit",
   target: "reddit",
 });
 const {files, root, sizedFiles, totalBytes} = inventory;

@@ -99,5 +99,6 @@ module.exports = {
     "**/__tests__/race/raceUnscoredAuthority.it.test.ts",
     "**/__tests__/redditProfileRetention.it.test.ts",
     "**/__tests__/accountOperationLease.it.test.ts",
+    "**/__tests__/race/androidRace.it.test.ts",
   ],
 };

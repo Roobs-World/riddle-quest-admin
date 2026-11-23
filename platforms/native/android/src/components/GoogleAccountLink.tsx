@@ -1,6 +1,6 @@
-import {createGoogleAccountController} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
+import {createGoogleAccountController} from "../auth/androidGoogleIdentity";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
-import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
+import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
 import {useEffect, useMemo, useSyncExternalStore} from "react";
 import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import {googleIdentityCopy} from "../i18n/googleIdentityCopy";

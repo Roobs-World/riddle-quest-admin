@@ -1,7 +1,7 @@
 import {readFile} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
-import {inspectWebTargetArtifact} from "../../../../packages/web-game/scripts/web-target-artifact-inventory.mjs";
+import {inspectWebTargetArtifact} from "../../../../scripts/web/web-target-artifact-inventory.mjs";
 
 export const youtubeSdkEntryResource = "https://www.youtube.com/game_api/v1";
 export const youtubeArtifactLimits = Object.freeze({
@@ -279,7 +279,7 @@ async function runCli() {
   if (unknownFlags.length > 0 || positional.length > 1) {
     throw new Error("Usage: audit-youtube-artifact.mjs [artifact-directory] [--allow-incomplete-fixture]");
   }
-  const rootDirectory = positional[0] ?? (process.env.YOUTUBE_BUILD_OUT_DIR?.trim() || "../../builds/youtube");
+  const rootDirectory = positional[0] ?? (process.env.YOUTUBE_BUILD_OUT_DIR?.trim() || "builds/youtube");
   const result = await auditYouTubeArtifact(rootDirectory, {allowIncompleteFixture});
   console.log(
     `YouTube artifact audit passed: ${result.files.length} files, ` +

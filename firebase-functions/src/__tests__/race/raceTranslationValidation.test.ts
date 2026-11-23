@@ -6,7 +6,7 @@ import {
   playableTranslatedAnswerIssue,
   raceTranslationCanonicalHash,
 } from "../../race/raceTranslationValidation";
-import {RACE_SUPPORTED_LOCALES} from "@riddle-quest/core/race";
+import {RACE_SUPPORTED_LOCALES} from "../../../../src/core/race/index.js";
 
 /** Creates bundle. */
 const createBundle = () => ({

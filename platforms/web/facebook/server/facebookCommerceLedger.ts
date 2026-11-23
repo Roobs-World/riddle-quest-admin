@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import type {DocumentReference, Firestore, Transaction} from "firebase-admin/firestore";
-import {resolveFacebookProduct} from "@riddle-quest/core/pricing/facebookCatalog";
+import {resolveFacebookProduct} from "../src/commerce/facebookCatalog.js";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {facebookPaymentTokenSchema} from "./facebookPaymentContracts";

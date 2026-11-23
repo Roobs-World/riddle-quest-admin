@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "@riddle-quest/core/race";
+import {RACE_RULES} from "../../../../src/core/race/index.js";
 import {abandonRaceRunForUser, readyRaceRunForUser, resumeRaceRunForUser, submitRaceGuessForUser,
   requestRaceHintForUser, skipRaceRiddleForUser} from "../../race/raceService";
 import type {RaceRunRecord} from "../../race/raceEngine";

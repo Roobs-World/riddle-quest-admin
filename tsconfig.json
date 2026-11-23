@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUncheckedSideEffectImports": true,
+    "stableTypeOrdering": true,
+    "types": [
+      "vite/client",
+      "jest"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "customConditions": [
+      "browser"
+    ],
+    "paths": {
+      "#shop-modal-page": [
+        "./src/web/play/modalPages/commerce/ShopModalPage.tsx"
+      ],
+      "#youtube-content": [
+        "./firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json"
+      ]
+    },
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src",
+    "vite.config.ts",
+    "scripts/web/build",
+    "platforms/web/*/src",
+    "platforms/web/*/build"
+  ],
+  "exclude": [
+    "src/**/__tests__/**",
+    "src/**/test/**",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "platforms/web/*/src/**/__tests__/**",
+    "platforms/web/*/src/**/*.test.ts",
+    "platforms/web/*/src/**/*.test.tsx",
+    "platforms/web/*/src/server/**",
+    "platforms/web/*/server/**"
+  ]
+}

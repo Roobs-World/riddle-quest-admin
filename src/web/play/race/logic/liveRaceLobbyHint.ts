@@ -1,0 +1,8 @@
+import {hasLiveRaceLobby as hasSharedLobby, LIVE_RACE_LOBBY_KEY} from "../../../../hosted/race/logic/liveRaceLobbyHint";
+import {observeBrowserStorage} from "../../../platform/browserStorage";
+export {LIVE_RACE_LOBBY_KEY} from "../../../../hosted/race/logic/liveRaceLobbyHint";
+
+/** The browser startup hint never reads native or another target's storage. */
+export function hasLiveRaceLobby(ownerId?: string, locale?: string): boolean {
+  return hasSharedLobby(ownerId, locale, () => observeBrowserStorage("local", LIVE_RACE_LOBBY_KEY));
+}

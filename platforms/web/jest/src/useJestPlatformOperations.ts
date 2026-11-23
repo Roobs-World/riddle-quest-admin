@@ -1,5 +1,5 @@
 import {useCallback, useState, type MutableRefObject} from "react";
-import {sanitizeAnalyticsParams, trackEvent} from "../../../../packages/web-game/src/analytics/events";
+import {sanitizeAnalyticsParams, trackEvent} from "../../../../src/web/analytics/events";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import type {JestPlatformPort, JestSession} from "./types";
 

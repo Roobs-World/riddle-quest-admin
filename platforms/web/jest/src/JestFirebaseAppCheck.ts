@@ -5,9 +5,9 @@ import {
   setTokenAutoRefreshEnabled,
   type AppCheck,
 } from "firebase/app-check";
-import {firebaseApp} from "../../../../packages/web-game/src/firebase";
-import {firebaseEnvironment} from "../../../../packages/web-game/src/firebaseEnvironment";
-import {hasTrustedTestHarnessMarker} from "../../../../packages/web-game/src/testHarness";
+import {firebaseApp} from "../../../../src/web/firebase";
+import {firebaseEnvironment} from "../../../../src/web/firebaseEnvironment";
+import {hasTrustedTestHarnessMarker} from "../../../../src/web/testHarness";
 
 /** Indicates whether a trusted harness route may bypass browser attestation. */
 const isHarnessRoute =

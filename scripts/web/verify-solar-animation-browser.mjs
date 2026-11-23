@@ -1,0 +1,327 @@
+import {createSolarRendererSource,openSolarGame} from './solar-browser-fixture.mjs';
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {mkdir,mkdtemp,readFile,readdir,rm,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {build} from 'vite';
+import {chromium} from '@playwright/test';
+import {verifyLiveDecoration} from './verify-live-decoration-browser.mjs';
+import {verifySolarInitialization} from './verify-solar-initialization-browser.mjs';
+import {verifyContextRecovery} from './verify-context-recovery-browser.mjs';
+import {verifySolarSizing} from './verify-solar-sizing-browser.mjs';
+import {verifyDeferredRestoration} from './verify-deferred-restoration-browser.mjs';
+import {verifyLayoutGraphics} from './verify-layout-graphics-browser.mjs';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const mode=process.env.SOLAR_ANIMATION_REACT_MODE??'development';
+const baseline=process.env.SOLAR_ANIMATION_BASELINE_DIR;
+const motionChecks=process.env.SOLAR_MOTION_CHECKS==='1';
+const initializationChecks=process.env.SOLAR_INITIALIZATION_CHECKS==='1';
+const sizingChecks=process.env.SOLAR_SIZING_CHECKS==='1';
+const restorationChecks=process.env.SOLAR_RESTORATION_CHECKS==='1';
+const contextChecks=process.env.SOLAR_CONTEXT_CHECKS==='1'||restorationChecks||sizingChecks;
+const layoutChecks=process.env.SOLAR_LAYOUT_CHECKS==='1';
+const resourceChecks=process.env.SOLAR_RESOURCE_CHECKS==='1'||motionChecks||initializationChecks||contextChecks||layoutChecks;
+const nativeRenderer=process.env.SOLAR_ANIMATION_NATIVE_RENDERER==='1';
+assert.ok(['development','production'].includes(mode));
+const output=path.resolve(process.env.SOLAR_ANIMATION_REPORT_DIR??path.join(root,sizingChecks?'builds/test-evidence/game-resize-work-2026-10-03':restorationChecks?'builds/test-evidence/game-deferred-restoration-2026-10-03':layoutChecks?'builds/test-evidence/game-layout-graphics-2026-10-03':contextChecks?'builds/test-evidence/game-context-recovery-2026-10-03':initializationChecks?'builds/test-evidence/game-deferred-graphics-2026-10-03':motionChecks?'builds/test-evidence/game-live-decoration-2026-10-03':resourceChecks?'builds/test-evidence/game-graphics-resources-2026-10-03':'builds/test-evidence/game-solar-animation-2026-10-03',mode));
+await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
+const scratch=await mkdtemp(path.join(root,'node_modules/.cache/solar-animation-'));
+const originalThree=path.join(root,'node_modules/three/src/Three.js');
+const scene=path.join(root,'src/web/play/SolarSystem.tsx');
+const facade=path.join(scratch,'three-fixture.ts');
+// Real host, authority, checkpoint and keyboard setup; only the graphics driver is controlled.
+const commonSource=`
+import React from 'react';import {createRoot} from 'react-dom/client';
+import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/web/play/PlayHostApp.tsx'))};
+import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/web/play/HostedPlaySession.ts'))};
+import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/web/play/fakeServices.ts'))};
+import {FatalErrorBoundary} from ${JSON.stringify(path.join(root,'src/web/FatalErrorBoundary.tsx'))};
+import {useGameSurfaces} from ${JSON.stringify(path.join(root,'src/web/play/game/hooks/useGameSurfaces.ts'))};
+import {applyPlayerPreferences,setPlayerReducedMotion,subscribeToPlayerPreferenceChanges} from ${JSON.stringify(path.join(root,'src/web/play/playerPreferences.ts'))};
+import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/web/observability/browserErrorReporter.ts'))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/web/play/guidance/guidanceConfig.ts'))};
+import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/web/play/localBridge.ts'))};
+import ${JSON.stringify(path.join(root,'src/web/styles.css'))};
+window.__RIDDLE_QUEST_BROWSER_TEST__=true;
+window.probe={errors:[],unhandled:[],saves:[],guesses:0,completions:0,sceneRenders:0,raceImports:0,hookRenders:0,playable:0};
+window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
+configureBrowserErrorReporter((error,context)=>{window.probe.errors.push({...context,error:String(error)});});
+applyPlayerPreferences({locale:'en',muted:true,reducedMotion:new URL(location.href).searchParams.has('reduced'),onboardingComplete:true});
+window.setMotion=setPlayerReducedMotion;window.applyMotion=value=>applyPlayerPreferences({reducedMotion:value,onboardingComplete:true});window.probe.preferenceWrites=[];subscribeToPlayerPreferenceChanges(change=>window.probe.preferenceWrites.push(change));
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
+for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+const pendingIdle=new Map(),retainedIdle=new Map();let nextIdle=0;
+window.pendingIdle=()=>pendingIdle.size;
+window.replayIdle=()=>{for(const callback of retainedIdle.values())callback({didTimeout:false,timeRemaining:()=>5});};
+window.requestIdleCallback=callback=>{const id=++nextIdle;pendingIdle.set(id,callback);return id;};
+window.cancelIdleCallback=id=>{const callback=pendingIdle.get(id);if(callback)retainedIdle.set(id,callback);pendingIdle.delete(id);};
+window.releaseScene=()=>{const callbacks=[...pendingIdle.values()];pendingIdle.clear();callbacks.forEach(callback=>callback({didTimeout:false,timeRemaining:()=>5}));};
+if(new URL(location.href).searchParams.has('timer')){
+ const rawTimeout=window.setTimeout.bind(window),rawClearTimeout=window.clearTimeout.bind(window),pendingTimers=new Map(),retainedTimers=new Map();let nextTimer=0;
+ window.requestIdleCallback=undefined;
+ window.setTimeout=(callback,delay,...args)=>{if(delay!==2500||!new Error().stack.includes('/assets/'))return rawTimeout(callback,delay,...args);const id=--nextTimer;pendingTimers.set(id,()=>callback(...args));return id;};
+ window.clearTimeout=id=>{if(id<0){const callback=pendingTimers.get(id);if(callback)retainedTimers.set(id,callback);pendingTimers.delete(id);}else rawClearTimeout(id);};
+ window.pendingIdle=()=>pendingTimers.size;
+ window.releaseScene=()=>{const callbacks=[...pendingTimers.values()];pendingTimers.clear();callbacks.forEach(callback=>callback());};
+ window.replayIdle=()=>{for(const callback of retainedTimers.values())callback();};
+}
+window.pause=paused=>dispatchLocalBridge(HOST_TO_GAME_EVENT,{type:paused?'host:pause':'host:resume',payload:{}});
+const source=createFakeHostServices();
+const services={...source,submitGuess:async input=>{window.probe.guesses++;return source.submitGuess(input);},completeGame:async input=>{
+ window.probe.completions++;const result=await source.completeGame(input);window.probe.authorityCoins=(await source.loadProfile('jest-guest'))?.coins;return result;}};
+const params=new URL(location.href).searchParams;
+function ProviderRace({onClose}){return <section className='race-screen' data-testid='provider-race'><button onClick={onClose}>Return to puzzle</button></section>;}
+const session=createHostedPlaySession({hostServices:services,economyAvailable:false,raceAvailable:params.has('custom'),raceLocalePolicy:'all',onPlayerDataChange:update=>window.probe.saves.push(update)});
+function HookProbe(){const [enabled,setEnabled]=React.useState(true);window.disableRace=()=>setEnabled(false);window.probe.hookRenders++;
+ const {RaceTo10Game,GameModalView}=useGameSurfaces(enabled);return <output data-enabled={enabled?'yes':'no'} data-ready={typeof RaceTo10Game==='function'?'yes':'no'} data-modal-ready={typeof GameModalView==='function'?'yes':'no'}>Preload fixture</output>;}
+const app=createRoot(document.querySelector('#root'));
+app.render(<React.StrictMode><FatalErrorBoundary>{params.has('probe')?<HookProbe/>:<PlayHostApp session={session} raceSurface={params.has('custom')?ProviderRace:undefined} onPlayable={()=>window.probe.playable++}/>}</FatalErrorBoundary></React.StrictMode>);
+window.loaded=true;
+`;
+await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
+await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
+const injected=`
+import {SolarSystem} from ${JSON.stringify(scene)};
+const rawRequest=window.requestAnimationFrame.bind(window),rawCancel=window.cancelAnimationFrame.bind(window);
+const rawObserver=window.ResizeObserver;const directScene=new URL(location.href).searchParams.has('scene');let manual=directScene;let nextFrame=0;
+const pending=new Map(),retained=new Map();let frameClock=1000;
+window.probe.frames=0;window.probe.callbacks=0;window.probe.draws=0;window.probe.resizes=0;window.probe.disposals=0;
+window.probe.contextReleases=0;window.probe.resourceReleases=0;window.probe.duplicateReleases=0;window.probe.observers=[];window.probe.angles=[];
+window.probe.sizes=[];window.probe.bufferAssignments=0;window.probe.rendererConstructions=0;window.probe.allocations=[];window.probe.textureCallbacks=[];window.resourceSiteCalls={};
+const liveResources=new Set();window.liveResources=()=>liveResources.size;
+window.trackResource=(resource,kind)=>{liveResources.add(resource);window.probe.allocations.push(kind);};window.markResourceDisposed=resource=>liveResources.delete(resource);
+window.maybeFailResource=kind=>{window.resourceSiteCalls[kind]=(window.resourceSiteCalls[kind]??0)+1;window.currentResourceSiteCalls[kind]=(window.currentResourceSiteCalls[kind]??0)+1;if(window.failResource?.kind===kind&&window.currentResourceSiteCalls[kind]===window.failResource.occurrence)throw Error('injected '+kind+' setup failure');};
+window.probe.windowErrors=[];window.addEventListener('error',e=>window.probe.windowErrors.push(String(e.error??e.message)));
+window.probe.capabilityProbes=0;window.probe.probeReleases=0;
+if(${resourceChecks}){
+ const getContext=HTMLCanvasElement.prototype.getContext;
+ HTMLCanvasElement.prototype.getContext=function(kind,...args){
+  if(kind!=='webgl2'&&kind!=='webgl')return getContext.call(this,kind,...args);
+  window.probe.capabilityProbes++;
+  const context=getContext.call(this,kind,...args);
+  // The controlled renderer supports headless Firefox even when its native GPU is unavailable.
+  if(!context)return {getExtension:name=>name==='WEBGL_lose_context'?{loseContext:()=>window.probe.probeReleases++}:null};
+  const getExtension=context.getExtension.bind(context);
+  context.getExtension=name=>{const extension=getExtension(name);return name==='WEBGL_lose_context'&&extension?{loseContext:()=>{window.probe.probeReleases++;extension.loseContext();},restoreContext:()=>extension.restoreContext()}:extension;};
+  return context;
+ };
+}
+if(${initializationChecks}){
+ const add=document.addEventListener.bind(document),remove=document.removeEventListener.bind(document),active=new Set(),retained=new Set();
+ document.addEventListener=(type,callback,...args)=>{if(type==='visibilitychange'&&typeof callback==='function'&&new Error().stack.includes('SolarSystem-'))active.add(callback);return add(type,callback,...args);};
+ document.removeEventListener=(type,callback,...args)=>{if(type==='visibilitychange'&&active.has(callback)){active.delete(callback);retained.add(callback);}return remove(type,callback,...args);};
+ window.solarVisibilityListeners=()=>active.size;window.replayVisibility=()=>{for(const callback of retained)callback();};
+}
+if(${contextChecks}){
+ window.probe.nativeRestorationEvents=0;document.addEventListener('webglcontextrestored',()=>window.probe.nativeRestorationEvents++,true);
+ window.probe.driverLosses=0;window.probe.driverRestores=0;window.probe.driverCreationErrors=0;window.probe.nativeParameterFailures=0;
+ const add=HTMLCanvasElement.prototype.addEventListener,remove=HTMLCanvasElement.prototype.removeEventListener;
+ const callbacks=[],active=new Set();window.contextCallbacks=callbacks;window.activeContextCallbacks=()=>active.size;
+ HTMLCanvasElement.prototype.addEventListener=function(type,callback,options){if(type.startsWith('webglcontext')&&callback){const row={canvas:this,type,callback,capture:typeof options==='boolean'?options:!!options?.capture};callbacks.push(row);active.add(row);}return add.call(this,type,callback,options);};
+ HTMLCanvasElement.prototype.removeEventListener=function(type,callback,options){const capture=typeof options==='boolean'?options:!!options?.capture;for(const row of active){if(row.canvas===this&&row.type===type&&row.callback===callback&&row.capture===capture)active.delete(row);}return remove.call(this,type,callback,options);};
+ window.contextEvent=type=>{const canvas=document.querySelector('.solar-system canvas');const event=new Event(type,{cancelable:true});canvas.dispatchEvent(event);return event.defaultPrevented;};
+ window.replayContextCallbacks=()=>{for(const row of callbacks){try{if(typeof row.callback==='function')row.callback.call(row.canvas,new Event(row.type,{cancelable:true}));else row.callback.handleEvent(new Event(row.type,{cancelable:true}));}catch(error){window.probe.windowErrors.push(String(error));}}};
+}
+const rawNow=performance.now.bind(performance);performance.now=()=>manual?frameClock:rawNow();
+window.requestAnimationFrame=callback=>{const stack=new Error().stack.split('\\n');const caller=stack.slice(stack[0]==='Error'?2:1).join('\\n');if(!manual||!caller.includes('/assets/')||(!directScene&&!${layoutChecks}&&caller.includes('runWhenLayoutReady'))||/^\\s*at (?:FontFaceSet|ResizeObserver|Window)\\.schedule /.test(caller))return rawRequest(callback);const id=--nextFrame;pending.set(id,callback);window.probe.frames++;return id;};
+window.cancelAnimationFrame=id=>{if(id<0){const callback=pending.get(id);if(callback)retained.set(id,callback);pending.delete(id);}else rawCancel(id);};
+window.controlFrames=()=>{manual=true;};
+window.pendingFrames=()=>pending.size;
+window.step=(elapsed=16)=>{frameClock+=elapsed;const callbacks=[...pending.values()];pending.clear();for(const callback of callbacks){window.probe.callbacks++;try{callback(frameClock);}catch(error){window.probe.windowErrors.push(String(error));}}};
+window.replayFrames=()=>{for(const callback of [...retained.values()]){try{callback(frameClock);}catch(error){window.probe.windowErrors.push(String(error));}}};
+let hidden=false;Object.defineProperty(document,'hidden',{configurable:true,get:()=>hidden});
+window.visibility=value=>{hidden=value;document.dispatchEvent(new Event('visibilitychange'));};
+window.ResizeObserver=class{constructor(callback){if(window.probe.failObserverConstructor){window.probe.failObserverConstructor=false;throw Error('injected observer constructor failure');}this.callback=callback;this.native=new rawObserver(callback);this.active=false;}observe(target){if(target.classList.contains('solar-system')){this.active=true;window.probe.observers.push(this);if(window.probe.failObserverObserve){window.probe.failObserverObserve=false;throw Error('injected observer observe failure');}if(!directScene&&!${layoutChecks})this.callback([{contentRect:{width:window.innerWidth,height:window.innerHeight}}]);}else this.native.observe(target);}disconnect(){this.active=false;this.native.disconnect();}unobserve(target){this.native.unobserve(target);}};
+window.resizeScene=(width=1280,height=844,retired=false)=>{for(const observer of window.probe.observers){if(observer.active||retired){try{observer.callback([{contentRect:{width,height}}]);}catch(error){window.probe.windowErrors.push(String(error));}}}};
+function SceneProbe(){const [paused,setPaused]=React.useState(false),[mounted,setMounted]=React.useState(true);window.setScenePause=setPaused;window.setSceneMounted=setMounted;return <><button onClick={()=>setPaused(value=>!value)}>Pause scene</button><button onClick={()=>setMounted(value=>!value)}>Toggle scene</button><input aria-label='Puzzle draft' defaultValue='PIAN'/><output data-paused={paused?'yes':'no'} data-mounted={mounted?'yes':'no'}/>{mounted&&<SolarSystem paused={paused}/>}</>;}
+`;
+let injection=injected;
+if(initializationChecks)injection=injection.replace(/import \{SolarSystem\} from .*?;\n/,'').replace(/function SceneProbe\(\).*\n/,'');
+let main=commonSource.replace('const source=createFakeHostServices();',injection+'\nconst source=createFakeHostServices();');
+if(!initializationChecks)main=main.replace("params.has('probe')?<HookProbe/>","params.has('scene')?<SceneProbe/>:params.has('probe')?<HookProbe/>");
+await writeFile(path.join(scratch,'main.tsx'),main);
+let browser,server;const observations=[];
+try{
+ await writeFile(facade,createSolarRendererSource({nativeRenderer,contextChecks,sizingChecks,resourceChecks,originalThree}));
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'controlled-solar-renderer',enforce:'pre',async load(id){if(contextChecks&&nativeRenderer&&id.endsWith('/three/src/renderers/WebGLRenderer.js'))return (await readFile(id,'utf8')).replace('function onContextRestore( /* event */ ) {','function onContextRestore( /* event */ ) { window.probe.driverRestores++;').replace('function onContextLost( event ) {','function onContextLost( event ) { window.probe.driverLosses++;');if(motionChecks&&baseline&&(id===path.join(root,'src/web/play/GameFrameApp.tsx')||id===path.join(root,'src/web/play/DecorativeSolarSystem.tsx')))return readFile(path.join(baseline,path.basename(id,'.tsx')+'.before.txt'),'utf8');if(!layoutChecks&&!contextChecks&&!initializationChecks&&!motionChecks&&resourceChecks&&baseline&&id===path.join(root,'src/web/play/performance/mobileCapabilities.ts'))return readFile(path.join(baseline,'mobileCapabilities.before.txt'),'utf8');if(id===scene){const source=await readFile(baseline&&!motionChecks?path.join(baseline,'SolarSystem.before.txt'):scene,'utf8');return (initializationChecks?'window.probe.solarImports=(window.probe.solarImports??0)+1;\n':'')+source.replace('"three/src/Three.js"',JSON.stringify(facade));}}}],build:{outDir:'dist',minify:false}});
+ const sceneAsset=initializationChecks?(await readdir(path.join(scratch,'dist/assets'))).find(file=>file.startsWith('SolarSystem-')&&file.endsWith('.js')):undefined;
+ if(initializationChecks)assert.ok(sceneAsset,'SolarSystem remains a genuinely separate lazy native module');
+ await writeFile(path.join(output,'lazy-scene-asset.txt'),sceneAsset??'not applicable');
+ let releaseHeldScene;const heldScene=new Promise(resolve=>releaseHeldScene=resolve);
+ server=createServer(async(request,response)=>{try{const pathname=new URL(request.url,'http://localhost').pathname;if(initializationChecks&&process.env.SOLAR_ANIMATION_SERVE_ONLY==='1'){if(pathname==='/__fixture/release-scene'){releaseHeldScene();response.writeHead(200).end('released');return;}if(pathname==='/assets/'+sceneAsset)await heldScene;}const file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname),body=await readFile(file);response.writeHead(200,{'content-type':file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.webp')?'image/webp':'text/html'});response.end(body);}catch{response.writeHead(404).end();}});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url=`http://127.0.0.1:${server.address().port}`;
+ await writeFile(path.join(output,'url.txt'),url);
+ if(process.env.SOLAR_ANIMATION_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
+ else{
+ browser=await chromium.launch({headless:true});
+ for(const width of [1280,390]){
+  const context=await browser.newContext({viewport:{width,height:844},deviceScaleFactor:Number(process.env.SOLAR_NATIVE_DPR??1)}),page=await context.newPage();
+  if(resourceChecks)await page.addInitScript(()=>{localStorage.clear();sessionStorage.clear();});
+  await page.addInitScript(()=>{Object.defineProperty(navigator,'hardwareConcurrency',{configurable:true,value:8});Object.defineProperty(navigator,'deviceMemory',{configurable:true,value:8});if(typeof WebGLRenderingContext==='undefined')window.WebGLRenderingContext=class{};});
+  const metric=async(name,actual,expected)=>{observations.push({width,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
+  const value=field=>page.evaluate(field=>window.probe[field],field);
+  const pending=()=>page.evaluate(()=>window.pendingFrames());
+  const begin=async()=>{await page.goto(url+'?scene=1');await page.locator('[data-testid=solar-system]').waitFor({state:'attached'});await page.waitForFunction(()=>window.probe.frames>0);await page.evaluate(()=>window.step());};
+  const pause=async paused=>{await page.evaluate(paused=>window.setScenePause(paused),paused);await page.locator(`output[data-paused=${paused?'yes':'no'}]`).waitFor({state:'attached'});};
+  if(sizingChecks){await verifySolarSizing({page,width,url,baseline,metric,output,nativeRenderer});await context.close();continue;}
+  if(restorationChecks){await verifyDeferredRestoration({page,width,url,baseline,metric,output,nativeRenderer});await context.close();continue;}
+  if(layoutChecks){await verifyLayoutGraphics({page,width,url,baseline,metric,output});await context.close();continue;}
+  if(contextChecks){await verifyContextRecovery({page,width,url,baseline,metric,output,nativeRenderer});await context.close();continue;}
+  if(initializationChecks){await verifySolarInitialization({page,width,url,baseline,metric,output,sceneAsset,mode});await context.close();continue;}
+  if(motionChecks){for(const scheduler of ['idle','timer'])await verifyLiveDecoration({page,width,url,baseline,metric:(name,actual,expected)=>metric(scheduler+': '+name,actual,expected),output,scheduler});await context.close();continue;}
+  if(resourceChecks){
+   // The current scene uses sprites; fail the second sphere after partial sun setup instead of retired point-cloud allocation.
+   const scenarios=[['renderer_constructor',1],['pixel_ratio',1],['anisotropy',1],['MeshBasicMaterial',1],['ShaderMaterial',2],['SphereGeometry',2],['SpriteMaterial',4],['RingGeometry',1],['texture_loader',5],['texture_error_sync',1],['texture_error',1],['healthy',1]];
+   for(const [kind,occurrence] of scenarios){
+    await openSolarGame(page,url);
+    await page.keyboard.type('pian');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
+    const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken);
+    await page.evaluate(({kind,occurrence})=>{window.failResource={kind,occurrence};window.controlFrames();window.releaseScene();},{kind,occurrence});
+    if(kind==='healthy'||kind==='texture_error'){
+     await page.locator('.solar-system canvas').waitFor({state:'attached'});await page.waitForFunction(()=>window.probe.observers.some(row=>row.active));
+     await page.evaluate(width=>{window.resizeScene(width,844);window.step();},width);
+     await metric(kind+': healthy construction draws the actual Three scene',await value('draws'),1);
+     if(kind==='texture_error')await page.evaluate(()=>window.probe.textureCallbacks.at(-1).onError?.(Error('injected asynchronous texture failure')));
+     else {await page.evaluate(()=>window.pause(true));await page.locator('.game-app.paused').waitFor();}
+    }else if(kind==='texture_error_sync')await page.waitForFunction(()=>window.probe.textureCallbacks.length>0);
+    else await page.waitForFunction(({kind,occurrence})=>(window.resourceSiteCalls[kind]??0)>=occurrence,{kind,occurrence});
+    if(kind==='healthy'){
+     await metric('healthy: live scene owns its allocated graphics',await page.evaluate(()=>window.liveResources()>50),true);
+     // Host pause preserves resources; navigating retires them through the actual React root.
+     await metric('healthy: pause retains one scene and no active frames',await page.locator('.solar-system canvas').count(),1);
+     await metric('healthy: host pause leaves no animation frame',await pending(),0);
+     await page.evaluate(()=>window.pause(false));await page.locator('.game-app:not(.paused)').waitFor();
+     await page.evaluate(()=>{window.probe.failDraw=true;window.step();});
+    }
+    await metric(kind+': temporary capability contexts are released',await value('probeReleases'),await value('capabilityProbes'));
+    await metric(kind+': optional failure retains the game frame',await page.locator('.game-app').count(),1);
+    await metric(kind+': same authoritative session survives',await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken),token);
+    await metric(kind+': PIAN draft survives',await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.currentLetters.join('').toUpperCase()),'PIAN');
+    await metric(kind+': no returned resource remains live',await page.evaluate(()=>window.liveResources()),0);
+    await metric(kind+': renderer cleanup happens exactly once',await value('disposals'),kind==='renderer_constructor'?0:await value('rendererConstructions'));
+    await metric(kind+': context release happens exactly once',await value('contextReleases'),kind==='renderer_constructor'?0:await value('rendererConstructions'));
+    await metric(kind+': no canvas remains attached',await page.locator('.solar-system canvas').count(),0);
+    await metric(kind+': no animation frames remain',await pending(),0);
+    await metric(kind+': shared graphics are not disposed twice',await value('duplicateReleases'),0);
+    const diagnosticCount=await page.evaluate(()=>window.probe.errors.filter(row=>row.component==='solar_system').length);
+    await metric(kind+': setup diagnostic remains bounded',diagnosticCount,kind==='renderer_constructor'?0:kind==='healthy'||kind==='texture_error'?1:await value('rendererConstructions'));
+    await page.evaluate(()=>{window.replayFrames();window.resizeScene(400,300,true);for(const callback of window.probe.textureCallbacks)callback.onError?.(Error('retained texture failure'));});
+    await metric(kind+': retained callbacks do not repeat diagnostic',await page.evaluate(()=>window.probe.errors.filter(row=>row.component==='solar_system').length),diagnosticCount);
+    await metric(kind+': retained callbacks do not dispose twice',await value('duplicateReleases'),0);
+    await page.keyboard.type('o');await page.getByRole('button',{name:/^submit$/i}).click();await page.waitForFunction(()=>window.probe.completions===1);
+    await metric(kind+': player can finish the answer',await value('guesses'),1);
+    await metric(kind+': player receives one completion',await value('completions'),1);
+    await metric(kind+': no browser callback escapes',await value('windowErrors'),[]);
+    await metric(kind+': no unhandled promise remains',await value('unhandled'),[]);
+    if(!baseline&&kind==='MeshBasicMaterial')await page.screenshot({path:path.join(output,`partial-scene-game-${width}.png`)});
+   }
+   await context.close();continue;
+  }
+  if(nativeRenderer){
+   await begin();await page.evaluate(width=>window.resizeScene(width,844),width);
+   await metric('native Three renderer is attached',await page.locator('.solar-system canvas').count(),1);
+   await page.evaluate(width=>{window.resizeScene(width,844);window.step();},width);
+   await metric('native WebGL renderer draws with the real scene and local textures',await value('draws'),1);
+   await metric('native renderer maintains one next frame',await pending(),1);
+   await metric('native renderer issues actual WebGL draw calls',(await value('nativeRenderCalls'))>0,true);
+   await pause(true);await metric('native renderer cancels work while paused',await pending(),0);
+   const before=await value('draws');await page.evaluate(()=>window.step(60_000));
+   await metric('native renderer draws nothing during pause',await value('draws'),before);
+   await pause(false);await page.evaluate(()=>window.step());
+   await metric('native renderer resumes drawing',await value('draws'),before+1);
+   await metric('native drawing causes no window errors',await value('windowErrors'),[]);
+   await page.evaluate(()=>window.setSceneMounted(false));await page.locator('output[data-mounted=no]').waitFor({state:'attached'});
+   await metric('native renderer cleanup removes its canvas',await page.locator('.solar-system canvas').count(),0);
+   await metric('native renderer cleanup cancels pending work',await pending(),0);
+   await context.close();continue;
+  }
+  await begin();
+  await metric('unmeasured scene has no animation frame chain',await pending(),0);
+  await metric('unmeasured scene has not drawn',await value('draws'),0);
+  await page.evaluate(()=>window.resizeScene(0,0));
+  await metric('zero-sized scene has no frame chain',await pending(),0);
+  await metric('zero-sized scene skips renderer resizing',await value('resizes'),0);
+  await page.evaluate(()=>{window.resizeScene(1279.7,843.8);window.step();});
+  await metric('healthy scene draws once when layout is ready',await value('draws'),1);
+  await metric('healthy scene maintains one next frame',await pending(),1);
+  const firstAngle=await page.evaluate(()=>window.probe.angles.at(-1));
+  await pause(true);
+  await metric('host pause cancels pending animation',await pending(),0);
+  const beforePause=await value('draws');
+  const beforePauseCallbacks=await value('callbacks');
+  await page.evaluate(()=>{for(let i=0;i<180;i++)window.step(1000/60);});
+  await metric('three seconds of simulated paused display frames execute zero callbacks',(await value('callbacks'))-beforePauseCallbacks,0);
+  await page.evaluate(()=>{window.step(60_000);window.replayFrames();});
+  await metric('retained callbacks cannot draw while paused',await value('draws'),beforePause);
+  await pause(false);await metric('resume creates one chain',await pending(),1);
+  await page.evaluate(()=>window.replayFrames());
+  // Replay only before stepping: callbacks from the previous generation must be inert.
+  await metric('cancelled pre-resume callbacks cannot duplicate the chain',await pending(),1);
+  await metric('cancelled pre-resume callbacks cannot draw',await value('draws'),beforePause);
+  await page.evaluate(()=>window.step());
+  const resumedAngle=await page.evaluate(()=>window.probe.angles.at(-1));
+  await metric('resume advances by active time without a 60-second jump',Math.abs(resumedAngle-firstAngle-firstAngle)<1e-9,true);
+  await page.evaluate(()=>window.visibility(true));await metric('hidden scene cancels its frame',await pending(),0);
+  const beforeHidden=await value('draws');await page.evaluate(()=>window.step(60_000));
+  await metric('hidden scene performs no draw',await value('draws'),beforeHidden);
+  await page.evaluate(()=>{window.visibility(false);window.step();});await metric('visible scene resumes one chain',await pending(),1);
+  await page.evaluate(()=>window.resizeScene(0,0));await metric('layout collapse stops the loop',await pending(),0);
+  await page.evaluate(width=>window.resizeScene(width,844),width);await metric('layout recovery resumes one chain',await pending(),1);
+  await page.evaluate(()=>document.querySelector('.solar-system canvas').dispatchEvent(new Event('webglcontextlost')));
+  await metric('lost graphics context cancels work',await pending(),0);
+  await page.evaluate(()=>window.step());await metric('context loss leaves puzzle input usable',await page.getByRole('textbox',{name:'Puzzle draft'}).inputValue(),'PIAN');
+  await pause(true);await page.evaluate(()=>document.querySelector('.solar-system canvas').dispatchEvent(new Event('webglcontextrestored')));
+  await metric('context restoration respects host pause',await pending(),0);
+  await pause(false);await metric('restored unpaused scene resumes once',await pending(),1);
+  await page.evaluate(()=>window.setSceneMounted(false));await page.locator('output[data-mounted=no]').waitFor({state:'attached'});
+  const afterUnmount={draws:await value('draws'),resizes:await value('resizes')};
+  await metric('unmount cancels all frames',await pending(),0);
+  await page.evaluate(()=>{window.replayFrames();window.resizeScene(400,300,true);window.visibility(true);window.visibility(false);});
+  await metric('retired browser callbacks cannot draw',await value('draws'),afterUnmount.draws);
+  await metric('retired resize observer cannot touch the renderer',await value('resizes'),afterUnmount.resizes);
+  await metric('retired scene releases each shared resource once',await value('duplicateReleases'),0);
+  await metric('healthy retirement leaves no window errors',await value('windowErrors'),[]);
+
+  for(const failure of ['draw','resize','dispose']){
+   await begin();await page.evaluate(width=>window.resizeScene(width,844),width);
+   const beforeResources=await value('resourceReleases'),beforeDisposals=await value('disposals'),beforeContextReleases=await value('contextReleases');
+   await page.evaluate(failure=>{if(failure==='draw')window.probe.failDraw=true;if(failure==='resize')window.probe.failResize=true;if(failure==='dispose'){window.probe.failDraw=true;window.probe.failDispose=true;}if(failure==='resize')window.resizeScene(400,300);else window.step();},failure);
+   await metric(`${failure}: failure retires pending callbacks`,await pending(),0);
+   await metric(`${failure}: failed scene removes its canvas`,await page.locator('.solar-system canvas').count(),0);
+   await metric(`${failure}: all geometry, material and texture cleanup runs`,(await value('resourceReleases'))>beforeResources+50,true);
+   await metric(`${failure}: renderer disposal runs once`,(await value('disposals'))-beforeDisposals,1);
+   await metric(`${failure}: context release survives disposal errors`,(await value('contextReleases'))-beforeContextReleases,1);
+   const errorCount=await page.evaluate(()=>window.probe.errors.filter(row=>row.component==='solar_system').length);
+   await metric(`${failure}: drawing or resize diagnostic is bounded`,errorCount,failure==='dispose'?2:1);
+   await page.evaluate(()=>{window.replayFrames();window.resizeScene(400,300,true);window.visibility(false);});
+   await metric(`${failure}: stale callbacks do not repeat diagnostics`,await page.evaluate(()=>window.probe.errors.filter(row=>row.component==='solar_system').length),errorCount);
+   await metric(`${failure}: failure is contained outside the window error channel`,await value('windowErrors'),[]);
+   await page.getByRole('textbox',{name:'Puzzle draft'}).fill('PIANO');await metric(`${failure}: puzzle input remains editable`,await page.getByRole('textbox',{name:'Puzzle draft'}).inputValue(),'PIANO');
+  }
+  // A real hosted puzzle must preserve its server token and finish after an async draw failure.
+  await openSolarGame(page,url);
+  await page.keyboard.type('pian');
+  await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
+  const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken);
+  await page.evaluate(()=>{window.controlFrames();window.releaseScene();});await page.locator('[data-testid=solar-system]').waitFor({state:'attached'});
+  await page.evaluate(()=>window.step());await page.waitForFunction(()=>window.probe.observers.some(row=>row.active));
+  await page.evaluate(()=>{window.resizeScene(390,844);window.probe.failDraw=true;window.step();});
+  await metric('async drawing failure preserves the game frame',await page.locator('.game-app').count(),1);
+  await metric('async drawing failure preserves its authoritative token',await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken),token);
+  await metric('async drawing failure preserves the PIAN draft',await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.currentLetters.join('').toUpperCase()),'PIAN');
+  await metric('async drawing failure reports once',await page.evaluate(()=>window.probe.errors.filter(row=>row.operation==='animate_scene').length),1);
+  await page.keyboard.type('o');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIANO'),{},{timeout:5000,polling:100});await page.keyboard.press('Enter');try{await page.waitForFunction(()=>window.probe.completions===1,{},{timeout:5000,polling:100});}catch(error){await writeFile(path.join(output,'completion-debug.json'),JSON.stringify(await page.evaluate(()=>({probe:{...window.probe,observers:undefined},text:document.body.innerText,pending:window.pendingFrames()})),null,2));await page.screenshot({path:path.join(output,'completion-debug.png')});throw error;}
+  await metric('player finishes after asynchronous graphics failure',await value('guesses'),1);
+  await metric('completion delivers one authoritative reward',await value('completions'),1);
+  await metric('graphics failure does not escape the browser callback',await value('windowErrors'),[]);
+  await metric('graphics failure produces no unhandled promise',await value('unhandled'),[]);
+  if(!baseline)await page.screenshot({path:path.join(output,`game-${width}.png`)});
+  await context.close();
+ }
+ }
+ await writeFile(path.join(output,'observations.json'),JSON.stringify(observations,null,2));
+ console.log(JSON.stringify({mode,baseline:!!baseline,checks:observations.length,failures:observations.filter(row=>JSON.stringify(row.actual)!==JSON.stringify(row.expected))},null,2));
+}finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});}

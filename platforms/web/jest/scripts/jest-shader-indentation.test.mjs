@@ -3,7 +3,7 @@ import {readFile, readdir} from "node:fs/promises";
 import {createRequire} from "node:module";
 import path from "node:path";
 import test from "node:test";
-import {createWebTargetViteConfig} from "../../../../packages/web-game/webTargetViteConfig.ts";
+import {createWebTargetViteConfig} from "../../../../scripts/web/build/webTargetViteConfig.ts";
 
 /** Real target configuration supplies the transform exercised by these checks. */
 const config = createWebTargetViteConfig({command: "build", mode: "jest", environment: process.env});

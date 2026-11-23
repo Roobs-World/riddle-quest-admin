@@ -1,7 +1,7 @@
 import {useCallback, type Dispatch, type SetStateAction} from "react";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
-import {trackEvent, trackPurchase} from "../../../../packages/web-game/src/analytics/events";
-import type {ProductSummary, PurchaseResult} from "@riddle-quest/hosted/hostTypes";
+import {tr} from "../../../../src/web/play/i18n";
+import {trackEvent, trackPurchase} from "../../../../src/web/analytics/events";
+import type {ProductSummary, PurchaseResult} from "../../../../src/hosted/hostTypes";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestSession} from "./types";
 

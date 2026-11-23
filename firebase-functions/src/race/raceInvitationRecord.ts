@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceLocaleSchema, type RaceLocale} from "@riddle-quest/core/race";
+import {RaceLocaleSchema, type RaceLocale} from "../../../src/core/race/index.js";
 
 /** Internal exclusive-seat authorization and independent publication facts. */
 export type RaceInvitationRecord = {

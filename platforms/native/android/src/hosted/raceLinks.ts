@@ -1,6 +1,6 @@
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {YouTubeLocale} from "../../../../../src/solo";
 import {Share} from "react-native";
-import {liveRaceInvitationUrl} from "@riddle-quest/hosted/live/invitations";
+import {liveRaceInvitationUrl} from "../entries/invitations";
 import {shareAndroidInvite} from "./inviteShare";
 
 /** Android's share sheet exposes only the existing private lobby, never another provider's link. */

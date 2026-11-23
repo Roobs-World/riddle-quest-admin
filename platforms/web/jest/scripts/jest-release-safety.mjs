@@ -273,16 +273,14 @@ export const findUnresolvedUploadBarriers = ({receiptDirectory, sourceCommit}) =
 };
 
 const mutableDependencyCacheDirectories = new Set([".cache", ".rolldown", ".vite", ".vite-temp"]);
-const releaseWorkspacePackageDirectories = ["core", "hosted", "solo", "web-game"]
-  .map((name) => join("packages", name))
-  .concat(["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"].map(name => join("platforms", "web", name)));
+const releaseWorkspacePackageDirectories = ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
+  .map(name => join("platforms", "web", name));
 const dependencyInputs = [
   "package.json",
   "pnpm-lock.yaml",
   "pnpm-workspace.yaml",
   join("firebase-functions", "package.json"),
   join("firebase-functions", "package-lock.json"),
-  join("firebase-functions", "packages", "core", "package.json"),
   ...releaseWorkspacePackageDirectories.map((directory) => join(directory, "package.json")),
   "node_modules",
   join("firebase-functions", "node_modules"),

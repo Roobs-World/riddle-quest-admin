@@ -1,4 +1,4 @@
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {YouTubeLocale} from "../../../../../src/solo";
 
 /** Shared race and referral guidance keeps the original link available after installation. */
 const guidance = {

@@ -1,23 +1,8 @@
 const path = require("node:path");
 const {getDefaultConfig, mergeConfig} = require("@react-native/metro-config");
 
-/** Monorepo root that holds the pnpm store and the shared workspace packages. */
+/** Repository root that holds the pnpm store and shared source folders. */
 const repositoryRoot = path.resolve(__dirname, "../../..");
-
-/**
- * Workspace sources resolved straight to TypeScript so Metro bundles the exact
- * modules the web targets compile, without a separate build step. Longer
- * specifiers are listed before their prefixes.
- */
-const workspaceSources = {
-  "#solo-content": path.join(repositoryRoot, "packages/web-game/src/playable/generated/youtube-content-v1.json"),
-  "@riddle-quest/hosted": path.join(repositoryRoot, "packages/hosted/src/index.ts"),
-  "@riddle-quest/solo/react": path.join(repositoryRoot, "packages/solo/src/react/index.ts"),
-  "@riddle-quest/solo": path.join(repositoryRoot, "packages/solo/src/index.ts"),
-  "@riddle-quest/core/validation/androidEntryInbox": path.join(repositoryRoot, "packages/core/src/validation/androidEntryInbox.ts"),
-  "@riddle-quest/core/game": path.join(repositoryRoot, "packages/core/src/game/index.ts"),
-  "@riddle-quest/core": path.join(repositoryRoot, "packages/core/src/index.ts"),
-};
 
 /**
  * Metro configuration
@@ -35,17 +20,14 @@ const config = {
   resolver: {
     nodeModulesPaths: [path.join(__dirname, "node_modules"), path.join(repositoryRoot, "node_modules")],
     resolveRequest: (context, moduleName, platform) => {
-      // Shared workspace sources use the native app's React and Firebase instances.
+      // Shared sources use the native app's React and Firebase instances.
       if (moduleName === "react" || moduleName.startsWith("react/") || moduleName === "firebase" || moduleName.startsWith("firebase/")) {
         return context.resolveRequest({...context, originModulePath: path.join(__dirname, "index.js")}, moduleName, platform);
       }
       if (moduleName === "#hosted-config") return {type: "sourceFile", filePath: hostedConfigPath};
-      if (moduleName.startsWith("@riddle-quest/hosted/")) {
-        return {type: "sourceFile", filePath: path.join(repositoryRoot, "packages/hosted/src", `${moduleName.slice("@riddle-quest/hosted/".length)}.ts`)};
+      if (moduleName === "#solo-content") {
+        return {type: "sourceFile", filePath: path.join(repositoryRoot, "src/web/playable/generated/youtube-content-v1.json")};
       }
-      /** Shared workspace module mapped to its TypeScript source. */
-      const filePath = workspaceSources[moduleName];
-      if (filePath) return {type: "sourceFile", filePath};
       return context.resolveRequest(context, moduleName, platform);
     },
   },

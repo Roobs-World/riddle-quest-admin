@@ -1,8 +1,8 @@
 import {referralCopy} from "../i18n/referralCopy";
 import {raceText} from "../i18n/raceCopy";
 import {notificationCopy} from "../i18n/notificationCopy";
-import type {HostServices, WebGameMode} from "@riddle-quest/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
+import type {HostServices, WebGameMode} from "../../../../../src/hosted/hostTypes";
+import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
 import {StyleSheet, Text, View} from "react-native";
 import {ModeCard} from "../components/ModeCard";
 import {ActionButton, Eyebrow, Heading, Screen} from "../components/Primitives";

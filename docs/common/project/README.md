@@ -11,9 +11,9 @@ All development, releases, Jest uploads and monitoring repairs use `main`. Confi
 | `platforms/web/<provider>` | Target HTML, composition, SDK adapters, provider-only server integration, assets, tests and release scripts |
 | `platforms/web/reddit` | Reddit browser adapter, trusted Devvit `/api/*` gateway, package validation and release receipts; Firebase authority lives separately in `server` |
 | `platforms/native/android` | Bare React Native app, native views and device bridges; Android-only Firebase authority lives in `server` |
-| `packages/web-game` | Shared browser presentation, Vite build infrastructure and browser test support; retains the `@riddle-quest/portal` package name for existing commands |
-| `packages/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
-| `packages/solo`, `packages/hosted` | Shared solo and hosted controllers used by web and Android |
+| `src/web` | Shared browser presentation and browser test support; common build tools live in `scripts/web` |
+| `src/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
+| `src/solo`, `src/hosted` | Shared solo and hosted controllers used by web and Android |
 | `firebase-functions` | Shared authoritative gameplay and infrastructure, deployed export composition, and archive-local compiled server output |
 | `tooling/sentry-worker` | Background Sentry repair worker with signed deployment checks and bounded Jest/Facebook repair paths |
 | `src/locales` | All user-facing translations: 16 locales across target-specific namespaces |
@@ -58,7 +58,7 @@ Do not use npm or Yarn to update this workspace. Commit `pnpm-lock.yaml` wheneve
 Start the normal Vite development server:
 
 ```bash
-pnpm --filter @riddle-quest/portal dev:jest
+pnpm dev:jest
 ```
 
 Open `http://localhost:5173/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
@@ -98,7 +98,7 @@ Configuration is split by trust level. Values prefixed with `VITE_` are compiled
 
 The dedicated Jest build loads `platforms/web/jest/.env.jest`. Use
 `platforms/web/jest/.env.jest.local` for ignored machine-specific public overrides. Vite's `envDir` points outside the
-portal source root, so legacy `packages/web-game/.env*` files are never loaded and the production security audit rejects
+shared browser source root, so legacy `packages/web-game/.env*` files are never loaded and the production security audit rejects
 them.
 
 | Variable | Required | Meaning |
@@ -346,7 +346,7 @@ When adding or removing copy:
 5. If notification fields changed, publish the reviewed Firestore notification configuration separately.
 
 ```bash
-pnpm --filter @riddle-quest/portal check:locales
+pnpm check:locales
 ```
 
 ## Testing
@@ -377,8 +377,8 @@ Useful focused checks:
 ```bash
 pnpm test:core
 pnpm test:web
-pnpm --filter @riddle-quest/portal test:jest-local:playwright
-pnpm --filter @riddle-quest/portal test:mobile-soak
+pnpm test:jest-local:playwright
+pnpm test:mobile-soak
 pnpm --dir firebase-functions test:race:rules
 ```
 
@@ -391,7 +391,7 @@ pnpm verify:production
 pnpm verify:production:extended
 ```
 
-The gate prepares the ignored `@riddle-quest/core` deploy package before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, active-version verification, and moderation remain explicit owner-run checks.
+The gate stages canonical shared and provider source inside the ignored Functions deployment tree before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, active-version verification, and moderation remain explicit owner-run checks.
 
 ### Uploaded sandbox build
 
@@ -400,7 +400,7 @@ Generate a short-lived login URL under Developer Console → Sandbox Users, copy
 ```bash
 JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
 JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm --filter @riddle-quest/portal test:jest-deployed:playwright
+pnpm test:jest-deployed:playwright
 ```
 
 `JEST_EXPECTED_BUILD_VERSION` is required. Optional deployed-test values are `JEST_DEPLOYED_GAME_URL`, `JEST_SANDBOX_STORAGE_STATE`, and `JEST_GAME_ID`. The default storage-state file lives under `/tmp`; do not commit authenticated browser state.
@@ -459,7 +459,7 @@ The command rebuilds and audits Facebook, creates the source/hash-bound ZIP rece
 Build and package a YouTube release candidate through the separate fail-closed path after all 16 audited content bundles exist:
 
 ```bash
-pnpm --filter @riddle-quest/portal build:youtube
+pnpm build:youtube
 pnpm release:youtube
 ```
 
@@ -493,7 +493,7 @@ locked, and do not place other credentials in readable paths outside the masked 
 
 Jest responds to a successful submission with HTTP `202`: the build and automatic-activation request are accepted for
 background processing, not ready or active yet. Before transmission, the command writes an owner-private attempt receipt
-under `packages/web-game/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
+under `.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
 transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could
 duplicate an accepted build. After a documented `202`, the receipt records the version ID, exact archive checksum, and
 activation intent. The documented API has no authoritative build-status polling endpoint, so the release tool does not

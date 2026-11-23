@@ -43,7 +43,7 @@ The handshake accepts a `GET` request whose `hub.mode` is `subscribe` and whose 
 ## Accept the complete purchase flow
 
 1. Keep public checkout disabled while completing the approved role-account acceptance procedure.
-2. Confirm that the native catalog contains the six coin products and the ad-free durable product from `packages/core/src/pricing/facebookCatalog.ts`.
+2. Confirm that the native catalog contains the six coin products and the ad-free durable product from `platforms/web/facebook/src/commerce/facebookCatalog.ts`.
 3. Confirm that the signed SDK receipt and signed webhook identify the same purchase token and product.
 4. Confirm that the webhook's `user_id` equals the player's game-scoped `FBInstant.player.getID()` value.
 5. Confirm that the grant succeeds once and returns the authoritative balance.

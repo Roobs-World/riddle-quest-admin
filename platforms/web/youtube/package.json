@@ -5,14 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode youtube",
-    "build": "pnpm --filter @riddle-quest/portal build:youtube",
+    "build": "pnpm --filter riddle-quest build:youtube",
     "check:types": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@riddle-quest/core": "workspace:*",
-    "@riddle-quest/hosted": "workspace:*",
-    "@riddle-quest/portal": "workspace:*",
-    "@riddle-quest/solo": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },

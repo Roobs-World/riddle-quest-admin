@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {LiveRaceView} from "@riddle-quest/core/race";
-import type {blockRival, joinLiveRace, reportRival} from "../../firebase";
+import type {LiveRaceView} from "../../../../../src/core/race";
+import type {blockRival, joinLiveRace, reportRival} from "../../../../../src/web/firebase";
 
 /** Transport responses remain untrusted until the real adapter validates them. */
 type CallableReply = {
@@ -14,7 +14,7 @@ const mockBlockRival = jest.fn<(...input: Parameters<typeof blockRival>) => Prom
 /** Captures ticket-bound reports at the existing callable boundary. */
 const mockReportRival = jest.fn<(...input: Parameters<typeof reportRival>) => Promise<CallableReply>>();
 
-jest.mock("../../firebase", () => ({joinLiveRace: mockJoinLiveRace, blockRival: mockBlockRival, reportRival: mockReportRival}));
+jest.mock("../../../../../src/web/firebase", () => ({joinLiveRace: mockJoinLiveRace, blockRival: mockBlockRival, reportRival: mockReportRival}));
 import {createJestRaceMatchmaking} from "../createJestRaceMatchmaking";
 
 /** Server-issued private lobby returned after resolving the original opponent. */

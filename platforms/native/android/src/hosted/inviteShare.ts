@@ -1,5 +1,5 @@
-import {androidInviteStoreUrl} from "@riddle-quest/hosted/androidEntryInbox";
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import {androidInviteStoreUrl} from "../entries/androidEntryInbox";
+import type {YouTubeLocale} from "../../../../../src/solo";
 import {Share} from "react-native";
 import {androidInviteGuidance} from "../i18n/inviteCopy";
 

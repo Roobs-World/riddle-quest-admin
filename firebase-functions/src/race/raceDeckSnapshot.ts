@@ -1,4 +1,4 @@
-import {RACE_RULES} from "@riddle-quest/core/race";
+import {RACE_RULES} from "../../../src/core/race/index.js";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import type {RaceRiddleSnapshot, RaceRunRecord} from "./raceEngine";

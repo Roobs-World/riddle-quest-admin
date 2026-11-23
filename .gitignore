@@ -7,7 +7,7 @@ dist-reddit/
 dist-youtube/
 dist-netflix/
 dist-yahoo/
-packages/web-game/dist-gamesnacks/
+/dist-gamesnacks/
 coverage/
 *.tsbuildinfo
 
@@ -32,12 +32,12 @@ firebase-functions/riddle-quest-admin-sdk.json
 firebase-functions/.runtimeconfig.json
 firebase-functions/artifacts/notification-copy-backups/
 
-packages/web-game/build.zip
-packages/web-game/.jest-upload-receipts/
-packages/web-game/.jest-release-workspaces/
-packages/web-game/build-facebook.zip
-packages/web-game/build-youtube.zip
-packages/web-game/build-youtube.manifest.json
+/build.zip
+/.jest-upload-receipts/
+/.jest-release-workspaces/
+/build-facebook.zip
+/build-youtube.zip
+/build-youtube.manifest.json
 build-youtube.zip
 build-html5.zip
 build-html5.sha256
@@ -71,7 +71,7 @@ build-telegram-review.zip
 build-telegram-review.zip.manifest.json
 build-microsoft-pwa.zip
 build-microsoft-pwa.zip.manifest.json
-packages/web-game/dist-microsoft-pwa/
+/dist-microsoft-pwa/
 build-y8-review.zip
 build-y8-review.zip.manifest.json
 build-playgama-review.zip
@@ -124,8 +124,8 @@ build-gamesnacks.zip
 build-gamesnacks.zip.manifest.json
 build-youtube.manifest.json
 build-youtube.test-report.json
-packages/web-game/.facebook-upload-receipts/
-packages/web-game/.facebook-setup-receipts/
+/.facebook-upload-receipts/
+/.facebook-setup-receipts/
 platforms/web/reddit/build-reddit.zip
 platforms/web/reddit/.reddit-release-receipts/
 build-noadsgames-review.zip

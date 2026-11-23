@@ -1,6 +1,6 @@
-import {RaceTournamentEntry} from "../../../../packages/web-game/src/play/race/RaceTournamentEntry";
-import type {RaceTo10GameProps} from "../../../../packages/web-game/src/play/race/RaceTo10Game.types";
-import {captureBrowserException} from "../../../../packages/web-game/src/observability/browserErrorReporter";
+import {RaceTournamentEntry} from "../../../../src/web/play/race/RaceTournamentEntry";
+import type {RaceTo10GameProps} from "../../../../src/web/play/race/RaceTo10Game.types";
+import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
 
 /** Reddit uses only its same-origin game-owned board, with no Meta or Jest SDK. */
 const presentation = {titleId: "reddit-tournament-title", analyticsScreen: "reddit_tournament",

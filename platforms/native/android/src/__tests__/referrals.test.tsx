@@ -2,8 +2,8 @@ import {describe, expect, it, jest} from "@jest/globals";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {Share} from "react-native";
-import {YOUTUBE_COPY, resolveYouTubeLocale} from "@riddle-quest/solo";
-import type {AndroidReferralBackend, AndroidReferralStatus} from "@riddle-quest/hosted/androidReferrals";
+import {YOUTUBE_COPY, resolveYouTubeLocale} from "../../../../../src/solo";
+import type {AndroidReferralBackend, AndroidReferralStatus} from "../referrals/androidReferrals";
 import {HostedReferralScreen} from "../screens/HostedReferralScreen";
 import {referralCopy} from "../i18n/referralCopy";
 /** Retains token for this operation. */

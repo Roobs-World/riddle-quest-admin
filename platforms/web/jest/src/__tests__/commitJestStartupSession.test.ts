@@ -1,7 +1,7 @@
 import {commitJestStartupSession} from "../commitJestStartupSession";
 import {createNotificationOperationGate, type NotificationCrossContextLock} from "../notifications/operationGate";
 import type {JestSession} from "../types";
-import {getCurrentLocale} from "../../../../../packages/web-game/src/play/i18n";
+import {getCurrentLocale} from "../../../../../src/web/play/i18n";
 
 /** Provides session behavior. */
 const session: JestSession = {

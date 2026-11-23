@@ -1,5 +1,5 @@
-import type {HostServices, LeaderboardType} from "@riddle-quest/hosted/hostTypes";
-import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
+import type {HostServices, LeaderboardType} from "../../../../../src/hosted/hostTypes";
+import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
 import {useState} from "react";
 import {StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";

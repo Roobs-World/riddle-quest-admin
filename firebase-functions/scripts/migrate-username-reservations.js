@@ -12,7 +12,7 @@ const {
   usernameReservationMigrationRef,
   USERNAME_RESERVATIONS_COLLECTION,
 } = require("../lib/firebase-functions/src/profile/usernameReservations.js");
-const {UsernameSchema} = require("@riddle-quest/core/validation/requestSchemas");
+const {UsernameSchema} = require("../lib/src/core/validation/requestSchemas");
 
 const args = process.argv.slice(2);
 const option = (name) => {

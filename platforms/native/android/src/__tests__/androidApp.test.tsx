@@ -1,11 +1,11 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {BridgeProfile} from "@riddle-quest/core/bridge";
-import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
-import type {YouTubeLocale, YouTubeSdkPort} from "@riddle-quest/solo";
+import type {BridgeProfile} from "../../../../../src/core/bridge";
+import type {AuthSnapshot, HostServices} from "../../../../../src/hosted/hostTypes";
+import type {YouTubeLocale, YouTubeSdkPort} from "../../../../../src/solo";
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {Linking} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {ANDROID_ENTRY_INBOX_KEY} from "@riddle-quest/hosted/androidEntryInbox";
+import {ANDROID_ENTRY_INBOX_KEY} from "../entries/androidEntryInbox";
 import {readPlayInstallReferrer} from "../hosted/playInstallReferrer";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";

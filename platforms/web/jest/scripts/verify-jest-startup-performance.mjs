@@ -8,16 +8,16 @@ import {chromium} from '@playwright/test';
 
 // Measures actual Jest startup/commit modules with repeatable provider/backend
 // delays. Baseline reproduces the previous app's serial hydration call site.
-const root = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const root = fileURLToPath(new URL("../../../../", import.meta.url));
 const baseline = process.argv.includes('--baseline');
 const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/jest-startup-load-'));
 const output = process.argv.find(arg => arg.endsWith('.json'));
 await writeFile(path.join(scratch,'index.html'), '<html lang="en"><body><main id="root">Loading</main><script type="module" src="/main.ts"></script></body></html>');
 await writeFile(path.join(scratch,'main.ts'), `
-import {startJestSession, markJestPlayable} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/startup.ts'))};
-import {commitJestStartupSession} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/commitJestStartupSession.ts'))};
-import {MockJestPlatform} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/MockJestPlatform.ts'))};
-import {createNotificationOperationGate} from ${JSON.stringify(path.join(root,'../../platforms/web/jest/src/notifications/operationGate.ts'))};
+import {startJestSession, markJestPlayable} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/startup.ts'))};
+import {commitJestStartupSession} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/commitJestStartupSession.ts'))};
+import {MockJestPlatform} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/MockJestPlatform.ts'))};
+import {createNotificationOperationGate} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/notifications/operationGate.ts'))};
 window.events=[];const record=name=>{window.events.push({name,time:performance.now()});};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const scenario=new URLSearchParams(location.search).get('scenario');
@@ -42,7 +42,7 @@ markJestPlayable(platform);document.getElementById('root').innerHTML='<button>Pl
 let browser,server;
 const results=[];
 try {
-  await build({root:scratch,configFile:false,logLevel:'error',define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},build:{outDir:'dist'},resolve:{alias:{'@riddle-quest/core/bridge/constants':path.join(root,'../core/src/bridge/constants.ts'),'@riddle-quest/core/race':path.join(root,'../core/src/race/index.ts')}}});
+  await build({root:scratch,configFile:false,logLevel:'error',define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},build:{outDir:'dist'},});
   server=createServer(async(request,response)=>{
     try {
       const file=path.join(scratch,'dist',new URL(request.url,'http://localhost').pathname==='/'?'index.html':new URL(request.url,'http://localhost').pathname);

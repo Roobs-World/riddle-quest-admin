@@ -14,7 +14,7 @@ import {
   SpendCoinsResponseSchema,
   GetHintRequestSchema,
   GetHintResponseSchema,
-} from "@riddle-quest/core/validation/requestSchemas";
+} from "../../../src/core/validation/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {gameplayCallableOptions, gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";
@@ -23,7 +23,7 @@ import {
   purchaseAuthoritativeHint,
   skipAuthoritativeRiddle,
 } from "./singlePlayerSession";
-import type {SupportedLocale} from "@riddle-quest/core/validation";
+import type {SupportedLocale} from "../../../src/core/validation/index.js";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 
 /**

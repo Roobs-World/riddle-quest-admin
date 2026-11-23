@@ -1,4 +1,4 @@
-import type {GrantAndroidPurchaseOutput, SyncAndroidSubscriptionsOutput} from "@riddle-quest/hosted";
+import type {GrantAndroidPurchaseOutput, SyncAndroidSubscriptionsOutput} from "../hosted/androidAccountFunctions";
 import type {AndroidPurchaseBackend} from "../billing/androidCommerce";
 import type {PlayBillingPort, PlayCheckoutResult, PlayProduct, PlayPurchase} from "../billing/playBilling";
 /** Coin pack used across billing scenarios. */

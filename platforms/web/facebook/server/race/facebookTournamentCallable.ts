@@ -3,7 +3,7 @@ import {
   ListFacebookTournamentResponseSchema,
   RecordFacebookTournamentRunRequestSchema,
   RecordFacebookTournamentRunResponseSchema,
-} from "@riddle-quest/core/race";
+} from "../../../../../src/core/race/index.js";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {isFacebookFeatureEnabled} from "../facebookFeatureFlags";
 import {isFacebookFirebaseUid} from "../facebookSecurity";

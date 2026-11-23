@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "@jest/globals";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {NativeModules} from "react-native";
-import {createAndroidGoogleIdentity} from "@riddle-quest/hosted/identity/androidGoogleIdentity";
+import {createAndroidGoogleIdentity} from "../auth/androidGoogleIdentity";
 import {GoogleAccountLink} from "../components/GoogleAccountLink";
 import {AccountScreen} from "../screens/AccountScreen";
 import {SafeAreaProvider} from "react-native-safe-area-context";
@@ -9,7 +9,7 @@ import {clearGoogleCredentialState, googleCredentialsAvailable, pickGoogleCreden
 import {googleIdentityCopy} from "../i18n/googleIdentityCopy";
 import type {HostedFirebaseClient} from "../hosted/firebaseClient";
 import type {HostedAccountController} from "../hosted/useHostedAccount";
-import {createGameFunctionsClient} from "@riddle-quest/hosted";
+import {createGameFunctionsClient} from "../../../../../src/hosted";
 import {getApps, initializeApp} from "firebase/app";
 import {getFunctions} from "firebase/functions";
 

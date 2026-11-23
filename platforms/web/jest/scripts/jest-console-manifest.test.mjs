@@ -60,7 +60,7 @@ test("approved privacy metadata stays Console-only and cannot create in-game nav
   const informationSource = await readFile(
     path.join(
       repositoryDirectory,
-      "packages/web-game/src/play/modalPages/information/InformationModalPages.tsx",
+      "src/web/play/modalPages/information/InformationModalPages.tsx",
     ),
     "utf8",
   );
@@ -93,7 +93,7 @@ test("approved privacy metadata stays Console-only and cannot create in-game nav
 
 test("ordinary builds validate known Console fields without claiming owner approval", async () => {
   const portalPackage = JSON.parse(await readFile(
-    path.join(repositoryDirectory, "packages/web-game/package.json"),
+    path.join(repositoryDirectory, "package.json"),
     "utf8",
   ));
   const rootPackage = JSON.parse(await readFile(path.join(repositoryDirectory, "package.json"), "utf8"));

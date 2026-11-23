@@ -1,4 +1,4 @@
-import {RACE_MAX_ADJUSTED_TIME_MS, RACE_TARGET_CORRECT, type RaceLocale} from "@riddle-quest/core/race";
+import {RACE_MAX_ADJUSTED_TIME_MS, RACE_TARGET_CORRECT, type RaceLocale} from "../../../../../src/core/race/index.js";
 import type {Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {isFacebookFirebaseUid} from "../facebookSecurity";

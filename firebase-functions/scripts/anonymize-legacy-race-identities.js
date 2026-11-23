@@ -4,7 +4,7 @@
 
 const {initializeApp} = require("firebase-admin/app");
 const {FieldPath, FieldValue, Timestamp, getFirestore} = require("firebase-admin/firestore");
-const {RACE_CHALLENGE_TTL_MS} = require("@riddle-quest/core/race");
+const {RACE_CHALLENGE_TTL_MS} = require("../lib/src/core/race");
 
 const args = process.argv.slice(2);
 const option = (name) => {

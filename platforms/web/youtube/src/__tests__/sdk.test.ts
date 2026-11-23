@@ -1,6 +1,6 @@
 import {createYouTubeSdkPort} from "../sdk";
-import {LEGACY_PLATFORM_RUNTIME_POLICY} from "../../../../../packages/web-game/src/platform/types";
-import {YOUTUBE_RUNTIME_POLICY} from "../../../../../packages/web-game/src/playable/types";
+import {LEGACY_PLATFORM_RUNTIME_POLICY} from "../../../../../src/web/platform/types";
+import {YOUTUBE_RUNTIME_POLICY} from "../../../../../src/web/playable/types";
 /** Creates sdk. */
 const createSdk = () => {
   /** Provides callbacks behavior. */

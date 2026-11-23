@@ -1,4 +1,4 @@
-import {resetAnalyticsForTests, trackEvent, trackPurchase} from "../../../../../packages/web-game/src/analytics/events";
+import {resetAnalyticsForTests, trackEvent, trackPurchase} from "../../../../../src/web/analytics/events";
 import {installFacebookAnalytics} from "../analytics";
 import type {FacebookInstantSdk} from "../fbinstant";
 

@@ -1,6 +1,6 @@
-import {readProtectedContent} from "@riddle-quest/core/contentProtection";
-import {RaceEntryResponseSchema} from "@riddle-quest/core/race";
-import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "@riddle-quest/core/bridge";
+import {readProtectedContent} from "../../../../src/core/contentProtection";
+import {RaceEntryResponseSchema} from "../../../../src/core/race";
+import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "../../../../src/core/bridge";
 import {
   ClassicRiddleBufferResponseSchema,
   CompleteGameResponseDataSchema,
@@ -10,9 +10,9 @@ import {
   SkipRiddleResponseSchema,
   SpendCoinsResponseSchema,
   SubmitSinglePlayerGuessResponseDataSchema,
-} from "@riddle-quest/core/validation";
-import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
-import {tr} from "../../../../packages/web-game/src/play/i18n";
+} from "../../../../src/core/validation";
+import type {AuthSnapshot, HostServices} from "../../../../src/hosted/hostTypes";
+import {tr} from "../../../../src/web/play/i18n";
 import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
 import {
   AbandonRaceRunResponseSchema,
@@ -26,7 +26,7 @@ import {
   RequestRaceHintResponseSchema,
   SkipRaceRiddleResponseSchema,
   SubmitRaceGuessResponseSchema,
-} from "@riddle-quest/core/race";
+} from "../../../../src/core/race";
 
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>

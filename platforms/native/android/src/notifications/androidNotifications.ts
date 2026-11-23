@@ -5,7 +5,7 @@ import {
   createAndroidNotificationController,
   type AndroidNotificationBackend,
   type AndroidNotificationDevice,
-} from "@riddle-quest/hosted/androidNotifications";
+} from "./androidNotificationController";
 import {hostedConfig} from "../hosted/hostedConfig";
 /** Validated native bridge. */
 type NativeNotifications = {

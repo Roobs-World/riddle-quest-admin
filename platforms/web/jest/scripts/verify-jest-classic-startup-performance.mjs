@@ -7,14 +7,14 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 // Actual Jest adapter, with repeatable authority delays and a completed Daily.
-const root = fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const root = fileURLToPath(new URL("../../../../", import.meta.url));
 const baseline = process.argv.includes('--baseline');
 const output = process.argv.find(arg => arg.endsWith('.json'));
 await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});
 const scratch = await mkdtemp(path.join(root, 'node_modules/.cache/jest-classic-load-'));
 await writeFile(path.join(scratch, 'index.html'), '<html><body><main id="root">Loading</main><script type="module" src="/main.ts"></script></body></html>');
 await writeFile(path.join(scratch, 'main.ts'), `
-import {createJestStartupRiddlePreload} from ${JSON.stringify(path.join(root, '../../platforms/web/jest/src/startupRiddlePreload.ts'))};
+import {createJestStartupRiddlePreload} from ${JSON.stringify(path.join(root, 'platforms/web/jest/src/startupRiddlePreload.ts'))};
 const events=[];const record=name=>events.push({name,time:performance.now()});
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const completed=new URLSearchParams(location.search).get('completed')==='1';

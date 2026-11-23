@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "@riddle-quest/core/race";
+import {RACE_RULES} from "../../../../src/core/race/index.js";
 import {readyRaceRunForUser, resumeRaceRunForUser, submitRaceGuessForUser} from "../../race/raceService";
 
 /** Isolated emulator storage proves malformed countdowns cannot become scored authority. */

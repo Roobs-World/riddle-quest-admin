@@ -27,7 +27,7 @@ import {
   GetLeaderboardResponseSchema,
   LeaderboardEntry,
   LeaderboardType,
-} from "@riddle-quest/core/validation/requestSchemas";
+} from "../../../src/core/validation/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 
 /** Defines the level weight value. */

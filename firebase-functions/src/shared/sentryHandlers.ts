@@ -1,4 +1,4 @@
-import {contentProtectionRequest, protectContent} from "@riddle-quest/core/contentProtection";
+import {contentProtectionRequest, protectContent} from "../../../src/core/contentProtection.js";
 import type {
   CallableFunction,
   CallableOptions,

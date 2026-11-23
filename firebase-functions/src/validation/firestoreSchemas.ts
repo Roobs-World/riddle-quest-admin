@@ -1,7 +1,7 @@
 import type {FieldValue} from "firebase-admin/firestore";
-import {type PlayerStats} from "@riddle-quest/core/validation";
+import {type PlayerStats} from "../../../src/core/validation/index.js";
 
-export * from "@riddle-quest/core/validation";
+export * from "../../../src/core/validation/index.js";
 
 /** Describes player stats update. */
 export type PlayerStatsUpdate = {

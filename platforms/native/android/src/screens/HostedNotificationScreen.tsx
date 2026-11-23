@@ -1,7 +1,7 @@
 import {palette} from "../theme";
-import type {createAndroidNotificationController} from "@riddle-quest/hosted/androidNotifications";
-import {youtubeText, type YouTubeLocale} from "@riddle-quest/solo";
-import type {AndroidNotificationPreferences} from "@riddle-quest/hosted/androidNotifications";
+import type {createAndroidNotificationController} from "../notifications/androidNotificationController";
+import {youtubeText, type YouTubeLocale} from "../../../../../src/solo";
+import type {AndroidNotificationPreferences} from "../notifications/androidNotificationController";
 import {useEffect, useState} from "react";
 import {Text, View} from "react-native";
 import {ActionButton, Panel, Screen, Heading} from "../components/Primitives";

@@ -1,4 +1,4 @@
-import {REDDIT_GOLD_PRODUCTS} from "@riddle-quest/core/pricing/redditCatalog";
+import {REDDIT_GOLD_PRODUCTS} from "../shared/redditCatalog.js";
 
 /** Describes hook kind. */
 type HookKind = "fulfill" | "refund";

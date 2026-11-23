@@ -1,10 +1,10 @@
-import {PlayerSaveRecoveryLayout} from "../../../../packages/web-game/src/play/PlayerSaveRecoveryLayout";
-import {ProfileSubscriptionContext} from "../../../../packages/web-game/src/play/modalPages/profile/ProfileSubscriptionContext";
-import {completionPresentationKey} from "@riddle-quest/hosted/play/completionPresentation";
-import {ProviderProfileContext} from "../../../../packages/web-game/src/play/ProviderProfileContext";
-import {ShopSubscriptionContext} from "../../../../packages/web-game/src/play/modalPages/commerce/ShopSubscriptionContext";
+import {PlayerSaveRecoveryLayout} from "../../../../src/web/play/PlayerSaveRecoveryLayout";
+import {ProfileSubscriptionContext} from "../../../../src/web/play/modalPages/profile/ProfileSubscriptionContext";
+import {completionPresentationKey} from "../../../../src/hosted/play/completionPresentation";
+import {ProviderProfileContext} from "../../../../src/web/play/ProviderProfileContext";
+import {ShopSubscriptionContext} from "../../../../src/web/play/modalPages/commerce/ShopSubscriptionContext";
 import {Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {PlayHostApp} from "../../../../packages/web-game/src/play/PlayHostApp";
+import {PlayHostApp} from "../../../../src/web/play/PlayHostApp";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
 import {
@@ -16,7 +16,7 @@ import {
   type JestStartupUpdate,
 } from "./startup";
 import type {JestSession} from "./types";
-import {tr, useLocale} from "../../../../packages/web-game/src/play/i18n";
+import {tr, useLocale} from "../../../../src/web/play/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion, shouldPromptGuestRegistration} from "./milestone";
 import {useJestNotifications} from "./notifications/useJestNotifications";
@@ -24,15 +24,15 @@ import type {NotificationCopy} from "./notifications/copy";
 import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
-import {configurePlatformAnalytics, trackScreen} from "../../../../packages/web-game/src/analytics/events";
-import {hasTrustedTestHarnessMarker} from "../../../../packages/web-game/src/testHarness";
+import {configurePlatformAnalytics, trackScreen} from "../../../../src/web/analytics/events";
+import {hasTrustedTestHarnessMarker} from "../../../../src/web/testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
 import {JestAccountDeleted, JestStartupError, JestStartupProgress} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
 import {useJestPurchaseRecovery} from "./useJestPurchaseRecovery";
-import {captureBrowserException} from "../../../../packages/web-game/src/observability/browserErrorReporter";
+import {captureBrowserException} from "../../../../src/web/observability/browserErrorReporter";
 import {
   ACCOUNT_DELETION_PENDING_PHASE,
   AccountDeletionCleanupError,
@@ -49,15 +49,15 @@ import {useJestPlayerStateWrites} from "./useJestPlayerStateWrites";
 import {useAccountDeletionQuiescence} from "./useAccountDeletionQuiescence";
 import {commitJestStartupSession} from "./commitJestStartupSession";
 import {clearJestFirebaseAuthentication} from "./clearJestFirebaseAuthentication";
-import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../../../../packages/web-game/src/play/services";
+import {createHostServices, getHostConfigurationWarning, resolveHostServicesMode} from "../../../../src/web/play/services";
 import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformOperations";
 import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
 import {createJestHostedPlaySession} from "./JestHostedPlaySession";
 import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
-import {hasLiveRaceLobby} from "../../../../packages/web-game/src/play/race/logic/liveRaceLobbyHint";
+import {hasLiveRaceLobby} from "../../../../src/web/play/race/logic/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
-import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../packages/web-game/src/platform/startupWarmup";
+import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/web/platform/startupWarmup";
 
 /** Account-management controls load when Profile or Settings first renders them. */
 const JestProfileSubscriptions = lazy(() => import("./JestProfileSubscriptions")
@@ -85,7 +85,7 @@ function warmJestFirebaseStartup(): void {
   }
   // Warm-up failures are retried and reported by the authenticated startup path.
   void import("firebase/auth").catch(() => undefined);
-  void import("../../../../packages/web-game/src/play/firebaseServices").catch(() => undefined);
+  void import("../../../../src/web/play/firebaseServices").catch(() => undefined);
   void import("./JestFirebaseAppCheck").then((module) => module.warmJestFirebaseAppCheck()).catch(() => undefined);
 }
 
@@ -145,7 +145,7 @@ export function JestPlayApp() {
     const key = `${session.firebaseUid}:${avatarUrl}`;
     if (syncedAvatarRef.current === key) return;
     syncedAvatarRef.current = key;
-    void import("../../../../packages/web-game/src/firebase")
+    void import("../../../../src/web/firebase")
       .then(({syncJestAvatar}) => syncJestAvatar({avatarUrl}))
       .catch((error) => {
         captureBrowserException(error, {component: "jest_avatar_sync"});
@@ -306,7 +306,7 @@ export function JestPlayApp() {
         /** Provides [{sign in with custom token}, {auth}, {ensure jest firebase app check ready}] behavior. */
         const [{signInWithCustomToken}, {auth}, {ensureJestFirebaseAppCheckReady}] = await Promise.all([
           import("firebase/auth"),
-          import("../../../../packages/web-game/src/firebase"),
+          import("../../../../src/web/firebase"),
           import("./JestFirebaseAppCheck"),
         ]);
         // Attestation is independent of identity; it usually completed during the startup warm-up.
@@ -403,8 +403,8 @@ export function JestPlayApp() {
               hostServices.preloadInitialRiddles?.(preparedLocale);
               /** Authoritative profile remains mandatory before showing the balance or enabling play. */
               const [{loadUserDocument}, {toBridgeProfile}] = await Promise.all([
-                import("../../../../packages/web-game/src/firebase"),
-                import("@riddle-quest/hosted/profileMapper"),
+                import("../../../../src/web/firebase"),
+                import("../../../../src/hosted/profileMapper"),
               ]);
               /** Profile created or restored by the authoritative identity exchange. */
               const profileData = await loadUserDocument(readySession.firebaseUid);

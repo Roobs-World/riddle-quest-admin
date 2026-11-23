@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceCategoryIdSchema, RaceLocaleSchema} from "@riddle-quest/core/race";
+import {RaceCategoryIdSchema, RaceLocaleSchema} from "../../../src/core/race/index.js";
 import {raceMatchPolicySnapshot, RaceMatchPolicySchema, RaceMatchExperimentAssignmentSchema} from "./raceMatchPolicy";
 
 /** Historical identities remain opaque single path segments. */

@@ -528,7 +528,7 @@ test("generated verification outputs do not alter release source identity", asyn
 test("source files in nested artifact-named folders remain source inputs", async context => {
   const fixture = await createReleaseFixture(context);
   const original = await captureSourceIdentity(fixture.repositoryDirectory);
-  const file = path.join(fixture.repositoryDirectory, "packages/web-game/src/artifacts/model.ts");
+  const file = path.join(fixture.repositoryDirectory, "src/web/artifacts/model.ts");
   await mkdir(path.dirname(file), {recursive: true});
   await writeFile(file, "export const value = 1;\n");
   assert.notEqual((await captureSourceIdentity(fixture.repositoryDirectory)).snapshotSha256, original.snapshotSha256);

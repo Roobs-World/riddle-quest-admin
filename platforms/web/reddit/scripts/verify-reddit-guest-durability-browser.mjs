@@ -6,11 +6,11 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
-const root=fileURLToPath(new URL("../../../../packages/web-game/", import.meta.url));
+const root=fileURLToPath(new URL("../../../../", import.meta.url));
 const mode=process.env.GUEST_DURABILITY_REACT_MODE??'development';
 const baseline=process.env.GUEST_DURABILITY_BASELINE_DIR;
 const coldOnly=process.env.GUEST_DURABILITY_COLD_ONLY==='1';
-const output=path.resolve(process.env.GUEST_DURABILITY_REPORT_DIR??path.join(root,'../../builds/test-evidence/reddit-guest-durability-2026-10-03',mode));
+const output=path.resolve(process.env.GUEST_DURABILITY_REPORT_DIR??path.join(root,'builds/test-evidence/reddit-guest-durability-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/reddit-guest-'));
 const observations=[];let browser,server;

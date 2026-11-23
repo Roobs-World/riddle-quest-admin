@@ -1,4 +1,4 @@
-import {RACE_ACHIEVEMENT_IDS} from "@riddle-quest/core/race";
+import {RACE_ACHIEVEMENT_IDS} from "../../../../src/core/race/index.js";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../shared/constants";
 import {evaluateRaceAchievementEvent, raceRewardAwardsAgree} from "../../race/raceAchievements";
 

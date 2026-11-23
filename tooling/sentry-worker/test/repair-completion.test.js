@@ -4,20 +4,20 @@ import {validateRepairPayload} from "../worker/repair-payload.mjs";
 import {completeRepair} from "../worker/github-repair.mjs";
 
 const change = {path: "firebase-functions/src/shared/example.ts", mode: "100644", content: Buffer.from("export const fixed = true;\n").toString("base64")};
-test("repairs accept source and tests only in the shared and web packages covered by production readiness", () => {
+test("repairs accept source and tests only in the shared source folders covered by production readiness", () => {
   for (const path of [
-    "packages/core/src/game/fixed.ts",
-    "packages/core/test/game.test.ts",
-    "packages/core/tests/game.test.ts",
-    "packages/solo/src/solo.ts",
-    "packages/solo/test/solo.test.ts",
-    "packages/solo/tests/solo.test.ts",
-    "packages/hosted/src/account.ts",
-    "packages/hosted/test/account.test.ts",
-    "packages/hosted/tests/account.test.ts",
-    "packages/web-game/src/play/fixed.ts",
-    "packages/web-game/test/shared-ui.test.ts",
-    "packages/web-game/tests/shared-ui.test.ts",
+    "src/core/game/fixed.ts",
+    "src/core/test/game.test.ts",
+    "src/core/tests/game.test.ts",
+    "src/solo/solo.ts",
+    "src/solo/test/solo.test.ts",
+    "src/solo/tests/solo.test.ts",
+    "src/hosted/account.ts",
+    "src/hosted/test/account.test.ts",
+    "src/hosted/tests/account.test.ts",
+    "src/web/play/fixed.ts",
+    "src/web/test/shared-ui.test.ts",
+    "src/web/tests/shared-ui.test.ts",
     "platforms/web/jest/src/fixed.ts",
     "platforms/web/jest/server/fixed.ts",
     "platforms/web/jest/scripts/audit-jest-artifact.mjs",
@@ -31,7 +31,7 @@ test("repairs accept source and tests only in the shared and web packages covere
     });
   }
 });
-test("repairs reject parked targets, unknown packages and package-prefix lookalikes", () => {
+test("repairs reject parked targets, unknown folders and source-prefix lookalikes", () => {
   for (const path of [
     "platforms/native/android/src/auth/fixed.ts",
     "platforms/native/android/server/account.ts",
@@ -49,9 +49,9 @@ test("repairs reject parked targets, unknown packages and package-prefix lookali
     "platforms/web/facebook/vite.config.ts",
     "packages/portal/src/jest/fixed.ts",
     "packages/unknown/src/fixed.ts",
-    "packages/core-extra/src/fixed.ts",
-    "packages/web-game-other/tests/fixed.test.ts",
-    "packages/hosted/package.json",
+    "src/core-extra/src/fixed.ts",
+    "src/web-other/tests/fixed.test.ts",
+    "package.json",
     "firebase-functions/test/fixed.test.ts",
   ]) {
     assert.throws(() => validateRepairPayload({changes: [{...change, path}]}), {message: "unsupported_repair_path"}, path);
@@ -59,8 +59,8 @@ test("repairs reject parked targets, unknown packages and package-prefix lookali
 });
 test("bounded repair payload rejects automation changes, traversal, deletions, binary data and excessive work", () => {
   assert.equal(validateRepairPayload({changes: [change]}).changes.length, 1);
-  for (const invalid of [{...change, path: ".github/workflows/check.yml"}, {...change, path: "packages/core/src/../../AGENTS.md"}, {...change, path: "packages/core/src/AGENTS.md"}, {...change, path: "firebase-functions/src/CLAUDE.md"}, {...change, deleted: true}, {...change, mode: "120000"}, {...change, content: "/w=="}, {...change, content: Buffer.alloc(128_001).toString("base64")}]) assert.throws(() => validateRepairPayload({changes: [invalid]}));
-  assert.throws(() => validateRepairPayload({changes: Array.from({length: 13}, (_, index) => ({...change, path: `packages/core/src/file${index}.ts`}))}));
+  for (const invalid of [{...change, path: ".github/workflows/check.yml"}, {...change, path: "src/core/../../AGENTS.md"}, {...change, path: "src/core/AGENTS.md"}, {...change, path: "firebase-functions/src/CLAUDE.md"}, {...change, deleted: true}, {...change, mode: "120000"}, {...change, content: "/w=="}, {...change, content: Buffer.alloc(128_001).toString("base64")}]) assert.throws(() => validateRepairPayload({changes: [invalid]}));
+  assert.throws(() => validateRepairPayload({changes: Array.from({length: 13}, (_, index) => ({...change, path: `src/core/file${index}.ts`}))}));
 });
 test("a mixed repair containing a parked target is rejected before any GitHub authority or write request", async () => {
   const requests = [];

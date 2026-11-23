@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {LiveRaceController, type LiveRaceControllerOptions} from "@riddle-quest/hosted/live/LiveRaceController";
+import {LiveRaceController, type LiveRaceControllerOptions} from "../../../../../src/hosted/live/LiveRaceController";
 import {useEffect, useState, useSyncExternalStore} from "react";
 import {AppState} from "react-native";
 

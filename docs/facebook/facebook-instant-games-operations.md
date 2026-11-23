@@ -10,8 +10,8 @@ This runbook describes the Facebook web target currently present in source. It i
 ## Build and inspect
 
 ```sh
-pnpm --filter @riddle-quest/portal build:facebook
-pnpm --filter @riddle-quest/portal audit:facebook-artifact
+pnpm build:facebook
+pnpm audit:facebook-artifact
 ```
 
 The build writes `builds/facebook`. It must load only `fbinstant.8.0.js`, contain root `fbapp-config.json`, remain below 5 MiB of critical initial resources and 200 MiB total, contain no source maps or private credentials, and pass the reciprocal Jest-leakage audit. The Jest build remains independently available through `build:jest`; never combine both SDKs in one artifact.
@@ -39,7 +39,7 @@ remains a fallback. These paths still require Meta-hosted acceptance.
 Run the interactive setup/evidence guide from the repository root when the real Meta app is available:
 
 ```sh
-pnpm --filter @riddle-quest/portal facebook:setup
+pnpm facebook:setup
 ```
 
 The wizard stores the Meta app ID, origins, and deletion-status URL under the ignored, owner-local `.facebook-setup-receipts` directory. It deliberately never accepts secret values, does not collect `FACEBOOK_FIREBASE_APP_ID`, does not write the Functions deployment environment, and never changes tracker statuses. Treat `setup.env` as evidence input only: obtain the canonical Firebase web app ID separately, review all four non-secret values, and deliberately copy them into `firebase-functions/.env.riddle-quest-ec2b2` before backend preflight. Meta approvals remain deferred until the production gate, as requested.
@@ -205,7 +205,7 @@ The preparer refuses to replace the rebuildable ZIP while any retained handoff i
 If the outcome is unknown, do not begin again or retransmit. Reconcile the existing draft in Meta first. After Meta shows the non-production draft, save a redacted dashboard capture outside the repository and bind its bytes plus the draft ID to the accepted ZIP:
 
 ```sh
-pnpm --dir packages/web-game facebook:draft ambiguous \
+pnpm facebook:draft ambiguous \
   --archive-hash EXACT_64_HEX_SHA256 \
   --reason "dashboard result unknown after transmission"
 ```
@@ -213,7 +213,7 @@ pnpm --dir packages/web-game facebook:draft ambiguous \
 This transition is exclusive for that hash and retained; concurrent or repeated transitions of its barrier fail closed. After reconciling the existing artifact in Meta, bind its redacted evidence plus draft ID to the accepted ZIP:
 
 ```sh
-pnpm --dir packages/web-game facebook:draft accept \
+pnpm facebook:draft accept \
   --archive-hash EXACT_64_HEX_SHA256 \
   --draft-id META_DRAFT_ID \
   --evidence /absolute/path/to/redacted-draft-evidence
@@ -222,7 +222,7 @@ pnpm --dir packages/web-game facebook:draft accept \
 After every gate and review passes, a human promotes that existing draft without uploading new bytes. Obtain or independently download and hash the production artifact; the following command refuses any hash different from the accepted draft and writes an owner-private promotion receipt:
 
 ```sh
-pnpm --dir packages/web-game facebook:draft promote \
+pnpm facebook:draft promote \
   --archive-hash EXACT_64_HEX_SHA256 \
   --production-hash EXACT_64_HEX_SHA256 \
   --evidence /absolute/path/to/redacted-promotion-evidence

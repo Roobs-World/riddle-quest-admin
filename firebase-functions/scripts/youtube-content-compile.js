@@ -28,7 +28,7 @@ const resolveOption = (name, fallback) => path.resolve(repositoryRoot, option(na
 const sourcePath = resolveOption("--source", "firebase-functions/content/youtube-content-source-v1.json");
 const translationsDirectory = resolveOption("--translations-dir", "firebase-functions/content/youtube-translations");
 const orderPath = resolveOption("--order", "firebase-functions/content/youtube-content-order-v1.json");
-const outputPath = resolveOption("--output", "packages/web-game/src/playable/generated/youtube-content-v1.json");
+const outputPath = resolveOption("--output", "src/web/playable/generated/youtube-content-v1.json");
 const auditPath = resolveOption(
   "--audit-output",
   "firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json",

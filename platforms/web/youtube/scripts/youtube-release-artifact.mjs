@@ -18,25 +18,25 @@ const gitCommitPattern = /^[0-9a-f]{40,64}$/u;
 
 export const youtubeReleaseVerificationSuites = Object.freeze([
   Object.freeze({id: "youtube-content-tests", command: "pnpm --dir firebase-functions test:youtube-content"}),
-  Object.freeze({id: "youtube-runtime-unit-tests", command: "pnpm --filter @riddle-quest/portal test:youtube:unit"}),
-  Object.freeze({id: "legacy-target-builds-and-audits", command: "pnpm --filter @riddle-quest/portal build:web"}),
-  Object.freeze({id: "youtube-release-build-and-audit", command: "pnpm --filter @riddle-quest/portal build:youtube"}),
-  Object.freeze({id: "release-boundary-tests", command: "pnpm --filter @riddle-quest/portal test:release-scripts"}),
+  Object.freeze({id: "youtube-runtime-unit-tests", command: "pnpm --filter riddle-quest test:youtube:unit"}),
+  Object.freeze({id: "legacy-target-builds-and-audits", command: "pnpm --filter riddle-quest build:web"}),
+  Object.freeze({id: "youtube-release-build-and-audit", command: "pnpm --filter riddle-quest build:youtube"}),
+  Object.freeze({id: "release-boundary-tests", command: "pnpm --filter riddle-quest test:release-scripts"}),
   Object.freeze({
     id: "jest-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:jest-local:playwright",
+    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:jest-local:playwright",
   }),
   Object.freeze({
     id: "facebook-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:facebook:playwright",
+    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:facebook:playwright",
   }),
   Object.freeze({
     id: "reddit-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:reddit:playwright",
+    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:reddit:playwright",
   }),
   Object.freeze({
     id: "youtube-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:youtube:playwright",
+    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:youtube:playwright",
   }),
 ]);
 

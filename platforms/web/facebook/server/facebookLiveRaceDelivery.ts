@@ -1,4 +1,4 @@
-import {RACE_TARGET_CORRECT} from "@riddle-quest/core/race";
+import {RACE_TARGET_CORRECT} from "../../../../src/core/race/index.js";
 import {runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "./facebookRaceReferralDelivery";

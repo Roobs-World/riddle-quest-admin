@@ -1,6 +1,6 @@
 import type {Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceLocaleSchema, type RaceLocale} from "@riddle-quest/core/race";
+import {RaceLocaleSchema, type RaceLocale} from "../../../../../src/core/race/index.js";
 import {admin} from "../../../../../firebase-functions/src/shared/firebaseAdmin";
 import {isFacebookFirebaseUid} from "../facebookSecurity";
 import {

@@ -1,4 +1,4 @@
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "../../../src/core/game/index.js";
 import {
   RACE_RULES,
   type RaceCategoryId,
@@ -8,7 +8,7 @@ import {
   type RaceRunStatus,
   type RaceRunView,
   type RaceRules,
-} from "@riddle-quest/core/race";
+} from "../../../src/core/race/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 
 /** Bounds unscored deck preparation so repeatedly postponing readiness cannot extend one attempt. */

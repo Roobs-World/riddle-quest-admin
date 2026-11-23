@@ -301,7 +301,7 @@ export const validateJestConsoleManifest = async ({
   const informationSource = await readFile(
     path.join(
       repositoryDirectory,
-      "packages/web-game/src/play/modalPages/information/InformationModalPages.tsx",
+      "src/web/play/modalPages/information/InformationModalPages.tsx",
     ),
     "utf8",
   );

@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "@riddle-quest/core/validation/requestSchemas";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "@riddle-quest/core/validation/requestSchemas";
+import {CompleteGameRequestDataSchema, CompleteGameResponseDataSchema} from "../../../src/core/validation/requestSchemas.js";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "../../../src/core/validation/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {completeAuthoritativeGame} from "./completeGameLogic";
 import {gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";

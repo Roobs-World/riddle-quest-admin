@@ -5,7 +5,7 @@ import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {mkdir, readFile, writeFile} from "node:fs/promises";
 import path from "node:path";
-import type {HostToGameMessage} from "@riddle-quest/core/bridge";
+import type {HostToGameMessage} from "../../../../../src/core/bridge";
 
 import {
   type AuthHarnessState,
@@ -43,7 +43,7 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
     if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-      execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:jest"], {
+      execFileSync("pnpm", ["--filter", "riddle-quest", "build:jest"], {
         cwd: path.resolve(packageRoot, "../.."),
         stdio: "inherit",
       });

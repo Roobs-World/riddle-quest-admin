@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "@riddle-quest/core/race";
+import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "../../../../src/core/race/index.js";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
 import {requestDocumentId} from "../../race/raceSetupService";

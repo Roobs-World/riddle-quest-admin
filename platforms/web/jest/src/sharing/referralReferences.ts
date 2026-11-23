@@ -1,4 +1,4 @@
-import {createJestReferralShareReference, type JestPersonalizedReferralReference} from "@riddle-quest/core/referrals";
+import {createJestReferralShareReference, type JestPersonalizedReferralReference} from "../../../../../src/core/referrals";
 
 /** Per-page counter used only when Web Crypto is unavailable. */
 let fallbackSequence = 0;

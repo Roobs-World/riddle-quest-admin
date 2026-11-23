@@ -6,8 +6,8 @@ import {
   RaceDifficultyBandSchema,
   type RaceCategoryId,
   type RaceLocale,
-} from "@riddle-quest/core/race";
-import {graphemeLength} from "@riddle-quest/core/game";
+} from "../../../src/core/race/index.js";
+import {graphemeLength} from "../../../src/core/game/index.js";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {RaceContentImportFileSchema, createRaceContentImportPlan, type RaceContentImportFile} from "./raceContentImport";

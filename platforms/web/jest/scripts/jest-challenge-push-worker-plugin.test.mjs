@@ -6,7 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {jestChallengePushWorkerPlugin} from '../build/jestChallengePushWorkerPlugin.ts';
-import {webTargetDependencyPlugin, targetDependencyEvidencePath} from '../../../../packages/web-game/webTargetDependencies.ts';
+import {webTargetDependencyPlugin, targetDependencyEvidencePath} from '../../../../scripts/web/build/webTargetDependencies.ts';
 
 const id = 'virtual:jest-live-challenge-push-worker-url';
 test('only the Jest target can resolve the notification worker', () => {

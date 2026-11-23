@@ -4,8 +4,8 @@ import type {
   RecordFacebookTournamentRunRequest,
   ListFacebookContextBoardRequest,
   RecordFacebookContextRunRequest,
-} from "@riddle-quest/core/race";
-import {firebaseFunctions} from "../../../../packages/web-game/src/firebase";
+} from "../../../../src/core/race";
+import {firebaseFunctions} from "../../../../src/web/firebase";
 import {
   parseFacebookClientConfiguration,
   parseFacebookPurchaseGrant,

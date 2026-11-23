@@ -1,4 +1,4 @@
-import {RACE_RULES, type RaceGhostEvent} from "@riddle-quest/core/race";
+import {RACE_RULES, type RaceGhostEvent} from "../../../src/core/race/index.js";
 
 /** Retained aggregate authority constrains known history without inventing missing legacy events. */
 type TimelineAuthority = {

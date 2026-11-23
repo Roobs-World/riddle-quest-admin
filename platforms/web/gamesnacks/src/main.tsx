@@ -1,7 +1,7 @@
 import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
-import {YouTubePlayableApp} from "../../../../packages/web-game/src/playable/YouTubePlayableApp";
-import "../../../../packages/web-game/src/playable/styles.css";
+import {YouTubePlayableApp} from "../../../../src/web/playable/YouTubePlayableApp";
+import "../../../../src/web/playable/styles.css";
 import {createGameSnacksSdkPort} from "./GameSnacksSdkPort";
 /** Provides root behavior. */
 const root = document.getElementById("root");

@@ -1,9 +1,9 @@
-import type {EconomyDifficulty} from "@riddle-quest/core/game";
+import type {EconomyDifficulty} from "../../../src/core/game/index.js";
 import type {PlayerProgress} from "../validation/firestoreSchemas";
 import type {
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "@riddle-quest/core/validation/requestSchemas";
+} from "../../../src/core/validation/requestSchemas.js";
 
 /** Authoritative response for one replay-safe hint purchase. */
 export type AuthoritativeHintResult = {

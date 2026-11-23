@@ -5,7 +5,7 @@ import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveSer
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
 import {listLiveRaceChallengesForUser} from "../../race/raceLiveChallengeNotifications";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
-import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, LiveRaceChallengeSchema} from "@riddle-quest/core/race";
+import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, LiveRaceChallengeSchema} from "../../../../src/core/race/index.js";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../../../platforms/web/reddit/server/redditSecurity";

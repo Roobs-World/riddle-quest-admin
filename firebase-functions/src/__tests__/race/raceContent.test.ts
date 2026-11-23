@@ -3,8 +3,8 @@ import {
   RACE_SUPPORTED_LOCALES,
   type RaceCategoryId,
   type RaceDifficultyBand,
-} from "@riddle-quest/core/race";
-import type {SupportedLocale} from "@riddle-quest/core/validation";
+} from "../../../../src/core/race/index.js";
+import type {SupportedLocale} from "../../../../src/core/validation/index.js";
 import {
   createRaceContentDryRun,
   inferCanonicalRiddleId,

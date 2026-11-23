@@ -1,10 +1,10 @@
-import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
+import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
 import {logger} from "firebase-functions/v2";
 import {z} from "zod";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle, type RiddleReviewFeedback} from "../riddles/openaiService";
 import type {DailyRiddle} from "../validation/firestoreSchemas";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/core/validation/index.js";
 import {
   getLocalizedCanonicalKey,
   getLocalizedDailyDocRef,

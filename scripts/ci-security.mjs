@@ -102,8 +102,8 @@ export function auditWorkflowCostPolicy(name, source) {
     failures.push(`${name}: jobs must use canonical unquoted block keys so every job is audited`);
   }
   for (const job of readJobBlocks(source)) {
-    if (!/^    if: github\.ref == 'refs\/heads\/jest' && inputs\.confirm_runner_usage\s*$/mu.test(job.source)) {
-      failures.push(`${name}: job ${job.name} must require the Jest branch and runner-usage confirmation`);
+    if (!/^    if: github\.ref == 'refs\/heads\/main' && inputs\.confirm_runner_usage\s*$/mu.test(job.source)) {
+      failures.push(`${name}: job ${job.name} must require main and runner-usage confirmation`);
     }
   }
   if (!/^concurrency:\n  group: [^\n]+\n  cancel-in-progress: (?:true|false)\s*$/mu.test(source) ||

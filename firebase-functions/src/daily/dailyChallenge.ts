@@ -1,12 +1,12 @@
 import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
-import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
+import {getDailyDate} from "../../../src/core/validation/dailyCalendar.js";
 import * as functions from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {getUser} from "../gameplay/firestoreService";
 import {captureException} from "../shared/sentry";
-import {SUPPORTED_LOCALES} from "@riddle-quest/core/validation";
-import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "@riddle-quest/core/validation/requestSchemas";
+import {SUPPORTED_LOCALES} from "../../../src/core/validation/index.js";
+import {GetCurrentDailyChallengeResponse, GetCurrentDailyChallengeResponseSchema} from "../../../src/core/validation/requestSchemas.js";
 import {validateCallableResponse} from "../validation/callableValidation";
 import {gameplayCallableOptions, gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {resolveDailyChallengeProgress} from "./dailyChallengeProgress";

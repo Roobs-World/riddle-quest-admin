@@ -5,7 +5,7 @@ import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
-  type JoinLiveRace, type UpdateLiveRace} from "@riddle-quest/core/race";
+  type JoinLiveRace, type UpdateLiveRace} from "../../../src/core/race/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../shared/accountDeletion";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";

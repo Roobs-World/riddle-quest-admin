@@ -1,5 +1,5 @@
 import {requestExpandedMode} from "@devvit/client";
-import {readBrowserStorage} from "../../../../packages/web-game/src/platform/browserStorage";
+import {readBrowserStorage} from "../../../../src/web/platform/browserStorage";
 
 /** Describes reddit copy. */
 type RedditCopy = {

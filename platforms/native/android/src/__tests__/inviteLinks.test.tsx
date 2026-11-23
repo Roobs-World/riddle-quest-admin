@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {ANDROID_ENTRY_INBOX_KEY, parseAndroidInstallEntry} from "@riddle-quest/hosted/androidEntryInbox";
-import {SUPPORTED_LOCALES} from "@riddle-quest/core/validation/locales";
+import {ANDROID_ENTRY_INBOX_KEY, parseAndroidInstallEntry} from "../entries/androidEntryInbox";
+import {SUPPORTED_LOCALES} from "../../../../../src/core/validation/locales";
 import {act, renderHook, waitFor} from "@testing-library/react-native";
 import {Linking, Share} from "react-native";
 import {useAndroidEntries} from "../hosted/useAndroidEntries";

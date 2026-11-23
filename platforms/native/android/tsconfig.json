@@ -2,7 +2,10 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "strict": true,
-    "lib": ["ES2022", "ES2022.Intl"],
+    "lib": [
+      "ES2022",
+      "ES2022.Intl"
+    ],
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
@@ -14,19 +17,25 @@
     "noImplicitReturns": true,
     "noUncheckedSideEffectImports": true,
     "resolveJsonModule": true,
-    "types": ["jest", "react-native"],
+    "types": [
+      "jest",
+      "react-native"
+    ],
     "paths": {
-      "#solo-content": ["../../../packages/web-game/src/playable/generated/youtube-content-v1.json"],
-      "#hosted-config": ["./hosted.config.example.json"],
-      "@riddle-quest/core": ["../../../packages/core/src/index.ts"],
-      "@riddle-quest/core/game": ["../../../packages/core/src/game/index.ts"],
-      "@riddle-quest/core/*": ["../../../packages/core/src/*"],
-      "@riddle-quest/hosted": ["../../../packages/hosted/src/index.ts"],
-      "@riddle-quest/hosted/*": ["../../../packages/hosted/src/*"],
-      "@riddle-quest/solo": ["../../../packages/solo/src/index.ts"],
-      "@riddle-quest/solo/react": ["../../../packages/solo/src/react/index.ts"]
+      "#solo-content": [
+        "../../../src/web/playable/generated/youtube-content-v1.json"
+      ],
+      "#hosted-config": [
+        "./hosted.config.example.json"
+      ]
     }
   },
-  "include": ["src/**/*", "index.js"],
-  "exclude": ["node_modules", "android"]
+  "include": [
+    "src/**/*",
+    "index.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "android"
+  ]
 }

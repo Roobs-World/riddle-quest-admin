@@ -1,6 +1,6 @@
 jest.mock("../../platform/webTargetEnvironment", () => ({isFacebookWebTarget: true}));
 import {renderToString} from "react-dom/server";
-import {ContinueModalPage} from "../../../../../packages/web-game/src/play/modalPages/commerce/CoinActionModalPages";
+import {ContinueModalPage} from "../../../../../src/web/play/modalPages/commerce/CoinActionModalPages";
 
 /** Inert event callback isolates modal rendering assertions. */
 const noop = () => undefined;

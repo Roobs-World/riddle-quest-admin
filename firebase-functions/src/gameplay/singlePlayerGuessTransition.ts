@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "@riddle-quest/core/game";
-import type {SubmitSinglePlayerGuessResponseData} from "@riddle-quest/core/validation/requestSchemas";
+import {computeFeedback, lowerCaseGraphemes, splitGraphemes} from "../../../src/core/game/index.js";
+import type {SubmitSinglePlayerGuessResponseData} from "../../../src/core/validation/requestSchemas.js";
 import {MAX_ATTEMPTS_CHALLENGE, MAX_ATTEMPTS_CLASSIC} from "../shared/constants";
 import type {GuessTransition, GuessTransitionInput, SinglePlayerSessionState} from "./singlePlayerSessionTypes";
 

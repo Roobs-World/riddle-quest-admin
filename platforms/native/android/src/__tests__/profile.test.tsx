@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "@jest/globals";
-import type {BridgeLeaderboardEntry} from "@riddle-quest/core/bridge";
-import type {HostServices, LeaderboardType} from "@riddle-quest/hosted/hostTypes";
-import type {YouTubeLocale} from "@riddle-quest/solo";
+import type {BridgeLeaderboardEntry} from "../../../../../src/core/bridge";
+import type {HostServices, LeaderboardType} from "../../../../../src/hosted/hostTypes";
+import type {YouTubeLocale} from "../../../../../src/solo";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "../AndroidApp";

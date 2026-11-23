@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import type {Firestore} from "firebase-admin/firestore";
-import {resolveRedditGoldProduct} from "@riddle-quest/core/pricing";
+import {resolveRedditGoldProduct} from "../src/shared/redditCatalog.js";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isRedditCommerceEnabled} from "./redditFeatureFlags";
 import {isRedditFirebaseUid} from "./redditSecurity";

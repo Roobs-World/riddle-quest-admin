@@ -16,7 +16,7 @@ import {
   type PlaySubscriptionPurchase,
 } from "../playDeveloperApi";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../../../firebase-functions/src/shared/constants";
-import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@riddle-quest/core/pricing/catalog";
+import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../../../src/core/pricing/catalog.js";
 
 /** Player owning the fixtures. */
 const UID = "android-player";

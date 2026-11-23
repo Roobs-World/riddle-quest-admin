@@ -1,0 +1,350 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {assertTargetDependency, runtimePackage, targetDependencyEvidencePath} from './build/webTargetDependencies.ts';
+const targets = ['jest', 'facebook', 'reddit', 'youtube', 'netflix', 'yahoo', 'gamesnacks'];
+test('retained-race artifact validates the configured inventory directory and rebuilds altered bytes', {timeout: 180_000}, async t => {
+  const {mkdtemp,readFile,writeFile,rm}=await import('node:fs/promises');
+  const {tmpdir}=await import('node:os');
+  const path=await import('node:path');
+  const {fileURLToPath}=await import('node:url');
+  const {execFile}=await import('node:child_process');
+  const {promisify}=await import('node:util');
+  const temporary=await mkdtemp(path.join(tmpdir(),'retained-inventory-test-'));
+  t.after(()=>rm(temporary,{recursive:true,force:true}));
+  const evidence=path.join(temporary,'evidence');
+  const run=async()=>JSON.parse((await promisify(execFile)(process.execPath,['scripts/build-retained-race-test-artifact.mjs'],{
+    cwd:fileURLToPath(new URL('../..',import.meta.url)),maxBuffer:32*1024*1024,timeout:120_000,
+    env:{...process.env,TMPDIR:temporary,RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR:evidence},
+  })).stdout);
+  const built=await run();
+  assert.equal(built.inventoryFile,targetDependencyEvidencePath('jest',built.directory,evidence));
+  const inventory=JSON.parse(await readFile(built.inventoryFile,'utf8'));
+  assert.equal(inventory.outputDirectory,built.directory);
+  assert.ok(inventory.modules.includes('scripts/web/fixtures/RetainedRaceHarness.tsx'));
+  assert.deepEqual(await run(),built);
+  const entry=path.join(built.directory,'index.html');
+  const original=await readFile(entry,'utf8');
+  await writeFile(entry,original+'\n<!-- altered test artifact -->');
+  await run();
+  assert.equal(await readFile(entry,'utf8'),original);
+});
+test('each target rejects every other provider module, including resolved aliases and dynamic imports', () => {
+  for (const target of targets) for (const owner of targets) {
+    const id = `/workspace/platforms/web/${owner}/src/adapter.ts`;
+    if (target === owner) assert.doesNotThrow(() => assertTargetDependency(target, id));
+    else assert.throws(() => assertTargetDependency(target, id), /owned module/u);
+  }
+});
+test('transitive SDK packages and tooling fail closed on every artifact', () => {
+  for (const target of targets) {
+    assert.throws(() => assertTargetDependency(target, '/node_modules/jest/build/index.js'), /undeclared runtime/u);
+    assert.throws(() => assertTargetDependency(target, '/node_modules/another-provider-sdk/index.js'), /undeclared runtime/u);
+    assert.throws(() => assertTargetDependency(target, '/workspace/src/web/test/harness.ts'), /test code/u);
+    assert.doesNotThrow(() => assertTargetDependency(target, '/node_modules/.pnpm/react@19/node_modules/react/index.js'));
+    if (!['jest','facebook'].includes(target)) assert.throws(() => assertTargetDependency(target,
+      '/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), /undeclared runtime/u);
+  }
+  assert.equal(runtimePackage('/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), '@firebase/app');
+});
+
+test('Firestore TypeScript runtime helpers remain limited to Firebase-backed targets', () => {
+  const helper = '/node_modules/.pnpm/tslib@2.9.1/node_modules/tslib/tslib.es6.mjs';
+  assert.equal(runtimePackage(helper), 'tslib');
+  for (const target of targets) {
+    if (['jest', 'facebook'].includes(target)) assert.doesNotThrow(() => assertTargetDependency(target, helper));
+    else assert.throws(() => assertTargetDependency(target, helper), /undeclared runtime package tslib/u);
+  }
+});
+
+test('real bundler rejects aliased and lazy provider imports plus SDK packages before minification', async t => {
+  const {mkdtemp,mkdir,writeFile,rm,access}=await import('node:fs/promises');
+  const {tmpdir}=await import('node:os');
+  const path=await import('node:path');
+  const {createRequire}=await import('node:module');
+  const {pathToFileURL}=await import('node:url');
+  const {build}=await import(pathToFileURL(createRequire(new URL('../../package.json',import.meta.url)).resolve('vite')).href);
+  const {webTargetDependencyPlugin}=await import('./build/webTargetDependencies.ts');
+  const root=await mkdtemp(path.join(tmpdir(),'target-dependency-build-'));
+  t.after(()=>rm(root,{recursive:true,force:true}));
+  const evidence=path.join(root,'evidence');
+  const entry=path.join(root,'src/web/shared/main.js');
+  await mkdir(path.dirname(entry),{recursive:true});
+  const sdk=path.join(root,'node_modules/jest-gaming-sdk');await mkdir(sdk,{recursive:true});
+  await writeFile(path.join(sdk,'package.json'),JSON.stringify({name:'jest-gaming-sdk',main:'index.js'}));
+  await writeFile(path.join(sdk,'index.js'),'export default function sdk(){return 1}');
+  for(const [index,target] of targets.entries()){
+    const foreign=target==='facebook'?'jest':targets[(index+1)%targets.length];
+    const adapter=path.join(root,`platforms/web/${foreign}/src/adapter.js`);await mkdir(path.dirname(adapter),{recursive:true});
+    await writeFile(adapter,'export const provider=()=>1');
+    const config={configFile:false,root,logLevel:'silent',resolve:{alias:{'other-adapter':adapter}},
+      plugins:[webTargetDependencyPlugin(target,{evidenceDirectory:evidence})],
+      build:{outDir:path.join(root,'dist'),rolldownOptions:{input:entry}}};
+    await writeFile(entry,"import('other-adapter').then(console.log)");
+    await assert.rejects(build(config),/owned module/u);
+    await assert.rejects(access(targetDependencyEvidencePath(target,path.join(root,'dist'),evidence)),{code:'ENOENT'});
+    await writeFile(entry,"import sdk from 'jest-gaming-sdk';console.log(sdk())");
+    await assert.rejects(build(config),/undeclared runtime package jest-gaming-sdk/u);
+    await writeFile(entry,"console.log('isolated runtime')");
+    const publicDirectory=path.join(root,'copied');
+    await mkdir(publicDirectory,{recursive:true});
+    for(const file of ['jest-provider.js','provider.js.map']){
+      await writeFile(path.join(publicDirectory,file),'provider code');
+      await assert.rejects(build({...config,publicDir:publicDirectory}),/untracked copied script/u);
+      await assert.rejects(access(targetDependencyEvidencePath(target,path.join(root,'dist'),evidence)),{code:'ENOENT'});
+      await rm(path.join(publicDirectory,file));
+    }
+  }
+});
+
+async function buildFixture(t) {
+  const {mkdtemp, mkdir, writeFile, rm} = await import('node:fs/promises');
+  const {tmpdir} = await import('node:os');
+  const path = await import('node:path');
+  const {createRequire} = await import('node:module');
+  const {pathToFileURL} = await import('node:url');
+  const {build} = await import(pathToFileURL(createRequire(new URL('../../package.json', import.meta.url)).resolve('vite')).href);
+  const root = await mkdtemp(path.join(tmpdir(), 'target-evidence-lifecycle-'));
+  t.after(() => rm(root, {recursive: true, force: true}));
+  const entry = path.join(root, 'main.js');
+  await writeFile(entry, "console.log('isolated artifact')");
+  const evidence = path.join(root, 'evidence');
+  await mkdir(evidence, {recursive: true});
+  const {webTargetDependencyPlugin} = await import('./build/webTargetDependencies.ts');
+  const config = output => ({configFile: false, root, publicDir: false, logLevel: 'silent',
+    plugins: [webTargetDependencyPlugin('facebook', {evidenceDirectory: evidence})],
+    build: {outDir: output, rolldownOptions: {input: entry}}});
+  return {root, evidence, build, config, path};
+}
+
+test('concurrent custom outputs retain separate complete inventories and preserve canonical release evidence', async t => {
+  const {readFile, writeFile} = await import('node:fs/promises');
+  const {root, evidence, build, config, path} = await buildFixture(t);
+  const canonical = path.join(evidence, 'facebook.json');
+  await writeFile(canonical, 'existing canonical inventory');
+  const outputs = [path.join(root, 'first-output'), path.join(root, 'second-output')];
+  await Promise.all(outputs.map(output => build(config(output))));
+  const inventories = await Promise.all(outputs.map(async output => {
+    const file = targetDependencyEvidencePath('facebook', output, evidence);
+    const inventory = JSON.parse(await readFile(file, 'utf8'));
+    assert.equal(inventory.outputDirectory, output);
+    assert.ok(inventory.files.length > 0);
+    for (const row of inventory.files) {
+      const {createHash} = await import('node:crypto');
+      assert.equal(row.sha256, createHash('sha256').update(await readFile(path.join(output, row.file))).digest('hex'));
+    }
+    return file;
+  }));
+  assert.notEqual(inventories[0], inventories[1]);
+  assert.equal(await readFile(canonical, 'utf8'), 'existing canonical inventory');
+  assert.throws(() => targetDependencyEvidencePath('unknown', outputs[0], evidence), /Unknown dependency target/u);
+});
+
+test('later generation/write failures and generate-only builds cannot leave successful evidence', async t => {
+  const {access} = await import('node:fs/promises');
+  const {root, evidence, build, config, path} = await buildFixture(t);
+  const output = path.join(root, 'output');
+  const inventory = targetDependencyEvidencePath('facebook', output, evidence);
+  const reused = config(output);
+  for (const stage of ['generateBundle', 'writeBundle', 'closeBundle']) {
+    await build(reused);
+    await access(inventory);
+    const failure = {name: 'late-build-failure', enforce: 'post', [stage]() {throw new Error(`failed during ${stage}`);}};
+    await assert.rejects(build({...reused, plugins: [...reused.plugins, failure]}), /failed during/u);
+    await assert.rejects(access(inventory), {code: 'ENOENT'});
+  }
+  await build(reused);
+  await access(inventory);
+  await build({...reused, build: {...reused.build, write: false}});
+  await assert.rejects(access(inventory), {code: 'ENOENT'});
+});
+
+test('published inventory reflects final chunk bytes after private map cleanup', async t => {
+  const {readFile, writeFile, rm} = await import('node:fs/promises');
+  const {createHash} = await import('node:crypto');
+  const {root, evidence, build, config, path} = await buildFixture(t);
+  const output = path.join(root, 'postprocessed-output');
+  const privateMap = path.join(output, 'private.js.map');
+  const cleanup = {name: 'private-map-postprocessing',
+    async writeBundle(_options, bundle) {
+      const chunk = Object.values(bundle).find(item => item.type === 'chunk');
+      assert.ok(chunk);
+      await writeFile(path.join(output, chunk.fileName), `${chunk.code}\nconsole.log('postprocessed');\n`);
+      await writeFile(privateMap, 'private build source');
+    },
+    async closeBundle() {await rm(privateMap);},
+  };
+  const selected = config(output);
+  await build({...selected, plugins: [...selected.plugins, cleanup]});
+  const inventory = JSON.parse(await readFile(targetDependencyEvidencePath('facebook', output, evidence), 'utf8'));
+  assert.equal(inventory.files.some(row => row.file.endsWith('.map')), false);
+  for (const chunk of inventory.chunks) {
+    const bytes = await readFile(path.join(output, chunk.file));
+    assert.match(bytes.toString(), /postprocessed/u);
+    assert.equal(chunk.sha256, createHash('sha256').update(bytes).digest('hex'));
+    assert.equal(inventory.files.find(row => row.file === chunk.file).sha256, chunk.sha256);
+  }
+});
+
+ test('release evidence root is shared by builds and verification without changing canonical source inventories', async t => {
+  const path = await import('node:path');
+  const {fileURLToPath} = await import('node:url');
+  const repository = fileURLToPath(new URL('../..', import.meta.url));
+  const output = path.join(repository, 'builds/facebook');
+  const original = process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+  t.after(() => {
+    if (original === undefined) delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+    else process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = original;
+  });
+  delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+  const canonical = targetDependencyEvidencePath('facebook', output);
+  const isolated = path.join(repository, 'temporary-release-evidence');
+  process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = isolated;
+  assert.equal(targetDependencyEvidencePath('facebook', output), path.join(isolated, 'facebook.json'));
+  assert.notEqual(targetDependencyEvidencePath('facebook', output), canonical);
+  assert.equal(targetDependencyEvidencePath('facebook', output, path.join(repository, 'explicit')), path.join(repository, 'explicit/facebook.json'));
+  assert.notEqual(targetDependencyEvidencePath('facebook', output), targetDependencyEvidencePath('facebook', path.join(repository, 'custom-output')));
+  process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = 'relative-path';
+  assert.throws(() => targetDependencyEvidencePath('facebook', output), /must be absolute/u);
+});
+
+ test('frozen license inventory preserves exact notices and fails closed without requerying the package store', async t => {
+  const {execFileSync} = await import('node:child_process');
+  const {mkdtemp,writeFile,rm,readFile} = await import('node:fs/promises');
+  const {tmpdir} = await import('node:os');
+  const path = await import('node:path');
+  const {fileURLToPath} = await import('node:url');
+  const {createNotice} = await import('./generate-third-party-licenses.mjs');
+  const repository = fileURLToPath(new URL('../..', import.meta.url));
+  const directory = await mkdtemp(path.join(tmpdir(), 'frozen-license-test-'));
+  t.after(() => rm(directory,{recursive:true,force:true}));
+  const original = process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  const originalPath = process.env.PATH;
+  t.after(() => {
+    process.env.PATH = originalPath;
+    if(original === undefined) delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+    else process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = original;
+  });
+  delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  const expected = createNotice(new Set(['react']));
+  const metadata = JSON.parse(await readFile(path.join(repository,'node_modules/.modules.yaml'),'utf8'));
+  const storeDirectory = process.env.RIDDLE_QUEST_LICENSE_STORE_DIR ?? metadata.storeDir;
+  const inventory = execFileSync('pnpm',['--filter','riddle-quest','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024,env:{...process.env,pnpm_config_store_dir:storeDirectory}});
+  const file = path.join(directory,'inventory.json');
+  await writeFile(file,inventory,{mode:0o400});
+  process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = file;
+  process.env.PATH = directory;
+  assert.equal(createNotice(new Set(['react'])),expected);
+  assert.throws(() => createNotice(new Set(['missing-runtime-package'])),/Emitted package has no notice/u);
+  process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = path.join(directory,'missing.json');
+  assert.throws(() => createNotice(new Set(['react'])),/ENOENT/u);
+  process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = 'relative.json';
+  assert.throws(() => createNotice(new Set(['react'])),/must be absolute/u);
+});
+
+
+test('GameSnacks packaging uses relocated audited evidence and rejects changed or untracked runtime files', async t => {
+  const {copyFile, mkdir, mkdtemp, readFile, rm, writeFile} = await import('node:fs/promises');
+  const {createHash} = await import('node:crypto');
+  const {spawnSync} = await import('node:child_process');
+  const {tmpdir} = await import('node:os');
+  const path = await import('node:path');
+  const {fileURLToPath} = await import('node:url');
+  const repository = fileURLToPath(new URL('../..', import.meta.url));
+  const root = await mkdtemp(path.join(tmpdir(), 'gamesnacks-packaging-evidence-'));
+  t.after(() => rm(root, {recursive: true, force: true}));
+  // Copy the production packager and resolver dependencies into a tiny repository;
+  // the subprocess exercises real packaging without touching canonical artifacts.
+  for (const relative of [
+    'platforms/web/gamesnacks/scripts/package-gamesnacks.mjs',
+    'scripts/web/build/webTargetDependencies.ts',
+    'scripts/web/generate-third-party-licenses.mjs',
+    'scripts/release/release-registry.mjs',
+    'scripts/release/release-targets.json',
+    ...JSON.parse(await readFile(path.join(repository, 'scripts/release/release-targets.json'), 'utf8'))
+      .map(target => `platforms/web/${target}/release.json`),
+  ]) {
+    const destination = path.join(root, relative);
+    await mkdir(path.dirname(destination), {recursive: true});
+    await copyFile(path.join(repository, relative), destination);
+  }
+  for (const relative of [
+    'docs/facebook/assets/icon-1024.png',
+    'docs/jest/assets/riddle-quest-hero.png',
+    'docs/common/web-game/visual-parity/current/05-game.png',
+    'node_modules/.modules.yaml',
+  ]) {
+    const destination = path.join(root, relative);
+    await mkdir(path.dirname(destination), {recursive: true});
+    await writeFile(destination, relative.endsWith('.yaml')
+      ? JSON.stringify({storeDir: path.join(root, 'package-store')})
+      : 'fixture marketing asset');
+  }
+  const output = path.join(root, 'builds/gamesnacks');
+  await mkdir(path.join(output, 'assets'), {recursive: true});
+  const runtime = 'globalThis.GameSnacks;';
+  const content = new Map([
+    ['index.html', '<script src="assets/runtime.js"></script>'],
+    ['assets/runtime.js', runtime],
+  ]);
+  for (const [file, bytes] of content) await writeFile(path.join(output, file), bytes);
+  const inventory = {schemaVersion: 1, target: 'gamesnacks', outputDirectory: output,
+    packages: [], modules: [], chunks: [],
+    files: [...content].map(([file, bytes]) => ({file,
+      sha256: createHash('sha256').update(bytes).digest('hex')}))};
+  const defaultInventory = path.join(root, 'artifacts/target-dependencies/gamesnacks.json');
+  const evidenceDirectory = path.join(root, 'release-evidence');
+  const relocatedInventory = path.join(evidenceDirectory, 'gamesnacks.json');
+  await mkdir(path.dirname(defaultInventory), {recursive: true});
+  await mkdir(evidenceDirectory);
+  const staleInventory = JSON.stringify({...inventory,
+    files: inventory.files.map(row => ({...row, sha256: '0'.repeat(64)}))});
+  await writeFile(defaultInventory, staleInventory);
+  await writeFile(relocatedInventory, JSON.stringify(inventory));
+  /** Runs the real packager with explicit evidence and a bounded child lifetime. */
+  const runPackager = (evidence = evidenceDirectory) => spawnSync(process.execPath,
+    [path.join(root, 'platforms/web/gamesnacks/scripts/package-gamesnacks.mjs')], {
+      cwd: root, encoding: 'utf8', timeout: 10_000,
+      env: {...process.env, RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: evidence},
+    });
+  const success = runPackager();
+  assert.equal(success.status, 0, success.stderr || success.error?.message);
+  const packagedInventory = JSON.parse(await readFile(relocatedInventory, 'utf8'));
+  assert.deepEqual(packagedInventory.files.map(row => row.file).sort(), [
+    ...content.keys(), 'game.json', 'marketing/icon.png',
+    'marketing/horizontal.png', 'marketing/vertical.png',
+  ].sort());
+  for (const row of packagedInventory.files) {
+    assert.equal(row.sha256, createHash('sha256')
+      .update(await readFile(path.join(output, row.file))).digest('hex'));
+  }
+  const archive = await readFile(path.join(root, 'build-gamesnacks.zip'));
+  const archiveManifest = JSON.parse(await readFile(path.join(root, 'build-gamesnacks.zip.manifest.json'), 'utf8'));
+  assert.equal(archiveManifest.sha256, createHash('sha256').update(archive).digest('hex'));
+  assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
+  await writeFile(relocatedInventory, JSON.stringify(inventory));
+  await writeFile(path.join(output, 'assets/runtime.js'), `${runtime}/* changed */`);
+  const changed = runPackager();
+  assert.notEqual(changed.status, 0);
+  assert.match(changed.stderr, /Changed audited GameSnacks runtime: assets\/runtime\.js/u);
+  assert.deepEqual(JSON.parse(await readFile(relocatedInventory, 'utf8')), inventory);
+  await writeFile(path.join(output, 'assets/runtime.js'), runtime);
+  await writeFile(path.join(output, 'untracked.txt'), 'unexpected runtime file');
+  const untracked = runPackager();
+  assert.notEqual(untracked.status, 0);
+  assert.match(untracked.stderr, /Untracked GameSnacks package file: untracked\.txt/u);
+  assert.deepEqual(JSON.parse(await readFile(relocatedInventory, 'utf8')), inventory);
+  await rm(path.join(output, 'untracked.txt'));
+  const relative = runPackager('relative-evidence');
+  assert.notEqual(relative.status, 0);
+  assert.match(relative.stderr, /Dependency evidence directory must be absolute/u);
+  assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
+});
+
+
+test('Jest screenshot renderer stays exclusive to the Jest artifact', () => {
+  const renderer = '/workspace/node_modules/html2canvas-pro/dist/html2canvas-pro.esm.js';
+  assert.doesNotThrow(() => assertTargetDependency('jest', renderer));
+  for (const target of targets.filter(target => target !== 'jest')) {
+    assert.throws(() => assertTargetDependency(target, renderer), /undeclared runtime package html2canvas-pro/u);
+  }
+});

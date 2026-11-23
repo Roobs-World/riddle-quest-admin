@@ -1,4 +1,4 @@
-import {RACE_RULES} from "@riddle-quest/core/race";
+import {RACE_RULES} from "../../../../src/core/race/index.js";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, raceOutcome, refreshRaceRun, type RaceRunRecord} from "../../race/raceEngine";
 import {parseRunRecord} from "../../race/raceSetupService";
 

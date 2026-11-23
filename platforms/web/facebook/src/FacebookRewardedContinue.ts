@@ -1,5 +1,5 @@
-import type {AdsCapability, AttemptRecoveryCapability} from "../../../../packages/web-game/src/platform/types";
-import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
+import type {AdsCapability, AttemptRecoveryCapability} from "../../../../src/web/platform/types";
+import {createRequestId} from "../../../../src/hosted/play/requestIds";
 
 /** Sequences SDK completion before one bounded server attempt, never a coin grant. */
 export function createFacebookRewardedContinue({ads, claim, isActive}: {

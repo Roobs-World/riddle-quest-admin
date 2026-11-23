@@ -1,6 +1,6 @@
 import {randomUUID} from "node:crypto";
 import * as functions from "firebase-functions";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "../../../src/core/validation/index.js";
 import {admin} from "../shared/firebaseAdmin";
 import {onDocumentCreated, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {captureException} from "../shared/sentry";

@@ -1,4 +1,4 @@
-import {RACE_CATEGORY_IDS} from "@riddle-quest/core/race";
+import {RACE_CATEGORY_IDS} from "../../../src/core/race/index.js";
 import {generateUniqueRiddle, GeneratedRiddleSchema, RIDDLE_GENERATION_MODEL} from "../riddles/openaiService";
 import {
   createRaceContentImportPlan,

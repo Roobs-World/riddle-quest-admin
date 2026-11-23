@@ -4,7 +4,7 @@ import {
   RaceCategoryIdSchema,
   RaceDifficultyBandSchema,
   type RaceCategoryId,
-} from "@riddle-quest/core/race";
+} from "../../../src/core/race/index.js";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {RACE_MIN_POOL_SIZE, RACE_POOL_SIZE, validateRacePool, type RacePoolIssue} from "./raceContentValidation";

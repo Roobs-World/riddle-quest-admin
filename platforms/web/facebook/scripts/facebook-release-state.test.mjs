@@ -25,7 +25,7 @@ async function fixture(context) {
   for (const name of ["facebook-draft-evidence.mjs", "facebook-release-artifact.mjs", "facebook-release-state.mjs", "prepare-facebook-draft.mjs"]) {
     await copyFile(new URL(name, import.meta.url), path.join(scripts, name));
   }
-  await writeFile(path.join(root, ".gitignore"), "packages/web-game/.facebook-upload-receipts/\npackages/web-game/build-facebook.zip\n");
+  await writeFile(path.join(root, ".gitignore"), "./.facebook-upload-receipts/\n./build-facebook.zip\n");
   await run("/usr/bin/git", ["init", "--quiet"], {cwd: root});
   await run("/usr/bin/git", ["add", "."], {cwd: root});
   await run("/usr/bin/git", ["-c", "user.name=Local Test", "-c", "user.email=test@example.invalid", "commit", "--quiet", "-m", "isolated fixture"], {cwd: root});

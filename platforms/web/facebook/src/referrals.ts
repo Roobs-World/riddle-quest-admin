@@ -1,5 +1,5 @@
 import type {FacebookInstantSdk} from "./fbinstant";
-import type {RaceLocale} from "@riddle-quest/core/race";
+import type {RaceLocale} from "../../../../src/core/race";
 import {facebookTournamentLocaleFromEntryData} from "./facebookTournamentEntry";
 
 /** Defines the token pattern value. */
@@ -41,7 +41,7 @@ export function facebookLaunchFromEntryData(value: unknown, nowMs = Date.now()):
 export async function createFacebookReferralToken(): Promise<FacebookReferralToken> {
   /** Firebase remains confined to the Facebook target's authenticated authority. */
   const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
-    import("firebase/functions"), import("../../../../packages/web-game/src/firebase"),
+    import("firebase/functions"), import("../../../../src/web/firebase"),
   ]);
   /** Token response is validated before entering the provider share payload. */
   const result = await httpsCallable<Record<string, never>, unknown>(
@@ -77,7 +77,7 @@ export async function bindFacebookEntryReferral(sdk: FacebookInstantSdk): Promis
   /** Provides [{get functions, https callable}, {firebase app}] behavior. */
   const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
     import("firebase/functions"),
-    import("../../../../packages/web-game/src/firebase"),
+    import("../../../../src/web/firebase"),
   ]);
   /** Provides bind behavior. */
   const bind = httpsCallable<

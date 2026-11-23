@@ -1,5 +1,5 @@
-import {FACEBOOK_PRODUCTS} from "@riddle-quest/core/pricing/facebookCatalog";
-import type {CommerceCapability, CommerceProduct, PlatformResult} from "../../../../packages/web-game/src/platform/types";
+import {FACEBOOK_PRODUCTS} from "./commerce/facebookCatalog";
+import type {CommerceCapability, CommerceProduct, PlatformResult} from "../../../../src/web/platform/types";
 import {
   FacebookPurchaseRecovery,
   parseFacebookUnconsumedPurchases,
