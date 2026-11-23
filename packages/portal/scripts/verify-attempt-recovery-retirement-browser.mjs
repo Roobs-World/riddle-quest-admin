@@ -22,7 +22,7 @@ try {
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useAttemptRecovery} from ${JSON.stringify(path.join(portal, 'src/play/game/hooks/useAttemptRecovery.ts'))};
-import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal, 'src/play/gameSession.ts'))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal, '../hosted/src/play/gameSession.ts'))};
 import {ContinueModalPage} from ${JSON.stringify(path.join(portal, 'src/play/modalPages/commerce/ContinueActions.tsx'))};
 import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, 'src/play/GameFrameControls.tsx'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(portal, 'src/play/fakeServices.ts'))};

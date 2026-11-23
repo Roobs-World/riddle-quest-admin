@@ -22,9 +22,9 @@ import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/play/PlayHostApp.
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/play/HostedPlaySession.ts'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/fakeServices.ts'))};
 import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'src/reddit/RedditGuestHostServices.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(root,'src/play/GameSessionCheckpoints.ts'))};
-import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'src/play/pendingGuessJournal.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
+import {createSavedGame} from ${JSON.stringify(path.join(root,'../hosted/src/play/GameSessionCheckpoints.ts'))};
+import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'../hosted/src/play/pendingGuessJournal.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};

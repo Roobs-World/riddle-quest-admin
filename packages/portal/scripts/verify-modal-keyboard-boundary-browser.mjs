@@ -17,7 +17,7 @@ try{
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {GameModalView} from ${JSON.stringify(path.join(root,'src/play/GameModalView.tsx'))};
 import {GameSurfaceRecovery} from ${JSON.stringify(path.join(root,'src/play/GameSurfaceRecovery.tsx'))};
-import {createInitialGameSession} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

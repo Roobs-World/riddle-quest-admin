@@ -14,7 +14,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameMessageListener} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameBridgeLifecycle.ts'))};
 import {useCompletionDelivery} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useCompletionDelivery.ts'))};
 import {useGameMessageRouter} from ${JSON.stringify(path.join(root,'src/play/useGameMessageRouter.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {createGameMessageRouter} from ${JSON.stringify(path.join(root,'src/play/bridgeRouter.ts'))};
 import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};

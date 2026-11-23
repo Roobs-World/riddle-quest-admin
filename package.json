@@ -119,7 +119,11 @@
     "test:deployments:live": "node scripts/release/verify-live-web-games.mjs",
     "development:complete": "node scripts/release/complete-development-task.mjs",
     "test:architecture": "node --test scripts/release/*.test.mjs packages/portal/scripts/web-target-dependencies.test.mjs",
-    "prepare:html5-handoffs": "node scripts/release/package-html5-release.mjs"
+    "prepare:html5-handoffs": "node scripts/release/package-html5-release.mjs",
+    "check:types:jest-facebook": "pnpm prepare:functions && pnpm --filter @riddle-quest/core check:types && pnpm --filter @riddle-quest/solo check:types && pnpm --filter @riddle-quest/hosted check:types && pnpm --filter @riddle-quest/portal check:types",
+    "test:coverage:jest-facebook": "pnpm prepare:functions && pnpm --filter @riddle-quest/core test:coverage && pnpm --filter @riddle-quest/solo test --runInBand && pnpm --filter @riddle-quest/hosted test --runInBand && pnpm --filter @riddle-quest/portal test:coverage",
+    "build:jest-facebook": "pnpm prepare:functions && pnpm check:security && pnpm check:facebook-secrets && pnpm check:scalability && pnpm check:modern-packages && pnpm check:tsdoc && pnpm check:file-sizes && pnpm --filter @riddle-quest/core build && pnpm --filter @riddle-quest/portal build:jest && pnpm --filter @riddle-quest/portal build:facebook",
+    "test:e2e:jest-facebook": "pnpm check:e2e-coverage --jest-facebook && pnpm --dir firebase-functions test:race:rules && pnpm --filter @riddle-quest/portal test:e2e:jest-facebook"
   },
   "engines": {
     "node": ">=24.17.0"

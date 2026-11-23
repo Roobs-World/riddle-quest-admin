@@ -4,7 +4,7 @@ export function validateRepairPayload(payload) {
   let size = 0;
   for (const change of payload.changes) {
     const path = change.path;
-    if (typeof path !== "string" || path.length > 240 || !/^(?:packages\/[a-z0-9-]+\/(?:src|test|tests)\/|firebase-functions\/src\/)/u.test(path) || path.split("/").some((part) => !part || part.startsWith(".") || part === ".." || /^(?:AGENTS|CLAUDE)\.md$/iu.test(part)) || /[\\\x00-\x1f]/u.test(path) || seen.has(path)) throw new Error("unsupported_repair_path");
+    if (typeof path !== "string" || path.length > 240 || !/^(?:packages\/(?:core|solo|hosted|portal)\/(?:src|test|tests)\/|firebase-functions\/src\/)/u.test(path) || path.split("/").some((part) => !part || part.startsWith(".") || part === ".." || /^(?:AGENTS|CLAUDE)\.md$/iu.test(part)) || /[\\\x00-\x1f]/u.test(path) || seen.has(path)) throw new Error("unsupported_repair_path");
     seen.add(path);
     if (change.deleted || change.mode && change.mode !== "100644" || typeof change.content !== "string") throw new Error("unsupported_repair_file_type");
     const bytes = Buffer.from(change.content, "base64");

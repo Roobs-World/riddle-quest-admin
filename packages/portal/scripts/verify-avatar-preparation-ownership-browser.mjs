@@ -18,7 +18,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameOperations} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameOperations.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {parseGameToHostMessage} from '@riddle-quest/core/bridge';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.probe={sent:[],started:0,completed:0,closed:0,rejected:[],releases:[],errors:[],unhandled:[],owner:null};

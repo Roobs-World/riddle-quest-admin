@@ -18,7 +18,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {GuidanceOverlay} from ${JSON.stringify(path.join(root,'src/play/guidance/GuidanceOverlay.tsx'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import {getCurrentLocale,setLocaleAndWait,tr,useLocale} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 import {applyPlayerPreferences,completePlayerOnboarding} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};

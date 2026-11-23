@@ -19,8 +19,8 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameSessionPersistence} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameSessionPersistence.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(root,'src/play/GameSessionCheckpoints.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createSavedGame} from ${JSON.stringify(path.join(root,'../hosted/src/play/GameSessionCheckpoints.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 const lifecycle=${JSON.stringify(lifecycle)};
 const scenario=new URL(location.href).searchParams.get('scenario')??'spec-state';
 window.probe={saves:[],suspended:0,adds:0,removes:0,listeners:new Set(),errors:[],unhandled:[],initialBackground:false};

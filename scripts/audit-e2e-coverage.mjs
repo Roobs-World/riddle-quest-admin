@@ -2,6 +2,18 @@ import {readdir, readFile} from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
+const arguments_ = process.argv.slice(2);
+if (arguments_.length > 1 || arguments_.some(argument => argument !== "--jest-facebook")) {
+  throw new Error("E2E coverage audit accepts only --jest-facebook or the default full scope.");
+}
+const jestFacebook = arguments_.includes("--jest-facebook");
+// These native-only suites remain subject to the default full-platform audit.
+const nativeIntegrationSuites = new Set([
+  "firebase-functions/src/__tests__/androidNotifications.it.test.ts",
+  "firebase-functions/src/__tests__/androidReferrals.it.test.ts",
+  "firebase-functions/src/__tests__/androidSubscriptionRegistry.it.test.ts",
+  "firebase-functions/src/__tests__/race/androidRace.it.test.ts",
+]);
 
 /** Collects files below a directory that satisfy a predicate. */
 async function collect(directory, predicate) {
@@ -29,7 +41,9 @@ const integrationSuites = await collect(path.join(root, "firebase-functions/src"
 );
 
 const missingBrowserSuites = browserSuites.filter((file) => !portalScripts.includes(path.basename(file)));
-const missingIntegrationSuites = integrationSuites.filter((file) => !rulesConfig.includes(path.basename(file)));
+const selectedIntegrationSuites = integrationSuites.filter(file => !jestFacebook ||
+  !nativeIntegrationSuites.has(path.relative(root, file).split(path.sep).join("/")));
+const missingIntegrationSuites = selectedIntegrationSuites.filter((file) => !rulesConfig.includes(path.basename(file)));
 const failures = [];
 
 if (missingBrowserSuites.length > 0) {
@@ -45,8 +59,14 @@ if (missingIntegrationSuites.length > 0) {
 if (!String(rootPackage.scripts?.["test:e2e"] ?? "").includes("test:e2e:local")) {
   failures.push("The root test:e2e interface must invoke the portal test:e2e:local interface.");
 }
-if (!workflow.includes("pnpm test:e2e")) {
-  failures.push("Production readiness must invoke the canonical pnpm test:e2e interface.");
+if (!/^\s*- run: pnpm test:e2e(?::jest-facebook)?\s*$/mu.test(workflow)) {
+  failures.push("Production readiness must invoke a canonical test:e2e interface.");
+}
+if (workflow.includes("pnpm test:e2e:jest-facebook")) {
+  const scoped = String(rootPackage.scripts?.["test:e2e:jest-facebook"] ?? "");
+  if (!scoped.includes("check:e2e-coverage") || !scoped.includes("test:race:rules") || !scoped.includes("@riddle-quest/portal test:e2e:jest-facebook")) {
+    failures.push("Jest/Facebook E2E must retain coverage auditing, backend rules, and the scoped portal interface.");
+  }
 }
 if (/pnpm .*test:(?:race:rules|[^\s]+:playwright|mobile-soak)/u.test(workflow)) {
   failures.push("Production readiness must not duplicate commands owned by the canonical test:e2e interface.");
@@ -58,6 +78,6 @@ if (failures.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `E2E coverage audit passed: ${browserSuites.length} Playwright suites and ${integrationSuites.length} emulator suites are reachable through pnpm test:e2e.`,
+    `E2E coverage audit passed (${jestFacebook ? "Jest/Facebook" : "full"}): ${browserSuites.length} Playwright suites and ${selectedIntegrationSuites.length} emulator suites have canonical entry points.`,
   );
 }

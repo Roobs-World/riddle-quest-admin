@@ -24,8 +24,8 @@ import {createHostedPlaySession} from ${JSON.stringify(path.join(portal, 'src/pl
 import {createFakeHostServices} from ${JSON.stringify(path.join(portal, 'src/play/fakeServices.ts'))};
 import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(portal, 'src/platform/PlayerProjectionPersistence.ts'))};
 import {useGameSessionPersistence} from ${JSON.stringify(path.join(portal, 'src/play/game/hooks/useGameSessionPersistence.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(portal, 'src/play/GameSessionCheckpoints.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(portal, 'src/play/gameSession.ts'))};
+import {createSavedGame} from ${JSON.stringify(path.join(portal, '../hosted/src/play/GameSessionCheckpoints.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(portal, '../hosted/src/play/gameSession.ts'))};
 import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, 'src/play/GameFrameControls.tsx'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, 'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(portal, 'src/play/guidance/guidanceConfig.ts'))};

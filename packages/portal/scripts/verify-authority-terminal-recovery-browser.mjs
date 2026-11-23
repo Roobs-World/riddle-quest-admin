@@ -6,6 +6,8 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
+const browserScope=process.env.PORTAL_BROWSER_SCOPE;
+assert.ok(browserScope===undefined||browserScope==='jest-facebook','PORTAL_BROWSER_SCOPE must be jest-facebook or unset');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.AUTHORITY_TERMINAL_REACT_MODE??'development';
 const handlerMode=process.env.AUTHORITY_TERMINAL_HANDLER_ONLY??null;assert([null,'modal','fallback'].includes(handlerMode));
@@ -23,18 +25,20 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/play/PlayHostApp.tsx'))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/play/HostedPlaySession.ts'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/fakeServices.ts'))};
-import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'src/reddit/RedditGuestHostServices.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(root,'src/play/GameSessionCheckpoints.ts'))};
-import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'src/play/pendingGuessJournal.ts'))};
+${browserScope==='jest-facebook'?'':`import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'src/reddit/RedditGuestHostServices.ts'))};`}
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
+import {createSavedGame} from ${JSON.stringify(path.join(root,'../hosted/src/play/GameSessionCheckpoints.ts'))};
+import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'../hosted/src/play/pendingGuessJournal.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
 const params=new URL(location.href).searchParams,attempts=Number(params.get('attempts')??1),provider=params.get('provider')??'missing',negative=params.has('negative'),prepare=params.has('prepare');
-const source=attempts===6?createFakeHostServices():createRedditGuestHostServices();
-const uid=attempts===6?'jest-guest':'reddit-guest';
+${browserScope==='jest-facebook'?`const fixtureAuthority=createFakeHostServices(),completionReceipts=new Map();
+const source={...fixtureAuthority,completeGame:input=>{const key=input.gameMode+':'+input.riddleId+':'+input.sessionToken;if(!completionReceipts.has(key))completionReceipts.set(key,fixtureAuthority.completeGame(input));return completionReceipts.get(key);}};
+const uid='jest-guest';`:`const source=attempts===6?createFakeHostServices():createRedditGuestHostServices();
+const uid=attempts===6?'jest-guest':'reddit-guest';`}
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');
@@ -101,6 +105,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><PlayHostAp
 window.profile=()=>source.loadProfile(uid);window.probe.ready=true;
  `);
  await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-authority-terminal',async load(id){
+if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');
 if(handlerMode==='modal'&&id.endsWith('/VictoryModalContent.tsx'))return 'export function VictoryModalContent({state,onAdvance}){return <button data-force-next data-profile-index={state.profile?.classicIndex} onClick={onAdvance}>Attempt next</button>}';
 if(handlerMode==='fallback'&&id.endsWith('/GameModalView.tsx'))return 'export function GameModalView(){throw new Error("fixture-modal-unavailable")}';
 if(handlerMode==='fallback'&&id.endsWith('/GameSurfaceRecovery.tsx')){const source=await readFile(id,'utf8');assert.equal(source.split('export function GameSurfaceRecovery(').length,2);return source.replace('export function GameSurfaceRecovery(','export function OriginalGameSurfaceRecovery(')+'\nexport function GameSurfaceRecovery({onNext,nextBlocked}){return <button data-force-next data-blocked={String(nextBlocked)} onClick={onNext}>Attempt next</button>}';}
@@ -128,14 +133,14 @@ if(baseline&&id.endsWith('/gameSession.ts'))return readFile(path.join(baseline,'
     metric('handler emits a new-round request only after exact progression proof',after.loads-before.loads,['advanced','gap'].includes(scenario)?1:0);
     metric('handler dismisses victory only after exact progression proof',after.dismissals-before.dismissals,['advanced','gap'].includes(scenario)?1:0);
     metric('Next requests the current authority index without completed-round locators',after.requests,['advanced','gap'].includes(scenario)?[{index:scenario==='gap'?3:2,hasOldSession:false,hasOldRiddle:false}]:[]);
-    metric('Next does not invent authority progression',await page.evaluate(async()=>{const profile=await window.profile();return[profile.gamesPlayed,profile.wins];}),scenario==='pending'?[0,0]:scenario==='gap'?[2,2]:[1,1]);
+    metric('Next does not invent authority progression',await page.evaluate(async()=>{const profile=await window.profile();return[profile.gamesPlayed,profile.wins];}),await page.evaluate(delta=>[window.probe.before.gamesPlayed+delta,window.probe.before.wins+delta],scenario==='pending'?0:scenario==='gap'?2:1));
     metric('Next does not replay a guess',await page.evaluate(()=>window.probe.outbound.filter(message=>message.type==='game:submitGuess').length),0);
     metric('Next does not replay a paid action',await page.evaluate(()=>window.probe.spends),[]);
     metric('only the deliberate missing-surface error is admitted',await page.evaluate(()=>window.probe.errors.every(error=>error.includes('fixture-modal-unavailable'))),true);
     metric('no unhandled rejection',await page.evaluate(()=>window.probe.unhandled),[]);
     await page.evaluate(()=>window.releaseCompletion());
-    await page.waitForFunction(async expected=>{const profile=await window.profile();return profile.gamesPlayed===expected&&profile.wins===expected;},scenario==='gap'?2:1);
-    metric('completion applies once including an already-committed duplicate read',await page.evaluate(async()=>{const profile=await window.profile();return[profile.gamesPlayed,profile.wins];}),scenario==='gap'?[2,2]:[1,1]);
+    await page.waitForFunction(async expected=>{const profile=await window.profile();return profile.gamesPlayed===window.probe.before.gamesPlayed+expected&&profile.wins===window.probe.before.wins+expected;},scenario==='gap'?2:1);
+    metric('completion applies once including an already-committed duplicate read',await page.evaluate(async()=>{const profile=await window.profile();return[profile.gamesPlayed,profile.wins];}),await page.evaluate(delta=>[window.probe.before.gamesPlayed+delta,window.probe.before.wins+delta],scenario==='gap'?2:1));
     await page.screenshot({path:path.join(output,[handlerMode,scenario,width,height].join('-')+'.png')});await context.close();
    }
   }else{
@@ -199,7 +204,7 @@ if(baseline&&id.endsWith('/gameSession.ts'))return readFile(path.join(baseline,'
    await page.goto(url+'?negative=1&provider=forged');await page.locator('.guess-board').waitFor();await page.waitForTimeout(150);
    metric('provider colours alone cannot open victory',await page.locator('.modal-victory').count(),0);
    metric('provider colours alone cannot deliver completion',await page.evaluate(()=>window.probe.completions.length),0);
-   metric('provider colours alone cannot advance authority',await page.evaluate(async()=>{const p=await window.profile();return[p.gamesPlayed,p.wins,p.coins];}),[0,0,0]);
+   metric('provider colours alone cannot advance authority',await page.evaluate(async()=>{const p=await window.profile();return[p.gamesPlayed,p.wins,p.coins];}),await page.evaluate(()=>{const p=window.probe.before;return[p.gamesPlayed,p.wins,p.coins];}));
    await context.close();
   }
   }

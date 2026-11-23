@@ -18,9 +18,9 @@ import {useGameMessageRouter} from ${JSON.stringify(path.join(portal,'src/play/u
 import {useGameMessageListener} from ${JSON.stringify(path.join(portal,'src/play/game/hooks/useGameBridgeLifecycle.ts'))};
 import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(portal,'src/play/localBridge.ts'))};
 import {useProvisionalPlayRecovery} from ${JSON.stringify(path.join(portal,'src/play/game/hooks/useProvisionalPlayRecovery.ts'))};
-import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'src/play/gameSession.ts'))};
-import {createPendingPlayJournalStorage} from ${JSON.stringify(path.join(portal,'src/play/pendingPlayJournalDiagnostics.ts'))};
-import {pendingPlayScope} from ${JSON.stringify(path.join(portal,'src/play/pendingGuessJournal.ts'))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'../hosted/src/play/gameSession.ts'))};
+import {createPendingPlayJournalStorage} from ${JSON.stringify(path.join(portal,'../hosted/src/play/pendingPlayJournalDiagnostics.ts'))};
+import {pendingPlayScope} from ${JSON.stringify(path.join(portal,'../hosted/src/play/pendingGuessJournal.ts'))};
 import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal,'src/play/GameFrameControls.tsx'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(portal,'src/styles.css'))};
