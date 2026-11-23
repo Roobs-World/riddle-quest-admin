@@ -16,7 +16,7 @@
 - When adding visible text, add it to every supported locale or reuse an existing translated key.
 - Run tests and browser test harnesses only when the user explicitly requests them. Build the target artifacts needed for the requested change or upload.
 - GitHub Actions stays manual-only with the explicit runner-usage confirmation gate. A push or merge does not authorize enabling workflows or spending hosted runner allowance. See `docs/common/development/github-actions-cost-controls.md`.
-- After each requested code change, upload the current game to Jest and tell the user when the upload has completed processing. Activate a build, publish the game, or submit it for review only when explicitly requested.
+- Game uploads are manual-only and require an explicit user request. File changes, commits, pushes, builds and completed code changes do not authorize an upload. After a requested Jest upload, tell the user when processing has completed. Activate a build, publish the game, or submit it for review only when explicitly requested.
 
 ## Branches
 
