@@ -1,7 +1,7 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import type {RetireLiveRaceJoin, RetireLiveRaceJoinResponse} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "./raceEligibility";
 import {requestDocumentId, type Firestore} from "./raceSetupService";
 import {liveJoinIntentRef, type LiveJoinIntent} from "./raceLiveJoinIntent";

@@ -1,10 +1,10 @@
-import {isAndroidAccountProvider} from "../android/androidUser";
+import {isAndroidAccountProvider} from "../../../platforms/native/android/server/androidUser";
 import {createHash} from "node:crypto";
 import {type Firestore} from "firebase-admin/firestore";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
-import {createFacebookNotificationTransport} from "../facebook/facebookNotificationTransport";
-import {createFacebookNotificationDispatchLedger} from "../facebook/facebookNotificationDispatch";
-import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
+import {createFacebookNotificationTransport} from "../../../platforms/web/facebook/server/facebookNotificationTransport";
+import {createFacebookNotificationDispatchLedger} from "../../../platforms/web/facebook/server/facebookNotificationDispatch";
+import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
 import {raceProviderScope} from "./raceEligibility";
 import {type LiveChallengePushEvent} from "./raceLiveChallengeNotifications";
 import {LIVE_RACE_INVITE_MS} from "@riddle-quest/core/race";

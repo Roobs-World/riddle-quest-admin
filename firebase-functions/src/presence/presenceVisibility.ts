@@ -1,7 +1,7 @@
 import {getDatabase, type Database} from "firebase-admin/database";
 import {getFirestore, type Firestore} from "firebase-admin/firestore";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
-import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../jest/jestAccountDeletion";
+import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../shared/accountDeletion";
 import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "../shared/callableSecurity";
 
 /** Provides valid user id behavior. */

@@ -4,10 +4,10 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [viteEntry, webTargetViteConfig, portalPackage, portalJest, coreJest, functionsJest, functionsPackage,
   openAIService, raceSchemas] =
   await Promise.all([
-    read("packages/portal/vite.config.ts"),
-    read("packages/portal/webTargetViteConfig.ts"),
-    read("packages/portal/package.json"),
-    read("packages/portal/jest.config.cjs"),
+    read("packages/web-game/vite.config.ts"),
+    read("packages/web-game/webTargetViteConfig.ts"),
+    read("packages/web-game/package.json"),
+    read("packages/web-game/jest.config.cjs"),
     read("packages/core/jest.config.js"),
     read("firebase-functions/jest.config.js"),
     read("firebase-functions/package.json"),

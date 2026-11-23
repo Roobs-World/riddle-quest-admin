@@ -4,7 +4,7 @@
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
 const {RACE_CATEGORY_IDS} = require("@riddle-quest/core/race");
-const {validateRacePool} = require("../lib/race/raceContentValidation.js");
+const {validateRacePool} = require("../lib/firebase-functions/src/race/raceContentValidation.js");
 
 const args = process.argv.slice(2);
 const projectIndex = args.indexOf("--project");

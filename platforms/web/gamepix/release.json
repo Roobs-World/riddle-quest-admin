@@ -1,0 +1,21 @@
+{
+  "target": "gamepix",
+  "title": "GamePix review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:gamepix",
+  "summary": "Create the SDK-free HTML5 archive permitted by the GamePix submission guidelines.",
+  "externalEffect": "None; account setup, upload, syndication choice and provider review remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "gamepix"
+    ]
+  },
+  "handoff": "Upload build-gamepix-review.zip without enabling syndication until the current terms are accepted.",
+  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "displayName": "GamePix",
+  "delivery": "neutral-html5",
+  "artifact": "build-gamepix-review.zip",
+  "releaseGate": "GamePix account creation, upload, distribution choice and review remain manual."
+}

@@ -2,7 +2,7 @@ import {Timestamp} from "firebase-admin/firestore";
 import {HttpsError, type CallableResponse} from "firebase-functions/v2/https";
 import {randomUUID} from "node:crypto";
 import {z} from "zod";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import type {Firestore} from "./raceSetupService";
 
 /** Maximum stream admission lifetime before credentials and authority are checked again. */

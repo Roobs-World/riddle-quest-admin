@@ -4,7 +4,7 @@
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
 const {RACE_SUPPORTED_LOCALES} = require("@riddle-quest/core/race");
-const {createRaceContentDryRun} = require("../lib/race/raceContentMigration.js");
+const {createRaceContentDryRun} = require("../lib/firebase-functions/src/race/raceContentMigration.js");
 
 const projectId = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 if (!projectId) {

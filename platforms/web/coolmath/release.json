@@ -1,0 +1,21 @@
+{
+  "target": "coolmath",
+  "title": "Coolmath Games pitch",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:coolmath",
+  "summary": "Create a neutral HTML5 archive for the non-exclusive Coolmath Games licensing pitch.",
+  "externalEffect": "None; licensing acceptance is required before any Coolmath SDK work or publication.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "coolmath"
+    ]
+  },
+  "handoff": "Submit the playable URL and retain build-coolmath-pitch.zip for requested review.",
+  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "displayName": "Coolmath Games",
+  "delivery": "neutral-html5",
+  "artifact": "build-coolmath-pitch.zip",
+  "releaseGate": "Coolmath licensing review remains manual; this neutral archive is for the non-exclusive pitch only."
+}

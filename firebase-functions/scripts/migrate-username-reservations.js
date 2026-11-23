@@ -6,12 +6,12 @@ const {FieldPath, getFirestore} = require("firebase-admin/firestore");
 const {
   MAX_USERNAME_MIGRATION_PAGE_SIZE,
   migrateUsernameReservationPage,
-} = require("../lib/profile/usernameReservationMigration.js");
+} = require("../lib/firebase-functions/src/profile/usernameReservationMigration.js");
 const {
   createUsernameReservationFields,
   usernameReservationMigrationRef,
   USERNAME_RESERVATIONS_COLLECTION,
-} = require("../lib/profile/usernameReservations.js");
+} = require("../lib/firebase-functions/src/profile/usernameReservations.js");
 const {UsernameSchema} = require("@riddle-quest/core/validation/requestSchemas");
 
 const args = process.argv.slice(2);

@@ -5,9 +5,9 @@ const {access, readFile, rename, writeFile} = require("node:fs/promises");
 const {createHash} = require("node:crypto");
 const {constants} = require("node:fs");
 const path = require("node:path");
-const {authorRaceContent} = require("../lib/race/raceContentAuthoring.js");
-const {RaceContentImportFileSchema} = require("../lib/race/raceContentImport.js");
-const {RIDDLE_GENERATION_MODEL} = require("../lib/riddles/openaiService.js");
+const {authorRaceContent} = require("../lib/firebase-functions/src/race/raceContentAuthoring.js");
+const {RaceContentImportFileSchema} = require("../lib/firebase-functions/src/race/raceContentImport.js");
+const {RIDDLE_GENERATION_MODEL} = require("../lib/firebase-functions/src/riddles/openaiService.js");
 
 const args = process.argv.slice(2);
 const option = (name) => {

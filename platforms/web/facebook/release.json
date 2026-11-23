@@ -1,0 +1,20 @@
+{
+  "target": "facebook",
+  "title": "Facebook",
+  "boundary": "local-immutable-handoff",
+  "publicCommand": "pnpm release:facebook",
+  "summary": "Verify the Facebook artifact and create its immutable manual-upload handoff.",
+  "externalEffect": "None; Meta Dashboard upload and production promotion remain manual.",
+  "command": {
+    "executable": "pnpm",
+    "args": [
+      "--filter",
+      "@riddle-quest/portal",
+      "release:facebook"
+    ]
+  },
+  "handoff": "Upload only the printed read-only archive to Meta as a non-production Draft.",
+  "runbook": "docs/facebook-instant-games-operations.md",
+  "displayName": "Facebook",
+  "delivery": "web-target"
+}

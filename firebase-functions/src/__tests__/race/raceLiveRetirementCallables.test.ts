@@ -5,7 +5,7 @@ const mockRetire = jest.fn(), mockAccess = jest.fn(), mockLease = jest.fn(async 
 jest.mock("../../race/raceLiveRetirement", () => ({retireLiveRaceJoinForUser: mockRetire}));
 jest.mock("../../race/raceRollout", () => ({assertRaceAccess: mockAccess}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
-jest.mock("../../jest/jestAccountDeletion", () => ({...jest.requireActual("../../jest/jestAccountDeletion"), runWithJestAccountOperationLease: mockLease}));
+jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithJestAccountOperationLease: mockLease}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"), onCall: jest.fn((options, handler) => Object.assign(handler, {deploymentOptions: options}))}));
 import {retireLiveRaceJoin} from "../../race/raceLiveCallables";
 /** Canonical verified identity remains distinct from all untrusted request fields. */

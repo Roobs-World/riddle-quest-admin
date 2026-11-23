@@ -16,3 +16,6 @@ node_modules/
 *admin-sdk*.json
 riddle-quest-admin-sdk.json
 qwordly-admin-sdk.json
+
+# Generated repository-shaped Firebase compiler input.
+.build-source/

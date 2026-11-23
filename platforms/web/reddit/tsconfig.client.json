@@ -1,0 +1,13 @@
+{
+  "extends": "../../../packages/web-game/tsconfig.json",
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "src/server/**",
+    "src/**/__tests__/**",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "server/**"
+  ]
+}

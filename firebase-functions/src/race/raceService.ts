@@ -66,7 +66,7 @@ import {assertRaceChallengeEligible, inspectRaceChallengeEligibility, raceProvid
 import {projectRaceMatchCandidate} from "./raceMatchCandidates";
 import {raceDeckContentVersion, raceRecordingFingerprint, assertRacePreparedRecording} from "./raceDeckSnapshot";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, raceDifficultyAdjustedMs, recordRaceExposure} from "./raceMatchPerformance";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 export {readyRaceRunForUser} from "./raceRunLifecycle";
 import {settleRaceRun} from "./raceSettlement";
 import {projectRaceRunResponse} from "./raceRunResponse";

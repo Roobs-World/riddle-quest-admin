@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceDeadlineAtMs, raceRules} from "./raceEngine";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
 import {projectRaceMatchCandidate, raceMatchCandidateEquals} from "./raceMatchCandidates";

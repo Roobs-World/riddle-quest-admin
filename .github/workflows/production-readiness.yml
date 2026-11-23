@@ -101,7 +101,7 @@ jobs:
       - run: pnpm --filter @riddle-quest/portal validate:w3c ../../builds/jest/index.html ../../builds/facebook/index.html
       - run: pnpm --filter @riddle-quest/portal preflight:jest-upload
       - name: Package the Facebook build already verified by the browser suite
-        run: node packages/portal/scripts/prepare-facebook-draft.mjs
+        run: node platforms/web/facebook/scripts/prepare-facebook-draft.mjs
       - run: pnpm check:facebook-progress
 
   development-progress:

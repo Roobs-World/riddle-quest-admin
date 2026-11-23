@@ -1,10 +1,10 @@
 import {withRaceDeliveryReceipt} from "./raceDeliveryFailures";
 import {admin} from "../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {creatorRaceResult} from "./raceSettlement";
 import {parseRunRecord, persistRaceAchievementEvent, requestDocumentId, type Firestore} from "./raceSetupService";
 import {parseRaceSettlementEvent} from "./raceDeliveryRecords";
-import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../facebook/facebookRaceReferralDelivery";
+import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../../../platforms/web/facebook/server/facebookRaceReferralDelivery";
 
 /**
  * Delivers one canonical settlement outbox event transactionally and idempotently.

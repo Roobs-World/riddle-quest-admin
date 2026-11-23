@@ -1,7 +1,7 @@
 import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@riddle-quest/core/race";
 import {raceOperationAtMs, toRaceRunView, type RaceRunRecord} from "./raceEngine";
 import {liveFinishMs} from "./raceLiveScoring";
-import type {FacebookLiveContextBinding} from "./facebookLiveContextBinding";
+import type {FacebookLiveContextBinding} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 
 /** Private ticket contains the immutable deck and authenticated owner. */
 export type LiveTicket = {

@@ -20,7 +20,7 @@ import {
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/deleteAccountData";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {deliverRaceSettlement} from "../../race/raceSettlementDelivery";
-import {recordJestAccountDeletion} from "../../jest/jestAccountDeletion";
+import {recordJestAccountDeletion} from "../../../../platforms/web/jest/server/jestAccountDeletion";
 
 /** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";

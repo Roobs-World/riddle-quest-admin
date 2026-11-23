@@ -1,6 +1,6 @@
 import {getDatabase} from "firebase-admin/database";
 import {onValueWritten} from "firebase-functions/v2/database";
-import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
+import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
 
 /** Describes connection value. */
 type ConnectionValue = {

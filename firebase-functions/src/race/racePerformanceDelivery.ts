@@ -1,19 +1,19 @@
 import {withRaceDeliveryReceipt} from "./raceDeliveryFailures";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {admin} from "../shared/firebaseAdmin";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, racePerformanceSample, recordRacePerformance, recordRaceCompletion} from "./raceMatchPerformance";
 import {parseRunRecord, type Firestore} from "./raceSetupService";
 import {parseRacePerformanceEvent} from "./raceDeliveryRecords";
-import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../facebook/facebookRaceReferralDelivery";
-import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
-import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
-import {finishRedditLiveRaceReferralDelivery, needsRedditLiveRaceReferral, validateRedditLiveRaceReferralSource} from "../reddit/redditLiveRaceReferralDelivery";
-import {isRedditFirebaseUid} from "../reddit/redditSecurity";
-import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
-import {finishFacebookLiveRaceDelivery} from "../facebook/facebookLiveRaceDelivery";
-import {isRedditFeatureEnabled} from "../reddit/redditFeatureFlags";
-import {finishRedditLiveRaceDelivery} from "../reddit/redditLiveRaceDelivery";
+import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "../../../platforms/web/facebook/server/facebookRaceReferralDelivery";
+import {isFacebookFirebaseUid} from "../../../platforms/web/facebook/server/facebookSecurity";
+import {validateFacebookLiveRaceReferralSource} from "../../../platforms/web/facebook/server/facebookLiveRaceReferralDelivery";
+import {finishRedditLiveRaceReferralDelivery, needsRedditLiveRaceReferral, validateRedditLiveRaceReferralSource} from "../../../platforms/web/reddit/server/redditLiveRaceReferralDelivery";
+import {isRedditFirebaseUid} from "../../../platforms/web/reddit/server/redditSecurity";
+import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
+import {finishFacebookLiveRaceDelivery} from "../../../platforms/web/facebook/server/facebookLiveRaceDelivery";
+import {isRedditFeatureEnabled} from "../../../platforms/web/reddit/server/redditFeatureFlags";
+import {finishRedditLiveRaceDelivery} from "../../../platforms/web/reddit/server/redditLiveRaceDelivery";
 
 /** Idempotently folds a settled owner's performance into their language/category estimate. */
 export async function deliverRacePerformance(runId: string, db: Firestore = admin.firestore(), nowMs = Date.now()): Promise<boolean> {

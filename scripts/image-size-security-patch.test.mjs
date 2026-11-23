@@ -7,7 +7,7 @@ import test from "node:test";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const workspaceConfig = readFileSync(join(repositoryRoot, "pnpm-workspace.yaml"), "utf8");
-const devvitRoot = realpathSync(join(repositoryRoot, "packages/reddit-app/node_modules/devvit"));
+const devvitRoot = realpathSync(join(repositoryRoot, "platforms/web/reddit/node_modules/devvit"));
 const cliPackage = createRequire(join(devvitRoot, "package.json")).resolve("@devvit/cli/package.json");
 const imageSizeEntry = createRequire(cliPackage).resolve("image-size");
 

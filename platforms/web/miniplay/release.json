@@ -1,0 +1,21 @@
+{
+  "target": "miniplay",
+  "title": "Miniplay review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:miniplay",
+  "summary": "Create a neutral HTML5 archive for Miniplay account and API review.",
+  "externalEffect": "None; account setup, support request, API integration, testing and production launch remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "miniplay"
+    ]
+  },
+  "handoff": "Request credentials and written non-exclusive terms before implementing an isolated Miniplay adapter.",
+  "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  "displayName": "Miniplay",
+  "delivery": "neutral-html5",
+  "artifact": "build-miniplay-review.zip",
+  "releaseGate": "Miniplay account setup, support request, API credentials, integration review and production launch remain manual."
+}

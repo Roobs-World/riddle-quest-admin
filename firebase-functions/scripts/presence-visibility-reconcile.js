@@ -110,7 +110,7 @@ async function main() {
   const {initializeApp, deleteApp} = require("firebase-admin/app");
   const {getFirestore} = require("firebase-admin/firestore");
   const {getDatabase} = require("firebase-admin/database");
-  const {reconcilePresenceVisibilityPage} = require("../lib/presence/presenceVisibilityReconciliation.js");
+  const {reconcilePresenceVisibilityPage} = require("../lib/firebase-functions/src/presence/presenceVisibilityReconciliation.js");
   const app = initializeApp({projectId: scope.projectId, databaseURL: scope.databaseURL});
   try {
     const page = scope.pairs.slice(scope.offset, scope.offset + scope.limit);

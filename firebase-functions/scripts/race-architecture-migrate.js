@@ -3,7 +3,7 @@
 
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
-const {migrateRaceArchitecturePage} = require("../lib/race/raceArchitectureMigration");
+const {migrateRaceArchitecturePage} = require("../lib/firebase-functions/src/race/raceArchitectureMigration");
 
 const args = process.argv.slice(2);
 const option = (name) => {

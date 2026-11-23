@@ -12,7 +12,8 @@ import {
 import {get, ref} from "firebase/database";
 import {deletePresenceForUser, refreshPresenceVisibility} from "../presence/presenceVisibility";
 import {blockKnownRival} from "../social/socialSafety";
-import {JestAccountDeletionBusyError, recordJestAccountDeletion} from "../jest/jestAccountDeletion";
+import {recordJestAccountDeletion} from "../../../platforms/web/jest/server/jestAccountDeletion";
+import {JestAccountDeletionBusyError} from "../shared/accountDeletion";
 
 /** Destructive fixtures are confined to a private demo and loopback emulators. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";

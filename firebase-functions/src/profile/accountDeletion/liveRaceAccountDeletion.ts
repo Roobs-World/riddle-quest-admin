@@ -1,7 +1,7 @@
 import {publishLiveRaceSignals} from "../../race/raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId, stripUndefined} from "../../race/raceSetupService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
 import {DELETED_LIVE_RACE_USER_ID} from "../../race/raceLivePrivacy";

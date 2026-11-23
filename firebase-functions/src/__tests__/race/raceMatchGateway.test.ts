@@ -15,14 +15,14 @@ jest.mock("../../shared/sentryHandlers", () => ({
 }));
 jest.mock("../../shared/firebaseAdmin", () => ({admin: {firestore: () => ({collection: () => ({doc: () => ({get: async () => ({data: () => ({})})})})})}}));
 jest.mock("firebase-functions/params", () => ({...jest.requireActual("firebase-functions/params"), defineSecret: () => ({value: () => "hermetic-gateway-secret"})}));
-jest.mock("../../reddit/redditFeatureFlags", () => ({isRedditFeatureEnabled: () => true, isRedditCommerceEnabled: () => true}));
-jest.mock("../../reddit/redditSecurity", () => ({verifyRedditGatewayAssertion: (...args: unknown[]) => verify(...args)}));
-jest.mock("../../reddit/redditMatchmaking", () => ({findRedditRaceMatch: (...args: unknown[]) => find(...args)}));
+jest.mock("../../../../platforms/web/reddit/server/redditFeatureFlags", () => ({isRedditFeatureEnabled: () => true, isRedditCommerceEnabled: () => true}));
+jest.mock("../../../../platforms/web/reddit/server/redditSecurity", () => ({verifyRedditGatewayAssertion: (...args: unknown[]) => verify(...args)}));
+jest.mock("../../../../platforms/web/reddit/server/redditMatchmaking", () => ({findRedditRaceMatch: (...args: unknown[]) => find(...args)}));
 jest.mock("../../race/raceRollout", () => ({...jest.requireActual("../../race/raceRollout"), assertRaceAccess: (...args: unknown[]) => access(...args)}));
-jest.mock("../../reddit/redditEndpoints", () => ({REDDIT_APP_NAME: "riddle-quest", consumeRedditGatewayNonce: jest.fn(),
+jest.mock("../../../../platforms/web/reddit/server/redditEndpoints", () => ({REDDIT_APP_NAME: "riddle-quest", consumeRedditGatewayNonce: jest.fn(),
   consumeRedditRequestQuota: (...args: unknown[]) => quota(...args), parseRedditGatewayEnvelope: (body: unknown) => body,
   redditProviderIdentityId: () => "opaque-provider-identity", resolveRedditProviderIdentity: () => ({uid: "authenticated-owner", needsUidRepair: false})}));
-import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
+import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 
 /** Minimal HTTP response captures only the public gateway result. */
 const response = () => {

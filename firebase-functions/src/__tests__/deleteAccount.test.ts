@@ -155,8 +155,8 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 jest.mock("firebase-functions/v2", () => ({logger: {error: mockLoggerError}}));
 jest.mock("../shared/callableSecurity", () => ({browserCallableSecurityOptions: {enforceAppCheck: true}}));
-jest.mock("../jest/jestDeletedAuthUser", () => ({preserveDeletedJestAuthUser: mockPreserveDeletedJestAuthUser}));
-jest.mock("../facebook/facebookAccountDeletion", () => ({
+jest.mock("../../../platforms/web/jest/server/jestDeletedAuthUser", () => ({preserveDeletedJestAuthUser: mockPreserveDeletedJestAuthUser}));
+jest.mock("../../../platforms/web/facebook/server/facebookAccountDeletion", () => ({
   deleteFacebookAccountGeneration: mockDeleteFacebookAccountGeneration,
 }));
 jest.mock("../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn().mockResolvedValue(true)}));
@@ -218,11 +218,11 @@ jest.mock("../shared/firebaseAdmin", () => ({
 
 import {deleteAccount} from "../profile/accountDeletion";
 import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
-import {createJestPurchaseGrantId} from "../jest/jestPurchaseReceipts";
+import {createJestPurchaseGrantId} from "../../../platforms/web/jest/server/jestPurchaseReceipts";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 import {hashRaceCohortUser} from "../race/raceRollout";
 import {requestDocumentId} from "../race/raceSetupService";
-import {jestFirebaseUid} from "../jest/jestSecurity";
+import {jestFirebaseUid} from "../../../platforms/web/jest/server/jestSecurity";
 
 describe("deleteAccount", () => {
   beforeEach(() => {

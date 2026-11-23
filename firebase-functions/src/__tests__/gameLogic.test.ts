@@ -14,8 +14,8 @@ const mockRunWithJestAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
-jest.mock("../jest/jestAccountDeletion", () => ({
-  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+jest.mock("../shared/accountDeletion", () => ({
+  ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
   runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 

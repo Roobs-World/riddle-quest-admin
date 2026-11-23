@@ -1,18 +1,19 @@
 /* eslint-env node */
 module.exports = {
   rootDir: ".",
-  roots: ["<rootDir>"],
+  roots: ["<rootDir>/src", "<rootDir>/../platforms/native/android/server", "<rootDir>/../platforms/web/jest/server", "<rootDir>/../platforms/web/facebook/server", "<rootDir>/../platforms/web/reddit/server", "<rootDir>/../platforms/web/yahoo/server"],
+  modulePaths: ["<rootDir>/node_modules"],
   testEnvironment: "node",
   testEnvironmentOptions: {globalsCleanup: "on"},
-  testMatch: ["**/__tests__/**/*.test.ts", "!**/__tests__/**/*.it.test.ts", "!lib/**"],
+  testMatch: ["**/__tests__/**/*.test.ts", "!**/__tests__/**/*.it.test.ts", "!**/lib/**", "!**/.build-source/**"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
     // Shared-contract tests follow portal re-exports into hosted source.
-    "/packages/(?:portal|hosted)/src/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
+    "/packages/(?:web-game|hosted)/src/.+\\.ts$": "<rootDir>/jest.portalTransform.js",
     "^.+\\.ts$": [
       "ts-jest",
       {
-        tsconfig: "tsconfig.json",
+        tsconfig: "tsconfig.test.json",
       },
     ],
   },
@@ -21,6 +22,8 @@ module.exports = {
   coverageReporters: ["text", "text-summary", "json-summary"],
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
+    "../platforms/**/server/**/*.{ts,tsx}",
+    "!../platforms/**/server/**/__tests__/**",
     "!src/**/*.d.ts",
     "!src/**/__tests__/**",
     "!src/**/*.{test,spec}.{ts,tsx}",
@@ -40,7 +43,7 @@ module.exports = {
     "src/race/raceContentImport.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/raceContentMigration.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/raceContentValidation.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
-    "src/jest/jestSecurity.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
+    "../platforms/web/jest/server/jestSecurity.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/raceEngine.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/raceReadService.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/gameplay/achievements.ts": {statements: 100, branches: 100, functions: 100, lines: 100},

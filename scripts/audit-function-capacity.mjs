@@ -5,7 +5,8 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 
 const require = createRequire(new URL("../firebase-functions/package.json", import.meta.url));
 const ts = require("typescript");
-const root = new URL("../firebase-functions/src/", import.meta.url);
+const roots = ["firebase-functions/src", "platforms/native/android/server", ...["jest", "facebook", "reddit", "yahoo"].map(target => `platforms/web/${target}/server`)]
+  .map(directory => new URL(`../${directory}/`, import.meta.url));
 const failures = [];
 
 async function check(directory) {
@@ -43,8 +44,8 @@ export function builtFunctionCapacityFailures(functions) {
 }
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
-  await check(root);
-  if (process.argv.includes("--built")) failures.push(...builtFunctionCapacityFailures(require("./lib/index.js")));
+  for (const root of roots) await check(root);
+  if (process.argv.includes("--built")) failures.push(...builtFunctionCapacityFailures(require("./lib/firebase-functions/src/index.js")));
   if (failures.length) throw new Error(failures.join("\n"));
   console.log("Function capacity audit passed: explicit zero warm instances and no maximum-instance resets.");
 }

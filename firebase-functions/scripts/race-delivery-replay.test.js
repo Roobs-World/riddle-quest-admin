@@ -20,7 +20,7 @@ async function run(args, failure) {
     require(name) {
       if (name === "firebase-admin/app") return {initializeApp: value => calls.push(["initialize", value])};
       if (name === "firebase-admin/firestore") return {getFirestore: () => database};
-      if (name === "../lib/race/raceDeliveryRecovery") return {replayRaceDelivery: async (...values) => {
+      if (name === "../lib/firebase-functions/src/race/raceDeliveryRecovery") return {replayRaceDelivery: async (...values) => {
         calls.push(["replay", ...values]);
         if (failure) throw failure;
         return !values[4].dryRun;

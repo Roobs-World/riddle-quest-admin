@@ -4,11 +4,11 @@ import {createHmac} from "node:crypto";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {listLiveRaceHistoryForUser} from "../../race/raceLiveHistory";
-import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 import {LIVE_RACE_HISTORY_MS} from "@riddle-quest/core/race";
-import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
-import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
-import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../reddit/redditSecurity";
+import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
+import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
+import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../../../platforms/web/reddit/server/redditSecurity";
 
 /** Local demo project is mandatory before any fixture cleanup. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";

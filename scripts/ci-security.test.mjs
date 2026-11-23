@@ -5,7 +5,7 @@ import {auditSecurityConfiguration, hasPlaintextNetworkReference} from "./audit-
 
 const pinnedCheckout = "actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0";
 
-const metadataPath = "firebase-functions/src/android/playDeveloperApi.ts";
+const metadataPath = "platforms/native/android/server/playDeveloperApi.ts";
 const metadataSource = `const METADATA_TOKEN_URL =
   "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token";`;
 const avatarPath = "firebase-functions/src/profile/avatarUpload.ts";
@@ -20,7 +20,7 @@ test("production security audit accepts its bounded metadata and emulator transp
 
 test("plaintext exceptions cannot authorize external endpoints or unrelated source files", () => {
   for (const [path, source] of [[metadataPath, metadataSource], [avatarPath, avatarSource]]) {
-    assert.equal(hasPlaintextNetworkReference("packages/portal/src/unsafe.ts", source), true);
+    assert.equal(hasPlaintextNetworkReference("packages/web-game/src/unsafe.ts", source), true);
     for (const url of ["http://api.example.com", "ws://api.example.com/socket", "http://localhost.example.com", "http://127.0.0.1.example.com"]) {
       assert.equal(hasPlaintextNetworkReference(path, `${source}\nfetch("${url}");`), true, url);
     }

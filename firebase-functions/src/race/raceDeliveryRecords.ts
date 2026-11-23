@@ -2,7 +2,7 @@ import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
 import {RaceCategoryIdSchema} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
-import {FacebookLiveContextBindingSchema} from "./facebookLiveContextBinding";
+import {FacebookLiveContextBindingSchema} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 
 /** Only opaque single-path IDs can be used to read delivery source/owner documents. */
 const Id = z.string().min(1).max(160).refine(value => !value.includes("/"));

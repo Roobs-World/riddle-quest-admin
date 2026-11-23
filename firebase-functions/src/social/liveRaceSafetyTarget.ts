@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "../race/raceEligibility";
 
 /** Resolves only the human opponent of an authenticated, retained live seat in the mutation transaction. */

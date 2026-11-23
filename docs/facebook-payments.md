@@ -31,7 +31,7 @@ The callback accepts authenticated refunds even when `commerce` is in `FACEBOOK_
 
 1. Open **Use Cases**, then **Webhook**, for the app in the Meta App Dashboard.
 2. Set the callback URL to `https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/facebookPaymentWebhook`.
-3. Derive the verify token privately with `facebookPaymentsVerifyToken(appSecret, appId)` from `firebase-functions/src/facebook/facebookPaymentContracts.ts`.
+3. Derive the verify token privately with `facebookPaymentsVerifyToken(appSecret, appId)` from `platforms/web/facebook/server/facebookPaymentContracts.ts`.
 4. Enter that derived value in the dashboard's **Verify Token** field.
 5. Complete the dashboard's callback verification and subscribe to the V2 `in_app_purchase` field.
 6. Confirm that actual signed purchase and refund callbacks arrive after permission approval.

@@ -33,7 +33,7 @@ function run(label, binary, args, options = {}) {
 }
 
 run("TypeScript", packageBinary("@typescript/native", "bin/tsc"), ["-p", "tsconfig.json", "--noEmit"]);
-run("ESLint", packageBinary("eslint", "bin/eslint.js"), ["--ext", ".js,.ts", "src"]);
+run("ESLint", packageBinary("eslint", "bin/eslint.js"), ["--config", "eslint.config.cjs", "--ext", ".js,.ts", "src", "../platforms/native/android/server", "../platforms/web/jest/server", "../platforms/web/facebook/server", "../platforms/web/reddit/server", "../platforms/web/yahoo/server"]);
 run(
   "Jest unit suite",
   packageBinary("jest", "bin/jest.js"),

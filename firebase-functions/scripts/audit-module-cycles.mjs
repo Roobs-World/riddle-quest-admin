@@ -4,6 +4,13 @@ import {fileURLToPath} from "node:url";
 import ts from "typescript";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../src", import.meta.url));
+const providerSourceDirectories = [
+  "../../platforms/native/android/server",
+  "../../platforms/web/jest/server",
+  "../../platforms/web/facebook/server",
+  "../../platforms/web/reddit/server",
+  "../../platforms/web/yahoo/server",
+].map((relative) => fileURLToPath(new URL(relative, import.meta.url)));
 const compilerOptions = Object.freeze({
   allowJs: true,
   module: ts.ModuleKind.NodeNext,
@@ -46,7 +53,7 @@ const collectProductionModules = async (sourceDirectory) => {
         throw new TypeError(`Production source graph must not contain symbolic links: ${candidate}`);
       }
       if (metadata.isDirectory()) {
-        if (entry.name !== "__tests__" && entry.name !== "__mocks__") await walk(candidate);
+        if (entry.name !== "__tests__" && entry.name !== "__mocks__" && entry.name !== "scripts") await walk(candidate);
       } else if (metadata.isFile() && isProductionModule(entry.name)) {
         modules.push(candidate);
       }
@@ -162,7 +169,10 @@ export async function auditProductionModuleCycles({sourceDirectory = defaultSour
     throw new TypeError("sourceDirectory must be a non-empty string");
   }
   const root = path.resolve(sourceDirectory);
-  const modules = await collectProductionModules(root);
+  const sourceDirectories = root === path.resolve(defaultSourceDirectory)
+    ? [root, ...providerSourceDirectories]
+    : [root];
+  const modules = (await Promise.all(sourceDirectories.map(collectProductionModules))).flat().sort(compareText);
   const moduleSet = new Set(modules);
   const resolutionCache = ts.createModuleResolutionCache(root, (value) => value, compilerOptions);
   const graph = new Map(modules.map((module) => [module, []]));

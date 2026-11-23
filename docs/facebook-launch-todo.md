@@ -160,7 +160,7 @@ git rev-parse HEAD
 pnpm --filter @riddle-quest/portal facebook:setup
 ```
 
-7. Read its receipt under `packages/portal/.facebook-setup-receipts`. The wizard does not obtain the Firebase App ID or deploy configuration. A developer must deliberately enter reviewed non-secrets in the Functions environment.
+7. Read its receipt under `packages/web-game/.facebook-setup-receipts`. The wizard does not obtain the Firebase App ID or deploy configuration. A developer must deliberately enter reviewed non-secrets in the Functions environment.
 8. Verify each allowed game origin is exactly the HTTPS origin the game uses. An origin is scheme plus hostname and optional port, not an arbitrary page path.
 9. Have the developer confirm the Facebook entry/build loads SDK v8 and root `fbapp-config.json`. SDK version is selected by the artifact; do not assume a dashboard dropdown controls it.
 10. Check the dashboard's Zero Permission Access status and the recorded 13+ audience. Reconcile any discrepancy with the built configuration.
@@ -714,7 +714,7 @@ pnpm --dir firebase-functions race:translations:import --project riddle-quest-ec
 2. Open [Meta for Developers](https://developers.facebook.com/apps/) and select the existing Riddle Quest Instant Games app. Check its app ID against the repository's Facebook configuration. Do not select an old native/mobile app just because its name looks similar.
 3. Open the app's Instant Games monetization settings or the linked Monetization Manager. Menu names can change; use the app's official in-dashboard monetization link if the label differs. Find the existing rewarded-video placement `1748953042991569_1765482768005263` before creating anything. This is the configured Instant Games placement; a native app's ad setup does not automatically carry over.
 4. Check that the placement belongs to this app, is a rewarded-video placement, has the necessary approved monetization/property settings and is allowed to serve on the intended Instant Games surfaces. Record its actual approval/status. If you cannot see it, ask the app/property administrator for access; do not make a duplicate placement to work around missing access.
-5. If Meta requires a replacement placement, have the administrator create/approve it through the current Instant Games process. Copy its placement ID, not an app secret or access token. Ask the developer to put only that public ID into `VITE_FACEBOOK_REWARDED_PLACEMENT_ID` in `config/vite/portal/.env.facebook`, then rebuild. Never put Meta secrets into a Vite variable.
+5. If Meta requires a replacement placement, have the administrator create/approve it through the current Instant Games process. Copy its placement ID, not an app secret or access token. Ask the developer to put only that public ID into `VITE_FACEBOOK_REWARDED_PLACEMENT_ID` in `platforms/web/facebook/.env.facebook`, then rebuild. Never put Meta secrets into a Vite variable.
 6. Read [Meta's HTML5 rewarded-ad instructions](https://developers.facebook.com/documentation/games/monetize/in-app-ads/rewarded-ads). Use their approved test-ad/account instructions for this property. Do not click your own live ads or manufacture production traffic. Record whether this app/placement actually receives a successful test impression; a configured ID alone is not proof of fill.
 7. Owner: record the trust decision before enabling the feature. The browser waits for Meta's `showAsync()` success, but that success is not a signed receipt the server can verify. The server limits the reward to one exhausted, authenticated Facebook session; a modified authenticated client could still call the extra-try endpoint without watching. Decide whether this bounded SDK-mediated reward is acceptable. If not, keep `rewarded_ads` disabled and request an applicable server-verifiable contract from Meta. Do not borrow a native Android/Unity verification contract for this HTML5 game.
 8. Developer: confirm the local implementation still calls `getRewardedVideoAsync`, loads the ad and waits for `showAsync()` success before calling `grantFacebookRewardedContinue`. Confirm failed, cancelled and no-fill results do not call that endpoint. The implementation exists; inspect it rather than building a second ad flow.
@@ -947,7 +947,7 @@ pnpm release:facebook
 6. If outcome is unknown, stop retransmission. Record the ambiguity using the actual hash:
 
 ```sh
-pnpm --dir packages/portal facebook:draft ambiguous --archive-hash EXACT_64_HEX_SHA256 --reason "dashboard result unknown after transmission"
+pnpm --dir packages/web-game facebook:draft ambiguous --archive-hash EXACT_64_HEX_SHA256 --reason "dashboard result unknown after transmission"
 ```
 
 7. Reconcile the full Meta version list and original attempt before any retry. If local creation was interrupted, have the operator use the documented `recover --archive-hash` procedure; recovery never authorises transmission by itself.
@@ -961,7 +961,7 @@ sha256sum /absolute/path/to/downloaded-candidate.zip
 10. Save a redacted draft dashboard evidence file privately and bind acceptance using real values:
 
 ```sh
-pnpm --dir packages/portal facebook:draft accept --archive-hash EXACT_64_HEX_SHA256 --draft-id META_DRAFT_ID --evidence /absolute/path/to/redacted-draft-evidence
+pnpm --dir packages/web-game facebook:draft accept --archive-hash EXACT_64_HEX_SHA256 --draft-id META_DRAFT_ID --evidence /absolute/path/to/redacted-draft-evidence
 ```
 
 11. Complete P0-04 and every included feature procedure against this exact draft. If code changes, make a new reviewed candidate and revalidate its bytes.
@@ -974,7 +974,7 @@ pnpm --dir packages/portal facebook:draft accept --archive-hash EXACT_64_HEX_SHA
 18. Record the real promotion only after it occurs:
 
 ```sh
-pnpm --dir packages/portal facebook:draft promote --archive-hash EXACT_64_HEX_SHA256 --production-hash EXACT_64_HEX_SHA256 --evidence /absolute/path/to/redacted-promotion-evidence
+pnpm --dir packages/web-game facebook:draft promote --archive-hash EXACT_64_HEX_SHA256 --production-hash EXACT_64_HEX_SHA256 --evidence /absolute/path/to/redacted-promotion-evidence
 ```
 
 19. Keep promotion/upload receipts private and write-once. A local receipt confirms local consistency; it does not itself perform or prove Meta promotion.

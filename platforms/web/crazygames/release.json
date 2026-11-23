@@ -1,0 +1,21 @@
+{
+  "target": "crazygames",
+  "title": "CrazyGames Basic Launch",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:crazygames",
+  "summary": "Create the SDK-free, ad-free HTML5 archive accepted for a CrazyGames Basic Launch.",
+  "externalEffect": "None; CrazyGames Developer Portal upload and QA review remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "crazygames"
+    ]
+  },
+  "handoff": "Upload build-crazygames-basic.zip in the Developer Portal and retain its manifest digest.",
+  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "displayName": "CrazyGames",
+  "delivery": "neutral-html5",
+  "artifact": "build-crazygames-basic.zip",
+  "releaseGate": "Developer Portal upload and Basic Launch review remain manual."
+}

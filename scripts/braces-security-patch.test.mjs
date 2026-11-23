@@ -6,7 +6,7 @@ import {spawnSync} from "node:child_process";
 import test from "node:test";
 
 const root = resolve(import.meta.dirname, "..");
-const devvit = realpathSync(join(root, "packages/reddit-app/node_modules/devvit"));
+const devvit = realpathSync(join(root, "platforms/web/reddit/node_modules/devvit"));
 const cli = createRequire(join(dirname(devvit), "@devvit/cli/package.json"));
 const bracesEntry = createRequire(cli.resolve("chokidar")).resolve("braces");
 
@@ -74,7 +74,7 @@ test("ordinary glob compilation, ranges and escaping retain their behavior", () 
 
 test("the audit exception is bound to the installed backport and required gate", () => {
   const config = readFileSync(join(root, "pnpm-workspace.yaml"), "utf8");
-  const patch = readFileSync(join(root, "patches/braces@3.0.3.patch"), "utf8");
+  const patch = readFileSync(join(root, "config/security-patches/braces@3.0.3.patch"), "utf8");
   const manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
   assert.match(config, /braces@3\.0\.3: patches\/braces@3\.0\.3\.patch/u);
   assert.match(config, /GHSA-vfj7-8cjw-p6xm/u);

@@ -13,7 +13,7 @@ import {emptyRaceMatchProfile} from "../../race/raceMatchPerformance";
 import {parseRaceMatchOffer} from "../../race/raceMatchOfferRecord";
 import {readRaceMatchOffer} from "../../race/raceMatchOffer";
 import {parseRunRecord} from "../../race/raceSetupService";
-import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebook/facebookReferrals";
+import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../../../platforms/web/facebook/server/facebookReferrals";
 
 /** Independent demo-project database; these tests never contact production. */
 let db: FirebaseFirestore.Firestore;

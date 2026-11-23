@@ -85,7 +85,7 @@ jobs:
             build-html5.sha256
             build-html5.zip.source.json
             builds/
-            packages/reddit-app/dist/
+            platforms/web/reddit/dist/
 
   youtube:
     name: Verify and package the YouTube Playable

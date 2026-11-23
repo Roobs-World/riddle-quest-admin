@@ -11,19 +11,37 @@
     "noUncheckedSideEffectImports": true,
     "noUnusedLocals": true,
     "outDir": "lib",
-    "rootDir": "src",
+    "rootDir": ".build-source",
     "paths": {
-      "@riddle-quest/core": ["../packages/core/dist/index.d.ts"],
-      "@riddle-quest/core/game": ["../packages/core/dist/game/index.d.ts"],
-      "@riddle-quest/core/race": ["../packages/core/dist/race/index.d.ts"],
-      "@riddle-quest/core/pricing/facebookCatalog": ["../packages/core/dist/pricing/facebookCatalog.d.ts"],
-      "@riddle-quest/core/validation": ["../packages/core/dist/validation/index.d.ts"],
-      "@riddle-quest/core/validation/*": ["../packages/core/dist/validation/*"]
+      "@riddle-quest/core": [
+        "../packages/core/dist/index.d.ts"
+      ],
+      "@riddle-quest/core/game": [
+        "../packages/core/dist/game/index.d.ts"
+      ],
+      "@riddle-quest/core/race": [
+        "../packages/core/dist/race/index.d.ts"
+      ],
+      "@riddle-quest/core/pricing/facebookCatalog": [
+        "../packages/core/dist/pricing/facebookCatalog.d.ts"
+      ],
+      "@riddle-quest/core/validation": [
+        "../packages/core/dist/validation/index.d.ts"
+      ],
+      "@riddle-quest/core/validation/*": [
+        "../packages/core/dist/validation/*"
+      ]
     },
     "sourceMap": true,
     "strict": true,
-    "lib": ["esnext", "dom"],
-    "types": ["node", "jest"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "node",
+      "jest"
+    ],
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -32,6 +50,17 @@
     "noEmit": false
   },
   "compileOnSave": true,
-  "include": ["src/**/*.ts", "src/**/*.js", "jest.config.js"],
-  "exclude": ["node_modules", "lib", "src/__tests__", "src/__mocks__", "**/*.bak", "**/*.skip"]
+  "include": [
+    ".build-source/firebase-functions/src/**/*.ts",
+    ".build-source/firebase-functions/src/**/*.js",
+    ".build-source/platforms/**/server/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "**/__tests__/**",
+    "**/__mocks__/**",
+    "**/*.bak",
+    "**/*.skip"
+  ]
 }

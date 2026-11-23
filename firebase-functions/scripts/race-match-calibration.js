@@ -28,7 +28,7 @@ function parseOptions(args) {
 /** Only aggregate output is printed; this command has no production mutation path. */
 async function main(args = process.argv.slice(2)) {
   const options = parseOptions(args);
-  const {summarizeRaceMatches, compareRacePolicies, raceMatchMeasurement} = require("../lib/race/raceMatchCalibration");
+  const {summarizeRaceMatches, compareRacePolicies, raceMatchMeasurement} = require("../lib/firebase-functions/src/race/raceMatchCalibration");
   let report;
   if (options.input) {
     const {readFile, stat} = require("node:fs/promises");

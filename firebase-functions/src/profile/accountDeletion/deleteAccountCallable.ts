@@ -5,10 +5,10 @@ import {captureException} from "../../shared/sentry";
 import {getSafeErrorMetadata} from "../../shared/errorMetadata";
 import {deleteAccountForUser} from "./deleteAccountData";
 import {onCallWithSentry} from "../../shared/sentryHandlers";
-import {isJestAccountDeletionBusyError} from "../../jest/jestAccountDeletion";
-import {isJestFirebaseUid, jestFirebaseUid} from "../../jest/jestSecurity";
-import {isFacebookFirebaseUid} from "../../facebook/facebookSecurity";
-import {deleteFacebookAccountGeneration} from "../../facebook/facebookAccountDeletion";
+import {isJestAccountDeletionBusyError} from "../../shared/accountDeletion";
+import {isJestFirebaseUid, jestFirebaseUid} from "../../../../platforms/web/jest/server/jestSecurity";
+import {isFacebookFirebaseUid} from "../../../../platforms/web/facebook/server/facebookSecurity";
+import {deleteFacebookAccountGeneration} from "../../../../platforms/web/facebook/server/facebookAccountDeletion";
 import {defineSecret} from "firebase-functions/params";
 
 /** Provides facebook uid secret behavior. */

@@ -55,7 +55,7 @@ async function invoke(args, options = {}) {
         };
       if (name === "firebase-admin/firestore") return {getFirestore: () => ({})};
       if (name === "firebase-admin/database") return {getDatabase: () => ({})};
-      if (name === "../lib/presence/presenceVisibilityReconciliation.js")
+      if (name === "../lib/firebase-functions/src/presence/presenceVisibilityReconciliation.js")
         return {
           reconcilePresenceVisibilityPage: async (pairs, _db, _database, apply) => {
             calls.push(["page", JSON.parse(JSON.stringify(pairs)), apply]);

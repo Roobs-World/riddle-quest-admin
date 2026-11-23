@@ -1,11 +1,11 @@
-import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
+import {androidReferralPlayPatch} from "../../../platforms/native/android/server/androidReferralIdentity";
 import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
-import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
+import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
   type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";
 import {liveOperationAtMs, liveRaceSearchEndsAtMs, liveRun, liveView, type LiveMatch, type LiveTicket} from "./raceLiveState";

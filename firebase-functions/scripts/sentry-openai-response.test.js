@@ -10,7 +10,7 @@ test('configured Sentry preserves structured OpenAI response body consumption', 
     Sentry.init = options => originalInit({...options, transport: () => ({
       send: async () => ({statusCode: 200}), flush: async () => true,
     })});
-    const {withSentrySpan} = require('./lib/shared/sentry');
+    const {withSentrySpan} = require('./lib/firebase-functions/src/shared/sentry');
     const OpenAI = require('openai').default;
     const {zodTextFormat} = require('openai/helpers/zod');
     const {z} = require('zod');

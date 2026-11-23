@@ -3,7 +3,7 @@ import {readFile} from "node:fs/promises";
 import test from "node:test";
 
 const root = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-const portal = JSON.parse(await readFile(new URL("../../packages/portal/package.json", import.meta.url), "utf8"));
+const portal = JSON.parse(await readFile(new URL("../../packages/web-game/package.json", import.meta.url), "utf8"));
 const functions = JSON.parse(await readFile(new URL("../../firebase-functions/package.json", import.meta.url), "utf8"));
 
 test("production verification uses the canonical release E2E gate without downgrading content to a fixture", () => {
@@ -50,7 +50,7 @@ test("Jest and Facebook readiness preserves parked targets while bounding its ru
   assert.match(workflow, /pnpm test:e2e:jest-facebook/u);
   assert.doesNotMatch(workflow, /JEST_FACEBOOK_BROWSER_SHARD|matrix\.shard/u);
   assert.match(workflow, /needs: \[workspace-node24, functions-node22\]/u);
-  assert.match(workflow, /run: node packages\/portal\/scripts\/prepare-facebook-draft\.mjs/u);
+  assert.match(workflow, /run: node platforms\/web\/facebook\/scripts\/prepare-facebook-draft\.mjs/u);
   assert.doesNotMatch(workflow, /run: pnpm --filter @riddle-quest\/portal preflight:facebook-upload/u);
   assert.ok(workflow.includes("group: production-readiness-${{ github.workflow }}-${{ github.ref }}"));
   assert.match(workflow, /DEVELOPMENT_TARGETS: '\["jest","facebook"\]'/u);

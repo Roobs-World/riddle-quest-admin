@@ -334,100 +334,6 @@ importers:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
 
-  packages/android:
-    dependencies:
-      '@react-native-async-storage/async-storage':
-        specifier: 3.1.1
-        version: 3.1.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
-      '@riddle-quest/core':
-        specifier: workspace:*
-        version: link:../core
-      '@riddle-quest/hosted':
-        specifier: workspace:*
-        version: link:../hosted
-      '@riddle-quest/solo':
-        specifier: workspace:*
-        version: link:../solo
-      firebase:
-        specifier: ^13.4.0
-        version: 13.4.0(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
-      react:
-        specifier: 19.3.1
-        version: 19.3.1
-      react-native:
-        specifier: 0.88.1
-        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
-      react-native-safe-area-context:
-        specifier: 5.11.1
-        version: 5.11.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
-    devDependencies:
-      '@babel/core':
-        specifier: ^7.29.13
-        version: 7.29.13(supports-color@8.1.1)
-      '@babel/plugin-transform-export-namespace-from':
-        specifier: 7.29.15
-        version: 7.29.15(@babel/core@7.29.13(supports-color@8.1.1))
-      '@babel/preset-env':
-        specifier: ^7.29.14
-        version: 7.29.14(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
-      '@babel/runtime':
-        specifier: ^7.29.15
-        version: 7.29.15
-      '@jest/globals':
-        specifier: 30.5.2
-        version: 30.5.2(supports-color@8.1.1)
-      '@react-native-community/cli':
-        specifier: 20.2.0
-        version: 20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1)
-      '@react-native-community/cli-platform-android':
-        specifier: 20.2.0
-        version: 20.2.0
-      '@react-native/babel-preset':
-        specifier: 0.88.1
-        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
-      '@react-native/codegen':
-        specifier: 0.88.1
-        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))
-      '@react-native/gradle-plugin':
-        specifier: 0.88.1
-        version: 0.88.1
-      '@react-native/jest-preset':
-        specifier: 0.88.1
-        version: 0.88.1(react@19.3.1)(supports-color@8.1.1)
-      '@react-native/metro-config':
-        specifier: 0.88.1
-        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
-      '@react-native/typescript-config':
-        specifier: 0.88.1
-        version: 0.88.1
-      '@testing-library/react-native':
-        specifier: 14.1.0
-        version: 14.1.0(jest@30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2)))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)(test-renderer@1.3.1(@types/react@19.3.0)(react@19.3.1))
-      '@types/jest':
-        specifier: 30.0.0
-        version: 30.0.0
-      '@types/react':
-        specifier: ~19.3.0
-        version: 19.3.0
-      '@typescript/native':
-        specifier: npm:typescript@7.0.2
-        version: typescript@7.0.2
-      cross-env:
-        specifier: 10.1.0
-        version: 10.1.0
-      hermes-compiler:
-        specifier: 260318099.0.5
-        version: 260318099.0.5
-      jest:
-        specifier: 30.5.2
-        version: 30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2))
-      test-renderer:
-        specifier: ^1.3.1
-        version: 1.3.1(@types/react@19.3.0)(react@19.3.1)
-      typescript:
-        specifier: npm:@typescript/typescript6@6.0.2
-        version: '@typescript/typescript6@6.0.2'
-
   packages/core:
     dependencies:
       zod:
@@ -490,7 +396,44 @@ importers:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
 
-  packages/portal:
+  packages/solo:
+    dependencies:
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@jest/globals':
+        specifier: 30.5.2
+        version: 30.5.2(supports-color@8.1.1)
+      '@types/jest':
+        specifier: 30.0.0
+        version: 30.0.0
+      '@types/node':
+        specifier: 26.6.6
+        version: 26.6.6
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@typescript/native':
+        specifier: npm:typescript@7.0.2
+        version: typescript@7.0.2
+      cross-env:
+        specifier: 10.1.0
+        version: 10.1.0
+      jest:
+        specifier: 30.5.2
+        version: 30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2))
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      ts-jest:
+        specifier: 29.4.15
+        version: 29.4.15(@babel/core@7.29.13(supports-color@8.1.1))(@jest/transform@30.5.2(supports-color@8.1.1))(@jest/types@30.5.1)(@typescript/typescript6@6.0.2)(babel-jest@30.5.2(supports-color@8.1.1))(esbuild@0.25.9)(jest-util@30.5.1)(jest@30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2)))
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+
+  packages/web-game:
     dependencies:
       '@riddle-quest/core':
         specifier: workspace:*
@@ -605,8 +548,274 @@ importers:
         specifier: 26.11.20
         version: 26.11.20
 
-  packages/reddit-app:
+  platforms/native/android:
     dependencies:
+      '@react-native-async-storage/async-storage':
+        specifier: 3.1.1
+        version: 3.1.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      firebase:
+        specifier: ^13.4.0
+        version: 13.4.0(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-native:
+        specifier: 0.88.1
+        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react-native-safe-area-context:
+        specifier: 5.11.1
+        version: 5.11.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.29.13
+        version: 7.29.13(supports-color@8.1.1)
+      '@babel/plugin-transform-export-namespace-from':
+        specifier: 7.29.15
+        version: 7.29.15(@babel/core@7.29.13(supports-color@8.1.1))
+      '@babel/preset-env':
+        specifier: ^7.29.14
+        version: 7.29.14(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
+      '@babel/runtime':
+        specifier: ^7.29.15
+        version: 7.29.15
+      '@jest/globals':
+        specifier: 30.5.2
+        version: 30.5.2(supports-color@8.1.1)
+      '@react-native-community/cli':
+        specifier: 20.2.0
+        version: 20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1)
+      '@react-native-community/cli-platform-android':
+        specifier: 20.2.0
+        version: 20.2.0
+      '@react-native/babel-preset':
+        specifier: 0.88.1
+        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
+      '@react-native/codegen':
+        specifier: 0.88.1
+        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))
+      '@react-native/gradle-plugin':
+        specifier: 0.88.1
+        version: 0.88.1
+      '@react-native/jest-preset':
+        specifier: 0.88.1
+        version: 0.88.1(react@19.3.1)(supports-color@8.1.1)
+      '@react-native/metro-config':
+        specifier: 0.88.1
+        version: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
+      '@react-native/typescript-config':
+        specifier: 0.88.1
+        version: 0.88.1
+      '@testing-library/react-native':
+        specifier: 14.1.0
+        version: 14.1.0(jest@30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2)))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native-community/cli@20.2.0(@typescript/typescript6@6.0.2)(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1))(react@19.3.1)(test-renderer@1.3.1(@types/react@19.3.0)(react@19.3.1))
+      '@types/jest':
+        specifier: 30.0.0
+        version: 30.0.0
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@typescript/native':
+        specifier: npm:typescript@7.0.2
+        version: typescript@7.0.2
+      cross-env:
+        specifier: 10.1.0
+        version: 10.1.0
+      hermes-compiler:
+        specifier: 260318099.0.5
+        version: 260318099.0.5
+      jest:
+        specifier: 30.5.2
+        version: 30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2))
+      test-renderer:
+        specifier: ^1.3.1
+        version: 1.3.1(@types/react@19.3.0)(react@19.3.1)
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+
+  platforms/web/facebook:
+    dependencies:
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      firebase:
+        specifier: ^13.4.0
+        version: 13.4.0(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@jest/globals':
+        specifier: 30.5.2
+        version: 30.5.2(supports-color@8.1.1)
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+
+  platforms/web/gamesnacks:
+    dependencies:
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+
+  platforms/web/jest:
+    dependencies:
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      firebase:
+        specifier: ^13.4.0
+        version: 13.4.0(@types/react@19.3.0)(react@19.3.1)(supports-color@8.1.1)
+      html2canvas-pro:
+        specifier: 2.6.4
+        version: 2.6.4
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@jest-com/types':
+        specifier: 1.261111.3
+        version: 1.261111.3
+      '@jest/globals':
+        specifier: 30.5.2
+        version: 30.5.2(supports-color@8.1.1)
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
+      '@rolldown/plugin-babel':
+        specifier: 0.3.1
+        version: 0.3.1(@babel/core@7.29.13(supports-color@8.1.1))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8)
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: ^6.3.0
+        version: 6.3.0(@rolldown/plugin-babel@0.3.1(@babel/core@7.29.13(supports-color@8.1.1))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8))(babel-plugin-react-compiler@1.0.0)(vite@8.3.8)
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+
+  platforms/web/netflix:
+    dependencies:
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+
+  platforms/web/reddit:
+    dependencies:
+      '@devvit/client':
+        specifier: 0.15.4
+        version: 0.15.4(twirp-ts@2.5.0)
+      '@devvit/payments':
+        specifier: 0.15.4
+        version: 0.15.4(twirp-ts@2.5.0)
       '@devvit/web':
         specifier: 0.15.4
         version: 0.15.4(twirp-ts@2.5.0)
@@ -615,13 +824,28 @@ importers:
         version: 2.1.11(hono@4.13.19)
       '@riddle-quest/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
       devvit:
         specifier: 0.15.4
         version: 0.15.4(@devvit/server@0.15.4(twirp-ts@2.5.0))(@devvit/shared@0.15.4(twirp-ts@2.5.0))(@types/node@26.6.6)(@typescript/typescript6@6.0.2)(supports-color@8.1.1)
       hono:
         specifier: 4.13.19
         version: 4.13.19
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@devvit/server':
         specifier: 0.15.4
@@ -629,9 +853,21 @@ importers:
       '@devvit/shared':
         specifier: 0.15.4
         version: 0.15.4(twirp-ts@2.5.0)
+      '@jest/globals':
+        specifier: 30.5.2
+        version: 30.5.2(supports-color@8.1.1)
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
       '@types/node':
         specifier: ^26.6.6
         version: 26.6.6
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
       chrome-launcher:
         specifier: 1.2.3
         version: 1.2.3(supports-color@8.1.1)
@@ -648,42 +884,79 @@ importers:
         specifier: 8.3.8
         version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
 
-  packages/solo:
+  platforms/web/yahoo:
     dependencies:
       '@riddle-quest/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@types/react':
+        specifier: ~19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: npm:@typescript/typescript6@6.0.2
+        version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+
+  platforms/web/youtube:
+    dependencies:
+      '@riddle-quest/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@riddle-quest/hosted':
+        specifier: workspace:*
+        version: link:../../../packages/hosted
+      '@riddle-quest/portal':
+        specifier: workspace:*
+        version: link:../../../packages/web-game
+      '@riddle-quest/solo':
+        specifier: workspace:*
+        version: link:../../../packages/solo
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/jest':
-        specifier: 30.0.0
-        version: 30.0.0
-      '@types/node':
-        specifier: 26.6.6
-        version: 26.6.6
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
       '@types/react':
         specifier: ~19.3.0
         version: 19.3.0
-      '@typescript/native':
-        specifier: npm:typescript@7.0.2
-        version: typescript@7.0.2
-      cross-env:
-        specifier: 10.1.0
-        version: 10.1.0
-      jest:
-        specifier: 30.5.2
-        version: 30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2))
-      react:
-        specifier: 19.3.1
-        version: 19.3.1
-      ts-jest:
-        specifier: 29.4.15
-        version: 29.4.15(@babel/core@7.29.13(supports-color@8.1.1))(@jest/transform@30.5.2(supports-color@8.1.1))(@jest/types@30.5.1)(@typescript/typescript6@6.0.2)(babel-jest@30.5.2(supports-color@8.1.1))(esbuild@0.25.9)(jest-util@30.5.1)(jest@30.5.2(@types/node@26.6.6)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@26.6.6)(@typescript/typescript6@6.0.2)))
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: ^8.3.8
+        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
 
 packages:
 
@@ -12119,6 +12392,17 @@ snapshots:
   '@rolldown/binding-win32-x64-msvc@1.2.19':
     optional: true
 
+  '@rolldown/plugin-babel@0.3.1(@babel/core@7.29.13(supports-color@8.1.1))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8)':
+    dependencies:
+      '@babel/core': 7.29.13(supports-color@8.1.1)
+      artichokie: 0.4.5
+      picomatch: 4.0.7
+      rolldown: 1.2.19
+    optionalDependencies:
+      '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1)
+      '@babel/runtime': 8.1.3
+      vite: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+
   '@rolldown/plugin-babel@0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8)':
     dependencies:
       '@babel/core': 8.1.3
@@ -12688,6 +12972,14 @@ snapshots:
       - crossws
       - ocache
       - srvx
+
+  '@vitejs/plugin-react@6.3.0(@rolldown/plugin-babel@0.3.1(@babel/core@7.29.13(supports-color@8.1.1))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8))(babel-plugin-react-compiler@1.0.0)(vite@8.3.8)':
+    dependencies:
+      '@rolldown/pluginutils': 1.1.1
+      vite: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
+    optionalDependencies:
+      '@rolldown/plugin-babel': 0.3.1(@babel/core@7.29.13(supports-color@8.1.1))(@babel/plugin-transform-runtime@7.29.7(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8)
+      babel-plugin-react-compiler: 1.0.0
 
   '@vitejs/plugin-react@6.3.0(@rolldown/plugin-babel@0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8))(babel-plugin-react-compiler@1.0.0)(vite@8.3.8)':
     dependencies:

@@ -1,0 +1,21 @@
+{
+  "target": "miro",
+  "title": "Miro Marketplace review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:miro",
+  "summary": "Create an ad-free neutral hosted-web archive for Miro team-building integration planning.",
+  "externalEffect": "None; app creation, collaboration design, SDK integration, beta adoption and review remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "miro"
+    ]
+  },
+  "handoff": "Design a real facilitator and board-result flow before recruiting the beta organizations required for review.",
+  "runbook": "docs/research/additional-release-targets-round-8-2026-09-21.md",
+  "displayName": "Miro Marketplace",
+  "delivery": "neutral-html5",
+  "artifact": "build-miro-marketplace-review.zip",
+  "releaseGate": "Miro app creation, collaborative-flow design, SDK integration, beta adoption, Marketplace review and publication remain manual."
+}

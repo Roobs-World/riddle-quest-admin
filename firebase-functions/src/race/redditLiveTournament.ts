@@ -1,7 +1,0 @@
-import {readProviderLiveTournamentRun} from "./raceLiveTournament";
-
-/** Reddit official scores resolve only owned Reddit live victories. */
-export function readRedditLiveTournamentRun(transaction: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,
-  userId: string, ticketId: string) {
-  return readProviderLiveTournamentRun(transaction, db, userId, ticketId, "reddit");
-}

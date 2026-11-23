@@ -1,4 +1,4 @@
-import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
+import {androidReferralPlayPatch} from "../../../platforms/native/android/server/androidReferralIdentity";
 import {normalizeEconomyDifficulty} from "@riddle-quest/core/game";
 import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 import {coerceToDate} from "../daily/dailyStreak";

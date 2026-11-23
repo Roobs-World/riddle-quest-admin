@@ -6,7 +6,7 @@ For first-time app/community provisioning, secrets, a non-promotable private
 playtest, and the sandbox Firebase deployment, run the resumable guarded wizard:
 
 ```bash
-./scripts/setup-reddit-games.sh
+./platforms/web/reddit/scripts/setup-reddit-games.sh
 ```
 
 It requires confirmation before external mutations and never writes either Reddit

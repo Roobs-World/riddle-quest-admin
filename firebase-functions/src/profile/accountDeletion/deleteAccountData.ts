@@ -1,15 +1,15 @@
-import {deleteAndroidReferralData} from "../../android/androidReferralDeletion";
-import {anonymizeFacebookPaymentTokens} from "../../facebook/facebookPaymentDeletion";
-import {anonymizeAndroidPurchaseGrants} from "../../android/androidPurchaseDeletion";
+import {deleteAndroidReferralData} from "../../../../platforms/native/android/server/androidReferralDeletion";
+import {anonymizeFacebookPaymentTokens} from "../../../../platforms/web/facebook/server/facebookPaymentDeletion";
+import {anonymizeAndroidPurchaseGrants} from "../../../../platforms/native/android/server/androidPurchaseDeletion";
 import {admin} from "../../shared/firebaseAdmin";
-import {createJestPurchaseGrantId} from "../../jest/jestPurchaseReceipts";
-import {createJestReferralVerificationId} from "../../jest/jestReferralReceipts";
-import {recordJestAccountDeletion} from "../../jest/jestAccountDeletion";
-import {isJestFirebaseUid} from "../../jest/jestSecurity";
+import {createJestPurchaseGrantId} from "../../../../platforms/web/jest/server/jestPurchaseReceipts";
+import {createJestReferralVerificationId} from "../../../../platforms/web/jest/server/jestReferralReceipts";
+import {recordJestAccountDeletion} from "../../../../platforms/web/jest/server/jestAccountDeletion";
+import {isJestFirebaseUid} from "../../../../platforms/web/jest/server/jestSecurity";
 import {hashRaceCohortUser} from "../../race/raceRollout";
 import {deleteUsernameReservationAndProfiles} from "../usernameReservations";
 import {deletePresenceForUser} from "../../presence/presenceVisibility";
-import {removeUserFromFacebookContextCompetitions} from "../../race/facebookContextService";
+import {removeUserFromFacebookContextCompetitions} from "../../../../platforms/web/facebook/server/race/facebookContextService";
 import {
   deleteMatchingCollectionGroupDocuments,
   deleteMatchingDocuments,

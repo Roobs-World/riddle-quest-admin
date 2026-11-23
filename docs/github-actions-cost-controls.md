@@ -10,7 +10,7 @@ An account-wide scan of 27 accessible owned repositories found about 2,952 runne
 
 The primary causes were:
 
-- Older workflow versions ran full verification on every branch push. Android pushes alone caused 58 retained runs. The default `main` branch still carries this older automatic definition.
+- Older workflow versions ran full verification on every branch push. Android pushes alone caused 58 retained runs. At the time of that measurement, `main` still carried the older automatic definition; the consolidated `main` now contains the manual-only controls below.
 - The newer Jest workflow used the commit SHA in its concurrency key. New pushes therefore did not cancel superseded push runs.
 - Four browser shards each ran common authentication, purchase recovery, retained race, Facebook, mobile soak and Firestore rules checks. Only the dedicated browser command list actually used the shard selector.
 - Each shard's Facebook preflight rebuilt the target and repeated the Facebook browser suite after that suite had already run.
@@ -40,7 +40,7 @@ GitHub's timing endpoint returned zero billable milliseconds for runs with subst
 
 ## Before deliberately using hosted runners again
 
-Keep repository Actions and its workflows disabled until a hosted run is explicitly requested. Before permanently enabling workflows, migrate or remove the automatic workflow definitions on `main` and stale branches. A corrected file on `jest` does not protect other refs that still contain automatic triggers.
+Keep repository Actions and its workflows disabled until a hosted run is explicitly requested. Before permanently enabling workflows, migrate or remove automatic workflow definitions on stale branches. The corrected files on `main` and `jest` do not protect other refs that still contain automatic triggers.
 
 For an authorized hosted run, review the selected workflow's maximum runner time, use the `jest` branch and explicitly confirm allowance usage. Keep local verification as the default. Enabling a workflow or launching it is not part of an ordinary push.
 

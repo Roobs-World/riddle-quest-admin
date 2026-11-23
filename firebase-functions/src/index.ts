@@ -17,7 +17,7 @@ setGlobalOptions({minInstances: 0, preserveExternalChanges: true});
 if (getApps().length === 0) initializeApp();
 
 import {getHint, spendCoins, skipRiddle} from "./gameplay/gameLogic";
-import {grantFacebookRewardedContinue} from "./facebook/facebookRewardedContinueCallable";
+import {grantFacebookRewardedContinue} from "../../platforms/web/facebook/server/facebookRewardedContinueCallable";
 import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
 import {getClassicRiddleBuffer} from "./daily/classicRiddleBuffer";
 import {deleteAccount, syncJestAvatar, updateAvatar, updateUsername} from "./profile";
@@ -51,42 +51,42 @@ import {
   retryJestAccountDeletion,
   syncJestSubscriptions,
   verifyJestReferrals,
-} from "./jest/jestEndpoints";
-import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
-import {grantFacebookPurchase, facebookPaymentWebhook} from "./facebook/facebookPayments";
-import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "./android/androidReferralCallables";
-import {deliverAndroidReferralPlay} from "./android/androidReferralDelivery";
-import {setAndroidPushSubscription, sendAndroidDailyReminders} from "./android/androidNotifications";
-import {provisionAndroidAccount} from "./android/provisionAndroidAccount";
-import {grantAndroidPurchase, syncAndroidSubscriptions} from "./android/androidPurchaseEndpoints";
-import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "./android/androidAttestation";
-import {facebookDataDeletionCallback, facebookDataDeletionStatus} from "./facebook/facebookDataDeletionEndpoints";
-import {listFacebookTournament, recordFacebookTournament} from "./race/facebookTournamentCallable";
+} from "../../platforms/web/jest/server/jestEndpoints";
+import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "../../platforms/web/facebook/server/facebookEndpoints";
+import {grantFacebookPurchase, facebookPaymentWebhook} from "../../platforms/web/facebook/server/facebookPayments";
+import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "../../platforms/native/android/server/androidReferralCallables";
+import {deliverAndroidReferralPlay} from "../../platforms/native/android/server/androidReferralDelivery";
+import {setAndroidPushSubscription, sendAndroidDailyReminders} from "../../platforms/native/android/server/androidNotifications";
+import {provisionAndroidAccount} from "../../platforms/native/android/server/provisionAndroidAccount";
+import {grantAndroidPurchase, syncAndroidSubscriptions} from "../../platforms/native/android/server/androidPurchaseEndpoints";
+import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "../../platforms/native/android/server/androidAttestation";
+import {facebookDataDeletionCallback, facebookDataDeletionStatus} from "../../platforms/web/facebook/server/facebookDataDeletionEndpoints";
+import {listFacebookTournament, recordFacebookTournament} from "../../platforms/web/facebook/server/race/facebookTournamentCallable";
 import {blockRival, reportRival} from "./social/socialSafetyCallables";
 import {aggregatePresenceStatus} from "./presence/presenceAggregation";
 import {setPresenceConsent} from "./presence/presenceConsentCallable";
-import {bindFacebookReferral, createFacebookReferral} from "./facebook/facebookReferralCallables";
+import {bindFacebookReferral, createFacebookReferral} from "../../platforms/web/facebook/server/facebookReferralCallables";
 import {syncBlockedRivalPresenceVisibility, syncKnownRivalPresenceVisibility} from "./presence/presenceVisibility";
 import {
   joinFacebookContext,
   leaveFacebookContext,
   listFacebookContextBoard,
   recordFacebookContextRun,
-} from "./race/facebookContextCallables";
-import {getFacebookClientConfiguration} from "./facebook/facebookClientConfigurationCallable";
+} from "../../platforms/web/facebook/server/race/facebookContextCallables";
+import {getFacebookClientConfiguration} from "../../platforms/web/facebook/server/facebookClientConfigurationCallable";
 import {
   acceptFacebookNotificationPermissionPrompt,
   claimFacebookNotificationPermissionPrompt,
-} from "./facebook/facebookNotificationPromptCallables";
-import {deleteRedditAccount, exchangeRedditIdentity} from "./reddit/redditEndpoints";
-import {redditStorage} from "./reddit/redditStorageEndpoint";
-import {redditGameplay} from "./reddit/redditGameplayEndpoint";
-import {yahooOAuthCallback, yahooOAuthStart} from "./yahoo/yahooOAuthEndpoints";
+} from "../../platforms/web/facebook/server/facebookNotificationPromptCallables";
+import {deleteRedditAccount, exchangeRedditIdentity} from "../../platforms/web/reddit/server/redditEndpoints";
+import {redditStorage} from "../../platforms/web/reddit/server/redditStorageEndpoint";
+import {redditGameplay} from "../../platforms/web/reddit/server/redditGameplayEndpoint";
+import {yahooOAuthCallback, yahooOAuthStart} from "../../platforms/web/yahoo/server/yahooOAuthEndpoints";
 import {
   confirmYahooStripeCheckout,
   createYahooStripeCheckout,
   yahooStripeWebhook,
-} from "./yahoo/yahooStripeEndpoints";
+} from "../../platforms/web/yahoo/server/yahooStripeEndpoints";
 export {
   spendCoins,
   grantFacebookRewardedContinue,

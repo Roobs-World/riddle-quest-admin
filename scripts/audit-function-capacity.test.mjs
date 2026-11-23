@@ -6,7 +6,7 @@ import {builtFunctionCapacityFailures} from "./audit-function-capacity.mjs";
 const require = createRequire(new URL("../firebase-functions/package.json", import.meta.url));
 const {RESET_VALUE} = require("firebase-functions/v2/options");
 const {onCall} = require("firebase-functions/v2/https");
-const deployed = require("./lib/index.js");
+const deployed = require("./lib/firebase-functions/src/index.js");
 
 test("actual built functions keep zero warm instances and omit unspecified maximums", () => {
   const endpoints = Object.values(deployed).filter(handler => handler.__endpoint);

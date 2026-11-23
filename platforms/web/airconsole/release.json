@@ -1,0 +1,21 @@
+{
+  "target": "airconsole",
+  "title": "AirConsole review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:airconsole",
+  "summary": "Create a neutral HTML5 archive for AirConsole controller, SDK and performance planning.",
+  "externalEffect": "None; game creation, controller implementation, upload, review and release remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "airconsole"
+    ]
+  },
+  "handoff": "Create the game ID and design the phone controller before building the isolated two-page artifact.",
+  "runbook": "docs/research/additional-release-targets-round-5-2026-09-21.md",
+  "displayName": "AirConsole",
+  "delivery": "neutral-html5",
+  "artifact": "build-airconsole-review.zip",
+  "releaseGate": "AirConsole game creation, controller design, SDK integration, upload, review and approval remain manual."
+}

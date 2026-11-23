@@ -12,12 +12,12 @@ export async function auditPlatformMonetization() {
   const [policySource, jestPurchases, facebookEntry, facebookBootstrap, facebookCommerce,
     redditConfigSource, redditProductsSource, redditClient, youtubeAudit, standaloneAudit, yahooEntry] = await Promise.all([
     read("config/platform-monetization.json"),
-    read("packages/portal/src/jest/purchases.ts"), read("packages/portal/src/facebook/FacebookPlatformEntry.tsx"),
-    read("packages/portal/src/facebook/FacebookPlatformBootstrap.ts"),
-    read("packages/portal/src/facebook/FacebookCommerceCapability.ts"), read("packages/reddit-app/devvit.json"),
-    read("packages/reddit-app/products.json"), read("packages/portal/src/reddit/RedditPlatformBootstrap.ts"),
-    read("packages/portal/scripts/audit-youtube-artifact.mjs"),
-    read("packages/portal/scripts/audit-standalone-artifact.mjs"), read("packages/portal/targets/yahoo/index.html"),
+    read("platforms/web/jest/src/purchases.ts"), read("platforms/web/facebook/src/FacebookPlatformEntry.tsx"),
+    read("platforms/web/facebook/src/FacebookPlatformBootstrap.ts"),
+    read("platforms/web/facebook/src/FacebookCommerceCapability.ts"), read("platforms/web/reddit/devvit.json"),
+    read("platforms/web/reddit/products.json"), read("platforms/web/reddit/src/RedditPlatformBootstrap.ts"),
+    read("platforms/web/youtube/scripts/audit-youtube-artifact.mjs"),
+    read("packages/web-game/scripts/audit-standalone-artifact.mjs"), read("platforms/web/yahoo/index.html"),
   ]);
   const policy = JSON.parse(policySource);
   const failures = [];

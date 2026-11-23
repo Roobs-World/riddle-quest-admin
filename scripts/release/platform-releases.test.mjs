@@ -253,7 +253,7 @@ test("the combined release verifies once before running every adapter", async ()
 
 test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {
   const portalPackage = JSON.parse(await readFile(
-    new URL("../../packages/portal/package.json", import.meta.url),
+    new URL("../../packages/web-game/package.json", import.meta.url),
     "utf8",
   ));
   assert.equal(

@@ -110,11 +110,13 @@ has its OpenAI key; the wrapper has a scoped, expiring repair ticket. The runner
 returns a bounded UTF-8 source patch and summary to the service. The service
 rechecks authority and source, then creates GitHub blobs/tree/commit and a PR.
 
-Automatic patches are limited to 12 files and 256 KiB under `core`, `solo`,
-`hosted`, or `portal` package `src`, `test`, or `tests` directories and
-`firebase-functions/src`. Android, Reddit app and unknown packages are rejected.
+Automatic patches are limited to 12 files and 256 KiB under `packages/core`,
+`packages/solo`, `packages/hosted` or `packages/web-game` in their `src`, `test`
+or `tests` directories, shared `firebase-functions/src`, and
+`platforms/web/jest` or `platforms/web/facebook` in their `src`, `server` or
+`scripts` directories. Native and every other provider root are rejected.
 Deletions, symlinks, binary
-files, dot paths and nested agent instruction files are rejected. Repairs needing
+files, dot paths, package manifests and nested agent instruction files are rejected. Repairs needing
 other paths require manual work. The coding process cannot directly push or merge.
 A later poll automatically squash-merges the exact successful Production readiness
 PR head after fresh deployment/base checks. Production explicitly sets
@@ -135,11 +137,10 @@ security checks remain required; backend emulator coverage runs on Node 22.
 Android coverage thresholds and the default full-platform commands are unchanged,
 but parked client targets do not gate these web repairs.
 
-The scoped browser plan retains 140 audited checks in four disjoint shards.
-It excludes nine provider-only checks and selects the hosted/Facebook portions
-of mixed harnesses. The Jest account, purchase recovery, retained race, Facebook
-SDK, and mobile-soak suites remain required. Unknown command leaves fail closed
-until their scope is reviewed. `--dry-run` lists a shard without launching it:
+The scoped browser plan selects the hosted/Facebook portions of mixed harnesses
+and rejects unknown command leaves until their scope is reviewed. The manual
+readiness workflow runs the complete browser suite once, without a shard matrix.
+The plan command can still list one shard without launching it:
 
 ```sh
 pnpm --filter @riddle-quest/portal exec node scripts/run-jest-facebook-browser.mjs --shard 1/4 --dry-run
@@ -148,6 +149,19 @@ pnpm --filter @riddle-quest/portal exec node scripts/run-jest-facebook-browser.m
 Only the two production artifacts are built and passed to HTML validation.
 Changing this workflow does not change the worker's exact successful PR-head,
 current-deployment, base-SHA, ticket or merge-SHA checks.
+
+Repository Actions and workflows remain disabled unless a hosted run is explicitly
+authorized. Source workflows accept only manual dispatch with the runner-usage
+confirmation gate. The worker does not enable Actions or bypass required checks;
+automatic merging remains pending when matching successful PR-head evidence is
+unavailable. See [Actions cost controls](github-actions-cost-controls.md).
+
+The [platform source migration](platform-layout.md) changes source paths and the
+repair allowlist, not the deployed worker revision recorded above. Deploying those
+worker changes is a separate operation. `main` owns the integrated source, `sentry`
+carries the worker, and automated repairs retain the signed `jest` base. The repair
+agent follows `AGENTS.md`, including the requirement that tests and browser harnesses
+run only when explicitly requested.
 
 The service never deploys Functions, uploads or activates Jest, publishes the game,
 submits review, or marks Sentry issues resolved. Release operations remain separate.

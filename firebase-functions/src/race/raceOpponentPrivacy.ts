@@ -1,5 +1,5 @@
 import {admin} from "../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import type {RaceRunRecord} from "./raceEngine";
 import {stripUndefined, type Firestore} from "./raceSetupService";
 

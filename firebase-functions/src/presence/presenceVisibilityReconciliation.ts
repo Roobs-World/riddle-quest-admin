@@ -1,6 +1,6 @@
 import type {Database} from "firebase-admin/database";
 import type {Firestore} from "firebase-admin/firestore";
-import {getJestAccountDeletionRef, JEST_ACCOUNT_OPERATION_COLLECTION} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef, JEST_ACCOUNT_OPERATION_COLLECTION} from "../shared/accountDeletion";
 import {refreshPresenceVisibility} from "./presenceVisibility";
 
 /** Explicit operator inventory identifies scope, never authorization. */

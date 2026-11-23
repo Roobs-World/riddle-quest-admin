@@ -1,0 +1,18 @@
+{
+  "target": "netflix",
+  "title": "Netflix",
+  "boundary": "local-validated-artifact",
+  "publicCommand": "pnpm release:netflix",
+  "summary": "Build and audit the isolated Netflix candidate artifact.",
+  "externalEffect": "None until a Netflix partner upload command is configured.",
+  "command": {
+    "executable": "pnpm",
+    "args": [
+      "build:netflix"
+    ]
+  },
+  "handoff": "Use builds/netflix with the Netflix partner delivery tooling.",
+  "runbook": "docs/netflix-yahoo-candidate-builds.md",
+  "displayName": "Netflix",
+  "delivery": "web-target"
+}

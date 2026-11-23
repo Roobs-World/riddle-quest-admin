@@ -1,6 +1,6 @@
 // Real operation leases and permission delivery are exercised by emulator suites.
-jest.mock("../jest/jestAccountDeletion", () => ({
-  ...jest.requireActual("../jest/jestAccountDeletion"),
+jest.mock("../shared/accountDeletion", () => ({
+  ...jest.requireActual("../shared/accountDeletion"),
   runWithJestAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
     operation(),
 }));

@@ -17,7 +17,7 @@ A self-contained Web Target hosted by YouTube whose play state belongs only to t
 _Avoid_: YouTube app, YouTube account
 
 **Android App**:
-The bare React Native client in `packages/android` for Google Play. It shares server-issued Classic, Daily, Race to 10, profiles, achievements and confirmed economy with the hosted game through shared controllers. Native adapters provide storage, lifecycle, Google account linking, avatar selection, sharing, notifications and Play Billing. Google linking preserves the Firebase uid and is required before new paid checkouts and rewarded referrals; the backend verifies every purchase and conversion. The explicitly selected Offline Surface has separate local progress and non-purchasable currency. Android never imports another target's provider SDK, ads or analytics.
+The bare React Native client in `platforms/native/android` for Google Play. It shares server-issued Classic, Daily, Race to 10, profiles, achievements and confirmed economy with the hosted game through shared controllers. Native adapters provide storage, lifecycle, Google account linking, avatar selection, sharing, notifications and Play Billing. Google linking preserves the Firebase uid and is required before new paid checkouts and rewarded referrals; the backend verifies every purchase and conversion. The explicitly selected Offline Surface has separate local progress and non-purchasable currency. Android never imports another target's provider SDK, ads or analytics.
 _Avoid_: Mobile build, native port, Play version of the web game
 
 **Android Google identity**:

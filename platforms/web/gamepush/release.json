@@ -1,0 +1,21 @@
+{
+  "target": "gamepush",
+  "title": "GamePush Distribution review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:gamepush",
+  "summary": "Create a neutral HTML5 archive for GamePush contract and destination review.",
+  "externalEffect": "None; contracting, destination selection, SDK integration, moderation and syndication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "gamepush"
+    ]
+  },
+  "handoff": "Request the exact destination and opt-out list before implementing the isolated GamePush SDK adapter.",
+  "runbook": "docs/research/further-html5-release-targets-2026-09-21.md",
+  "displayName": "GamePush Distribution",
+  "delivery": "neutral-html5",
+  "artifact": "build-gamepush-review.zip",
+  "releaseGate": "GamePush contracting, destination selection, SDK integration, moderation and syndication remain manual."
+}

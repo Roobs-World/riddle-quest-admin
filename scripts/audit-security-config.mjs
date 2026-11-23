@@ -3,17 +3,17 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const portalTargetHtmlPaths = [
-  `${repositoryRoot}/packages/portal/targets/jest/index.html`,
-  `${repositoryRoot}/packages/portal/targets/facebook/index.html`,
-  `${repositoryRoot}/packages/portal/targets/reddit/index.html`,
-  `${repositoryRoot}/packages/portal/targets/reddit/reddit-inline.html`,
-  `${repositoryRoot}/packages/portal/targets/youtube/index.html`,
+  `${repositoryRoot}/platforms/web/jest/index.html`,
+  `${repositoryRoot}/platforms/web/facebook/index.html`,
+  `${repositoryRoot}/platforms/web/reddit/index.html`,
+  `${repositoryRoot}/platforms/web/reddit/reddit-inline.html`,
+  `${repositoryRoot}/platforms/web/youtube/index.html`,
 ];
 const portalTargetSourceEntryPaths = [
-  `${repositoryRoot}/packages/portal/src/jest/main.tsx`,
-  `${repositoryRoot}/packages/portal/src/facebook/main.tsx`,
-  `${repositoryRoot}/packages/portal/src/reddit/main.tsx`,
-  `${repositoryRoot}/packages/portal/src/youtube/main.tsx`,
+  `${repositoryRoot}/platforms/web/jest/src/main.tsx`,
+  `${repositoryRoot}/platforms/web/facebook/src/main.tsx`,
+  `${repositoryRoot}/platforms/web/reddit/src/main.tsx`,
+  `${repositoryRoot}/platforms/web/youtube/src/main.tsx`,
 ];
 
 const productionFiles = [];
@@ -29,13 +29,18 @@ const collectProductionFiles = (directory) => {
   }
 };
 
-collectProductionFiles(`${repositoryRoot}/packages/portal/src`);
+collectProductionFiles(`${repositoryRoot}/packages/web-game/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
+for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+  collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/src`);
+  if (existsSync(`${repositoryRoot}/platforms/web/${target}/server`)) collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/server`);
+}
+collectProductionFiles(`${repositoryRoot}/platforms/native/android/server`);
 productionFiles.push(...portalTargetHtmlPaths);
 
 /** Audits source text for network references that bypass encrypted transport. */
 export function hasPlaintextNetworkReference(path, source) {
-  if (path === "firebase-functions/src/android/playDeveloperApi.ts") {
+  if (path === "platforms/native/android/server/playDeveloperApi.ts") {
     // Google's runtime metadata token transport is fixed to this private endpoint.
     source = source.replace(/\bconst METADATA_TOKEN_URL\s*=\s*"http:\/\/metadata\.google\.internal\/computeMetadata\/v1\/instance\/service-accounts\/default\/token";/u, "");
   }
@@ -54,9 +59,9 @@ const plaintextNetworkReferences = productionFiles.flatMap((path) => {
     : [];
 });
 
-const portalEnvironmentDirectory = `${repositoryRoot}/config/vite/portal`;
+const portalEnvironmentDirectory = `${repositoryRoot}/platforms/web/jest`;
 const jestEnvironment = readFileSync(`${portalEnvironmentDirectory}/.env.jest`, "utf8");
-const legacyPortalEnvironmentFiles = readdirSync(`${repositoryRoot}/packages/portal`)
+const legacyPortalEnvironmentFiles = readdirSync(`${repositoryRoot}/packages/web-game`)
   .filter((name) => name === ".env" || name.startsWith(".env."));
 const jestBackendUrl = /^VITE_JEST_FUNCTIONS_BASE_URL=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
 const appCheckSiteKey = /^VITE_FIREBASE_APP_CHECK_SITE_KEY=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
@@ -82,17 +87,17 @@ const encryptedSentryDsn = (() => {
 })();
 
 const viteConfiguration = [
-  readFileSync(`${repositoryRoot}/packages/portal/vite.config.ts`, "utf8"),
-  readFileSync(`${repositoryRoot}/packages/portal/webTargetViteConfig.ts`, "utf8"),
+  readFileSync(`${repositoryRoot}/packages/web-game/vite.config.ts`, "utf8"),
+  readFileSync(`${repositoryRoot}/packages/web-game/webTargetViteConfig.ts`, "utf8"),
 ].join("\n");
 const portalTargetSourceEntries = portalTargetSourceEntryPaths
   .map((path) => readFileSync(path, "utf8"))
   .join("\n");
-const analyticsAdapterPath = `${repositoryRoot}/packages/portal/src/analytics/firebaseAnalytics.ts`;
-const browserSentry = readFileSync(`${repositoryRoot}/packages/portal/src/observability/sentry.ts`, "utf8");
+const analyticsAdapterPath = `${repositoryRoot}/packages/web-game/src/analytics/firebaseAnalytics.ts`;
+const browserSentry = readFileSync(`${repositoryRoot}/packages/web-game/src/observability/sentry.ts`, "utf8");
 const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
 const jestReleaseScript = readFileSync(
-  `${repositoryRoot}/packages/portal/scripts/release-jest-timestamped.mjs`,
+  `${repositoryRoot}/platforms/web/jest/scripts/release-jest-timestamped.mjs`,
   "utf8",
 );
 
@@ -105,9 +110,9 @@ const contentSecurityPolicy = headerValues.get("content-security-policy") ?? "";
 const requirements = [
   [legacyPortalEnvironmentFiles.length === 0,
     `Legacy portal-root environment files must be removed: ${legacyPortalEnvironmentFiles.join(", ")}`],
-  [/new URL\("\.\.\/\.\.\/config\/vite\/portal\/", import\.meta\.url\)/u.test(viteConfiguration) &&
-    /envDir:\s*portalEnvironmentDirectory/u.test(viteConfiguration),
-  "Vite must load browser configuration only from the dedicated repository-level env directory."],
+  [viteConfiguration.includes('new URL(`../../platforms/web/${profile.id}/`, import.meta.url)') &&
+    /envDir:\s*targetRoot/u.test(viteConfiguration),
+  "Vite must load browser configuration only from the selected platform directory."],
   [Number(/max-age=(\d+)/i.exec(hsts)?.[1] ?? 0) >= 31_536_000,
     "HSTS must remain enabled for at least one year."],
   [/\bincludesubdomains\b/i.test(hsts), "HSTS must cover subdomains."],
@@ -137,7 +142,7 @@ const requirements = [
   [/const jestBuildOutDir\s*=\s*environment\.JEST_BUILD_OUT_DIR\?\.trim\(\)\s*\|\|\s*canonicalBuildOutputDirectories\.jest/u
     .test(viteConfiguration) &&
     /jest:\s*jestBuildOutDir/u.test(viteConfiguration) &&
-    /const selectedBuildOutDir\s*=\s*buildOutputDirectories\[profile\.id\]/u.test(viteConfiguration) &&
+    /const selectedBuildOutDir\s*=\s*path\.resolve\(portalPackageDirectory, buildOutputDirectories\[profile\.id\]\)/u.test(viteConfiguration) &&
     viteConfiguration.includes("assets: `${selectedBuildOutDir}/**`") &&
     viteConfiguration.includes("filesToDeleteAfterUpload: `${selectedBuildOutDir}/**/*.map`") &&
     /JEST_BUILD_OUT_DIR:\s*releaseBuildDirectory/u.test(jestReleaseScript),

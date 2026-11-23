@@ -1,1 +1,3 @@
 /artifacts export-ignore
+
+config/security-patches/*.patch -whitespace

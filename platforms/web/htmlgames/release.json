@@ -1,0 +1,21 @@
+{
+  "target": "htmlgames",
+  "title": "HTMLGames.com pitch",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:htmlgames",
+  "summary": "Create a neutral HTML5 archive for the HTMLGames.com developer contact process.",
+  "externalEffect": "None; commercial review, file transfer and publication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "htmlgames"
+    ]
+  },
+  "handoff": "Use the official developer form and retain build-htmlgames-pitch.zip for requested delivery.",
+  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "displayName": "HTMLGames.com",
+  "delivery": "neutral-html5",
+  "artifact": "build-htmlgames-pitch.zip",
+  "releaseGate": "HTMLGames.com contact, commercial review and publication remain manual."
+}

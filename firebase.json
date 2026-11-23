@@ -19,7 +19,7 @@
     "rules": "firebase-functions/database.rules.json"
   },
   "hosting": {
-    "public": "packages/portal/dist-jest",
+    "public": "packages/web-game/dist-jest",
     "ignore": [
       "firebase.json",
       "**/.*",

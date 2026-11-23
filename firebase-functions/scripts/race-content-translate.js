@@ -15,26 +15,26 @@ const {
   generateRaceTranslationBundle,
   raceTranslationDraftHash,
   validateRaceTranslationCheckpoint,
-} = require("../lib/race/raceTranslationGenerator.js");
+} = require("../lib/firebase-functions/src/race/raceTranslationGenerator.js");
 const {
   RaceTranslationBundleSchema,
   createRaceTranslationPlan,
   playableTranslatedAnswerIssue,
-} = require("../lib/race/raceTranslationValidation.js");
+} = require("../lib/firebase-functions/src/race/raceTranslationValidation.js");
 
 const args = process.argv.slice(2);
 const option = (name) => {
   const index = args.indexOf(name);
   return index >= 0 ? args[index + 1] : undefined;
 };
-const {RIDDLE_GENERATION_MODEL} = require("../lib/riddles/openaiService.js");
+const {RIDDLE_GENERATION_MODEL} = require("../lib/firebase-functions/src/riddles/openaiService.js");
 const translatorModel = RIDDLE_GENERATION_MODEL;
 const criticModel = option("--critic-model");
 const sourcePath = path.resolve(option("--source") || "content/race-en-reviewed-v2.json");
 const outputDirectory = path.resolve(option("--output-dir") || "content/race-translations");
 const requestedLocales = (option("--locales") || RACE_SUPPORTED_LOCALES.filter((locale) => locale !== "en").join(","))
   .split(",").map((locale) => locale.trim()).filter(Boolean);
-const {TranslationCritiqueSchema, TranslationDraftSchema} = require("../lib/race/raceTranslationGenerator.js");
+const {TranslationCritiqueSchema, TranslationDraftSchema} = require("../lib/firebase-functions/src/race/raceTranslationGenerator.js");
 
 const fail = (message) => {
   process.stderr.write(`${message}\n`);

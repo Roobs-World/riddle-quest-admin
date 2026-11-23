@@ -40,4 +40,6 @@ jest.env.setup.js
 
 # If your main entry point in package.json (e.g., "main": "lib/index.js")
 # and firebase.json functions source points to a directory containing 'lib',
-# then 'lib' itself should NOT be in .gcloudignore. 
+# then 'lib' itself should NOT be in .gcloudignore.
+# Canonical platform source is compiled before archiving.
+.build-source/

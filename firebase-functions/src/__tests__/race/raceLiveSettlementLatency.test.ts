@@ -3,7 +3,7 @@ import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
 import {applyRaceGuess} from "../../race/raceEngine";
 import {updateLiveRaceForUser} from "../../race/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
-import {JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
+import {JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 
 /** Fixed authoritative observation clock for every provider. */
 const NOW = 1_800_000_000_000;

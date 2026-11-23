@@ -1,4 +1,4 @@
-import {sendAndroidLiveChallengePush} from "../android/androidNotifications";
+import {sendAndroidLiveChallengePush} from "../../../platforms/native/android/server/androidNotifications";
 import {z} from "zod";
 import {getMessaging} from "firebase-admin/messaging";
 import {createHash} from "node:crypto";
@@ -10,7 +10,7 @@ import {admin} from "../shared/firebaseAdmin";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest} from "../validation/callableValidation";
-import {runWithJestAccountOperationLease, getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
+import {runWithJestAccountOperationLease, getJestAccountDeletionRef, assertJestAccountActive} from "../shared/accountDeletion";
 import {raceProviderScope} from "./raceEligibility";
 import {deliverLiveRacePush, sendFacebookLiveChallengePush} from "./raceLivePushDelivery";
 

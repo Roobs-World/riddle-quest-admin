@@ -1,6 +1,6 @@
 import {splitGraphemes} from "@riddle-quest/core/game";
 import {RaceRiddlePromptSchema} from "@riddle-quest/core/race";
-import {editRaceInput} from "../../../../packages/portal/src/play/race/logic/raceInput";
+import {editRaceInput} from "../../../../packages/web-game/src/play/race/logic/raceInput";
 import {validateRacePool} from "../../race/raceContentValidation";
 import {assertRaceDeckCompatible, assertLiveRaceDeckCompatible} from "../../race/raceDeckCompatibility";
 import {applyRaceGuess} from "../../race/raceEngine";

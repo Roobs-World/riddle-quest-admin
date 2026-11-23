@@ -5,7 +5,7 @@ const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
 const {readFile, mkdir, writeFile} = require("node:fs/promises");
 const path = require("node:path");
-const {createRaceContentImportPlan} = require("../lib/race/raceContentImport.js");
+const {createRaceContentImportPlan} = require("../lib/firebase-functions/src/race/raceContentImport.js");
 
 const args = process.argv.slice(2);
 const option = (name) => {

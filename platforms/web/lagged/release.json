@@ -1,0 +1,21 @@
+{
+  "target": "lagged",
+  "title": "Lagged review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:lagged",
+  "summary": "Create a neutral HTML5 archive for the Lagged developer application and integration review.",
+  "externalEffect": "None; developer approval and account-issued SDK configuration are required before monetized publication.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "lagged"
+    ]
+  },
+  "handoff": "Apply with the production playable URL and retain build-lagged-review.zip for provider review.",
+  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "displayName": "Lagged",
+  "delivery": "neutral-html5",
+  "artifact": "build-lagged-review.zip",
+  "releaseGate": "Lagged developer approval, SDK credentials, integration review and publication remain manual."
+}

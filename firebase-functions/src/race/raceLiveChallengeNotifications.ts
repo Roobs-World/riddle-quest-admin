@@ -1,9 +1,9 @@
-import {isAndroidAccountProvider} from "../android/androidUser";
+import {isAndroidAccountProvider} from "../../../platforms/native/android/server/androidUser";
 import {Timestamp, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_INVITE_MS, type LiveRaceChallenge} from "@riddle-quest/core/race";
 import {createUsernameReservationId, normalizeUsernameForReservation} from "../profile/usernameReservations";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "./raceEligibility";
 import {getLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {type LiveTicket} from "./raceLiveState";

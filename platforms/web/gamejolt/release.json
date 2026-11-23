@@ -1,0 +1,21 @@
+{
+  "target": "gamejolt",
+  "title": "Game Jolt",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:gamejolt",
+  "summary": "Create a provider-neutral browser-game archive for a Game Jolt release package.",
+  "externalEffect": "None; game creation, package upload and publication remain authenticated dashboard steps.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "gamejolt"
+    ]
+  },
+  "handoff": "Create the Game Jolt game and browser package, then upload build-gamejolt.zip and publish its release.",
+  "runbook": "docs/research/html5-publishing-platforms-2026-09-20.md",
+  "displayName": "Game Jolt",
+  "delivery": "neutral-html5",
+  "artifact": "build-gamejolt.zip",
+  "releaseGate": "Game Jolt game-page, browser package, release and publication setup remain manual."
+}

@@ -77,8 +77,8 @@ jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({
   recoverPendingAuthoritativeCompletion: (...args: unknown[]) => mockRecoverPendingAuthoritativeCompletion(...args),
 }));
 
-jest.mock("../jest/jestAccountDeletion", () => ({
-  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+jest.mock("../shared/accountDeletion", () => ({
+  ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
   runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 

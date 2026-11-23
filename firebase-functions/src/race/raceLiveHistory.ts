@@ -3,7 +3,7 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_HISTORY_MS, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema,
   LiveRaceHistoryEntrySchema, RaceCategoryIdSchema, type ListLiveRaceHistoryRequest, type LiveRaceHistoryEntry} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {resolveLiveRaceSafetyTarget} from "../social/liveRaceSafetyTarget";
 import {raceProviderScope} from "./raceEligibility";
 import type {LiveMatch, LiveTicket} from "./raceLiveState";

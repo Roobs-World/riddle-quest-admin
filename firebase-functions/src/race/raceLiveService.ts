@@ -1,5 +1,5 @@
-import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
-import {androidReferralLiveEventId} from "../android/androidReferralDelivery";
+import {androidReferralPlayPatch} from "../../../platforms/native/android/server/androidReferralIdentity";
+import {androidReferralLiveEventId} from "../../../platforms/native/android/server/androidReferralDelivery";
 import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
@@ -7,20 +7,20 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
   type JoinLiveRace, type UpdateLiveRace} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
-import {getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef, assertJestAccountActive} from "../shared/accountDeletion";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./raceEngine";
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent,
   requestDocumentId, stripUndefined, prepareRaceAchievementEvent, type Firestore} from "./raceSetupService";
 import {liveRun, liveView, liveOperationAtMs, liveRaceSearchEndsAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
-import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {isFacebookFirebaseUid} from "../../../platforms/web/facebook/server/facebookSecurity";
 import {pendingRaceDelivery} from "./raceDeliveryFailures";
-import {facebookLiveRaceReferralEventId} from "../facebook/facebookLiveRaceReferralDelivery";
-import {isRedditFirebaseUid} from "../reddit/redditSecurity";
-import {redditLiveRaceReferralEventId} from "../reddit/redditLiveRaceReferralDelivery";
+import {facebookLiveRaceReferralEventId} from "../../../platforms/web/facebook/server/facebookLiveRaceReferralDelivery";
+import {isRedditFirebaseUid} from "../../../platforms/web/reddit/server/redditSecurity";
+import {redditLiveRaceReferralEventId} from "../../../platforms/web/reddit/server/redditLiveRaceReferralDelivery";
 import {settleLiveFinish} from "./raceLiveScoring";
 import {prepareLiveRaceRematch, createLiveRaceRematchInvitation} from "./raceLiveRematch";
-import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
+import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 import {assertLiveRaceDeckCompatible} from "./raceDeckCompatibility";
 import {isLiveRaceRetained, prepareLiveRaceQueue} from "./raceLiveQueue";
 import {readLiveJoinIntent, claimLiveJoinIntent} from "./raceLiveJoinIntent";

@@ -1,0 +1,475 @@
+:root {
+  color: #f8f7ff;
+  background: #090b24;
+  font-family: Inter, ui-rounded, "Segoe UI", system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --yt-accent: #f4c84a;
+  --yt-panel: rgba(27, 29, 72, 0.92);
+  --yt-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(111, 85, 255, 0.35), transparent 36%),
+    radial-gradient(circle at 82% 76%, rgba(30, 164, 197, 0.24), transparent 38%), #090b24;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 1px solid var(--yt-border);
+  border-radius: 0.85rem;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+button:hover:not(:disabled),
+button:focus-visible {
+  border-color: var(--yt-accent);
+  outline: 3px solid rgba(244, 200, 74, 0.28);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.48;
+}
+
+.yt-shell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+}
+
+.yt-center,
+.yt-loading {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.yt-loader {
+  width: clamp(2.5rem, 12vmin, 5rem);
+  aspect-ratio: 1;
+  border: 0.45rem solid rgba(255, 255, 255, 0.16);
+  border-top-color: var(--yt-accent);
+  border-radius: 50%;
+  animation: yt-spin 0.9s linear infinite;
+}
+
+@keyframes yt-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.yt-status {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(100%, 58rem);
+  min-height: 3rem;
+  margin: 0 auto 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--yt-border);
+  border-radius: 1rem;
+  background: rgba(9, 11, 36, 0.94);
+  backdrop-filter: blur(10px);
+}
+
+.yt-status strong {
+  margin-inline-end: auto;
+}
+
+.yt-panel,
+.yt-menu,
+.yt-puzzle {
+  width: min(100%, 48rem);
+  margin: 0 auto;
+  padding: clamp(1rem, 4vmin, 2rem);
+  border: 1px solid var(--yt-border);
+  border-radius: clamp(1rem, 3vmin, 1.6rem);
+  background: var(--yt-panel);
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.35);
+}
+
+.yt-panel h1,
+.yt-menu h1,
+.yt-puzzle h1 {
+  margin: 0 0 1rem;
+  line-height: 1.16;
+}
+.yt-puzzle h1 {
+  font-size: clamp(1.15rem, 3.6vmin, 2rem);
+  text-wrap: balance;
+  line-height: 1.4;
+}
+.yt-eyebrow {
+  margin: 0 0 0.45rem;
+  color: #c8c3ff;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.yt-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.yt-mode-card {
+  display: grid;
+  place-items: center;
+  min-height: clamp(8rem, 24vmin, 13rem);
+  padding: 1rem;
+  gap: 0.5rem;
+  border-radius: 1.1rem;
+}
+.yt-mode-card:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.yt-mode-card > span {
+  font-size: clamp(2rem, 9vmin, 4rem);
+}
+.yt-mode-card strong {
+  font-size: clamp(1.1rem, 4vmin, 1.55rem);
+}
+.yt-mode-card small {
+  color: #d7d4ea;
+}
+.yt-progress-button {
+  width: 100%;
+}
+
+.yt-primary {
+  border-color: #ffe17b;
+  color: #171221;
+  background: linear-gradient(135deg, #ffe17b, #f0b92f);
+  font-weight: 800;
+  padding-inline: 1.2rem;
+}
+
+.yt-danger {
+  border-color: #ff8d9c;
+  background: #7b2033;
+  padding-inline: 1.2rem;
+}
+
+.yt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.yt-actions > button {
+  flex: 1 1 8rem;
+  padding-inline: 0.8rem;
+}
+
+.yt-banner,
+.yt-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: min(100%, 48rem);
+  margin: 0 auto 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #8ee3bd;
+  border-radius: 0.8rem;
+  background: #173e38;
+}
+
+.yt-banner.error,
+.yt-notice {
+  border-color: #ff9aa8;
+  background: #582635;
+}
+.yt-banner button {
+  min-height: 36px;
+  padding-inline: 0.75rem;
+}
+
+.yt-guesses {
+  display: grid;
+  justify-content: center;
+  gap: clamp(0.3rem, 1vmin, 0.55rem);
+  margin: 1rem 0;
+}
+
+.yt-guess-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.25rem, 1vmin, 0.5rem);
+}
+
+.yt-tile {
+  display: grid;
+  place-items: center;
+  width: clamp(2.1rem, 8.5vmin, 3.8rem);
+  height: clamp(2.1rem, 8.5vmin, 3.8rem);
+  min-height: 0;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.6rem;
+  background: rgba(3, 5, 22, 0.5);
+  font-size: clamp(1rem, 4vmin, 1.55rem);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.yt-tile.green {
+  border-color: #84e7b6;
+  background: #176948;
+}
+.yt-tile.yellow {
+  border-color: #ffe47d;
+  background: #7c611a;
+}
+.yt-tile.red {
+  border-color: #fd9dac;
+  background: #793146;
+}
+.yt-tile.active {
+  border-color: var(--yt-accent);
+  box-shadow: 0 0 0 3px rgba(244, 200, 74, 0.23);
+}
+.yt-tile.hinted {
+  border-color: #93c9ff;
+  background: #234e7d;
+}
+
+.yt-answer-native {
+  display: block;
+  width: min(100%, 28rem);
+  min-height: 46px;
+  margin: 0.8rem auto;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--yt-border);
+  border-radius: 0.75rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  text-align: center;
+}
+
+.yt-answer-native:focus {
+  border-color: var(--yt-accent);
+  outline: 3px solid rgba(244, 200, 74, 0.23);
+}
+
+.yt-keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.2rem, 0.8vmin, 0.4rem);
+  max-width: 34rem;
+  margin: 0.75rem auto;
+}
+
+.yt-keyboard button {
+  min-width: 0;
+  width: clamp(1.85rem, 6.4vmin, 2.7rem);
+  min-height: clamp(2.1rem, 7vmin, 2.7rem);
+  padding: 0;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.28);
+}
+
+.yt-continue-panel {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 28rem;
+  margin: 1rem auto 0;
+}
+
+.yt-progress-grid,
+.yt-result-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+
+.yt-progress-grid div,
+.yt-result-stats div {
+  padding: 0.75rem;
+  border: 1px solid var(--yt-border);
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+dt {
+  color: #c8c3dd;
+  font-size: 0.85rem;
+}
+dd {
+  margin: 0.2rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+.yt-back {
+  margin-bottom: 1rem;
+  padding-inline: 0.8rem;
+}
+.yt-result-icon {
+  font-size: clamp(3rem, 14vmin, 6rem);
+}
+.yt-achievement-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+}
+.yt-achievement-icons span {
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 1.35rem;
+}
+
+.yt-preferences {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  padding: 0.85rem;
+  border: 1px solid var(--yt-border);
+  border-radius: 0.75rem;
+}
+
+.yt-preferences label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 44px;
+}
+.yt-preferences input {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.youtube-high-contrast {
+  --yt-panel: #10122f;
+  --yt-border: rgba(255, 255, 255, 0.72);
+  --yt-accent: #ffe45c;
+}
+
+.youtube-game-paused *,
+.youtube-game-paused *::before,
+.youtube-game-paused *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+.youtube-reduced-motion *,
+.youtube-reduced-motion *::before,
+.youtube-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition: none !important;
+}
+
+@media (max-width: 420px) {
+  .yt-keyboard {
+    width: 92%;
+  }
+  .yt-mode-grid {
+    grid-template-columns: 1fr;
+  }
+  .yt-mode-card {
+    min-height: 6.8rem;
+    grid-template-columns: auto 1fr;
+    text-align: start;
+  }
+  .yt-mode-card > span {
+    grid-row: span 2;
+  }
+  .yt-status {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .yt-shell {
+    padding: 0.45rem;
+  }
+  .yt-status {
+    position: static;
+    margin-bottom: 0.4rem;
+    min-height: 2.35rem;
+    padding-block: 0.35rem;
+  }
+  .yt-puzzle {
+    display: grid;
+    grid-template-columns: minmax(12rem, 1fr) minmax(14rem, 1fr);
+    gap: 0.5rem 1rem;
+    padding: 0.7rem 1rem;
+  }
+  .yt-puzzle > .yt-eyebrow,
+  .yt-puzzle > h1 {
+    grid-column: 1;
+  }
+  .yt-puzzle > .yt-guesses,
+  .yt-puzzle > .yt-answer-native,
+  .yt-puzzle > .yt-keyboard,
+  .yt-puzzle > .yt-actions,
+  .yt-puzzle > .yt-continue-panel {
+    grid-column: 2;
+  }
+  .yt-puzzle > .yt-guesses {
+    grid-row: 1 / span 3;
+    align-self: center;
+  }
+  .yt-keyboard {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

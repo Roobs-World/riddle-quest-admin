@@ -1,5 +1,7 @@
 packages:
   - "packages/*"
+  - "platforms/native/*"
+  - "platforms/web/*"
   - "firebase-functions"
 
 autoInstallPeers: false
@@ -107,4 +109,4 @@ packageExtensions:
       google-protobuf: "3.21.4"
 
 patchedDependencies:
-  braces@3.0.3: patches/braces@3.0.3.patch
+  braces@3.0.3: config/security-patches/braces@3.0.3.patch

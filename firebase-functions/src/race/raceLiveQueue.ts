@@ -1,7 +1,7 @@
 import {LIVE_RACE_COUNTDOWN_MS} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "./raceEligibility";
 import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "./raceDeckCompatibility";
 import {requestDocumentId, stripUndefined, type Firestore} from "./raceSetupService";

@@ -1,0 +1,18 @@
+{
+  "target": "yahoo",
+  "title": "Yahoo",
+  "boundary": "local-validated-artifact",
+  "publicCommand": "pnpm release:yahoo",
+  "summary": "Build and audit the isolated Yahoo candidate artifact.",
+  "externalEffect": "None until a Yahoo partner upload command is configured.",
+  "command": {
+    "executable": "pnpm",
+    "args": [
+      "build:yahoo"
+    ]
+  },
+  "handoff": "Use builds/yahoo with the Yahoo partner delivery tooling.",
+  "runbook": "docs/netflix-yahoo-candidate-builds.md",
+  "displayName": "Yahoo",
+  "delivery": "web-target"
+}

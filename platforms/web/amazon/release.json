@@ -1,0 +1,21 @@
+{
+  "target": "amazon",
+  "title": "Amazon Appstore Web App review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:amazon",
+  "summary": "Create a self-contained HTML5 archive for Fire Web App compatibility review.",
+  "externalEffect": "None; enrollment, device testing, product setup, listing and certification remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "amazon"
+    ]
+  },
+  "handoff": "Test build-amazon-webapp-review.zip with Fire Web App Tester before adding isolated Amazon IAP.",
+  "runbook": "docs/research/additional-html5-release-targets-2026-09-21.md",
+  "displayName": "Amazon Appstore Web App",
+  "delivery": "neutral-html5",
+  "artifact": "build-amazon-webapp-review.zip",
+  "releaseGate": "Amazon developer enrollment, Fire compatibility testing, IAP setup, listing and certification remain manual."
+}

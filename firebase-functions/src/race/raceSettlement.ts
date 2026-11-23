@@ -2,7 +2,7 @@ import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type Race
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {raceRewardAwardsAgree} from "./raceAchievements";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceClock, raceOutcome, raceOperationAtMs, refreshRaceRun, type RaceRunRecord} from "./raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
 import {persistRaceAchievementEvent, readRaceCoinBalance, stripUndefined, type Firestore} from "./raceSetupService";

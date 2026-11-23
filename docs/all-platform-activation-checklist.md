@@ -68,10 +68,10 @@ Ensure `FACEBOOK_DISABLED_FEATURES` does not contain a feature intended for laun
 Required owner setup:
 
 - Authenticate the Devvit CLI with the Reddit developer account that owns `riddle-quest`.
-- Keep the approved Firebase Functions host in `packages/reddit-app/devvit.json`.
+- Keep the approved Firebase Functions host in `platforms/web/reddit/devvit.json`.
 - Set global secret `redditGatewaySecret` to the matching Firebase gateway secret.
 - Set global setting `redditEnvironment` to `production` for the production version.
-- Obtain Devvit Payments pilot/production approval and approval for every product in `packages/reddit-app/products.json`.
+- Obtain Devvit Payments pilot/production approval and approval for every product in `platforms/web/reddit/products.json`.
 - Complete playtesting in `r/riddle_quest_dev`, then submit the app for review/public distribution.
 
 The backend must carry the matching Reddit gateway and UID secrets. Run `pnpm release:reddit`; follow `docs/reddit-games-operations.md` for the exact-byte upload limitation. Reddit documents `devvit upload`, playtest, and publish/review as separate stages.
@@ -85,7 +85,7 @@ Required owner setup:
 - All 16 credentialed translation bundles and the release-ready content/model audit; the current English engineering fixture cannot be submitted.
 - Portal bundle analysis, hosted Test Suite, desktop/mobile web testing, physical Android/iOS testing, and certification submission.
 
-Run `pnpm release:youtube`, upload `packages/portal/build-youtube.zip`, and bind all portal evidence to the generated SHA-256. The public portal does not expose a supported upload API, so ingestion and certification remain portal actions.
+Run `pnpm release:youtube`, upload `build-youtube.zip`, and bind all portal evidence to the generated SHA-256. The public portal does not expose a supported upload API, so ingestion and certification remain portal actions.
 
 ## Netflix Games
 

@@ -1,19 +1,21 @@
 # Riddle Quest
 
-Riddle Quest is a mobile-first React HTML5 word game with isolated builds for Jest, Facebook Instant Games, Reddit Devvit Web, and YouTube Playables. Shared gameplay remains server-authoritative where a trusted backend contract exists; YouTube deliberately uses platform-local solo authority because its Playable is self-contained. Provider identity, storage, commerce, social, notification, and lifecycle capabilities are exposed only where their platform contracts support them.
+Riddle Quest is a word game with isolated React HTML5 targets for Jest, Facebook Instant Games, Reddit Devvit Web, YouTube Playables, Netflix, Yahoo and GameSnacks, plus a bare React Native Android app. Shared gameplay remains server-authoritative where a trusted backend contract exists; self-contained targets use their permitted local save authority. Provider identity, storage, commerce, social, notification, and lifecycle capabilities appear only where their platform contracts support them.
 
-This repository contains only the web game, its Firebase backend, and the Reddit Devvit gateway package. Do not add React Native, Expo, Android, iOS, native-store authentication, or app-install prompts. Ads are permitted only in the Facebook artifact.
+All platforms share one canonical `main` branch. Platform-specific source lives below `platforms/native/<provider>` or `platforms/web/<provider>`. Ads are permitted only in the Facebook artifact. See [platform ownership and build contracts](docs/platform-layout.md) before adding or moving code.
 
 ## Architecture
 
 | Path | Responsibility |
 | --- | --- |
-| `packages/portal` | Vite, React, game UI, isolated platform adapters, browser tests, and standalone Jest/Facebook/Reddit/YouTube client build tooling |
-| `packages/portal/targets/{jest,facebook,reddit,youtube}` | Target-owned HTML documents; each loads only its own source main and approved host SDK |
-| `packages/portal/src/{jest,facebook,reddit,youtube}` | Target composition roots and provider adapters; cross-target imports are rejected before every build |
-| `packages/reddit-app` | Devvit Web package, same-origin `/api/*` gateway, package validation, and immutable release receipts |
+| `platforms/web/<provider>` | Target HTML, composition, SDK adapters, provider-only server integration, assets, tests and release scripts |
+| `platforms/web/reddit` | Reddit browser adapter, trusted Devvit `/api/*` gateway, package validation and release receipts; Firebase authority lives separately in `server` |
+| `platforms/native/android` | Bare React Native app, native views and device bridges; Android-only Firebase authority lives in `server` |
+| `packages/web-game` | Shared browser presentation, Vite build infrastructure and browser test support; retains the `@riddle-quest/portal` package name for existing commands |
 | `packages/core` | Browser-safe game rules, validation schemas, bridge types, Race to 10 contracts, and pricing metadata |
-| `firebase-functions` | Authoritative gameplay, provider identity exchanges, player profiles/storage/deletion, payment grants, referrals, leaderboards, and multiplayer |
+| `packages/solo`, `packages/hosted` | Shared solo and hosted controllers used by web and Android |
+| `firebase-functions` | Shared authoritative gameplay and infrastructure, deployed export composition, and archive-local compiled server output |
+| `tooling/sentry-worker` | Background Sentry repair worker with signed deployment checks and bounded Jest/Facebook repair paths |
 | `src/locales` | All user-facing translations: 16 locales across target-specific namespaces |
 | `assets` | Source images, audio, fonts, and 3D assets |
 | `docs` | Operations, architecture decisions, review evidence, assets, and runbooks |
@@ -59,7 +61,7 @@ Start the normal Vite development server:
 pnpm --filter @riddle-quest/portal dev:jest
 ```
 
-Open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
+Open `http://localhost:5173/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
 
 Deterministic harness routes are intended for development and automated tests:
 
@@ -94,9 +96,9 @@ Configuration is split by trust level. Values prefixed with `VITE_` are compiled
 
 ### Browser and Jest build values
 
-The dedicated Jest build loads `config/vite/portal/.env.jest`. Use
-`config/vite/portal/.env.jest.local` for ignored machine-specific public overrides. Vite's `envDir` points outside the
-portal source root, so legacy `packages/portal/.env*` files are never loaded and the production security audit rejects
+The dedicated Jest build loads `platforms/web/jest/.env.jest`. Use
+`platforms/web/jest/.env.jest.local` for ignored machine-specific public overrides. Vite's `envDir` points outside the
+portal source root, so legacy `packages/web-game/.env*` files are never loaded and the production security audit rejects
 them.
 
 | Variable | Required | Meaning |
@@ -173,7 +175,7 @@ pnpm dlx firebase-tools@15.25.1 functions:secrets:set OPENAI_API_KEY --project r
 Install the committed template outside the repository as an owner-only file. Keeping it outside Vite's environment directory and normal build inputs reduces credential exposure:
 
 ```bash
-install -D -m 600 packages/portal/jest-release.credentials.example \
+install -D -m 600 platforms/web/jest/jest-release.credentials.example \
   "${XDG_CONFIG_HOME:-$HOME/.config}/riddle-quest/jest-release.env"
 ```
 
@@ -212,7 +214,7 @@ Repository values and Developer Console values must agree.
 Monetization configuration has three locks, and all three must be changed together:
 
 1. Create or update the SKU in the Jest Developer Console.
-2. Add its trusted grant or entitlement in `firebase-functions/src/jest/jestProductCatalog.ts`.
+2. Add its trusted grant or entitlement in `platforms/web/jest/server/jestProductCatalog.ts`.
 3. Add it to `JEST_PRODUCT_SKUS` or `JEST_SUBSCRIPTION_SKUS` in the deployed Functions environment.
 
 Coin-pack values are granted only from the server catalog. Never accept a coin amount from the client. A purchase is granted transactionally using a SHA-256 digest of the signed `purchaseToken` as the idempotency receipt key before the client calls `completePurchase()`; the raw token is never a Firestore document path.
@@ -436,9 +438,9 @@ Build the established Jest, Facebook, and Reddit web targets plus the Reddit App
 pnpm build:web
 ```
 
-This preserves the existing deployment path and writes isolated artifacts to `packages/portal/dist-jest`, `packages/portal/dist-facebook`, and `packages/portal/dist-reddit`. It does not build or package YouTube. Each target keeps its own SDK, resource, and forbidden-code audit; the Jest audit additionally enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit.
+This preserves the existing deployment path and writes isolated artifacts to `builds/jest`, `builds/facebook`, and `builds/reddit`. It does not build or package YouTube. Each target keeps its own SDK, resource, and forbidden-code audit; the Jest audit additionally enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit.
 
-Verify all four isolated client targets without requiring release translations:
+Verify the isolated client targets without requiring release translations:
 
 ```bash
 pnpm verify:all-targets
@@ -461,7 +463,7 @@ pnpm --filter @riddle-quest/portal build:youtube
 pnpm release:youtube
 ```
 
-The release build writes `packages/portal/dist-youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The fixture artifact and synthetic packaging tests are not upload evidence. See [`docs/youtube-playables-operations.md`](docs/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
+The release build writes `builds/youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The fixture artifact and synthetic packaging tests are not upload evidence. See [`docs/youtube-playables-operations.md`](docs/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
 
 After all tests and sandbox checks pass, upload a timestamped build:
 
@@ -491,7 +493,7 @@ locked, and do not place other credentials in readable paths outside the masked 
 
 Jest responds to a successful submission with HTTP `202`: the build and automatic-activation request are accepted for
 background processing, not ready or active yet. Before transmission, the command writes an owner-private attempt receipt
-under `packages/portal/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
+under `packages/web-game/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
 transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could
 duplicate an accepted build. After a documented `202`, the receipt records the version ID, exact archive checksum, and
 activation intent. The documented API has no authoritative build-status polling endpoint, so the release tool does not
@@ -541,8 +543,8 @@ Before merging a change:
 3. Preserve guest progress by continuing to use the stable Jest `playerId` when registration completes.
 4. Keep purchase grants, subscription entitlements, and referral rewards signed, server-authoritative, and idempotent.
 5. Update all locales for visible copy and republish Firestore notification copy when applicable.
-6. Test cancellation, retryable failure, terminal failure, reload recovery, guest state, and registered state for SDK changes.
-7. Verify UI changes in the affected injected browser harness and run `pnpm verify:all-targets` so all four isolated client artifacts are rebuilt and checked.
+6. When tests are explicitly requested, cover cancellation, retryable failure, terminal failure, reload recovery, guest state and registered state for SDK changes.
+7. Build the affected isolated artifacts. When browser testing is explicitly requested, use the affected injected harness; use hosted unpublished previews for Jest end-to-end checks.
 8. Retain release evidence with the relevant operational runbook or acceptance test.
 9. Keep exported contracts, public methods, and security-sensitive variables documented with accurate TSDoc; update this README when commands, architecture, configuration, coverage gates, or deployment steps change.
 10. Review `git diff` and `git status` to ensure no `.env`, secret, credential, generated archive, or browser state is included.
@@ -563,7 +565,7 @@ Review release notes for Vite, React, Firebase, Jest, Three.js, TypeScript, and 
 
 - `docs/jest-html5-operations.md` — hosted emulator, sandbox, Simulator, upload, and acceptance matrix
 - `firebase-functions/.env.example` — backend environment field reference
-- `packages/portal/jest-release.credentials.example` — external owner-only release-credential template
+- `platforms/web/jest/jest-release.credentials.example` — external owner-only release-credential template
 - [Jest HTML5 SDK documentation](https://docs.jest.com/sdk/html5)
 - [Jest sandbox testing](https://docs.jest.com/testing/sandbox)
 - [Firebase Functions environment and secrets](https://firebase.google.com/docs/functions/config-env)

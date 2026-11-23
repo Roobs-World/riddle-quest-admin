@@ -7,7 +7,7 @@ dist-reddit/
 dist-youtube/
 dist-netflix/
 dist-yahoo/
-packages/portal/dist-gamesnacks/
+packages/web-game/dist-gamesnacks/
 coverage/
 *.tsbuildinfo
 
@@ -32,12 +32,12 @@ firebase-functions/riddle-quest-admin-sdk.json
 firebase-functions/.runtimeconfig.json
 firebase-functions/artifacts/notification-copy-backups/
 
-packages/portal/build.zip
-packages/portal/.jest-upload-receipts/
-packages/portal/.jest-release-workspaces/
-packages/portal/build-facebook.zip
-packages/portal/build-youtube.zip
-packages/portal/build-youtube.manifest.json
+packages/web-game/build.zip
+packages/web-game/.jest-upload-receipts/
+packages/web-game/.jest-release-workspaces/
+packages/web-game/build-facebook.zip
+packages/web-game/build-youtube.zip
+packages/web-game/build-youtube.manifest.json
 build-youtube.zip
 build-html5.zip
 build-html5.sha256
@@ -71,7 +71,7 @@ build-telegram-review.zip
 build-telegram-review.zip.manifest.json
 build-microsoft-pwa.zip
 build-microsoft-pwa.zip.manifest.json
-packages/portal/dist-microsoft-pwa/
+packages/web-game/dist-microsoft-pwa/
 build-y8-review.zip
 build-y8-review.zip.manifest.json
 build-playgama-review.zip
@@ -124,10 +124,10 @@ build-gamesnacks.zip
 build-gamesnacks.zip.manifest.json
 build-youtube.manifest.json
 build-youtube.test-report.json
-packages/portal/.facebook-upload-receipts/
-packages/portal/.facebook-setup-receipts/
-packages/reddit-app/build-reddit.zip
-packages/reddit-app/.reddit-release-receipts/
+packages/web-game/.facebook-upload-receipts/
+packages/web-game/.facebook-setup-receipts/
+platforms/web/reddit/build-reddit.zip
+platforms/web/reddit/.reddit-release-receipts/
 build-noadsgames-review.zip
 build-noadsgames-review.zip.manifest.json
 build-kongregate.zip
@@ -161,3 +161,14 @@ artifacts/goal-completion-2026-10-24/riddle/final/upload-source/
 # Test reports, verification evidence, and release snapshots stay local
 artifacts/
 firebase-functions/qwordly-admin-sdk.json
+
+# Generated Git LFS hook wrappers
+.husky/_/
+
+# Platform release receipts and generated backend compilation tree
+platforms/web/*/.jest-upload-receipts/
+platforms/web/*/.facebook-upload-receipts/
+platforms/web/*/.facebook-setup-receipts/
+platforms/web/*/.reddit-release-receipts/
+platforms/web/*/build*.zip
+firebase-functions/.build-source/

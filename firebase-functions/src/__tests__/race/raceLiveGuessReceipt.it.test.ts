@@ -4,7 +4,7 @@ import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {RACE_RULES, type LiveRaceView} from "@riddle-quest/core/race";
 import type {LiveMatch} from "../../race/raceLiveState";
-import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 
 /** Renders the a interface. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;

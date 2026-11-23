@@ -3,7 +3,7 @@ import {z} from "zod";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
-import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
+import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
 import {setPresenceConsentForUser} from "./presenceAggregation";
 import {syncFacebookPresenceFeatureGate} from "./presenceFeatureGate";
 

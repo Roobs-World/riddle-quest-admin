@@ -29,9 +29,9 @@ import {finalizeAuthoritativeSession} from "./singlePlayerSession";
 import {assertPlayableSinglePlayerAnswer} from "./singlePlayerAnswerPolicy";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 import {completionBindingMatches, getSinglePlayerCompletionBindingRef} from "./singlePlayerCompletionBinding";
-import {settleAndroidReferralAfterPlay} from "../android/androidReferrals";
-import {settleFacebookReferralAfterAuthoritativeWin} from "../facebook/facebookReferrals";
-import {settleRedditReferralAfterAuthoritativeWin} from "../reddit/redditReferrals";
+import {settleAndroidReferralAfterPlay} from "../../../platforms/native/android/server/androidReferrals";
+import {settleFacebookReferralAfterAuthoritativeWin} from "../../../platforms/web/facebook/server/facebookReferrals";
+import {settleRedditReferralAfterAuthoritativeWin} from "../../../platforms/web/reddit/server/redditReferrals";
 
 // ---------------------------------------------------------------------------
 // completeGame - called once when a server-validated game truly ends.

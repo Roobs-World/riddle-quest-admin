@@ -5,10 +5,10 @@ import {getFirestore} from "firebase-admin/firestore";
 import {getDatabase, type Database} from "firebase-admin/database";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {blockKnownRival, reportKnownRival} from "../../social/socialSafety";
-import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
-import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
-import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
-import {canonicalRedditGatewayAssertion, hashRedditGatewayPayload, redditFirebaseUid} from "../../reddit/redditSecurity";
+import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
+import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
+import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
+import {canonicalRedditGatewayAssertion, hashRedditGatewayPayload, redditFirebaseUid} from "../../../../platforms/web/reddit/server/redditSecurity";
 
 /** Isolated demo project supplied by the local emulator runner. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";

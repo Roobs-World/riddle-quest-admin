@@ -4,7 +4,7 @@ import {readFile} from "node:fs/promises";
 import path from "node:path";
 import {createRequire} from "node:module";
 
-export const {chromium} = createRequire(new URL("../../packages/portal/package.json", import.meta.url))("@playwright/test");
+export const {chromium} = createRequire(new URL("../../packages/web-game/package.json", import.meta.url))("@playwright/test");
 
 /** Serves the actual release files without a development fallback or injected app code. */
 export async function serveArtifact(directory) {

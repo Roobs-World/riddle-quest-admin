@@ -1,14 +1,14 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/raceAccountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
 import type {RaceRunRecord} from "../../race/raceEngine";
 import {deliverRacePerformance} from "../../race/racePerformanceDelivery";
-import {recordFacebookTournamentRun} from "../../race/facebookTournament";
-import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebook/facebookReferrals";
-import {issueRedditReferralToken, bindRedditReferralToken} from "../../reddit/redditReferrals";
+import {recordFacebookTournamentRun} from "../../../../platforms/web/facebook/server/race/facebookTournament";
+import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../../../platforms/web/facebook/server/facebookReferrals";
+import {issueRedditReferralToken, bindRedditReferralToken} from "../../../../platforms/web/reddit/server/redditReferrals";
 import {LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
 import {FieldValue, Timestamp} from "firebase-admin/firestore";
 import {sendLiveRaceChallengeForUser} from "../../race/raceLiveChallengeNotifications";

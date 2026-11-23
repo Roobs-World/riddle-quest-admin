@@ -1,0 +1,21 @@
+{
+  "target": "kizi",
+  "title": "Kizi pitch",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:kizi",
+  "summary": "Create a neutral HTML5 archive for Kizi developer and commercial review.",
+  "externalEffect": "None; outreach, commercial review, SDK integration and publication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "kizi"
+    ]
+  },
+  "handoff": "Send the playable build and accept only a compatible non-exclusive publishing offer.",
+  "runbook": "docs/research/additional-release-targets-round-3-2026-09-21.md",
+  "displayName": "Kizi",
+  "delivery": "neutral-html5",
+  "artifact": "build-kizi-pitch.zip",
+  "releaseGate": "Kizi developer outreach, non-exclusive commercial review, SDK integration and publication remain manual."
+}

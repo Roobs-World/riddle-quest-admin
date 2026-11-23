@@ -2,13 +2,13 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_WIN_COINS} from "@riddle-quest/core/race";
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import type {Firestore} from "./raceSetupService";
 import type {parseRacePerformanceEvent} from "./raceDeliveryRecords";
 import type {LiveMatch, LiveTicket} from "./raceLiveState";
-import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
-import {isRedditFirebaseUid} from "../reddit/redditSecurity";
-import {FacebookLiveContextBindingSchema} from "./facebookLiveContextBinding";
+import {isFacebookFirebaseUid} from "../../../platforms/web/facebook/server/facebookSecurity";
+import {isRedditFirebaseUid} from "../../../platforms/web/reddit/server/redditSecurity";
+import {FacebookLiveContextBindingSchema} from "../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
 
 /** Supported provider identity remains explicit in each live referral receipt. */
 type Provider = "facebook" | "reddit";

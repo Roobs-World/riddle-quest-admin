@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {reserveRaceInviteForUser, claimRaceInviteForUser, getRaceEntryForUser, cancelRaceInviteForUser} from "../../race/raceInvitation";
-import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {startRaceRunForUser, submitRaceGuessForUser, publishRaceChallengeForUser, resumeRaceRunForUser} from "../../race/raceService";
 
 /** Isolated emulator project selected by the invoking test command. */

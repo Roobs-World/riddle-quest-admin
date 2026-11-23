@@ -1,0 +1,25 @@
+{
+  "name": "@riddle-quest/web-gamesnacks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode gamesnacks",
+    "build": "pnpm --filter @riddle-quest/portal build:gamesnacks",
+    "check:types": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@riddle-quest/core": "workspace:*",
+    "@riddle-quest/hosted": "workspace:*",
+    "@riddle-quest/portal": "workspace:*",
+    "@riddle-quest/solo": "workspace:*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "vite": "^8.3.8"
+  }
+}

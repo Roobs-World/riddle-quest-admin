@@ -1,0 +1,20 @@
+{
+  "target": "jest",
+  "title": "Jest",
+  "boundary": "remote-active-on-ready",
+  "publicCommand": "pnpm release:jest",
+  "summary": "Run the hardened production gate and upload one immutable build for activation after processing.",
+  "externalEffect": "Uploads to Jest and activates the exact build after processing succeeds. It never submits the game for review, publishes it, or changes listing visibility.",
+  "command": {
+    "executable": "pnpm",
+    "args": [
+      "--filter",
+      "@riddle-quest/portal",
+      "release:jest:timestamped"
+    ]
+  },
+  "handoff": "Confirm authoritative completion and exact build activation, then run the Simulator and sandbox checks. Game publication remains held.",
+  "runbook": "docs/jest-html5-operations.md",
+  "displayName": "Jest",
+  "delivery": "web-target"
+}

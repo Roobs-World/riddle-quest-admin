@@ -9,10 +9,10 @@ if (arguments_.length > 1 || arguments_.some(argument => argument !== "--jest-fa
 const jestFacebook = arguments_.includes("--jest-facebook");
 // These native-only suites remain subject to the default full-platform audit.
 const nativeIntegrationSuites = new Set([
-  "firebase-functions/src/__tests__/androidNotifications.it.test.ts",
-  "firebase-functions/src/__tests__/androidReferrals.it.test.ts",
-  "firebase-functions/src/__tests__/androidSubscriptionRegistry.it.test.ts",
-  "firebase-functions/src/__tests__/race/androidRace.it.test.ts",
+  "platforms/native/android/server/__tests__/androidNotifications.it.test.ts",
+  "platforms/native/android/server/__tests__/androidReferrals.it.test.ts",
+  "platforms/native/android/server/__tests__/androidSubscriptionRegistry.it.test.ts",
+  "platforms/native/android/server/__tests__/race/androidRace.it.test.ts",
 ]);
 
 /** Collects files below a directory that satisfy a predicate. */
@@ -27,13 +27,13 @@ async function collect(directory, predicate) {
   return files;
 }
 
-const portalPackage = JSON.parse(await readFile(path.join(root, "packages/portal/package.json"), "utf8"));
+const portalPackage = JSON.parse(await readFile(path.join(root, "packages/web-game/package.json"), "utf8"));
 const rootPackage = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const portalScripts = Object.values(portalPackage.scripts ?? {}).join("\n");
 const rulesConfig = await readFile(path.join(root, "firebase-functions/jest.rules.config.js"), "utf8");
 const workflow = await readFile(path.join(root, ".github/workflows/production-readiness.yml"), "utf8");
 
-const browserSuites = await collect(path.join(root, "packages/portal/src"), (name) =>
+const browserSuites = await collect(path.join(root, "packages/web-game/src"), (name) =>
   name.endsWith(".jest-playwright.test.ts"),
 );
 const integrationSuites = await collect(path.join(root, "firebase-functions/src"), (name) =>

@@ -4,7 +4,7 @@ import type {CallableRequest} from "firebase-functions/v2/https";
 const mockConfirm = jest.fn(), mockLease = jest.fn();
 jest.mock("../../race/raceLiveGuessReceipt", () => ({confirmLiveGuessReceiptForUser: mockConfirm}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
-jest.mock("../../jest/jestAccountDeletion", () => ({...jest.requireActual("../../jest/jestAccountDeletion"), runWithJestAccountOperationLease: mockLease}));
+jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithJestAccountOperationLease: mockLease}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"), onCall: jest.fn((options, handler) => Object.assign(handler, {deploymentOptions: options}))}));
 import {confirmLiveGuessReceipt} from "../../race/raceLiveCallables";
 /** Verified identity is absent from the historical request locator. */

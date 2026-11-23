@@ -138,8 +138,8 @@ jest.mock("../gameplay/firestoreService", () => ({
   updateUserProfile: (...args: [string, Record<string, unknown>]) => mockUpdateUserProfile(...args),
 }));
 
-jest.mock("../jest/jestAccountDeletion", () => ({
-  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+jest.mock("../shared/accountDeletion", () => ({
+  ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
   runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 
@@ -185,7 +185,7 @@ jest.mock("firebase-functions/v2/https", () => {
 
 // 4. Import the module under test
 import {syncJestAvatar, updateAvatar, updateUsername} from "../profile";
-import {jestFirebaseUid} from "../jest/jestSecurity";
+import {jestFirebaseUid} from "../../../platforms/web/jest/server/jestSecurity";
 import {syncLeaderboardProfileFields} from "../profile/leaderboardProfile";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 

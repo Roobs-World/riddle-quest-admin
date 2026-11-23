@@ -19,8 +19,8 @@ jest.mock("firebase-functions", () => ({
   logger: {info: mockLoggerInfo, warn: jest.fn(), error: mockLoggerError, debug: jest.fn()},
 }));
 
-jest.mock("../jest/jestAccountDeletion", () => ({
-  ...jest.requireActual<typeof import("../jest/jestAccountDeletion")>("../jest/jestAccountDeletion"),
+jest.mock("../shared/accountDeletion", () => ({
+  ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
   runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 

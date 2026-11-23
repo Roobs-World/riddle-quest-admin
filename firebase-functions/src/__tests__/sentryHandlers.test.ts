@@ -11,7 +11,7 @@ const runWithJestAccountOperationLease = jest.fn(
 );
 
 jest.mock("../shared/sentry", () => ({captureException, flushSentry}));
-jest.mock("../jest/jestAccountDeletion", () => ({
+jest.mock("../shared/accountDeletion", () => ({
   isJestAccountDeletedError: (error: unknown) => error instanceof Error && error.message === "account-deleted",
   runWithJestAccountOperationLease,
 }));

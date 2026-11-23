@@ -1,9 +1,9 @@
-import {isAndroidAccountProvider} from "../android/androidUser";
+import {isAndroidAccountProvider} from "../../../platforms/native/android/server/androidUser";
 import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "./raceEngine";
 import {parseRaceInvitation} from "./raceInvitationRecord";
 import {HttpsError} from "firebase-functions/v2/https";
-import {JestAccountDeletedError, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {JestAccountDeletedError, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
 import {requestDocumentId, parseRunRecord, type Firestore, type RaceChallengeRecord} from "./raceSetupService";
 

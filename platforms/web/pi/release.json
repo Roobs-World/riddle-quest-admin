@@ -1,0 +1,21 @@
+{
+  "target": "pi",
+  "title": "Pi Apps Platform review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:pi",
+  "summary": "Create a neutral hosted-web archive for Pi account, terms and SDK review.",
+  "externalEffect": "None; KYC, app creation, terms acceptance, integration and ecosystem listing remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "pi"
+    ]
+  },
+  "handoff": "Review authenticated terms and verify a dedicated domain before isolated SDK or payment work.",
+  "runbook": "docs/research/additional-release-targets-round-6-2026-09-21.md",
+  "displayName": "Pi Apps Platform",
+  "delivery": "neutral-html5",
+  "artifact": "build-pi-apps-review.zip",
+  "releaseGate": "Pi account, KYC, terms review, app creation, SDK integration, listing review and approval remain manual."
+}

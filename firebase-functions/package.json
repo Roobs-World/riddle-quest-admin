@@ -2,18 +2,18 @@
   "name": "functions",
   "scripts": {
     "prelint": "node scripts/prepare-deploy.js",
-    "lint": "eslint --ext .js,.ts src",
-    "prebuild": "node scripts/prepare-deploy.js && pnpm check:module-cycles",
+    "lint": "eslint --config eslint.config.cjs --ext .js,.ts src ../platforms/native/android/server ../platforms/web/jest/server ../platforms/web/facebook/server ../platforms/web/reddit/server ../platforms/web/yahoo/server",
+    "prebuild": "node scripts/prepare-deploy.js && node scripts/audit-module-cycles.mjs",
     "prepare:deploy": "node scripts/prepare-deploy.js",
-    "build": "rimraf lib && tsc -p tsconfig.json && rimraf lib/__tests__ lib/__mocks__",
-    "precheck:types": "node scripts/prepare-deploy.js && pnpm check:module-cycles",
+    "build": "rimraf lib && tsc -p tsconfig.json",
+    "precheck:types": "node scripts/prepare-deploy.js && node scripts/audit-module-cycles.mjs",
     "check:types": "tsc -p tsconfig.json --noEmit",
     "check:module-cycles": "node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs",
     "pretest": "node scripts/prepare-deploy.js",
     "test:sentry-openai": "pnpm build && node --test scripts/sentry-openai-response.test.js",
-    "test:deploy-scripts": "node scripts/validate-deploy-env.test.js && node scripts/audit-facebook-backend-exports.test.js && node scripts/audit-reddit-backend-exports.test.js && node scripts/facebook-referral-retention.test.js && node scripts/facebook-context-retention.test.js && node scripts/facebook-nonce-retention.test.js && node scripts/reddit-profile-retention.test.js",
-    "audit:facebook-exports": "node scripts/audit-facebook-backend-exports.js",
-    "audit:reddit-exports": "node scripts/audit-reddit-backend-exports.js",
+    "test:deploy-scripts": "node scripts/validate-deploy-env.test.js && node ../platforms/web/facebook/server/scripts/audit-facebook-backend-exports.test.js && node ../platforms/web/reddit/server/scripts/audit-reddit-backend-exports.test.js && node ../platforms/web/facebook/server/scripts/facebook-referral-retention.test.js && node ../platforms/web/facebook/server/scripts/facebook-context-retention.test.js && node ../platforms/web/facebook/server/scripts/facebook-nonce-retention.test.js && node ../platforms/web/reddit/server/scripts/reddit-profile-retention.test.js",
+    "audit:facebook-exports": "node ../platforms/web/facebook/server/scripts/audit-facebook-backend-exports.js",
+    "audit:reddit-exports": "node ../platforms/web/reddit/server/scripts/audit-reddit-backend-exports.js",
     "validate:deploy-env": "node ../scripts/audit-function-capacity.mjs && node scripts/validate-deploy-env.js",
     "deploy": "pnpm validate:deploy-env && firebase deploy --only functions",
     "preflight:facebook-backend": "REQUIRE_FACEBOOK_DEPLOY_CONFIG=1 pnpm validate:deploy-env && pnpm test:deploy-scripts && pnpm audit:facebook-exports && pnpm check:types && pnpm lint && pnpm test --runInBand && pnpm build",
@@ -59,7 +59,7 @@
     "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-context-retention.js",
     "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-nonce-retention.js",
     "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/reddit-profile-retention.js",
-    "postbuild": "node ../scripts/audit-function-capacity.mjs --built",
+    "postbuild": "node scripts/audit-deployment-artifact.js && node ../scripts/audit-function-capacity.mjs --built",
     "test:android-notifications:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-notifications \"pnpm exec jest --config jest.android-notifications.config.js --runInBand\"",
     "test:android-referrals:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-referrals \"pnpm exec jest --config jest.android-referrals.config.js --runInBand\"",
     "test:android-subscriptions:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-subscriptions \"pnpm exec jest --config jest.android-subscriptions.config.js --runInBand\""
@@ -67,7 +67,7 @@
   "engines": {
     "node": "22"
   },
-  "main": "lib/index.js",
+  "main": "lib/firebase-functions/src/index.js",
   "dependencies": {
     "@firebase/app": "0.16.2",
     "@firebase/app-compat": "0.5.18",

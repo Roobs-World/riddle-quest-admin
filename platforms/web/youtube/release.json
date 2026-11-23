@@ -1,0 +1,20 @@
+{
+  "target": "youtube",
+  "title": "YouTube",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:youtube",
+  "summary": "Verify all isolated targets and create the deterministic YouTube release bundle.",
+  "externalEffect": "None; Developer Portal ingestion and certification remain manual.",
+  "command": {
+    "executable": "pnpm",
+    "args": [
+      "--filter",
+      "@riddle-quest/portal",
+      "preflight:youtube-upload"
+    ]
+  },
+  "handoff": "Upload build-youtube.zip and retain its manifest and test report for manual certification.",
+  "runbook": "docs/youtube-playables-operations.md",
+  "displayName": "YouTube",
+  "delivery": "web-target"
+}

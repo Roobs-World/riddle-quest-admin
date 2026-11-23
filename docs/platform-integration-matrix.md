@@ -9,7 +9,10 @@ Each release owns its provider SDK and exposes only capabilities approved for th
 | Reddit | Devvit Web and Payments | Server-side Reddit identity exchange and same-origin storage gateway | Reddit Gold purchases, matchmaking, tournaments, and presence | No game ad integration |
 | YouTube | YouTube Playables Game API | Playable Save | Provider lifecycle, locale, audio, readiness, and health reporting | Forbidden by the self-contained Playables contract |
 | Netflix | Partner contract required | Engineering-only local save adapter | Blocked until the private Netflix Games SDK and credentials are supplied | No ads unless Netflix's partner contract explicitly approves them |
-| Yahoo | Yahoo OpenID Connect plus Firebase | Yahoo OAuth identity exchange and Firebase-backed game data | Provider commerce unavailable; Stripe checkout is not implemented in application code | No approved Yahoo in-game ad integration |
+| Yahoo | Partner contract required | Engineering-only local save adapter | Provider identity, commerce and social features stay absent until an approved contract is available | No approved Yahoo in-game ad integration |
+| GameSnacks | GameSnacks SDK | Target-owned save and lifecycle adapter | Only capabilities permitted by the self-contained target | No Facebook ad integration |
+
+The [platform layout](platform-layout.md) defines canonical source ownership. A retained provider-only server module does not authorize adding its capability to a self-contained browser artifact.
 
 Facebook ad activation requires both deployment environment variables:
 

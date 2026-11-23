@@ -1,0 +1,21 @@
+{
+  "target": "yalgames",
+  "title": "YalGames review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:yalgames",
+  "summary": "Create an ad-free, commerce-disabled HTML5 archive for YalGames editorial review.",
+  "externalEffect": "None; contact submission, review and publication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "yalgames"
+    ]
+  },
+  "handoff": "Send the canonical HTTPS playable and review ZIP through the official contact route.",
+  "runbook": "docs/research/additional-release-targets-round-11-2026-09-21.md",
+  "displayName": "YalGames",
+  "delivery": "neutral-html5",
+  "artifact": "build-yalgames-review.zip",
+  "releaseGate": "YalGames contact submission, editorial review and publication remain manual; ads and commerce stay disabled."
+}

@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const {execSync} = require("child_process");
+const {stagePlatformSource} = require("./stage-platform-source.js");
 
 const repoRoot = path.resolve(__dirname, "..", "..");
 const sourceCoreDir = path.join(repoRoot, "packages", "core");
@@ -77,3 +78,5 @@ assertCopiedArtifactIsComplete(targetCoreDir);
 syncInstalledPackageCopy(targetCoreDir);
 
 console.log(`Prepared deploy build artifact at ${targetCoreDir}`);
+
+stagePlatformSource();

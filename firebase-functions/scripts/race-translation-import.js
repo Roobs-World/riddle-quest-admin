@@ -9,7 +9,7 @@ const {
   assertRaceTranslationAtomicWriteCount,
   assertRaceTranslationImportSnapshotStable,
   createRaceTranslationImportPlan,
-} = require("../lib/race/raceTranslationImport.js");
+} = require("../lib/firebase-functions/src/race/raceTranslationImport.js");
 
 const args = process.argv.slice(2);
 const option = (name) => {

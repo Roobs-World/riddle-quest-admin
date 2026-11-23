@@ -4,11 +4,11 @@ import {readFile, readdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {webBuildFacts} from './release-registry.mjs';
-import {assertTargetDependency, runtimePackage, targetDependencyEvidencePath} from '../../packages/portal/webTargetDependencies.ts';
+import {assertTargetDependency, runtimePackage, targetDependencyEvidencePath} from '../../packages/web-game/webTargetDependencies.ts';
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 for (const [target, facts] of Object.entries(webBuildFacts)) {
-  const directory = path.join(root, 'packages/portal', facts.outputDirectory);
+  const directory = path.join(root, 'packages/web-game', facts.outputDirectory);
   const evidence = JSON.parse(await readFile(targetDependencyEvidencePath(target, directory), 'utf8'));
   if (evidence.target !== target || evidence.outputDirectory !== directory || !evidence.files?.length) throw new Error(`Incomplete ${target} inventory`);
   const actualFiles = (await readdir(directory, {recursive: true, withFileTypes: true})).filter(entry => entry.isFile())

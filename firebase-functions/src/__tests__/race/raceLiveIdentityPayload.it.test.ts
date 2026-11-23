@@ -2,7 +2,7 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {DocumentSnapshot, getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser} from "../../race/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
-import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 
 /** Destructive fixtures may run only in a private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";

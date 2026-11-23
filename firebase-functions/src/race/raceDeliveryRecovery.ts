@@ -8,12 +8,12 @@ import {creatorRaceResult} from "./raceSettlement";
 import {deliverRaceSettlement} from "./raceSettlementDelivery";
 import {deliverRacePerformance} from "./racePerformanceDelivery";
 import {RaceMatchProfileSchema} from "./raceMatchPerformance";
-import {validateFacebookLiveRaceReferralSource} from "../facebook/facebookLiveRaceReferralDelivery";
-import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
-import {readFacebookLiveTournamentDeliveryInput} from "../facebook/facebookLiveRaceDelivery";
-import {isRedditFeatureEnabled} from "../reddit/redditFeatureFlags";
-import {readRedditLiveTournamentDeliveryInput} from "../reddit/redditLiveRaceDelivery";
-import {validateRedditLiveRaceReferralSource} from "../reddit/redditLiveRaceReferralDelivery";
+import {validateFacebookLiveRaceReferralSource} from "../../../platforms/web/facebook/server/facebookLiveRaceReferralDelivery";
+import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
+import {readFacebookLiveTournamentDeliveryInput} from "../../../platforms/web/facebook/server/facebookLiveRaceDelivery";
+import {isRedditFeatureEnabled} from "../../../platforms/web/reddit/server/redditFeatureFlags";
+import {readRedditLiveTournamentDeliveryInput} from "../../../platforms/web/reddit/server/redditLiveRaceDelivery";
+import {validateRedditLiveRaceReferralSource} from "../../../platforms/web/reddit/server/redditLiveRaceReferralDelivery";
 
 /**
  * Administrator-only recovery of an existing, repaired delivery receipt.

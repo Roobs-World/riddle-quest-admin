@@ -41,8 +41,8 @@ await verifyZip("build-gamesnacks.zip", "gamesnacks");
 for (const directory of ["jest", "facebook", "netflix", "yahoo"]) {
   await requireFile(`builds/${directory}/index.html`);
 }
-await requireFile("packages/reddit-app/dist/client/game.html");
-await requireFile("packages/reddit-app/dist/server/index.cjs");
+await requireFile("platforms/web/reddit/dist/client/game.html");
+await requireFile("platforms/web/reddit/dist/server/index.cjs");
 
 // Every executable release path carries a canonical monetization policy.
 const policy = JSON.parse(await readFile(path.join(repository, "config/platform-monetization.json"), "utf8"));

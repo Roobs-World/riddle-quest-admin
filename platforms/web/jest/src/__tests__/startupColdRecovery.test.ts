@@ -1,0 +1,158 @@
+import {JestBackendClient} from "../backend";
+import {MockJestPlatform} from "../MockJestPlatform";
+import {JestPurchaseCoordinator} from "../purchases";
+import {markJestPlayable, startJestSession, stopJestLoadingHeartbeat} from "../startup";
+import type {JestPlatformPort} from "../types";
+
+/** Runs startup through the real transport and coordinator, delaying only the external preflight. */
+function coldPurchaseStartup(preflightMs: number, grantStatus = 200) {
+  /** Records the platform's loading state without replacing startup or purchase behavior. */
+  const mockPlatform = new MockJestPlatform();
+  /** Uses the full provider contract when supplying its pending recovery page. */
+  const platform: JestPlatformPort = mockPlatform;
+  /** Detects any automatic SDK reinitialization during one startup attempt. */
+  const init = jest.spyOn(platform, "init");
+  /** Records provider acknowledgement after the authoritative response. */
+  const complete = jest.spyOn(platform, "completePurchase");
+  /** Records when Firebase authentication is allowed to follow recovery. */
+  const authenticate = jest.fn(async () => undefined);
+  /** Captures public progress calls so the manual-loading watchdog can be checked. */
+  const progress: Array<{
+    /** Controlled timestamp when the platform receives this progress update. */
+    at: number;
+    /** Percentage sent to the provider's manual-loading screen. */
+    value: number;
+  }> = [];
+  /** Retains the mock platform's actual loading-progress projection. */
+  const reportProgress = platform.setLoadingProgress;
+  /** Records the server/provider order across the real coordinator. */
+  const order: string[] = [];
+  jest.spyOn(platform, "setLoadingProgress").mockImplementation((value) => {
+    progress.push({at: Date.now(), value});
+    reportProgress(value);
+  });
+  jest.spyOn(platform, "getIncompletePurchases").mockResolvedValue({status: "success", value: {
+    purchases: [{purchaseToken: "pending-1", productSku: "coin-pack-1"}],
+    purchasesSigned: "signed-pending-page", hasMore: false,
+  }});
+  complete.mockImplementation(async () => {
+    order.push("complete");
+    return {status: "success", value: undefined};
+  });
+  /** Models a browser fetch that cannot send its signed POST until CORS completes. */
+  const fetchMock = jest.spyOn(globalThis, "fetch").mockImplementation(async (input, options) => {
+    if (String(input).endsWith("grantJestPurchase")) {
+      return new Promise<Response>((resolve, reject) => {
+        /** Represents cold preflight startup, not a backend grant that has already committed. */
+        const preflight = setTimeout(() => {
+          if (grantStatus === 200) order.push("authoritative-grant");
+          resolve(new Response(JSON.stringify({
+            granted: true, purchaseToken: "pending-1", coinsAwarded: 250, newCoins: 550,
+          }), {status: grantStatus}));
+        }, preflightMs);
+        options?.signal?.addEventListener("abort", () => {
+          clearTimeout(preflight);
+          reject(new DOMException("Aborted", "AbortError"));
+        }, {once: true});
+      });
+    }
+    order.push("identity");
+    return new Response(JSON.stringify({customToken: "firebase-token", uid: "uid-1"}));
+  });
+  /** Exercises the production default deadline rather than a test-only override. */
+  const backend = new JestBackendClient("https://functions.example.test");
+  /** Includes pending-purchase discovery, grant, completion, and signed identity startup. */
+  const pending = startJestSession(platform, backend, new JestPurchaseCoordinator(platform, backend), authenticate);
+  return {mockPlatform, platform, init, complete, authenticate, progress, order, fetchMock, pending};
+}
+
+beforeEach(() => jest.useFakeTimers({now: 0}));
+afterEach(() => {
+  jest.restoreAllMocks();
+  jest.useRealTimers();
+});
+
+it.each([16_456, 27_000])(
+  "recovers through a %ims cold preflight without fatal startup or repeated SDK init",
+  async (preflightMs) => {
+    /** Owns this isolated provider and its startup loading heartbeat. */
+    const scenario = coldPurchaseStartup(preflightMs);
+    try {
+      await jest.advanceTimersByTimeAsync(14_999);
+      expect(scenario.complete).not.toHaveBeenCalled();
+      expect(scenario.authenticate).not.toHaveBeenCalled();
+      expect(scenario.mockPlatform.loaded).toBe(false);
+      expect(scenario.progress).toContainEqual({at: 10_000, value: 16});
+      await jest.advanceTimersByTimeAsync(preflightMs - 14_999);
+      await expect(scenario.pending).resolves.toMatchObject({
+        status: "success", value: {firebaseAuthenticated: true},
+      });
+      expect(scenario.order).toEqual(["authoritative-grant", "complete", "identity"]);
+      expect(scenario.complete).toHaveBeenCalledTimes(1);
+      expect(scenario.complete).toHaveBeenCalledWith("pending-1");
+      expect(scenario.init).toHaveBeenCalledTimes(1);
+      expect(scenario.authenticate).toHaveBeenCalledTimes(1);
+      expect(scenario.fetchMock).toHaveBeenCalledTimes(2);
+      expect(scenario.mockPlatform.loaded).toBe(false);
+      expect(scenario.progress.every((update, index) =>
+        update.at - (scenario.progress[index - 1]?.at ?? 0) < 15_000,
+      )).toBe(true);
+      markJestPlayable(scenario.platform);
+      expect(scenario.mockPlatform.loaded).toBe(true);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      stopJestLoadingHeartbeat(scenario.platform);
+    }
+  },
+);
+
+it("bounds prolonged recovery at 30s while retaining the pending purchase and loading heartbeat", async () => {
+  /** Keeps the external preflight stalled beyond the supported cold-start window. */
+  const scenario = coldPurchaseStartup(60_000);
+  /** Records whether a retry screen has been exposed before the deadline. */
+  let settled = false;
+  void scenario.pending.then(() => {settled = true;});
+  try {
+    await jest.advanceTimersByTimeAsync(29_999);
+    expect(settled).toBe(false);
+    expect(scenario.mockPlatform.loaded).toBe(false);
+    expect(scenario.progress).toEqual([
+      {at: 0, value: 5}, {at: 0, value: 15}, {at: 10_000, value: 16}, {at: 20_000, value: 17},
+    ]);
+    await jest.advanceTimersByTimeAsync(1);
+    await expect(scenario.pending).resolves.toEqual({
+      status: "retryable-failure", message: "Jest backend grantJestPurchase timed out.",
+    });
+    expect(scenario.complete).not.toHaveBeenCalled();
+    expect(scenario.authenticate).not.toHaveBeenCalled();
+    expect(scenario.init).toHaveBeenCalledTimes(1);
+    expect(scenario.fetchMock).toHaveBeenCalledTimes(1);
+    expect(scenario.fetchMock.mock.calls[0]?.[1]?.signal?.aborted).toBe(true);
+    expect(scenario.mockPlatform.loaded).toBe(true);
+    expect(jest.getTimerCount()).toBe(0);
+    await jest.advanceTimersByTimeAsync(60_000);
+    expect(scenario.order).toEqual([]);
+  } finally {
+    stopJestLoadingHeartbeat(scenario.platform);
+  }
+});
+
+it("does not acknowledge or retry an authoritative rejection after a slow successful preflight", async () => {
+  /** Lets CORS finish before the server rejects the signed purchase. */
+  const scenario = coldPurchaseStartup(16_456, 400);
+  try {
+    await jest.advanceTimersByTimeAsync(16_456);
+    await expect(scenario.pending).resolves.toEqual({
+      status: "retryable-failure", message: "Jest backend grantJestPurchase failed (400)",
+    });
+    expect(scenario.complete).not.toHaveBeenCalled();
+    expect(scenario.authenticate).not.toHaveBeenCalled();
+    expect(scenario.fetchMock).toHaveBeenCalledTimes(1);
+    expect(scenario.fetchMock.mock.calls[0]?.[1]?.signal?.aborted).toBe(false);
+    expect(jest.getTimerCount()).toBe(0);
+    await jest.advanceTimersByTimeAsync(60_000);
+    expect(scenario.fetchMock).toHaveBeenCalledTimes(1);
+  } finally {
+    stopJestLoadingHeartbeat(scenario.platform);
+  }
+});

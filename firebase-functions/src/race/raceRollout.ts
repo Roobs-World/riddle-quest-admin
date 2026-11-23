@@ -10,9 +10,9 @@ import {
 } from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
-import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {isFacebookFirebaseUid} from "../../../platforms/web/facebook/server/facebookSecurity";
 import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
-import {isRedditFirebaseUid} from "../reddit/redditSecurity";
+import {isRedditFirebaseUid} from "../../../platforms/web/reddit/server/redditSecurity";
 
 /** Describes firestore. */
 type Firestore = FirebaseFirestore.Firestore;

@@ -4,7 +4,7 @@
 
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
-const {replayRaceDelivery} = require("../lib/race/raceDeliveryRecovery");
+const {replayRaceDelivery} = require("../lib/firebase-functions/src/race/raceDeliveryRecovery");
 
 const args = process.argv.slice(2);
 const option = name => {

@@ -184,7 +184,7 @@ Writes require a separately reviewed maintenance action with `--apply --confirm-
 
 ## Release and incident rules
 
-Selected-context private Live PvP is prepared in the [3 October context challenge evidence](evidence/facebook-context-challenges-2026-10-03.md). `targets/facebook/fbapp-config.json` declares the `race_context_challenge` custom-update template and the Facebook mode selects it. On an advertised callable `updateAsync` host, an explicit native choice starts the existing private lobby in the selected category; another explicit click sends its opaque handle to that same native context with `NO_PUSH`. Native context changes, language retirement and account deletion cannot retarget that invitation. The template is registered through a testing bundle upload, rather than the dashboard's scheduled User Notifications editor. The current dashboard still shows version 6 as Testing; this source manifest and SDK integration have not been uploaded or accepted. The shared dirty checkout has no eligible canonical handoff. Keep actual two-role delivery/acceptance and device coverage open after a clean reviewed candidate is prepared.
+Selected-context private Live PvP is prepared in the [3 October context challenge evidence](evidence/facebook-context-challenges-2026-10-03.md). `platforms/web/facebook/fbapp-config.json` declares the `race_context_challenge` custom-update template and the Facebook mode selects it. On an advertised callable `updateAsync` host, an explicit native choice starts the existing private lobby in the selected category; another explicit click sends its opaque handle to that same native context with `NO_PUSH`. Native context changes, language retirement and account deletion cannot retarget that invitation. The template is registered through a testing bundle upload, rather than the dashboard's scheduled User Notifications editor. The current dashboard still shows version 6 as Testing; this source manifest and SDK integration have not been uploaded or accepted. The shared dirty checkout has no eligible canonical handoff. Keep actual two-role delivery/acceptance and device coverage open after a clean reviewed candidate is prepared.
 
 - Keep Meta Business verification and Approved Partner approval deferred as requested. An audited non-production role-account test draft may be uploaded to gather P0 hosted evidence, but do not promote, expose public traffic, or call the project complete without the approvals.
 - The target build first rebuilds and audits the Facebook artifact. The draft preparer then runs the server-only Meta secret-boundary audit, reruns the artifact audit, creates the root-content ZIP, and records its SHA-256 and source commit. Upload only those exact bytes as a non-production test draft after the local/backend gates required for that test pass.
@@ -205,7 +205,7 @@ The preparer refuses to replace the rebuildable ZIP while any retained handoff i
 If the outcome is unknown, do not begin again or retransmit. Reconcile the existing draft in Meta first. After Meta shows the non-production draft, save a redacted dashboard capture outside the repository and bind its bytes plus the draft ID to the accepted ZIP:
 
 ```sh
-pnpm --dir packages/portal facebook:draft ambiguous \
+pnpm --dir packages/web-game facebook:draft ambiguous \
   --archive-hash EXACT_64_HEX_SHA256 \
   --reason "dashboard result unknown after transmission"
 ```
@@ -213,7 +213,7 @@ pnpm --dir packages/portal facebook:draft ambiguous \
 This transition is exclusive for that hash and retained; concurrent or repeated transitions of its barrier fail closed. After reconciling the existing artifact in Meta, bind its redacted evidence plus draft ID to the accepted ZIP:
 
 ```sh
-pnpm --dir packages/portal facebook:draft accept \
+pnpm --dir packages/web-game facebook:draft accept \
   --archive-hash EXACT_64_HEX_SHA256 \
   --draft-id META_DRAFT_ID \
   --evidence /absolute/path/to/redacted-draft-evidence
@@ -222,7 +222,7 @@ pnpm --dir packages/portal facebook:draft accept \
 After every gate and review passes, a human promotes that existing draft without uploading new bytes. Obtain or independently download and hash the production artifact; the following command refuses any hash different from the accepted draft and writes an owner-private promotion receipt:
 
 ```sh
-pnpm --dir packages/portal facebook:draft promote \
+pnpm --dir packages/web-game facebook:draft promote \
   --archive-hash EXACT_64_HEX_SHA256 \
   --production-hash EXACT_64_HEX_SHA256 \
   --evidence /absolute/path/to/redacted-promotion-evidence

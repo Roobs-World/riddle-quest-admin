@@ -1,10 +1,12 @@
 const js = require("@eslint/js");
 const tseslint = require("@typescript-eslint/eslint-plugin");
 const globals = require("globals");
+const path = require("node:path");
+const repositoryRoot = path.resolve(__dirname, "..");
 
 module.exports = [
   {
-    ignores: ["lib/**/*", "generated/**/*"],
+    ignores: ["firebase-functions/lib/**/*", "firebase-functions/generated/**/*", "firebase-functions/.build-source/**/*"],
   },
   js.configs.recommended,
   ...tseslint.configs["flat/recommended"],
@@ -27,19 +29,26 @@ module.exports = [
     },
   },
   {
-    files: ["src/**/*.ts"],
+    files: ["platforms/**/server/scripts/**/*.js"],
+    languageOptions: {sourceType: "commonjs"},
+    rules: {"@typescript-eslint/no-require-imports": "off"},
+  },
+  {
+    files: ["firebase-functions/src/**/*.ts", "platforms/**/server/**/*.ts"],
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        projectService: false,
+        project: "./tsconfig.test.json",
         tsconfigRootDir: __dirname,
       },
     },
   },
   {
-    files: ["src/__tests__/**/*.ts", "src/**/*.test.ts", "src/**/*.spec.ts"],
+    files: ["firebase-functions/src/__tests__/**/*.ts", "firebase-functions/src/**/*.test.ts", "firebase-functions/src/**/*.spec.ts", "platforms/**/server/__tests__/**/*.ts"],
     languageOptions: {
       parserOptions: {
         projectService: false,
+        project: false,
       },
     },
     rules: {
@@ -50,4 +59,4 @@ module.exports = [
       quotes: "off",
     },
   },
-];
+].map((entry) => ({...entry, basePath: repositoryRoot}));

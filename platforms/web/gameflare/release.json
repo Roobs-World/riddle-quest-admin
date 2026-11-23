@@ -1,0 +1,21 @@
+{
+  "target": "gameflare",
+  "title": "GameFlare Distribution review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:gameflare",
+  "summary": "Create an ad-free neutral HTML5 archive for GameFlare suitability and contract review.",
+  "externalEffect": "None; account creation, contract acceptance, payout setup, upload and production approval remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "gameflare"
+    ]
+  },
+  "handoff": "Confirm host-side advertising without bundled ad code and non-exclusive terms before submission.",
+  "runbook": "docs/research/additional-release-targets-round-4-2026-09-21.md",
+  "displayName": "GameFlare Distribution",
+  "delivery": "neutral-html5",
+  "artifact": "build-gameflare-review.zip",
+  "releaseGate": "GameFlare account setup, contract review, upload, payout configuration and production approval remain manual."
+}

@@ -4,7 +4,7 @@ import {completeGame} from "../gameplay/completeGameCallable";
 import {submitSinglePlayerGuess} from "../gameplay/submitSinglePlayerGuessCallable";
 import {getHint, spendCoins, skipRiddle} from "../gameplay/gameLogic";
 import {joinLiveRace, updateLiveRace} from "../race/raceLiveCallables";
-import {redditGameplay} from "../reddit/redditGameplayEndpoint";
+import {redditGameplay} from "../../../platforms/web/reddit/server/redditGameplayEndpoint";
 
 it("declares database-adjacent gameplay alongside existing client endpoints", () => {
   for (const callable of [getCurrentClassicRiddle, getCurrentDailyChallenge, getClassicRiddleBuffer,

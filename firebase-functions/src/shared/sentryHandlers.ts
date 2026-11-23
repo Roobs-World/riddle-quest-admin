@@ -12,7 +12,7 @@ import {HttpsError, onCall, onRequest} from "firebase-functions/v2/https";
 import type {ScheduleFunction, ScheduleOptions, ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
-import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../jest/jestAccountDeletion";
+import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "./accountDeletion";
 import {captureException, flushSentry} from "./sentry";
 
 /**

@@ -1,9 +1,9 @@
 import {LIVE_RACE_COUNTDOWN_MS, RACE_TARGET_CORRECT} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
-import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {isFacebookFirebaseUid} from "../../../platforms/web/facebook/server/facebookSecurity";
 import {parseRunRecord} from "./raceSetupService";
 import type {RaceRunRecord} from "./raceEngine";
-import {isRedditFirebaseUid} from "../reddit/redditSecurity";
+import {isRedditFirebaseUid} from "../../../platforms/web/reddit/server/redditSecurity";
 import {DELETED_LIVE_RACE_USER_ID} from "./raceLivePrivacy";
 
 /** Frozen creator deck shared structurally by provider-owned official recorders. */

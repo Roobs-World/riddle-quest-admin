@@ -14,7 +14,7 @@ Start the normal development server:
 pnpm --filter @riddle-quest/portal dev:jest
 ```
 
-Open `http://localhost:5173/targets/jest/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
+Open `http://localhost:5173/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
 
 For repeatable automated regression tests, use the project's deterministic harness and Playwright suite:
 
@@ -38,7 +38,7 @@ While logged in to Jest, open:
 https://jest.com/g/riddle-q?host=http://localhost:3000
 ```
 
-The embedded-development check selects the real `JestSDK` adapter, not the deterministic local harness. The production deploy validator deliberately rejects localhost origins, so never add `http://localhost:3000` to the deployed `JEST_GAME_ORIGIN` allowlist. Backend-authoritative checks in this mode require a local Functions emulator selected through the ignored `config/vite/portal/.env.jest.local`; otherwise use an uploaded sandbox build for real backend flows. Do not add `harness=` to this URL.
+The embedded-development check selects the real `JestSDK` adapter, not the deterministic local harness. The production deploy validator deliberately rejects localhost origins, so never add `http://localhost:3000` to the deployed `JEST_GAME_ORIGIN` allowlist. Backend-authoritative checks in this mode require a local Functions emulator selected through the ignored `platforms/web/jest/.env.jest.local`; otherwise use an uploaded sandbox build for real backend flows. Do not add `harness=` to this URL.
 
 Validate Jest SDK loading, player identity payloads, registration dismissal/completion, entry payloads, cancellation, and retryable SDK errors here. Validate player-data persistence and catalog reads through a local Functions emulator or uploaded sandbox build. Payment settlement, notification delivery, and referral attribution require sandbox users.
 
@@ -166,7 +166,7 @@ gate for provider behavior rather than treating the localhost mock as proof of c
 
 ### Local SDK mock
 
-Run `pnpm --filter @riddle-quest/portal dev:jest` and open `http://localhost:5173/targets/jest/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
+Run `pnpm --filter @riddle-quest/portal dev:jest` and open `http://localhost:5173/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
 
 Run both deterministic browser suites with:
 
@@ -210,7 +210,7 @@ These environments are complementary: local mocks prove application branches, th
 - Jest build origin: `https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com`
 - Functions base URL: `https://us-central1-riddle-quest-ec2b2.cloudfunctions.net`
 
-The committed `config/vite/portal/.env.jest` contains public Firebase client configuration. Vite loads only that dedicated repository-level directory; any legacy `packages/portal/.env*` file blocks the production audit and timestamped release. `JEST_SHARED_SECRET` remains in Firebase Secret Manager. The only deployed Functions are the authoritative Jest identity, purchase, referral, profile, leaderboard, riddle, and gameplay boundaries; the obsolete legacy-migration Functions have been deleted.
+The committed `platforms/web/jest/.env.jest` contains public Firebase client configuration. Vite loads only that dedicated repository-level directory; any legacy `packages/web-game/.env*` file blocks the production audit and timestamped release. `JEST_SHARED_SECRET` remains in Firebase Secret Manager. The only deployed Functions are the authoritative Jest identity, purchase, referral, profile, leaderboard, riddle, and gameplay boundaries; the obsolete legacy-migration Functions have been deleted.
 
 ### Google Cloud runtime health
 
@@ -248,7 +248,7 @@ set `complete` manually.
 Install the credential template outside the repository with owner-only permissions, then set the game upload token and notification email. The release rejects repository-local, linked, group-readable, or world-readable credential files:
 
 ```bash
-install -D -m 600 packages/portal/jest-release.credentials.example \
+install -D -m 600 platforms/web/jest/jest-release.credentials.example \
   "${XDG_CONFIG_HOME:-$HOME/.config}/riddle-quest/jest-release.env"
 pnpm release:jest
 ```
@@ -325,7 +325,7 @@ uncertain attempt. Reconcile it through the [Developer Console build status and 
 After a documented `202`, both receipts transition to accepted-pending and record the version ID and exact ZIP checksum;
 the source-wide barrier deliberately remains. Only after the Console or completion email reports an authoritative final
 status may an owner manually remove the corresponding `<game-id>.<source-commit>.unresolved-upload.json` file from
-`packages/portal/.jest-upload-receipts`; retain the accepted build-specific receipt as the audit record, or reconcile it
+`packages/web-game/.jest-upload-receipts`; retain the accepted build-specific receipt as the audit record, or reconcile it
 before ever retrying that exact version. Do not delete either barrier and retry blindly: Jest may already have accepted
 the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
 deliberately does not infer readiness from elapsed time or poll an unofficial URL. Use the Developer Console or completion
