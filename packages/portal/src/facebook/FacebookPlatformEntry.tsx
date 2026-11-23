@@ -112,8 +112,11 @@ export function FacebookPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
   const [presenceAvailable, setPresenceAvailable] = useState(false);
+  /** Current SDK catalog and purchase callback exposed to hosted play. */
   const [commercePresentation, setCommercePresentation] = useState<{
+    /** Visible Facebook product summaries for the authenticated account. */
     products: ProductSummary[];
+    /** Checkout callback owned by the current commerce session. */
     purchase: (productId: string) => Promise<PurchaseResult>;
   }>();
   /** Provides player persistence ref behavior. */
@@ -141,7 +144,9 @@ export function FacebookPlatformEntry() {
     let unsubscribePause: (() => void) | undefined;
     /** Provides unsubscribe resume behavior. */
     let unsubscribeResume: (() => void) | undefined;
+    /** Removes the payment recovery listener when the account session retires. */
     let unsubscribeCommerceResume: (() => void) | undefined;
+    /** Payment lifecycle controller for the authenticated Facebook account. */
     let commerceSession: FacebookCommerceSession | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
@@ -169,6 +174,7 @@ export function FacebookPlatformEntry() {
         const userId = await authenticateFacebook(sdk);
         /** Provides ads behavior. */
         let ads = undefined;
+        /** Latest verified ad-removal entitlement passed to the ad adapter. */
         let removeInterstitialAds: boolean | undefined;
         /** Facebook-only continuation capability bound to the current authenticated session. */
         let attemptRecovery: import("../platform/types").AttemptRecoveryCapability | undefined;
@@ -224,6 +230,7 @@ export function FacebookPlatformEntry() {
           configurationLoaded = true;
           removeInterstitialAds = clientConfiguration.removeInterstitialAds;
           if (ageCategory === "13_plus" && clientConfiguration.commerceEnabled && facebookPaymentsAvailable(sdk)) {
+            /** Payment session connected to this authenticated host and deletion gate. */
             const commerce = new FacebookCommerceSession({
               sdk,
               payments: sdk.payments,

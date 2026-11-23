@@ -64,9 +64,13 @@ export const getFacebookClientConfiguration = onCallWithSentry(
     /** Provides configuration behavior. */
     const configuration = resolveFacebookClientConfiguration(commerceAccount.data());
     if (configuration.commerceEnabled) {
+      /** Provider identity matches for this account, capped to detect ambiguity. */
       const identities = await getFirestore().collection("providerIdentities").where("uid", "==", request.auth.uid).limit(2).get();
+      /** Only provider identity eligible to establish the current payment generation. */
       const identity = identities.size === 1 ? identities.docs[0].data() : undefined;
+      /** Account generation asserted by the authenticated Facebook session. */
       const generation = request.auth.token.accountGeneration;
+      /** Trusted creation or deletion timestamp delimiting the current account generation. */
       const startedAt = generation === 1 ? identity?.createdAt : identity?.lastDeletedAt;
       configuration.commerceEnabled = identity?.provider === "facebook" && identity.status === "active" &&
         identity.accountGeneration === generation && typeof generation === "number" && Number.isSafeInteger(generation) &&

@@ -14,6 +14,7 @@ type CommerceAccount = {
   coinDebt: number;
   /** Stores remove interstitial ads. */
   removeInterstitialAds: boolean;
+  /** Verified durable purchase receipts that currently support ad removal. */
   durableReceiptIds: string[];
 };
 
@@ -101,6 +102,7 @@ const accountFrom = (value: Record<string, unknown> | undefined): CommerceAccoun
   if (value?.removeInterstitialAds !== undefined && typeof value.removeInterstitialAds !== "boolean") {
     throw new Error("invalid-facebook-commerce-entitlement");
   }
+  /** Stored durable receipt identifiers validated before entitlement calculation. */
   const durableReceiptIds = value?.durableReceiptIds ?? [];
   if (!Array.isArray(durableReceiptIds) || !durableReceiptIds.every((id): id is string => typeof id === "string" && /^[0-9a-f]{64}$/u.test(id)) ||
     new Set(durableReceiptIds).size !== durableReceiptIds.length || durableReceiptIds.length > 0 && value?.removeInterstitialAds !== true) {
@@ -184,18 +186,24 @@ export const facebookCommerceTokenId = (purchaseToken: string): string => {
 
 /** The callable supplies references derived from the verified webhook owner. */
 export type FacebookPaymentGrantAuthorization = {
+  /** Webhook token document that establishes payment ownership and refund state. */
   tokenRef: DocumentReference;
+  /** Provider identity document whose generation must still authorize the grant. */
   providerRef: DocumentReference;
+  /** Authenticated account generation expected by the grant transaction. */
   accountGeneration: number;
 };
 
 /** Rechecks owner, deletion generation, refund state and token uniqueness in the grant transaction. */
 async function authorizePaymentGrant(transaction: Transaction, authorization: FacebookPaymentGrantAuthorization,
   input: VerifiedFacebookPurchase, receiptId: string): Promise<void> {
+  /** Latest webhook token and identity state read in the grant transaction. */
   const [tokenSnapshot, providerSnapshot] = await Promise.all([
     transaction.get(authorization.tokenRef), transaction.get(authorization.providerRef),
   ]);
+  /** Validated webhook state that must match the caller's receipt and account. */
   const token = facebookPaymentTokenSchema.parse(tokenSnapshot.data());
+  /** Current provider identity checked against the authenticated account. */
   const provider = providerSnapshot.data();
   if (authorization.tokenRef.id !== facebookCommerceTokenId(input.purchaseToken) ||
     token.providerIdentityId !== authorization.providerRef.id || token.owner.kind !== "bound" ||
@@ -254,7 +262,10 @@ export async function grantVerifiedFacebookPurchase(
   db: Firestore,
   input: VerifiedFacebookPurchase,
   authorization?: FacebookPaymentGrantAuthorization,
-): Promise<FacebookPurchaseResult & {coinsAwarded: number}> {
+): Promise<FacebookPurchaseResult & {
+  /** New spendable coins credited by this grant, excluding receipt replays. */
+  coinsAwarded: number
+}> {
   assertCommerceEnabled();
   requireUid(input.uid);
   assertBounded("payment-id", input.paymentId, 1_024);
@@ -360,7 +371,10 @@ export async function refundVerifiedFacebookPurchase(
 /** Refunds continue during a checkout kill switch and never require retaining raw payment IDs. */
 export async function refundVerifiedFacebookPurchaseReceipt(
   db: Firestore,
-  input: Omit<VerifiedFacebookRefund, "paymentId"> & {purchaseReceiptId: string},
+  input: Omit<VerifiedFacebookRefund, "paymentId"> & {
+    /** Opaque purchase receipt identifier retained for refund reconciliation. */
+    purchaseReceiptId: string
+  },
 ): Promise<FacebookRefundResult> {
   assertBounded("refund-event-id", input.eventId, 1_024);
   if (!/^[0-9a-f]{64}$/u.test(input.purchaseReceiptId)) throw new Error("invalid-facebook-receipt-id");
@@ -521,6 +535,7 @@ export async function refundVerifiedFacebookPurchaseReceipt(
     /** Provides next account behavior. */
     const durableReceiptIds = receipt.kind === "durable"
       ? state.account.durableReceiptIds.filter(id => id !== purchaseRef.id) : state.account.durableReceiptIds;
+    /** Commerce debt and remaining durable entitlements after this refund. */
     const nextAccount: CommerceAccount = {
       coinDebt: safeAdd("coin-debt", state.account.coinDebt, debtAdded),
       removeInterstitialAds: receipt.kind === "durable" ? durableReceiptIds.length > 0 : state.account.removeInterstitialAds,

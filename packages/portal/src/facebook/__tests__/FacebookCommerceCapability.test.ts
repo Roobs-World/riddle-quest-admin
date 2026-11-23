@@ -1,5 +1,6 @@
 import {describe, expect, jest, test} from "@jest/globals";
 import {FacebookCommerceCapability, parseFacebookCatalog} from "../FacebookCommerceCapability";
+import type {FacebookSignedPurchaseGrant} from "../FacebookPurchaseRecovery";
 
 /** Provides coin product id behavior. */
 const coinProductId = "com.roobsworld.riddlequest.coinpack1";
@@ -297,10 +298,17 @@ describe("Facebook commerce capability", () => {
     const purchaseReady = new Promise<void>((resolve) => {
       releasePurchase = resolve;
     });
+    /** Signals that checkout started after its pending-receipt read. */
+    let markPurchaseStarted: () => void = () => undefined;
+    /** Observes the provider checkout phase without counting implementation microtasks. */
+    const purchaseStarted = new Promise<void>((resolve) => {
+      markPurchaseStarted = resolve;
+    });
     /** Provides sdk behavior. */
     const sdk = payments({
       purchaseAsync: jest.fn(async () => {
         events.push("purchase:start");
+        markPurchaseStarted();
         await purchaseReady;
         events.push("purchase:end");
         return purchase();
@@ -314,11 +322,10 @@ describe("Facebook commerce capability", () => {
       }),
     });
     /** Provides capability behavior. */
-    const capability = new FacebookCommerceCapability(sdk, async () => ({
-      granted: true,
-      providerReceiptId: "receipt-1",
-      consume: true,
-    }));
+    const capability = new FacebookCommerceCapability(sdk, async () => {
+      events.push("grant");
+      return {granted: true, providerReceiptId: "receipt-1", consume: true};
+    });
 
     /** Provides purchase result behavior. */
     const purchaseResult = capability.purchase(coinProductId);
@@ -326,8 +333,8 @@ describe("Facebook commerce capability", () => {
     const recoveryResult = capability.recover();
     /** Provides duplicate recovery behavior. */
     const duplicateRecovery = capability.recover();
-    await Promise.resolve();
-    expect(events).toEqual(["purchase:start"]);
+    await purchaseStarted;
+    expect(events).toEqual(["recover:read", "purchase:start"]);
     releasePurchase?.();
 
     await expect(Promise.all([purchaseResult, recoveryResult, duplicateRecovery])).resolves.toEqual([
@@ -335,7 +342,107 @@ describe("Facebook commerce capability", () => {
       {status: "success", value: undefined},
       {status: "success", value: undefined},
     ]);
-    expect(events).toEqual(["purchase:start", "purchase:end", "consume", "recover:read"]);
+    expect(events).toEqual(["recover:read", "purchase:start", "purchase:end", "grant", "consume", "recover:read"]);
+    expect(sdk.purchaseAsync).toHaveBeenCalledTimes(1);
+    expect(sdk.getPurchasesAsync).toHaveBeenCalledTimes(2);
+  });
+
+  test("advances past a permanently rejected same-SKU receipt without charging again or consuming it", async () => {
+    /** Keeps the deleted generation ahead of a valid current receipt. */
+    const oldPurchase = purchase({paymentID: "old-payment", purchaseToken: "old-token", signedRequest: "old.signature"});
+    /** Reflects only successfully consumed receipts disappearing from the SDK. */
+    let pending = [oldPurchase, purchase()];
+    /** Records grant-before-consume ordering and any stale retry. */
+    const events: string[] = [];
+    /** Refuses a new checkout because an existing valid receipt can fulfill the request. */
+    const sdk = payments({
+      purchaseAsync: jest.fn(),
+      getPurchasesAsync: async () => pending,
+      consumePurchaseAsync: async (token: string) => {
+        events.push(`consume:${token}`);
+        pending = pending.filter(item => item.purchaseToken !== token);
+      },
+    });
+    /** Rejects only the old receipt under the server's permanent owner check. */
+    const grant = jest.fn<FacebookSignedPurchaseGrant>(async input => {
+      events.push(`grant:${input.signedRequest}`);
+      if (input.signedRequest === "old.signature") throw Object.assign(new Error("old-generation"), {code: "functions/failed-precondition"});
+      return {granted: true, providerReceiptId: "receipt-1", consume: true};
+    });
+    /** Shares one quarantine between checkout and later resume recovery. */
+    const capability = new FacebookCommerceCapability(sdk, grant);
+    await expect(capability.purchase(coinProductId)).resolves.toEqual({status: "success", value: {providerReceiptId: "receipt-1"}});
+    await expect(capability.recover()).resolves.toEqual({status: "success", value: undefined});
+    expect(events).toEqual(["grant:old.signature", "grant:signature.payload", "consume:purchase-token-1"]);
+    expect(sdk.purchaseAsync).not.toHaveBeenCalled();
+  });
+
+  test("shares recovery's old-generation quarantine with the next explicit same-SKU checkout", async () => {
+    /** Models Meta keeping an unconsumed receipt from a deleted game account. */
+    const oldPurchase = purchase({paymentID: "old-payment", purchaseToken: "old-token", signedRequest: "old.signature"});
+    /** Captures both old and current authoritative requests. */
+    const grant = jest.fn<FacebookSignedPurchaseGrant>(async input => {
+      if (input.signedRequest === "old.signature") throw Object.assign(new Error("old-generation"), {code: "functions/failed-precondition"});
+      return {granted: true, providerReceiptId: "receipt-1", consume: true};
+    });
+    /** Keeps the old entry present across recovery and checkout. */
+    const sdk = payments({getPurchasesAsync: async () => [oldPurchase]});
+    /** Owns the shared quarantine without persisting financial state. */
+    const capability = new FacebookCommerceCapability(sdk, grant);
+    await expect(capability.recover()).resolves.toEqual({status: "success", value: undefined});
+    await expect(capability.purchase(coinProductId)).resolves.toEqual({status: "success", value: {providerReceiptId: "receipt-1"}});
+    expect(grant.mock.calls).toEqual([[{signedRequest: "old.signature"}], [{signedRequest: "signature.payload"}]]);
+    expect(sdk.purchaseAsync).toHaveBeenCalledTimes(1);
+    expect(sdk.consumePurchaseAsync).toHaveBeenCalledWith("purchase-token-1");
+  });
+
+  test("never opens another paid checkout automatically after a new charge is permanently rejected", async () => {
+    /** Preserves rejected charges in the provider's unconsumed history. */
+    const pending: ReturnType<typeof purchase>[] = [];
+    /** Counts actual provider checkouts rather than grant retries. */
+    let charges = 0;
+    /** Returns a distinct receipt only after another explicit purchase call. */
+    const sdk = payments({
+      getPurchasesAsync: async () => pending,
+      purchaseAsync: jest.fn(async () => {
+        charges += 1;
+        /** Identifies the receipt created by this single provider dialog. */
+        const next = purchase({paymentID: `payment-${charges}`, purchaseToken: `token-${charges}`, signedRequest: `signature-${charges}`});
+        pending.push(next);
+        return next;
+      }),
+    });
+    /** Rejects the first newly created charge without authorizing its consumption. */
+    const grant = jest.fn<FacebookSignedPurchaseGrant>(async input => {
+      if (input.signedRequest === "signature-1") throw Object.assign(new Error("old-generation"), {code: "functions/failed-precondition"});
+      return {granted: true, providerReceiptId: "receipt-2", consume: true};
+    });
+    /** Allows a later user action while forbidding an implicit second charge. */
+    const capability = new FacebookCommerceCapability(sdk, grant);
+    await expect(capability.purchase(coinProductId)).resolves.toEqual({status: "terminal-failure", message: "old-generation"});
+    expect(charges).toBe(1);
+    expect(sdk.consumePurchaseAsync).not.toHaveBeenCalled();
+    await expect(capability.purchase(coinProductId)).resolves.toEqual({status: "success", value: {providerReceiptId: "receipt-2"}});
+    expect(charges).toBe(2);
+    expect(grant.mock.calls).toEqual([[{signedRequest: "signature-1"}], [{signedRequest: "signature-2"}]]);
+    expect(sdk.consumePurchaseAsync).toHaveBeenCalledTimes(1);
+    expect(sdk.consumePurchaseAsync).toHaveBeenCalledWith("token-2");
+  });
+
+  test("retries a new charge's temporary grant failure without opening another provider checkout", async () => {
+    /** Returns one new charge and no earlier SDK receipts. */
+    const sdk = payments();
+    /** Lets the original authoritative request recover on a later explicit retry. */
+    const grant = jest.fn<FacebookSignedPurchaseGrant>()
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValue({granted: true, providerReceiptId: "receipt-1", consume: true});
+    /** Retains the unresolved receipt while the grant service is unavailable. */
+    const capability = new FacebookCommerceCapability(sdk, grant);
+    await expect(capability.purchase(coinProductId)).resolves.toEqual({status: "retryable-failure", message: "offline"});
+    await expect(capability.purchase(coinProductId)).resolves.toEqual({status: "success", value: {providerReceiptId: "receipt-1"}});
+    expect(sdk.purchaseAsync).toHaveBeenCalledTimes(1);
     expect(sdk.getPurchasesAsync).toHaveBeenCalledTimes(1);
+    expect(grant.mock.calls).toEqual([[{signedRequest: "signature.payload"}], [{signedRequest: "signature.payload"}]]);
+    expect(sdk.consumePurchaseAsync).toHaveBeenCalledWith("purchase-token-1");
   });
 });

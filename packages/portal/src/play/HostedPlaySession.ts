@@ -144,7 +144,9 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
   const services = input.accountDeletionServiceGate
     ? coordinateHostServices(configured, input.accountDeletionServiceGate)
     : configured;
+  /** Stable purchase callback whose concurrent invocations share admission. */
   const purchaseOwner = input.platformPurchase ?? input.hostServices.requestPurchase;
+  /** Admits one checkout at a time for the same platform purchase callback. */
   const requestPurchase: HostServices["requestPurchase"] = async productId => {
     if (activePlatformPurchases.has(purchaseOwner)) return {
       success: false,
