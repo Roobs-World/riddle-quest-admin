@@ -91,6 +91,17 @@ it("stores only low-integrity preferences", () =>
     registrationPromptDismissedAt: undefined,
     firstMilestoneMarked: undefined,
   }));
+it.each([
+  {state: "a new guest store", values: {}},
+  {state: "a cleared guest snapshot", values: {riddleQuestPlayerState: null}},
+  {state: "an unset guest snapshot", values: {riddleQuestPlayerState: undefined}},
+])("returns no saved progress for $state", async ({values}) => {
+  /** Provider-owned storage can be empty before play or after clearing progress. */
+  const mock = sdk();
+  mock.data.getAll.mockReturnValue(values);
+
+  await expect(new JestSdkPlatform(mock).readPlayerData()).resolves.toBeNull();
+});
 it("loads a versioned player snapshot from the Jest player store", async () => {
   /** Provides mock behavior. */
   const mock = sdk();
