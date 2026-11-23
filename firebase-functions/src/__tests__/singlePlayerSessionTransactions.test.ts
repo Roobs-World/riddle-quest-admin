@@ -113,8 +113,8 @@ import {
   skipAuthoritativeRiddle,
   submitAuthoritativeGuess,
   type SinglePlayerSessionState,
-} from "../gameplay/singlePlayerSession";
-import {getCompletionBoundAuthoritativeSession} from "../gameplay/singlePlayerCompletionBinding";
+} from "../gameplay/sessions/singlePlayerSession";
+import {getCompletionBoundAuthoritativeSession} from "../gameplay/sessions/singlePlayerCompletionBinding";
 import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 
 /** Defines the user id value. */

@@ -1,4 +1,4 @@
-import {readProviderLiveTournamentRun} from "../../../../../firebase-functions/src/race/raceLiveTournament";
+import {readProviderLiveTournamentRun} from "../../../../../firebase-functions/src/race/live/raceLiveTournament";
 
 /** Reddit official scores resolve only owned Reddit live victories. */
 export function readRedditLiveTournamentRun(transaction: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,

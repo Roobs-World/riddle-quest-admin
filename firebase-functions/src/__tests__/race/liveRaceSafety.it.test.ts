@@ -3,7 +3,7 @@ import {initializeApp, deleteApp, getApps, type App} from "firebase-admin/app";
 import {createHmac} from "node:crypto";
 import {getFirestore} from "firebase-admin/firestore";
 import {getDatabase, type Database} from "firebase-admin/database";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {blockKnownRival, reportKnownRival} from "../../social/socialSafety";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";

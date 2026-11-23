@@ -1,6 +1,6 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {bindRaceRequest, assertRaceRequestReplay, assertRaceMutationReceipt, assertLegacyRaceStart, type RaceReceiptCommand} from "../../race/raceRequestBinding";
-import {applyRaceGuess, applyRaceHint, applyRaceSkip, abandonRaceRun, toRaceRunView, type RaceRunRecord} from "../../race/raceEngine";
+import {bindRaceRequest, assertRaceRequestReplay, assertRaceMutationReceipt, assertLegacyRaceStart, type RaceReceiptCommand} from "../../race/runs/raceRequestBinding";
+import {applyRaceGuess, applyRaceHint, applyRaceSkip, abandonRaceRun, toRaceRunView, type RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Original typed guess whose letters never enter binding metadata. */
 const input = {runId: "run", riddleId: "q-0", requestId: "request-0001", guess: "xxxx"};

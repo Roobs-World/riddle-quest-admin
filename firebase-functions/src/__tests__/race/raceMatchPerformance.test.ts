@@ -1,7 +1,7 @@
 import {emptyRaceMatchProfile, raceDifficultyAdjustedMs, racePerformanceSample, recordRaceExposure,
   recordRacePerformance, scoreRaceCandidate, RaceMatchProfileSchema, racePerformanceExpectation,
-  recordRaceCompletion, raceCompletionExpectation, RacePerformanceSampleSchema} from "../../race/raceMatchPerformance";
-import type {RaceRunRecord} from "../../race/raceEngine";
+  recordRaceCompletion, raceCompletionExpectation, RacePerformanceSampleSchema} from "../../race/matchmaking/raceMatchPerformance";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Transparent estimator fixtures exercise observable match quality, not storage implementation. */
 const candidate = (overrides: Partial<Parameters<typeof scoreRaceCandidate>[2]> = {}) => ({creatorId: "creator", categoryId: "history" as const,

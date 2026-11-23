@@ -1,13 +1,13 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "../../../../src/races/contracts/index.js";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
 import {startRaceRunForUser} from "../../race/raceService";
 import {buildDeterministicRaceDeck, listRaceCategoriesForLocale, loadEligibleContent, requestDocumentId} from "../../race/raceSetupService";
-import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
+import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
 import {graphemeLength} from "../../../../src/gameplay/input/graphemes.js";
-import type {LiveMatch, LiveTicket} from "../../race/raceLiveState";
+import type {LiveMatch, LiveTicket} from "../../race/live/raceLiveState";
 
 /** Every canonical mutation belongs to this pass's private loopback demo. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`, NOW = 1_800_000_000_000;

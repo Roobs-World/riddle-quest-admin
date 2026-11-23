@@ -1,8 +1,8 @@
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue, Timestamp} from "firebase-admin/firestore";
-import {ensureAuthoritativeSession, skipAuthoritativeRiddle} from "../gameplay/singlePlayerSession";
-import {skipRiddle} from "../gameplay/gameLogic";
+import {ensureAuthoritativeSession, skipAuthoritativeRiddle} from "../gameplay/sessions/singlePlayerSession";
+import {skipRiddle} from "../gameplay/callables/gameLogic";
 
 /** Derived preparation is observable while the callable, lease and skip transaction remain real. */
 const mockSupply = jest.fn(async (_user: string, _index: number, _locale: string) => undefined);

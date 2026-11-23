@@ -2,7 +2,7 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {getRaceOutcomeForUser, resumeRaceRunForUser, publishRaceChallengeForUser} from "../../race/raceService";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Public-interface regressions run exclusively against the local demo emulator. */
 let db: FirebaseFirestore.Firestore;

@@ -1,6 +1,6 @@
 import {RaceGhostEventSchema, RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {buildRaceBotOpponent, parseRaceBotOffer, type RaceBotOffer} from "../../race/raceBot";
-import {toRaceRunView, refreshRaceRun, raceDeadlineAtMs, type RaceRunRecord} from "../../race/raceEngine";
+import {buildRaceBotOpponent, parseRaceBotOffer, type RaceBotOffer} from "../../race/matchmaking/raceBot";
+import {toRaceRunView, refreshRaceRun, raceDeadlineAtMs, type RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Complete immutable fallback deck used across multiple simulated skill levels. */
 const riddles = Array.from({length: 15}, (_, position) => ({position, riddleId: `r${position}`,

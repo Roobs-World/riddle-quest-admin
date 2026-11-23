@@ -1,7 +1,7 @@
 "use strict";
 const {test} = require("node:test");
 const assert = require("node:assert/strict");
-const {parseOptions} = require("./race-match-calibration");
+const {parseOptions} = require("./races/race-match-calibration");
 
 test("requires one explicit source and validates mode before any backend access", () => {
   for (const args of [[], ["--input", "a", "--project", "p"], ["--input", "a", "--mode", "apply"], ["--apply", "yes"],

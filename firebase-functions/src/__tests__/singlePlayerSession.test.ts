@@ -1,7 +1,7 @@
-import {buildSinglePlayerChallengeResponse} from "../gameplay/singlePlayerRiddleResponse";
-import {projectPublicSinglePlayerSession} from "../gameplay/singlePlayerPublicSession";
+import {buildSinglePlayerChallengeResponse} from "../gameplay/sessions/singlePlayerRiddleResponse";
+import {projectPublicSinglePlayerSession} from "../gameplay/sessions/singlePlayerPublicSession";
 import {HttpsError} from "firebase-functions/v2/https";
-import {transitionSinglePlayerGuess, type SinglePlayerSessionState} from "../gameplay/singlePlayerSession";
+import {transitionSinglePlayerGuess, type SinglePlayerSessionState} from "../gameplay/sessions/singlePlayerSession";
 
 /** Builds one valid authoritative guess request. */
 const request = (guess: string, requestId: string, gameMode: "classic" | "challenge" = "classic") => ({

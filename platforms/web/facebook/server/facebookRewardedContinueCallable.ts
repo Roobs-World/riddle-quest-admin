@@ -3,7 +3,7 @@ import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "../../../../src
 import {validateCallableRequest, validateCallableResponse} from "../../../../firebase-functions/src/validation/callableValidation";
 import {browserCallableSecurityOptions} from "../../../../firebase-functions/src/shared/callableSecurity";
 import {onCallWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
-import {grantAuthoritativeContinue} from "../../../../firebase-functions/src/gameplay/singlePlayerSession";
+import {grantAuthoritativeContinue} from "../../../../firebase-functions/src/gameplay/sessions/singlePlayerSession";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {isFacebookFirebaseUid} from "./facebookSecurity";
 

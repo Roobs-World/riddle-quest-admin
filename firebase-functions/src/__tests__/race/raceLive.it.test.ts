@@ -1,8 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS, RACE_RULES, type LiveRaceView} from "../../../../src/races/contracts/index.js";
-import type {LiveMatch} from "../../race/raceLiveState";
+import type {LiveMatch} from "../../race/live/raceLiveState";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 
 /** Renders the a interface. */

@@ -18,8 +18,8 @@ const {
   saveRiddleFingerprint,
   stableJson,
   validateOrderManifest,
-} = require("./lib/youtube-content-pack.js");
-const {resolveYouTubeCanonicalSource} = require("./lib/youtube-content-author.js");
+} = require("./content/lib/youtube-content-pack.js");
+const {resolveYouTubeCanonicalSource} = require("./content/lib/youtube-content-author.js");
 
 const repositoryRoot = path.resolve(__dirname, "../..");
 const sourceDocumentPath = path.join(

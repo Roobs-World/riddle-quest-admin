@@ -6,11 +6,11 @@ const {mkdtemp, mkdir, readFile, rm, stat, writeFile} = require("node:fs/promise
 const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
-const {SUPPORTED_LOCALES, sha256, stableJson} = require("./lib/youtube-content-pack.js");
-const {resumePreparedCommit} = require("./youtube-content-author.js");
+const {SUPPORTED_LOCALES, sha256, stableJson} = require("./content/lib/youtube-content-pack.js");
+const {resumePreparedCommit} = require("./content/youtube-content-author.js");
 
 const functionsRoot = path.resolve(__dirname, "..");
-const authorScript = path.join(functionsRoot, "scripts/youtube-content-author.js");
+const authorScript = path.join(functionsRoot, "scripts/content/youtube-content-author.js");
 
 test("recovers an interrupted multi-file publication from exact staged hashes without a key or model call", async (t) => {
   const directory = await mkdtemp(path.join(os.tmpdir(), "riddle-quest-youtube-author-"));

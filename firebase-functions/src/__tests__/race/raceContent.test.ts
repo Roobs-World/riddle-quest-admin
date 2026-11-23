@@ -10,8 +10,8 @@ import {
   inferCanonicalRiddleId,
   inferRaceDifficulty,
   type ExistingRaceContentRecord,
-} from "../../race/raceContentMigration";
-import {validateRacePool} from "../../race/raceContentValidation";
+} from "../../race/content/raceContentMigration";
+import {validateRacePool} from "../../race/content/raceContentValidation";
 
 /** Provides record behavior. */
 const record = ({

@@ -206,15 +206,15 @@ it("runs the actual CLI preview and hash-confirmed apply against production serv
     input = join(directory, "pairs.json");
   /** The production CLI is compared byte-for-byte with its isolated compiled copy. */
   const cli =
-    process.env.PRESENCE_RECONCILIATION_CLI ?? join(__dirname, "../../scripts/presence-visibility-reconcile.js");
+    process.env.PRESENCE_RECONCILIATION_CLI ?? join(__dirname, "../../scripts/maintenance/presence-visibility-reconcile.js");
   expect(readFileSync(cli, "utf8")).toBe(
-    readFileSync(join(__dirname, "../../scripts/presence-visibility-reconcile.js"), "utf8"),
+    readFileSync(join(__dirname, "../../scripts/maintenance/presence-visibility-reconcile.js"), "utf8"),
   );
   writeFileSync(input, JSON.stringify([pair]), {mode: 0o600});
   /** Every storage scope is explicit and constrained to the same private demo. */
   const args = [cli, "--project", PROJECT, "--database-url", `https://${PROJECT}.firebaseio.com`, "--input", input];
   /** The actual operator path selects the repository's pinned Functions runtime. */
-  const runner = join(__dirname, "../../scripts/run-with-functions-node.js");
+  const runner = join(__dirname, "../../scripts/runtime/run-with-functions-node.js");
   /** Execute the unchanged CLI through that wrapper without shell interpolation. */
   const invokeCli = (tail: string[] = []) =>
     JSON.parse(execFileSync(process.execPath, [runner, ...args, ...tail], {env: process.env, encoding: "utf8"}));

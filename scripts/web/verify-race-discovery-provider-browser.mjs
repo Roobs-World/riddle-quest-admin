@@ -14,7 +14,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 window.commands=[];window.finds=[];window.label=tr('RaceTo10.MATCH_PLAYER');
 function reply(message,operation,data){window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation,ok:true,data}}}));}

@@ -44,9 +44,9 @@ jest.mock("../../validation/callableValidation", () => ({
   validateCallableResponse: mockValidateCallableResponse,
 }));
 
-jest.mock("../../race/raceSettlement", () => ({readSettledRaceOutcome: mockReadSettledRaceOutcome}));
+jest.mock("../../race/settlement/raceSettlement", () => ({readSettledRaceOutcome: mockReadSettledRaceOutcome}));
 
-jest.mock("../../race/raceEngine", () => ({
+jest.mock("../../race/runs/raceEngine", () => ({
   raceOutcome: mockRaceOutcome,
 }));
 

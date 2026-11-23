@@ -1,11 +1,11 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/raceEngine";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/raceLiveService";
-import {deliverRacePerformance} from "../../../../../../firebase-functions/src/race/racePerformanceDelivery";
+import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/runs/raceEngine";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/live/raceLiveService";
+import {deliverRacePerformance} from "../../../../../../firebase-functions/src/race/settlement/racePerformanceDelivery";
 import {issueRedditReferralToken, bindRedditReferralToken} from "../../redditReferrals";
-import {processRaceDeliveryQueue} from "../../../../../../firebase-functions/src/race/raceDeliveryQueue";
-import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/raceDeliveryRecovery";
+import {processRaceDeliveryQueue} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryQueue";
+import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryRecovery";
 import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {Timestamp} from "firebase-admin/firestore";
 import {LIVE_RACE_WAIT_MS} from "../../../../../../src/races/contracts/index.js";

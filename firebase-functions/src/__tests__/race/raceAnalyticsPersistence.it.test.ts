@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {createHash} from "node:crypto";
-import {recordRaceAnalyticsForUser} from "../../race/raceRollout";
+import {recordRaceAnalyticsForUser} from "../../race/access/raceRollout";
 
 /** Actual SDK checks run only against disposable emulator data. */
 let db: FirebaseFirestore.Firestore;

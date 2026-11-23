@@ -4,7 +4,7 @@ import {test} from "node:test";
 import vm from "node:vm";
 
 /** Existing setup script whose environment boundary is exercised in isolation. */
-const source = readFileSync(new URL("../firebase-functions/jest.env.setup.js", import.meta.url), "utf8");
+const source = readFileSync(new URL("../firebase-functions/config/testing/emulator-environment.cjs", import.meta.url), "utf8");
 
 /** Runs the real setup with a fake deployment dotenv loader, without credentials or network access. */
 function runSetup(env) {

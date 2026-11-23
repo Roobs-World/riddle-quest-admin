@@ -14,14 +14,14 @@ const {
   saveRiddleFingerprint,
   validateCanonicalSource,
   validateTranslationBundle,
-} = require("./lib/youtube-content-pack.js");
+} = require("./content/lib/youtube-content-pack.js");
 const {
   YOUTUBE_ENGLISH_QUALITY_VERSION,
   authorYouTubeContent,
   createYouTubeAppendSpecs,
   resolveYouTubeCanonicalSource,
   stableHash,
-} = require("./lib/youtube-content-author.js");
+} = require("./content/lib/youtube-content-author.js");
 
 const repositoryRoot = path.resolve(__dirname, "../..");
 const sourceDocumentPath = path.join(

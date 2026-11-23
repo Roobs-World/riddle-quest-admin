@@ -3,11 +3,11 @@ import {runWithJestAccountOperationLease} from "../../../../firebase-functions/s
 import {isRedditFeatureEnabled} from "./redditFeatureFlags";
 import {finishRedditLiveRaceReferralDelivery, needsRedditLiveRaceReferral} from "./redditLiveRaceReferralDelivery";
 import {validateRedditLiveRaceReferralSource} from "./redditLiveRaceReferralDelivery";
-import {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/raceDeliveryRecords";
+import {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/delivery/raceDeliveryRecords";
 import {HttpsError} from "firebase-functions/v2/https";
 import {readRedditLiveTournamentRun} from "./race/redditLiveTournament";
 import {assertRedditTournamentDeck, deriveRedditTournamentEntry, recordRedditTournamentRun} from "./race/redditTournament";
-import type {LiveMatch} from "../../../../firebase-functions/src/race/raceLiveState";
+import type {LiveMatch} from "../../../../firebase-functions/src/race/live/raceLiveState";
 import type {Firestore} from "../../../../firebase-functions/src/race/raceSetupService";
 
 /** Eligible solve delivery and administrator dry-run share the official source validator. */

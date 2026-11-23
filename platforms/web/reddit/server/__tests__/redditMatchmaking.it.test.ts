@@ -1,13 +1,13 @@
 import {logger} from "firebase-functions";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
-import {projectRaceMatchCandidate} from "../../../../../firebase-functions/src/race/raceMatchCandidates";
+import {projectRaceMatchCandidate} from "../../../../../firebase-functions/src/race/matchmaking/raceMatchCandidates";
 import {parseChallengeRecord, requestDocumentId} from "../../../../../firebase-functions/src/race/raceSetupService";
 import {findRedditRaceMatch} from "../redditMatchmaking";
-import {emptyRaceMatchProfile, recordRaceExposure, recordRacePerformance, racePerformanceExpectation} from "../../../../../firebase-functions/src/race/raceMatchPerformance";
-import {searchRaceCandidates, racePerformanceBucket, RACE_MATCH_READ_BUDGET} from "../../../../../firebase-functions/src/race/raceCandidateSearch";
-import {DEFAULT_RACE_MATCH_POLICY, raceMatchPolicySnapshot, selectRaceMatchConfiguration} from "../../../../../firebase-functions/src/race/raceMatchPolicy";
-import {RACE_MATCH_LOOKUP_MS} from "../../../../../firebase-functions/src/race/raceMatchReadMeter";
+import {emptyRaceMatchProfile, recordRaceExposure, recordRacePerformance, racePerformanceExpectation} from "../../../../../firebase-functions/src/race/matchmaking/raceMatchPerformance";
+import {searchRaceCandidates, racePerformanceBucket, RACE_MATCH_READ_BUDGET} from "../../../../../firebase-functions/src/race/matchmaking/raceCandidateSearch";
+import {DEFAULT_RACE_MATCH_POLICY, raceMatchPolicySnapshot, selectRaceMatchConfiguration} from "../../../../../firebase-functions/src/race/matchmaking/raceMatchPolicy";
+import {RACE_MATCH_LOOKUP_MS} from "../../../../../firebase-functions/src/race/matchmaking/raceMatchReadMeter";
 
 /** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";

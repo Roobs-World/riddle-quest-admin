@@ -2,8 +2,8 @@ import {getApps,initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {createHash} from "node:crypto";
 import {RACE_RULES, type CancelRaceInviteRequest} from "../../../../src/races/contracts/index.js";
-import {getRaceEntryForUser,cancelRaceInviteForUser} from "../../race/raceInvitation";
-import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
+import {getRaceEntryForUser,cancelRaceInviteForUser} from "../../race/invitations/raceInvitation";
+import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
 
 /** Only the dedicated loopback demo owns these profile, invitation and recording fixtures. */
 const PROJECT=process.env.GCLOUD_PROJECT??"",A=`jest_${"a".repeat(40)}`,B=`jest_${"b".repeat(40)}`,NOW=1_800_000_000_000;

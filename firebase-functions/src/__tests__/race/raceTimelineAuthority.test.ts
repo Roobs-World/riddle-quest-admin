@@ -1,7 +1,7 @@
 import {RACE_RULES, type RaceGhostEvent} from "../../../../src/races/contracts/index.js";
 import {parseRunRecord, parseChallengeRecord} from "../../race/raceSetupService";
-import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun, abandonRaceRun, type RaceRunRecord} from "../../race/raceEngine";
-import {buildRaceBotOpponent} from "../../race/raceBot";
+import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun, abandonRaceRun, type RaceRunRecord} from "../../race/runs/raceEngine";
+import {buildRaceBotOpponent} from "../../race/matchmaking/raceBot";
 
 /** Owned full deck supports authoritative scoring and legacy history verification. */
 const fixture = (): RaceRunRecord => ({runId: "run", userId: "player", role: "creator", status: "active", categoryId: "history", locale: "en",

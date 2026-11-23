@@ -6,7 +6,7 @@ import test from "node:test";
 import {
   auditProductionModuleCycles,
   ModuleCycleAuditError,
-} from "./audit-module-cycles.mjs";
+} from "./build/audit-module-cycles.mjs";
 
 const withSources = async (sources, operation) => {
   const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-module-cycle-"));

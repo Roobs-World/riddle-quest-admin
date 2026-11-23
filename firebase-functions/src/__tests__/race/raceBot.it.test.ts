@@ -1,10 +1,10 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {offerRaceBot} from "../../race/raceBot";
-import {emptyRaceMatchProfile} from "../../race/raceMatchPerformance";
-import {DEFAULT_RACE_MATCH_CONTEXT} from "../../race/raceMatchPolicy";
+import {offerRaceBot} from "../../race/matchmaking/raceBot";
+import {emptyRaceMatchProfile} from "../../race/matchmaking/raceMatchPerformance";
+import {DEFAULT_RACE_MATCH_CONTEXT} from "../../race/matchmaking/raceMatchPolicy";
 import {logger} from "firebase-functions";
-import {findRecordedRaceMatch} from "../../race/raceMatchmaking";
+import {findRecordedRaceMatch} from "../../race/matchmaking/raceMatchmaking";
 import {startRaceRunForUser, readyRaceRunForUser, resumeRaceRunForUser, submitRaceGuessForUser,
   getRaceOutcomeForUser, publishRaceChallengeForUser} from "../../race/raceService";
 

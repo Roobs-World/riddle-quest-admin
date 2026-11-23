@@ -1,6 +1,6 @@
 import {RACE_ACHIEVEMENT_IDS} from "../../../../src/races/contracts/index.js";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../shared/constants";
-import {evaluateRaceAchievementEvent, raceRewardAwardsAgree} from "../../race/raceAchievements";
+import {evaluateRaceAchievementEvent, raceRewardAwardsAgree} from "../../race/settlement/raceAchievements";
 
 describe("multiplayer achievements", () => {
   it("unlocks the debut and clean-run achievements on a first clean completion", () => {

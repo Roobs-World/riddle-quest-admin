@@ -21,7 +21,7 @@ jest.mock("firebase-functions/v2/https", () => {
     onCall: jest.fn((_options: unknown, handler: unknown) => handler),
   };
 });
-jest.mock("../gameplay/singlePlayerSession", () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({
   purchaseAuthoritativeHint: (...args: unknown[]) => mockPurchaseAuthoritativeHint(...args),
   getIssuedAuthoritativeSession: jest.fn(),
   grantAuthoritativeContinue: jest.fn(),
@@ -33,7 +33,7 @@ jest.mock("../gameplay/firestoreService", () => ({
 }));
 jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNeeded: jest.fn()}));
 
-import {getHint} from "../gameplay/gameLogic";
+import {getHint} from "../gameplay/callables/gameLogic";
 
 /** Provides data behavior. */
 const data = {

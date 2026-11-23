@@ -1,6 +1,6 @@
 import {facebookContextKey} from "../../race/facebookContextCompetition";
 import {listFacebookContextBoard, recordFacebookContextBoardRun} from "../../race/facebookContextBoard";
-import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/raceEngine";
+import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/runs/raceEngine";
 
 /** Renders the start interface. */
 const START = Date.UTC(2026, 7, 19);

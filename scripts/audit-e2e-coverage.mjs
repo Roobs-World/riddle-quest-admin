@@ -31,10 +31,10 @@ async function collect(directory, predicate) {
 const rootPackage = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const projectScripts = Object.values(rootPackage.scripts ?? {}).join("\n");
 const serverPackage = JSON.parse(await readFile(path.join(root, "firebase-functions/package.json"), "utf8"));
-const emulatorConfigurations = new Set(["jest.rules.config.js"]);
+const emulatorConfigurations = new Set(["config/testing/jest.rules.config.js"]);
 for (const script of Object.values(serverPackage.scripts ?? {})) {
   if (!script.includes("emulators:exec")) continue;
-  for (const match of script.matchAll(/--config\s+(jest[\w.-]+\.config\.js)/gu)) emulatorConfigurations.add(match[1]);
+  for (const match of script.matchAll(/--config\s+((?:config\/testing\/)?jest[\w.-]+\.config\.js)/gu)) emulatorConfigurations.add(match[1]);
 }
 const emulatorConfig = (await Promise.all([...emulatorConfigurations]
   .map(name => readFile(path.join(root, "firebase-functions", name), "utf8")))).join("\n");

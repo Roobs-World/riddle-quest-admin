@@ -2,9 +2,9 @@ import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";
-import {ensureAuthoritativeSession, finalizeAuthoritativeSession, submitAuthoritativeGuess} from "../gameplay/singlePlayerSession";
-import {completeAuthoritativeGame} from "../gameplay/completeGameLogic";
-import {baseAttemptLimit} from "../gameplay/singlePlayerGuessTransition";
+import {ensureAuthoritativeSession, finalizeAuthoritativeSession, submitAuthoritativeGuess} from "../gameplay/sessions/singlePlayerSession";
+import {completeAuthoritativeGame} from "../gameplay/sessions/completeGameLogic";
+import {baseAttemptLimit} from "../gameplay/sessions/singlePlayerGuessTransition";
 import {ensureUserDocumentComplete} from "../gameplay/firestoreService";
 
 /** Content preparation receives committed progress while persistence and sessions stay real. */

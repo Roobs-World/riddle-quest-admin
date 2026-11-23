@@ -89,7 +89,7 @@ const mockTriggerClassicRiddleGenerationIfNeeded = jest.fn();
 const mockGetUser = jest.fn(async (userId: string) => mockDocuments.get(`users/${userId}`));
 
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
-jest.mock("../gameplay/singlePlayerSession", () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({
   finalizeAuthoritativeSession: (...args: unknown[]) => mockFinalizeAuthoritativeSession(...args),
 }));
 jest.mock("../gameplay/firestoreService", () => ({
@@ -110,7 +110,7 @@ jest.mock("../riddles/riddleSupply", () => ({
   triggerClassicRiddleGenerationIfNeeded: (...args: unknown[]) => mockTriggerClassicRiddleGenerationIfNeeded(...args),
 }));
 
-import {completeAuthoritativeGame, LOSS_COMPLETION_RECEIPT_TTL_MS} from "../gameplay/completeGameLogic";
+import {completeAuthoritativeGame, LOSS_COMPLETION_RECEIPT_TTL_MS} from "../gameplay/sessions/completeGameLogic";
 
 /** Defines the user id value. */
 const USER_ID = "player-1";

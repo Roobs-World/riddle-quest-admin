@@ -24,7 +24,7 @@ Common source lives in feature folders such as `src/gameplay`, `src/races`, `src
 
 These are ordinary folders governed by root `package.json`, `tsconfig.json`, `vite.config.ts`, and `jest.config.cjs`. They have no separate package configuration or generated package builds. Callers import canonical implementations directly. Cross-feature aggregate entry points and files that merely re-exported another implementation have been removed. See the [feature source analysis and rationale](shared-source-layout.md).
 
-Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's catalog lives in `platforms/web/facebook/src/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Jest's referral campaigns live under its `src/referrals`. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`. Decide ownership by behavior and callers rather than an old provider-prefixed filename.
+Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's catalog lives in `platforms/web/facebook/src/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Jest's referral campaigns live under its `src/referrals`. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`, grouped by [server responsibility](functions-source-layout.md). Decide ownership by behavior and callers rather than an old provider-prefixed filename.
 
 ## Build and archive contracts
 
@@ -36,7 +36,11 @@ Firebase still deploys only `firebase-functions`, with Node 22, its existing reg
 
 Preparation copies canonical shared source and provider server dependencies into repository-shaped paths within `.build-source`. An archive-local CommonJS boundary preserves server emission without rebuilding or vendoring a shared package. TypeScript follows imports from the authoritative server entries and creates the archive-local `lib` tree. Staging a browser source file does not include it in the compiled deployment graph. The Functions entry is `lib/firebase-functions/src/index.js`. Generated source copies and compiled output are build artifacts. Maintenance scripts, source discovery, export and capacity audits, and cycle checks follow those same canonical roots.
 
-Jest release preparation retains its clean-source snapshot, Bubblewrap isolation, credential permissions, token-on-stdin boundary, source/artifact hashes and upload receipts. Uploads run from `main`. Processing completion must be observed before reporting an upload complete. Activation requires explicit authorization; publication and review submission remain separate. Jest end-to-end checks use hosted unpublished previews when testing is requested.
+Game uploads require an explicit user request. Source changes, builds, commits, and pushes do not authorize uploads. Jest release preparation retains its clean-source snapshot, Bubblewrap isolation, credential permissions, token-on-stdin boundary, source/artifact hashes and upload receipts. Uploads run from `main`. Processing completion must be observed before reporting an upload complete. Activation requires explicit authorization; publication and review submission remain separate. Jest end-to-end checks use hosted unpublished previews when testing is requested.
+
+## Directory size
+
+Project-owned directories contain at most 20 direct non-test files. Tests are exempt and remain in their existing locations. Installed dependencies and generated or ignored build outputs are excluded. Split production files by responsibility and move callers with the canonical source. See the [Functions source layout](functions-source-layout.md) for the backend application of this rule.
 
 ## Verification and history
 

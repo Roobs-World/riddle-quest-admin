@@ -1,6 +1,6 @@
-import {liveRaceReferralEventId, validateLiveRaceReferralSource} from "../../../../firebase-functions/src/race/raceLiveReferralDelivery";
+import {liveRaceReferralEventId, validateLiveRaceReferralSource} from "../../../../firebase-functions/src/race/delivery/raceLiveReferralDelivery";
 import type {Firestore} from "../../../../firebase-functions/src/race/raceSetupService";
-import type {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/raceDeliveryRecords";
+import type {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/delivery/raceDeliveryRecords";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {isRedditFeatureEnabled} from "./redditFeatureFlags";
 import {settleRedditReferralAfterAuthoritativeWin} from "./redditReferrals";

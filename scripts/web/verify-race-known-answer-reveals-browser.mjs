@@ -18,7 +18,7 @@ import React from 'react';
 import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/web/fixtures/RetainedRaceHarness.tsx"))};
 const params=new URLSearchParams(location.search),operation=params.get('operation'),candidate=params.get('candidate');
 const key='riddleQuest:activeRaceRun',now=Date.now();
 let view={runId:'startup-run',role:'creator',status:'active',categoryId:'history',locale:'en',rules:RACE_RULES,

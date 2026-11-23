@@ -5,7 +5,7 @@ const mockEnabled = jest.fn(() => true);
 /** Captures callable configuration so tests assert the App Check boundary. */
 const mockOnCall = jest.fn((_name: string, _options: unknown, handler: unknown) => handler);
 jest.mock("../../../../../firebase-functions/src/shared/sentryHandlers", () => ({onCallWithSentry: (...args: unknown[]) => mockOnCall(...args)}));
-jest.mock("../../../../../firebase-functions/src/gameplay/singlePlayerSession", () => ({grantAuthoritativeContinue: (...args: unknown[]) => mockGrant(...args)}));
+jest.mock("../../../../../firebase-functions/src/gameplay/sessions/singlePlayerSession", () => ({grantAuthoritativeContinue: (...args: unknown[]) => mockGrant(...args)}));
 jest.mock("../facebookFeatureFlags", () => ({isFacebookFeatureEnabled: (...args: unknown[]) => mockEnabled(...args)}));
 import {grantFacebookRewardedContinue} from "../facebookRewardedContinueCallable";
 import type {CallableRequest} from "firebase-functions/v2/https";

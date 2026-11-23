@@ -1,4 +1,4 @@
-import {readProviderLiveTournamentRun} from "../../../../../firebase-functions/src/race/raceLiveTournament";
+import {readProviderLiveTournamentRun} from "../../../../../firebase-functions/src/race/live/raceLiveTournament";
 
 /** Facebook official scores resolve only owned Facebook live victories. */
 export function readFacebookLiveTournamentRun(transaction: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,

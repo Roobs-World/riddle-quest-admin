@@ -12,7 +12,7 @@ Valid offer replays preserve the receipt. If an existing intent needs another el
 
 ## Configuration shape
 
-The baseline is defined by `DEFAULT_RACE_MATCH_POLICY` in `firebase-functions/src/race/raceMatchPolicy.ts`:
+The baseline is defined by `DEFAULT_RACE_MATCH_POLICY` in `firebase-functions/src/race/matchmaking/raceMatchPolicy.ts`:
 
 ```json
 {

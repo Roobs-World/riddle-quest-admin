@@ -5,7 +5,7 @@ import {isFacebookFirebaseUid} from "../facebookSecurity";
 import {admin} from "../../../../../firebase-functions/src/shared/firebaseAdmin";
 import {facebookContextKey} from "./facebookContextCompetition";
 import {parseFacebookContextCompetition} from "./facebookContextService";
-import {raceClock, type RaceRunRecord} from "../../../../../firebase-functions/src/race/raceEngine";
+import {raceClock, type RaceRunRecord} from "../../../../../firebase-functions/src/race/runs/raceEngine";
 import {parseRunRecord} from "../../../../../firebase-functions/src/race/raceSetupService";
 import {readFacebookLiveTournamentRun} from "./facebookLiveTournament";
 import {assertFacebookTournamentDeck, type FacebookTournamentDeckBinding} from "./facebookTournament";

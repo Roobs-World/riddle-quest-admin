@@ -4,15 +4,15 @@ import type {CallableRequest, CallableResponse} from "firebase-functions/v2/http
 const mockStream = jest.fn(), mockUpdate = jest.fn(), mockAccess = jest.fn();
 /** Provides mock lease behavior. */
 const mockLease = jest.fn(async (_user: string, _timeout: number, operation: () => Promise<unknown>) => operation());
-jest.mock("../../race/raceLiveStream", () => ({streamLiveRaceChanges: mockStream}));
-jest.mock("../../race/raceLiveService", () => ({updateLiveRaceForUser: mockUpdate, joinLiveRaceForUser: jest.fn()}));
-jest.mock("../../race/raceRollout", () => ({assertRaceAccess: mockAccess}));
+jest.mock("../../race/live/raceLiveStream", () => ({streamLiveRaceChanges: mockStream}));
+jest.mock("../../race/live/raceLiveService", () => ({updateLiveRaceForUser: mockUpdate, joinLiveRaceForUser: jest.fn()}));
+jest.mock("../../race/access/raceRollout", () => ({assertRaceAccess: mockAccess}));
 jest.mock("../../shared/firebaseAdmin", () => ({admin: {firestore: () => ({name: "server-db"})}}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
 jest.mock("../../shared/accountDeletion", () => ({runWithJestAccountOperationLease: mockLease, isJestAccountDeletedError: () => false}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"),
   onCall: jest.fn((_options, handler) => handler)}));
-import {updateLiveRace} from "../../race/raceLiveCallables";
+import {updateLiveRace} from "../../race/api/raceLiveCallables";
 /** Provides handler behavior. */
 const handler = updateLiveRace as unknown as (request: CallableRequest<unknown>, response?: CallableResponse) => Promise<unknown>;
 /** Provides input behavior. */

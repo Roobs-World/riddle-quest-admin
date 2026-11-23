@@ -14,6 +14,7 @@
 - Jest ships in English only. Hint badges never award coins.
 - When removing visible text, verify it is unused elsewhere and remove the corresponding key from every locale.
 - When adding visible text, add it to every supported locale or reuse an existing translated key.
+- Keep each project-owned folder under `firebase-functions` at no more than 20 direct files. Test files and test folders are exempt; installed dependencies and generated output are excluded. Run `pnpm check:functions-layout` after changing the layout.
 - Run tests and browser test harnesses only when the user explicitly requests them. Build the target artifacts needed for the requested change or upload.
 - GitHub Actions stays manual-only with the explicit runner-usage confirmation gate. A push or merge does not authorize enabling workflows or spending hosted runner allowance. See `docs/common/development/github-actions-cost-controls.md`.
 - Game uploads are manual-only and require an explicit user request. File changes, commits, pushes, builds and completed code changes do not authorize an upload. After a requested Jest upload, tell the user when processing has completed. Activate a build, publish the game, or submit it for review only when explicitly requested.

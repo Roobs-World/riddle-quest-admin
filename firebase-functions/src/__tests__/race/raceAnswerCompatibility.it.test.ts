@@ -2,9 +2,9 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {RaceRunViewSchema} from "../../../../src/races/contracts/index.js";
 import {buildDeterministicRaceDeck, loadEligibleContent, listRaceCategoriesForLocale} from "../../race/raceSetupService";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {toRaceRunView} from "../../race/raceEngine";
-import type {LiveMatch} from "../../race/raceLiveState";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {toRaceRunView} from "../../race/runs/raceEngine";
+import type {LiveMatch} from "../../race/live/raceLiveState";
 
 /** Every fixture mutation is confined to a dedicated private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;

@@ -1,8 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
-import {liveJoinIntentRef} from "../../race/raceLiveJoinIntent";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
+import {liveJoinIntentRef} from "../../race/invitations/raceLiveJoinIntent";
 import {requestDocumentId} from "../../race/raceSetupService";
 
 /** Authenticated fixture identities share one provider. */

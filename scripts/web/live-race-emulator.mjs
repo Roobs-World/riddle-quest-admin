@@ -13,9 +13,9 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   if (!getApps().length) initializeApp({projectId});
   const {getFirestore} = require("firebase-admin/firestore");
   const db = getFirestore();
-  const {joinLiveRaceForUser, updateLiveRaceForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/raceLiveService.js"));
-  const {getLiveRaceChallengeForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/raceLiveInvitation.js"));
-  const {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/raceLiveChallengeNotifications.js"));
+  const {joinLiveRaceForUser, updateLiveRaceForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/live/raceLiveService.js"));
+  const {getLiveRaceChallengeForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/invitations/raceLiveInvitation.js"));
+  const {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/invitations/raceLiveChallengeNotifications.js"));
   const {createUsernameReservationFields} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/profile/usernameReservations.js"));
   const {JoinLiveRaceSchema, UpdateLiveRaceSchema} = require(path.join(root, "firebase-functions/lib/src/races/contracts/index.js"));
   const users = {Alice: `${provider}_${"a".repeat(40)}`, Bob: `${provider}_${"b".repeat(40)}`};
@@ -95,7 +95,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   }
   return {observe(user, ticketId, onChange, onComplete) {
     if (tickets.get(user) !== ticketId) throw new Error("Unknown live seat");
-    const {streamLiveRaceChanges} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/raceLiveStream.js"));
+    const {streamLiveRaceChanges} = require(path.join(root, "firebase-functions/lib/firebase-functions/src/race/live/raceLiveStream.js"));
     const controller = new AbortController();
     void streamLiveRaceChanges(db, users[user], ticketId, {signal:controller.signal,sendChunk:async chunk=>onChange(chunk)}, 45_000).then(()=>onComplete?.(), error=>onComplete?.(error));
     return ()=>controller.abort();

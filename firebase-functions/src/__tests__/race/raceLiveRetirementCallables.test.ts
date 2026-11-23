@@ -2,12 +2,12 @@ import type {CallableRequest} from "firebase-functions/v2/https";
 
 /** Wrapped callable tests isolate only domain authority, preserving schema, identity and lease behavior. */
 const mockRetire = jest.fn(), mockAccess = jest.fn(), mockLease = jest.fn(async (_owner: string, _timeout: number, operation: () => Promise<unknown>) => operation());
-jest.mock("../../race/raceLiveRetirement", () => ({retireLiveRaceJoinForUser: mockRetire}));
-jest.mock("../../race/raceRollout", () => ({assertRaceAccess: mockAccess}));
+jest.mock("../../race/live/raceLiveRetirement", () => ({retireLiveRaceJoinForUser: mockRetire}));
+jest.mock("../../race/access/raceRollout", () => ({assertRaceAccess: mockAccess}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
 jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithJestAccountOperationLease: mockLease}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"), onCall: jest.fn((options, handler) => Object.assign(handler, {deploymentOptions: options}))}));
-import {retireLiveRaceJoin} from "../../race/raceLiveCallables";
+import {retireLiveRaceJoin} from "../../race/api/raceLiveCallables";
 /** Canonical verified identity remains distinct from all untrusted request fields. */
 const OWNER = `jest_${"a".repeat(40)}`, input = {requestId: "original-join-request", expectedOwnerId: OWNER};
 /** Actual onCall wrapper exposes its callback in the established unit seam. */

@@ -29,13 +29,13 @@ const mockFirestore = Object.assign(() => ({collection: (name: string) => ({doc:
   runTransaction: async (operation: (transaction: typeof mockTransaction) => unknown) => operation(mockTransaction)}),
   {FieldValue: {serverTimestamp: () => "server-time"}, Timestamp: {fromMillis: (value: number) => ({millis: value})}});
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
-jest.mock("../gameplay/singlePlayerSession", () => ({finalizeAuthoritativeSession: async () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({finalizeAuthoritativeSession: async () => ({
   attempts: 4, lastGuess: "organ", answer: "piano", locale: "en", completionKey: "classic:1", classicIndex: 1, terminal: true,
 })}));
 jest.mock("../gameplay/leaderboard", () => ({updateLeaderboardEntry: async () => undefined}));
 jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNeeded: async () => undefined}));
 
-import {completeAuthoritativeGame} from "../gameplay/completeGameLogic";
+import {completeAuthoritativeGame} from "../gameplay/sessions/completeGameLogic";
 
 it.each([false, true])("completes with legacy profile %s without repair or empty projection round trips", async legacy => {
   jest.useFakeTimers().setSystemTime(1_800_000_000_000);

@@ -1,7 +1,7 @@
-import {completeAuthoritativeGame} from "../../../../../firebase-functions/src/gameplay/completeGameLogic";
+import {completeAuthoritativeGame} from "../../../../../firebase-functions/src/gameplay/sessions/completeGameLogic";
 import {createAndroidUser} from "../androidUser";
-import {ensureAuthoritativeSession, submitAuthoritativeGuess} from "../../../../../firebase-functions/src/gameplay/singlePlayerSession";
-import {getSinglePlayerContentKey} from "../../../../../firebase-functions/src/gameplay/singlePlayerAnswerPolicy";
+import {ensureAuthoritativeSession, submitAuthoritativeGuess} from "../../../../../firebase-functions/src/gameplay/sessions/singlePlayerSession";
+import {getSinglePlayerContentKey} from "../../../../../firebase-functions/src/gameplay/sessions/singlePlayerAnswerPolicy";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {createHash} from "node:crypto";

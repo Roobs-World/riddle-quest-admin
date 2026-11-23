@@ -3,7 +3,7 @@ import {
   MAX_CLASSIC_LOAD_INDEX,
   parseClassicLoadIndex,
   parseSinglePlayerResumeFields,
-} from "../gameplay/singlePlayerLoadRequest";
+} from "../gameplay/sessions/singlePlayerLoadRequest";
 
 /** Renders the token interface. */
 const TOKEN = "00000000-0000-4000-8000-000000000001";

@@ -5,7 +5,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
 const os = require("node:os");
 const path = require("node:path");
-const {run} = require("./run-isolated-emulators");
+const {run} = require("./verification/run-isolated-emulators");
 
 test("concurrent launcher children own independent temporary storage and clean successful runs", async () => {
   const fixture = await fs.mkdtemp(path.join(os.tmpdir(), "emulator-isolation-test-"));
@@ -48,7 +48,7 @@ test("termination reaches the child and remains a failed invocation even after g
     const cli = path.join(fixture, "child.cjs"), output = path.join(fixture, "output"), marker = path.join(fixture, "signal");
     await fs.writeFile(cli, `const fs=require('node:fs');fs.writeFileSync(process.argv[2],require('node:os').tmpdir());
 process.on('SIGTERM',()=>{fs.writeFileSync(process.argv[3],'forwarded');process.exit(0);});console.log('READY');setInterval(()=>{},1000);`);
-    child = spawn(process.execPath, ["-e", `require(${JSON.stringify(require.resolve("./run-isolated-emulators"))}).run(${JSON.stringify([output, marker])},${JSON.stringify(cli)}).then(code=>{process.exitCode=code;})`]);
+    child = spawn(process.execPath, ["-e", `require(${JSON.stringify(require.resolve("./verification/run-isolated-emulators"))}).run(${JSON.stringify([output, marker])},${JSON.stringify(cli)}).then(code=>{process.exitCode=code;})`]);
     const terminal = once(child, "close");
     await new Promise((resolve, reject) => {
       child.stdout.on("data", data => {if (data.toString().includes("READY")) resolve();});

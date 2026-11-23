@@ -16,7 +16,7 @@ const {
   validateFacebookDeployEnvironment,
   validateRedditDeployEnvironment,
   validateDeployTarget,
-} = require("./validate-deploy-env");
+} = require("./deploy/validate-deploy-env");
 
 const validRedditEnvironment = () => ({
   REDDIT_APP_NAME: "riddle-quest",

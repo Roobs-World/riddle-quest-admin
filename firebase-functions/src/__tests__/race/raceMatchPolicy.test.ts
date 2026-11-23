@@ -1,5 +1,5 @@
-import {DEFAULT_RACE_MATCH_POLICY, selectRaceMatchConfiguration, raceMatchPolicySnapshot, raceMatchContext, loadRaceMatchPolicy, RaceMatchPolicySchema} from "../../race/raceMatchPolicy";
-import {emptyRaceMatchProfile, racePerformanceExpectation, scoreRaceCandidate, recordRaceExposure} from "../../race/raceMatchPerformance";
+import {DEFAULT_RACE_MATCH_POLICY, selectRaceMatchConfiguration, raceMatchPolicySnapshot, raceMatchContext, loadRaceMatchPolicy, RaceMatchPolicySchema} from "../../race/matchmaking/raceMatchPolicy";
+import {emptyRaceMatchProfile, racePerformanceExpectation, scoreRaceCandidate, recordRaceExposure} from "../../race/matchmaking/raceMatchPerformance";
 import type {Firestore} from "../../race/raceSetupService";
 
 it("hashes equivalent configurations identically and seals a detached snapshot", () => {

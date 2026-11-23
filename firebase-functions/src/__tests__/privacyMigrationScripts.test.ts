@@ -7,7 +7,7 @@ const script = (name: string): string => readFileSync(resolve(__dirname, `../../
 describe("privacy migration safeguards", () => {
   it("never recreates a leaderboard row during a subject-link backfill", () => {
     /** Provides source behavior. */
-    const source = script("purge-orphan-leaderboard-rows.js");
+    const source = script("maintenance/purge-orphan-leaderboard-rows.js");
 
     expect(source).toContain("backfills.forEach((ref) => batch.update(ref, {subjectUserId: ref.id}))");
     expect(source).not.toContain("backfills.forEach((ref) => batch.set(");
@@ -16,7 +16,7 @@ describe("privacy migration safeguards", () => {
 
   it("limits the request-receipt migration to top-level race runs", () => {
     /** Provides source behavior. */
-    const source = script("anonymize-legacy-race-identities.js");
+    const source = script("races/anonymize-legacy-race-identities.js");
     /** Provides receipt migration behavior. */
     const receiptMigration = source.slice(source.indexOf("async function processLegacyRaceRequestReceipts"));
 

@@ -5,7 +5,7 @@ import {isValidGuess} from "../../../../src/gameplay/rules/isValidGuess.js";
 import {SubmitRaceGuessRequestSchema, UpdateLiveRaceSchema} from "../../../../src/races/contracts/index.js";
 import {startRaceRunForUser, submitRaceGuessForUser, requestRaceHintForUser, resumeRaceRunForUser} from "../../race/raceService";
 import {parseRunRecord} from "../../race/raceSetupService";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 
 /** Every mutation is guarded by a private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "", OWNER = `jest_${"a".repeat(40)}`, PEER = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;

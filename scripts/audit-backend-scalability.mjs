@@ -12,7 +12,7 @@ const riddleSupplySource = await readFile(
   "utf8",
 );
 const gameLogicSource = await readFile(
-  new URL("../firebase-functions/src/gameplay/gameLogic.ts", import.meta.url),
+  new URL("../firebase-functions/src/gameplay/callables/gameLogic.ts", import.meta.url),
   "utf8",
 );
 

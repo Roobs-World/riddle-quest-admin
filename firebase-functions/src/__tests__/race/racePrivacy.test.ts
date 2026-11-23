@@ -1,16 +1,16 @@
 import {admin} from "../../shared/firebaseAdmin";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 import {
   PRIVATE_RACE_PLAYER_NAME,
   raceRunPrivacyWrite,
   resolveRaceOpponentPrivacy,
   scrubRaceOpponent,
-} from "../../race/raceOpponentPrivacy";
+} from "../../race/privacy/raceOpponentPrivacy";
 import {
   hydrateRaceReceiptResponse,
   minimizeRaceReceiptResponse,
   raceReceiptExpiresAt,
-} from "../../race/raceReceiptPrivacy";
+} from "../../race/privacy/raceReceiptPrivacy";
 
 /** Provides run behavior. */
 const run = (overrides: Partial<RaceRunRecord> = {}): RaceRunRecord => ({

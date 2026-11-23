@@ -2,15 +2,15 @@ import {logger} from "firebase-functions";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {migrateRaceArchitecturePage} from "../../race/raceArchitectureMigration";
-import {raceChallengeEligibility} from "../../race/raceEligibility";
-import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
+import {migrateRaceArchitecturePage} from "../../race/recovery/raceArchitectureMigration";
+import {raceChallengeEligibility} from "../../race/access/raceEligibility";
+import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
 import {parseChallengeRecord, resolveChallengeRiddles} from "../../race/raceSetupService";
-import {findRecordedRaceMatch} from "../../race/raceMatchmaking";
+import {findRecordedRaceMatch} from "../../race/matchmaking/raceMatchmaking";
 import {getRaceOutcomeForUser} from "../../race/raceReadService";
-import {processRaceSettlementJobs} from "../../race/raceSettlementJobs";
-import {processRaceProjectionReconciliation, reconcileRaceCandidatePage, RACE_RECONCILIATION_LEASE_MS} from "../../race/raceProjectionReconciliation";
-import {parseRaceMatchCandidate} from "../../race/raceMatchCandidates";
+import {processRaceSettlementJobs} from "../../race/settlement/raceSettlementJobs";
+import {processRaceProjectionReconciliation, reconcileRaceCandidatePage, RACE_RECONCILIATION_LEASE_MS} from "../../race/recovery/raceProjectionReconciliation";
+import {parseRaceMatchCandidate} from "../../race/matchmaking/raceMatchCandidates";
 import {reserveRaceInviteForUser, publishRaceChallengeForUser, claimRaceInviteForUser,
   startRaceRunForUser, readyRaceRunForUser, abandonRaceRunForUser, resumeRaceRunForUser} from "../../race/raceService";
 

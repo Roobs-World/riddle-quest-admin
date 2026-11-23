@@ -1,7 +1,7 @@
 import {RaceRunViewSchema, RACE_RULES, type RaceDifficultyBand, type RaceLocale} from "../../../../src/races/contracts/index.js";
-import {liveRun} from "../../race/raceLiveState";
-import {toRaceRunView} from "../../race/raceEngine";
-import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
+import {liveRun} from "../../race/live/raceLiveState";
+import {toRaceRunView} from "../../race/runs/raceEngine";
+import type {ExistingRaceContentRecord} from "../../race/content/raceContentMigration";
 import {buildDeterministicRaceDeck} from "../../race/raceService";
 import {assertRaceLocaleCompatible, resolveChallengeRiddles, type RaceChallengeRecord} from "../../race/raceSetupService";
 

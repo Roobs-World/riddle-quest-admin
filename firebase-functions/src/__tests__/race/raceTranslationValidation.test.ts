@@ -5,7 +5,7 @@ import {
   createRaceTranslationPlan,
   playableTranslatedAnswerIssue,
   raceTranslationCanonicalHash,
-} from "../../race/raceTranslationValidation";
+} from "../../race/content/raceTranslationValidation";
 import {RACE_SUPPORTED_LOCALES} from "../../../../src/races/contracts/index.js";
 
 /** Creates bundle. */

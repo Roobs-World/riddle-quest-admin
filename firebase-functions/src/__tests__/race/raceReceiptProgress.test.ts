@@ -1,6 +1,6 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {applyRaceGuess, applyRaceHint, applyRaceSkip, abandonRaceRun, toRaceRunView, type RaceRunRecord} from "../../race/raceEngine";
-import {assertRaceMutationReceipt} from "../../race/raceRequestBinding";
+import {applyRaceGuess, applyRaceHint, applyRaceSkip, abandonRaceRun, toRaceRunView, type RaceRunRecord} from "../../race/runs/raceEngine";
+import {assertRaceMutationReceipt} from "../../race/runs/raceRequestBinding";
 
 /** Real engine transitions provide compatibility evidence for terminal and historical checkpoints. */
 const fixture = (): RaceRunRecord => ({recordVersion: 1, runId: "progress", userId: "player", role: "creator", status: "active",

@@ -1,6 +1,6 @@
 import {RaceMatchResponseSchema, type RaceMatchRequest, type RaceMatchResponse, type RaceLocale} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
-import {findRecordedRaceMatch} from "../../../../firebase-functions/src/race/raceMatchmaking";
+import {findRecordedRaceMatch} from "../../../../firebase-functions/src/race/matchmaking/raceMatchmaking";
 import {isRedditFirebaseUid} from "./redditSecurity";
 import {readRedditSocialProfile} from "./redditSocialProfile";
 

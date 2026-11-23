@@ -25,8 +25,8 @@ const mockFindRecordedRaceMatch = jest.fn();
 const mockGetRaceEntryForUser = jest.fn();
 /** Creator cancellation is a separate idempotent authority mutation. */
 const mockCancelRaceInviteForUser = jest.fn();
-jest.mock("../../race/raceInvitation", () => ({getRaceEntryForUser: mockGetRaceEntryForUser, cancelRaceInviteForUser: mockCancelRaceInviteForUser}));
-jest.mock("../../race/raceMatchmaking", () => ({findRecordedRaceMatch: mockFindRecordedRaceMatch}));
+jest.mock("../../race/invitations/raceInvitation", () => ({getRaceEntryForUser: mockGetRaceEntryForUser, cancelRaceInviteForUser: mockCancelRaceInviteForUser}));
+jest.mock("../../race/matchmaking/raceMatchmaking", () => ({findRecordedRaceMatch: mockFindRecordedRaceMatch}));
 /** Provides mock run with jest account operation lease behavior. */
 const mockRunWithJestAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
@@ -66,7 +66,7 @@ jest.mock("../../race/raceService", () => ({
   submitRaceGuessForUser: serviceMocks.submitRaceGuessForUser,
 }));
 
-jest.mock("../../race/raceRollout", () => ({
+jest.mock("../../race/access/raceRollout", () => ({
   assertRaceAccess: mockAssertRaceAccess,
   getRaceAccessForUser: serviceMocks.getRaceAccessForUser,
   recordRaceAnalyticsForUser: serviceMocks.recordRaceAnalyticsForUser,
@@ -95,7 +95,7 @@ import {
   startRaceRun,
   readyRaceRun,
   submitRaceGuess,
-} from "../../race/raceCallables";
+} from "../../race/api/raceCallables";
 import {createRaceCallableCases, type RaceCallableHandlers} from "./callableCases";
 import {raceCallableUserId, raceRunResponseFixture, raceChallengePreviewFixture} from "./callableFixtures";
 

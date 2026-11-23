@@ -36,7 +36,7 @@ async function invoke(args, options = {}) {
     stderr: {write: (value) => stderr.push(value)},
   };
   const input = options.bytes ?? bytes;
-  runInNewContext(readFileSync(join(__dirname, "presence-visibility-reconcile.js"), "utf8"), {
+  runInNewContext(readFileSync(join(__dirname, "maintenance/presence-visibility-reconcile.js"), "utf8"), {
     process: stub,
     URL,
     require: (name) => {
@@ -55,7 +55,7 @@ async function invoke(args, options = {}) {
         };
       if (name === "firebase-admin/firestore") return {getFirestore: () => ({})};
       if (name === "firebase-admin/database") return {getDatabase: () => ({})};
-      if (name === "../lib/firebase-functions/src/presence/presenceVisibilityReconciliation.js")
+      if (name === "../../lib/firebase-functions/src/presence/presenceVisibilityReconciliation.js")
         return {
           reconcilePresenceVisibilityPage: async (pairs, _db, _database, apply) => {
             calls.push(["page", JSON.parse(JSON.stringify(pairs)), apply]);

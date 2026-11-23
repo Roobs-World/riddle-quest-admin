@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {searchRaceCandidates} from "../../race/raceCandidateSearch";
-import {emptyRaceMatchProfile} from "../../race/raceMatchPerformance";
+import {searchRaceCandidates} from "../../race/matchmaking/raceCandidateSearch";
+import {emptyRaceMatchProfile} from "../../race/matchmaking/raceMatchPerformance";
 
 it("finishes a sparse indexed search within its deadline with bounded concurrent reads", async () => {
   jest.useFakeTimers();

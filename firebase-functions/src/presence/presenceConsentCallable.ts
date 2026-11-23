@@ -5,7 +5,7 @@ import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
 import {setPresenceConsentForUser} from "./presenceAggregation";
-import {syncFacebookPresenceFeatureGate} from "./presenceFeatureGate";
+import {syncFacebookPresenceFeatureGate} from "../../../platforms/web/facebook/server/presence/facebookPresenceFeatureGate";
 
 /** Validates the presence consent request data shape. */
 const PresenceConsentRequestSchema = z.object({enabled: z.boolean()}).strict();

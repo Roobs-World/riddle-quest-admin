@@ -2,7 +2,7 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {splitGraphemes} from "../../../../src/gameplay/input/graphemes.js";
 import {SubmitRaceGuessRequestSchema} from "../../../../src/races/contracts/index.js";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 import {startRaceRunForUser, submitRaceGuessForUser, requestRaceHintForUser} from "../../race/raceService";
 
 /** Mutation guards confine authored catalogs and canonical accounts to one private loopback demo emulator. */

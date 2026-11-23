@@ -1,9 +1,9 @@
 import {initializeApp, deleteApp, type App} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {retireLiveRaceJoinForUser} from "../../race/raceLiveRetirement";
-import {liveJoinIntentRef} from "../../race/raceLiveJoinIntent";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {retireLiveRaceJoinForUser} from "../../race/live/raceLiveRetirement";
+import {liveJoinIntentRef} from "../../race/invitations/raceLiveJoinIntent";
 import {requestDocumentId} from "../../race/raceSetupService";
 
 /** This suite mutates only an owned loopback demo and two fixture accounts. */

@@ -28,7 +28,7 @@ async function invoke(args, rows = [], outcome = "ready", queryFailure = false) 
   runInNewContext(readFileSync(join(__dirname, "facebook-nonce-retention.js"), "utf8"), {
     process: processStub,
     require: function isolatedRequire(name) {
-      if (name === "../../../../../firebase-functions/scripts/functions-dependencies.js") return isolatedRequire;
+      if (name === "../../../../../firebase-functions/scripts/runtime/functions-dependencies.js") return isolatedRequire;
       if (name === "firebase-admin/app") return {initializeApp: config => {calls.push(["initialize", config.projectId]); return {};}};
       if (name === "firebase-admin/firestore") return {getFirestore: () => db, FieldPath: {documentId: () => "__name__"}};
       if (name === "../../../../../firebase-functions/lib/platforms/web/facebook/server/facebookIdentityNonce.js") return {prepareFacebookIdentityNonceRetention: async (_db, id, apply) => {

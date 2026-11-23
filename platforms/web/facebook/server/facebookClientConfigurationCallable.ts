@@ -6,7 +6,7 @@ import {onCallWithSentry} from "../../../../firebase-functions/src/shared/sentry
 import {validateCallableRequest, validateCallableResponse} from "../../../../firebase-functions/src/validation/callableValidation";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {isFacebookFirebaseUid} from "./facebookSecurity";
-import {syncFacebookPresenceFeatureGate} from "../../../../firebase-functions/src/presence/presenceFeatureGate";
+import {syncFacebookPresenceFeatureGate} from "./presence/facebookPresenceFeatureGate";
 
 /** Validates the facebook client configuration response data shape. */
 const FacebookClientConfigurationResponseSchema = z

@@ -18,7 +18,7 @@ import React from 'react';
 import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/fixtures/RetainedRaceHarness.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root, "scripts/web/fixtures/RetainedRaceHarness.tsx"))};
 import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root, "src/races/presentation/racePresentation.ts"))};
 const now=Date.now();
@@ -58,7 +58,7 @@ await writeFile(path.join(scratch, "index.html"), '<html><body style="margin:0;b
 let browser, server;
 try {
   await build({plugins: [{name:"expose-injected-race-session", enforce:"pre", transform(code, id) {
-    if (id.endsWith("/scripts/fixtures/RetainedRaceHarness.tsx")) {
+    if (id.endsWith("/scripts/web/fixtures/RetainedRaceHarness.tsx")) {
       const constructor="new RaceProviderViews({reportError: session.reportError})";
       assert(code.includes(constructor));
       return {code:code.replace(constructor,"new RaceProviderViews({reportError: session.reportError, clock: window.providerClock})"),map:null};

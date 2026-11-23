@@ -3,15 +3,15 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../daily/dailyChallenge";
-import {ensureAuthoritativeSession, submitAuthoritativeGuess, finalizeAuthoritativeSession} from "../gameplay/singlePlayerSession";
-import {baseAttemptLimit} from "../gameplay/singlePlayerGuessTransition";
-import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
+import {ensureAuthoritativeSession, submitAuthoritativeGuess, finalizeAuthoritativeSession} from "../gameplay/sessions/singlePlayerSession";
+import {baseAttemptLimit} from "../gameplay/sessions/singlePlayerGuessTransition";
+import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/sessions/singlePlayerAnswerPolicy";
 
 /** Catalog selection is controlled; current loaders, issuance, completion and account leases stay real. */
 const mockPlayable = jest.fn();
-jest.mock("../gameplay/classicRiddleFallback", () => ({...jest.requireActual("../gameplay/classicRiddleFallback"), getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
+jest.mock("../gameplay/content/classicRiddleFallback", () => ({...jest.requireActual("../gameplay/content/classicRiddleFallback"), getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
 // Early recovery is isolated so terminal cases exercise the post-issuance branch, not the earlier binding-recovery branch.
-jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({recoverPendingAuthoritativeCompletion: async () => false}));
+jest.mock("../gameplay/sessions/singlePlayerTerminalRecovery", () => ({recoverPendingAuthoritativeCompletion: async () => false}));
 jest.mock("../daily/dailyRolloverRecovery", () => ({reconcilePreviousDailyBinding: async (_uid: string, user: unknown) => user}));
 // Derived ranking and content-generation side effects are outside the canonical load/completion fixture.
 jest.mock("../gameplay/leaderboard", () => ({updateLeaderboardEntry: async () => undefined}));

@@ -1,17 +1,17 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/raceLiveService";
-import {deliverRacePerformance} from "../../../../../../firebase-functions/src/race/racePerformanceDelivery";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/live/raceLiveService";
+import {deliverRacePerformance} from "../../../../../../firebase-functions/src/race/settlement/racePerformanceDelivery";
 import {facebookContextKey} from "../../race/facebookContextCompetition";
 import {joinFacebookContextCompetition, leaveFacebookContextCompetition, removeUserFromFacebookContextCompetitions} from "../../race/facebookContextService";
 import {recordFacebookContextBoardRun} from "../../race/facebookContextBoard";
 import {joinFacebookContext, leaveFacebookContext, recordFacebookContextRun} from "../../race/facebookContextCallables";
 import {facebookTournamentWindow} from "../../race/facebookTournament";
-import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/raceEngine";
+import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/runs/raceEngine";
 import {recordJestAccountDeletion} from "../../../../jest/server/jestAccountDeletion";
 import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../../../../../firebase-functions/src/profile/accountDeletion/raceAccountDeletion";
-import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/raceDeliveryRecovery";
+import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryRecovery";
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebookReferrals";
 
 /** Browser-independent production delivery runs only against a private loopback demo emulator. */

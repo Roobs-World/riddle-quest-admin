@@ -4,7 +4,7 @@ import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {submitRaceGuessForUser, requestRaceHintForUser, skipRaceRiddleForUser, startRaceRunForUser,
   reserveRaceInviteForUser, publishRaceChallengeForUser, abandonRaceRunForUser} from "../../race/raceService";
 import {requestDocumentId} from "../../race/raceSetupService";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Isolated demo storage never accesses production. */
 let db: FirebaseFirestore.Firestore;

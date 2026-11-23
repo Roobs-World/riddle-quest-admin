@@ -5,10 +5,10 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {startRaceRunForUser, submitRaceGuessForUser, resumeRaceRunForUser} from "../../race/raceService";
-import {getRaceEntryForUser, claimRaceInviteForUser, reserveRaceInviteForUser, getRaceChallengeForUser} from "../../race/raceInvitation";
-import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
+import {getRaceEntryForUser, claimRaceInviteForUser, reserveRaceInviteForUser, getRaceChallengeForUser} from "../../race/invitations/raceInvitation";
+import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
 import {parseChallengeRecord, resolveChallengeRiddles, type RaceChallengeRecord} from "../../race/raceSetupService";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Canonical fixtures only touch a private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;

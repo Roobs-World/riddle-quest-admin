@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
-import {parseRaceMatchOffer} from "../../race/raceMatchOfferRecord";
-import {DEFAULT_RACE_MATCH_POLICY} from "../../race/raceMatchPolicy";
+import {parseRaceMatchOffer} from "../../race/matchmaking/raceMatchOfferRecord";
+import {DEFAULT_RACE_MATCH_POLICY} from "../../race/matchmaking/raceMatchPolicy";
 
 /** Original receipts lacked explicit pool and policy fields. */
 const legacy = {userId: `reddit_${"a".repeat(40)}`, challengeId: "challenge", createdAtMs: 1000, expiresAtMs: 61000,

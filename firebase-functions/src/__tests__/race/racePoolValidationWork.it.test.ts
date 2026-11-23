@@ -4,7 +4,7 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {listRaceCategoriesForLocale} from "../../race/raceSetupService";
 import {startRaceRunForUser} from "../../race/raceService";
-import {joinLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
 
 /** All catalog, account and gameplay observations belong to one private loopback demo. */
 const PROJECT=process.env.GCLOUD_PROJECT??"", A=`jest_${"a".repeat(40)}`, NOW=1_800_000_000_000;

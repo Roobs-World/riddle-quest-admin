@@ -2,8 +2,8 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {submitRaceGuessForUser, resumeRaceRunForUser, getRaceOutcomeForUser} from "../../race/raceService";
-import {raceOutcome, type RaceRunRecord} from "../../race/raceEngine";
-import {processRaceDeadline, replayRaceDeadline} from "../../race/raceDeadlineRecovery";
+import {raceOutcome, type RaceRunRecord} from "../../race/runs/raceEngine";
+import {processRaceDeadline, replayRaceDeadline} from "../../race/recovery/raceDeadlineRecovery";
 
 /** Demo-only authority for event history and reward rollback regressions. */
 let db: FirebaseFirestore.Firestore;

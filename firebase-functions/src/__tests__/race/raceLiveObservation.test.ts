@@ -2,8 +2,8 @@ import {Timestamp} from "firebase-admin/firestore";
 import {RACE_DECK_SIZE} from "../../../../src/races/contracts/index.js";
 import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
 import {requestDocumentId} from "../../race/raceSetupService";
-import {updateLiveRaceForUser} from "../../race/raceLiveService";
-import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
+import {updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
 
 /** Fixed authoritative clock and provider subjects. */
 const NOW = 1_800_000_000_000, OWNER = `jest_${"a".repeat(40)}`, RIVAL = `jest_${"b".repeat(40)}`;

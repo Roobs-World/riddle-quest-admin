@@ -2,7 +2,7 @@
 
 Project documentation lives in this folder. Platform documentation belongs in `docs/<platform>/`. Documentation for shared modules and operations belongs in `docs/common/<module>/`. Keep each module's evidence and documentation assets with its documents.
 
-Start with the [project setup guide](common/project/README.md), [platform source ownership](common/architecture/platform-layout.md), [shared feature folders](common/architecture/shared-source-layout.md), or [shared module index](common/README.md).
+Start with the [project setup guide](common/project/README.md), [platform source ownership](common/architecture/platform-layout.md), [shared feature folders](common/architecture/shared-source-layout.md), [Functions source organisation](common/architecture/functions-source-layout.md), or [shared module index](common/README.md).
 
 ## Platforms
 

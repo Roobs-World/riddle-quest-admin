@@ -1,8 +1,8 @@
 import {Timestamp} from "firebase-admin/firestore";
 import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
-import {applyRaceGuess} from "../../race/raceEngine";
-import {updateLiveRaceForUser} from "../../race/raceLiveService";
-import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
+import {applyRaceGuess} from "../../race/runs/raceEngine";
+import {updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
 import {JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 
 /** Fixed authoritative observation clock for every provider. */

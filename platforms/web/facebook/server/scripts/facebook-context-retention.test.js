@@ -17,7 +17,7 @@ async function invoke(args, outcome = {scanned: 0, invalid: 0, complete: true}) 
   runInNewContext(readFileSync(join(__dirname, "facebook-context-retention.js"), "utf8"), {
     process: stub, Date: {now: () => 1_700_000_000_000},
     require: function isolatedRequire(name) {
-      if (name === "../../../../../firebase-functions/scripts/functions-dependencies.js") return isolatedRequire;
+      if (name === "../../../../../firebase-functions/scripts/runtime/functions-dependencies.js") return isolatedRequire;
       if (name === "firebase-admin/app") return {initializeApp: options => {calls.push(["project", options.projectId]); return {};}};
       if (name === "firebase-admin/firestore") return {getFirestore: () => ({})};
       if (name === "../../../../../firebase-functions/lib/platforms/web/facebook/server/race/facebookContextRetention.js") return {purgeExpiredFacebookContextPage: async (_db, now, apply, limit) => {

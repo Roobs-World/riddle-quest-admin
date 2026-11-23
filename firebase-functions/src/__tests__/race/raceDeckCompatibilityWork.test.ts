@@ -1,6 +1,6 @@
 import type {RaceLocale} from "../../../../src/races/contracts/index.js";
-import {assertRaceDeckCompatible} from "../../race/raceDeckCompatibility";
-import type {RaceRiddleSnapshot} from "../../race/raceEngine";
+import {assertRaceDeckCompatible} from "../../race/runs/raceDeckCompatibility";
+import type {RaceRiddleSnapshot} from "../../race/runs/raceEngine";
 
 /** Original frozen content isolates answer validation from identity, clue and position constraints. */
 const riddle: RaceRiddleSnapshot = {

@@ -35,11 +35,14 @@ tsconfig.*.json
 
 # Babel and Jest config unless specifically needed by runtime
 babel.config.cjs
-jest.config.js
-jest.env.setup.js
+config/testing/jest.config.js
+config/testing/emulator-environment.cjs
 
 # If your main entry point in package.json (e.g., "main": "lib/firebase-functions/src/index.js")
 # and firebase.json functions source points to a directory containing 'lib',
 # then 'lib' itself should NOT be in .gcloudignore.
 # Canonical platform source is compiled before archiving.
 /.build-source/
+
+# Testing configuration is never part of the deployed runtime.
+/config/

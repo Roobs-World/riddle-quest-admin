@@ -19,7 +19,7 @@ import {
 } from "../../race/raceService";
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/deleteAccountData";
 import {requestDocumentId} from "../../race/raceSetupService";
-import {deliverRaceSettlement} from "../../race/raceSettlementDelivery";
+import {deliverRaceSettlement} from "../../race/settlement/raceSettlementDelivery";
 import {recordJestAccountDeletion} from "../../../../platforms/web/jest/server/jestAccountDeletion";
 
 /** Defines the project id value. */

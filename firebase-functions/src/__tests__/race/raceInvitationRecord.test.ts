@@ -1,4 +1,4 @@
-import {parseRaceInvitation} from "../../race/raceInvitationRecord";
+import {parseRaceInvitation} from "../../race/invitations/raceInvitationRecord";
 
 /** Supported legacy invitations need no explicit independent state fields. */
 const legacy = {challengeId: "invitation", creatorId: "creator", locale: "en", status: "inviting", createdAtMs: 0, expiresAtMs: 1000};

@@ -19,11 +19,11 @@ jest.mock("firebase-functions/v2/https", () => {
   const actual = jest.requireActual("firebase-functions/v2/https") as typeof import("firebase-functions/v2/https");
   return {HttpsError: actual.HttpsError, onCall: (...args: [unknown, unknown]) => mockOnCall(...args)};
 });
-jest.mock("../gameplay/completeGameLogic", () => ({
+jest.mock("../gameplay/sessions/completeGameLogic", () => ({
   completeAuthoritativeGame: (...args: unknown[]) => mockCompleteAuthoritativeGame(...args),
 }));
 
-import {completeGame} from "../gameplay/completeGameCallable";
+import {completeGame} from "../gameplay/callables/completeGameCallable";
 
 /** Provides response behavior. */
 const response = {

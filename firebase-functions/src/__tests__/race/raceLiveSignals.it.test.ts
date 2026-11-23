@@ -4,8 +4,8 @@ import {initializeTestEnvironment, assertFails, type RulesTestEnvironment} from 
 import {doc, getDoc, getDocs, collection, setDoc} from "firebase/firestore";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {streamLiveRaceChanges} from "../../race/raceLiveStream";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {streamLiveRaceChanges} from "../../race/live/raceLiveStream";
 import {removeLiveRaceIdentitySnapshots} from "../../profile/accountDeletion/liveRaceAccountDeletion";
 
 /** Dedicated demo project prevents these fixtures from reaching a live database. */

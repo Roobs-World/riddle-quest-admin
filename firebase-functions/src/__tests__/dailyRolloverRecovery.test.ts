@@ -6,7 +6,7 @@ const mockRecoverPendingCompletion = jest.fn();
 const mockGetUser = jest.fn();
 
 jest.mock("../gameplay/firestoreService", () => ({getUser: (...args: unknown[]) => mockGetUser(...args)}));
-jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({
+jest.mock("../gameplay/sessions/singlePlayerTerminalRecovery", () => ({
   recoverPendingAuthoritativeCompletion: (...args: unknown[]) => mockRecoverPendingCompletion(...args),
 }));
 

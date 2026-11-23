@@ -1,11 +1,11 @@
 import {splitGraphemes} from "../../../../src/gameplay/input/graphemes.js";
 import {RaceRiddlePromptSchema} from "../../../../src/races/contracts/index.js";
 import {editRaceInput} from "../../../../src/races/rounds/raceInput.js";
-import {validateRacePool} from "../../race/raceContentValidation";
-import {assertRaceDeckCompatible, assertLiveRaceDeckCompatible} from "../../race/raceDeckCompatibility";
-import {applyRaceGuess} from "../../race/raceEngine";
-import {liveRun} from "../../race/raceLiveState";
-import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
+import {validateRacePool} from "../../race/content/raceContentValidation";
+import {assertRaceDeckCompatible, assertLiveRaceDeckCompatible} from "../../race/runs/raceDeckCompatibility";
+import {applyRaceGuess} from "../../race/runs/raceEngine";
+import {liveRun} from "../../race/live/raceLiveState";
+import type {ExistingRaceContentRecord} from "../../race/content/raceContentMigration";
 
 /** Complete balanced records exercise catalog admission without external models or mutable services. */
 const pool = (answer: string): ExistingRaceContentRecord[] => Array.from({length: 30}, (_, index) => ({

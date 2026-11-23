@@ -7,7 +7,7 @@ const path = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
 
-const source = fs.readFileSync(path.join(__dirname, "race-delivery-replay.js"), "utf8");
+const source = fs.readFileSync(path.join(__dirname, "races/race-delivery-replay.js"), "utf8");
 
 async function run(args, failure) {
   const calls = [];
@@ -20,7 +20,7 @@ async function run(args, failure) {
     require(name) {
       if (name === "firebase-admin/app") return {initializeApp: value => calls.push(["initialize", value])};
       if (name === "firebase-admin/firestore") return {getFirestore: () => database};
-      if (name === "../lib/firebase-functions/src/race/raceDeliveryRecovery") return {replayRaceDelivery: async (...values) => {
+      if (name === "../../lib/firebase-functions/src/race/delivery/raceDeliveryRecovery") return {replayRaceDelivery: async (...values) => {
         calls.push(["replay", ...values]);
         if (failure) throw failure;
         return !values[4].dryRun;

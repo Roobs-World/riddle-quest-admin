@@ -13,6 +13,7 @@
       "coverage",
       "artifacts",
       "**/firebase-functions/content",
+      "**/firebase-functions/config",
       "__tests__",
       "__mocks__",
       "scripts",

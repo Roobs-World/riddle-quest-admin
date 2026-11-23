@@ -6,7 +6,7 @@ import {createJestPurchaseGrantId} from "../../../../platforms/web/jest/server/j
 import {createJestReferralVerificationId} from "../../../../platforms/web/jest/server/jestReferralReceipts";
 import {recordJestAccountDeletion} from "../../../../platforms/web/jest/server/jestAccountDeletion";
 import {isJestFirebaseUid} from "../../../../platforms/web/jest/server/jestSecurity";
-import {hashRaceCohortUser} from "../../race/raceRollout";
+import {hashRaceCohortUser} from "../../race/access/raceRollout";
 import {deleteUsernameReservationAndProfiles} from "../usernameReservations";
 import {deletePresenceForUser} from "../../presence/presenceVisibility";
 import {removeUserFromFacebookContextCompetitions} from "../../../../platforms/web/facebook/server/race/facebookContextService";

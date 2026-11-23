@@ -1,6 +1,6 @@
-import {raceMatchMeasurement, summarizeRaceMatches, compareRacePolicies, RaceMatchMeasurementSchema} from "../../race/raceMatchCalibration";
-import {DEFAULT_RACE_MATCH_POLICY} from "../../race/raceMatchPolicy";
-import {emptyRaceMatchProfile, recordRaceExposure} from "../../race/raceMatchPerformance";
+import {raceMatchMeasurement, summarizeRaceMatches, compareRacePolicies, RaceMatchMeasurementSchema} from "../../race/matchmaking/raceMatchCalibration";
+import {DEFAULT_RACE_MATCH_POLICY} from "../../race/matchmaking/raceMatchPolicy";
+import {emptyRaceMatchProfile, recordRaceExposure} from "../../race/matchmaking/raceMatchPerformance";
 
 /** Answer-free observations use one fixed cohort and a deterministic reporting clock. */
 const row = {provider: "reddit", locale: "en", categoryId: "history", createdAtMs: 100, expiresAtMs: 500};

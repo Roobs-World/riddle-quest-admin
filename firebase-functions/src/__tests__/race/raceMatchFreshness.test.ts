@@ -1,5 +1,5 @@
-import {DEFAULT_RACE_MATCH_POLICY, raceMatchPolicySnapshot} from "../../race/raceMatchPolicy";
-import {raceCandidateNeedsFreshness, raceFreshnessInspectionBatch, selectRaceFreshCandidate} from "../../race/raceMatchFreshness";
+import {DEFAULT_RACE_MATCH_POLICY, raceMatchPolicySnapshot} from "../../race/matchmaking/raceMatchPolicy";
+import {raceCandidateNeedsFreshness, raceFreshnessInspectionBatch, selectRaceFreshCandidate} from "../../race/matchmaking/raceMatchFreshness";
 
 /** Input is already canonically eligible and sorted by performance band and score. */
 const near = {id: "near", band: 0, repeats: 1, exposure: 0};

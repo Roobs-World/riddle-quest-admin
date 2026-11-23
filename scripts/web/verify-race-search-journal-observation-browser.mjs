@@ -17,7 +17,7 @@ const source = `
 import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 import {RACE_RECOVERY_KEY} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const authority=createFakeRaceServices(),originalRead=Storage.prototype.getItem;
 window.denied=false;Storage.prototype.getItem=function(key){if(window.denied&&key===RACE_RECOVERY_KEY)throw new Error('read denied');return originalRead.call(this,key);};

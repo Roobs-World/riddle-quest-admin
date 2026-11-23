@@ -17,7 +17,7 @@ import React from 'react';
 import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/web/fixtures/RetainedRaceHarness.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const scenario=new URLSearchParams(location.search).get("case"),catalog=createFakeRaceServices();
 const now=Date.now(),view={runId:'keyboard-run',role:'creator',status:'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,

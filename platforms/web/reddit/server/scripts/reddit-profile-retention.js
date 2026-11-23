@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-const functionsRequire = require("../../../../../firebase-functions/scripts/functions-dependencies.js");
+const functionsRequire = require("../../../../../firebase-functions/scripts/runtime/functions-dependencies.js");
 
 const {initializeApp} = functionsRequire("firebase-admin/app");
 const {getFirestore} = functionsRequire("firebase-admin/firestore");

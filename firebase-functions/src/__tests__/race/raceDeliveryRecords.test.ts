@@ -1,5 +1,5 @@
 import {Timestamp} from "firebase-admin/firestore";
-import {parseRacePerformanceEvent, parseRaceSettlementEvent} from "../../race/raceDeliveryRecords";
+import {parseRacePerformanceEvent, parseRaceSettlementEvent} from "../../race/delivery/raceDeliveryRecords";
 
 /** Minimal legacy processing receipt remains supported. */
 const receipt = () => ({runId: "run-1", userId: "player-1", createdAtMs: 1000,

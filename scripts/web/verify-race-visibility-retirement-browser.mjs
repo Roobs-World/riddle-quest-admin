@@ -15,7 +15,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 window.sessionSetups=0;window.sessionCleanups=0;window.suspended=false;window.tickCalls=0;window.gameVisible=true;
 Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>window.gameVisible?'visible':'hidden'});

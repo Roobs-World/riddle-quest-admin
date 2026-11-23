@@ -264,7 +264,7 @@
     "check:w3c": "pnpm validate:w3c",
     "test:release-interface": "node --test scripts/release/platform-releases.test.mjs",
     "test:release-targets:e2e": "node scripts/release/verify-release-target-e2e.mjs && pnpm test:release-artifacts:browser",
-    "verify:functions:node22": "pnpm prepare:functions && node firebase-functions/scripts/run-with-functions-node.js firebase-functions/scripts/verify-node-runtime.js",
+    "verify:functions:node22": "pnpm prepare:functions && node firebase-functions/scripts/runtime/run-with-functions-node.js firebase-functions/scripts/runtime/verify-node-runtime.js",
     "verify:production": "pnpm check:braces-security && pnpm audit --prod --audit-level high && pnpm audit --audit-level high && pnpm check:monetization && pnpm check:functions-lock && pnpm --dir firebase-functions test:deploy-scripts && pnpm check:facebook-secrets && pnpm check:youtube-progress && pnpm check:types && pnpm --dir firebase-functions lint && pnpm verify:functions:node22 && pnpm check:facebook-copy && pnpm --dir firebase-functions test:youtube-content && pnpm test:youtube:unit && pnpm test:coverage && pnpm test:release-scripts && pnpm test:architecture && pnpm build && pnpm test:e2e && pnpm check:w3c && pnpm preflight:jest-upload && pnpm preflight:facebook-upload",
     "verify:production:extended": "pnpm verify:production && PORTAL_USE_EXISTING_BUILD=1 pnpm test:mobile-soak",
     "test:interface": "cross-env NODE_ENV=test jest --selectProjects interface",
@@ -351,7 +351,8 @@
     "test:local-game:coverage": "cross-env NODE_ENV=test jest --selectProjects local-game --runInBand --coverage",
     "test:services:coverage": "cross-env NODE_ENV=test jest --selectProjects services --runInBand --coverage",
     "test:e2e:jest-facebook:web": "pnpm test:jest-facebook-browser-plan && pnpm build:jest && pnpm build:facebook && PORTAL_USE_EXISTING_BUILD=1 node scripts/web/run-jest-facebook-browser.mjs && PORTAL_USE_EXISTING_BUILD=1 pnpm test:jest-auth:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:jest-purchase-recovery:browser && PORTAL_USE_EXISTING_BUILD=1 pnpm test:retained-race:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:facebook:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:mobile-soak",
-    "release:facebook:handoff": "pnpm preflight:facebook-upload && pnpm facebook:draft begin"
+    "release:facebook:handoff": "pnpm preflight:facebook-upload && pnpm facebook:draft begin",
+    "check:functions-layout": "node firebase-functions/scripts/build/audit-directory-layout.js"
   },
   "engines": {
     "node": ">=24.17.0"

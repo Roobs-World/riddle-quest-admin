@@ -1,7 +1,7 @@
 import {Timestamp} from "firebase-admin/firestore";
 import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
 
 /** Fixed authoritative observation clock and authenticated provider subjects. */
 const NOW = 1_800_000_000_000, OWNER = `jest_${"a".repeat(40)}`, RIVAL = `jest_${"b".repeat(40)}`;

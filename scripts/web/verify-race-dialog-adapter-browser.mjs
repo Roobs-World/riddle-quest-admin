@@ -16,7 +16,7 @@ await writeFile(path.join(scratch,"main.tsx"),`
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/web/fixtures/RetainedRaceHarness.tsx"))};
 import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,"src/sharing/components/ReferralSharingCapability.tsx"))};
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
 import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};

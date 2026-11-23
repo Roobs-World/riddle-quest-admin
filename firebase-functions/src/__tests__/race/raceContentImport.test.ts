@@ -1,6 +1,6 @@
 import {RACE_CATEGORY_IDS, type RaceCategoryId, type RaceDifficultyBand} from "../../../../src/races/contracts/index.js";
 import easierEnglish from "../../../content/race-en-reviewed-v2.json";
-import {createRaceContentImportPlan} from "../../race/raceContentImport";
+import {createRaceContentImportPlan} from "../../race/content/raceContentImport";
 
 /** Provides valid file behavior. */
 const validFile = () => ({

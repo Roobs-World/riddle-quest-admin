@@ -2,9 +2,9 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {mkdirSync, writeFileSync} from "node:fs";
 import {join} from "node:path";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
-import type {LiveTicket} from "../../race/raceLiveState";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
+import type {LiveTicket} from "../../race/live/raceLiveState";
 
 /** Every source/account mutation belongs to an isolated loopback demo. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "",

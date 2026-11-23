@@ -1,9 +1,9 @@
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../daily/dailyChallenge";
 import {getClassicRiddleBuffer} from "../daily/classicRiddleBuffer";
-import {completeGame} from "../gameplay/completeGameCallable";
-import {submitSinglePlayerGuess} from "../gameplay/submitSinglePlayerGuessCallable";
-import {getHint, spendCoins, skipRiddle} from "../gameplay/gameLogic";
-import {joinLiveRace, updateLiveRace} from "../race/raceLiveCallables";
+import {completeGame} from "../gameplay/callables/completeGameCallable";
+import {submitSinglePlayerGuess} from "../gameplay/callables/submitSinglePlayerGuessCallable";
+import {getHint, spendCoins, skipRiddle} from "../gameplay/callables/gameLogic";
+import {joinLiveRace, updateLiveRace} from "../race/api/raceLiveCallables";
 import {redditGameplay} from "../../../platforms/web/reddit/server/redditGameplayEndpoint";
 
 it("declares database-adjacent gameplay alongside existing client endpoints", () => {

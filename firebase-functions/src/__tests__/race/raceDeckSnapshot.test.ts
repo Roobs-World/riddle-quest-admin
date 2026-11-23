@@ -1,7 +1,7 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {raceDeckContentVersion, validateRaceDeckSnapshot, raceRecordingFingerprint, assertRacePreparedRecording} from "../../race/raceDeckSnapshot";
+import {raceDeckContentVersion, validateRaceDeckSnapshot, raceRecordingFingerprint, assertRacePreparedRecording} from "../../race/runs/raceDeckSnapshot";
 import {parseChallengeRecord} from "../../race/raceSetupService";
-import {applyRaceHint, toRaceRunView, type RaceRunRecord} from "../../race/raceEngine";
+import {applyRaceHint, toRaceRunView, type RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Minimal authoritative run used to exercise archived rules and answer policy. */
 const run = (): RaceRunRecord => ({

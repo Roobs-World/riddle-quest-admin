@@ -1,5 +1,5 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {applyRaceGuess, applyRaceHint, applyRaceSkip, raceOutcome, refreshRaceRun, type RaceRunRecord} from "../../race/raceEngine";
+import {applyRaceGuess, applyRaceHint, applyRaceSkip, raceOutcome, refreshRaceRun, type RaceRunRecord} from "../../race/runs/raceEngine";
 import {parseRunRecord} from "../../race/raceSetupService";
 
 /** Valid legacy storage without a rules snapshot or a populated event history. */

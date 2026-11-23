@@ -14,7 +14,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const field=new URLSearchParams(location.search).get('case');window.commands=[];window.recipient=field==='recipient';
 window.poisonEntry=session=>{const state=session.getSnapshot(),entry=state.entryStatus;if(entry?.status!=='ready')return;if(field==='clear')state.entryStatus=null;else if(field==='identity')state.activeChallengeId='other';else{entry.viewerRole=field==='recipient'?'creator':'recipient';if(entry.invitation)entry.invitation.role='recipient';}};

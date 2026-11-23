@@ -220,7 +220,7 @@ import {deleteAccount} from "../profile/accountDeletion/index";
 import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
 import {createJestPurchaseGrantId} from "../../../platforms/web/jest/server/jestPurchaseReceipts";
 import {createUsernameReservationId} from "../profile/usernameReservations";
-import {hashRaceCohortUser} from "../race/raceRollout";
+import {hashRaceCohortUser} from "../race/access/raceRollout";
 import {requestDocumentId} from "../race/raceSetupService";
 import {jestFirebaseUid} from "../../../platforms/web/jest/server/jestSecurity";
 

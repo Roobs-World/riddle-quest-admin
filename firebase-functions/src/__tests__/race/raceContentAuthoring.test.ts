@@ -9,9 +9,9 @@ jest.mock("../../riddles/openaiService", () => ({
   generateUniqueRiddle: (...args: unknown[]) => mockGenerate(...args),
 }));
 
-import {authorRaceContent} from "../../race/raceContentAuthoring";
-import {createRaceContentImportPlan} from "../../race/raceContentImport";
-import type {RaceContentImportFile} from "../../race/raceContentImport";
+import {authorRaceContent} from "../../race/content/raceContentAuthoring";
+import {createRaceContentImportPlan} from "../../race/content/raceContentImport";
+import type {RaceContentImportFile} from "../../race/content/raceContentImport";
 
 describe("multiplayer bank authoring", () => {
   beforeEach(() => {

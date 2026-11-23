@@ -38,7 +38,7 @@ module.exports = [
     languageOptions: {
       parserOptions: {
         projectService: false,
-        project: "./tsconfig.test.json",
+        project: "./config/testing/tsconfig.test.json",
         tsconfigRootDir: __dirname,
       },
     },

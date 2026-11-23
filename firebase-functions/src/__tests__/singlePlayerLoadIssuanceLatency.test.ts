@@ -34,15 +34,15 @@ jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}})
 // Current entitlement reconciliation, HTTP transport and account leases are outside this issuance-stage fixture.
 jest.mock("../shared/sentryHandlers", () => ({onCallWithSentry: (_name: string, _options: unknown, handler: unknown) => ({run: handler})}));
 jest.mock("../gameplay/firestoreService", () => ({getUser: async () => ({progress: {classicIndex: 1}, preferredLanguage: "en"})}));
-jest.mock("../gameplay/classicRiddleFallback", () => ({...jest.requireActual<any>("../gameplay/classicRiddleFallback"), getPlayableClassicRiddle: async () => {
+jest.mock("../gameplay/content/classicRiddleFallback", () => ({...jest.requireActual<any>("../gameplay/content/classicRiddleFallback"), getPlayableClassicRiddle: async () => {
   await mockDelay(); return {contentLocale: "en", riddle: {riddleId: "classic-1", text: "What has keys?", answer: "piano"}};
 }}));
-jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({recoverPendingAuthoritativeCompletion: async () => false}));
+jest.mock("../gameplay/sessions/singlePlayerTerminalRecovery", () => ({recoverPendingAuthoritativeCompletion: async () => false}));
 jest.mock("../daily/dailyRolloverRecovery", () => ({reconcilePreviousDailyBinding: async (_uid: string, user: unknown) => user}));
 jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNeeded: async () => undefined}));
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../daily/dailyChallenge";
-import {ensureAuthoritativeSession} from "../gameplay/singlePlayerSession";
-import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
+import {ensureAuthoritativeSession} from "../gameplay/sessions/singlePlayerSession";
+import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/sessions/singlePlayerAnswerPolicy";
 import {getDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 
 it.each((["classic", "challenge"] as const).flatMap(mode => [false, true].map(resumed => ({mode, resumed}))))(

@@ -1,10 +1,10 @@
-import {publishLiveRaceSignals} from "../../race/raceLiveSignals";
+import {publishLiveRaceSignals} from "../../race/live/raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId, stripUndefined} from "../../race/raceSetupService";
-import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
-import {DELETED_LIVE_RACE_USER_ID} from "../../race/raceLivePrivacy";
+import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
+import {DELETED_LIVE_RACE_USER_ID} from "../../race/privacy/raceLivePrivacy";
 import {deleteMatchingCollectionGroupDocuments, deleteMatchingDocuments} from "./accountDeletionBatches";
 
 /** Legacy discovery and request deletion use bounded pages; identity removal is transactional per match. */

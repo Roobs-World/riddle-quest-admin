@@ -6,8 +6,8 @@ import {
   joinFacebookContextCompetition,
   removeUserFromFacebookContextCompetitions,
 } from "../../race/facebookContextService";
-import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/raceEngine";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/raceLiveService";
+import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/runs/raceEngine";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../firebase-functions/src/race/live/raceLiveService";
 
 /** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";

@@ -37,11 +37,11 @@ jest.mock("../daily/dailyChallenge", () => ({getCurrentClassicRiddle: {run: asyn
   riddleId: "classic-1", text: "What has keys?", answerLength: 5, sessionToken: "current-session-token-classic-1", questionNumber: 1,
   attemptsUsed: 0, hasUsedContinue: false, awaitingContinue: false}], totalQuestions: 1}})}}));
 jest.mock("../gameplay/firestoreService", () => ({getUser: async () => ({progress: {classicIndex: 1}, preferredLanguage: "en"})}));
-jest.mock("../gameplay/classicRiddleFallback", () => ({getPlayableClassicRiddle: async (index: number) => {
+jest.mock("../gameplay/content/classicRiddleFallback", () => ({getPlayableClassicRiddle: async (index: number) => {
   await mockDelay(); return {contentLocale: "en", riddle: {riddleId: `classic-${index}`, text: "What has keys?", answer: "piano"}};
 }}));
 import {getClassicRiddleBuffer} from "../daily/classicRiddleBuffer";
-import {getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
+import {getSinglePlayerContentKey} from "../gameplay/sessions/singlePlayerAnswerPolicy";
 
 /** Fixture references use the same opaque identity as the production document resolver. */
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");

@@ -461,4 +461,4 @@ export async function appendUnlockedAchievements(userId: string, newEntries: Unl
   functions.logger.info(`Appended ${toAdd.length} achievements for user ${userId}`);
 }
 
-export {getClassicRiddleByIndex, getDailyRiddle, getRiddle, getRiddleByGameMode} from "./riddleRepository";
+export {getClassicRiddleByIndex, getDailyRiddle, getRiddle, getRiddleByGameMode} from "./content/riddleRepository";

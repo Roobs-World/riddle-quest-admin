@@ -1,6 +1,6 @@
-import {liveRaceReferralEventId, validateLiveRaceReferralSource} from "../../../../firebase-functions/src/race/raceLiveReferralDelivery";
+import {liveRaceReferralEventId, validateLiveRaceReferralSource} from "../../../../firebase-functions/src/race/delivery/raceLiveReferralDelivery";
 import type {Firestore} from "../../../../firebase-functions/src/race/raceSetupService";
-import type {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/raceDeliveryRecords";
+import type {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/delivery/raceDeliveryRecords";
 
 /** Facebook keeps its existing separate hash domain and durable receipts. */
 export const facebookLiveRaceReferralEventId = (userId: string, ticketId: string): string =>

@@ -1,7 +1,7 @@
 import {findRedditRaceMatch} from "../redditMatchmaking";
-import {findRecordedRaceMatch} from "../../../../../firebase-functions/src/race/raceMatchmaking";
+import {findRecordedRaceMatch} from "../../../../../firebase-functions/src/race/matchmaking/raceMatchmaking";
 
-jest.mock("../../../../../firebase-functions/src/race/raceMatchmaking", () => ({findRecordedRaceMatch: jest.fn()}));
+jest.mock("../../../../../firebase-functions/src/race/matchmaking/raceMatchmaking", () => ({findRecordedRaceMatch: jest.fn()}));
 
 /** Authenticated Reddit identity fixture. */
 const uid = (value: string) => `reddit_${value.repeat(40)}`;

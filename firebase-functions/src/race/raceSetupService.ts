@@ -1,4 +1,4 @@
-import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
+import {assertRaceDeckCompatible} from "./runs/raceDeckCompatibility";
 import {admin} from "../shared/firebaseAdmin";
 import {createHash} from "node:crypto";
 import {
@@ -16,14 +16,14 @@ import {
   type RaceLocale,
   type RaceChallengePreview,
 } from "../../../src/races/contracts/index.js";
-import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
-import {assertRaceStoredRecord} from "./raceStoredRecords";
+import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./runs/raceDeckSnapshot";
+import {assertRaceStoredRecord} from "./runs/raceStoredRecords";
 import {logger} from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
-import {type RaceRiddleSnapshot, type RaceRunRecord} from "./raceEngine";
-import {RACE_DECK_DIFFICULTY_COUNTS, validateRacePool} from "./raceContentValidation";
-import type {ExistingRaceContentRecord} from "./raceContentMigration";
-import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./raceAchievements";
+import {type RaceRiddleSnapshot, type RaceRunRecord} from "./runs/raceEngine";
+import {RACE_DECK_DIFFICULTY_COUNTS, validateRacePool} from "./content/raceContentValidation";
+import type {ExistingRaceContentRecord} from "./content/raceContentMigration";
+import {evaluateRaceAchievementEvent, type RaceAchievementEvent} from "./settlement/raceAchievements";
 
 /** Describes firestore. */
 export type Firestore = FirebaseFirestore.Firestore;

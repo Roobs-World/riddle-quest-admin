@@ -7,8 +7,8 @@ const mockCurrent = jest.fn();
 jest.mock("../shared/sentryHandlers", () => ({onCallWithSentry: (_name: string, _options: unknown, handler: unknown) => ({run: handler})}));
 jest.mock("../daily/dailyChallenge", () => ({getCurrentClassicRiddle: {run: (...args: unknown[]) => mockCurrent(...args)}}));
 jest.mock("../gameplay/firestoreService", () => ({getUser: async () => ({progress: {classicIndex: 1}, preferredLanguage: "en"})}));
-jest.mock("../gameplay/classicRiddleFallback", () => ({getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
-jest.mock("../gameplay/singlePlayerSession", () => ({
+jest.mock("../gameplay/content/classicRiddleFallback", () => ({getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({
   ensureAuthoritativeSessionWithState: async (...args: [string, string, string]) => ({sessionToken: await mockEnsureSession(...args),
     state: {gameMode: "classic", answer: "piano", locale: "en", attempts: 0, hasUsedContinue: false, awaitingContinue: false,
       terminal: false, guessReceipts: {}, expiresAt: {toMillis: () => 1_900_000_000_000}}}),

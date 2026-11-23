@@ -14,7 +14,7 @@ await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></di
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RACE_RECOVERY_KEY} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const field=new URLSearchParams(location.search).get('case'),authority=createFakeRaceServices();
 window.armed=false;window.observations=0;window.testClock={now:()=>{if(window.armed&&++window.observations===(field==='first'?1:2))window.replace();return performance.now();},schedule:(callback,delay)=>setTimeout(callback,delay),cancel:id=>clearTimeout(id)};window.recoveryKey=RACE_RECOVERY_KEY;window.commands=[];

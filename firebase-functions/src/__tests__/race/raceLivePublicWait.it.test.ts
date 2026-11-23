@@ -3,7 +3,7 @@ import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {LIVE_RACE_WAIT_MS, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 
 /** Distinct deterministic Jest accounts used for public pairing and ownership checks. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;

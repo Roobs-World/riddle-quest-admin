@@ -2,9 +2,9 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue, Timestamp} from "firebase-admin/firestore";
 import {RACE_RULES, RACE_ACHIEVEMENT_IDS} from "../../../../src/races/contracts/index.js";
 import {getRaceOutcomeForUser, resumeRaceRunForUser, publishRaceChallengeForUser} from "../../race/raceService";
-import {raceOutcome, type RaceRunRecord} from "../../race/raceEngine";
-import {deliverRaceSettlement} from "../../race/raceSettlementDelivery";
-import {replayRaceDelivery} from "../../race/raceDeliveryRecovery";
+import {raceOutcome, type RaceRunRecord} from "../../race/runs/raceEngine";
+import {deliverRaceSettlement} from "../../race/settlement/raceSettlementDelivery";
+import {replayRaceDelivery} from "../../race/delivery/raceDeliveryRecovery";
 
 /** All destructive fixtures require a dedicated local demo emulator. */
 let db: FirebaseFirestore.Firestore;

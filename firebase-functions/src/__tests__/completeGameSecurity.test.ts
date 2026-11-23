@@ -9,14 +9,14 @@ jest.mock("../gameplay/firestoreService", () => ({
   updateUserCoins: jest.fn(),
   updateUserStats: jest.fn(),
 }));
-jest.mock("../gameplay/singlePlayerSession", () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({
   finalizeAuthoritativeSession: (...args: unknown[]) => mockFinalizeAuthoritativeSession(...args),
 }));
 jest.mock("../gameplay/achievements", () => ({evaluateAchievements: jest.fn()}));
 jest.mock("../gameplay/leaderboard", () => ({updateLeaderboardEntry: jest.fn()}));
 jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNeeded: jest.fn()}));
 
-import {deriveAuthoritativeCompletion} from "../gameplay/completeGameLogic";
+import {deriveAuthoritativeCompletion} from "../gameplay/sessions/completeGameLogic";
 
 describe("secure game completion derivation", () => {
   beforeEach(() => {

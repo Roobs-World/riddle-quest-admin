@@ -4,9 +4,9 @@ import {getFirestore} from "firebase-admin/firestore";
 import {
   ensureAuthoritativeSession, getIssuedAuthoritativeSession, purchaseAuthoritativeHint,
   type SinglePlayerSessionState,
-} from "../gameplay/singlePlayerSession";
-import {getSinglePlayerContentKey, getSinglePlayerCompletionKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {projectPublicSinglePlayerSession} from "../gameplay/singlePlayerPublicSession";
+} from "../gameplay/sessions/singlePlayerSession";
+import {getSinglePlayerContentKey, getSinglePlayerCompletionKey} from "../gameplay/sessions/singlePlayerAnswerPolicy";
+import {projectPublicSinglePlayerSession} from "../gameplay/sessions/singlePlayerPublicSession";
 import {HINT_COST_COINS} from "../shared/constants";
 
 /** Canonical writes must remain in the allocated private demo emulator. */

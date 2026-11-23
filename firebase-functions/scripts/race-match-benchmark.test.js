@@ -1,7 +1,7 @@
 "use strict";
 const {test} = require("node:test");
 const assert = require("node:assert/strict");
-const {validateOptions, distribution, validMatchedResult} = require("./race-match-benchmark");
+const {validateOptions, distribution, validMatchedResult} = require("./races/race-match-benchmark");
 const safe = {FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099", GCLOUD_PROJECT: "demo-riddle-quest-match"};
 test("fixture writes reject production, remote endpoints and wrong demo projects", () => {
   for (const env of [{}, {...safe, FIRESTORE_EMULATOR_HOST: "example.com:8099"}, {...safe, GCLOUD_PROJECT: "production"},

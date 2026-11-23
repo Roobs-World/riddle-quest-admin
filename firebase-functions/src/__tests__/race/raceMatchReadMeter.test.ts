@@ -1,5 +1,5 @@
 import {assertRaceMatchReadBudget, RACE_MATCH_DOCUMENT_READ_BUDGET, RACE_MATCH_TRANSACTION_BUDGET,
-  withMeteredRaceTransaction, type RaceMatchReadMeter} from "../../race/raceMatchReadMeter";
+  withMeteredRaceTransaction, type RaceMatchReadMeter} from "../../race/matchmaking/raceMatchReadMeter";
 
 it("counts retried eligibility reads without changing transaction method ownership", async () => {
   /** Simulated transaction uses its own context for both reads and writes. */

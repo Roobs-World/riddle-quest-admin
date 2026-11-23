@@ -1,20 +1,20 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/raceAccountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
-import type {RaceRunRecord} from "../../race/raceEngine";
-import {deliverRacePerformance} from "../../race/racePerformanceDelivery";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
+import {deliverRacePerformance} from "../../race/settlement/racePerformanceDelivery";
 import {recordFacebookTournamentRun} from "../../../../platforms/web/facebook/server/race/facebookTournament";
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../../../platforms/web/facebook/server/facebookReferrals";
 import {issueRedditReferralToken, bindRedditReferralToken} from "../../../../platforms/web/reddit/server/redditReferrals";
 import {LIVE_RACE_WAIT_MS} from "../../../../src/races/contracts/index.js";
 import {FieldValue, Timestamp} from "firebase-admin/firestore";
-import {sendLiveRaceChallengeForUser} from "../../race/raceLiveChallengeNotifications";
+import {sendLiveRaceChallengeForUser} from "../../race/invitations/raceLiveChallengeNotifications";
 import {createUsernameReservationId} from "../../profile/usernameReservations";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
-import {listLiveRaceChallengesForUser} from "../../race/raceLiveChallengeNotifications";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
+import {listLiveRaceChallengesForUser} from "../../race/invitations/raceLiveChallengeNotifications";
 
 /** All destructive fixture work is restricted to an isolated loopback demo emulator. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "";

@@ -1,7 +1,7 @@
-import {withMeteredRaceTransaction} from "../../race/raceMatchReadMeter";
+import {withMeteredRaceTransaction} from "../../race/matchmaking/raceMatchReadMeter";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {withRaceTransactionReads} from "../../race/raceTransactionReads";
+import {withRaceTransactionReads} from "../../race/runs/raceTransactionReads";
 
 /** Emulator-only checks exercise the actual SDK transaction restrictions. */
 let db: FirebaseFirestore.Firestore;

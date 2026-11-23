@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {getJestAccountDeletionRef} from "../shared/accountDeletion";
-import {raceProviderScope} from "../race/raceEligibility";
+import {raceProviderScope} from "../race/access/raceProviderScope";
 
 /** Resolves only the human opponent of an authenticated, retained live seat in the mutation transaction. */
 export async function resolveLiveRaceSafetyTarget(transaction: FirebaseFirestore.Transaction, db: FirebaseFirestore.Firestore,

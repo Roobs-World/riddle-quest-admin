@@ -1,7 +1,7 @@
 import {deleteApp, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {submitRaceGuessForUser} from "../../race/raceService";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Reference factory for deterministic transactions; this suite never contacts production. */
 const app = initializeApp({projectId: "demo-race-read-budget"}, "race-read-budget");

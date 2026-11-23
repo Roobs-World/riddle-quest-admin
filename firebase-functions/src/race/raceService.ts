@@ -1,4 +1,4 @@
-import {assertRaceDeckCompatible} from "./raceDeckCompatibility";
+import {assertRaceDeckCompatible} from "./runs/raceDeckCompatibility";
 import {admin} from "../shared/firebaseAdmin";
 import {logger} from "firebase-functions";
 import {createHash} from "node:crypto";
@@ -26,7 +26,7 @@ import {
   type SubmitRaceGuessResponse,
 } from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
-import {assertRaceMatchOfferForStart} from "./raceMatchOffer";
+import {assertRaceMatchOfferForStart} from "./matchmaking/raceMatchOffer";
 import {
   abandonRaceRun,
   applyRaceGuess,
@@ -40,9 +40,9 @@ import {
   type RaceOpponentRecord,
   type RaceRiddleSnapshot,
   type RaceRunRecord,
-} from "./raceEngine";
-import {raceReceiptExpiresAt} from "./raceReceiptPrivacy";
-import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./raceOpponentPrivacy";
+} from "./runs/raceEngine";
+import {raceReceiptExpiresAt} from "./privacy/raceReceiptPrivacy";
+import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "./privacy/raceOpponentPrivacy";
 import {
   assertRaceLocaleCompatible,
   buildDeterministicRaceDeck,
@@ -60,19 +60,20 @@ import {
   type RaceChallengeRecord,
   type RaceDeckRecord,
 } from "./raceSetupService";
-import {mutateRaceRun} from "./raceRunMutation";
-import {bindRaceRequest, assertRaceRequestReplay, assertLegacyRaceStart, rejectRaceRequestReuse} from "./raceRequestBinding";
-import {assertRaceChallengeEligible, inspectRaceChallengeEligibility, raceProviderScope} from "./raceEligibility";
-import {projectRaceMatchCandidate} from "./raceMatchCandidates";
-import {raceDeckContentVersion, raceRecordingFingerprint, assertRacePreparedRecording} from "./raceDeckSnapshot";
-import {emptyRaceMatchProfile, RaceMatchProfileSchema, raceDifficultyAdjustedMs, recordRaceExposure} from "./raceMatchPerformance";
+import {mutateRaceRun} from "./runs/raceRunMutation";
+import {bindRaceRequest, assertRaceRequestReplay, assertLegacyRaceStart, rejectRaceRequestReuse} from "./runs/raceRequestBinding";
+import {assertRaceChallengeEligible, inspectRaceChallengeEligibility} from "./access/raceEligibility";
+import {raceProviderScope} from "./access/raceProviderScope";
+import {projectRaceMatchCandidate} from "./matchmaking/raceMatchCandidates";
+import {raceDeckContentVersion, raceRecordingFingerprint, assertRacePreparedRecording} from "./runs/raceDeckSnapshot";
+import {emptyRaceMatchProfile, RaceMatchProfileSchema, raceDifficultyAdjustedMs, recordRaceExposure} from "./matchmaking/raceMatchPerformance";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
-export {readyRaceRunForUser} from "./raceRunLifecycle";
-import {settleRaceRun} from "./raceSettlement";
-import {projectRaceRunResponse} from "./raceRunResponse";
-import {parseRaceInvitation, assertRaceInvitationOpen} from "./raceInvitationRecord";
-import {buildRaceBotOpponent, parseRaceBotOffer, assertRaceAcceptedBotRun} from "./raceBot";
-export {reserveRaceInviteForUser, claimRaceInviteForUser, getRaceChallengeForUser} from "./raceInvitation";
+export {readyRaceRunForUser} from "./runs/raceRunLifecycle";
+import {settleRaceRun} from "./settlement/raceSettlement";
+import {projectRaceRunResponse} from "./runs/raceRunResponse";
+import {parseRaceInvitation, assertRaceInvitationOpen} from "./invitations/raceInvitationRecord";
+import {buildRaceBotOpponent, parseRaceBotOffer, assertRaceAcceptedBotRun} from "./matchmaking/raceBot";
+export {reserveRaceInviteForUser, claimRaceInviteForUser, getRaceChallengeForUser} from "./invitations/raceInvitation";
 export {buildDeterministicRaceDeck, listRaceCategoriesForLocale} from "./raceSetupService";
 
 /** Reports one answer-free command observation outside transactions, including failed offer acceptance. */

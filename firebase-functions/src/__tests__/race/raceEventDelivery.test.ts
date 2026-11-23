@@ -12,10 +12,10 @@ const deliver = jest.fn(async () => false);
 jest.mock("../../shared/firebaseAdmin", () => ({admin: {firestore: () => ({
   collection: () => ({doc: () => ({get: async () => ({exists: true, data: () => receipt})})}),
 })}}));
-jest.mock("../../race/raceSettlementDelivery", () => ({deliverRaceSettlement: (...args: unknown[]) => deliver(...args)}));
-jest.mock("../../race/racePerformanceDelivery", () => ({deliverRacePerformance: (...args: unknown[]) => deliver(...args)}));
+jest.mock("../../race/settlement/raceSettlementDelivery", () => ({deliverRaceSettlement: (...args: unknown[]) => deliver(...args)}));
+jest.mock("../../race/settlement/racePerformanceDelivery", () => ({deliverRacePerformance: (...args: unknown[]) => deliver(...args)}));
 
-import {deliverRaceSettlementEvent, deliverRacePerformanceEvent} from "../../race/raceSettlementJobs";
+import {deliverRaceSettlementEvent, deliverRacePerformanceEvent} from "../../race/settlement/raceSettlementJobs";
 
 beforeEach(() => {receipt = {delivered: false, nextAttemptAtMs: Date.now() + 30000}; jest.clearAllMocks();});
 

@@ -1,5 +1,5 @@
-import {mutateRaceRun} from "../../race/raceRunMutation";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import {mutateRaceRun} from "../../race/runs/raceRunMutation";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 jest.mock("../../race/raceSetupService", () => ({
   parseRunRecord: (run: unknown) => run,
@@ -7,19 +7,19 @@ jest.mock("../../race/raceSetupService", () => ({
   applyActionRateLimit: (run: unknown) => run,
   stripUndefined: (value: unknown) => value,
 }));
-jest.mock("../../race/raceOpponentPrivacy", () => ({
+jest.mock("../../race/privacy/raceOpponentPrivacy", () => ({
   resolveRaceOpponentPrivacy: async (_tx: unknown, _db: unknown, run: unknown) => ({run, scrubbed: false}),
   raceRunPrivacyWrite: (run: unknown) => run,
 }));
-jest.mock("../../race/raceSettlement", () => ({settleRaceRun: async (_tx: unknown, _db: unknown, run: unknown) => run}));
-jest.mock("../../race/raceReceiptPrivacy", () => ({
+jest.mock("../../race/settlement/raceSettlement", () => ({settleRaceRun: async (_tx: unknown, _db: unknown, run: unknown) => run}));
+jest.mock("../../race/privacy/raceReceiptPrivacy", () => ({
   hydrateRaceReceiptResponse: (response: unknown) => response,
   minimizeRaceReceiptResponse: (response: unknown) => response,
   raceReceiptExpiresAt: () => 999999,
 }));
 
-jest.mock("../../race/raceTransactionReads", () => ({withRaceTransactionReads: (transaction: unknown) => transaction}));
-jest.mock("../../race/raceRequestBinding", () => ({
+jest.mock("../../race/runs/raceTransactionReads", () => ({withRaceTransactionReads: (transaction: unknown) => transaction}));
+jest.mock("../../race/runs/raceRequestBinding", () => ({
   bindRaceRequest: () => ({version: 1, kind: "skip", fingerprint: "0".repeat(64)}),
   assertRaceMutationReceipt: jest.fn(),
 }));

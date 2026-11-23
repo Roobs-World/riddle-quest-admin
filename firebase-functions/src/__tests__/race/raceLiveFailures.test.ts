@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {liveRaceGatewayFailure} from "../../race/raceLiveFailures";
+import {liveRaceGatewayFailure} from "../../race/live/raceLiveFailures";
 
 it.each(["invalid-argument", "failed-precondition", "not-found", "permission-denied", "unauthenticated", "resource-exhausted"] as const)("preserves the authoritative %s category without private details", code => {
   /** Only the known category is safe to return across Devvit. */

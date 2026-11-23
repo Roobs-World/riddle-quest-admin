@@ -28,7 +28,7 @@ Every successful new intent is replayed without acceptance. Reports include scen
 Default iterations are five per scenario. For a larger local sample after building:
 
 ```sh
-node scripts/run-isolated-emulators.js emulators:exec --only firestore --project demo-riddle-quest-match 'node scripts/race-match-benchmark.js --iterations 20'
+node scripts/verification/run-isolated-emulators.js emulators:exec --only firestore --project demo-riddle-quest-match 'node scripts/races/race-match-benchmark.js --iterations 20'
 ```
 
 Use `--scenario dense|sparse|exclusions|empty|capped|freshness` for diagnosis. A warm synthetic emulator sample is a repeatable regression baseline, not a production percentile estimate. Setup/cleanup is outside lookup timing. The 15-second production guard stops issuing work; in-flight reads may finish later, so it is not a guaranteed end-to-end response deadline.

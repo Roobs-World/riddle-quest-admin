@@ -45,7 +45,7 @@ jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}})
 // Account leases and HTTP transport are outside this timing fixture; domain request/response validation stays real.
 jest.mock("../shared/sentryHandlers", () => ({onCallWithSentry: (_name: string, _options: unknown, handler: unknown) => ({run: handler})}));
 jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNeeded: (...args: [string, number, string]) => mockSupply(...args)}));
-import {skipRiddle} from "../gameplay/gameLogic";
+import {skipRiddle} from "../gameplay/callables/gameLogic";
 
 /** A valid immutable opaque token binds the same Classic request on every replay. */
 const TOKEN = "00000000-0000-4000-8000-000000000001";

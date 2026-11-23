@@ -3,8 +3,8 @@ import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {readyRaceRunForUser, resumeRaceRunForUser, startRaceRunForUser} from "../../race/raceService";
 import {requestDocumentId} from "../../race/raceSetupService";
-import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 import {Timestamp} from "firebase-admin/firestore";
 
 /** Isolated demo authority for transactional response-acceptance regressions. */

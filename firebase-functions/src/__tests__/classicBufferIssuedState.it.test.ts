@@ -1,8 +1,8 @@
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {ensureAuthoritativeSession} from "../gameplay/singlePlayerSession";
-import {getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
+import {ensureAuthoritativeSession} from "../gameplay/sessions/singlePlayerSession";
+import {getSinglePlayerContentKey} from "../gameplay/sessions/singlePlayerAnswerPolicy";
 import {getClassicRiddleBuffer} from "../daily/classicRiddleBuffer";
 
 /** Current reconciliation and catalog selection are isolated; issuance, reads and account leases remain real. */
@@ -10,7 +10,7 @@ const mockCurrent = jest.fn();
 /** Catalog gaps can be introduced independently of canonical issuance. */
 const mockPlayable = jest.fn();
 jest.mock("../daily/dailyChallenge", () => ({getCurrentClassicRiddle: {run: (...args: unknown[]) => mockCurrent(...args)}}));
-jest.mock("../gameplay/classicRiddleFallback", () => ({getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
+jest.mock("../gameplay/content/classicRiddleFallback", () => ({getPlayableClassicRiddle: (...args: unknown[]) => mockPlayable(...args)}));
 /** Only this private loopback demo emulator may hold the fixture account and sessions. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** A fixed private account owns each issued content binding and mutation lease. */

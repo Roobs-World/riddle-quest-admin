@@ -15,8 +15,8 @@ pnpm --dir firebase-functions build
 Preview one bounded page, replacing the project, verified default-database URL and private input path:
 
 ```bash
-node firebase-functions/scripts/run-with-functions-node.js \
-  firebase-functions/scripts/presence-visibility-reconcile.js \
+node firebase-functions/scripts/runtime/run-with-functions-node.js \
+  firebase-functions/scripts/maintenance/presence-visibility-reconcile.js \
   --project YOUR_PROJECT \
   --database-url https://YOUR_PROJECT-default-rtdb.YOUR_REGION.firebasedatabase.app \
   --input /absolute/private/presence-pairs.json --offset 0 --limit 20
@@ -27,8 +27,8 @@ Preview reads the selected stored permissions and returns counts, the input SHA-
 Apply the **same previewed offset**, using its exact hash:
 
 ```bash
-node firebase-functions/scripts/run-with-functions-node.js \
-  firebase-functions/scripts/presence-visibility-reconcile.js \
+node firebase-functions/scripts/runtime/run-with-functions-node.js \
+  firebase-functions/scripts/maintenance/presence-visibility-reconcile.js \
   --project YOUR_PROJECT \
   --database-url https://YOUR_PROJECT-default-rtdb.YOUR_REGION.firebasedatabase.app \
   --input /absolute/private/presence-pairs.json --offset 0 --limit 20 \

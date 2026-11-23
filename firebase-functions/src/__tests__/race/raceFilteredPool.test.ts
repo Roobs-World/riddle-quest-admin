@@ -1,7 +1,7 @@
 import filteredEnglish from "../../../content/race-en-reviewed-v2.json";
 import reviewedEnglish from "../../../content/archive/race-en-reviewed-v2-before-length-exclusions.json";
 import {RACE_CATEGORY_IDS} from "../../../../src/races/contracts/index.js";
-import {createRaceContentImportPlan} from "../../race/raceContentImport";
+import {createRaceContentImportPlan} from "../../race/content/raceContentImport";
 import {buildDeterministicRaceDeck} from "../../race/raceSetupService";
 
 /** Canonical questions removed because faithful translated answers exceed seven slots. */

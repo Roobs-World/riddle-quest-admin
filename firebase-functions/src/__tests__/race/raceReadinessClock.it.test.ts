@@ -3,7 +3,7 @@ import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {abandonRaceRunForUser, readyRaceRunForUser, resumeRaceRunForUser, submitRaceGuessForUser,
   requestRaceHintForUser, skipRaceRiddleForUser} from "../../race/raceService";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Demo-only canonical storage for readiness and cancellation clock ordering. */
 let db: FirebaseFirestore.Firestore;

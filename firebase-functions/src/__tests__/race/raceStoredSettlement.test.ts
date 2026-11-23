@@ -1,5 +1,5 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {raceOutcome, raceOperationAtMs, type RaceRunRecord} from "../../race/raceEngine";
+import {raceOutcome, raceOperationAtMs, type RaceRunRecord} from "../../race/runs/raceEngine";
 import {parseRunRecord} from "../../race/raceSetupService";
 
 /** Canonical legacy recording supports sparse historical reward metadata. */

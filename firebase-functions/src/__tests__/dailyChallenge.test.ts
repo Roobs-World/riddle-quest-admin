@@ -58,7 +58,7 @@ jest.mock("../riddles/riddleGeneration", () => ({
   generateTodaysDailyChallenge: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock("../gameplay/singlePlayerSession", () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({
   ensureAuthoritativeSession: (...args: unknown[]) => mockEnsureAuthoritativeSession(...args),
   ensureAuthoritativeSessionWithState: async (...args: unknown[]) => {
     /** Fixture token and recovery state represent one committed issuance result for buffer tests. */
@@ -68,12 +68,12 @@ jest.mock("../gameplay/singlePlayerSession", () => ({
   getIssuedAuthoritativeSession: (...args: unknown[]) => mockGetIssuedAuthoritativeSession(...args),
 }));
 
-jest.mock("../gameplay/completeGameLogic", () => ({
+jest.mock("../gameplay/sessions/completeGameLogic", () => ({
   completeAuthoritativeGame: (...args: unknown[]) => mockCompleteAuthoritativeGame(...args),
   isDailyCompletionDateEligible: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock("../gameplay/singlePlayerTerminalRecovery", () => ({
+jest.mock("../gameplay/sessions/singlePlayerTerminalRecovery", () => ({
   recoverPendingAuthoritativeCompletion: (...args: unknown[]) => mockRecoverPendingAuthoritativeCompletion(...args),
 }));
 

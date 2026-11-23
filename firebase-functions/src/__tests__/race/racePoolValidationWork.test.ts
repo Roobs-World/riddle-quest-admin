@@ -1,8 +1,8 @@
 import {mkdirSync, writeFileSync} from "node:fs";
 import {join} from "node:path";
 import {performance} from "node:perf_hooks";
-import {validateRacePool} from "../../race/raceContentValidation";
-import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
+import {validateRacePool} from "../../race/content/raceContentValidation";
+import type {ExistingRaceContentRecord} from "../../race/content/raceContentMigration";
 
 /** Balanced complete source fixtures exercise actual fresh catalog validation. */
 const pool = (answer: string): ExistingRaceContentRecord[] => Array.from({length: 30}, (_, index) => ({locale: "en",

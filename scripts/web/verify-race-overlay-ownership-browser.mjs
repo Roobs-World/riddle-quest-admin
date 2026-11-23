@@ -17,7 +17,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
-import {RetainedRaceHarness} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 import {GameFrameApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/GameFrameApp.tsx"))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};

@@ -1,8 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue} from "firebase-admin/firestore";
 import {buildDeterministicRaceDeck, loadEligibleContent, listRaceCategoriesForLocale} from "../../race/raceSetupService";
-import {joinLiveRaceForUser} from "../../race/raceLiveService";
-import type {ExistingRaceContentRecord} from "../../race/raceContentMigration";
+import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
+import type {ExistingRaceContentRecord} from "../../race/content/raceContentMigration";
 
 /** Fixture mutations are restricted to one private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";

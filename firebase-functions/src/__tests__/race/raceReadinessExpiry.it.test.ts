@@ -2,8 +2,8 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {readyRaceRunForUser} from "../../race/raceService";
-import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Isolated Firestore authority for stale preparation and archive availability. */
 let db: FirebaseFirestore.Firestore;

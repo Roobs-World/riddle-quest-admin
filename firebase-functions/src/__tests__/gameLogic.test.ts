@@ -19,7 +19,7 @@ jest.mock("../shared/accountDeletion", () => ({
   runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 
-jest.mock("../gameplay/singlePlayerSession", () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({
   grantAuthoritativeContinue: (...args: unknown[]) => mockGrantAuthoritativeContinue(...args),
   getIssuedAuthoritativeSession: (...args: unknown[]) => mockGetIssuedAuthoritativeSession(...args),
   purchaseAuthoritativeHint: jest.fn(),
@@ -41,7 +41,7 @@ jest.mock("firebase-functions/v2/https", () => {
   };
 });
 
-import {skipRiddle, spendCoins} from "../gameplay/gameLogic";
+import {skipRiddle, spendCoins} from "../gameplay/callables/gameLogic";
 
 /** Defines the session token value. */
 const SESSION_TOKEN = "00000000-0000-4000-8000-000000000001";

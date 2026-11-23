@@ -33,12 +33,12 @@ const mockFirestore = Object.assign(() => ({collection: (name: string) => ({doc:
   runTransaction: async (operation: (transaction: typeof mockTransaction) => unknown) => operation(mockTransaction)}),
   {FieldValue: {serverTimestamp: () => "server-time"}, Timestamp: {fromMillis: (value: number) => ({millis: value})}});
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: mockFirestore}}));
-jest.mock("../gameplay/singlePlayerSession", () => ({finalizeAuthoritativeSession: async () => ({
+jest.mock("../gameplay/sessions/singlePlayerSession", () => ({finalizeAuthoritativeSession: async () => ({
   attempts: 1, lastGuess: "piano", answer: "piano", locale: "en", completionKey: "classic:1", classicIndex: 1, terminal: true,
 })}));
 jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNeeded: async () => new Promise(resolve => setTimeout(resolve, 400))}));
 
-import {completeAuthoritativeGame} from "../gameplay/completeGameLogic";
+import {completeAuthoritativeGame} from "../gameplay/sessions/completeGameLogic";
 
 it.each([false, true])("prepares Classic content from committed legacy profile %s without a duplicate read", async legacy => {
   jest.useFakeTimers().setSystemTime(1_800_000_000_000);

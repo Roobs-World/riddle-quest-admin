@@ -3,11 +3,11 @@ import {
   assertRaceTranslationAtomicWriteCount,
   assertRaceTranslationImportSnapshotStable,
   createRaceTranslationImportPlan,
-} from "../../race/raceTranslationImport";
+} from "../../race/content/raceTranslationImport";
 import {
   AUTOMATED_TRANSLATION_QUALITY_VERSION,
   raceTranslationCanonicalHash,
-} from "../../race/raceTranslationValidation";
+} from "../../race/content/raceTranslationValidation";
 
 /** Provides bundle behavior. */
 const bundle = () => ({

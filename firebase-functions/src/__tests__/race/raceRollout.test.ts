@@ -6,7 +6,7 @@ import {
   getRaceAccessForUser,
   hashRaceCohortUser,
   recordRaceAnalyticsForUser,
-} from "../../race/raceRollout";
+} from "../../race/access/raceRollout";
 import {admin} from "../../shared/firebaseAdmin";
 
 describe("Race rollout cohort evaluation", () => {
@@ -299,9 +299,9 @@ describe("Race rollout configuration cache", () => {
     delete process.env.FUNCTIONS_EMULATOR;
     try {
       /** Fresh rollout module initialized without test or emulator markers. */
-      let productionRollout!: typeof import("../../race/raceRollout");
+      let productionRollout!: typeof import("../../race/access/raceRollout");
       jest.isolateModules(() => {
-        productionRollout = require("../../race/raceRollout");
+        productionRollout = require("../../race/access/raceRollout");
       });
       /** Rollout reads switch from enabled to disabled after the cache expires. */
       const {db, get} = createCountingDb([

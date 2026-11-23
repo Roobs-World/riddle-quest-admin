@@ -13,7 +13,7 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
+import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/web/fixtures/RetainedRaceHarness.tsx'))};
 const mode=new URLSearchParams(location.search).get('case');window.commands=[];window.testNow=0;Object.defineProperty(performance,'now',{value:()=>window.testNow});
 window.waiting=()=>({status:'waiting',serverNowMs:10000,invitation:{claimState:'unclaimed',publicationState:'pending',role:mode==='creator'?'creator':'recipient',canCancel:mode==='creator',expiresAtMs:mode==='expiry'||mode==='revive'?11000:1000000}});
 window.reply=(message,operation,data)=>window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation,ok:true,data}}}));

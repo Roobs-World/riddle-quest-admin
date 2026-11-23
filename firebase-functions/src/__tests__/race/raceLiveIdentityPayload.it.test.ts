@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {DocumentSnapshot, getFirestore} from "firebase-admin/firestore";
-import {joinLiveRaceForUser} from "../../race/raceLiveService";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
+import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 
 /** Destructive fixtures may run only in a private loopback demo emulator. */

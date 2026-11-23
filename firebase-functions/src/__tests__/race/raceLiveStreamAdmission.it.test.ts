@@ -1,8 +1,8 @@
 import {randomUUID} from "node:crypto";
 import {deleteApp, initializeApp} from "firebase-admin/app";
 import {DocumentReference, getFirestore, Timestamp} from "firebase-admin/firestore";
-import {joinLiveRaceForUser} from "../../race/raceLiveService";
-import {streamLiveRaceChanges} from "../../race/raceLiveStream";
+import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
+import {streamLiveRaceChanges} from "../../race/live/raceLiveStream";
 
 /** Deterministic Jest account that owns every stream admission in this fixture. */
 const OWNER = `jest_${"d".repeat(40)}`;

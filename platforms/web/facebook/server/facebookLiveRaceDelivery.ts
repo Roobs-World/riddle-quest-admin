@@ -3,11 +3,11 @@ import {runWithJestAccountOperationLease} from "../../../../firebase-functions/s
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "./facebookRaceReferralDelivery";
 import {validateFacebookLiveRaceReferralSource} from "./facebookLiveRaceReferralDelivery";
-import {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/raceDeliveryRecords";
+import {parseRacePerformanceEvent} from "../../../../firebase-functions/src/race/delivery/raceDeliveryRecords";
 import {HttpsError} from "firebase-functions/v2/https";
 import {readFacebookLiveTournamentRun} from "./race/facebookLiveTournament";
 import {assertFacebookTournamentDeck, deriveFacebookTournamentEntry, recordFacebookTournamentRun} from "./race/facebookTournament";
-import type {LiveMatch} from "../../../../firebase-functions/src/race/raceLiveState";
+import type {LiveMatch} from "../../../../firebase-functions/src/race/live/raceLiveState";
 import type {Firestore} from "../../../../firebase-functions/src/race/raceSetupService";
 import {recordFacebookContextBoardBindingRun} from "./race/facebookContextBoard";
 import {parseFacebookContextCompetition} from "./race/facebookContextService";

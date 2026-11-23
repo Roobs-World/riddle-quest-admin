@@ -1,8 +1,8 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {processRaceDeliveryQueue, RACE_DELIVERY_LEASE_MS} from "../../race/raceDeliveryQueue";
-import {pendingRaceDelivery, raceDeliveryRetryAt, withRaceDeliveryReceipt} from "../../race/raceDeliveryFailures";
-import {readRaceRecoveryHealth} from "../../race/raceRecoveryHealth";
+import {processRaceDeliveryQueue, RACE_DELIVERY_LEASE_MS} from "../../race/delivery/raceDeliveryQueue";
+import {pendingRaceDelivery, raceDeliveryRetryAt, withRaceDeliveryReceipt} from "../../race/delivery/raceDeliveryFailures";
+import {readRaceRecoveryHealth} from "../../race/recovery/raceRecoveryHealth";
 
 /** Recovery tests always use a demo-project emulator. */
 let db: FirebaseFirestore.Firestore;

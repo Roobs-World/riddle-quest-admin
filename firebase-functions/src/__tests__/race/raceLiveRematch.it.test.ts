@@ -1,15 +1,15 @@
 import {initializeApp, deleteApp, getApps, type App} from "firebase-admin/app";
 import {createHmac} from "node:crypto";
 import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
-import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
-import {listLiveRaceChallengesForUser} from "../../race/raceLiveChallengeNotifications";
+import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
+import {listLiveRaceChallengesForUser} from "../../race/invitations/raceLiveChallengeNotifications";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, LiveRaceChallengeSchema} from "../../../../src/races/contracts/index.js";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../../../platforms/web/reddit/server/redditSecurity";
-import type {RaceProviderScope} from "../../race/raceEligibility";
+import type {RaceProviderScope} from "../../race/access/raceProviderScope";
 import {setEmulatorSystemTime} from "../helpers/emulatorClock";
 
 /** Owned demo project prevents cleanup from touching another database. */

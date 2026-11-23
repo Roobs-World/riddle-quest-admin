@@ -18,7 +18,7 @@ jest.mock("firebase-functions/params", () => ({...jest.requireActual("firebase-f
 jest.mock("../../../../platforms/web/reddit/server/redditFeatureFlags", () => ({isRedditFeatureEnabled: () => true, isRedditCommerceEnabled: () => true}));
 jest.mock("../../../../platforms/web/reddit/server/redditSecurity", () => ({verifyRedditGatewayAssertion: (...args: unknown[]) => verify(...args)}));
 jest.mock("../../../../platforms/web/reddit/server/redditMatchmaking", () => ({findRedditRaceMatch: (...args: unknown[]) => find(...args)}));
-jest.mock("../../race/raceRollout", () => ({...jest.requireActual("../../race/raceRollout"), assertRaceAccess: (...args: unknown[]) => access(...args)}));
+jest.mock("../../race/access/raceRollout", () => ({...jest.requireActual("../../race/access/raceRollout"), assertRaceAccess: (...args: unknown[]) => access(...args)}));
 jest.mock("../../../../platforms/web/reddit/server/redditEndpoints", () => ({REDDIT_APP_NAME: "riddle-quest", consumeRedditGatewayNonce: jest.fn(),
   consumeRedditRequestQuota: (...args: unknown[]) => quota(...args), parseRedditGatewayEnvelope: (body: unknown) => body,
   redditProviderIdentityId: () => "opaque-provider-identity", resolveRedditProviderIdentity: () => ({uid: "authenticated-owner", needsUidRepair: false})}));

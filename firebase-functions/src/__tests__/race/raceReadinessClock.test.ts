@@ -1,6 +1,6 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
 import {parseRunRecord} from "../../race/raceSetupService";
-import type {RaceRunRecord} from "../../race/raceEngine";
+import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Actual untouched countdown cancellation carries an action before scored start. */
 const fixture = (): RaceRunRecord => ({runId: "clock-validation", userId: "clock-player", role: "creator", status: "abandoned",

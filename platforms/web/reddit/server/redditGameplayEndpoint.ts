@@ -4,9 +4,9 @@ import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {onRequestWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../../../../firebase-functions/src/daily/dailyChallenge";
 import {getClassicRiddleBuffer} from "../../../../firebase-functions/src/daily/classicRiddleBuffer";
-import {submitSinglePlayerGuess} from "../../../../firebase-functions/src/gameplay/submitSinglePlayerGuessCallable";
-import {completeGame} from "../../../../firebase-functions/src/gameplay/completeGameCallable";
-import {getHint, skipRiddle, spendCoins} from "../../../../firebase-functions/src/gameplay/gameLogic";
+import {submitSinglePlayerGuess} from "../../../../firebase-functions/src/gameplay/callables/submitSinglePlayerGuessCallable";
+import {completeGame} from "../../../../firebase-functions/src/gameplay/callables/completeGameCallable";
+import {getHint, skipRiddle, spendCoins} from "../../../../firebase-functions/src/gameplay/callables/gameLogic";
 import {getLeaderboard} from "../../../../firebase-functions/src/gameplay/leaderboard";
 import {getUser} from "../../../../firebase-functions/src/gameplay/firestoreService";
 import {updateUsername} from "../../../../firebase-functions/src/profile/updateUsername";
@@ -30,10 +30,10 @@ import {
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
 } from "../../../../src/races/contracts/index.js";
-import {joinLiveRace, retireLiveRaceJoin, confirmLiveGuessReceipt, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../../../../firebase-functions/src/race/raceLiveCallables";
-import {liveRaceGatewayFailure} from "../../../../firebase-functions/src/race/raceLiveFailures";
+import {joinLiveRace, retireLiveRaceJoin, confirmLiveGuessReceipt, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../../../../firebase-functions/src/race/api/raceLiveCallables";
+import {liveRaceGatewayFailure} from "../../../../firebase-functions/src/race/live/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
-import {assertRaceAccess} from "../../../../firebase-functions/src/race/raceRollout";
+import {assertRaceAccess} from "../../../../firebase-functions/src/race/access/raceRollout";
 import {
   abandonRaceRun,
   getRaceAccess,
@@ -49,7 +49,7 @@ import {
   startRaceRun,
   readyRaceRun,
   submitRaceGuess,
-} from "../../../../firebase-functions/src/race/raceCallables";
+} from "../../../../firebase-functions/src/race/api/raceCallables";
 import {
   listRedditTournamentStandings,
   recordRedditTournamentRun,

@@ -1,7 +1,7 @@
 import {getDailyDate, shiftDailyDate} from "../../../src/gameplay/daily/dailyCalendar.js";
 import {getUser} from "../gameplay/firestoreService";
-import {getSinglePlayerCompletionKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {recoverPendingAuthoritativeCompletion} from "../gameplay/singlePlayerTerminalRecovery";
+import {getSinglePlayerCompletionKey} from "../gameplay/sessions/singlePlayerAnswerPolicy";
+import {recoverPendingAuthoritativeCompletion} from "../gameplay/sessions/singlePlayerTerminalRecovery";
 
 /** Recovers a just-finished previous-day win when local resume data was lost. */
 export async function reconcilePreviousDailyBinding(

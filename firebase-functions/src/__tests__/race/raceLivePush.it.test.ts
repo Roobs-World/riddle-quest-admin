@@ -1,15 +1,16 @@
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
-import {joinLiveRaceForUser} from "../../race/raceLiveService";
-import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
-import {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} from "../../race/raceLiveChallengeNotifications";
-import {deliverLiveRacePush, sendFacebookLiveChallengePush} from "../../race/raceLivePushDelivery";
+import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
+import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
+import {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} from "../../race/invitations/raceLiveChallengeNotifications";
+import {deliverLiveRacePush} from "../../race/notifications/raceLivePushDelivery";
+import {sendFacebookLiveChallengePush} from "../../../../platforms/web/facebook/server/notifications/facebookLiveChallengePush";
 import {facebookFirebaseUid} from "../../../../platforms/web/facebook/server/facebookSecurity";
 import * as facebookTransport from "../../../../platforms/web/facebook/server/facebookNotificationTransport";
 import {createUsernameReservationFields, createUsernameReservationId} from "../../profile/usernameReservations";
-import {liveChallengePushCopy} from "../../race/raceLivePushCopy";
-import {setLiveRacePushSubscription} from "../../race/raceLivePushJobs";
+import {liveChallengePushCopy} from "../../race/notifications/raceLivePushCopy";
+import {setLiveRacePushSubscription} from "../../race/notifications/raceLivePushJobs";
 
 /** Synthetic same-provider account identities for emulator tests. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;

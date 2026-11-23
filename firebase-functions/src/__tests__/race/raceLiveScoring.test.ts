@@ -1,6 +1,6 @@
 import {RACE_RULES} from "../../../../src/races/contracts/index.js";
-import {liveRun, advanceLiveBot, type LiveMatch} from "../../race/raceLiveState";
-import {settleLiveFinish} from "../../race/raceLiveScoring";
+import {liveRun, advanceLiveBot, type LiveMatch} from "../../race/live/raceLiveState";
+import {settleLiveFinish} from "../../race/live/raceLiveScoring";
 
 /** Real run shape keeps completion clocks separate from current observation time. */
 function fixture(): LiveMatch {

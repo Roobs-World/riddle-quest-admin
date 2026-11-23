@@ -8,7 +8,7 @@ const [viteEntry, webTargetViteConfig, projectPackage, projectJest, functionsJes
     read("scripts/web/build/webTargetViteConfig.ts"),
     read("package.json"),
     read("jest.config.cjs"),
-    read("firebase-functions/jest.config.js"),
+    read("firebase-functions/config/testing/jest.config.js"),
     read("firebase-functions/package.json"),
     read("firebase-functions/src/riddles/openaiService.ts"),
     read("src/races/contracts/raceSchemas.ts"),

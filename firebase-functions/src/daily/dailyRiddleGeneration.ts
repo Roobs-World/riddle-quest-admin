@@ -12,7 +12,7 @@ import {
   riddleExists,
   riddleHasPlayableClue,
 } from "../riddles/riddleGenerationRepository";
-import {isPlayableSinglePlayerAnswer} from "../gameplay/singlePlayerAnswerPolicy";
+import {isPlayableSinglePlayerAnswer} from "../gameplay/sessions/singlePlayerAnswerPolicy";
 
 /** Maximum candidate attempts spent on one locale in one scheduled run. */
 const MAX_DAILY_ATTEMPTS_PER_LOCALE = 3;

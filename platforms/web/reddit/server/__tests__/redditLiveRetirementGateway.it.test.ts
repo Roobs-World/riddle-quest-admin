@@ -4,7 +4,7 @@ import {getFirestore} from "firebase-admin/firestore";
 import {redditGameplay} from "../redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../redditEndpoints";
 import {canonicalRedditGatewayAssertion, hashRedditGatewayPayload, redditFirebaseUid} from "../redditSecurity";
-import {liveJoinIntentRef} from "../../../../../firebase-functions/src/race/raceLiveJoinIntent";
+import {liveJoinIntentRef} from "../../../../../firebase-functions/src/race/invitations/raceLiveJoinIntent";
 import {setEmulatorSystemTime} from "../../../../../firebase-functions/src/__tests__/helpers/emulatorClock";
 
 /** Gateway tests use real signature, nonce, quota, identity, callable and retirement authority. */

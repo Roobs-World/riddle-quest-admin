@@ -1,10 +1,10 @@
-import type {RaceTranslationModelPort} from "../../race/raceTranslationGenerator";
+import type {RaceTranslationModelPort} from "../../race/content/raceTranslationGenerator";
 import {
   generateRaceTranslationBundle,
   assertExactTranslationResponseIds,
   raceTranslationDraftHash,
   validateRaceTranslationCheckpoint,
-} from "../../race/raceTranslationGenerator";
+} from "../../race/content/raceTranslationGenerator";
 import reviewedEnglish from "../../../content/race-en-reviewed-v1.json";
 
 /** Provides source behavior. */
