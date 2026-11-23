@@ -1,7 +1,6 @@
 import {parseEntryIntent} from "./entryIntent";
 import type {JestPlatformPort, JestPlayerData, JestPreferences, PlatformResult, ScreenshotProvider} from "./types";
 import {captureBrowserException} from "../observability/browserErrorReporter";
-import {parsePlayerData} from "../platform/playerDataValidation";
 import {isValidNotificationAsset} from "./notifications/inlineAsset";
 import {invokeSdkOperation, type JestSdkBoundary} from "./sdkBoundary";
 
@@ -261,7 +260,8 @@ export class JestSdkPlatform implements JestPlatformPort {
   async readPlayerData(): Promise<JestPlayerData | null> {
     /** Provides value behavior. */
     const value: unknown = this.sdk.data?.getAll?.()?.[PLAYER_DATA_KEY];
-    return parsePlayerData(value);
+    if (value === null || value === undefined) return null;
+    return (await import("../platform/playerDataValidation")).parsePlayerData(value);
   }
   /**
    * Replaces the app-owned player snapshot and waits for the SDK flush.
