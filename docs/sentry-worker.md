@@ -21,7 +21,39 @@ open when it was enabled. Unsigned webhooks are rejected; signed stale-preview
 webhooks and authenticated polling check current deployment identity and block
 stale events. The first manual poll checked eight issues and launched no paid work.
 The enabled Sentry app `riddle-quest-bb1edf` already points to this endpoint.
-An actual paid repair and Sentry-originated notification have not been exercised.
+The hourly worker claimed the 10:00 UTC paid work budget on 2026-11-23 and opened
+[repair PR #20](https://github.com/Grindhead/riddle-quest/pull/20) at 10:03:44 UTC
+for scheduler issue `RIDDLE-QUEST-14`. This verifies a paid repair run and PR
+creation. Its signed base `fb658bb81` was stale after `jest` advanced to
+`464e4f541`, and the worker's base guard correctly blocked merging. The fixes
+were then integrated manually and peer-reviewed at source
+`5887d9279b768dd8a5ec055555868eecf1389631`.
+[PR readiness run 45180137753](https://github.com/Grindhead/riddle-quest/actions/runs/45180137753)
+completed successfully at 14:53 UTC with 4,048 workspace tests, 3,389 backend
+tests, all four browser jobs and their 140 distinct plan commands. GitGuardian
+also passed. The PR workflow intentionally skips the development receipt; the
+later same-source push workflow and its receipt remain separate.
+
+Under the owner's merge authorization, the exact tested source advanced into
+`jest` and `origin/jest`. GitHub recorded PR #20 as merged at 14:54:42 UTC with
+that same merge commit. This integration did not weaken the original ticket's
+stale-base guard. The Jest repair preview completed processing as READY and
+inactive, version `1.0.0-dev.20261123145501.5887d9279b76.24302180`, ID
+`01a208e7-756d-7345-9610-52641a1dca1d`. Both authenticated sandbox accounts
+passed English Settings, catalog, Premium, tab-switch, live two-player race and
+reload-persistence checks on that exact preview. The passive probe recorded no
+negative catalog replies or uncaught exceptions. The exact-release Sentry query
+returned zero groups at 15:00:50 and 15:02:28 UTC, subject to ingestion delay.
+Cloud Logging returned all 44 subscription-sync POST requests in the test window,
+all HTTP 200 with no HTTP 429. Historical issues were not marked resolved.
+
+Health at 15:02 UTC remained HTTP 200 and configured at worker revision
+`012020b5d`, with automatic merging enabled. Production Functions deployment,
+Jest activation and Facebook release remain separate operations. No backend
+deployment or Facebook upload occurred in this pass. Sentry-originated webhook
+delivery has not been independently verified. See the
+[readiness evidence](evidence/jest-facebook-readiness-2026-11-23.md) for the source,
+upload fingerprint, timed observations and remaining Meta acceptance limit.
 
 The worker watches Sentry organization `roobs-world-limited`, project
 `riddle-quest`, numeric project `4511885926006864`, and repairs

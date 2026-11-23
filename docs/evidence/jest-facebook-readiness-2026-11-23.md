@@ -1,143 +1,164 @@
 # Jest and Facebook readiness, 2026-11-23
 
-The source `012020b5d` CI run finished with failure in all four browser jobs.
-Its workspace and backend jobs passed. Local checks confirm the follow-up
-fixture fixes, but a complete CI run on the follow-up commit remains pending.
-The fixes preserve production game logic and the assertions for receipts,
-identity, timeouts, keyboard boundaries and rendering.
+## Verified source and upload
 
-## CI scope and observed failures
+[Repair PR #20](https://github.com/Grindhead/riddle-quest/pull/20) merged at
+14:54:42 UTC with the exact tested source
+`5887d9279b768dd8a5ec055555868eecf1389631`. The `jest` branch and `origin/jest`
+advanced to that commit. Its
+[PR readiness run](https://github.com/Grindhead/riddle-quest/actions/runs/45180137753)
+completed successfully at 14:53 UTC. All six required workspace, backend and
+browser jobs passed, along with GitGuardian. The following documentation-only
+commit records this evidence without changing the uploaded game source.
 
-[Production readiness run 45092990341](https://github.com/Grindhead/riddle-quest/actions/runs/45092990341)
-checks source `012020b5d4ce570fc8041a9d1591b411f0020165`. Its Node 24 workspace job
-passed the 3,990 scoped shared/web tests, audits, types, architecture checks and
-Jest/Facebook builds. Its separate Node 22 Functions job passed all 3,277 backend
-tests and its runtime, type, build and coverage gates.
+The official Jest inventory confirms the English preview is READY and inactive,
+with no processing error. Its version is
+`1.0.0-dev.20261123145501.5887d9279b76.24302180`, ID
+`01a208e7-756d-7345-9610-52641a1dca1d`.
 
-The [workflow](../../.github/workflows/production-readiness.yml) retains 140
-audited browser commands in four disjoint shards of 35, with `fail-fast: false`.
-Unknown leaves fail closed. Provider-only checks outside Jest/Facebook are
-excluded; mixed leaves retain their applicable shared/Jest/Facebook cases. HTML
-validation, upload preflights and the development completion receipt still
-require their actual successful gates.
+[Exact inactive preview](https://jest.com/g/riddle-q?versionId=01a208e7-756d-7345-9610-52641a1dca1d).
 
-The four browser failures were:
+The gated ZIP is 2,626,231 bytes with 91 entries and SHA-256
+`278c21d4a7f390162e765bf3a1e825d25710dcd3f86468cc6db8f43b661b8432`.
+The exact served artifact's game-owned initial resources total 573,838 bytes,
+below the unchanged 576,716.8-byte limit. The controlled local build comparison
+measured 573,783 bytes after the fix; that is a separate build measurement.
+[Exact preview](https://jest.com/g/riddle-q?versionId=01a208e7-756d-7345-9610-52641a1dca1d).
+The upload from clean source has 90 files, 4.12 MB, in a 91-entry, 2.50 MB ZIP.
+Its SHA-256 is
+`278c21d4a7f390162e765bf3a1e825d25710dcd3f86468cc6db8f43b661b8432`.
+The release command completed successfully; its log is `/tmp/rq-5887-jest-upload.log`.
 
-- Shard 1 passed its first 24 commands, then failed
-  `test:modal-close-commit:browser` at
-  `verify-modal-close-commit-browser.mjs:55`. The injected fixture toolbar
-  intercepted an ordinary click on the settings dialog's **Close** button.
-  The toolbar's empty background covered the control on the 390 × 568 viewport.
-- Shard 2 failed `test:gameplay-receipts:browser` at
-  `verify-firebase-gameplay-receipts-browser.mjs:203`: the generated Firebase stub
-  lacked `getCurrentDailyChallenge`. Its collector recognized named imports, but
-  the real adapter now forwards a namespace to the shared host implementation.
-- Shard 3 failed `test:offline-keyboard-boundary:browser` at
-  `verify-offline-keyboard-boundary-browser.mjs:48`, timing out after 30 seconds
-  while waiting for draft `PI`. The fixture sent physical keys before initial
-  journal-backed answer admission was ready.
-- Shard 4 passed its full scoped E2E step, including the ten-minute mobile soak,
-  but its repeated fresh-build Facebook upload preflight failed waiting for
-  the `0:02.0` context standing. The fixture sampled its window endpoints
-  independently. A one-millisecond boundary produced a `604800001` ms window,
-  which the real response parser correctly rejected.
+Work is limited to Jest, Facebook and their shared backend. The Jest build contains
+English only. No build was activated, published or submitted for review. Production
+deployment remains separate.
 
-## Harness corrections and local proof
+## Verification
 
-The Firebase fixture helper now discovers the actual runtime namespace through
-TypeScript without executing Firebase, while preserving named aliases and
-excluding type-only exports. Both affected collectors use it. Only Firebase IO
-is injected; the real adapter orchestration and receipt/ownership assertions stay
-in place.
-
-Positive keyboard fixtures wait for an enabled, non-inert answer key before their
-first physical input. The offline commitment event and all later negative checks
-are unchanged. No forced input, assertion removal or timeout increase is used.
-
-The modal-close fixture keeps its toolbar geometry and stacking order. Its
-background is now transparent and ignores pointer events, while the six toolbar
-buttons retain pointer events. Hit-testing confirms that every toolbar button
-receives its own clicks and that the **Close** center reaches the modal control.
-The original native click succeeds. No forced click or production CSS change is
-used, and the full original matrices retain their assertions and timeouts.
-
-The local live-render race reproduction exposed another stale instrumentation target:
-instrumentation appended a wrapper to the portal `racePresentation.ts` forwarding
-facade and called undefined `originalLetterStates`. It now wraps the shared
-implementation through an exact alias and asserts one matching declaration.
-
-Both immediate and held Facebook context responses now derive their seven-day
-window from one clock read and the shared duration constant. Advancing-clock
-regressions exercise the actual callable parser. The held response is now valid,
-so its existing stale-context check proves ownership rejection rather than
-malformed-response rejection. Production guards and UI expectations are unchanged.
-
-These results distinguish original CI from local follow-up checks. They do not
-substitute for a complete CI pass on the follow-up commit:
-
-| Verification | Result |
+| Check on source `5887d9279` | Observed result |
 | --- | --- |
-| Scoped types | `pnpm check:types:jest-facebook` passed |
-| Initial grouped browser command | Source `012020b5d` CI passed 8 suites, 36 tests and 380 route checks |
-| Firebase fixture helper | 4 tests passed, including runtime/type-only re-exports and a module that throws if executed |
-| Gameplay receipts | All original assertions passed at 1,280 px and 390 px in development and production |
-| Shared Firebase race profile recovery | 110 checks per React mode |
-| Full offline keyboard boundary | 1,719 checks per React mode |
-| Live-render, scoped solo/race | 516 checks per React mode |
-| Full modal-close matrix | 228 checks per React mode, plus all six toolbar hit-tests and a native modal Close click |
-| Selected browser shard 1 follow-up | All 34 follow-up commands passed with exit code 0; the unchanged initial group of 8 suites passed in the original CI run |
-| Full selected browser shard 2 | All 35 commands passed with the default matrices and React modes |
-| Full selected browser shard 3 | All 35 commands passed with the default matrices and React modes |
-| Full selected browser shard 4 | All 35 commands passed with exit code 0 and the default matrices and React modes |
-| Facebook context fixture | Four advancing-clock cases and three existing parser tests passed; 50 complete context journeys and a fresh full upload preflight passed |
-| Initial-input samples | Per mode: Classic preparation 15 checks, Facebook `auto` recovery 14, stable solo requests 12, static solo keyboard 11, solo hint recovery 12 scenarios |
+| Shared/web coverage | 4,048 tests passed |
+| Jest SDK adapter coverage | 100% of 186 statements, 118 branches, 49 functions and 166 lines |
+| Release and architecture checks | 242 release checks and 55 architecture checks passed |
+| Node 22 compatibility | 147 suites and 1,997 tests passed on Node 22.23.1, including types and ESLint |
+| Full backend coverage | 246 suites and 3,389 tests passed; statements 89.64%, branches 85.07%, functions 89.06%, lines 91.60% |
+| TSDoc | 32,510 declarations across 1,473 files passed |
+| Jest artifact | 90 files, 4.12 MB; measured entry 573,783 bytes under the unchanged 576,716.8-byte limit |
+| Facebook artifact | 411 files, 4.55 MB; strict artifact audit passed |
+| Restore browser checks | Three authentication cases passed after the parser change on runtime-equivalent source `065126469` |
+| Browser plan | All four jobs passed; 140 real unique commands, 35 per shard, with no duplicates |
 
-Receipt/profile evidence is under `/tmp/rq-firebase-fixture-exports/`;
-readiness logs use `/tmp/rq-answer-readiness-*`; live-render logs are
-`/tmp/rq-live-render-fixed-{development,production}.log`. Modal-close proof uses
-`/tmp/rq-modal-close-fixed-{development,production,inspect}.log` and before/after
-screenshots under `/tmp/rq-modal-close-*.png`. These local files are
-ephemeral. A complete scoped CI run on the follow-up commit remains pending;
-local results do not substitute for all four browser shards and their subsequent
-release checks.
+Each browser job also passed HTML validation, both upload preflights and Facebook
+progress checks. Its rules stage had 95 suites and 1,362 tests. Common stages had
+46 authentication cases, 28 retained-race cases, the Facebook case and the
+ten-minute mobile soak. These repeated stages are separate from the 140 commands.
 
-## Recorded deployment baseline
+The PR workflow intentionally skips its development receipt. The subsequent
+[push run](https://github.com/Grindhead/riddle-quest/actions/runs/45199291482)
+uses the same source SHA and was still in progress at 15:05:43 UTC. Its receipt is not claimed here.
+The earlier `464e4f541` [run](https://github.com/Grindhead/riddle-quest/actions/runs/45172788278)
+passed in full, including its Jest/Facebook receipt at 14:08:17 UTC, artifact
+`14826610464`.
 
-The baseline upload receipt was updated at `2026-11-23T01:10:50.206Z`.
-The earlier official Jest inventory observation recorded the English-only
-`012020b5d` preview, version `1.0.0-dev.20261123011027.012020b5d4ce.ddabfe54`, ID
-`01a205f4-903a-728a-bc6b-98acbc2da5d8`, as READY and inactive, with no processing
-error. This records the baseline before the follow-up upload, not the status of a
-later preview. [Exact preview](https://jest.com/g/riddle-q?versionId=01a205f4-903a-728a-bc6b-98acbc2da5d8).
-The same baseline observation recorded the active October build
-`1.0.0-dev.20261025-review-complete`, ID
-`01a17226-db08-708f-86a1-6733b1fe4824`. These harness fixes have not activated,
-published or submitted a game build, or deployed backend changes.
+## Repair behavior
 
-The worker's public health reports source `012020b5d`, HTTP 200, `configured`,
-`workerEnabled: true` and `autoMergeEnabled: true`, following the owner's explicit
-approval. Current deployment/base/ticket/exact-CI-head checks remain required.
-An actual paid repair and Sentry-originated delivery have not been exercised;
-game uploads and production backend deployment remain separate operations.
-See the [Sentry worker runbook](../sentry-worker.md) for configuration, verified
-webhook/poll behavior and operational limits.
+Routine foreground catalog refreshes share the exact account's pending read and
+a ten-second freshness window. Hidden pages defer catalog work while receipt
+reconciliation and profile publication continue. Explicit refreshes still read
+fresh data after purchases and reject older responses. Reconnection, registration
+and recovered receipts require fresh entitlement data on return.
 
-## Natural scheduler execution
+Catalog reads retry one exact provider-negative reply within one 15-second budget.
+Persistent, unexpected and terminal failures still report. Paid actions remain
+single-attempt. Empty, cleared and explicitly unset guest saves return no saved
+progress. Returning saves await the same full parser, loaded only when data exists.
+The local comparison removed 3,507 entry bytes from the failing 577,290-byte build. Three
+empty-storage cases restored the unchanged coverage thresholds. No latency claim
+is made. Peer review corrected manual freshness and hidden-event freshness cases.
 
-The deployed `dailyChallengeScheduler` is ACTIVE on Node 22, revision
-`dailychallengescheduler-00056-kax`, serving 100% of traffic. Cloud Scheduler is
-ENABLED with schedule `0,30 0,2,3,6-9 * * *`, timezone `UTC`, and a 900-second
-attempt deadline. The natural 02:00 slot produced a Cloud Run request at
-`2026-11-23T02:00:33.685347Z`: HTTP 200, latency `109.724781499s`.
-Scheduler recorded `AttemptFinished` at `02:02:24.848790836Z`. No manual trigger
-or configuration change was used. Its reported next slot was
-`2026-11-23T02:30:01.678007Z`.
+Background Daily SDK timeouts and DOM response aborts produce warnings during a
+candidate attempt. Existing retries remain unchanged. Caller cancellations, other
+modes, unexpected errors and exhausted locale generation still report.
 
-Two warnings rejected generated candidates during quality review; the invocation
-completed successfully. The exact current revision returned no ERROR logs in
-`2026-11-22T23:06:54Z` through `2026-11-23T02:05:06.185Z`. At the latter time,
-Sentry's preceding-24-hour query for `runtime:firebase-functions` and that exact
-revision returned zero matching issues. This is a bounded post-run observation,
-subject to ingestion delay. The latest earlier failed request observed was HTTP
-500 on old revision `dailychallengescheduler-00054-fix` at
-`2026-11-22T09:00:27.151138Z`; it does not identify a failure of the current run.
+## Live checks on the uploaded repair
+
+Both authenticated Firefox sandbox accounts loaded the exact new version with
+`lang="en"` and left-to-right layout. Settings had no language selector. Both shops
+showed all six coin packs and Premium active. Initial balances A 4,195 and B 4,150
+were preserved. Their existing solo profile counters also matched the baseline.
+
+Eight real tab switches at one-second steps produced one product read and one
+subscription read per account in the measured windows, 19,729 ms for A and
+18,739 ms for B. Within those windows, all catalog reads began while visible. The passive
+probe recorded zero negative catalog replies and no uncaught exceptions.
+
+A live Mixed race showed the same ten clues and mirrored opponent progress. B
+finished 10/10 while A had 9/10, with matching winner and loser results. B's balance
+increased from 4,150 to 4,200; A retained 4,195. After closing results and reloading
+the exact preview, those balances and Premium status persisted. A retained three
+solo wins and two daily puzzles; B retained zero for both. Both remained English.
+
+No new purchases were made. The probe captured no uncaught exceptions or negative
+catalog replies through the race and reloads. The temporary extension, helpers
+and probe session storage were removed. The orientation banner was dismissed.
+Both tabs remain open, with tab 0 selected.
+
+## Sentry and HTTP observations
+
+The query in Sentry project `riddle-quest`, ID `4511885926006864`, for exact release
+`riddle-quest@1.0.0-dev.20261123145501.5887d9279b76.24302180` returned zero groups at
+15:00:50 UTC and 15:02:28.330896 UTC. These are bounded observations subject to
+Sentry ingestion delay. Historical groups were not marked resolved.
+
+Cloud Logging returned all 44 subscription-sync POST requests between 14:55:00
+and 15:02:26 UTC on `syncjestsubscriptions-00050-giw`. Every request returned HTTP
+200, with no HTTP 429 and no truncated results. Safe reports are
+`/tmp/rq-5887-sentry-final-safe.json`, `/tmp/rq-5887-subscription-http-final-safe.json`
+and `/tmp/rq-5887-sdk-probe-{A,B}.json` and `/tmp/rq-5887-served-initial-bytes.json`.
+
+On the earlier `464e4f541` preview, issues 44 and 2E recorded negative catalog
+replies shortly before navigation, and issue 45 correlated with HTTP 429 after
+rapid focus changes exceeded the existing 30-per-minute IP limit. A passive trace
+placed the negative replies 233 ms before parent `pagehide`, then saw successful
+reads in the new document. The provider's internal reason remains unknown. The
+older `777d59490` issue 1Y in `getPlayerSigned` also remains unexplained because
+its details are privacy-redacted. None was suppressed merely because a new build exists.
+
+## Deployed services and release limits
+
+The scheduler remains ACTIVE on Node 22 revision `dailychallengescheduler-00056-kax`,
+updated November 22 at 23:06:54 UTC, with a maximum of 20 instances. Subscription
+sync remains ACTIVE on Node 22 revision `syncjestsubscriptions-00050-giw`, updated
+at 22:54:51 UTC. Its server rate limit is unchanged. The scheduler's 09:02:34 UTC
+transport interruption recovered at 09:03:29 UTC in the same HTTP 200 invocation.
+The merged repair changes attempt telemetry, not the existing retry policy.
+
+Worker health at 15:02 UTC was HTTP 200 and configured, with worker and automatic
+merging enabled at revision `012020b5d`. Production Jest authority is the public
+live iframe; preview authority is off and Functions authority is on. Its actual
+10:00 UTC paid-work claim opened PR #20 at 10:03:44 UTC. The stale signed base
+correctly blocked worker merging. The owner authorized the reviewed integration;
+the original deployment, ticket and base guards remain enabled. Paid repair and
+PR creation are proven. Sentry-originated webhook delivery remains unverified.
+See the [worker runbook](../sentry-worker.md).
+
+The approved worker plan does not automatically deploy Functions or activate Jest.
+No backend deployment or Facebook upload occurred. Facebook payment Functions
+remain absent and `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED` is off. Meta checkout
+acceptance remains unverified. Earlier Facebook proof at `464e4f541` included 82
+recovery cases, 150 backend cases with 81 real-HMAC cases, and an isolated demo
+ledger run. PR #20 leaves that payment implementation unchanged.
+
+The recorded active Jest baseline remains `1.0.0-dev.20261025-review-complete`, ID
+`01a17226-db08-708f-86a1-6733b1fe4824`. The new upload is an inactive preview.
+
+## Verification history
+
+- `012020b5d` passed workspace/backend checks and exposed four browser fixture failures.
+- `fd04896b8` fixed readiness, export discovery, modal hit-testing and the fixture clock. `777d59490` added required comments; a later push cancelled its remaining run.
+- `fb658bb81` added Facebook payments and restored Facebook-only ads. `464e4f541` fixed contract expectations and recovery, then passed the complete scoped pipeline.
+- PR #20 repaired the observed catalog and Daily reporting problems. The lazy parser and three empty-save cases corrected entry size and coverage without relaxing their limits.
+
+Local logs under `/tmp/rq-5887-*`, `/tmp/rq-jest-entry-*` and
+`/tmp/rq-jest-empty-save-*` are ephemeral. CI links and the upload fingerprint above
+identify the tested source and artifact.
