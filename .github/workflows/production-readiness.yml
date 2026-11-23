@@ -19,7 +19,7 @@ concurrency:
 jobs:
   workspace-node24:
     name: Jest and Facebook workspace (Node 24)
-    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
+    if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -52,7 +52,7 @@ jobs:
 
   functions-node22:
     name: Firebase Functions (Node 22)
-    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
+    if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -78,7 +78,7 @@ jobs:
 
   browser-and-rules:
     name: Jest and Facebook browser and rules
-    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
+    if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     needs: [workspace-node24, functions-node22]
     runs-on: ubuntu-24.04
     timeout-minutes: 360
@@ -107,7 +107,7 @@ jobs:
   development-progress:
     name: Record verified development progress
     needs: [workspace-node24, functions-node22, browser-and-rules]
-    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
+    if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

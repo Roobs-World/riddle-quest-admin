@@ -55,6 +55,8 @@ function syncInstalledPackageCopy(targetCorePackageDir) {
   }
 
   for (const installedCoreDir of packageDirs) {
+    if (installedCoreDir === targetCorePackageDir || installedCoreDir === sourceCoreDir) continue;
+    fs.rmSync(path.join(installedCoreDir, "dist"), {recursive: true, force: true});
     fs.copyFileSync(path.join(targetCorePackageDir, "package.json"), path.join(installedCoreDir, "package.json"));
     fs.cpSync(path.join(targetCorePackageDir, "dist"), path.join(installedCoreDir, "dist"), {
       recursive: true,
@@ -64,6 +66,8 @@ function syncInstalledPackageCopy(targetCorePackageDir) {
   }
 }
 
+// TypeScript does not remove output for deleted modules. Rebuild the shared package from an empty output.
+fs.rmSync(path.join(sourceCoreDir, "dist"), {recursive: true, force: true});
 execSync("pnpm --filter @riddle-quest/core build", {
   cwd: repoRoot,
   stdio: "inherit",

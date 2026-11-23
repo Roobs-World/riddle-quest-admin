@@ -4,8 +4,37 @@
     "runtime": "nodejs22",
     "predeploy": [
       "pnpm --dir firebase-functions run validate:deploy-env",
-      "pnpm --dir firebase-functions run prepare:deploy",
       "pnpm --dir firebase-functions run build"
+    ],
+    "ignore": [
+      "node_modules",
+      ".git",
+      ".build-source",
+      "coverage",
+      "artifacts",
+      "content",
+      "__tests__",
+      "__mocks__",
+      "scripts",
+      "*.log",
+      ".env*",
+      "*.env",
+      "*.runtimeconfig.json",
+      "*admin-sdk*.json",
+      "*.pem",
+      "*.key",
+      "**/src/**/*.ts",
+      "**/src/**/*.md",
+      "jest.*",
+      "tsconfig*.json",
+      "eslint.config.*",
+      "firebase.*.json",
+      "firestore.*",
+      "database.*",
+      "storage.rules",
+      ".nvmrc",
+      ".gitignore",
+      ".gcloudignore"
     ]
   },
   "firestore": {

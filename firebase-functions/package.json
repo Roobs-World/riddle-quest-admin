@@ -1,13 +1,10 @@
 {
   "name": "functions",
   "scripts": {
-    "prelint": "node scripts/prepare-deploy.js",
-    "lint": "eslint --config eslint.config.cjs --ext .js,.ts src ../platforms/native/android/server ../platforms/web/jest/server ../platforms/web/facebook/server ../platforms/web/reddit/server ../platforms/web/yahoo/server",
-    "prebuild": "node scripts/prepare-deploy.js && node scripts/audit-module-cycles.mjs",
+    "lint": "node scripts/prepare-deploy.js && node scripts/lint-source.js",
     "prepare:deploy": "node scripts/prepare-deploy.js",
-    "build": "rimraf lib && tsc -p tsconfig.json",
-    "precheck:types": "node scripts/prepare-deploy.js && node scripts/audit-module-cycles.mjs",
-    "check:types": "tsc -p tsconfig.json --noEmit",
+    "build": "node scripts/prepare-deploy.js && node scripts/audit-module-cycles.mjs && rimraf lib && tsc -p tsconfig.json && node scripts/audit-deployment-artifact.js && node ../scripts/audit-function-capacity.mjs --built",
+    "check:types": "node scripts/prepare-deploy.js && node scripts/audit-module-cycles.mjs && tsc -p tsconfig.json --noEmit",
     "check:module-cycles": "node --test scripts/audit-module-cycles.test.mjs && node scripts/audit-module-cycles.mjs",
     "pretest": "node scripts/prepare-deploy.js",
     "test:sentry-openai": "pnpm build && node --test scripts/sentry-openai-response.test.js",
@@ -55,14 +52,14 @@
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",
     "test:race:rules": "pnpm build && cross-env NODE_OPTIONS=\"--max-old-space-size=6144\" node scripts/run-isolated-emulators.js emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --maxWorkers=1 --workerIdleMemoryLimit=1536MB\"",
-    "facebook:referrals:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-referral-retention.js",
-    "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-context-retention.js",
-    "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-nonce-retention.js",
-    "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/reddit-profile-retention.js",
-    "postbuild": "node scripts/audit-deployment-artifact.js && node ../scripts/audit-function-capacity.mjs --built",
+    "facebook:referrals:retention": "pnpm build && node scripts/run-with-functions-node.js ../platforms/web/facebook/server/scripts/facebook-referral-retention.js",
+    "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js ../platforms/web/facebook/server/scripts/facebook-context-retention.js",
+    "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js ../platforms/web/facebook/server/scripts/facebook-nonce-retention.js",
+    "reddit:profiles:retention": "pnpm build && node scripts/run-with-functions-node.js ../platforms/web/reddit/server/scripts/reddit-profile-retention.js",
     "test:android-notifications:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-notifications \"pnpm exec jest --config jest.android-notifications.config.js --runInBand\"",
     "test:android-referrals:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-referrals \"pnpm exec jest --config jest.android-referrals.config.js --runInBand\"",
-    "test:android-subscriptions:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-subscriptions \"pnpm exec jest --config jest.android-subscriptions.config.js --runInBand\""
+    "test:android-subscriptions:emulator": "node scripts/run-isolated-emulators.js emulators:exec --config firebase.race-verification.json --only firestore --project demo-android-subscriptions \"pnpm exec jest --config jest.android-subscriptions.config.js --runInBand\"",
+    "gcp-build": ""
   },
   "engines": {
     "node": "22"

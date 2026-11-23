@@ -1,11 +1,11 @@
 # Node.js dependencies
 node_modules/
 
-# Source files (if deploying 'lib' and 'main' in package.json is 'lib/index.js')
-src/
+# Source files (if deploying 'lib' and 'main' in package.json is 'lib/firebase-functions/src/index.js')
+/src/
 # If you only deploy the 'lib' directory (common for compiled TypeScript),
 # ensure your firebase.json 'source' points to 'firebase-functions' (or the directory containing 'lib')
-# and 'main' in package.json is 'lib/index.js'.
+# and 'main' in package.json is 'lib/firebase-functions/src/index.js'.
 
 # Test files and directories
 __tests__/
@@ -38,8 +38,8 @@ babel.config.cjs
 jest.config.js
 jest.env.setup.js
 
-# If your main entry point in package.json (e.g., "main": "lib/index.js")
+# If your main entry point in package.json (e.g., "main": "lib/firebase-functions/src/index.js")
 # and firebase.json functions source points to a directory containing 'lib',
 # then 'lib' itself should NOT be in .gcloudignore.
 # Canonical platform source is compiled before archiving.
-.build-source/
+/.build-source/

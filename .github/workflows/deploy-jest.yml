@@ -19,7 +19,7 @@ concurrency:
 jobs:
   deploy:
     name: Verify, upload and activate Jest build
-    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
+    if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     environment: jest-production

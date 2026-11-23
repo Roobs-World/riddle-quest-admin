@@ -245,6 +245,8 @@ set `complete` manually.
 
 ## Build and upload
 
+Build and upload from a clean, committed `main` checkout. Confirm `git branch --show-current` returns `main` and push the reviewed source to `origin/main` before preparing the release.
+
 Install the credential template outside the repository with owner-only permissions, then set the game upload token and notification email. The release rejects repository-local, linked, group-readable, or world-readable credential files:
 
 ```bash
@@ -258,8 +260,8 @@ both so a stale file cannot change release behavior. The canonical `release:jest
 in its process environment. Build activation is allowed. Game publication, review submission and listing visibility changes remain held. Set `JEST_RELEASE_INACTIVE=true` for an explicitly inactive build.
 
 For GitHub Actions CD, create a protected `jest-production` environment, require the desired reviewers, restrict it to
-the `jest` branch, and add `JEST_GAME_UPLOAD_TOKEN` plus `JEST_NOTIFICATION_EMAIL` as environment secrets. Dispatch
-`Upload and activate Jest build` from the `jest` branch. The workflow uses the same canonical release command and a
+the `main` branch, and add `JEST_GAME_UPLOAD_TOKEN` plus `JEST_NOTIFICATION_EMAIL` as environment secrets. Dispatch
+`Upload and activate Jest build` from the `main` branch. The workflow uses the same canonical release command and a
 non-cancellable production concurrency lock; it does not provide a shorter CI-only upload path. Facebook, Reddit, and
 YouTube retain their separately documented manual handoff boundaries.
 

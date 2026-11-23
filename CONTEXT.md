@@ -1,6 +1,6 @@
 # Riddle Quest
 
-Riddle Quest is one game delivered through provider-specific web surfaces. This glossary distinguishes globally authoritative accounts from deliberately platform-local play and provider-scoped state.
+Riddle Quest is one game delivered through provider-specific web surfaces. All current development, releases, Jest uploads and monitoring repairs use `main`; platform folders define source ownership. This glossary distinguishes globally authoritative accounts from deliberately platform-local play and provider-scoped state.
 
 ## Delivery
 

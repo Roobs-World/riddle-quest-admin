@@ -4,7 +4,7 @@ Never paste credentials into source control or chat. Store browser build values 
 
 ## Shared release
 
-1. Keep the `jest` branch reviewed and clean.
+1. Keep `main` reviewed and clean; prepare every platform release from that source branch.
 2. Configure every provider item below.
 3. Inspect the release plan with `pnpm release:all --dry-run`.
 4. Run `pnpm release:all`. The shared target gate completes before any target adapter runs.

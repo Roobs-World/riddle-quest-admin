@@ -65,7 +65,7 @@ test("bounded repair payload rejects automation changes, traversal, deletions, b
 test("a mixed repair containing a parked target is rejected before any GitHub authority or write request", async () => {
   const requests = [];
   await assert.rejects(completeRepair(
-    {issueId: "123", branch: "branch", claimSha: "claim", base: "jest"},
+    {issueId: "123", branch: "branch", claimSha: "claim", base: "main"},
     {changes: [change, {...change, path: "platforms/native/android/src/auth/fixed.ts"}]},
     "server-only",
     async () => {requests.push("authority"); return {allowed: true};},
@@ -74,7 +74,7 @@ test("a mixed repair containing a parked target is rejected before any GitHub au
   assert.deepEqual(requests, []);
 });
 test("the service creates the bounded PR from a claim only after both authoritative checks pass", async () => {
-  const context = {issueId: "123", branch: "codex/sentry-123", claimSha: "claim", base: "jest"};
+  const context = {issueId: "123", branch: "codex/sentry-123", claimSha: "claim", base: "main"};
   const requests = [];
   const replies = [{object: {sha: "claim"}}, {tree: {sha: "base-tree"}}, {sha: "blob"}, {sha: "tree"}, {sha: "commit"}, {}, {number: 99}];
   let checks = 0;
@@ -86,13 +86,13 @@ test("the service creates the bounded PR from a claim only after both authoritat
   assert.equal(result.pullRequest, 99);
   assert.deepEqual(JSON.parse(requests[4].options.body).parents, ["claim"]);
   assert.equal(JSON.parse(requests[5].options.body).force, false);
-  assert.equal(JSON.parse(requests[6].options.body).base, "jest");
+  assert.equal(JSON.parse(requests[6].options.body).base, "main");
 });
 test("authority changes during completion leave branch and PR untouched", async () => {
   const requests = [];
   const replies = [{object: {sha: "claim"}}, {tree: {sha: "base-tree"}}, {sha: "blob"}, {sha: "tree"}, {sha: "commit"}];
   let checks = 0;
-  const result = await completeRepair({issueId: "123", branch: "branch", claimSha: "claim", base: "jest"}, {changes: [change]}, "server-only", async () => ++checks === 1 ? {allowed: true} : {allowed: false, reason: "deployment_changed"}, async (url, options) => {requests.push({url, method: options.method}); return Response.json(replies.shift());});
+  const result = await completeRepair({issueId: "123", branch: "branch", claimSha: "claim", base: "main"}, {changes: [change]}, "server-only", async () => ++checks === 1 ? {allowed: true} : {allowed: false, reason: "deployment_changed"}, async (url, options) => {requests.push({url, method: options.method}); return Response.json(replies.shift());});
   assert.equal(result.reason, "deployment_changed");
   assert.ok(requests.every((item) => item.method !== "PATCH" && !item.url.endsWith("/pulls")));
 });

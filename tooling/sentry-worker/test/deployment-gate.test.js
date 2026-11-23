@@ -67,10 +67,13 @@ test("sanitized events include deployment and application frames while dropping 
 test("tickets reject tampering and expiry; claim identity changes across deployments and occurrence days", () => {
   const fingerprint = "a".repeat(64);
   const branch = repairBranch("123", fingerprint, timestamp);
-  const context = {issueId: "123", event, fingerprint, base: "jest", baseSha: "b".repeat(40), claimSha: "c".repeat(40), branch};
+  const context = {issueId: "123", event, fingerprint, base: "main", baseSha: "b".repeat(40), claimSha: "c".repeat(40), branch};
   const now = Date.parse(timestamp);
   const ticket = signTicket(context, "secret", now);
   assert.equal(readTicket(ticket, "secret", now).branch, branch);
+  const legacyTicket = signTicket({...context, base: "jest"}, "secret", now);
+  assert.equal(readTicket(legacyTicket, "secret", now), null);
+  assert.equal(readTicket(legacyTicket, "secret", now, "reconcile"), null);
   assert.equal(readTicket(ticket, "wrong", now), null);
   assert.equal(readTicket(`${ticket}x`, "secret", now), null);
   assert.equal(readTicket(ticket, "secret", now + 4 * 60 * 60 * 1000), null);

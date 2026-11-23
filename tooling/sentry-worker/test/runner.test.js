@@ -17,5 +17,5 @@ test("the isolated runner downloads and pins the Codex executable without npm", 
   assert.equal((source.match(/await checkDeployment\(\)/gu) ?? []).length, 3);
   const agentEnvironment = /const agentEnv = (.*);/u.exec(source)?.[1];
   assert.doesNotMatch(agentEnvironment, /GITHUB|TICKET|CHECK_URL/u);
-  assert.match(source, /\["init", "-b", "jest"\]/u);
+  assert.match(source, /\["init", "-b", "main"\]/u);
 });

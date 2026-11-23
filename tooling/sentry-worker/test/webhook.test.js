@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {createHmac} from "node:crypto";
 import test from "node:test";
-import handler, {issueIdentity, launchFirstUnclaimed, reconcileRepair, reserveBranch, reserveHourlyBudget, verifySignature} from "../api/sentry-webhook.js";
+import handler, {checkRepairContext, issueIdentity, launchFirstUnclaimed, reconcileRepair, reserveBranch, reserveHourlyBudget, verifySignature} from "../api/sentry-webhook.js";
 import {repairBranch, signTicket} from "../worker/deployment-gate.mjs";
 
 async function request(method, headers = {}) {
@@ -17,7 +17,30 @@ test("health reports actual configuration presence without exposing credentials"
   assert.equal(body.service, "riddle-quest-sentry-worker");
   assert.equal(body.status, "not_configured");
   assert.equal(body.workerEnabled, false);
+  assert.equal(body.targetBranch, "main");
   assert.deepEqual(body.authorityConfigured, {jestProduction: "public-live-iframe", jestPreviews: false, functions: false});
+});
+test("legacy branch configuration and repair contexts fail closed before upstream calls", async (context) => {
+  const previousTarget = process.env.TARGET_BRANCH;
+  const previousFetch = globalThis.fetch;
+  context.after(() => {
+    if (previousTarget === undefined) delete process.env.TARGET_BRANCH;
+    else process.env.TARGET_BRANCH = previousTarget;
+    globalThis.fetch = previousFetch;
+  });
+  process.env.TARGET_BRANCH = "jest";
+  const response = await request("GET");
+  assert.equal(JSON.parse(response.body).workerEnabled, false);
+  assert.equal(JSON.parse(response.body).targetBranch, "jest");
+  const requests = [];
+  globalThis.fetch = async (...args) => {requests.push(args); throw new Error("must not contact upstream");};
+  await assert.rejects(reserveBranch("123", "token", {}), {message: "unsupported_base_branch"});
+  const result = await checkRepairContext({base: "jest"}, "token", async () => {
+    requests.push("deployment");
+    return {allowed: true};
+  });
+  assert.deepEqual(result, {allowed: false, reason: "unsupported_base_branch"});
+  assert.deepEqual(requests, []);
 });
 test("CLI deployments report their source when Vercel supplies an empty git revision", async () => {
   const previousGit = process.env.VERCEL_GIT_COMMIT_SHA;
@@ -92,7 +115,7 @@ test("an abandoned branch without a pull request is reclaimed after the sandbox 
   const event = {timestamp: "2026-09-20T05:00:00Z"};
   const fingerprint = "a".repeat(64);
   assert.deepEqual(await reserveBranch("123", "token", {event, fingerprint}, Date.parse(event.timestamp)), {
-    base: "jest",
+    base: "main",
     branch: repairBranch("123", fingerprint, event.timestamp),
     baseSha: "base-sha",
     claimSha: "claim-sha",
@@ -113,9 +136,9 @@ test("a later cron merges a repaired pull request after its exact checks pass", 
   const event = {timestamp: new Date().toISOString()};
   const fingerprint = "a".repeat(64);
   const branch = repairBranch("148177327", fingerprint, event.timestamp);
-  const ticket = signTicket({issueId: "148177327", event, fingerprint, branch, base: "jest", baseSha: "b".repeat(40), claimSha: "c".repeat(40)}, "test-secret");
+  const ticket = signTicket({issueId: "148177327", event, fingerprint, branch, base: "main", baseSha: "b".repeat(40), claimSha: "c".repeat(40)}, "test-secret");
   const replies = [
-    [{number: 4, title: "Fix issue", body: `<!-- sentry-worker-ticket:${ticket} -->`, base: {ref: "jest"}, head: {sha: "repair-sha"}}],
+    [{number: 4, title: "Fix issue", body: `<!-- sentry-worker-ticket:${ticket} -->`, base: {ref: "main"}, head: {sha: "repair-sha"}}],
     {workflow_runs: [{id: 99, head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]},
     {object: {sha: "b".repeat(40)}},
     {merged: true},
@@ -145,10 +168,10 @@ test("the default service leaves a checked repair for review and reports release
   const event = {timestamp: new Date().toISOString()};
   const fingerprint = "a".repeat(64);
   const branch = repairBranch("123", fingerprint, event.timestamp);
-  const ticket = signTicket({issueId: "123", event, fingerprint, branch, base: "jest", baseSha: "b".repeat(40), claimSha: "c".repeat(40)}, "test-secret");
+  const ticket = signTicket({issueId: "123", event, fingerprint, branch, base: "main", baseSha: "b".repeat(40), claimSha: "c".repeat(40)}, "test-secret");
   globalThis.fetch = async (url, options = {}) => {
     assert.equal(options.method ?? "GET", "GET");
-    return Response.json(String(url).includes("/pulls?") ? [{number: 4, base: {ref: "jest"}, head: {sha: "repair-sha"}, body: `<!-- sentry-worker-ticket:${ticket} -->`}] : String(url).includes("/actions/") ? {workflow_runs: [{head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]} : {object: {sha: "b".repeat(40)}});
+    return Response.json(String(url).includes("/pulls?") ? [{number: 4, base: {ref: "main"}, head: {sha: "repair-sha"}, body: `<!-- sentry-worker-ticket:${ticket} -->`}] : String(url).includes("/actions/") ? {workflow_runs: [{head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]} : {object: {sha: "b".repeat(40)}});
   };
   assert.deepEqual(await reconcileRepair("123", "test", branch, async () => ({allowed: true, fingerprint})), {status: "ready_for_review", pullRequest: 4, releaseWorkPending: true});
 });
@@ -161,12 +184,12 @@ test("a successful CI run cannot merge after the deployed version or base branch
   const event = {timestamp: new Date().toISOString()};
   const fingerprint = "a".repeat(64);
   const branch = repairBranch("123", fingerprint, event.timestamp);
-  const ticket = signTicket({issueId: "123", event, fingerprint, branch, base: "jest", baseSha: "b".repeat(40), claimSha: "c".repeat(40)}, "test-secret");
+  const ticket = signTicket({issueId: "123", event, fingerprint, branch, base: "main", baseSha: "b".repeat(40), claimSha: "c".repeat(40)}, "test-secret");
   const requests = [];
   globalThis.fetch = async (url, options = {}) => {
     requests.push({url: String(url), method: options.method ?? "GET"});
     assert.equal(options.method ?? "GET", "GET");
-    return Response.json(String(url).includes("/pulls?") ? [{number: 4, base: {ref: "jest"}, head: {sha: "repair-sha"}, body: `<!-- sentry-worker-ticket:${ticket} -->`}] : String(url).includes("/actions/") ? {workflow_runs: [{head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]} : {object: {sha: "c".repeat(40)}});
+    return Response.json(String(url).includes("/pulls?") ? [{number: 4, base: {ref: "main"}, head: {sha: "repair-sha"}, body: `<!-- sentry-worker-ticket:${ticket} -->`}] : String(url).includes("/actions/") ? {workflow_runs: [{head_sha: "repair-sha", event: "pull_request", status: "completed", conclusion: "success"}]} : {object: {sha: "c".repeat(40)}});
   };
   assert.equal((await reconcileRepair("123", "token", branch, async () => ({allowed: true, fingerprint: "d".repeat(64)}))).reason, "deployment_changed");
   assert.equal((await reconcileRepair("123", "token", branch, async () => ({allowed: true, fingerprint}))).reason, "base_branch_changed");

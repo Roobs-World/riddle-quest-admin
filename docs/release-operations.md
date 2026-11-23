@@ -1,6 +1,6 @@
 # Platform release commands
 
-Riddle Quest has one canonical release command for each shipping target. Run all commands from the repository root.
+Riddle Quest has one canonical release command for each shipping target. Run all commands from the repository root in a clean, committed `main` checkout. Push the reviewed source to `origin/main` before preparing an upload or handoff. Monitoring repairs also target `main`; separate platform and worker branches are no longer maintained.
 
 ```bash
 pnpm release:jest

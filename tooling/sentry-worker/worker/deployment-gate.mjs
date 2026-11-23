@@ -1,5 +1,7 @@
 import {createHash, createHmac, sign, timingSafeEqual} from "node:crypto";
 
+export const REPAIR_BASE_BRANCH = "main";
+
 const PROJECT = "riddle-quest-ec2b2";
 const TEAM_ID = "019faa67-d2a6-7169-aa29-a4411a3a3c3d";
 const GAME_ID = "019faa68-f3ec-755d-9ab5-c887fb426801";
@@ -193,7 +195,7 @@ export function readTicket(ticket, secret, now = Date.now(), purpose = "repair")
   try {
     const context = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
     if (!Number.isFinite(context.issuedAt) || !Number.isFinite(context.expiresAt) || !Number.isFinite(context.reconcileExpiresAt) || context.issuedAt > now || context.expiresAt - context.issuedAt > MAX_TICKET_AGE_MS || context.reconcileExpiresAt - context.issuedAt > MAX_RECONCILE_AGE_MS || (purpose === "reconcile" ? context.reconcileExpiresAt : context.expiresAt) <= now) return null;
-    if (!/^\d+$/u.test(context.issueId) || !/^[a-f0-9]{40}$/u.test(context.baseSha) || !/^[a-f0-9]{40}$/u.test(context.claimSha) || context.base !== "jest" || context.branch !== repairBranch(context.issueId, context.fingerprint, context.event.timestamp)) return null;
+    if (!/^\d+$/u.test(context.issueId) || !/^[a-f0-9]{40}$/u.test(context.baseSha) || !/^[a-f0-9]{40}$/u.test(context.claimSha) || context.base !== REPAIR_BASE_BRANCH || context.branch !== repairBranch(context.issueId, context.fingerprint, context.event.timestamp)) return null;
     return context;
   } catch {return null;}
 }

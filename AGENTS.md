@@ -19,9 +19,9 @@
 
 ## Branches
 
-- `main` is the canonical source branch for all platforms and shared code. Integrate outstanding work into `main` before continuing platform development. `platforms/native/android` and `platforms/web/<provider>` are folders, not Git branch names.
-- Confirm the current branch before editing. Commit and push each completed unit to `origin` as work progresses. Preserve unrelated edits and coordinate file ownership before parallel changes.
-- Keep the existing `jest` deployment branch and `sentry` worker branch current with the completed `main` changes relevant to them. Upload to Jest only from `jest`. Worker automatic repair PRs retain their signed Jest base and deployment-authority checks; merge their completed changes back into `main`. Platform folders never create a second source-of-truth branch. Publication, review submission and other deployment actions retain their existing authorization requirements.
+- Use `main` for all development, releases, Jest uploads and monitoring repairs. Platform ownership follows `platforms/native/android` and `platforms/web/<provider>` folders. There are no separate maintained platform, deployment or worker branches.
+- Confirm `git branch --show-current` returns `main` before editing or releasing. Commit and push each completed unit to `origin/main` as work progresses. Preserve unrelated edits and coordinate file ownership before parallel changes.
+- Monitoring repair PRs target `main` and retain signed main-base, deployed-version, exact-head and deployment-authority checks. Release authorization requirements still apply to activation, publication, review submission and deployment. Historical branch/worktree records do not change the current main-only policy.
 
 ## Agent skills
 

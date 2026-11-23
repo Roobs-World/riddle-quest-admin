@@ -19,7 +19,7 @@ Browser E2E steps accounted for approximately 1,807 minutes, or 67.7% of Riddle 
 
 ## Controls in source
 
-The three maintained workflows now accept only `workflow_dispatch`. They have no push, pull request, tag or schedule trigger. Every job requires the `jest` branch and an explicit `confirm_runner_usage=true` input. The checkbox defaults to false.
+The three maintained workflows now accept only `workflow_dispatch`. They have no push, pull request, tag or schedule trigger. Every job requires the `main` branch and an explicit `confirm_runner_usage=true` input. The checkbox defaults to false.
 
 Readiness now runs the complete browser suite once, without a matrix. It waits for both workspace and Functions checks to pass before starting browsers. Facebook packaging reuses the build and browser results from that run rather than repeating the suite. Superseding readiness runs share a branch-based concurrency group and cancel older runs. Completion receipts expire after seven days rather than 90.
 
@@ -40,8 +40,8 @@ GitHub's timing endpoint returned zero billable milliseconds for runs with subst
 
 ## Before deliberately using hosted runners again
 
-Keep repository Actions and its workflows disabled until a hosted run is explicitly requested. Before permanently enabling workflows, migrate or remove automatic workflow definitions on stale branches. The corrected files on `main` and `jest` do not protect other refs that still contain automatic triggers.
+Keep repository Actions and its workflows disabled until a hosted run is explicitly requested. Use only the reviewed manual workflows on `main`. Historical refs may retain older automatic definitions; keep those refs inactive rather than using them for releases or verification.
 
-For an authorized hosted run, review the selected workflow's maximum runner time, use the `jest` branch and explicitly confirm allowance usage. Keep local verification as the default. Enabling a workflow or launching it is not part of an ordinary push.
+For an authorized hosted run, review the selected workflow's maximum runner time, use the `main` branch and explicitly confirm allowance usage. Keep local verification as the default. Enabling a workflow or launching it is not part of an ordinary push.
 
 At account level, review [GitHub billing budgets](https://github.com/settings/billing/budgets) and configure an Actions budget with **Stop usage when budget limit is reached** plus threshold alerts. An alert-only budget does not stop spending. These controls require account billing access and were not changed in this investigation. See [GitHub's budget instructions](https://docs.github.com/en/billing/how-tos/set-up-budgets).

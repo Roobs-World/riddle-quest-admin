@@ -2,7 +2,7 @@ import {createHmac, timingSafeEqual} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {Sandbox} from "@vercel/sandbox";
 import {evaluateWorkflowRuns} from "../worker/check-policy.mjs";
-import {readTicket, repairBranch, sanitizeEvent, signTicket, verifyDeployment} from "../worker/deployment-gate.mjs";
+import {readTicket, REPAIR_BASE_BRANCH, repairBranch, sanitizeEvent, signTicket, verifyDeployment} from "../worker/deployment-gate.mjs";
 import {completeRepair} from "../worker/github-repair.mjs";
 
 const ORG = "roobs-world-limited";
@@ -96,8 +96,8 @@ async function createClaim(repoUrl, baseRef, branch, issueId, token) {
 
 export async function reserveBranch(issueId, token, identity, now = Date.now()) {
   const repoUrl = `https://api.github.com/repos/${REPOSITORY}`;
-  const base = process.env.TARGET_BRANCH ?? "jest";
-  if (base !== "jest") throw new Error("unsupported_base_branch");
+  const base = process.env.TARGET_BRANCH ?? REPAIR_BASE_BRANCH;
+  if (base !== REPAIR_BASE_BRANCH) throw new Error("unsupported_base_branch");
   const ref = await api(`${repoUrl}/git/ref/heads/${encodeURIComponent(base)}`, token);
   // Fail before reserving a branch unless this token can enforce the Actions gate.
   await api(`${repoUrl}/actions/workflows/production-readiness.yml/runs?per_page=1`, token, {
@@ -157,6 +157,7 @@ async function sourceArchive(sha, token) {
   return Buffer.concat(chunks);
 }
 export async function checkRepairContext(context, token, verify = verifyDeployment) {
+  if (context.base !== REPAIR_BASE_BRANCH) return {allowed: false, reason: "unsupported_base_branch"};
   const deployment = await verify(context.event);
   if (!deployment.allowed) return {allowed: false, reason: deployment.reason};
   if (deployment.fingerprint !== context.fingerprint) return {allowed: false, reason: "deployment_changed"};
@@ -243,8 +244,9 @@ export async function launchFirstUnclaimed(candidates, launchCandidate) {
 }
 export default async function handler(request, response) {
   const required = ["SENTRY_AUTH_TOKEN", "SENTRY_WEBHOOK_SECRET", "SENTRY_WORKER_GITHUB_TOKEN", "OPENAI_API_KEY", "CRON_SECRET"];
-  const configured = required.every((key) => Boolean(process.env[key]));
-  if (request.method === "GET" && !header(request, "authorization")) return send(response, 200, {service: "riddle-quest-sentry-worker", status: configured ? "configured" : "not_configured", workerEnabled: configured, autoMergeEnabled: process.env.SENTRY_WORKER_AUTO_MERGE === "1", revision: process.env.VERCEL_GIT_COMMIT_SHA || process.env.SENTRY_WORKER_SOURCE_SHA || null, authorityConfigured: {jestProduction: "public-live-iframe", jestPreviews: Boolean(process.env.JEST_MCP_ACCESS_TOKEN), functions: Boolean(process.env.SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT)}});
+  const targetBranch = process.env.TARGET_BRANCH ?? REPAIR_BASE_BRANCH;
+  const configured = required.every((key) => Boolean(process.env[key])) && targetBranch === REPAIR_BASE_BRANCH;
+  if (request.method === "GET" && !header(request, "authorization")) return send(response, 200, {service: "riddle-quest-sentry-worker", status: configured ? "configured" : "not_configured", workerEnabled: configured, targetBranch, autoMergeEnabled: process.env.SENTRY_WORKER_AUTO_MERGE === "1", revision: process.env.VERCEL_GIT_COMMIT_SHA || process.env.SENTRY_WORKER_SOURCE_SHA || null, authorityConfigured: {jestProduction: "public-live-iframe", jestPreviews: Boolean(process.env.JEST_MCP_ACCESS_TOKEN), functions: Boolean(process.env.SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT)}});
   if (request.method === "HEAD") return send(response, 200);
   if (request.method !== "POST" && request.method !== "GET") {
     response.setHeader("Allow", "GET, HEAD, POST");

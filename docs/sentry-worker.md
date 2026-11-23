@@ -1,5 +1,7 @@
 # Sentry repair worker on Vercel
 
+The current source policy uses `main` for worker development and repair PR bases. Dated deployment observations below record the service revision that was actually checked; updating source does not update the deployed worker or its environment. Verify the deployed configuration before relying on the main-only policy in production.
+
 On 2026-11-22 the documented endpoint returned HTTP 404
 `DEPLOYMENT_NOT_FOUND`. Authenticated lookup of the old project ID and name also
 returned 404, and team-scoped project search was empty. There was no deployed
@@ -57,7 +59,7 @@ upload fingerprint, timed observations and remaining Meta acceptance limit.
 
 The worker watches Sentry organization `roobs-world-limited`, project
 `riddle-quest`, numeric project `4511885926006864`, and repairs
-`Grindhead/riddle-quest` from `jest`. Browser and Functions errors share that project.
+`Grindhead/riddle-quest` from `main` under the current source policy. Browser and Functions errors share that project.
 
 ## Processing and deployed-version checks
 
@@ -124,8 +126,8 @@ PR head after fresh deployment/base checks. Production explicitly sets
 stale tickets block merging. Without that flag the code defaults to
 `ready_for_review` and `releaseWorkPending: true`.
 
-The merge flag does not perform the required Jest upload, source-branch
-synchronization or applicable backend release. These remain separate release
+The merge flag does not perform the required Jest upload or applicable backend
+release. Repairs merge into `main`; release commands use that same source branch. These remain separate release
 operations; no post-merge coordinator is currently configured.
 
 ## Jest and Facebook verification scope
@@ -158,8 +160,8 @@ unavailable. See [Actions cost controls](github-actions-cost-controls.md).
 
 The [platform source migration](platform-layout.md) changes source paths and the
 repair allowlist, not the deployed worker revision recorded above. Deploying those
-worker changes is a separate operation. `main` owns the integrated source, `sentry`
-carries the worker, and automated repairs retain the signed `jest` base. The repair
+worker changes is a separate operation. All worker development and automated
+repair PRs use `main`, with a signed main base. The repair
 agent follows `AGENTS.md`, including the requirement that tests and browser harnesses
 run only when explicitly requested.
 
@@ -184,7 +186,7 @@ Store secrets only in the dedicated service project. Never log their values.
 | `SENTRY_WORKER_URL` | Canonical HTTPS webhook/check endpoint. Defaults to Vercel's production project URL plus `/api/sentry-webhook`. |
 | `NODEJS_HELPERS` | Set `0` to preserve raw webhook bytes. |
 | `SENTRY_WORKER_SOURCE_SHA` | Nonsecret committed source SHA for CLI deployments without Git integration. Health prefers Vercel's Git SHA when present. |
-| `TARGET_BRANCH` | Optional, only `jest` is accepted. |
+| `TARGET_BRANCH` | Optional, only `main` is accepted. |
 | `SENTRY_WORKER_AUTO_MERGE` | Production is `1`, explicitly authorized on 2026-11-23. Merges only after the exact CI head and current deployment/base checks pass. Unset defaults to review-only. Release operations remain separate. |
 
 Jest access tokens expire after one hour. This service does not store or rotate

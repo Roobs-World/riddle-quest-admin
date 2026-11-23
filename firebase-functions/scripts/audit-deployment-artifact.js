@@ -7,6 +7,7 @@ const {createRequire, isBuiltin} = require("node:module");
 const functionsRoot = path.resolve(__dirname, "..");
 const manifest = require("../package.json");
 const outputRoot = path.join(functionsRoot, "lib");
+const runtimeFiles = [];
 let modules = 0;
 let references = 0;
 
@@ -19,7 +20,9 @@ function inspectDirectory(directory) {
         throw new Error(`Unexpected source-only directory in Functions output: ${filename}`);
       }
       inspectDirectory(filename);
-    } else if (entry.name.endsWith(".js")) {
+    } else {
+      runtimeFiles.push(filename);
+      if (!entry.name.endsWith(".js")) continue;
       modules += 1;
       const resolve = createRequire(filename).resolve;
       for (const match of fs.readFileSync(filename, "utf8").matchAll(/\brequire\(["']([^"']+)["']\)/gu)) {
@@ -47,5 +50,45 @@ function inspectDirectory(directory) {
 if (!fs.existsSync(path.join(functionsRoot, manifest.main))) {
   throw new Error(`Missing Functions deployment entry: ${manifest.main}`);
 }
+/** Uses the same enumerator and ignore rules as the installed Firebase upload packager. */
+async function inspectUploadFiles() {
+  const {readdirRecursive} = require("firebase-tools/lib/fsAsync");
+  const config = require("../../firebase.json").functions;
+  if (!Array.isArray(config.ignore)) throw new Error("Functions upload requires explicit archive ignore rules");
+  const files = await readdirRecursive({
+    path: functionsRoot,
+    ignoreStrings: [...config.ignore, "firebase-debug.log", "firebase-debug.*.log", ".runtimeconfig.json"],
+  });
+  const uploadNames = new Set(files.map((file) => path.relative(functionsRoot, file.name).split(path.sep).join("/")));
+  const expectFile = (filename) => {
+    const name = path.relative(functionsRoot, filename).split(path.sep).join("/");
+    if (!uploadNames.has(name)) throw new Error(`Functions upload omits required artifact: ${name}`);
+  };
+  for (const filename of runtimeFiles) expectFile(filename);
+  expectFile(path.join(functionsRoot, "package.json"));
+  expectFile(path.join(functionsRoot, "package-lock.json"));
+  expectFile(path.join(functionsRoot, "packages/core/package.json"));
+  const inspectCore = (directory) => {
+    for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
+      const filename = path.join(directory, entry.name);
+      if (entry.isDirectory()) inspectCore(filename);
+      else expectFile(filename);
+    }
+  };
+  inspectCore(path.join(functionsRoot, "packages/core/dist"));
+  for (const name of uploadNames) {
+    if (name === "package.json" || name === "package-lock.json") continue;
+    if (!name.startsWith("lib/") && !name.startsWith("packages/core/")) {
+      throw new Error(`Source-only or local file enters Functions upload: ${name}`);
+    }
+  }
+  return uploadNames.size;
+}
+
 inspectDirectory(outputRoot);
-console.log(`Functions deployment artifact audit passed (${modules} modules, ${references} dependency references).`);
+inspectUploadFiles().then((uploadFiles) => {
+  console.log(`Functions deployment artifact audit passed (${modules} modules, ${references} dependency references, ${uploadFiles} upload files).`);
+}).catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+});

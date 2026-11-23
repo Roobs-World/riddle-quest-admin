@@ -1,4 +1,4 @@
-import {currentFunctions, currentJestProduction, currentJestVersions} from "./deployment-gate.mjs";
+import {currentFunctions, currentJestProduction, currentJestVersions, REPAIR_BASE_BRANCH} from "./deployment-gate.mjs";
 
 const env = process.env;
 const names = ["SENTRY_AUTH_TOKEN", "SENTRY_WEBHOOK_SECRET", "SENTRY_WORKER_GITHUB_TOKEN", "OPENAI_API_KEY", "CRON_SECRET"];
@@ -36,6 +36,7 @@ const jestPreviews = await probe(async () => {
   const inventory = await currentJestVersions();
   return {activeVersionId: inventory.find((version) => version.isActive).id, readyCount: inventory.filter((item) => item.buildStatus === "ready").length, renewableCredential: false};
 });
-const ready = Object.values(secretPresence).every(Boolean) && sentry.available && github.available && functions.available && jestProduction.available;
-console.log(JSON.stringify({status: ready ? "ready_for_deployment_verification" : "partial_or_blocked", autoMergeEnabled: env.SENTRY_WORKER_AUTO_MERGE === "1", secretPresence, sentry, github, authorities: {functions, jestProduction, jestPreviews}}, null, 2));
+const targetBranch = env.TARGET_BRANCH ?? REPAIR_BASE_BRANCH;
+const ready = targetBranch === REPAIR_BASE_BRANCH && Object.values(secretPresence).every(Boolean) && sentry.available && github.available && functions.available && jestProduction.available;
+console.log(JSON.stringify({status: ready ? "ready_for_deployment_verification" : "partial_or_blocked", targetBranch, autoMergeEnabled: env.SENTRY_WORKER_AUTO_MERGE === "1", secretPresence, sentry, github, authorities: {functions, jestProduction, jestPreviews}}, null, 2));
 process.exitCode = ready ? 0 : 1;
