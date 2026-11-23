@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -58,6 +59,7 @@ try {
   const answer=target==='playable'?'rome':'piano',prefix=answer.slice(0,-1),suffix=answer.slice(-1),keyboard=page.locator(target==='playable'?'.yt-keyboard':'.keyboard');
   const letters=()=>page.locator(target==='playable'?'.yt-guess-row.current .yt-tile':'.guess-row:has([aria-current="true"]) button').allTextContents().then(values=>values.join('').toLowerCase());
   const focus=async()=>{if(target==='playable'||target==='race')await page.locator(target==='playable'?'.yt-answer-native':'.race-native-answer-input').focus();else await page.evaluate(()=>document.activeElement?.blur());};
+  if(target==='solo')await waitForAnswerInputReady(page);
   await focus();await page.keyboard.type(prefix);await page.waitForFunction(({target,prefix})=>[...document.querySelectorAll(target==='playable'?'.yt-guess-row.current .yt-tile':'.guess-row:has([aria-current="true"]) button')].map(x=>x.textContent).join('').toLowerCase()===prefix,{target,prefix});
   metric('physical input starts the correct draft',await letters(),prefix);
   metric('fixed key order is unchanged',await keyboard.locator('button').evaluateAll(buttons=>buttons.map(b=>b.textContent.trim()).filter(text=>/^[A-Z]$/.test(text)).join('')),'QWERTYUIOPASDFGHJKLZXCVBNM');

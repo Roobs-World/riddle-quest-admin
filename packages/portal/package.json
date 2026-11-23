@@ -240,7 +240,7 @@
     "test:live-hint-cursor:browser": "node scripts/verify-live-hint-cursor-browser.mjs && HINT_CURSOR_REACT_MODE=production node scripts/verify-live-hint-cursor-browser.mjs",
     "test:solo-hint-intent:browser": "node scripts/verify-solo-hint-intent-browser.mjs && HINT_INTENT_REACT_MODE=production node scripts/verify-solo-hint-intent-browser.mjs",
     "test:retained-race:playwright": "PORTAL_BROWSER_TESTS=1 jest --config jest.config.cjs --runInBand --runTestsByPath src/jest/__tests__/retainedRaceEntries.jest-playwright.test.ts src/jest/__tests__/retainedRaceRecovery.jest-playwright.test.ts src/jest/__tests__/retainedRaceQuit.jest-playwright.test.ts",
-    "test:jest-facebook-browser-plan": "node --test --test-isolation=none scripts/run-jest-facebook-browser.test.mjs",
+    "test:jest-facebook-browser-plan": "node --test --test-isolation=none scripts/run-jest-facebook-browser.test.mjs scripts/firebase-fixture-exports.test.mjs",
     "test:e2e:jest-facebook": "pnpm test:jest-facebook-browser-plan && pnpm build:jest && pnpm build:facebook && PORTAL_USE_EXISTING_BUILD=1 node scripts/run-jest-facebook-browser.mjs && PORTAL_USE_EXISTING_BUILD=1 pnpm test:jest-auth:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:jest-purchase-recovery:browser && PORTAL_USE_EXISTING_BUILD=1 pnpm test:retained-race:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:facebook:playwright && PORTAL_USE_EXISTING_BUILD=1 pnpm test:mobile-soak"
   },
   "dependencies": {

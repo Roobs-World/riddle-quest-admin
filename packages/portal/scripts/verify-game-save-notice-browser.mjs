@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -81,7 +82,7 @@ if(!id.endsWith('/useJestPlayerStateWrites.ts'))return;let code=await readFile(i
   const height=width===280?568:844,context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();
   const metric=(name,actual,expected)=>{observations.push({locale,width,scenario,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
   await page.goto(url+'?locale='+locale);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
+  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await waitForAnswerInputReady(page);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
   await page.clock.install();const initializations=await page.evaluate(()=>window.storageProbe.initializations);
   metric('healthy game has no save prompt',await page.locator('.player-save-notice').count(),0);
   if(scenario==='offline')await page.evaluate(()=>{Object.defineProperty(navigator,'onLine',{configurable:true,value:false});window.dispatchEvent(new Event('offline'));});

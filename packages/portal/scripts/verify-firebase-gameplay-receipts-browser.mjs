@@ -5,8 +5,11 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
+import {collectFirebaseFixtureExports} from "./firebase-fixture-exports.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const mode = process.env.GAMEPLAY_RECEIPT_REACT_MODE ?? "production";
+assert.ok(["development", "production"].includes(mode));
 const adapterPath = path.join(root, "src/play/firebaseServices.ts");
 const output = path.resolve(process.env.GAMEPLAY_RECEIPT_REPORT_DIR ?? path.join(root, "../../builds/test-evidence/game-authority-2026-10-03"));
 const baseline = process.env.GAMEPLAY_RECEIPT_BASELINE_SOURCE;
@@ -18,9 +21,7 @@ await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/gameplay-receipts-"));
 await mkdir(output, {recursive: true});
 const source = await readFile(adapterPath, "utf8");
-const imports = [...source.matchAll(/import\s*\{([^}]+)\}\s*from\s*["']\.\.\/firebase["']/g)]
-  .flatMap(match => match[1].split(",").map(name => name.trim()).filter(name => name && !name.startsWith("type ")))
-  .map(name => name.split(/\s+as\s+/)[0]);
+const imports = collectFirebaseFixtureExports({adapterSource: source, firebaseModulePath: path.join(root, "src/firebase.ts")});
 const receipt = {attempts: 1, isCorrect: true, coinsEarned: 50, newlyUnlockedAchievementIds: [],
   rewardBreakdown: {newBalance: 350, totalAwarded: 50}};
 await writeFile(path.join(scratch, "firebase.ts"), `
@@ -116,7 +117,7 @@ await writeFile(path.join(scratch, "index.html"), '<html><body><output>Waiting f
 let server, browser;
 const samples = [];
 try {
-  await build({root: scratch, configFile: false, logLevel: "error", plugins: [{
+  await build({root: scratch, configFile: false, logLevel: "error", define: {"process.env.NODE_ENV": JSON.stringify(mode)}, plugins: [{
     name: "injected-gameplay-authority", enforce: "pre",
     resolveId(id, importer) {
       if (importer === adapterPath && id === "../firebase") return path.join(scratch, "firebase.ts");

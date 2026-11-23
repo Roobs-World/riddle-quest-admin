@@ -9,14 +9,14 @@ The replacement project is `riddle-quest-sentry-worker`,
 `prj_Odf4SGWgXFCJGFMzp7mteljZIgbN`, on team
 `craig-beswethericks-projects-d44935d2`,
 `team_Q3bXo2jPBKdjs3tuoKLtqUe2`. The restored production deployment is
-`dpl_H5dbHryqQCsJJkECzyycvpC1dSVW`, source `a19ef13e9`, at
+`dpl_92fHZavA1kCmgJK5r2vbnenruEkW`, source `012020b5d`, at
 <https://riddle-quest-sentry-worker.vercel.app/api/sentry-webhook>.
 After explicit owner approval, service credentials were configured in this
 project. Live health reports `configured`, `workerEnabled: true`, and
 `autoMergeEnabled: true`. On 2026-11-23 the owner explicitly requested automatic
 merging of repair PRs. The existing merge path was enabled through production
 configuration without changing its CI or deployment checks. Live health verified
-the enabled flag and exact source revision at 00:13 UTC. No Sentry repair PRs were
+the enabled flag and exact source revision again at 01:50 UTC. No Sentry repair PRs were
 open when it was enabled. Unsigned webhooks are rejected; signed stale-preview
 webhooks and authenticated polling check current deployment identity and block
 stale events. The first manual poll checked eight issues and launched no paid work.

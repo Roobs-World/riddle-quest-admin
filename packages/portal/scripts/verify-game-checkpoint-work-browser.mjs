@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -53,6 +54,7 @@ try {
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage();const metric=(name,actual,expected)=>{observations.push({width,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
   await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
   if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+  await waitForAnswerInputReady(page);
   await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
   metric('physical typing durably checkpoints latest draft',await page.evaluate(()=>window.latestCheckpoint().currentLetters.join('')),'PIAN');
   const before=await page.evaluate(()=>({...window.checkpointWork,saves:window.probe.saves.length}));

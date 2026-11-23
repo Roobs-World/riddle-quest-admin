@@ -5,6 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
+import {collectFirebaseFixtureExports} from './firebase-fixture-exports.mjs';
 
 const browserScope=process.env.PORTAL_BROWSER_SCOPE;
 assert.ok(browserScope===undefined||browserScope==='jest-facebook','PORTAL_BROWSER_SCOPE must be jest-facebook or unset');
@@ -44,7 +45,7 @@ function App(){const host=useHostAuthSession({services:identity,postToGame});
 window.root=createRoot(document.querySelector('#root'));window.root.render(<React.StrictMode><App/></React.StrictMode>);
 `);
  const firebaseSource=await readFile(path.join(root,'src/play/firebaseServices.ts'),'utf8');
- const firebaseExports=[...new Set([...firebaseSource.matchAll(/import\s*\{([^}]+)\}\s*from ['"]\.\.\/firebase['"]/g)].flatMap(match=>match[1].split(',').map(name=>name.trim()).filter(name=>name&&!name.startsWith('type ')).map(name=>name.split(/\s+as\s+/)[0])).concat(['auth','loadUserDocument','spendCoins']))];
+ const firebaseExports=collectFirebaseFixtureExports({adapterSource:firebaseSource,firebaseModulePath:path.join(root,'src/firebase.ts')});
  const nativeStub=path.join(scratch,'native-auth.ts');await writeFile(nativeStub,"export const onAuthStateChanged=(auth,listener)=>{let live=true;queueMicrotask(()=>{if(live)listener(auth.currentUser);});return()=>{live=false;};};export const signOut=async auth=>{auth.currentUser=null;};");
  await build({root:scratch,configFile:false,resolve:{alias:{'firebase/auth':nativeStub}},publicDir:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'race-null-baseline',enforce:'pre',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(id===path.join(root,'src/firebase.ts'))return firebaseExports.map(name=>name==='auth'?"export const auth={currentUser:{uid:'Alice',displayName:'Alice',email:null,photoURL:null,isAnonymous:false,metadata:{creationTime:'2026-01-01T00:00:00.000Z'}}};":name==='loadUserDocument'?"export const loadUserDocument=uid=>window.readDocument(uid);":name==='spendCoins'?"export const spendCoins=async()=>({data:{newCoins:window.newBalance}});":'export const '+name+'=async()=>{throw new Error("Unexpected fixture provider operation");};').join('\n');if(baseline&&id.endsWith('/firebaseServices.ts'))return readFile(path.join(baseline,'firebase.before.txt'),'utf8');if(baseline&&id.endsWith('/useHostRaceCoordination.ts'))return readFile(path.join(baseline,'coordination.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,file=path.join(scratch,'dist',pathname==='/'?'index.html':pathname);res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});

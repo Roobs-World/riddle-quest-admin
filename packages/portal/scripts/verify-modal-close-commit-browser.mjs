@@ -12,7 +12,7 @@ await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.c
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/modal-close-commit-'));let server,browser;const observations=[];
 try{
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
- await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
+ await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>[data-fixture-controls]>button{pointer-events:auto}</style></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {GameModalView} from ${JSON.stringify(path.join(root,'src/play/GameModalView.tsx'))};
@@ -29,7 +29,7 @@ document.addEventListener=(type,...args)=>{if(type==='keydown')window.probe.adds
 let unblock,pending=new Promise(resolve=>unblock=resolve);window.allow=false;function Pending(){window.probe.suspended++;if(!window.allow)throw pending;return null;}
 function App(){const [visit,setVisit]=React.useState(0),[mounted,setMounted]=React.useState(false),[epoch,setEpoch]=React.useState(0);const owner=visit===1?'Bob':'Alice',blocked=scenario==='unlock'?visit===0:scenario==='lock'?visit===1:false;
  const close=()=>window.probe.closes.push(owner),state={...createInitialGameSession(),modal:scenario==='callback'?'settings':'continue',guessPending:blocked};
- return <><nav style={{position:'fixed',zIndex:10000,top:0,left:0,background:'white',display:'flex',flexWrap:'wrap',maxWidth:'100%'}}>
+ return <><nav data-fixture-controls style={{position:'fixed',zIndex:10000,top:0,left:0,background:'transparent',pointerEvents:'none',display:'flex',flexWrap:'wrap',maxWidth:'100%'}}>
  <button data-open onClick={()=>setMounted(true)}>Open dialog</button><button data-prepare onClick={()=>{window.allow=false;pending=new Promise(resolve=>unblock=resolve);React.startTransition(()=>setVisit(1));}}>Prepare replacement</button><button data-commit onClick={()=>{window.allow=true;unblock();}}>Commit replacement</button><button data-abandon onClick={()=>{setVisit(0);window.allow=true;unblock();}}>Abandon replacement</button><button data-parent onClick={()=>setEpoch(x=>x+1)}>Update parent</button><button data-retire onClick={()=>setMounted(false)}>Retire dialog</button></nav>
  <React.Suspense fallback={<p data-loading>Preparing fixture</p>}><main data-owner={owner} data-visit={visit} data-epoch={epoch}>
  {mounted?(surface==='recovery'?<GameSurfaceRecovery onClose={close} closeBlocked={blocked} onNext={noop}/>:<GameModalView state={state} onClose={close} onOpenModal={noop} onContinue={noop} onPurchase={noop} onNext={noop} onToggleMute={noop} onRequestHint={noop} onRequestSkip={noop} onRequestLeaderboard={noop} onUpdateUsername={noop} onUpdateAvatar={async()=>{}} onDeleteAccount={noop} onCoinBalancePreview={noop}/>):<p data-retired>Dialog removed</p>}{visit===1?<Pending/>:null}

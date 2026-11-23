@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, readFile, writeFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -55,6 +56,7 @@ try {
     const page=await browser.newPage({viewport:{width,height:844}}),errors=[];page.on('pageerror',error=>errors.push(error.message));
     await page.goto('http://127.0.0.1:'+server.address().port+'/');await page.getByRole('heading',{name:'What has keys but cannot open doors?',exact:true}).waitFor();
     const type=async text=>{await page.evaluate(()=>document.activeElement?.blur());if(method==='physical')await page.keyboard.type(text);else for(const letter of text)await page.locator('.keyboard button').filter({hasText:new RegExp('^'+letter.toUpperCase()+'$')}).click();};
+    if(method==='physical')await waitForAnswerInputReady(page);
     await type('c');if(recovery==='emptied')await page.locator('.guess-row').first().locator('.cell').nth(3).click();await page.locator('.game-input-actions button[data-tooltip=gameHint]').first().click();await page.locator('.modal-hint .play-primary').click();
     await page.waitForFunction(()=>window.hintPending&&document.querySelector('.guess-row')?.textContent==='P');await type('an');
     await page.waitForFunction(()=>document.querySelector('.guess-row')?.textContent==='PAN');

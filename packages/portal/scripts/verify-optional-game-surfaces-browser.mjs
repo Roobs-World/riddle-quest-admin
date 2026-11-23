@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {mkdir,mkdtemp,readFile,readdir,rm,writeFile} from 'node:fs/promises';
@@ -81,6 +82,7 @@ try{
    await page.route(`**/assets/${sceneAsset}`,async route=>{sceneRequests++;sceneRequested();await sceneGate;if(variant==='download')await route.abort('failed');else await route.continue();});
    await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
    if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+   await waitForAnswerInputReady(page);
    await page.keyboard.type('pia');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIA'));
    const draft=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame);
    await metric('scene preparation waits until idle is explicitly released',sceneRequests,0);

@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -87,6 +88,7 @@ window.preference=()=>setPlayerHighContrast(true);window.draft=()=>Array.from(do
    await page.evaluate(()=>{window.probe.failPreferences=1;window.preference();});await page.waitForFunction(()=>window.probe.failures.length>0);await page.waitForFunction(()=>window.durablePreferences().highContrast===true);
    metric('rejected preference recovers without another change',await page.evaluate(()=>window.durablePreferences().highContrast),true);metric('other initialized preferences remain saved',await page.evaluate(()=>window.durablePreferences().locale),'en');
   }else{
+   await waitForAnswerInputReady(page);
    await page.evaluate(persistent=>window.probe.failDraft=persistent?-1:1,['offline','hidden','manual','pause','wake-budget','retire','deletion'].includes(scenario));
    await page.keyboard.type('pian');await page.waitForFunction(()=>window.draft()==='PIAN'&&window.probe.failures.length>0);
    const count=()=>page.evaluate(()=>window.probe.writes.filter(x=>x?.activeGame?.currentLetters.join('')==='PIAN').length);

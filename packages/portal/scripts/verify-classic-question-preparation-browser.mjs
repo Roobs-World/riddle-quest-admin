@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -65,6 +66,7 @@ window.expire=()=>{const now=Date.now.bind(Date);Date.now=()=>now()+15_001;};
   await page.goto(origin+'/?scenario='+scenario);await page.getByRole('heading',{name:'What has keys but cannot open doors?',exact:true}).waitFor();
   if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
   metric('no successor read before a Classic win',await page.evaluate(()=>window.probe.reads.filter(x=>x.classicIndex===2).length),0);
+  await waitForAnswerInputReady(page);
   await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('piano');await page.keyboard.press('Enter');await page.locator('.modal-victory').waitFor();
   await page.waitForTimeout(100);
   metric('one read-only preparation during victory',await page.evaluate(()=>window.probe.reads.filter(x=>x.classicIndex===2).length),1);
