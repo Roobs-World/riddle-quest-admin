@@ -5,10 +5,14 @@ import {createRaceContextBoardFixture} from "./raceDialogs.jest-playwright.suppo
 
 describe("Facebook context standings fixtures", () => {
   it.each([2000, 4500, 9000, 27000])("preserves the exact server window with an advancing clock for %i ms standings", adjustedTimeMs => {
+    /** Fixed epoch before the mock advances each clock read. */
     const sampledNow = 1_700_000_000_000;
+    /** Next timestamp returned by the mocked clock. */
     let currentNow = sampledNow;
+    /** Restorable clock that exposes independently sampled endpoints. */
     const clock = jest.spyOn(Date, "now").mockImplementation(() => currentNow++);
     try {
+      /** Fixture validated through the production response parser. */
       const response = createRaceContextBoardFixture("fr", adjustedTimeMs);
       expect(parseFacebookContextBoardResponse(response)).toEqual(response);
       expect(response.startsAtMs).toBe(sampledNow - 1000);

@@ -4,7 +4,9 @@ import {RACE_CHALLENGE_TTL_MS, type ListFacebookContextBoardResponse} from "@rid
 
 /** Supplies valid server-window semantics to immediate and deliberately held context responses. */
 export function createRaceContextBoardFixture(locale: ListFacebookContextBoardResponse["locale"], adjustedTimeMs: number): ListFacebookContextBoardResponse {
+  /** One clock sample anchors both endpoints of the weekly fixture window. */
   const startsAtMs = Date.now() - 1000;
+  /** The same current-player standing appears in the rows and summary. */
   const currentPlayer = {rank: 1, adjustedTimeMs, isCurrentPlayer: true};
   return {locale, startsAtMs, endsAtMs: startsAtMs + RACE_CHALLENGE_TTL_MS,
     sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false, standings: [currentPlayer], currentPlayer};
