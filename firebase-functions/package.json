@@ -54,7 +54,7 @@
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/run-with-functions-node.js scripts/purge-orphan-leaderboard-rows.js",
     "notifications:configure": "node scripts/run-with-functions-node.js scripts/notification-copy-configure.js",
     "usernames:migrate": "node scripts/prepare-deploy.js && pnpm build && node scripts/run-with-functions-node.js scripts/migrate-username-reservations.js",
-    "test:race:rules": "pnpm build && node scripts/run-isolated-emulators.js emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --runInBand\"",
+    "test:race:rules": "pnpm build && cross-env NODE_OPTIONS=\"--max-old-space-size=6144\" node scripts/run-isolated-emulators.js emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm jest --config jest.rules.config.js --maxWorkers=1 --workerIdleMemoryLimit=1536MB\"",
     "facebook:referrals:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-referral-retention.js",
     "facebook:contexts:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-context-retention.js",
     "facebook:nonces:retention": "pnpm build && node scripts/run-with-functions-node.js scripts/facebook-nonce-retention.js",

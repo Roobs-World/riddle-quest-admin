@@ -76,7 +76,12 @@ export async function generateLocalizedClassicRiddlesForLocale(
         difficulty: (startingIndex + newRiddles.length) % 3 === 0 ? "medium" : undefined,
         excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)],
       },
-    );
+    ).catch(async (error: unknown) => {
+      if (newRiddles.length > 0) {
+        await storeLocalizedClassicRiddlesInFirestore(locale, newRiddles, startingIndex);
+      }
+      throw error;
+    });
     if (!riddle) {
       logger.warn(
         `Failed to generate unique classic riddle for locale ${locale}, retrying... (attempt ${attemptCount}/${maxAttempts})`,

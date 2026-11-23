@@ -23,7 +23,12 @@ jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore: () => db}}));
 jest.mock("../shared/sentryHandlers", () => ({onScheduleWithSentry: jest.fn()}));
 jest.mock("../shared/sentry", () => ({captureException: capture}));
 jest.mock("../riddles/riddleGeneration", () => ({generateLocalizedClassicRiddlesForLocale: generate}));
-import {processClassicSupplyJob, processClassicSupplyJobs, handleClassicSupplyRequest} from "../riddles/classicSupplyWorker";
+/** Provides warn behavior. */
+const warn = jest.fn();
+jest.mock("firebase-functions", () => ({logger: {warn}}));
+import {isTransientProviderError, processClassicSupplyJob, processClassicSupplyJobs, handleClassicSupplyRequest, TRANSIENT_REPORT_THRESHOLD} from "../riddles/classicSupplyWorker";
+/** Builds a provider SDK error carrying an HTTP status. */
+const providerError = (status: number) => Object.assign(new Error("provider"), {status});
 
 describe("durable Classic supply worker", () => {
   beforeEach(() => {
@@ -58,7 +63,7 @@ describe("durable Classic supply worker", () => {
   it("completes the durable request and excludes successful replay", async () => {
     expect(await processClassicSupplyJob("ar_20")).toBe("generated");
     expect(generate).toHaveBeenCalledWith("ar", 5, clock + 180000);
-    expect(transaction.getAll).toHaveBeenNthCalledWith(1, ref, {fieldMask: ["nextAttemptAtMs", "completed", "locale"]});
+    expect(transaction.getAll).toHaveBeenNthCalledWith(1, ref, {fieldMask: ["nextAttemptAtMs", "completed", "locale", "transientFailures"]});
     expect(transaction.getAll).toHaveBeenNthCalledWith(2, ref, {fieldMask: ["leaseId"]});
     expect(job.completed).toBe(true);
     expect(await processClassicSupplyJob("ar_20")).toBe("skipped");
@@ -94,6 +99,44 @@ describe("durable Classic supply worker", () => {
     expect(await processClassicSupplyJob("ar_20")).toBe("generated");
     expect(generate).toHaveBeenCalledTimes(2);
     expect(capture).toHaveBeenCalledTimes(1);
+  });
+  it("classifies rate limits, provider outages and dropped connections as transient", () => {
+    for (const status of [408, 409, 429, 500, 503]) expect(isTransientProviderError(providerError(status))).toBe(true);
+    for (const status of [400, 401, 403, 404, 422]) expect(isTransientProviderError(providerError(status))).toBe(false);
+    /** Real SDK transport subclasses do not set their instance name. */
+    const {APIConnectionError, APIConnectionTimeoutError} = jest.requireActual<typeof import("openai")>("openai");
+    for (const error of [new APIConnectionError({message: "connection"}), new APIConnectionTimeoutError()]) {
+      expect(error.name).toBe("Error");
+      expect(isTransientProviderError(error)).toBe(true);
+    }
+    for (const name of ["AbortError", "TimeoutError"]) {
+      expect(isTransientProviderError(Object.assign(new Error("network"), {name}))).toBe(true);
+    }
+    expect(isTransientProviderError(new Error("invalid model output"))).toBe(false);
+    expect(isTransientProviderError(undefined)).toBe(false);
+  });
+  it("retries transient provider failures quietly until they persist", async () => {
+    generate.mockRejectedValue(providerError(429));
+    for (let attempt = 1; attempt < TRANSIENT_REPORT_THRESHOLD; attempt++) {
+      expect(await processClassicSupplyJob("ar_20")).toBe("retry");
+      expect(job.transientFailures).toBe(attempt);
+      clock += 300000;
+    }
+    expect(capture).not.toHaveBeenCalled();
+    expect(warn).toHaveBeenCalledTimes(TRANSIENT_REPORT_THRESHOLD - 1);
+    expect(await processClassicSupplyJob("ar_20")).toBe("retry");
+    expect(capture).toHaveBeenCalledTimes(1);
+    clock += 300000;
+    generate.mockResolvedValue(undefined);
+    expect(await processClassicSupplyJob("ar_20")).toBe("generated");
+    expect(job.transientFailures).toBe(0);
+  });
+  it("reports non-transient failures immediately and resets the transient streak", async () => {
+    job.transientFailures = 2;
+    generate.mockRejectedValueOnce(providerError(400));
+    expect(await processClassicSupplyJob("ar_20")).toBe("retry");
+    expect(capture).toHaveBeenCalledTimes(1);
+    expect(job.transientFailures).toBe(0);
   });
   it("recovers an invocation that died with an unexpired lease", async () => {
     job = {...job, leaseId: "dead-worker", nextAttemptAtMs: clock + 600000};

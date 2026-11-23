@@ -545,6 +545,7 @@ export async function generateUniqueRiddle(
     functions.logger.info("Generated and quality-approved a riddle.", {answerLength: answer.length});
     return [question, answer, reviewedDifficulty];
   } catch (error) {
+    if (options.mode === "classic" && options.background) throw error;
     /** Identifies the failed stage without including prompts or generated content. */
     const diagnostics = {operation, locale, ...getSafeErrorMetadata(error)};
     // Daily retries candidates and reports exhausted locales at the scheduler boundary.

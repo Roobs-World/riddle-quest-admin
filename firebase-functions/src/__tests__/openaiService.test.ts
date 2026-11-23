@@ -609,9 +609,27 @@ describe("OpenAI Service", () => {
       expect(mockCaptureException).not.toHaveBeenCalled();
     });
 
+    test.each([
+      ["provider outage", "generate"], ["provider outage", "blind-solve"], ["provider outage", "review"],
+      ["response abort", "generate"], ["response abort", "blind-solve"], ["response abort", "review"],
+    ])("passes a background Classic %s during %s to the durable worker without reporting it", async (failure, operation) => {
+      /** Preserves the original provider status or transport exception for worker classification. */
+      const error = failure === "provider outage"
+        ? Object.assign(new Error("private provider response"), {status: 503})
+        : new DOMException("private transport details", "AbortError");
+      if (operation !== "generate") mockParse.mockResolvedValueOnce(parsedRiddleResponse("What flies without wings?", "time"));
+      if (operation === "review") mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("time"));
+      mockParse.mockRejectedValueOnce(error);
+
+      await expect(generateUniqueRiddle("en", [], {mode: "classic", background: true})).rejects.toBe(error);
+      expect(mockParse).toHaveBeenCalledTimes(["generate", "blind-solve", "review"].indexOf(operation) + 1);
+      expect(mockCaptureException).not.toHaveBeenCalled();
+      expect(mockLogger.error).not.toHaveBeenCalled();
+    });
+
     test.each<[string, RiddleGenerationOptions]>([
       ["foreground Daily", {mode: "daily", background: false}],
-      ["background Classic", {mode: "classic", background: true}],
+      ["foreground Classic", {mode: "classic", background: false}],
       ["background Multiplayer", {mode: "multiplayer", background: true}],
     ])("continues reporting transport interruptions in %s", async (_label, options) => {
       /** Genuine response transport abort used outside the scheduled Daily retry boundary. */
