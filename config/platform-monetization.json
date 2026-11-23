@@ -9,9 +9,9 @@
     },
     {
       "platform": "Facebook",
-      "iap": "Staged; disabled pending signed grant verification",
-      "ads": "Implemented; placement IDs and production feature flags required",
-      "gate": "Finish Meta verification, create both placements and capture hosted purchase contracts"
+      "iap": "Facebook Payments with signed receipts, webhook ownership verification and idempotent server grants",
+      "ads": "Facebook Audience Network rewarded video and interstitials through FBInstant",
+      "gate": "Configure the signed payment webhook before enabling checkout and complete Meta-hosted acceptance"
     },
     {
       "platform": "Reddit",

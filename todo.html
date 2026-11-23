@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riddle Quest To-Do</title>
+<style>
+:root {
+  --bg: #f7f6f2; --surface: #ffffff; --text: #1d1c1a; --muted: #6b6860; --line: #e3e0d8;
+  --accent: #3d5afe; --done: #2e7d32; --block: #c62828; --wait: #8a6d00; --review: #6a1b9a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141412; --surface: #1d1c1a; --text: #ecebe6; --muted: #a29f96; --line: #33312d;
+    --accent: #8c9eff; --done: #81c784; --block: #ef9a9a; --wait: #e6c35c; --review: #ce93d8;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141412; --surface: #1d1c1a; --text: #ecebe6; --muted: #a29f96; --line: #33312d;
+  --accent: #8c9eff; --done: #81c784; --block: #ef9a9a; --wait: #e6c35c; --review: #ce93d8;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+h2 { font-size: 1.1rem; margin: 36px 0 4px; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+.note { color: var(--muted); font-size: .9rem; margin: 0 0 12px; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0; }
+.bar input[type=search] { flex: 1 1 220px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; }
+.bar label { color: var(--muted); font-size: .9rem; display: flex; gap: 6px; align-items: center; }
+.progress { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+.progress span { display: block; height: 100%; background: var(--done); width: 0; transition: width .2s; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 16px 0; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.stat b { display: block; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+.stat small { color: var(--muted); }
+ul.items { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+ul.items li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--line); }
+ul.items li:first-child { border-top: 0; }
+ul.items li.checked .what { text-decoration: line-through; color: var(--muted); }
+ul.items input { margin-top: 4px; accent-color: var(--done); width: 16px; height: 16px; }
+.what strong { font-weight: 600; }
+.what p { margin: 2px 0 0; color: var(--muted); font-size: .92rem; }
+.tag { display: inline-block; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; margin-left: 6px; vertical-align: 2px; }
+.t-blocked { color: var(--block); } .t-wait { color: var(--wait); } .t-review { color: var(--review); } .t-todo { color: var(--accent); } .t-done { color: var(--done); }
+li.hidden { display: none; }
+code { font-size: .88em; background: var(--line); padding: 0 4px; border-radius: 4px; overflow-wrap: anywhere; }
+button.theme { margin-left: auto; background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 6px 10px; font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Riddle Quest: outstanding tasks</h1>
+  <p class="sub">Updated 2 November 2026. Sources: the shared task register (snapshot 13 Oct 2026), GitHub Issues, every local branch and worktree, and the Jest connector.</p>
+
+  <div class="progress" aria-hidden="true"><span id="pbar"></span></div>
+  <p class="note" id="ptext"></p>
+  <div class="stats" id="stats"></div>
+
+  <div class="bar">
+    <input type="search" id="q" placeholder="Filter tasks…" aria-label="Filter tasks">
+    <label><input type="checkbox" id="hideDone"> Hide ticked</label>
+    <button class="theme" id="theme" type="button">Theme</button>
+  </div>
+
+  <h2>Done</h2>
+  <p class="note">Completed and verified by the agent.</p>
+  <ul class="items" data-group="audit"></ul>
+
+  <h2>Remaining agent work</h2>
+  <p class="note">Code an agent can do; the larger items take several sessions.</p>
+  <ul class="items" data-group="agent"></ul>
+
+  <h2>Owner actions: Android launch</h2>
+  <p class="note">Code is done and tested; these need your accounts.</p>
+  <ul class="items" data-group="android"></ul>
+
+  <h2>Blocked on owner access or provider</h2>
+  <ul class="items" data-group="blocked"></ul>
+
+  <h2>Owner actions: verify, investigate, review</h2>
+  <ul class="items" data-group="review"></ul>
+
+  <h2>Owner actions: platform submissions</h2>
+  <ul class="items" data-group="todo"></ul>
+
+  <h2>Waiting on provider</h2>
+  <ul class="items" data-group="wait"></ul>
+
+  <h2>Press outreach (ready to contact)</h2>
+  <p class="note">Outward-facing. Send only after you approve the pitch.</p>
+  <ul class="items" data-group="outreach"></ul>
+</main>
+
+<script>
+const REGISTER = [{"id": "riddle-quest:promotion_outreach:alpha-beta-gamer:9346cd849491", "s": "Ready to contact", "t": "Alpha Beta Gamer", "a": "Game submission form", "n": "Immediately playable build with strong visual identity"}, {"id": "riddle-quest:promotion_outreach:destructoid:4e9a5cb87166", "s": "Ready to contact", "t": "Destructoid", "a": "Editorial contact", "n": "Cross-platform HTML5 release story"}, {"id": "riddle-quest:promotion_outreach:droidgamers:ba7c4daa3249", "s": "Ready to contact", "t": "DroidGamers", "a": "Editorial contact", "n": "Mobile browser play and planned Android reach"}, {"id": "riddle-quest:promotion_outreach:eurogamer:d3a78905cf54", "s": "Ready to contact", "t": "Eurogamer", "a": "Editorial contact", "n": "UK indie studio and accessible multilingual puzzle"}, {"id": "riddle-quest:promotion_outreach:game-developer:fbe56b98ebca", "s": "Ready to contact", "t": "Game Developer", "a": "Editorial contact", "n": "Technical story on one HTML5 game across provider SDKs"}, {"id": "riddle-quest:promotion_outreach:gamesbeat:32195e3d3fe2", "s": "Ready to contact", "t": "GamesBeat", "a": "VentureBeat contact", "n": "Automated multi-platform HTML5 release pipeline"}, {"id": "riddle-quest:promotion_outreach:gamesindustry-biz:52a2ba90ae27", "s": "Ready to contact", "t": "GamesIndustry.biz", "a": "Editorial contact", "n": "Independent multi-platform distribution case study"}, {"id": "riddle-quest:promotion_outreach:gamespot:2619032f7609", "s": "Ready to contact", "t": "GameSpot", "a": "News tip or editorial contact", "n": "Browser-game launch and unusual platform rollout"}, {"id": "riddle-quest:promotion_outreach:gamesradar:db14ea597eab", "s": "Ready to contact", "t": "GamesRadar+", "a": "Editorial team contact", "n": "Playable browser launch with screenshots and trailer"}, {"id": "riddle-quest:promotion_outreach:gamezebo:feb8e37f24ac", "s": "Ready to contact", "t": "Gamezebo", "a": "Review submission", "n": "Accessible casual word puzzle with short sessions"}, {"id": "riddle-quest:promotion_outreach:ign:df7746ffcd96", "s": "Ready to contact", "t": "IGN", "a": "Corporate editorial contact", "n": "Concise launch tip with playable link and trailer"}, {"id": "riddle-quest:promotion_outreach:indie-games-plus:e2415c29af1a", "s": "Ready to contact", "t": "Indie Games Plus", "a": "Direct editorial pitch", "n": "Small UK studio, distinctive colour-clue word design"}, {"id": "riddle-quest:promotion_outreach:kotaku:d5833dbe68e4", "s": "Ready to contact", "t": "Kotaku", "a": "News tip via about page", "n": "Short visual pitch tied to launch or notable update"}, {"id": "riddle-quest:promotion_outreach:mobilegamer-biz:e97f84951a54", "s": "Ready to contact", "t": "MobileGamer.biz", "a": "Editorial contact through site", "n": "Independent studio expanding a browser game across mobile channels"}, {"id": "riddle-quest:promotion_outreach:pc-gamer:beb85cf8851a", "s": "Ready to contact", "t": "PC Gamer", "a": "Editor pitch", "n": "Free browser puzzle with no installation"}, {"id": "riddle-quest:promotion_outreach:pocket-gamer:cd89f69f263b", "s": "Ready to contact", "t": "Pocket Gamer", "a": "Editorial news or review pitch", "n": "Mobile-friendly word puzzle; 17 languages and daily play"}, {"id": "riddle-quest:promotion_outreach:pocket-tactics:5c54624c9fb9", "s": "Ready to contact", "t": "Pocket Tactics", "a": "Editorial contact or news tip", "n": "Daily puzzle retention and competitive Race to 10"}, {"id": "riddle-quest:promotion_outreach:pocketgamer-biz:0d03e85ff739", "s": "Ready to contact", "t": "PocketGamer.biz", "a": "Editorial team or business network", "n": "Roobs World launch and cross-platform monetization strategy"}, {"id": "riddle-quest:promotion_outreach:polygon:ea159bcfdf98", "s": "Ready to contact", "t": "Polygon", "a": "Editorial contact", "n": "Design story behind riddles, colour clues and daily habit"}, {"id": "riddle-quest:promotion_outreach:rock-paper-shotgun:8fa1bcf222b0", "s": "Ready to contact", "t": "Rock Paper Shotgun", "a": "Editorial contact", "n": "Thoughtful daily browser puzzle from a UK developer"}, {"id": "riddle-quest:promotion_outreach:thegamer:c94ef231e038", "s": "Ready to contact", "t": "TheGamer", "a": "Editorial contact", "n": "Approachable word game and daily challenge"}, {"id": "riddle-quest:promotion_outreach:toucharcade:cae1041bbbd9", "s": "Ready to contact", "t": "TouchArcade", "a": "Press and preview contact", "n": "Touch-friendly browser game and future mobile availability"}, {"id": "riddle-quest:manual_action_checklist:addicting-games:567f575bb23c", "s": "To do", "t": "Addicting Games", "a": "Submit the hosted Riddle Quest URL through the official review form and accept only compatible non-exclusive terms."}, {"id": "riddle-quest:manual_action_checklist:airconsole:1179189d0973", "s": "To do", "t": "AirConsole", "a": "Create the Developer Console game ID, design the phone controller, review the non-exclusive agreement, and validate Hero revenue terms."}, {"id": "riddle-quest:manual_action_checklist:amazon-appstore-web-app:42c76b27ec28", "s": "To do", "t": "Amazon Appstore Web App", "a": "Enroll in Amazon Developer Console and test build-amazon-webapp-review.zip with Fire Web App Tester before creating the listing."}, {"id": "riddle-quest:manual_action_checklist:armor-games:fe318ee4e664", "s": "To do", "t": "Armor Games", "a": "Send the playable build as a non-exclusive pitch, disclose generative-AI use and decline timed exclusivity."}, {"id": "riddle-quest:manual_action_checklist:coolmath-games:1405533f0905", "s": "Submitted", "t": "Coolmath Games", "a": "Await non-exclusive licensing review; no publisher agreement has been accepted."}, {"id": "riddle-quest:manual_action_checklist:crazygames:d668917ff275", "s": "Blocked", "t": "CrazyGames", "a": "Sign in to the developer account to create the Basic Launch submission."}, {"id": "riddle-quest:manual_action_checklist:discord:94fc7050a7ed", "s": "To do", "t": "Discord", "a": "Create the Discord application, enable Activities and provide its application ID and URL mapping."}, {"id": "riddle-quest:manual_action_checklist:facebook:0facae74a656", "s": "To verify", "t": "Facebook", "a": "Verify the two configured placement IDs in Meta Monetisation Manager, add them to the production Facebook build configuration, and capture hosted interstitial and rewarded-ad evidence."}, {"id": "riddle-quest:manual_action_checklist:facebook:12f338d4e997", "s": "Blocked", "t": "Facebook", "a": "Reconcile the 27 August transmitting upload receipt before uploading the latest game changes."}, {"id": "riddle-quest:manual_action_checklist:facebook:17715cb96019", "s": "To do", "t": "Facebook", "a": "Correct the legal address and website, complete declarations, then submit the existing review draft."}, {"id": "riddle-quest:manual_action_checklist:facebook:1a15c3e22c45", "s": "Submitted", "t": "Facebook", "a": "Wait for Meta to decide the submitted passport identity confirmation; Meta states that review usually completes within 48 hours."}, {"id": "riddle-quest:manual_action_checklist:famobi:10263c443468", "s": "To review", "t": "Famobi", "a": "Pitch the hosted demo and request written non-exclusive terms, SDK credentials, server-side IAP verification details, source-handling terms and proposed destinations."}, {"id": "riddle-quest:manual_action_checklist:farcaster-mini-apps:d77c1c6dc756", "s": "To do", "t": "Farcaster Mini Apps", "a": "Reserve a stable subdomain, enable developer mode, create and sign the manifest, then prepare the public launch link."}, {"id": "riddle-quest:manual_action_checklist:game-jolt:b8b4d57ed31b", "s": "To do", "t": "Game Jolt", "a": "Create the game page, add a browser/HTML5 package, upload build-gamejolt.zip, and publish the release and game page."}, {"id": "riddle-quest:manual_action_checklist:gamedistribution:3dd10a275f45", "s": "To review", "t": "GameDistribution", "a": "Review the portal contract, create the game record and copy its assigned game ID."}, {"id": "riddle-quest:manual_action_checklist:gameflare-distribution:bc2e06e9bc22", "s": "To do", "t": "GameFlare Distribution", "a": "Create the company developer account, submit the HTTPS build, and confirm non-exclusive rights, payouts and host-side ads without bundled ad code."}, {"id": "riddle-quest:manual_action_checklist:gamemonetize:6706982c33b9", "s": "To review", "t": "GameMonetize", "a": "Compare current commercial terms, create the game record and obtain its GameId."}, {"id": "riddle-quest:manual_action_checklist:gamepix:90705e7b2d36", "s": "To do", "t": "GamePix", "a": "Create the developer account, review the current terms, upload build-gamepix-review.zip and leave network syndication disabled until approved."}, {"id": "riddle-quest:manual_action_checklist:gamepush-distribution:3e2920452a30", "s": "To review", "t": "GamePush Distribution", "a": "Apply with the demo and request UK-company terms, exact revenue share, destination list, opt-out controls, privacy terms and purchase verification contract."}, {"id": "riddle-quest:manual_action_checklist:github-jest:5c895a338465", "s": "To do", "t": "GitHub / Jest", "a": "Add JEST_GAME_UPLOAD_TOKEN and JEST_NOTIFICATION_EMAIL to the protected jest-production environment."}, {"id": "riddle-quest:manual_action_checklist:google-gamesnacks:21859cfa29b8", "s": "To do", "t": "Google GameSnacks", "a": "Contact GameSnacks for licensing and Developer Console access, then upload the prepared SDK bundle."}, {"id": "riddle-quest:manual_action_checklist:greenhouse-games:5f01fbf796e7", "s": "To do", "t": "Greenhouse Games", "a": "Document vocabulary, semantic reasoning and deduction objectives; create the creator account, review terms, and prepare a CSP-safe offline build without ads, IAP, analytics or external calls."}, {"id": "riddle-quest:manual_action_checklist:htmlgames-com:7bfdfafd123c", "s": "To do", "t": "HTMLGames.com", "a": "Use the developer form to propose Riddle Quest and confirm non-exclusive commercial terms before transferring the archive."}, {"id": "riddle-quest:manual_action_checklist:huawei-quick-game:8b0852b73b67", "s": "To verify", "t": "Huawei Quick Game", "a": "Register the UK company, confirm accepted release countries and non-exclusive terms, then apply for required Quick Game services."}, {"id": "riddle-quest:manual_action_checklist:itch-io:5b25972c088e", "s": "Blocked", "t": "itch.io", "a": "Complete the browser challenge and sign in to the developer account."}, {"id": "riddle-quest:manual_action_checklist:jest-metrics:7a9872376156", "s": "To do", "t": "Jest metrics", "a": "Connect OAuth for production team 019faa67-d2a6-7169-aa29-a4411a3a3c3d and game 019faa68-f3ec-755d-9ab5-c887fb426801; the existing connector accesses a different team."}, {"id": "riddle-quest:manual_action_checklist:jest:53aea8b6d2a4", "s": "Blocked", "t": "Jest", "a": "Sign in to the production team, reconcile the pending receipt, confirm this exact version is active and run the live sandbox smoke."}, {"id": "riddle-quest:manual_action_checklist:jiogames-html5:5aff9b91ab14", "s": "To do", "t": "JioGames HTML5", "a": "Apply to JioGames and request the current set-top-box HTML5 SDK, UK payout terms and written non-exclusive confirmation."}, {"id": "riddle-quest:manual_action_checklist:kizi:160205bf2c84", "s": "To do", "t": "Kizi", "a": "Send the playable build and media kit, requesting current technical requirements and a non-exclusive publishing offer."}, {"id": "riddle-quest:manual_action_checklist:kongregate:42e5d142c8f5", "s": "To do", "t": "Kongregate", "a": "Apply for developer status as Roobs World Limited, review the upload agreement, decline exclusive-hosting incentives, and upload build-kongregate.zip after approval."}, {"id": "riddle-quest:manual_action_checklist:lagged:bc7bd60c22da", "s": "To do", "t": "Lagged", "a": "Apply to the Lagged developer programme with the production playable URL and request the SDK credentials for an isolated integration."}, {"id": "riddle-quest:manual_action_checklist:line-mini-app:32c09096fe64", "s": "Blocked", "t": "LINE MINI App", "a": "Confirm regional commercial eligibility with LINE before starting a UK release adapter."}, {"id": "riddle-quest:manual_action_checklist:minipay-mini-apps:f2f409be9ec7", "s": "To review", "t": "MiniPay Mini Apps", "a": "Confirm UK organization submission eligibility, review form terms, and prepare a free commerce-disabled listing with network manifest and PageSpeed evidence."}, {"id": "riddle-quest:manual_action_checklist:miniplay:49ea900fb310", "s": "To do", "t": "Miniplay", "a": "Create a Roobs World Limited account, send the browser game support request, and request written non-exclusive terms and API credentials."}, {"id": "riddle-quest:manual_action_checklist:miro-marketplace:39f32ab2e4f0", "s": "To do", "t": "Miro Marketplace", "a": "Create the developer team, define the facilitator and board-result flow, deploy the isolated target, then recruit at least 10 organizations and evidence two months above 50 MAU."}, {"id": "riddle-quest:manual_action_checklist:netflix:ca9d4836c237", "s": "Blocked", "t": "Netflix", "a": "Obtain a Netflix Games producer, Partner Portal invitation, private SDK contract and certification requirements."}, {"id": "riddle-quest:manual_action_checklist:newgrounds:1442c4f045cf", "s": "Blocked", "t": "Newgrounds", "a": "Sign in to the Newgrounds account to create and upload the game project."}, {"id": "riddle-quest:manual_action_checklist:noadsgames:37f6e56ee2b0", "s": "Submitted", "t": "NoAdsGames", "a": "Await provider review of submission 93; do not send duplicate hosted-game submissions."}, {"id": "riddle-quest:manual_action_checklist:ozogames:4b4ac8dae402", "s": "To do", "t": "OzoGames", "a": "Email the hosted demo, ZIP, screenshots and rights statement; request the publisher agreement plus advertising, revenue-share and payout terms."}, {"id": "riddle-quest:manual_action_checklist:pi-apps-platform:75f2da3d25bc", "s": "To do", "t": "Pi Apps Platform", "a": "Create the Pi account, complete KYC, review authenticated developer terms, create Testnet/Mainnet apps, and verify a dedicated subdomain."}, {"id": "riddle-quest:manual_action_checklist:playgama:b96c715ee49f", "s": "To review", "t": "Playgama", "a": "Register, review the publishing sublicense and overlapping partner distribution choices, then decide whether to implement Playgama Bridge."}, {"id": "riddle-quest:manual_action_checklist:playkovo:68c63f216449", "s": "To do", "t": "PlayKovo", "a": "Submit the hosted game or build-playkovo-review.zip for manual review and confirm publication terms."}, {"id": "riddle-quest:manual_action_checklist:poki:111298545233", "s": "On hold", "t": "Poki", "a": "Do not accept web exclusivity; revisit only a written non-exclusive offer compatible with existing releases."}, {"id": "riddle-quest:manual_action_checklist:rando-gg:00903d524566", "s": "Blocked", "t": "Rando.gg", "a": "Retry once the provider reopens intake; no accepted submission or listing was established."}, {"id": "riddle-quest:manual_action_checklist:reddit:29e88a96068a", "s": "To do", "t": "Reddit", "a": "Resolve approved Firebase host, production Payments approval and exact-byte ingestion proof before publishing the new Devvit version."}, {"id": "riddle-quest:manual_action_checklist:reddit:5d5e62dbec1e", "s": "To do", "t": "Reddit", "a": "Capture the required authentication, payment, refund, post-entry, realtime and notification contract fixtures."}, {"id": "riddle-quest:manual_action_checklist:shockwave:a26e7a0169e7", "s": "To do", "t": "Shockwave", "a": "Register the company and request current official HTML5 SDK, API, monetization, privacy and UK payout documentation before integration."}, {"id": "riddle-quest:manual_action_checklist:softgames:5f6127d4d11b", "s": "To do", "t": "SOFTGAMES", "a": "Send a publishing enquiry requesting non-exclusive revenue-share terms; reject acquisition, IP-transfer or exclusive sponsorship terms."}, {"id": "riddle-quest:manual_action_checklist:telegram:0e9c1c6ca87e", "s": "To do", "t": "Telegram", "a": "Create the Riddle Quest bot and HTML5 game with BotFather, then record the bot username and game short name."}, {"id": "riddle-quest:manual_action_checklist:wgplayground:b19b98a75f3d", "s": "To review", "t": "WGPlayground", "a": "Review renewal, termination, sublicensing and fee clauses, then create an account and request authenticated SDK/IAP documentation."}, {"id": "riddle-quest:manual_action_checklist:world-app-mini-apps:1377bf5f8fe0", "s": "To review", "t": "World App Mini Apps", "a": "Create the Developer Portal app, verify UK eligibility, and choose a free-only release unless wallet payments pass legal and commercial review."}, {"id": "riddle-quest:manual_action_checklist:y8:c24006a86160", "s": "To do", "t": "Y8", "a": "Create a Y8 account and studio, then upload build-y8-review.zip without external monetization."}, {"id": "riddle-quest:manual_action_checklist:yahoo:c5ddeb5242d6", "s": "Blocked", "t": "Yahoo", "a": "Obtain approved Yahoo partner SDK and delivery contract before provider integration or monetization."}, {"id": "riddle-quest:manual_action_checklist:yalgames:d5406d699570", "s": "Submitted", "t": "YalGames", "a": "Await the editorial response; additional landscape artwork can be supplied if requested."}, {"id": "riddle-quest:manual_action_checklist:yandex-games:d497c569ebc6", "s": "To investigate", "t": "Yandex Games", "a": "Confirm that Yandex Advertising Network can contract with and pay the UK company before engineering starts."}, {"id": "riddle-quest:manual_action_checklist:youtube:220a7157ed11", "s": "Blocked", "t": "YouTube", "a": "Obtain Playables Developer Portal access and Editor or Manager access to the onboarded channel."}, {"id": "riddle-quest:manual_action_checklist:youtube:701a3c7f9f6b", "s": "To do", "t": "YouTube", "a": "Upload the exact release ZIP, run bundle analysis and the hosted test suite, then complete desktop, mobile and physical-device checks."}, {"id": "riddle-quest:manual_action_checklist:zoom-app-marketplace:0b39f09b1786", "s": "To do", "t": "Zoom App Marketplace", "a": "Create the public Zoom App, review current non-exclusive terms, configure least-privilege scopes and URLs, and prepare security and functional review evidence."}];
+
+const AUDIT = [
+  {id: "audit:issues", t: "GitHub Issues", a: "Grindhead/riddle-quest has 0 open issues.", done: true},
+  {id: "audit:branches", t: "Side branches and worktrees", a: "7 codex/* branches checked: everything they held is already in jest. 14 stale worktree records pruned; branches that exist only locally were kept.", done: true},
+  {id: "audit:rename", t: "Package scope renamed to @riddle-quest", a: "Both branches; type checks, unit suites and the functions suite pass. Historical evidence records keep the old name.", done: true},
+  {id: "audit:locales", t: "899 broken translations fixed in 15 locales", a: "Transliterated Russian, missing accents and umlauts, English left in place (Race to 10 categories) and mistranslations. Locale and copy audits plus the portal suite pass.", done: true},
+  {id: "audit:jest-upload-1", t: "Jest upload: rename build", a: "1.0.0-dev.20261102100648.b86e691d600e.8b879716 uploaded inactive; Jest emailed \"Build ready\". Not activated.", done: true},
+  {id: "audit:android-billing", t: "Android: Google Play Billing", a: "Server-verified coin packs and Premium, restore, launch-time recovery, shop in 16 languages. Release APK builds with Billing 9.1.0.", done: true},
+  {id: "audit:android-redelivery", t: "Android: offline guess redelivery fixed", a: "Firebase SDK error codes were misread, so offline guesses were dropped. Full adb suite now passes on the emulator.", done: true},
+  {id: "audit:android-profile", t: "Android: profile, leaderboards, account deletion", a: "Profile, stats, achievements, rename, XP/wins/streak leaderboards and deletion, verified on the emulator.", done: true},
+  {id: "audit:android-appcheck", t: "Android: Play Integrity App Check (code)", a: "Nonce, Play Integrity verdict and App Check minting, tested; production needs the owner steps under Android launch.", done: true},
+];
+
+const AGENT = [
+  {id: "agent:jest-upload-2", t: "Jest upload: translation build", a: "The inactive upload of the 899-string fix (e496a3be) is running its release gate. Confirm the \"Build ready\" email when it arrives."},
+  {id: "agent:android-race", t: "Android: Race to 10 multiplayer (plan 2.1, 2.2, 2.5)", a: "Move RaceSession and live-race logic into @riddle-quest/hosted and build native lobby, countdown, live play and results. Large: the web race is several thousand lines."},
+  {id: "agent:android-push", t: "Android: push notifications (plan 2.4)", a: "Firebase Cloud Messaging native module for race invitations and daily reminders. Needs google-services.json from the Firebase Android app registration."},
+  {id: "agent:android-avatar", t: "Android: avatar upload", a: "Needs an image-picker native module; the profile otherwise matches Jest."},
+  {id: "agent:android-data-safety", t: "Android: Data safety form and privacy notice (plan 4.2)", a: "The app now stores an account id, progress and purchase history; the Play form and privacy notice need updating before release."},
+];
+
+const ANDROID = [
+  {id: "android:firebase-app", t: "Register the Android app in Firebase", a: "Package com.roobsworld.riddlequest; set ANDROID_FIREBASE_APP_ID for the functions to the new app id."},
+  {id: "android:play-integrity", t: "Link Play Integrity", a: "Play Console, App integrity: link the Firebase Cloud project and enable the Play Integrity API."},
+  {id: "android:ttl", t: "Firestore TTL policy", a: "Add a TTL policy on androidAttestationNonces.expiresAt."},
+  {id: "android:deploy", t: "Deploy the Android functions", a: "grantAndroidPurchase, syncAndroidSubscriptions, issueAndroidAttestationNonce and exchangeAndroidAttestation, with provisionAndroidAccount."},
+  {id: "android:products", t: "Create Play products", a: "Six coin packs com.roobsworld.riddlequest.coinpack1 to coinpack6, and subscriptions premium.monthly (P1M) and premium.yearly (P1Y)."},
+  {id: "android:service-account", t: "Grant the functions service account Play access", a: "Users and permissions: view financial data and manage orders and subscriptions."},
+  {id: "android:internal-testing", t: "Internal testing with licence testers", a: "Upload a signed AAB to internal testing and buy with a licence tester; a sideloaded build cannot make real purchases."},
+  {id: "android:offline-decision", t: "Decide the offline mode (plan 4.1)", a: "Keep the self-contained game behind Play offline, or retire it."},
+  {id: "android:jest-connector", t: "Re-authorize the Jest connector", a: "The Jest connector needs re-authorizing in claude.ai connector settings; it also only reached the Dash Games team."},
+];
+
+const GROUP = {
+  "Blocked": "blocked", "To verify": "review", "To investigate": "review", "To review": "review",
+  "To do": "todo", "Submitted": "wait", "On hold": "wait", "Ready to contact": "outreach",
+};
+const TAG = {
+  "Blocked": "t-blocked", "To verify": "t-review", "To investigate": "t-review", "To review": "t-review",
+  "To do": "t-todo", "Submitted": "t-wait", "On hold": "t-wait", "Ready to contact": "t-todo",
+};
+
+const KEY = "riddle-quest-todo-v1";
+let ticked = {};
+try { ticked = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch { ticked = {}; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(ticked)); } catch {} }
+
+function item(task, status) {
+  const li = document.createElement("li");
+  li.dataset.id = task.id;
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  box.setAttribute("aria-label", task.t);
+  box.checked = task.done || !!ticked[task.id];
+  box.disabled = !!task.done;
+  box.addEventListener("change", () => { ticked[task.id] = box.checked; if (!box.checked) delete ticked[task.id]; save(); refresh(); });
+  const what = document.createElement("div");
+  what.className = "what";
+  const title = document.createElement("strong");
+  title.textContent = task.t;
+  what.append(title);
+  if (status) {
+    const tag = document.createElement("span");
+    tag.className = "tag " + TAG[status];
+    tag.textContent = status;
+    what.append(tag);
+  } else if (task.done) {
+    const tag = document.createElement("span");
+    tag.className = "tag t-done";
+    tag.textContent = "Done";
+    what.append(tag);
+  }
+  const p = document.createElement("p");
+  p.textContent = task.n ? `${task.a}. Angle: ${task.n}.` : task.a;
+  what.append(p);
+  li.append(box, what);
+  return li;
+}
+
+const lists = Object.fromEntries([...document.querySelectorAll("ul.items")].map(u => [u.dataset.group, u]));
+AUDIT.forEach(t => lists.audit.append(item(t)));
+AGENT.forEach(t => lists.agent.append(item(t)));
+ANDROID.forEach(t => lists.android.append(item(t)));
+REGISTER.slice().sort((a, b) => a.t.localeCompare(b.t)).forEach(t => lists[GROUP[t.s]].append(item(t, t.s)));
+
+function refresh() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const hide = document.getElementById("hideDone").checked;
+  let total = 0, done = 0;
+  document.querySelectorAll("ul.items li").forEach(li => {
+    const box = li.querySelector("input");
+    li.classList.toggle("checked", box.checked);
+    total++; if (box.checked) done++;
+    const match = !q || li.textContent.toLowerCase().includes(q);
+    li.classList.toggle("hidden", !match || (hide && box.checked));
+  });
+  document.getElementById("pbar").style.width = (total ? done / total * 100 : 0) + "%";
+  document.getElementById("ptext").textContent = `${done} of ${total} ticked. Ticks are saved in this browser only.`;
+  const counts = {};
+  REGISTER.forEach(t => { counts[t.s] = (counts[t.s] || 0) + 1; });
+  const cards = [["Done", AUDIT.length], ["Agent work", AGENT.length], ["Android launch", ANDROID.length], ["Blocked", counts["Blocked"] || 0],
+    ["Verify / review", (counts["To verify"] || 0) + (counts["To investigate"] || 0) + (counts["To review"] || 0)],
+    ["Submissions to do", counts["To do"] || 0], ["Waiting", (counts["Submitted"] || 0) + (counts["On hold"] || 0)],
+    ["Press outreach", counts["Ready to contact"] || 0]];
+  document.getElementById("stats").innerHTML = cards.map(([l, n]) => `<div class="stat"><b>${n}</b><small>${l}</small></div>`).join("");
+}
+document.getElementById("q").addEventListener("input", refresh);
+document.getElementById("hideDone").addEventListener("change", refresh);
+document.getElementById("theme").addEventListener("click", () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+});
+refresh();
+</script>
+</body>
+</html>

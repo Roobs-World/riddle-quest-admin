@@ -1,8 +1,0 @@
-{
-  "content": [
-    {
-      "type": "text",
-      "text": "Script ran on page and returned:\n```json\n{\n  \"authorityCoins\": 325,\n  \"authorityGames\": 8,\n  \"authorityWins\": 6,\n  \"completionIds\": [\n    \"complete-e85bc774-76b3-4a9f-a987-10b610778e6c\"\n  ],\n  \"guessIds\": [\n    \"retained-next-guess\"\n  ],\n  \"rootReplay\": 0,\n  \"journalDraft\": [\n    \"C\",\n    \"L\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"spends\": [],\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
-    }
-  ]
-}

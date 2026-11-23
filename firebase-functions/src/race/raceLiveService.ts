@@ -1,16 +1,18 @@
+import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
+import {androidReferralLiveEventId} from "../android/androidReferralDelivery";
 import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {acceptLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_WAIT_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
-  type JoinLiveRace, type UpdateLiveRace} from "@qwordly/core/race";
+import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
+  type JoinLiveRace, type UpdateLiveRace} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../jest/jestAccountDeletion";
-import {raceProviderScope} from "./raceEligibility";
+import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "./raceEngine";
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent,
   requestDocumentId, stripUndefined, prepareRaceAchievementEvent, type Firestore} from "./raceSetupService";
-import {liveRun, liveView, liveOperationAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
+import {liveRun, liveView, liveOperationAtMs, liveRaceSearchEndsAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {pendingRaceDelivery} from "./raceDeliveryFailures";
 import {facebookLiveRaceReferralEventId} from "../facebook/facebookLiveRaceReferralDelivery";
@@ -19,11 +21,10 @@ import {redditLiveRaceReferralEventId} from "../reddit/redditLiveRaceReferralDel
 import {settleLiveFinish} from "./raceLiveScoring";
 import {prepareLiveRaceRematch, createLiveRaceRematchInvitation} from "./raceLiveRematch";
 import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "./facebookLiveContextBinding";
-import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "./raceDeckCompatibility";
+import {assertLiveRaceDeckCompatible} from "./raceDeckCompatibility";
+import {isLiveRaceRetained, prepareLiveRaceQueue} from "./raceLiveQueue";
 import {readLiveJoinIntent, claimLiveJoinIntent} from "./raceLiveJoinIntent";
 
-/** A short lobby heartbeat prevents matching players who already closed their game. */
-const LOBBY_LEASE_MS = 10_000;
 /** Server persistence and time seams support transaction concurrency tests. */
 type Options = {
   /** Emulator database for concurrency tests. */
@@ -52,6 +53,10 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     throw new HttpsError("permission-denied", "Live race account changed.");
   /** Other providers cannot select a Facebook board, including invitation recovery. */
   const contextKey = facebookLiveContextSelection(userId, input.facebookContextId);
+  if (input.waitForPlayer && (input.createChallenge || input.challengeId || input.rematchOfTicketId))
+    throw new HttpsError("invalid-argument", "Human waiting requires a public lobby.");
+  if (input.resumeTicketId && !input.waitForPlayer)
+    throw new HttpsError("invalid-argument", "Only an existing public player lobby can be resumed.");
   if (input.challengeId) return acceptLiveRaceChallengeForUser(userId, input, options);
   /** Rematches share private-lobby authority while preserving the default public join. */
   const privateEntry = Boolean(input.createChallenge || input.rematchOfTicketId);
@@ -67,55 +72,88 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
   const ticketRef = db.doc(`liveRaceTickets/${ticketId}`);
   /** Provides pointer behavior. */
   const pointer = db.doc(`liveRacePlayers/${requestDocumentId(userId, "active-live-race")}`);
-  /** Provides queue ref behavior. */
-  const queueRef = db.doc(`liveRaceQueues/${pool}`);
   /** Reuses this invocation's validated immutable deck if Firestore retries the queue transaction. */
   let preparedDeck: Promise<ReturnType<typeof buildDeterministicRaceDeck>> | undefined;
   return db.runTransaction(async transaction => {
     /** Reads fresh recovery authority and only public identity fields before shared-pool locks or content queries. */
     const [intent, current, receipt, owner, deletion] = await Promise.all([readLiveJoinIntent(db, transaction, userId, input), transaction.get(pointer), transaction.get(ticketRef),
-      transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl"]}).then(([profile]) => profile),
+      transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]}).then(([profile]) => profile),
       transaction.get(getJestAccountDeletionRef(db, userId))]);
     assertJestAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
+    assertAndroidRaceAccount(userId, owner.data());
     /** Provides previous id behavior. */
     const previousId = current.data()?.ticketId as string | undefined;
+    if (input.resumeTicketId && (previousId !== input.resumeTicketId ||
+      receipt.exists && receipt.id !== input.resumeTicketId ||
+      intent?.record?.ticketId && intent.record.ticketId !== input.resumeTicketId))
+      throw new HttpsError("failed-precondition", "The original public lobby is unavailable.");
     if (previousId || receipt.exists || intent?.record?.ticketId) {
       /** Provides id behavior. */
-      const id = intent?.record?.ticketId ?? (receipt.exists ? ticketId : previousId!);
+      const id = input.resumeTicketId ?? intent?.record?.ticketId ?? (receipt.exists ? ticketId : previousId!);
       /** Provides old behavior. */
       const old = id === ticketId && receipt.exists ? receipt : await transaction.get(db.doc(`liveRaceTickets/${id}`));
       /** Provides ticket behavior. */
       const ticket = old.data() as LiveTicket | undefined;
+      if (input.resumeTicketId && (!ticket || ticket.userId !== userId))
+        throw new HttpsError("failed-precondition", "The original public lobby is unavailable.");
       if (intent?.record?.ticketId && (!ticket || ticket.userId !== userId))
         throw new HttpsError("not-found", "Original live join unavailable.");
-      if (ticket && ticket.userId === userId) {
+      if (ticket && !isLiveRaceRetained(old, nowMs) && (input.resumeTicketId || receipt.exists || intent?.record?.ticketId))
+        throw new HttpsError(input.resumeTicketId ? "failed-precondition" : "not-found", "Original live join expired.");
+      if (ticket && ticket.userId === userId && isLiveRaceRetained(old, nowMs)) {
+        /** Allows an upgraded client to finish its unchanged legacy public seat. */
+        const recoverLegacyPublic = !ticket.privateChallenge && !privateEntry && !ticket.waitForPlayer &&
+          input.waitForPlayer && !input.resumeTicketId && !receipt.exists;
         if (receipt.exists) assertFacebookLiveContextSelection(ticket.facebookContext, contextKey);
         if (receipt.exists && (Boolean(ticket.privateChallenge) !== privateEntry ||
-          ticket.rematchOfTicketId !== input.rematchOfTicketId || ticket.pool !== pool))
+          ticket.rematchOfTicketId !== input.rematchOfTicketId || ticket.pool !== pool ||
+          Boolean(ticket.waitForPlayer) !== Boolean(input.waitForPlayer)))
           throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
         /** Provides match behavior. */
-        const match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch : undefined;
-        /** An unattended expired invitation must not strand the account's active-seat pointer. */
-        const privateExpired = ticket.privateChallenge && !match &&
-          liveOperationAtMs(ticket, undefined, options.nowMs ?? Date.now()) >= ticket.createdAtMs + LIVE_RACE_INVITE_MS;
-        if (privateExpired && (receipt.exists || intent?.record?.ticketId)) {
-          ticket.cancelled = true;
-          transaction.update(old.ref, {cancelled: true});
-          publishLiveRaceSignals(db, transaction, [id], old.data()!.expiresAt);
-          return liveView(id, ticket, undefined, options.nowMs ?? Date.now());
-        }
-        if (!privateExpired && (receipt.exists || intent?.record?.ticketId || !ticket.cancelled && (!match || match.winner === undefined))) {
-          assertFacebookLiveContextSelection(ticket.facebookContext, contextKey);
-          if (Boolean(ticket.privateChallenge) !== privateEntry || ticket.rematchOfTicketId !== input.rematchOfTicketId)
-            throw new HttpsError("failed-precondition", "Finish the current live race first.");
-          if (ticket.pool !== pool) throw new HttpsError("failed-precondition", "Finish the current live race first.");
-          /** Reconnect observations renew this owned lease without rewinding either seat's clock. */
-          const observedAtMs = liveOperationAtMs(ticket, match, options.nowMs ?? Date.now());
-          transaction.update(old.ref, {seenAtMs: observedAtMs});
-          if (match) transaction.update(db.doc(`liveRaceMatches/${ticket.matchId}`), {observedAtMs});
-          claimLiveJoinIntent(transaction, intent, old.ref, observedAtMs);
-          return liveView(id, ticket, match, observedAtMs);
+        const matchSnapshot = ticket.matchId ? await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`)) : undefined;
+        /** Existing match recovered from the retained original ticket. */
+        let match = matchSnapshot?.data() as LiveMatch | undefined;
+        /** Recovery clock floored by the ticket and shared match observations. */
+        const recoveryNowMs = liveOperationAtMs(ticket, match, options.nowMs ?? Date.now());
+        /** Whether either retained authority document has expired or disappeared. */
+        const unavailable = !isLiveRaceRetained(old, recoveryNowMs) || Boolean(matchSnapshot && !isLiveRaceRetained(matchSnapshot, recoveryNowMs));
+        if (unavailable && (input.resumeTicketId || receipt.exists || intent?.record?.ticketId))
+          throw new HttpsError(input.resumeTicketId ? "failed-precondition" : "not-found", "Original live authority unavailable.");
+        if (!unavailable) {
+          /** Expired waits cannot strand the active pointer, and immutable receipts remain terminal. */
+          const waitExpired = !match && ticket.privateChallenge &&
+            recoveryNowMs >= liveRaceSearchEndsAtMs(ticket);
+          if (input.resumeTicketId && (ticket.cancelled || waitExpired || match?.winner !== undefined))
+            throw new HttpsError("failed-precondition", "The original public lobby has ended.");
+          if (waitExpired && (receipt.exists || intent?.record?.ticketId)) {
+            ticket.cancelled = true;
+            transaction.update(old.ref, {cancelled: true});
+            publishLiveRaceSignals(db, transaction, [id], old.data()!.expiresAt);
+            return liveView(id, ticket, undefined, options.nowMs ?? Date.now());
+          }
+          if (!waitExpired && (receipt.exists || intent?.record?.ticketId || !ticket.cancelled && (!match || match.winner === undefined))) {
+            assertFacebookLiveContextSelection(ticket.facebookContext, contextKey);
+            if (Boolean(ticket.privateChallenge) !== privateEntry || ticket.rematchOfTicketId !== input.rematchOfTicketId)
+              throw new HttpsError("failed-precondition", "Finish the current live race first.");
+            if (ticket.pool !== pool || Boolean(ticket.waitForPlayer) !== Boolean(input.waitForPlayer) && !recoverLegacyPublic)
+              throw new HttpsError("failed-precondition", "Finish the current live race first.");
+            /** Reconnect observations preserve the original seat, deck and countdown. */
+            const observedAtMs = recoveryNowMs;
+            if (ticket.cancelled || match?.winner !== undefined) return liveView(id, ticket, match, observedAtMs);
+            if (!match && current.data()?.ticketId !== id)
+              throw new HttpsError("failed-precondition", "Another live journey owns this account.");
+            /** Prepared pairing plan for an existing public player-wait seat. */
+            const queue = !match && !ticket.privateChallenge && observedAtMs < liveRaceSearchEndsAtMs(ticket) ? await prepareLiveRaceQueue(db, transaction,
+              {ticketId: id, ticket, nowMs: observedAtMs, expiresAt: old.data()!.expiresAt, ownerProfile: owner, ownerPointer: current}) : undefined;
+            match = queue?.match ?? match;
+            queue?.commit();
+            transaction.update(old.ref, {seenAtMs: observedAtMs, ...(match ? {matchId: ticket.matchId} : {})});
+            if (match && !queue?.match) transaction.update(db.doc(`liveRaceMatches/${ticket.matchId}`), {observedAtMs});
+            if (queue?.match) publishLiveRaceSignals(db, transaction, match!.tickets, old.data()!.expiresAt);
+            claimLiveJoinIntent(transaction, intent, old.ref, observedAtMs);
+            return liveView(id, ticket, match, observedAtMs);
+          }
         }
       }
     }
@@ -134,14 +172,18 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Provides ticket behavior. */
     const ticket: LiveTicket = {userId, pool, player, ...(privateEntry ? {privateChallenge: true} : {}),
+      ...(input.waitForPlayer ? {waitForPlayer: true} : {}),
       ...(facebookContext ? {facebookContext} : {}),
       ...(rematch ? {rematchOfTicketId: input.rematchOfTicketId, inviteRecipientId: rematch.recipientId} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
       run: liveRun({...deck, locale: input.locale, categoryId: input.categoryId}, userId, ticketId)};
     if (privateEntry) {
-      if (!rematch && !["jest", "facebook"].includes(raceProviderScope(userId) ?? ""))
+      if (!rematch && !["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? ""))
         throw new HttpsError("permission-denied", "Platform invitations unavailable.");
       /** Private seats are recoverable but cannot be selected by public searches. */
       const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
+      /** A new native private seat establishes play without changing another provider's account. */
+      const referralActivity = androidReferralPlayPatch(owner.data() ?? {});
+      if (referralActivity.androidReferralPlayed) transaction.update(owner.ref, referralActivity);
       transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
       claimLiveJoinIntent(transaction, intent, ticketRef, nowMs);
       transaction.set(pointer, {ticketId, expiresAt});
@@ -149,51 +191,26 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       publishLiveRaceSignals(db, transaction, [ticketId], expiresAt);
       return liveView(ticketId, ticket, undefined, nowMs);
     }
-    /** Shared queue is locked only after the new deck is ready; reconnects never read it. */
-    const queue = await transaction.get(queueRef);
-    /** Provides ids behavior. */
-    const ids: string[] = queue.data()?.tickets ?? [];
-    /** Provides candidates behavior. */
-    const candidates = ids.length ? await transaction.getAll(...ids.slice(0, 40).map(id => db.doc(`liveRaceTickets/${id}`))) : [];
-    /** Provides eligible behavior. */
-    const eligible = candidates.filter(snapshot => {
-      /** Provides other behavior. */
-      const other = snapshot.data() as LiveTicket | undefined;
-      return other && other.userId !== userId && other.pool === pool && !other.cancelled && !other.matchId &&
-        other.createdAtMs + LIVE_RACE_WAIT_MS > nowMs && other.seenAtMs + LOBBY_LEASE_MS > nowMs &&
-        isLiveRaceDeckCompatible(other.run);
-    });
-    /** Provides opponent behavior. */
-    let opponent: (typeof eligible)[number] | undefined;
-    for (const candidate of eligible) {
-      /** Provides other behavior. */
-      const other = candidate.data() as LiveTicket;
-      /** Provides checks behavior. */
-      const checks = await Promise.all([transaction.get(db.doc(`users/${userId}/blockedRivals/${other.userId}`)),
-        transaction.get(db.doc(`users/${other.userId}/blockedRivals/${userId}`)), transaction.get(getJestAccountDeletionRef(db, other.userId))]);
-      if (!checks.some(check => check.exists)) {opponent = candidate; break;}
-    }
-    /** Provides match behavior. */
-    let match: LiveMatch | undefined;
-    if (opponent) {
-      /** Provides other behavior. */
-      const other = opponent.data() as LiveTicket;
-      /** Provides starts at ms behavior. */
-      const startsAtMs = Math.max(options.nowMs ?? Date.now(), other.seenAtMs, ticket.seenAtMs) + LIVE_RACE_COUNTDOWN_MS;
-      ticket.matchId = opponent.id;
-      match = {tickets: [opponent.id, ticketId], participantIds: [other.userId, userId], startsAtMs, observedAtMs: startsAtMs - LIVE_RACE_COUNTDOWN_MS, players: [other.player, player], runs: [
-        liveRun(other.run, other.userId, opponent.id, startsAtMs), liveRun(other.run, userId, ticketId, startsAtMs)]};
-      transaction.update(opponent.ref, {matchId: opponent.id});
-      transaction.create(db.doc(`liveRaceMatches/${opponent.id}`), {...stripUndefined(match), expiresAt: admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000)});
-    }
-    /** Provides expires at behavior. */
+    /** Seven-day retention deadline for the new public ticket. */
     const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
+    /** Fresh server clock sampled after content preparation and before queue selection. */
+    const queueNowMs = options.nowMs ?? Date.now();
+    // Content preparation cannot consume the player's opponent search window.
+    ticket.createdAtMs = queueNowMs;
+    ticket.seenAtMs = queueNowMs;
+    /** Prepared public pairing and queue writes for the new owned seat. */
+    const queue = await prepareLiveRaceQueue(db, transaction, {ticketId, ticket, nowMs: queueNowMs, expiresAt, ownerProfile: owner, newTicket: true});
+    /** Verified human match, or no match while the ticket remains searching. */
+    const match = queue.match;
+    queue.commit();
+    /** Native matchmaking establishes play atomically with the new public seat. */
+    const referralActivity = androidReferralPlayPatch(owner.data() ?? {});
+    if (referralActivity.androidReferralPlayed) transaction.update(owner.ref, referralActivity);
     /** Provides response behavior. */
     const response = liveView(ticketId, ticket, match, options.nowMs ?? Date.now());
     transaction.create(ticketRef, {...stripUndefined(ticket), expiresAt});
     claimLiveJoinIntent(transaction, intent, ticketRef, nowMs);
     transaction.set(pointer, {ticketId, expiresAt});
-    transaction.set(queueRef, {tickets: [...eligible.filter(item => item !== opponent).map(item => item.id), ...(!opponent ? [ticketId] : [])].slice(-40), expiresAt});
     publishLiveRaceSignals(db, transaction, match?.tickets ?? [ticketId], expiresAt);
     return response;
   });
@@ -307,42 +324,64 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   /** Provides ticket behavior. */
   const ticket = snapshot.data() as LiveTicket;
   if (ticket.userId !== userId) throw new HttpsError("permission-denied", "This live seat belongs to another player.");
+  if (!isLiveRaceRetained(snapshot, sampledAtMs)) throw new HttpsError("not-found", "Live race expired.");
   if (options.expectedJoinId && ticket.activeJoinId !== options.expectedJoinId)
     throw new HttpsError("permission-denied", "A newer live join owns this seat.", {reason: "live-join-superseded"});
   /** Private lease supplies the clock floor before a match has been assigned. */
   let nowMs = liveOperationAtMs(ticket, undefined, sampledAtMs);
   if (ticket.cancelled) return liveView(input.ticketId, ticket, undefined, nowMs);
   /** Provides match behavior. */
-  let match = ticket.matchId ? (await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`))).data() as LiveMatch : undefined;
+  const matchSnapshot = ticket.matchId ? await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`)) : undefined;
+  if (matchSnapshot && !isLiveRaceRetained(matchSnapshot, nowMs))
+    throw new HttpsError("not-found", "Live match unavailable.");
+  /** Retained shared match, later replaced only by an authorized pairing or bot start. */
+  let match = matchSnapshot?.data() as LiveMatch | undefined;
+  /** Deferred queue writes prepared before request and settlement reads. */
+  let queue: Awaited<ReturnType<typeof prepareLiveRaceQueue>> | undefined;
   /** Unchanged observations do not rewrite or contend on the shared match. */
   let matchChanged = false;
   /** Only assigning a new bot match changes this matched ticket. */
   const previousMatchId = ticket.matchId;
   nowMs = liveOperationAtMs(ticket, match, nowMs);
+  if (!isLiveRaceRetained(snapshot, nowMs) || matchSnapshot && !isLiveRaceRetained(matchSnapshot, nowMs))
+    throw new HttpsError("not-found", "Live authority expired.");
+  /** Current active-seat pointer required for any unmatched ticket update. */
+  const ownerPointer = !match ? await transaction.get(db.doc(`liveRacePlayers/${requestDocumentId(userId, "active-live-race")}`)) : undefined;
+  if (!match && ownerPointer?.data()?.ticketId !== input.ticketId)
+    throw new HttpsError("failed-precondition", "Another live journey owns this account.");
   if (!match && input.action === "leave") {
     ticket.cancelled = true;
     transaction.update(ticketRef, {cancelled: true, seenAtMs: nowMs});
     publishLiveRaceSignals(db, transaction, [input.ticketId], snapshot.data()!.expiresAt);
     return liveView(input.ticketId, ticket, undefined, nowMs);
   }
-  if (!match && ticket.privateChallenge && nowMs >= ticket.createdAtMs + LIVE_RACE_INVITE_MS) {
+  if (!match && ticket.privateChallenge && nowMs >= liveRaceSearchEndsAtMs(ticket)) {
     ticket.cancelled = true;
     transaction.update(ticketRef, {cancelled: true, seenAtMs: nowMs});
     publishLiveRaceSignals(db, transaction, [input.ticketId], snapshot.data()!.expiresAt);
     return liveView(input.ticketId, ticket, undefined, nowMs);
   }
-  if (!match && !ticket.privateChallenge && nowMs >= ticket.createdAtMs + LIVE_RACE_WAIT_MS) {
+  if (!match && !ticket.privateChallenge && input.action === "poll" && nowMs < liveRaceSearchEndsAtMs(ticket)) {
+    /** Public account identity required before a waiting seat re-enters the queue. */
+    const [ownerProfile] = await transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]});
+    assertAndroidRaceAccount(userId, ownerProfile.data());
+    queue = await prepareLiveRaceQueue(db, transaction, {ticketId: input.ticketId, ticket, nowMs, expiresAt: snapshot.data()!.expiresAt, ownerProfile, ownerPointer});
+    match = queue.match;
+    matchChanged = Boolean(match);
+  }
+  if (!match && !ticket.privateChallenge && nowMs >= liveRaceSearchEndsAtMs(ticket)) {
     assertLiveRaceDeckCompatible(ticket.run);
     ticket.matchId = input.ticketId;
     /** Provides starts at ms behavior. */
     const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
     match = {tickets: [input.ticketId, null], participantIds: [userId], startsAtMs, observedAtMs: nowMs,
-      players: [ticket.player, {displayName: "Riddle Bot", avatarUrl: null, bot: true, correctCount: 0}],
+      players: [ticket.player, {displayName: `Guest_${input.ticketId.slice(0, 6).toUpperCase()}`, avatarUrl: null, bot: true, correctCount: 0}],
       runs: [liveRun(ticket.run, userId, input.ticketId, startsAtMs), liveRun(ticket.run, "bot", `${input.ticketId}-bot`, startsAtMs)]};
     matchChanged = true;
   }
   if (!match) {
     if (input.action !== "poll") throw new HttpsError("failed-precondition", "No opponent has joined yet.");
+    queue?.commit();
     transaction.update(ticketRef, {seenAtMs: nowMs});
     return liveView(input.ticketId, ticket, undefined, nowMs);
   }
@@ -352,6 +391,8 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   /** Provides seat behavior. */
   const seat = match.tickets[0] === input.ticketId ? 0 : match.tickets[1] === input.ticketId ? 1 : -1;
   if (seat === -1) throw new HttpsError("data-loss", "Invalid live seat.");
+  if (match.runs[seat].userId !== userId || match.deletedSeats?.[seat])
+    throw new HttpsError("permission-denied", "Live participant unavailable.");
   /** Requests ref. */
   const requestRef = db.doc(`liveRaceMatches/${ticket.matchId}/requests/${requestDocumentId(userId, input.requestId)}`);
   /** Provides rival id behavior. */
@@ -383,13 +424,20 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   }
   matchChanged = advanceLiveBot(match, nowMs) || matchChanged;
   matchChanged = settleLiveFinish(match, nowMs) || matchChanged;
+  /** Whether this invocation accepted a state-changing command that needs a receipt. */
+  let acceptedCommand = false;
   if (match.winner === undefined && !receipt?.exists && input.action !== "poll") {
-    matchChanged = true;
     if (input.action === "leave") {
       // Closing a finished seat cannot forfeit or shorten the rival's remaining opportunity.
-      if (match.runs[seat].status !== "completed") match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
+      if (match.runs[seat].status !== "completed") {
+        acceptedCommand = true;
+        matchChanged = true;
+        match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
+      }
     }
     else {
+      acceptedCommand = true;
+      matchChanged = true;
       if (nowMs < match.startsAtMs) throw new HttpsError("failed-precondition", "Match has not started.");
       /** Provides run behavior. */
       const run = applyActionRateLimit(refreshRaceRun(match.runs[seat], nowMs), userId, nowMs);
@@ -435,7 +483,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     /** Both seats share the one-time terminal receipt, including losses and draws. */
     const profileUpdates = new Map<FirebaseFirestore.DocumentSnapshot, Record<string, unknown>>();
     if (nowMs >= match.startsAtMs) for (const [seat, profile] of participants.entries()) {
-      if (!profile) continue;
+      if (!profile || !match.runs[seat]!.events.some(event => event.type === "correct")) continue;
       /** Persisted account counters supply the authoritative achievement baseline. */
       const data = profile.data()!;
       for (const field of ["multiplayerGamesPlayed", "multiplayerWins"]) {
@@ -463,7 +511,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
       run.settlementCoins = coins;
     }
     /** Only an existing, non-deleted human winner can receive coins and a win. */
-    const owner = match.winner === null ? null : participants[match.winner];
+    const owner = match.winner === null || !match.runs[match.winner]!.events.some(event => event.type === "correct") ? null : participants[match.winner];
     match.rewardCoins = 0;
     if (owner) {
       /** Provides coins behavior. */
@@ -484,18 +532,29 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
           ...pendingRaceDelivery(nowMs), expiresAt: snapshot.data()!.expiresAt});
       }
     }
-    for (const [profile, update] of profileUpdates) transaction.update(profile.ref, update);
+    for (const [profile, update] of profileUpdates) {
+      transaction.update(profile.ref, update);
+      if (raceProviderScope(profile.id) === "android" && typeof profile.data()?.androidGoogleSubjectHash === "string") {
+        /** The participant's immutable ticket selects its private terminal referral proof. */
+        const seat = match.runs.findIndex(run => run.userId === profile.id), sourceTicket = match.tickets[seat];
+        if (sourceTicket) transaction.create(db.doc(`androidReferralPlayOutbox/${androidReferralLiveEventId(profile.id, sourceTicket)}`), {
+          uid: profile.id, matchId: ticket.matchId, ticketId: sourceTicket, delivered: false, expiresAt: snapshot.data()!.expiresAt,
+        });
+      }
+    }
   }
   match.observedAtMs = nowMs;
   /** Provides response behavior. */
   const response = liveView(input.ticketId, ticket, match, nowMs);
   /** Provides expires at behavior. */
   const expiresAt = snapshot.data()!.expiresAt;
+  queue?.commit();
   if (matchChanged) {
-    transaction.set(db.doc(`liveRaceMatches/${ticket.matchId}`), {...stripUndefined(match), expiresAt});
+    transaction.set(db.doc(`liveRaceMatches/${ticket.matchId}`), {...stripUndefined(match),
+      expiresAt: matchSnapshot?.data()?.expiresAt ?? queue?.matchExpiresAt ?? expiresAt});
     publishLiveRaceSignals(db, transaction, match.tickets.filter((_, seat) => !match!.deletedSeats?.[seat]), expiresAt);
   }
   if (previousMatchId !== ticket.matchId) transaction.update(ticketRef, {matchId: ticket.matchId, seenAtMs: nowMs});
-  if (input.action !== "poll" && !receipt?.exists) transaction.create(requestRef, {userId, binding, expiresAt, ...(guessProof ? {guessProof} : {})});
+  if (acceptedCommand) transaction.create(requestRef, {userId, binding, expiresAt, ...(guessProof ? {guessProof} : {})});
   return response;
 }

@@ -125,6 +125,8 @@ export interface FacebookInstantProduct {
 
 /** Defines the contract for facebook instant payments. */
 export interface FacebookInstantPayments {
+  /** Registers Meta's payment initialization signal. */
+  onReady?(callback: () => void): void;
   /** Gets catalog async. */
   getCatalogAsync(): Promise<unknown>;
   /** Provides purchase async behavior. */

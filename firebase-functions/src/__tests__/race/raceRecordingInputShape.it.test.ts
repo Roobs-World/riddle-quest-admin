@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 import {startRaceRunForUser, publishRaceChallengeForUser} from "../../race/raceService";
 import {inspectRaceChallengeEligibility} from "../../race/raceEligibility";
 import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";

@@ -1,7 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 4 production declarations are undocumented.
-- packages/portal/src/reddit/__tests__/redditTournament.jest-playwright.support.ts:8 url
-- packages/portal/src/reddit/__tests__/redditTournament.jest-playwright.support.ts:8 locale
-- packages/portal/src/reddit/__tests__/redditTournament.jest-playwright.support.ts:59 url
-- packages/portal/src/reddit/__tests__/redditTournament.jest-playwright.support.ts:59 input
-[ELIFECYCLE] Command failed with exit code 1.

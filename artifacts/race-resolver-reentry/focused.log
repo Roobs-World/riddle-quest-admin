@@ -1,7 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-
-Test Suites: 3 passed, 3 total
-Tests:       14 passed, 14 total
-Snapshots:   0 total
-Time:        0.333 s, estimated 1 s
-Ran all test suites matching src/play/race/__tests__/raceResolverReentry.test.ts|src/play/race/__tests__/raceResolverFailure.test.ts|src/play/race/__tests__/raceCatalogRetry.test.ts.

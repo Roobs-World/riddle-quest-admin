@@ -1,8 +1,0 @@
-{
-  "mode": "production",
-  "engine": "firefox",
-  "browserVersion": "153.0",
-  "cases": 84,
-  "checks": 804,
-  "failures": []
-}

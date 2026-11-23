@@ -14,7 +14,7 @@ await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceScoreboard} from ${JSON.stringify(path.join(root,'src/play/race/components/RaceScoreboard.tsx'))};
 import {RaceResultPanel} from ${JSON.stringify(path.join(root,'src/play/race/components/RaceResultPanel.tsx'))};
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 const milliseconds=Number(new URLSearchParams(location.search).get('ms'));
 const run={runId:'run-timer',role:'creator',status:'completed',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:10,wallElapsedMs:milliseconds,totalPenaltyMs:milliseconds,adjustedElapsedMs:milliseconds,currentRiddle:null,events:[]};
 const outcome={runId:run.runId,result:'recorded',correctCount:10,wallFinishMs:milliseconds,hintPenaltyMs:milliseconds,skipPenaltyMs:milliseconds,totalPenaltyMs:milliseconds,adjustedFinishMs:milliseconds,publishable:false,rematchEligible:false,newlyUnlockedAchievementIds:[],achievementCoinsAwarded:0};

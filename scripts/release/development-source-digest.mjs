@@ -10,8 +10,6 @@ export const developmentSourcePathspecs = Object.freeze([
   '.',
   ':(exclude).codex/**',
   ':(exclude)artifacts/**',
-  ':(exclude)docs/reports/platform-release-readiness/src/data.json',
-  ':(exclude)docs/reports/platform-release-readiness/src/content/task-register.json',
 ]);
 
 /** Hash repository source files and link identities without reading external link targets. */

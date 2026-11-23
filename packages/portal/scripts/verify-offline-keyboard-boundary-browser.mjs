@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -8,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.OFFLINE_BOUNDARY_REACT_MODE??'development',baseline=process.env.OFFLINE_BOUNDARY_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.OFFLINE_BOUNDARY_REPORT_DIR??path.join(root,'../../artifacts/offline-keyboard-boundary-2026-10-04',mode));
+const output=path.resolve(process.env.OFFLINE_BOUNDARY_REPORT_DIR??path.join(root,'../../builds/test-evidence/offline-keyboard-boundary-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/offline-keyboard-boundary-'));let server,browser;const observations=[];
 try{
@@ -45,6 +46,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
  for(const [width,height] of process.env.OFFLINE_BOUNDARY_QUICK==='1'?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const surface of process.env.OFFLINE_BOUNDARY_SURFACES?.split(',')??['game','modal','race'])for(const scenario of process.env.OFFLINE_BOUNDARY_SCENARIOS?.split(',')??['disconnect','reconnect','reconnect-leased'])for(const key of process.env.OFFLINE_BOUNDARY_KEYS?.split(',')??['Tab','Escape','Enter','Backspace','t','Focus']){
  const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const metric=(name,actual,expected)=>observations.push({surface,scenario,key,width,height,name,actual,expected});
  await page.goto(url+'/?scenario='+scenario+'&key='+key+(surface==='race'?'&harness=race':'')+(process.env.OFFLINE_BOUNDARY_NO_EMIT==='1'?'&noEmit=1':'')+(process.env.OFFLINE_BOUNDARY_LATE==='1'?'&late=1':''));await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+ await waitForAnswerInputReady(page);
  await page.keyboard.type('pi');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('')==='PI'));
  if(surface!=='game')await page.getByRole('button',{name:surface==='modal'?'Settings':'Multiplayer',exact:true}).click();await settle();
  await page.evaluate(()=>{window.baseKeys=new Set(window.probe.keys);});

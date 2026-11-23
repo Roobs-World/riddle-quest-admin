@@ -1,5 +1,7 @@
 # Recorded matchmaking operations
 
+As of 16 October 2026, periodic race settlement, recovery monitoring and projection reconciliation are not scheduled. Clients display elapsed deadlines; authenticated server requests still enforce canonical deadlines and settle results on access. Event-driven outbox delivery remains retryable and idempotent. Diagnostic and migration helpers below remain available for explicit operator work. All functions use zero reserved minimum instances.
+
 These are development targets and investigation thresholds, not claims of production compliance. Backend lookup telemetry covers authorized calls that reach the matching service; identity/request rejection before that boundary belongs to provider ingress monitoring. Production validation still needs representative traffic, function cold starts, deployment-region/client transport and billed index scans. No alert configuration or production index was changed.
 
 ## Repeatable local benchmark

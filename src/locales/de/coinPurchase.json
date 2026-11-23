@@ -1,7 +1,6 @@
 {
   "CoinPurchase": {
-    "AWESOME_BUTTON": "Toll",
-    "COINS_SUFFIX": " Muenzen",
-    "TITLE": "Muenzen hinzugefuegt!"
+    "COINS_SUFFIX": " Münzen",
+    "TITLE": "Münzen hinzugefügt!"
   }
 }

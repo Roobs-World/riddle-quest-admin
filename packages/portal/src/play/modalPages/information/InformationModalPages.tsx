@@ -37,15 +37,15 @@ export function InstructionsModalPage({
     <div className="instructions-page">
       <p>{tr("Instructions.GOAL_DESCRIPTION")}</p>
       <h3>{tr("Instructions.COLOR_CLUES_TITLE")}</h3>
-      <p>
+      <p className="instruction-clue">
         <i className="clue green">A</i>
         {tr("Instructions.COLOR_CORRECT")}
       </p>
-      <p>
+      <p className="instruction-clue">
         <i className="clue yellow">B</i>
         {tr("Instructions.COLOR_MISPLACED")}
       </p>
-      <p>
+      <p className="instruction-clue">
         <i className="clue red">C</i>
         {tr("Instructions.COLOR_WRONG")}
       </p>

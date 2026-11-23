@@ -1,6 +1,0 @@
-
-Test Suites: 2 passed, 2 total
-Tests:       39 passed, 39 total
-Snapshots:   0 total
-Time:        0.265 s, estimated 1 s
-Ran all test suites matching src/facebook/__tests__/FacebookTournamentSharePreparation.test.ts|src/facebook/__tests__/FacebookTournamentPresentation.test.ts.

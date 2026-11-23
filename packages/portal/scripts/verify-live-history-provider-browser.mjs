@@ -8,7 +8,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const engine=process.env.LIVE_HISTORY_BROWSER??'chromium';
 const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.LIVE_HISTORY_MODE??'development';
-const evidence=path.resolve(process.env.LIVE_HISTORY_REPORT_DIR??path.join(portal,'../../artifacts/live-history-provider-2026-10-06',engine+'-'+mode));
+const evidence=path.resolve(process.env.LIVE_HISTORY_REPORT_DIR??path.join(portal,'../../builds/test-evidence/live-history-provider-2026-10-06',engine+'-'+mode));
 await mkdir(evidence,{recursive:true});await mkdir(path.join(portal,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/live-history-provider-'));
 let browser,server,browserVersion;const observations=[];
@@ -18,7 +18,7 @@ try {
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceTournamentEntry} from ${JSON.stringify(path.join(portal,'src/play/race/RaceTournamentEntry.tsx'))};
-import {ListLiveRaceHistoryResponseSchema,LiveRaceViewSchema} from '@qwordly/core/race';
+import {ListLiveRaceHistoryResponseSchema,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(portal,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

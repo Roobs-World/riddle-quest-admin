@@ -1,3 +1,0 @@
-[WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ node scripts/audit-facebook-backend-exports.js
-Facebook backend export audit passed: 23 entry points are exported.

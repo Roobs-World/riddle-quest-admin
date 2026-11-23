@@ -1,5 +1,5 @@
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "@qwordly/core/validation/requestSchemas";
+import {SpendCoinsRequestSchema, SpendCoinsResponseSchema} from "@riddle-quest/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";

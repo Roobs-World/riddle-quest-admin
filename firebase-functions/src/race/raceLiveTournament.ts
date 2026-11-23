@@ -1,4 +1,4 @@
-import {LIVE_RACE_COUNTDOWN_MS, RACE_TARGET_CORRECT} from "@qwordly/core/race";
+import {LIVE_RACE_COUNTDOWN_MS, RACE_TARGET_CORRECT} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 import {parseRunRecord} from "./raceSetupService";

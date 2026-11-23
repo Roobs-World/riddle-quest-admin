@@ -9,7 +9,7 @@ import {deliverRacePerformance} from "../../race/racePerformanceDelivery";
 import {recordFacebookTournamentRun} from "../../race/facebookTournament";
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebook/facebookReferrals";
 import {issueRedditReferralToken, bindRedditReferralToken} from "../../reddit/redditReferrals";
-import {LIVE_RACE_WAIT_MS} from "@qwordly/core/race";
+import {LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
 import {FieldValue, Timestamp} from "firebase-admin/firestore";
 import {sendLiveRaceChallengeForUser} from "../../race/raceLiveChallengeNotifications";
 import {createUsernameReservationId} from "../../profile/usernameReservations";
@@ -289,12 +289,12 @@ it("removes a deleting winner's board entry and balance snapshot without changin
   expect(match.newCoins).toBeUndefined();
   expect(match.settlementCoins).toBeUndefined();
   expect(match.runs[0].settlementCoins).toBeUndefined();
-  expect(match.runs[1].settlementCoins).toBe(125);
+  expect(match.runs[1].settlementCoins).toBeUndefined();
   expect(match.facebookReferral).toBeUndefined();
   /** Provides loss behavior. */
   const loss = await updateLiveRaceForUser(players[1], {ticketId: tickets[1].ticketId, action: "poll", requestId: "preserved-loss"}, {db, nowMs: START + 18000});
   expect(loss).toMatchObject({result: "loss", rewardCoins: 0, opponent: {displayName: "Riddle Quest player", avatarUrl: null}});
-  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(125);
+  expect((await db.doc(`users/${players[1]}`).get()).data()?.coins).toBe(100);
 });
 
 it.each(["cleanup-first", "guard-first", "completion-first", "concurrent"] as const)(

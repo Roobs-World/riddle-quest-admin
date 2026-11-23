@@ -1,5 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 2 production declarations are undocumented.
-- packages/portal/src/youtube/__tests__/LocalSoloAuthority.test.ts:89 unsubscribe
-- packages/portal/src/youtube/__tests__/LocalSoloAuthority.test.ts:115 unsubscribe
-[ELIFECYCLE] Command failed with exit code 1.

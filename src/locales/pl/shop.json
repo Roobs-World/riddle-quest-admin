@@ -1,9 +1,9 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "monety",
+    "COINS_SUFFIX": " monet",
     "LOADING_TEXT": "Ładowanie sklepu...",
     "NO_PACKS_AVAILABLE": "W tej chwili nie są dostępne żadne pakiety monet.",
-    "PURCHASE_BUTTON": "ZAKUP",
+    "PURCHASE_BUTTON": "KUP",
     "PERIOD_MONTHLY": "miesiąc",
     "PERIOD_WEEKLY": "tydzień",
     "PERIOD_YEARLY": "rok",
@@ -20,7 +20,6 @@
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Odnawia się automatycznie. Anuluj w dowolnym momencie w Profilu lub Ustawieniach.",
     "TITLE": "SKLEP Z MONETAMI",
     "YOUR_BALANCE": "Twoje saldo",
-    "PACK_DESCRIPTION": "Dodaj {coins} monet do swojego salda.",
     "BADGE_STARTER": "STARTOWY",
     "BADGE_POPULAR": "POPULARNY",
     "BADGE_BEST_VALUE": "NAJLEPSZA OFERTA",

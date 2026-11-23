@@ -1,5 +1,0 @@
-$ node scripts/verify-bridge-dispatch-ownership-browser.mjs && BRIDGE_DISPATCH_REACT_MODE=production node scripts/verify-bridge-dispatch-ownership-browser.mjs
-PASS development 1280px bridge dispatch and notice ownership
-PASS development 390px bridge dispatch and notice ownership
-PASS production 1280px bridge dispatch and notice ownership
-PASS production 390px bridge dispatch and notice ownership

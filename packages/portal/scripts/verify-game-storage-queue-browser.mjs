@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -8,7 +9,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.STORAGE_REACT_MODE??'development',baseline=process.env.STORAGE_BASELINE_DIR;
-const output=path.resolve(process.env.STORAGE_REPORT_DIR??path.join(root,'../../artifacts/game-storage-queue-2026-10-03',mode));
+const output=path.resolve(process.env.STORAGE_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-storage-queue-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-storage-'));
 const source=`
@@ -56,7 +57,7 @@ try {
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage();const metric=(name,actual,expected)=>{observations.push({width,scenario,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
   await page.goto(url);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
   if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
-  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
+  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await waitForAnswerInputReady(page);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
   for(let i=0;i<40;i++){await page.keyboard.press('Backspace');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIA');await page.keyboard.type('n');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');}
   await page.evaluate(()=>window.mergeProfile());
   metric('answer remains responsive while provider write is held',await page.evaluate(()=>window.draft()),'PIAN');

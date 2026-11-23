@@ -1,3 +1,4 @@
+import {setEmulatorSystemTime} from "../helpers/emulatorClock";
 import {initializeApp, deleteApp, getApps, type App} from "firebase-admin/app";
 import {createHmac} from "node:crypto";
 import {getFirestore} from "firebase-admin/firestore";
@@ -34,6 +35,7 @@ beforeAll(() => {
   db = getFirestore(app); database = getDatabase(app);
 });
 beforeEach(clear);
+afterEach(() => jest.useRealTimers());
 afterAll(async () => {if (db && database) await clear(); if (app) await deleteApp(app); if (gatewayApp) await deleteApp(gatewayApp);});
 
 it("routes signed Reddit safety through strict shared callables and deletion leases", async () => {
@@ -70,7 +72,7 @@ it("routes signed Reddit safety through strict shared callables and deletion lea
     const {seats} = await pair("reddit", "gateway", NOW, ids);
     await db.doc(`providerIdentities/${redditProviderIdentityId("riddle-quest", userId)}`).set({provider: "reddit", appName: "riddle-quest",
       providerUserId: userId, accountGeneration: 1, status: "active", uid: ids[0]});
-    jest.spyOn(Date, "now").mockReturnValue(NOW + 2000);
+    setEmulatorSystemTime(NOW + 2000);
     /** Original categorized intent survives a new signed transport assertion. */
     const payload = {liveTicketId: seats[0].ticketId, category: "spam", requestId: "signed-safety-report-0001"};
     await send("gameplay.safety.report", payload);
@@ -95,7 +97,7 @@ it("routes signed Reddit safety through strict shared callables and deletion lea
     expect((await db.collection("socialModerationQueue").get()).size).toBe(1);
     expect((await getJestAccountDeletionRef(db, ids[0]).collection("activeOperations").get()).empty).toBe(true);
   } finally {
-    jest.restoreAllMocks();
+    jest.restoreAllMocks(); jest.useRealTimers();
     for (const [key, value] of Object.entries(original)) {if (value === undefined) delete process.env[key]; else process.env[key] = value;}
   }
 });

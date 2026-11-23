@@ -1,222 +1,59 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../achievements";
-import type {GameSessionState} from "../../gameSession";
 import {useTranslator} from "../../i18n";
 import {CoinAwardSequence} from "./CoinAwardSequence";
 import type {FanfareCoinAward, FanfareStep} from "./fanfareSequence";
-import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
-import {useMemo} from "react";
-import {getConfirmedRiddleWin} from "../../ConfirmedRiddleOutcome";
 
-/** Props shared by the two fanfare modal content variants. */
-type SharedFanfareProps = {
-  /** Stores active coin award. */
-  activeCoinAward: FanfareCoinAward | null;
-  /** Stores on balance preview. */
-  onBalancePreview: (balance: number | null) => void;
-  /** Stores on advance. */
-  onAdvance: () => void;
-};
-
-/** Props for the victory fanfare content. */
-export type VictoryFanfareContentProps = SharedFanfareProps & {
-  /** Stores active step. */
-  activeStep: FanfareStep | undefined;
-  /** Stores state. */
-  state: GameSessionState;
-  /** Stores step index. */
-  stepIndex: number;
-  /** Stores step count. */
-  stepCount: number;
-};
-
-/** Props for an auxiliary purchase or achievement fanfare. */
-export type RewardFanfareContentProps = SharedFanfareProps & {
-  /** Stores active step. */
-  activeStep: FanfareStep | undefined;
-  /** Stores step index. */
-  stepIndex: number;
-  /** Stores step count. */
-  stepCount: number;
-};
-
-/** Renders an achievement unlocked during a fanfare sequence. */
-export function AchievementFanfare({
-  achievementId,
-}: {
-  /** Stores achievement id. */ /** Stores achievement id. */
-  achievementId: string;
+/** Renders the full achievement details used by the profile and localization checks. */
+export function AchievementFanfare({achievementId}: {
+  /** Stable achievement identifier. */ achievementId: string;
 }) {
-  /** Copy changes invalidate compiler caches while preserving local page state. */
+  /** Translated milestone labels for the active locale. */
   const tr = useTranslator();
-  /** Provides achievement behavior. */
-  const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
-  return (
-    <div className="achievement-unlock">
-      <span className="achievement-icon large" aria-hidden="true">
-        {achievement?.icon ?? "🏆"}
-      </span>
-      <strong>
-        {achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}
-      </strong>
-      {achievement && <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>}
-    </div>
-  );
+  /** Canonical achievement supplies its translated name and icon. */
+  const achievement = ACHIEVEMENT_DEFINITIONS.find(item => item.id === achievementId);
+  return <div className="achievement-unlock">
+    <span className="achievement-icon large" aria-hidden="true">{achievement?.icon ?? "🏆"}</span>
+    <strong>{achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}</strong>
+    {achievement && <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>}
+  </div>;
 }
 
-/** Renders the active server-authoritative victory reward step. */
-export function VictoryFanfareContent({
-  activeCoinAward,
-  activeStep,
-  onAdvance,
-  onBalancePreview,
-  state,
-  stepCount,
-  stepIndex,
-}: VictoryFanfareContentProps) {
-  /** Copy changes invalidate compiler caches while preserving local page state. */
+/** A short milestone label and its optional, already-granted coin award. */
+export function FanfareTabContent({step, level, award, collecting, onBalancePreview}: {
+  /** Milestone represented by this tab. */ step: FanfareStep;
+  /** Confirmed player level, when applicable. */ level: number | undefined;
+  /** Confirmed award associated with this step. */ award: FanfareCoinAward | null;
+  /** Only the front tab may start a coin flight. */ collecting: boolean;
+  /** Updates the decorative header counter. */ onBalancePreview: (balance: number | null) => void;
+}) {
+  /** Translated milestone labels for the active locale. */
   const tr = useTranslator();
-  /** Optional outbound sharing supplied by the active release target. */
-  const referralSharing = useReferralSharing();
-  /** Keeps the progress indicator coherent if reward details refresh mid-fanfare. */
-  const displayedStepCount = Math.max(stepCount, stepIndex + 1);
-  /** Confirmed winning history is stable across reward animation and profile renders. */
-  const recoveredWin = useMemo(() => state.riddle ? getConfirmedRiddleWin(state.riddle) : null, [state.riddle]);
-  /** Buffered provisional wins retain early advancement; recovered wins wait for their completion receipt. */
-  const recoveredAdvancePending = Boolean(recoveredWin && !state.completionAcknowledged);
-  /** Provides victory level behavior. */
-  const victoryLevel = state.lastRewards?.newLevel;
-
-  return (
-    <div className="fanfare-content">
-      <div className="fanfare-burst" aria-hidden="true">
-        ✦
-      </div>
-      {!activeStep ? (
-        <>
-          <strong className="fanfare-title" aria-live="polite">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
-          {state.lastOutcome?.kind === "win" && (
-            <button className="play-primary reward-continue" disabled={recoveredAdvancePending} onClick={onAdvance}>
-              {tr(state.riddle?.gameMode === "classic" ? "VictoryModal.NEXT_LEVEL_BUTTON" : "GameScreenAlerts.NEXT_BUTTON")}
-            </button>
-          )}
-        </>
-      ) : activeStep.kind === "achievement" ? (
-        <AchievementFanfare achievementId={activeStep.achievementId} />
-      ) : activeStep.kind === "level" ? (
-        <div className="level-up-summary">
-          <strong className="level-up-number">
-            {tr("LevelUpFanfare.LEVEL_PREFIX")}
-            {victoryLevel}
-          </strong>
-          {activeStep.achievementIds.length > 0 ? (
-            <p className="level-up-achievements">
-              <span>{tr("Achievements.NEW_ACHIEVEMENT")}</span>
-              {activeStep.achievementIds.map((achievementId) => {
-                /** Unlocked achievement listed inline so a level-up never hides it. */
-                const achievement = ACHIEVEMENT_DEFINITIONS.find((item) => item.id === achievementId);
-                return (
-                  <strong key={achievementId}>
-                    {achievement?.icon ?? "🏆"}{" "}
-                    {achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : achievementId}
-                  </strong>
-                );
-              })}
-            </p>
-          ) : null}
-          <p className="level-up-guidance">{tr("LevelUpFanfare.PROFILE_GUIDANCE")}</p>
-        </div>
-      ) : (
-        <>
-          <strong className="fanfare-title">{tr("VictoryModal.YOU_WON_TITLE")}</strong>
-          {activeCoinAward && activeCoinAward.amount > 0 ? (
-            <CoinAwardSequence
-              key={activeCoinAward.id}
-              amount={activeCoinAward.amount}
-              total={activeCoinAward.total}
-              onBalancePreview={onBalancePreview}
-            />
-          ) : null}
-          <div className="reward-summary reward-details">
-            {state.lastRewards?.newXp !== undefined && (
-              <span>
-                {state.lastRewards.newXp} {tr("StatsModal.XP")}
-              </span>
-            )}
-            {state.lastRewards?.newWinStreak !== undefined && <span>🔥 {state.lastRewards.newWinStreak}</span>}
-          </div>
-        </>
-      )}
-      {activeStep ? (
-        <>
-          <small className="sequence-progress">
-            {stepIndex + 1}/{displayedStepCount}
-          </small>
-          <button className="play-primary reward-continue"
-            disabled={recoveredAdvancePending && stepIndex + 1 >= displayedStepCount} onClick={onAdvance}>
-            {stepIndex + 1 < displayedStepCount ? tr("GameScreenAlerts.NEXT_BUTTON") :
-              tr("VictoryModal.NEXT_LEVEL_BUTTON")}
-          </button>
-          {activeStep.kind === "victory" && referralSharing ? (
-            <button
-              className="play-secondary"
-              onClick={() =>
-                referralSharing.shareResult({
-                  gameMode: state.riddle?.gameMode,
-                  riddleId: state.riddle?.riddleId,
-                  attempts: state.guesses.length,
-                  emojiGrid: state.guesses
-                    .map((guess) =>
-                      guess.feedback
-                        .map((feedback) => (feedback === "green" ? "🟩" : feedback === "yellow" ? "🟨" : "⬛"))
-                        .join(""),
-                    )
-                    .join("\n"),
-                })
-              }
-            >
-              {referralSharing.inviteLabel ?? tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
-            </button>
-          ) : null}
-        </>
-      ) : null}
+  /** Canonical achievement supplies its translated name and icon. */
+  const achievement = step.kind === "achievement"
+    ? ACHIEVEMENT_DEFINITIONS.find(item => item.id === step.achievementId) : undefined;
+  /** Short translated title for this milestone kind. */
+  let title: string;
+  /** Default milestone icon when no achievement icon applies. */
+  let icon = "✦";
+  switch (step.kind) {
+    case "victory": title = tr("VictoryModal.YOU_WON_TITLE"); break;
+    case "level": title = `${tr("LevelUpFanfare.LEVEL_PREFIX")}${level ?? ""}`; break;
+    case "achievement":
+      title = achievement ? (achievement.nameKey ? tr(achievement.nameKey) : achievement.name) : step.achievementId;
+      icon = achievement?.icon ?? "🏆";
+      break;
+    case "referral": title = tr("VictoryModal.REFERRAL_REWARD_TITLE"); break;
+    case "purchase":
+    case "coins": title = tr("CoinPurchase.TITLE"); break;
+    default: step satisfies never; return null;
+  }
+  return <>
+    {step.kind !== "level" && <span className="fanfare-tab-icon" aria-hidden="true">{icon}</span>}
+    <div className="fanfare-tab-copy">
+      {step.kind === "achievement" && <small>{tr("Achievements.NEW_ACHIEVEMENT")}</small>}
+      <strong>{title}</strong>
     </div>
-  );
-}
-
-/** Renders the active purchase or achievement reward step. */
-export function RewardFanfareContent({
-  activeCoinAward,
-  activeStep,
-  onAdvance,
-  onBalancePreview,
-  stepCount,
-  stepIndex,
-}: RewardFanfareContentProps) {
-  /** Copy changes invalidate compiler caches while preserving local page state. */
-  const tr = useTranslator();
-  return (
-    <div className="fanfare-content">
-      <div className="fanfare-burst" aria-hidden="true">
-        ✦
-      </div>
-      {activeStep?.kind === "purchase" || activeStep?.kind === "referral" || activeStep?.kind === "coins" ? (
-        activeCoinAward && activeCoinAward.amount > 0 ? (
-          <CoinAwardSequence
-            key={activeCoinAward.id}
-            amount={activeCoinAward.amount}
-            total={activeCoinAward.total}
-            onBalancePreview={onBalancePreview}
-          />
-        ) : null
-      ) : activeStep?.kind === "achievement" ? (
-        <AchievementFanfare achievementId={activeStep.achievementId} />
-      ) : null}
-      <small className="sequence-progress">
-        {stepIndex + 1}/{Math.max(1, stepCount)}
-      </small>
-      <button className="play-primary reward-continue" onClick={onAdvance}>
-        {stepIndex + 1 < stepCount ? tr("GameScreenAlerts.NEXT_BUTTON") : tr("CoinPurchase.AWESOME_BUTTON")}
-      </button>
-    </div>
-  );
+    {award && award.amount > 0 && <CoinAwardSequence key={award.id} amount={award.amount} total={award.total}
+      collecting={collecting} onBalancePreview={onBalancePreview} />}
+  </>;
 }

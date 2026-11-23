@@ -4,7 +4,7 @@ import {
   SubmitSinglePlayerGuessResponseDataSchema,
   type SubmitSinglePlayerGuessRequestData,
   type SubmitSinglePlayerGuessResponseData,
-} from "@qwordly/core/validation/requestSchemas";
+} from "@riddle-quest/core/validation/requestSchemas";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {gameplayInteractiveCallableOptions} from "../shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../shared/sentryHandlers";

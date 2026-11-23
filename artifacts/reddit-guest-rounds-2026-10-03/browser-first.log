@@ -1,8 +1,0 @@
-file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-rounds-browser.mjs:49
-    tokens.push(issued.sessionToken);
-                       ^
-
-TypeError: Cannot read properties of undefined (reading 'sessionToken')
-    at file:///home/craig-beswetherick/Documents/riddle-quest/packages/portal/scripts/verify-reddit-guest-rounds-browser.mjs:49:24
-
-Node.js v24.17.0

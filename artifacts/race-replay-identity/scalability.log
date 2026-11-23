@@ -1,2 +1,0 @@
-$ node scripts/audit-backend-scalability.mjs
-Backend scalability audit passed.

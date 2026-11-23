@@ -1,6 +1,4 @@
-import {logger} from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
-import {onScheduleWithSentry} from "../shared/sentryHandlers";
 import type {Firestore} from "./raceSetupService";
 import {RACE_DELIVERY_QUEUES, type RaceDeliveryQueueName} from "./raceDeliveryQueue";
 
@@ -132,12 +130,3 @@ export async function readRaceRecoveryHealth(db: Firestore = admin.firestore(), 
   }
   return {observedAtMs: nowMs, deadlines, outboxes: Object.fromEntries(outboxes) as Record<RaceDeliveryQueueName, OutboxHealth>, projections, warnings};
 }
-
-/** Independent read-only monitoring survives missed worker invocations and retained quarantine. */
-export const monitorRaceRecoveryHealth = onScheduleWithSentry("monitorRaceRecoveryHealth", {
-  schedule: "every 5 minutes", timeZone: "UTC", region: "us-central1", timeoutSeconds: 120,
-}, async () => {
-  /** Failed health queries reject the scheduled run rather than report a healthy empty queue. */
-  const report = await readRaceRecoveryHealth();
-  logger.write({severity: report.warnings.length ? "WARNING" : "INFO", message: "Race recovery health", ...report});
-});

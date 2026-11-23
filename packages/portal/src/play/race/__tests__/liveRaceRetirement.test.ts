@@ -1,4 +1,4 @@
-import {LiveRaceViewSchema, RACE_RULES, type LiveRaceView, type UpdateLiveRace} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RACE_RULES, type LiveRaceView, type UpdateLiveRace, type RetireLiveRaceJoinResponse} from "@riddle-quest/core/race";
 import {createLiveRaceRetirement} from "../logic/liveRaceRetirement";
 
 /** Valid server receipts distinguish owned confirmation from unrelated terminal seats. */
@@ -161,5 +161,96 @@ describe("owned live seat retirement", () => {
     const update = jest.fn().mockResolvedValue(completed), retire = createLiveRaceRetirement({update}, "completed-leave-id");
     retire(view()); await jest.advanceTimersByTimeAsync(60000); retire(view());
     expect(update).toHaveBeenCalledTimes(1); expect(jest.getTimerCount()).toBe(0);
+  });
+});
+
+describe("explicit retirement confirmation", () => {
+  beforeEach(() => jest.useFakeTimers());
+  afterEach(() => jest.useRealTimers());
+
+  it("coalesces callers and resolves only after the original join is confirmed", async () => {
+    /** Deferred transport receipts expose completion ordering to concurrent callers. */
+    const releases: ((value: RetireLiveRaceJoinResponse) => void)[] = [];
+    /** Each retirement call waits until its matching deferred receipt is released. */
+    const retireJoin = jest.fn(() => new Promise<RetireLiveRaceJoinResponse>(resolve => releases.push(resolve)));
+    /** Modern join retirement must not fall back to legacy ticket updates. */
+    const update = jest.fn();
+    /** The original account and join keys own every coalesced cleanup request. */
+    const retire = createLiveRaceRetirement({retireJoin, update}, "original-leave-key", "original-join-key", "original-owner");
+    /** The first caller owns the shared confirmation promise. */
+    const completion = retire(null);
+    expect(retire(view())).toBe(completion);
+    /** Tracks whether any unconfirmed caller has been released prematurely. */
+    let resolved = false;
+    /** Observes resolution without changing the shared cleanup promise. */
+    const observation = completion.then(confirmed => {resolved = confirmed;});
+    await jest.advanceTimersByTimeAsync(0);
+    expect(resolved).toBe(false);
+    expect(retireJoin).toHaveBeenCalledTimes(1);
+    expect(retireJoin).toHaveBeenCalledWith({requestId: "original-join-key", expectedOwnerId: "original-owner"});
+    for (const release of releases) release({status: "retired"});
+    await expect(completion).resolves.toBe(true);
+    await observation;
+    expect(resolved).toBe(true);
+    expect(update).not.toHaveBeenCalled();
+    expect(jest.getTimerCount()).toBe(0);
+  });
+
+  it("returns false after exhaustion and permits explicit retry with the original key", async () => {
+    /** An outage exhausts the bounded retry budget before explicit recovery. */
+    const retireJoin = jest.fn().mockRejectedValue(new Error("offline"));
+    /** Explicit recovery must retain the original join and account identity. */
+    const retire = createLiveRaceRetirement({retireJoin, update: jest.fn()}, "original-leave-key", "original-join-key", "original-owner");
+    /** All callers observe the same exhausted cleanup until they request a retry. */
+    const completion = retire(null);
+    await jest.advanceTimersByTimeAsync(60000);
+    await expect(completion).resolves.toBe(false);
+    expect(retireJoin).toHaveBeenCalledTimes(4);
+    expect(retire(view())).toBe(completion);
+    retireJoin.mockResolvedValue({status: "retired"});
+    /** The explicit retry owns a new completion while keeping the old join key. */
+    const retried = retire(null, {retry: true});
+    expect(retried).not.toBe(completion);
+    await expect(retried).resolves.toBe(true);
+    expect(retireJoin).toHaveBeenCalledTimes(5);
+    expect(retireJoin.mock.calls.every(([input]) => input.requestId === "original-join-key" && input.expectedOwnerId === "original-owner")).toBe(true);
+    expect(jest.getTimerCount()).toBe(0);
+  });
+
+  it("keeps a definitive failure closed until explicit same-key retry confirms", async () => {
+    /** A definitive denial stops automatic retries; explicit retry can later settle. */
+    const retireJoin = jest.fn().mockRejectedValueOnce({code: "functions/permission-denied"}).mockResolvedValue({status: "superseded"});
+    /** The denied cleanup remains bound to the original account and join. */
+    const retire = createLiveRaceRetirement({retireJoin, update: jest.fn()}, "original-leave-key", "original-join-key", "original-owner");
+    /** The definitive failure resolves rather than retaining pending callers. */
+    const completion = retire(null);
+    await expect(completion).resolves.toBe(false);
+    await jest.advanceTimersByTimeAsync(60000);
+    expect(retireJoin).toHaveBeenCalledTimes(1);
+    await expect(retire(null, {retry: true})).resolves.toBe(true);
+    expect(retireJoin.mock.calls).toEqual([
+      [{requestId: "original-join-key", expectedOwnerId: "original-owner"}],
+      [{requestId: "original-join-key", expectedOwnerId: "original-owner"}],
+    ]);
+    expect(jest.getTimerCount()).toBe(0);
+  });
+
+  it("publishes the shared promise before a synchronous adapter reenters cleanup", async () => {
+    /** Captures synchronous reentry before the first transport call settles. */
+    const observations: Promise<boolean>[] = [];
+    /** The adapter reenters the same cleanup while returning a valid receipt. */
+    const retireJoin = jest.fn(() => {
+      observations.push(retire(view()));
+      return Promise.resolve({status: "retired"} satisfies RetireLiveRaceJoinResponse);
+    });
+    /** Cleanup must publish its shared promise before invoking this adapter. */
+    const retire = createLiveRaceRetirement({retireJoin, update: jest.fn()}, "original-leave-key", "original-join-key", "original-owner");
+    /** The first completion must also be returned to every reentrant caller. */
+    const completion = retire(null);
+    await expect(completion).resolves.toBe(true);
+    expect(observations).toHaveLength(1);
+    for (const observation of observations) expect(observation).toBe(completion);
+    expect(retireJoin).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
   });
 });

@@ -1,5 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import {createGameMessageRouter, createHostMessageRouter} from "../bridgeRouter";
 
 describe("portal bridge routers", () => {

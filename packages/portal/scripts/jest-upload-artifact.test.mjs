@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import {mkdir, mkdtemp, readFile, stat, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
+import {createRequire} from "node:module";
+import {DatabaseSync} from "node:sqlite";
 import path from "node:path";
 import test from "node:test";
 
@@ -27,15 +29,68 @@ import {
   createReleaseSandboxArguments,
   findUnresolvedUploadBarriers,
   fingerprintReleaseDependencies,
+  linkReleaseSnapshotDependencies,
   getUnresolvedUploadBarrierPath,
   RIDDLE_QUEST_JEST_GAME_ID,
   resolveReleaseCredentialPath,
   resolveRiddleQuestJestGameId,
+  snapshotPnpmStoreIndex,
 } from "./jest-release-safety.mjs";
 
 const gameId = "019faa68-f3ec-755d-9ab5-c887fb426801";
 const versionId = "019faa68-f3ec-755d-9ab5-c887fb426802";
 const sourceCommit = "a".repeat(40);
+
+test("release store snapshot includes committed WAL records without modifying its source", async context => {
+  const {rm} = await import("node:fs/promises");
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-store-snapshot-"));
+  context.after(() => rm(directory, {recursive: true, force: true}));
+  const sourcePath = path.join(directory, "source.db");
+  const source = new DatabaseSync(sourcePath);
+  context.after(() => source.close());
+  source.exec("PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; CREATE TABLE packages (name TEXT PRIMARY KEY); INSERT INTO packages VALUES ('new-runtime');");
+  assert.ok((await stat(`${sourcePath}-wal`)).size > 0);
+  const before = await stat(sourcePath);
+  const destination = path.join(directory, "snapshot.db");
+  await snapshotPnpmStoreIndex(sourcePath, destination);
+  const snapshot = new DatabaseSync(destination, {readOnly: true});
+  try {
+    assert.deepEqual(snapshot.prepare("SELECT name FROM packages").all().map(row => row.name), ["new-runtime"]);
+  } finally {snapshot.close();}
+  assert.equal((await stat(sourcePath)).mtimeMs, before.mtimeMs);
+  assert.deepEqual(source.prepare("SELECT name FROM packages").all().map(row => row.name), ["new-runtime"]);
+});
+
+test("license notices use the active native or JavaScript pnpm executable without a global shim", async context => {
+  const {rm} = await import("node:fs/promises");
+  const {createNotice} = await import("./generate-third-party-licenses.mjs");
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-license-command-"));
+  context.after(() => rm(directory, {recursive: true, force: true}));
+  const original = {path: process.env.PATH, executable: process.env.npm_execpath, inventory: process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH};
+  context.after(() => {
+    for (const [key, value] of [["PATH", original.path], ["npm_execpath", original.executable], ["RIDDLE_QUEST_LICENSE_INVENTORY_PATH", original.inventory]])
+      if (value === undefined) delete process.env[key]; else process.env[key] = value;
+  });
+  delete process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH;
+  const dependency = path.join(directory, "dependency");
+  await mkdir(dependency);
+  await writeFile(path.join(dependency, "package.json"), JSON.stringify({name: "license-fixture", version: "1.0.0", license: "MIT"}));
+  await writeFile(path.join(dependency, "LICENSE"), "Fixture license text");
+  const inventory = JSON.stringify({MIT: [{paths: [dependency]}]});
+  for (const name of ["pnpm", "pnpm-native", "pnpm.cjs"]) {
+    const bin = path.join(directory, name.replaceAll(".", "-"));
+    await mkdir(bin);
+    const executable = path.join(bin, name);
+    const source = name.endsWith(".cjs") ? `process.stdout.write(${JSON.stringify(inventory)});`
+      : `#!/bin/sh\nprintf '%s\\n' '${inventory.replaceAll("'", "'\\''")}'\n`;
+    await writeFile(executable, source, {mode: 0o700});
+    process.env.npm_execpath = executable;
+    process.env.PATH = bin;
+    const notice = createNotice(new Set(["license-fixture"]));
+    assert.match(notice, /license-fixture@1\.0\.0/u, name);
+    assert.match(notice, /Fixture license text/u, name);
+  }
+});
 
 test("the release identity is fixed to the Riddle Quest Jest game", () => {
   assert.equal(RIDDLE_QUEST_JEST_GAME_ID, gameId);
@@ -448,6 +503,8 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     mkdir(path.join(directory, "firebase-functions", "node_modules"), {recursive: true}),
     mkdir(path.join(directory, "firebase-functions", "packages", "core"), {recursive: true}),
     mkdir(path.join(directory, "packages", "core", "node_modules"), {recursive: true}),
+    mkdir(path.join(directory, "packages", "hosted", "node_modules"), {recursive: true}),
+    mkdir(path.join(directory, "packages", "solo", "node_modules"), {recursive: true}),
     mkdir(path.join(directory, "packages", "portal", "node_modules"), {recursive: true}),
   ]);
   for (const [relativePath, contents] of [
@@ -458,12 +515,21 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
     [path.join("firebase-functions", "package-lock.json"), "{\"lockfileVersion\":3}\n"],
     [path.join("firebase-functions", "packages", "core", "package.json"), "{\"name\":\"functions-core\"}\n"],
     [path.join("packages", "core", "package.json"), "{\"name\":\"core\"}\n"],
+    [path.join("packages", "hosted", "package.json"), "{\"name\":\"hosted\"}\n"],
+    [path.join("packages", "solo", "package.json"), "{\"name\":\"solo\"}\n"],
     [path.join("packages", "portal", "package.json"), "{\"name\":\"portal\"}\n"],
     [path.join("node_modules", "release-tool.js"), "export default 'stable';\n"],
+    [path.join("node_modules", ".modules.yaml"), "storeDir: /store\n"],
+    [path.join("node_modules", "runtime-package", "index.js"), "export default 'runtime';\n"],
+    [path.join("node_modules", "runtime-package", ".pnpm-workspace-state-v1.json"), "package-owned workspace state\n"],
+    [path.join("node_modules", "runtime-package", ".pnpm-task-run-state-v1", "run.jsonl"), "package-owned task state\n"],
     [path.join("firebase-functions", "node_modules", "functions-runtime.js"), "functions-runtime\n"],
     [path.join("packages", "core", "node_modules", "compiler.js"), "core-compiler\n"],
+    [path.join("packages", "hosted", "node_modules", "firebase.js"), "hosted-firebase\n"],
+    [path.join("packages", "solo", "node_modules", "react.js"), "solo-react\n"],
     [path.join("packages", "portal", "node_modules", "bundler.js"), "portal-bundler\n"],
   ]) {
+    await mkdir(path.dirname(path.join(directory, relativePath)), {recursive: true});
     await writeFile(path.join(directory, relativePath), contents);
   }
 
@@ -474,10 +540,102 @@ test("dependency fingerprints detect tooling changes but ignore known build cach
   await writeFile(path.join(directory, "node_modules", "release-tool.js"), "export default 'stable';\n");
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
 
+  for (const relativePath of [
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    path.join("node_modules", ".modules.yaml"),
+    path.join("node_modules", "runtime-package", "index.js"),
+    path.join("node_modules", "runtime-package", ".pnpm-workspace-state-v1.json"),
+    path.join("node_modules", "runtime-package", ".pnpm-task-run-state-v1", "run.jsonl"),
+    path.join("packages", "hosted", "package.json"),
+    path.join("packages", "solo", "package.json"),
+    path.join("packages", "hosted", "node_modules", "firebase.js"),
+    path.join("packages", "solo", "node_modules", "react.js"),
+  ]) {
+    const file = path.join(directory, relativePath);
+    const original = await readFile(file);
+    await writeFile(file, "changed dependency\n");
+    assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial, relativePath);
+    await writeFile(file, original);
+    assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  }
+
   const cacheDirectory = path.join(directory, "packages", "portal", "node_modules", ".vite");
   await mkdir(cacheDirectory);
   await writeFile(path.join(cacheDirectory, "generated-cache.js"), "mutable cache\n");
   assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  const taskState = path.join(directory, "node_modules", ".pnpm-task-run-state-v1");
+  const workspaceState = path.join(directory, "node_modules", ".pnpm-workspace-state-v1.json");
+  await mkdir(taskState);
+  await writeFile(path.join(taskState, "run.jsonl"), "completed task bookkeeping\n");
+  await writeFile(workspaceState, JSON.stringify({lastValidatedTimestamp: 1}));
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await writeFile(path.join(taskState, "latest.json"), "new task bookkeeping\n");
+  await writeFile(workspaceState, JSON.stringify({lastValidatedTimestamp: 2}));
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  const {chmod, rm, symlink} = await import("node:fs/promises");
+  const tool = path.join(directory, "node_modules", "release-tool.js");
+  const originalMode = (await stat(tool)).mode & 0o777;
+  await chmod(tool, originalMode ^ 0o100);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await chmod(tool, originalMode);
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  const link = path.join(directory, "node_modules", "runtime-link");
+  await symlink("release-tool.js", link);
+  const linked = fingerprintReleaseDependencies({repositoryDirectory: directory});
+  await rm(link);
+  await symlink("runtime-package/index.js", link);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), linked);
+  await rm(link);
+  assert.equal(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+
+  await rm(workspaceState);
+  await mkdir(workspaceState);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await rm(workspaceState, {recursive: true});
+  await rm(taskState, {recursive: true});
+  await writeFile(taskState, "a file is not the generated task directory\n");
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await rm(taskState);
+  await symlink("runtime-package", taskState);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+  await rm(taskState);
+  await symlink("runtime-package/index.js", workspaceState);
+  assert.notEqual(fingerprintReleaseDependencies({repositoryDirectory: directory}), initial);
+});
+
+test("immutable release sources resolve each workspace's installed dependencies", async (context) => {
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-release-snapshot-"));
+  context.after(async () => {
+    const {rm} = await import("node:fs/promises");
+    await rm(directory, {force: true, recursive: true});
+  });
+  const repositoryDirectory = path.join(directory, "repository");
+  const immutableSourceDirectory = path.join(directory, "snapshot");
+  for (const workspace of ["", "core", "hosted", "solo", "portal"]) {
+    const relativeDirectory = workspace ? path.join("packages", workspace) : "";
+    await mkdir(path.join(repositoryDirectory, relativeDirectory, "node_modules"), {recursive: true});
+    await mkdir(path.join(immutableSourceDirectory, relativeDirectory), {recursive: true});
+  }
+  for (const [workspace, modulePath] of [["hosted", "firebase/functions.js"], ["solo", "react/index.js"]]) {
+    const moduleFile = path.join(repositoryDirectory, "packages", workspace, "node_modules", modulePath);
+    await mkdir(path.dirname(moduleFile), {recursive: true});
+    await writeFile(moduleFile, `module.exports = ${JSON.stringify(workspace)};\n`);
+  }
+
+  const hosted = createRequire(path.join(immutableSourceDirectory, "packages", "hosted", "src", "gameFunctions.js"));
+  const solo = createRequire(path.join(immutableSourceDirectory, "packages", "solo", "src", "react", "boot.js"));
+  assert.throws(() => hosted("firebase/functions"), {code: "MODULE_NOT_FOUND"});
+  assert.throws(() => solo("react"), {code: "MODULE_NOT_FOUND"});
+
+  linkReleaseSnapshotDependencies({repositoryDirectory, immutableSourceDirectory});
+
+  assert.equal(hosted("firebase/functions"), "hosted");
+  assert.equal(solo("react"), "solo");
 });
 
 test("the game-and-build upload barrier is atomic, owner-private, and blocks retries", async (context) => {
@@ -801,7 +959,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
     unresolvedBarrierIndex,
   );
   const consoleReadinessIndex = findAfter(
-    /\[\s*["']--filter["']\s*,\s*["']@qwordly\/portal["']\s*,\s*["']check:jest-console:release["']\s*\]/,
+    /\[\s*["']--filter["']\s*,\s*["']@riddle-quest\/portal["']\s*,\s*["']check:jest-console:release["']\s*\]/,
     dependencyCaptureIndex,
   );
   const gateIndex = findAfter(/\[\s*["']verify:production:extended["']\s*\]/, consoleReadinessIndex);
@@ -857,6 +1015,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   assert.match(materializer, /sourceCommit/);
   assert.match(materializer, /immutableSourceDirectory/);
   assert.match(materializer, /run\("\/usr\/bin\/tar"/);
+  assert.match(materializer, /linkReleaseSnapshotDependencies\(\{repositoryDirectory, immutableSourceDirectory\}\)/);
   assert.match(releaseSource, /openSync\(lockPath,\s*"wx",\s*0o600\)/);
   assert.match(releaseSource, /finally\s*\{\s*releaseLock\(\);/);
   assert.match(releaseSource, /finalDependencyFingerprint !== dependencyFingerprint/);
@@ -967,7 +1126,7 @@ test("the release sequence gates, packages, verifies, and uploads one immutable 
   );
   assert.match(
     releaseSource,
-    /node_modules["'],\s*["']\.modules\.yaml["'][\s\S]*operatorPnpmStoreDirectory[\s\S]*copyFileSync\(operatorPnpmStoreIndexPath[\s\S]*addReadOnlyDirectoryBind\([\s\S]*operatorPnpmStoreFilesDirectory/,
+    /node_modules["'],\s*["']\.modules\.yaml["'][\s\S]*operatorPnpmStoreDirectory[\s\S]*snapshotPnpmStoreIndex\(operatorPnpmStoreIndexPath[\s\S]*addReadOnlyDirectoryBind\([\s\S]*operatorPnpmStoreFilesDirectory/,
   );
   assert.doesNotMatch(releaseSource, /pnpm_config_store_dir:\s*operatorPnpmStoreDirectory/);
   assert.match(

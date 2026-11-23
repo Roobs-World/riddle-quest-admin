@@ -1,11 +1,11 @@
-import {getSoloWinCoins, SOLO_COIN_COSTS} from "@qwordly/core/game";
-import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
-import {cloneProductPricingCatalog} from "@qwordly/core/pricing/catalog";
-import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "./types";
-import {toProductSummaries} from "./types";
+import {getSoloWinCoins, SOLO_COIN_COSTS} from "@riddle-quest/core/game";
+import {computeFeedback, splitGraphemes} from "@riddle-quest/core/game";
+import {cloneProductPricingCatalog} from "@riddle-quest/core/pricing/catalog";
+import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "@riddle-quest/core/bridge";
+import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "@riddle-quest/hosted/hostTypes";
+import {toProductSummaries} from "@riddle-quest/hosted/hostTypes";
 import {createFakeRaceServices} from "./race/testing/fakeRaceServices";
-import {predictCompletionAchievementIds} from "./predictCompletionAchievements";
+import {predictCompletionAchievementIds} from "@riddle-quest/hosted/play/predictCompletionAchievements";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "./modalPages/commerce/commerceCosts";
 
 /** Provides fake riddles behavior. */

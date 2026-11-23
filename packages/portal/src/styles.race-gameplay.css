@@ -584,7 +584,10 @@
   .race-gameplay .guess-board {
     max-width: min(100%, calc(var(--answer-length) * 42px - 4px));
   }
-  .race-gameplay > .keyboard { align-self: center; }
+  .race-gameplay > .keyboard {
+    align-self: center;
+    justify-self: start;
+  }
 }
 
 /* Status stays unscaled; only the unchanged puzzle and inputs use viewport fit. */

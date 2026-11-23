@@ -1,7 +1,7 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import {Children, isValidElement, type ReactElement, type ReactNode} from "react";
 import {renderToString} from "react-dom/server";
-import type {PublishRaceChallengeResponse, RaceChallengePreview, RaceOutcome} from "@qwordly/core/race";
+import type {PublishRaceChallengeResponse, RaceChallengePreview, RaceOutcome} from "@riddle-quest/core/race";
 import {RaceTo10Game} from "../RaceTo10Game";
 import {RaceCountdown} from "../components/RaceCountdown";
 import {RaceGameplay} from "../components/RaceGameplay";

@@ -1,5 +1,5 @@
 import {jest} from "@jest/globals";
-import {UsernameSchema} from "@qwordly/core/validation/requestSchemas";
+import {UsernameSchema} from "@riddle-quest/core/validation/requestSchemas";
 import {createJestUser, createReservedJestUser} from "../jest/jestUser";
 
 describe("Jest user defaults", () => {

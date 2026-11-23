@@ -35,8 +35,8 @@ const session={player:{playerId:user,registered:false},profile:{username:user},e
 const entry=params.has('challenge')?JSON.parse(params.get('challenge')):{};
 const challengeId=isFacebook?facebookLaunchFromEntryData(entry).initialRaceChallengeId:resolveRaceChallengeId(parseEntryIntent(entry));
 async function postToHost(message){if(message.type==='game:listRaceCategories')window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
-const activity=async operation=>operation();const track=()=>{};const backend={};
-function App(){const jest=useJestSharing({locale:'en',session,platform,backend,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});const capability=isFacebook?undefined:jest;const push=params.has('push')?{...capability,setLiveRacePush:async enabled=>{window.pushCalls??=[];window.pushCalls.push(enabled);return window.pushAllowed??false;}}:capability;return <ReferralSharingProvider capability={push}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
+const activity=async operation=>operation();const track=()=>{};const backend={};const sharingEnabled=()=>true;
+function App(){const jest=useJestSharing({locale:'en',session,platform,backend,sharingEnabled,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});const capability=isFacebook?undefined:jest;const push=params.has('push')?{...capability,setLiveRacePush:async enabled=>{window.pushCalls??=[];window.pushCalls.push(enabled);return window.pushAllowed??false;}}:capability;return <ReferralSharingProvider capability={push}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
@@ -54,7 +54,7 @@ try {
         response.setHeader("Content-Type", "application/json"); response.end(JSON.stringify(result)); return;
       }
       const file = path.join(scratch, "dist", url.pathname === "/" ? "index.html" : url.pathname);
-      response.setHeader("Content-Type", file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "text/html");
+      response.setHeader("Content-Type", file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : file.endsWith(".svg") ? "image/svg+xml" : file.endsWith(".png") ? "image/png" : "text/html");
       response.end(await readFile(file));
     } catch (error) {
       console.error("Invitation fixture request failed:", error instanceof Error ? error.message : String(error));
@@ -64,23 +64,28 @@ try {
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
   browser = await chromium.launch({headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? {executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH} : {})});
-  for (const target of ["jest", "facebook", "facebook-share"]) {
+  for (const target of (process.env.LIVE_RACE_TARGETS?.split(",") ?? ["jest", "facebook", "facebook-share"])) {
     authority = await createLiveRaceEmulator({provider: target === "jest" ? "jest" : "facebook"});
     for (const viewport of [{width: 1280, height: 900}, {width: 390, height: 844}]) {
       await authority.reset();
-      const context = await browser.newContext({viewport});
-      await context.route("https://live-race.invalid/**", route => route.fulfill({contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="45" fill="#75baff"/></svg>'}));
-      const a = await context.newPage(), b = await context.newPage(), errors = [];
+      const contexts = await Promise.all(["Alice", "Bob"].map(() => browser.newContext({viewport})));
+      for (const context of contexts) await context.route("https://live-race.invalid/**", route => route.fulfill({contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="45" fill="#75baff"/></svg>'}));
+      const a = await contexts[0].newPage(), b = await contexts[1].newPage(), errors = [];
       for (const page of [a, b]) page.on("pageerror", error => errors.push(error.message));
       await a.goto(`${base}/?target=${target}&user=Alice`);
       await a.getByRole("button", {name: "Challenge a friend", exact: true}).click();
-      await a.locator(".live-race-self strong").waitFor().catch(async error => {
+      await a.locator(".friend-lobby-seat[data-occupied=true] strong").waitFor().catch(async error => {
         await a.screenshot({path: path.join(output, `${target}-lobby-failure-${viewport.width}.png`), fullPage: true});
         console.error("Lobby failed to open:", await a.locator("body").innerText(), errors);
         throw error;
       });
-      assert.match(await a.locator(".live-race-status").innerText(), /Waiting for your friend/);
-      assert.equal(await a.locator(".live-race-rival strong").count(), 0);
+      assert.match(await a.locator(".friend-lobby-status").innerText(), /Waiting for your friend/);
+      assert.equal(await a.locator(".friend-lobby-seat[data-occupied=true]").count(), 1);
+      const originalChallengeId = await a.evaluate(() => JSON.parse(localStorage.getItem("riddleQuest:liveRaceLobby")).challengeId);
+      await a.reload();
+      await a.locator(".friend-lobby-seat[data-occupied=true] strong").waitFor();
+      assert.equal(await a.evaluate(() => JSON.parse(localStorage.getItem("riddleQuest:liveRaceLobby")).challengeId), originalChallengeId, "Sender reload retains the exact private invitation");
+      assert.equal(await a.evaluate(() => window.commands.find(command => command.action === "join").input.challengeId), originalChallengeId);
       // Guest sharing is allowed; cancelled and failed dialogs leave the same reserved lobby ready for retry.
       await a.evaluate(() => window.outcome = "cancelled");
       await a.getByRole("button", {name: "Challenge a friend", exact: true}).click();
@@ -96,22 +101,20 @@ try {
       const entry = target === "jest" ? calls[2].input.entryPayload : calls[2].input.data;
       assert.match(entry.challengeId, /^live_[a-f0-9]{64}$/);
       assert.ok(calls.every(call => (target === "jest" ? call.input.entryPayload : call.input.data).challengeId === entry.challengeId));
-      if (target === "jest") {assert.equal(entry.challengeDestination, "multiplayer");assert.equal(calls[2].input.reference, "live_pvp_v1");}
+      if (target === "jest") {assert.equal(entry.challengeDestination, "multiplayer");assert.match(calls[2].input.reference, /^rq_r10_v1_[0-9a-f]{16}$/);}
       else if (target === "facebook-share") {assert.equal(calls[2].input.intent, "CHALLENGE");assert.equal(calls[2].input.switchContext, false);}
       else {assert.equal(calls[2].input.dialogTitle, "Challenge a friend");assert.ok(calls[2].input.text.default);}
       if (target !== "jest") assert.deepEqual(Object.keys(entry), ["challengeId"]);
       await a.screenshot({path: path.join(output, `${target}-reserved-${viewport.width}.png`), fullPage: true});
+      await a.goto(`${base}/?target=${target}&user=Alice&challenge=${encodeURIComponent(JSON.stringify(entry))}`);
+      await a.locator(".friend-lobby-seat[data-occupied=true] strong").waitFor();
+      assert.equal(await a.evaluate(() => window.commands.find(command => command.action === "join").input.challengeId), originalChallengeId, "Creator opening their own SMS link resumes the original private seat");
       await b.goto(`${base}/?target=${target}&user=Bob&challenge=${encodeURIComponent(JSON.stringify(entry))}`);
-      await b.getByRole("button", {name: "Accept challenge", exact: true}).waitFor();
-      assert.match(await b.locator(".live-race-invitation").innerText(), /Alice challenged you/);
-      assert.equal(await b.locator(".live-race-invitation").getAttribute("role"), "alert");
-      assert.equal(await b.evaluate(() => window.commands.some(command => command.action === "join")), false, "Receiving a notification must not auto-accept");
-      await b.screenshot({path: path.join(output, `${target}-received-${viewport.width}.png`), fullPage: true});
-      await b.getByRole("button", {name: "Accept challenge", exact: true}).click();
       await b.locator(".live-race-search-wheel[data-phase=countdown]").waitFor();
-      await a.locator(".live-race-rival strong").waitFor();
-      assert.equal(await a.locator(".live-race-rival strong").innerText(), "Bob");
-      assert.equal(await b.locator(".live-race-rival strong").innerText(), "Alice");
+      assert.equal(await b.getByRole("button", {name: "Accept challenge", exact: true}).count(), 0, "Opening a validated SMS link enters its private lobby directly");
+      await a.locator(".friend-lobby-seat[data-occupied=true]").nth(1).waitFor();
+      assert.equal(await a.locator(".friend-lobby-seat strong").nth(1).innerText(), "Bob");
+      assert.equal(await b.locator(".friend-lobby-seat strong").nth(1).innerText(), "Alice");
       const accept = await b.evaluate(() => window.commands.find(command => command.action === "join").input);
       assert.equal(accept.challengeId, entry.challengeId);
       assert.equal(accept.categoryId, "mixed");
@@ -120,11 +123,11 @@ try {
       await b.locator(".race-gameplay .guess-board").waitFor({timeout: 15000});
       assert.equal(await a.locator(".live-race-invite-share").count(), 0);
       assert.deepEqual(errors, []);
-      await context.close();
-      console.log(`${target} ${viewport.width}px: native challenge payload, dismissal/failure retry, notification, explicit acceptance into original lobby and shared gameplay passed.`);
+      await Promise.all(contexts.map(context => context.close()));
+      console.log(`${target} ${viewport.width}px: sender reload, native challenge payload, dismissal/failure retry, SMS-link entry into the original private lobby and shared gameplay passed.`);
       await authority.reset();
-      const direct = await browser.newContext({viewport});
-      const sender = await direct.newPage(), recipient = await direct.newPage();
+      const direct = await Promise.all(["Alice", "Bob"].map(() => browser.newContext({viewport})));
+      const sender = await direct[0].newPage(), recipient = await direct[1].newPage();
       await sender.goto(`${base}/?target=${target}&user=Alice`);
       await sender.getByRole("button", {name: "Challenge a friend", exact: true}).click();
       await sender.getByLabel("Player username", {exact: true}).fill("Bob");
@@ -166,10 +169,10 @@ try {
       await recipient.screenshot({path: path.join(output, `${target}-direct-inbox-${viewport.width}.png`), fullPage: true});
       await recipient.getByRole("button", {name: "Accept challenge", exact: true}).click();
       await recipient.locator(".live-race-search-wheel[data-phase=countdown]").waitFor();
-      await sender.locator(".live-race-rival strong").waitFor();
-      assert.equal(await sender.locator(".live-race-rival strong").innerText(), "Bob");
+      await sender.locator(".friend-lobby-seat[data-occupied=true]").nth(1).waitFor();
+      assert.equal(await sender.locator(".friend-lobby-seat strong").nth(1).innerText(), "Bob");
       console.log(`${target} ${viewport.width}px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.`);
-      await direct.close();
+      await Promise.all(direct.map(context => context.close()));
     }
   }
   const unsupported = await browser.newPage();

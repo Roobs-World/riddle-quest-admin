@@ -1,7 +1,6 @@
 {
   "CoinPurchase": {
-    "AWESOME_BUTTON": "Geweldig",
-    "COINS_SUFFIX": "Munten",
+    "COINS_SUFFIX": " Munten",
     "TITLE": "Munten toegevoegd!"
   }
 }

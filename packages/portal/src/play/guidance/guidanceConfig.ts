@@ -1,5 +1,5 @@
 import type {CSSProperties} from "react";
-import type {GameModal, GameSessionState} from "../gameSession";
+import type {GameModal, GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 
 /** Stable identifier for one tooltip or guided-tour step. */
 export type TooltipId =
@@ -7,6 +7,7 @@ export type TooltipId =
   | "gameCoins"
   | "gameHint"
   | "gameSkip"
+  | "gameMultiplayer"
   | "hintAfterWrongGuess"
   | "achievementEarned"
   | "leaderboardFifthCorrectAnswer"
@@ -21,12 +22,8 @@ export type TooltipId =
   | "profileLeaderboard"
   | "profileTreasure";
 
-/**
- * Ordered tooltips shown on a new player's first riddle.
- * @remarks The coin shop is deliberately absent so new players go straight into
- * play; it is introduced contextually at the start of a riddle after their first win.
- */
-export const GAME_TOUR: readonly TooltipId[] = ["gameHint", "submitAnswer", "gameSkip"];
+/** Ordered tooltips introducing available controls after their progression gates. */
+export const GAME_TOUR: readonly TooltipId[] = ["gameCoins", "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer"];
 
 /** Profile steps whose card must never overlap the control it explains. */
 const SEPARATED_PROFILE_TOOLTIPS = new Set<TooltipId>([
@@ -35,7 +32,7 @@ const SEPARATED_PROFILE_TOOLTIPS = new Set<TooltipId>([
 
 /** Tooltips positioned above their highlighted target. */
 export const ABOVE_TARGET_TOOLTIPS = new Set<TooltipId>([
-  "gameHint", "submitAnswer", "gameSkip",
+  "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
   "profileAchievements", "profileStatistics", "profileLeaderboard", "profileTreasure",
 ]);
 
@@ -58,8 +55,8 @@ export const TOOLTIP_TOUR_VERSION = "v2";
 /** Profile-specific version so a new profile step does not replay the game tour. */
 export const PROFILE_TOOLTIP_TOUR_VERSION = "v3";
 
-/** Game-tour version without the coin shop step. */
-export const GAME_TOOLTIP_TOUR_VERSION = "v3";
+/** Reintroduces Daily skipping and multiplayer, with coins available after the first win. */
+export const GAME_TOOLTIP_TOUR_VERSION = "v4";
 
 /** Superseded game tour version that still counts as seen and already showed the coin shop step. */
 const LEGACY_GAME_TOOLTIP_TOUR_VERSION = "v2";
@@ -70,6 +67,7 @@ export const TOOLTIP_KEYS: Record<TooltipId, readonly [title: string, body: stri
   gameCoins: ["Tooltips.GAME_COINS_TITLE", "Tooltips.GAME_COINS_BODY"],
   gameHint: ["Tooltips.GAME_HINT_TITLE", "Tooltips.GAME_HINT_BODY"],
   gameSkip: ["Tooltips.GAME_SKIP_TITLE", "Tooltips.GAME_SKIP_BODY"],
+  gameMultiplayer: ["RaceTo10.MULTIPLAYER_BUTTON", "Tooltips.GAME_MULTIPLAYER_BODY"],
   hintAfterWrongGuess: ["Tooltips.HINT_AFTER_WRONG_TITLE", "Tooltips.HINT_AFTER_WRONG_BODY"],
   achievementEarned: ["Tooltips.ACHIEVEMENT_EARNED_TITLE", "Tooltips.ACHIEVEMENT_EARNED_BODY"],
   leaderboardFifthCorrectAnswer: [
@@ -94,6 +92,7 @@ export const TOOLTIP_SELECTORS: Partial<Record<TooltipId, string>> = {
   gameHint: "[data-tooltip='gameHint']",
   submitAnswer: "[data-tooltip='submitAnswer']",
   gameSkip: "[data-tooltip='gameSkip']",
+  gameMultiplayer: "[data-tooltip='gameMultiplayer']",
   achievementEarned: "[data-tooltip='achievementEarned']",
   profileIdentity: "[data-tooltip='profileIdentity']",
   profileProgression: "[data-tooltip='profileProgression']",
@@ -130,10 +129,9 @@ function hasSeenLegacyGameTour(markers: GuidanceSeenReader, userId?: string): bo
   return markers.hasSeen("local", createTooltipTourStorageKey("gameTour", userId, LEGACY_GAME_TOOLTIP_TOUR_VERSION));
 }
 
-/** Returns whether a tour was completed, accepting the legacy game tour for returning players. */
+/** Returns whether the player completed the current version of a tour. */
 export function hasSeenTooltipTour(markers: GuidanceSeenReader, tourName: string, userId?: string): boolean {
-  return markers.hasSeen("local", createTooltipTourStorageKey(tourName, userId)) ||
-    (tourName === "gameTour" && hasSeenLegacyGameTour(markers, userId));
+  return markers.hasSeen("local", createTooltipTourStorageKey(tourName, userId));
 }
 
 /** Returns whether a contextual tooltip was dismissed or was already presented by the legacy game tour. */
@@ -147,11 +145,15 @@ export function getOnboardingTotalSteps(): number {
   return 2;
 }
 
-/** Omits actions unavailable in the current mode or platform's commerce capability. */
-export function getGameTour(gameMode: GameSessionState["gameMode"], commerceAvailable = true, economyAvailable = true): TooltipId[] {
-  return GAME_TOUR.filter((id) =>
-    (gameMode !== "challenge" || id !== "gameSkip") && (commerceAvailable || id !== "gameCoins") &&
-    (economyAvailable || id === "submitAnswer"));
+/** Introduces available controls, deferring coin-shop guidance until the player's first win. */
+export function getGameTour(gameMode: GameSessionState["gameMode"], commerceAvailable = true, economyAvailable = true, multiplayerAvailable = false, hasWon = false): TooltipId[] {
+  return GAME_TOUR.filter((id) => {
+    if (id === "gameCoins") return commerceAvailable && economyAvailable && hasWon;
+    if (id === "gameHint") return economyAvailable;
+    if (id === "gameSkip") return economyAvailable || gameMode === "challenge";
+    if (id === "gameMultiplayer") return multiplayerAvailable;
+    return true;
+  });
 }
 
 /** Avoids advertising a coin shop when the active provider has no checkout. */

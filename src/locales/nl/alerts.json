@@ -6,6 +6,9 @@
     "COST_COINS_PREFIX": "Kosten: ",
     "COST_COINS_SUFFIX": " Munten.",
     "DAILY_CHALLENGE_LABEL": "Dagelijkse uitdaging",
+    "DAILY_SKIP_MODAL_TITLE": "Dagelijks raadsel verlaten?",
+    "DAILY_SKIP_MESSAGE": "Je dagelijkse raadsel blijft onvoltooid. Naar de klassieke modus gaan?",
+    "DAILY_SKIP_CONTINUE_BUTTON": "Klassiek spelen",
     "GUEST_MODE_NOTICE_MESSAGE": "Je voortgang kan verloren gaan in de gastmodus en sommige functies, zoals het klassement, zijn niet beschikbaar.",
     "HINT_ERROR_TITLE": "Fout",
     "HINT_MODAL_TITLE": "Gebruik een hint?",
@@ -21,7 +24,7 @@
     "SKIP_BUTTON": "Overslaan",
     "SKIP_LEVEL_BUTTON": "LEVEL OVERSLAAN",
     "SKIP_MODAL_TITLE": "Het level overslaan?",
-    "SKIP_NOT_ENOUGH_COINS_MESSAGE": "Je hebt niet genoeg munten om een ​​level over te slaan.",
+    "SKIP_NOT_ENOUGH_COINS_MESSAGE": "Je hebt niet genoeg munten om een level over te slaan.",
     "SPEND_COINS_ERROR_MESSAGE": "Kan geen munten uitgeven. Probeer het opnieuw.",
     "SUBMIT_BUTTON": "INDIENEN",
     "SUBMIT_GUESS_ERROR_MESSAGE": "Kan gok niet verzenden. Probeer het opnieuw.",
@@ -33,11 +36,11 @@
     "DEBUG_DAILY_CHALLENGE_GENERATED_MESSAGE": "Succesvol een nieuwe dagelijkse uitdaging gegenereerd in localizedRiddles/{locale}/riddles/current.",
     "DEBUG_DAILY_CHALLENGE_GENERATED_TITLE": "Dagelijkse uitdaging Gegenereerd",
     "GUEST_MODE_SAVED_ON_DEVICE_MESSAGE": "Je voortgang wordt op dit apparaat opgeslagen. Upgrade uw account om het op verschillende apparaten veilig te houden.",
-    "STREAK_BROKEN_MESSAGE": "Uw streak eindigde op {previousStreak} dag{daySuffix}. Voltooi de dagelijkse uitdaging van vandaag om een ​​nieuwe streak te starten.",
-    "STREAK_BROKEN_TITLE": "Streep gebroken",
+    "STREAK_BROKEN_MESSAGE": "Je reeks eindigde op {previousStreak} dag{daySuffix}. Voltooi de dagelijkse uitdaging van vandaag om een nieuwe reeks te starten.",
+    "STREAK_BROKEN_TITLE": "Reeks verbroken",
     "NO_PRODUCTS_AVAILABLE_TITLE": "Geen producten beschikbaar",
     "QA_RIDDLE_DATABASE_UNAVAILABLE_MESSAGE": "De app kon het laden van de raadsels niet voltooien. Controleer uw verbinding en probeer het opnieuw.",
-    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Riddle-database niet beschikbaar",
+    "QA_RIDDLE_DATABASE_UNAVAILABLE_TITLE": "Raadseldatabase niet beschikbaar",
     "PROGRESS_UNSAVED_MESSAGE": "Je voortgang is nog niet opgeslagen. Houd het spel open."
   }
 }

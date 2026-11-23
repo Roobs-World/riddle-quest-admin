@@ -1,6 +1,0 @@
-
-Test Suites: 9 passed, 9 total
-Tests:       127 passed, 127 total
-Snapshots:   0 total
-Time:        0.686 s, estimated 1 s
-Ran all test suites matching GameFrameControls.test.tsx|GameFrameApp.test.tsx|NativeAnswerInput.test.tsx|RaceSessionHistoryGraphemes.test.ts|RaceSessionKnownAnswerFeedback.test.ts|RaceSessionKnownAnswerReveals.test.ts|RaceSessionProgress.test.ts|raceInput.test.ts|RaceSessionDraftReload.test.ts.

@@ -1,2 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit passed: 22529 declarations are documented across 1037 files.

@@ -106,6 +106,8 @@ type JestPurchase = {
   purchaseToken: string;
   /** Catalog SKU associated with the purchase. */
   productSku: string;
+  /** Marks test transactions that must be excluded from revenue reporting. */
+  sandbox?: boolean;
   /** Preserves additional platform fields without weakening required identity fields. */
   [key: string]: unknown;
 };
@@ -128,6 +130,8 @@ export type JestSubscription = {
   status: "active" | "inactive";
   /** Whether Jest currently allows a trial for this player and SKU. */
   trialEligible?: boolean;
+  /** Marks test subscriptions that must be excluded from revenue reporting. */
+  sandbox?: boolean;
 };
 
 /**
@@ -184,7 +188,7 @@ type JestReferralShare = {
 /** Provider notification content and launch attribution. */
 type JestNotificationContent = {
   /** Stable identifier used to replace or unschedule a notification. */
-  identifier?: string;
+  identifier: string;
   /** Optional provider notification title. */
   title?: string;
   /** Localized notification body. */
@@ -197,16 +201,16 @@ type JestNotificationContent = {
   entryPayload?: Record<string, string>;
 };
 
-/** Exactly one inline image or approved library reference, or the platform Hero fallback. */
+/** Exactly one runtime image or approved library reference, or the platform Hero fallback. */
 export type JestNotificationAsset =
   | {
-      /** PNG, JPEG, or WebP base64 data URL, at most 2MiB decoded. */
+      /** PNG, JPEG, or WebP data URL up to 2MiB encoded, or a public HTTPS URL up to 2048 characters. */
       asset: string;
-      /** Inline images cannot accompany a library reference. */
+      /** Runtime images cannot accompany a library reference. */
       assetReference?: never;
     }
   | {
-      /** Library references cannot accompany an inline image. */
+      /** Library references cannot accompany a runtime image. */
       asset?: never;
       /** Approved library asset, or omitted to use the platform Hero image. */
       assetReference?: string;

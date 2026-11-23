@@ -93,6 +93,8 @@ const mockAdminFirestoreDoc = jest.fn((collection: string, id = "") => ({
   path: `${collection}/${id}`,
   update: mockAdminFirestoreUpdate,
   set: mockAdminFirestoreSet,
+  /** Reads the canonical account used by native avatar authorization. */
+  get: async () => ({exists: mockFirestoreDocuments.has(`${collection}/${id}`), data: () => mockFirestoreDocuments.get(`${collection}/${id}`)}),
 }));
 /** Provides mock admin firestore collection behavior. */
 const mockAdminFirestoreCollection = jest.fn((path: string) => ({
@@ -203,11 +205,12 @@ describe("Profile Cloud Functions", () => {
 
   it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
+      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
       [
         {
+          minInstances: 0,
           enforceAppCheck: true,
           invoker: "public",
           timeoutSeconds: 540,
@@ -458,6 +461,29 @@ describe("Profile Cloud Functions", () => {
       );
       expect(mockStorageSave).not.toHaveBeenCalled();
     });
+
+    it.each(["anonymous", "google.com"])("uploads an avatar only for a provisioned Android %s account", async provider => {
+      /** Android's canonical profile is written exclusively by account provisioning. */
+      const uid = "a".repeat(28);
+      mockFirestoreDocuments.set(`users/${uid}`, {userId: uid, androidProvider: "anonymous"});
+      mockStorageSave.mockResolvedValue(undefined);
+      mockUpdateUserProfile.mockResolvedValue(undefined);
+      /** Invoke the callable handler through the existing onCall boundary fixture. */
+      const result: unknown = await Reflect.apply(updateAvatar, undefined, [{auth: {uid, token: {firebase: {sign_in_provider: provider}}}, data: {imageDataUrl: pngDataUrl}}]);
+      expect(result).toMatchObject({success: true});
+      expect(mockStorageFile).toHaveBeenCalledWith(`avatars/${uid}/profile`);
+    });
+
+    it.each([undefined, {userId: "another-owner", androidProvider: "anonymous"}, {userId: "a".repeat(28)}, {userId: "a".repeat(28), androidProvider: "custom"}])(
+      "rejects a native sign-in without the matching canonical Android account", async profile => {
+        /** A valid Firebase identity does not itself grant hosted profile authority. */
+        const uid = "a".repeat(28);
+        if (profile) mockFirestoreDocuments.set(`users/${uid}`, profile);
+        await expect(Reflect.apply(updateAvatar, undefined, [{auth: {uid, token: {firebase: {sign_in_provider: "anonymous"}}}, data: {imageDataUrl: pngDataUrl}}]))
+          .rejects.toMatchObject({code: "permission-denied"});
+        expect(mockStorageSave).not.toHaveBeenCalled();
+      },
+    );
 
     it("rejects unauthenticated avatar uploads", async () => {
       await expect((updateAvatar as any)({auth: undefined, data: {imageDataUrl: pngDataUrl}})).rejects.toMatchObject({

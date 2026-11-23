@@ -1,4 +1,4 @@
-import {RACE_SUPPORTED_LOCALES, type RaceLocale} from "@qwordly/core/race";
+import {RACE_SUPPORTED_LOCALES, type RaceLocale} from "@riddle-quest/core/race";
 import {createHash} from "node:crypto";
 import {z} from "zod";
 import {

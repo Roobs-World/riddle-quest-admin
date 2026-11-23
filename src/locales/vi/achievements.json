@@ -1,13 +1,13 @@
 {
   "Achievements": {
-    "COINS_SUFFIX": " Xu xu",
+    "COINS_SUFFIX": " Xu",
     "FANFARE_TITLE": "Đã mở khóa thành tích!",
     "MODAL_TITLE": "Thành tích",
-    "MORE_UNLOCKED_SUFFIX": " được mở khóa nhiều hơn",
+    "MORE_UNLOCKED_SUFFIX": " thành tích khác đã mở khóa",
     "NEW_ACHIEVEMENT": "Thành tích mới",
     "NICE_BUTTON": "Tốt",
     "UNLOCKED_ALERT_MESSAGE": "Kiểm tra hồ sơ của bạn để xem các thành tích mới của bạn.",
-    "UNLOCKED_ALERT_OK": "ĐƯỢC RỒI",
+    "UNLOCKED_ALERT_OK": "OK",
     "UNLOCKED_ALERT_TITLE": "Thành tích đã được mở khóa!",
     "MILESTONES": {
       "wins_10": {

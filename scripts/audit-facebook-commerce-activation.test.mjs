@@ -4,14 +4,14 @@ import {auditFacebookCommerceActivation} from "./audit-facebook-commerce-activat
 
 const inactiveBootstrap = "available: { commerce: false, ads: false }; capabilities: {overlay};";
 
-test("accepts staged commerce that is unavailable and unexposed", () => {
+test("accepts an unauthenticated bootstrap without commerce", () => {
   assert.deepEqual(auditFacebookCommerceActivation({
     runtimeSources: [{name: "entry.ts", source: "initializeCorePlay()"}],
     bootstrapSource: inactiveBootstrap,
   }), []);
 });
 
-test("rejects runtime imports, verifier endpoints, or enabled availability", () => {
+test("rejects commerce outside the Facebook adapter or before authentication", () => {
   const failures = auditFacebookCommerceActivation({
     runtimeSources: [
       {name: "entry.ts", source: "new FacebookCommerceCapability(payments, grant)"},
@@ -19,7 +19,10 @@ test("rejects runtime imports, verifier endpoints, or enabled availability", () 
     ],
     bootstrapSource: "available: {commerce: true}",
   });
-  assert.equal(failures.length, 3);
+  assert.ok(failures.some((failure) => failure.includes("entry.ts")));
+  assert.ok(failures.some((failure) => failure.includes("client.ts")));
+  assert.ok(failures.some((failure) => failure.includes("availability false")));
+  assert.ok(failures.some((failure) => failure.includes("authority is missing")));
 });
 
 test("rejects direct capability exposure even when availability remains false", () => {
@@ -27,5 +30,16 @@ test("rejects direct capability exposure even when availability remains false", 
     runtimeSources: [],
     bootstrapSource: "available: {commerce: false,}; capabilities: {commerce: adapter}",
   });
-  assert.deepEqual(failures, ["Facebook bootstrap must not expose the staged commerce capability."]);
+  assert.deepEqual(failures, ["Facebook bootstrap must not expose commerce before authentication."]);
+});
+
+test("requires receipt and webhook authority for the Facebook adapter", () => {
+  const input = {
+    runtimeSources: [{name: "packages/portal/src/facebook/FacebookCommerceSession.ts", source: "new FacebookCommerceCapability(payments, grant)"}],
+    bootstrapSource: inactiveBootstrap,
+  };
+  assert.equal(auditFacebookCommerceActivation(input).length, 5);
+  assert.deepEqual(auditFacebookCommerceActivation({...input, serverSources: [
+    "verifyFacebookSignedPurchase grantVerifiedFacebookPurchase FACEBOOK_PAYMENTS_WEBHOOK_ENABLED timingSafeEqual facebookPaymentTokens",
+  ]}), []);
 });

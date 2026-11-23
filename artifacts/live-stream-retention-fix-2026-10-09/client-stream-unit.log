@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       22 passed, 22 total
-Snapshots:   0 total
-Time:        0.181 s, estimated 1 s
-Ran all test suites within paths "src/play/__tests__/firebaseLiveRaceRecovery.test.ts", "src/play/__tests__/firebaseLiveRaceSubscription.test.ts", "src/play/race/__tests__/liveRacePolling.test.ts".

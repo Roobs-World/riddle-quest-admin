@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.PLAYABLE_CAPACITY_REACT_MODE??'development';
-const output=path.resolve(process.env.PLAYABLE_CAPACITY_REPORT_DIR??path.join(root,'../../artifacts/playable-text-capacity-2026-10-04',mode));
+const output=path.resolve(process.env.PLAYABLE_CAPACITY_REPORT_DIR??path.join(root,'../../builds/test-evidence/playable-text-capacity-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/playable-text-capacity-'));
 const fixture=path.join(root,'../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json');

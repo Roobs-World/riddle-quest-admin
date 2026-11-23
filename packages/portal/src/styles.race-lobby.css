@@ -106,7 +106,7 @@
   padding: clamp(18px, 4vw, 34px);
   color: var(--race-ink);
   border: 3px solid var(--race-warm);
-  background: var(--play-panel) url("../../../assets/images/home-bg.svg") center / cover no-repeat;
+  background: var(--play-panel) url("../../../assets/images/home-bg.svg?no-inline") center / cover no-repeat;
   border-radius: 32px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.26);
 }
@@ -381,8 +381,7 @@
 .race-screen .race-primary,
 .race-screen .race-secondary,
 .race-screen .live-race-push-consent button,
-.race-screen .live-race-invitation button,
-.race-screen .live-race-invite-share button {
+.race-screen .live-race-invitation button {
   min-height: 50px;
   padding: 12px 22px;
   border: 2px solid var(--race-warm);
@@ -422,6 +421,7 @@
   background: var(--race-ink);
 }
 .race-primary[aria-busy="true"]::after,
+.live-race-invite-share button[aria-busy="true"]::after,
 .race-tournaments > button[aria-busy="true"]::after,
 .race-hub-social-actions button[aria-busy="true"]::after,
 .race-safety-actions button[aria-busy="true"]::after,
@@ -511,6 +511,21 @@
   display: block;
   margin: 24px auto 0;
 }
+.race-screen .race-category-panel > .race-secondary,
+.race-screen .live-race-invite-share button {
+  display: block;
+  width: min(100%, 360px);
+  margin-inline: auto;
+  cursor: pointer;
+}
+.race-screen .race-category-panel > .race-secondary:disabled,
+.race-screen .live-race-invite-share button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.race-screen .live-race-invite-share button[aria-busy="true"] {
+  cursor: wait;
+}
 .race-screen-live-lobby { display: flex; flex-direction: column; }
 .live-race-lobby {
   flex: 1;
@@ -599,23 +614,10 @@
   .race-screen *, .race-screen *::before { animation: none; transition: none; }
 }
 
-.live-race-invite-share { margin: 18px 12px 0; }
+.live-race-invite-share { width: min(100%, 360px); margin: 18px auto 0; }
 .live-race-invitation { border: 3px solid var(--race-warm); margin-bottom: 16px; }
-
-.live-race-invitation button, .live-race-invite-share button {
-  min-height: 48px;
-  padding: 12px 20px;
-  border: 2px solid #247147;
-  border-radius: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.live-race-invitation button:focus-visible, .live-race-invite-share button:focus-visible {
-  outline: 3px solid #7bc9ff;
-  outline-offset: 3px;
-}
-.live-race-invite-share button:disabled { opacity: .6; cursor: wait; }
-.live-race-direct-invite { display: grid; gap: .6rem; margin-block-start: .8rem; width: min(100%, 28rem); }
+.live-race-invitation button { cursor: pointer; }
+.live-race-direct-invite { display: grid; gap: .6rem; margin-block-start: .8rem; width: 100%; }
 .live-race-direct-invite label { display: grid; gap: .4rem; text-align: start; }
 .live-race-direct-invite input { min-height: 48px; padding: .6rem; border-radius: .7rem; border: 1px solid currentColor; color: inherit; background: transparent; font: inherit; width: 100%; box-sizing: border-box; }
 .live-race-direct-invite input:focus-visible { outline: 3px solid #ffe380; outline-offset: 3px; }

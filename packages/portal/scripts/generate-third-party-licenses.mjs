@@ -5,7 +5,7 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 
 const portalDirectory = fileURLToPath(new URL("../", import.meta.url));
 const repositoryDirectory = resolve(portalDirectory, "../..");
-const licensePackage = process.env.RIDDLE_QUEST_LICENSE_PACKAGE ?? "@qwordly/portal";
+const licensePackage = process.env.RIDDLE_QUEST_LICENSE_PACKAGE ?? "@riddle-quest/portal";
 const configuredOutputFile = process.env.RIDDLE_QUEST_LICENSE_OUTPUT;
 if (configuredOutputFile !== undefined && !isAbsolute(configuredOutputFile)) {
   throw new Error("RIDDLE_QUEST_LICENSE_OUTPUT must be absolute when provided");
@@ -67,9 +67,10 @@ function readLicenseInventory(packageNames) {
   // Vercel sets npm_execpath to npm even when the install was performed by
   // pnpm. Only invoke it when it is actually a pnpm entrypoint; npm does not
   // implement `pnpm licenses list` and exits before producing JSON.
-  const usesPnpmExecutable = typeof npmExecutable === "string" && /(?:^|[/\\])pnpm(?:\.cjs)?$/.test(npmExecutable);
-  const command = usesPnpmExecutable ? process.execPath : "pnpm";
-  const prefixArguments = usesPnpmExecutable ? [npmExecutable] : [];
+  const usesPnpmExecutable = typeof npmExecutable === "string" && /(?:^|[/\\])pnpm(?:-native)?(?:\.[cm]?js|\.exe)?$/.test(npmExecutable);
+  const usesNodeEntrypoint = usesPnpmExecutable && /\.[cm]?js$/u.test(npmExecutable);
+  const command = usesNodeEntrypoint ? process.execPath : usesPnpmExecutable ? npmExecutable : "pnpm";
+  const prefixArguments = usesNodeEntrypoint ? [npmExecutable] : [];
   const output = execFileSync(
     command,
     [...prefixArguments, "--filter", licensePackage, "licenses", "list", ...(packageNames ? [] : ["--prod"]), "--json"],
@@ -170,7 +171,7 @@ export function createNotice(packageNames, {includeHomepages = true} = {}) {
     "==========================================",
     "",
     "This file lists the production runtime dependencies distributed with Riddle Quest.",
-    packageNames ? "It includes only packages emitted in this Web Target." : "It is generated from the locked @qwordly/portal production dependency graph.",
+    packageNames ? "It includes only packages emitted in this Web Target." : "It is generated from the locked @riddle-quest/portal production dependency graph.",
     "",
     "Dependency inventory",
     "--------------------",

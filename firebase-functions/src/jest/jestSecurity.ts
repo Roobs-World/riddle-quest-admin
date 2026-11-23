@@ -69,6 +69,14 @@ export function verifyJestSigned(
   if (payload.aud !== expectedGameId) throw new Error("invalid-audience");
   if (typeof payload.sub !== "string" || !payload.sub) throw new Error("invalid-subject");
   if (expectedPlayerId && payload.sub !== expectedPlayerId) throw new Error("invalid-subject");
+  if (payload.exp !== undefined &&
+    (typeof payload.exp !== "number" || !Number.isFinite(payload.exp) || payload.exp <= nowSeconds)) {
+    throw new Error("expired-token");
+  }
+  if (payload.nbf !== undefined &&
+    (typeof payload.nbf !== "number" || !Number.isFinite(payload.nbf) || payload.nbf > nowSeconds)) {
+    throw new Error("token-not-active");
+  }
   if (maxAgeSeconds !== null) {
     /** Provides issued at behavior. */
     const issuedAt = payload.iat;

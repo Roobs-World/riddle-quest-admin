@@ -1,5 +1,98 @@
 import {MockJestPlatform} from "../MockJestPlatform";
+
 import {JestPurchaseCoordinator} from "../purchases";
+import {JestBackendClient} from "../backend";
+import type {JestPlatformPort} from "../types";
+import {configureBrowserErrorReporter, resetBrowserErrorReporterForTests} from "../../observability/browserErrorReporter";
+
+/** Simulates browser-owned cross-tab checkout exclusion for coordinator fixtures. */
+const checkoutLocks = new Set<string>();
+/** Original browser descriptor restored after installing the checkout-lock fixture. */
+const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator");
+
+beforeAll(() => {
+  Object.defineProperty(globalThis, "navigator", {
+    configurable: true,
+    value: {
+      locks: {
+        request: async (
+          name: string,
+          _options: LockOptions,
+          operation: (lock: Pick<Lock, "name" | "mode"> | null) => unknown,
+        ) => {
+          if (checkoutLocks.has(name)) return operation(null);
+          checkoutLocks.add(name);
+          try {
+            return await operation({name, mode: "exclusive"});
+          } finally {
+            checkoutLocks.delete(name);
+          }
+        },
+      },
+    },
+  });
+});
+
+afterAll(() => {
+  if (originalNavigator) Object.defineProperty(globalThis, "navigator", originalNavigator);
+  else Reflect.deleteProperty(globalThis, "navigator");
+});
+
+/** Returns one signed inactive offer for subscription preflight scenarios. */
+const inactiveSubscriptionCatalog = (sku = "premium") => ({
+  status: "success" as const,
+  value: {
+    subscriptions: [{
+      sku,
+      displayName: "Premium",
+      displayDescription: null,
+      price: 4.99,
+      currency: "USD",
+      billingPeriod: "monthly" as const,
+      status: "inactive" as const,
+    }],
+    subscriptionsSigned: "catalog.inactive",
+  },
+});
+
+it.each(["active", "missing", "verification-failed", "lock-busy"])(
+  "keeps the locked subscription preflight fail-closed: %s", async condition => {
+    /** Subscription-capable platform with a controlled catalog and checkout spy. */
+    const platform = new MockJestPlatform(true);
+    /** Baseline signed offer adjusted for each preflight rejection scenario. */
+    const available = inactiveSubscriptionCatalog();
+    /** Records catalog reads and returns the scenario-specific subscription holding. */
+    const getSubscriptions = jest.spyOn(platform, "getSubscriptions").mockResolvedValue({status: "success", value: {
+      ...available.value,
+      subscriptions: condition === "missing" ? [] : available.value.subscriptions.map(subscription => ({...subscription,
+        displayDescription: "", trialEligible: condition !== "active", status: condition === "active" ? "active" : "inactive"})),
+    }});
+    /** Records checkout attempts that every rejected preflight must prevent. */
+    const begin = jest.spyOn(platform, "beginSubscription");
+    /** Backend client whose subscription verification is controlled by this scenario. */
+    const backend = new JestBackendClient("https://example.invalid");
+    /** Returns verified holdings or fails verification before checkout can begin. */
+    const sync = jest.spyOn(backend, "syncSubscriptions").mockResolvedValue({verified: true,
+      activeSkus: condition === "active" ? ["premium"] : []});
+    if (condition === "verification-failed") sync.mockRejectedValue(new Error("Signed holdings unavailable"));
+    /** Records catalog changes permitted after a verified holding or missing offer. */
+    const onCatalog = jest.fn();
+    /** Player-scoped checkout lock occupied by the competing-tab scenario. */
+    const lockName = "riddle-quest:jest-subscription:p1";
+    if (condition === "lock-busy") checkoutLocks.add(lockName);
+    try {
+      /** Coordinator outcome after the guarded subscription preflight. */
+      const result = await new JestPurchaseCoordinator(platform, backend).subscribe("premium", "p1", {locale: "en-GB", onCatalog});
+      expect(result.status).toBe(condition === "verification-failed" ? "retryable-failure" : "cancelled");
+      expect(begin).not.toHaveBeenCalled();
+      expect(getSubscriptions).toHaveBeenCalledTimes(condition === "lock-busy" ? 0 : 1);
+      expect(sync).toHaveBeenCalledTimes(condition === "lock-busy" ? 0 : 1);
+      expect(onCatalog).toHaveBeenCalledTimes(condition === "active" || condition === "missing" ? 1 : 0);
+      if (condition === "active") expect(onCatalog).toHaveBeenCalledWith([expect.objectContaining({subscriptionStatus: "active"})]);
+      if (condition === "missing") expect(onCatalog).toHaveBeenCalledWith([]);
+    } finally {checkoutLocks.delete(lockName);}
+  },
+);
 
 it("durably grants before completing a purchase", async () => {
   /** Provides order behavior. */
@@ -287,11 +380,6 @@ it("never re-offers an active subscription or an equivalent blocked cadence", as
         productId: "premium-monthly",
         subscriptionStatus: "active",
       }),
-      expect.objectContaining({
-        productId: "supporter-monthly",
-        description: "",
-        subscriptionStatus: "inactive",
-      }),
     ],
   });
 });
@@ -300,6 +388,7 @@ it("verifies a subscription before applying the active entitlement and never com
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);
   platform.completePurchase = jest.fn(platform.completePurchase);
+  platform.getSubscriptions = async () => inactiveSubscriptionCatalog();
   platform.beginSubscription = async () => ({
     status: "success",
     value: {
@@ -317,9 +406,9 @@ it("verifies a subscription before applying the active entitlement and never com
   });
   /** Provides backend behavior. */
   const backend = {
-    syncSubscriptions: jest.fn(async () => ({
+    syncSubscriptions: jest.fn(async (signed: string) => ({
       verified: true,
-      activeSkus: ["premium"],
+      activeSkus: signed === "catalog.inactive" ? [] : ["premium"],
       blockedSkus: ["premium-yearly"],
     })),
   };
@@ -334,6 +423,7 @@ it("verifies a subscription before applying the active entitlement and never com
 it("reports the Premium coins granted when a new subscription is verified", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);
+  platform.getSubscriptions = async () => inactiveSubscriptionCatalog();
   platform.beginSubscription = async () => ({
     status: "success",
     value: {
@@ -351,9 +441,9 @@ it("reports the Premium coins granted when a new subscription is verified", asyn
   });
   /** Provides backend behavior. */
   const backend = {
-    syncSubscriptions: jest.fn(async () => ({
+    syncSubscriptions: jest.fn(async (signed: string) => ({
       verified: true,
-      activeSkus: ["premium"],
+      activeSkus: signed === "catalog.inactive" ? [] : ["premium"],
       blockedSkus: [],
       premiumCoinsAwarded: 3400,
       newCoins: 3700,
@@ -393,17 +483,17 @@ it("refreshes and verifies an existing subscription after an already-subscribed 
       subscriptions: [],
       subscriptionsSigned: "subscriptions.refreshed",
     },
-  }));
+  })).mockResolvedValueOnce(inactiveSubscriptionCatalog());
   /** Provides backend behavior. */
   const backend = {
-    syncSubscriptions: jest.fn(async () => ({verified: true, activeSkus: ["premium"], blockedSkus: []})),
+    syncSubscriptions: jest.fn(async (signed: string) => ({verified: true, activeSkus: signed === "catalog.inactive" ? [] : ["premium"], blockedSkus: []})),
   };
 
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1")).toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0, recoveredExistingSubscription: true},
   });
-  expect(platform.getSubscriptions).toHaveBeenCalledTimes(1);
+  expect(platform.getSubscriptions).toHaveBeenCalledTimes(2);
   expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscriptions.refreshed", "p1");
 });
 
@@ -518,8 +608,9 @@ it("rejects unsigned, unverifiable, and malformed subscription catalogs", async 
 it("preserves subscription failures across purchase and recovery paths", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform(true);
+  platform.getSubscriptions = async () => inactiveSubscriptionCatalog();
   platform.beginSubscription = async () => ({status: "cancelled"});
-  await expect(new JestPurchaseCoordinator(platform, {} as never).subscribe("premium", "p1")).resolves.toEqual({
+  await expect(new JestPurchaseCoordinator(platform, {syncSubscriptions: async () => ({verified: true, activeSkus: []})} as never).subscribe("premium", "p1")).resolves.toEqual({
     status: "cancelled",
   });
 
@@ -530,10 +621,7 @@ it("preserves subscription failures across purchase and recovery paths", async (
     message: "refresh_failed",
   });
 
-  platform.getSubscriptions = async () => ({
-    status: "success",
-    value: {subscriptions: [], subscriptionsSigned: "refreshed"},
-  });
+  platform.getSubscriptions = async () => inactiveSubscriptionCatalog();
   await expect(
     new JestPurchaseCoordinator(platform, {
       syncSubscriptions: async () => ({verified: true, activeSkus: []}),
@@ -580,7 +668,7 @@ it("preserves subscription failures across purchase and recovery paths", async (
   });
 });
 
-it("preserves purchase cancellation, completion failure, and achievement grants", async () => {
+it("preserves checkout cancellation and confirmed grants after completion failure", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.beginPurchase = async () => ({status: "cancelled"});
@@ -603,7 +691,10 @@ it("preserves purchase cancellation, completion failure, and achievement grants"
   });
   await expect(
     new JestPurchaseCoordinator(platform, {grantPurchase} as never).purchase("coins", "p1"),
-  ).resolves.toEqual({status: "terminal-failure", message: "completion rejected"});
+  ).resolves.toEqual({
+    status: "success",
+    value: {coinsAwarded: 250, newCoins: 500, newlyUnlockedAchievementIds: ["first_purchase"]},
+  });
 
   platform.completePurchase = async () => ({status: "success", value: undefined});
   await expect(
@@ -659,11 +750,83 @@ it("stops reconciliation on platform failures and enforces its page limit", asyn
     status: "success",
     value: {purchases: [], purchasesSigned: "signed", hasMore: true},
   }));
-  await expect(new JestPurchaseCoordinator(platform, {} as never).reconcile("p1")).resolves.toEqual({
-    status: "terminal-failure",
-    message: "Incomplete purchase pagination exceeded safety limit",
+  /** Captures the diagnostic emitted when the provider never finishes pagination. */
+  const reported: unknown[] = [];
+  configureBrowserErrorReporter((error, context) => {reported.push({error, context});});
+  try {
+    await expect(new JestPurchaseCoordinator(platform, {} as never).reconcile("p1")).resolves.toEqual({
+      status: "terminal-failure",
+      message: "Incomplete purchase pagination exceeded safety limit",
+    });
+    expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(100);
+    expect(reported).toEqual([{error: new Error("Incomplete purchase pagination exceeded safety limit"),
+      context: {component: "jest_purchases", operation: "reconcile_pagination"}}]);
+  } finally {resetBrowserErrorReporterForTests();}
+});
+
+it.each(["returned", "thrown", "cancelled"])("presents a durable grant and reconciles its pending confirmation once: %s", async mode => {
+  /** Calls distinguish receipt recovery from opening another paid checkout. */
+  const calls: string[] = [];
+  /** Provider retains the exact purchase until a later confirmation succeeds. */
+  const pending = new Set<string>();
+  /** Authority ledger grants each provider token only once across coordinator lifetimes. */
+  const awarded = new Set<string>();
+  /** Wallet represents server state independently of provider confirmation. */
+  let balance = 300;
+  /** First page cannot confirm the receipt; a later page can recover it. */
+  let confirmationFails = true;
+  /** Captures the failure that remains observable after returning the confirmed grant. */
+  const reported: Array<{
+    /** Retained provider reason explains why confirmation remains incomplete. */
+    message: string;
+    /** Reporting operation distinguishes confirmation from authoritative grant failure. */
+    operation: unknown;
+  }> = [];
+  /** Provider behavior follows its durable incomplete-purchase queue. */
+  const platform: JestPlatformPort = new MockJestPlatform();
+  platform.beginPurchase = async productSku => {
+    calls.push("begin");
+    pending.add("recoverable-token");
+    return {status: "success", value: {purchase: {purchaseToken: "recoverable-token", productSku}, purchaseSigned: "checkout.signed"}};
+  };
+  platform.completePurchase = async token => {
+    calls.push("complete");
+    if (confirmationFails) {
+      if (mode === "thrown") throw new Error("SDK completion disconnected");
+      return mode === "cancelled" ? {status: "cancelled"} : {status: "retryable-failure", message: "SDK completion rejected"};
+    }
+    pending.delete(token);
+    return {status: "success", value: undefined};
+  };
+  platform.getIncompletePurchases = async () => {
+    calls.push("read-incomplete");
+    return {status: "success", value: {purchases: [...pending].map(purchaseToken => ({purchaseToken, productSku: "coins"})),
+      purchasesSigned: "recovery.signed", hasMore: false}};
+  };
+  /** Real coordinator uses an idempotent backend fixture rather than a local economy mutation. */
+  const backend = new JestBackendClient("https://example.invalid");
+  jest.spyOn(backend, "grantPurchase").mockImplementation(async (_signed, _playerId, purchaseToken) => {
+    calls.push("grant");
+    if (!awarded.has(purchaseToken)) {awarded.add(purchaseToken); balance += 250;}
+    return {granted: true, purchaseToken, coinsAwarded: 250, newCoins: balance, newlyUnlockedAchievementIds: ["first_purchase"]};
   });
-  expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(100);
+  configureBrowserErrorReporter((error, context) => {reported.push({message: error instanceof Error ? error.message : String(error), operation: context?.operation});});
+  try {
+    await expect(new JestPurchaseCoordinator(platform, backend).purchase("coins", "p1")).resolves.toEqual({status: "success",
+      value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: ["first_purchase"]}});
+    expect(balance).toBe(550);
+    expect([...pending]).toEqual(["recoverable-token"]);
+    expect(calls).toEqual(["begin", "grant", "complete"]);
+    expect(reported).toEqual([{message: mode === "thrown" ? "SDK completion disconnected" : mode === "cancelled" ? "cancelled" : "SDK completion rejected",
+      operation: "complete_purchase"}]);
+
+    confirmationFails = false;
+    await expect(new JestPurchaseCoordinator(platform, backend).reconcile("p1")).resolves.toEqual({status: "success", value: 1});
+    expect(balance).toBe(550);
+    expect([...awarded]).toEqual(["recoverable-token"]);
+    expect([...pending]).toEqual([]);
+    expect(calls).toEqual(["begin", "grant", "complete", "read-incomplete", "grant", "complete"]);
+  } finally {resetBrowserErrorReporterForTests();}
 });
 
 it("keeps an incomplete purchase recoverable when its backend grant throws", async () => {
@@ -736,14 +899,18 @@ it("normalizes verifier errors and omitted blocked subscription lists", async ()
     message: "catalog verification failed",
   });
 
+  platform.getSubscriptions = jest.fn(async () => ({
+    status: "success" as const,
+    value: {subscriptions: [], subscriptionsSigned: "catalog.active"},
+  })).mockResolvedValueOnce(inactiveSubscriptionCatalog());
   platform.beginSubscription = async () => ({status: "unavailable", message: "already_subscribed"});
   await expect(
     new JestPurchaseCoordinator(platform, {
-      syncSubscriptions: async () => ({verified: true, activeSkus: ["premium"]}),
+      syncSubscriptions: async (signed: string) => ({verified: true, activeSkus: signed === "catalog.inactive" ? [] : ["premium"]}),
     } as never).subscribe("premium", "p1"),
   ).resolves.toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0, recoveredExistingSubscription: true},
   });
   await expect(
     new JestPurchaseCoordinator(platform, {
@@ -756,10 +923,11 @@ it("normalizes verifier errors and omitted blocked subscription lists", async ()
     message: "refresh verification failed",
   });
 
+  platform.getSubscriptions = async () => inactiveSubscriptionCatalog();
   platform.beginSubscription = new MockJestPlatform(true).beginSubscription;
   await expect(
     new JestPurchaseCoordinator(platform, {
-      syncSubscriptions: async () => ({verified: true, activeSkus: ["premium"]}),
+      syncSubscriptions: async (signed: string) => ({verified: true, activeSkus: signed === "catalog.inactive" ? [] : ["premium"]}),
     } as never).subscribe("premium", "p1"),
   ).resolves.toEqual({
     status: "success",
@@ -775,4 +943,62 @@ it("normalizes verifier errors and omitted blocked subscription lists", async ()
     status: "retryable-failure",
     message: "subscription verification failed",
   });
+});
+
+it.each([new Error("browser checkout lock unavailable"), "browser checkout lock unavailable"])(
+  "normalizes checkout lock failures and releases its pending guard: %p", async error => {
+    /** Browser lock rejection controlled by this failure scenario. */
+    const lock = jest.spyOn(navigator.locks, "request").mockRejectedValueOnce(error);
+    try {
+      /** Real purchase coordinator retaining its local pending guard. */
+      const coordinator = new JestPurchaseCoordinator(new MockJestPlatform(true), new JestBackendClient("https://example.invalid"));
+      await expect(coordinator.subscribe("premium", "p1")).resolves.toEqual({
+        status: "retryable-failure", message: "browser checkout lock unavailable",
+      });
+      lock.mockRejectedValueOnce(new Error("second checkout reaches the browser lock"));
+      await expect(coordinator.subscribe("premium", "p1")).resolves.toEqual({
+        status: "retryable-failure", message: "second checkout reaches the browser lock",
+      });
+      expect(lock).toHaveBeenCalledTimes(2);
+    } finally {
+      lock.mockRestore();
+    }
+  },
+);
+
+it("opens only one provider preflight for simultaneous subscription requests", async () => {
+  /** Controlled provider port used by the checkout scenario. */
+  const platform: JestPlatformPort = new MockJestPlatform(true);
+  /** Provider preflight spy counting actual catalog requests. */
+  const catalog = jest.spyOn(platform, "getSubscriptions").mockResolvedValue({status: "cancelled"});
+  /** Real purchase coordinator retaining its local pending guard. */
+  const coordinator = new JestPurchaseCoordinator(platform, new JestBackendClient("https://example.invalid"));
+  /** First subscription request retained while a second request competes. */
+  const first = coordinator.subscribe("premium", "p1");
+  await expect(coordinator.subscribe("premium", "p1")).resolves.toEqual({status: "cancelled"});
+  await expect(first).resolves.toEqual({status: "cancelled"});
+  expect(catalog).toHaveBeenCalledTimes(1);
+  await expect(coordinator.subscribe("premium", "p1")).resolves.toEqual({status: "cancelled"});
+  expect(catalog).toHaveBeenCalledTimes(2);
+});
+
+it("preserves the provider sandbox marker alongside an authoritative consumable grant", async () => {
+  /** Controlled provider port used by the checkout scenario. */
+  const platform: JestPlatformPort = new MockJestPlatform(true);
+  platform.beginPurchase = async productSku => ({status: "success", value: {
+    purchase: {purchaseToken: "sandbox-receipt", productSku, sandbox: true}, purchaseSigned: "sandbox.signed",
+  }});
+  /** Provider confirmation spy for the sandbox receipt. */
+  const complete = jest.spyOn(platform, "completePurchase").mockResolvedValue({status: "success", value: undefined});
+  /** Backend client whose grant boundary is controlled locally. */
+  const backend = new JestBackendClient("https://example.invalid");
+  /** Authoritative grant fixture for the signed sandbox receipt. */
+  const grant = jest.spyOn(backend, "grantPurchase").mockResolvedValue({
+    granted: true, purchaseToken: "sandbox-receipt", coinsAwarded: 250, newCoins: 550,
+  });
+  await expect(new JestPurchaseCoordinator(platform, backend).purchase("coins", "p1")).resolves.toEqual({
+    status: "success", value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: undefined, sandbox: true},
+  });
+  expect(grant).toHaveBeenCalledWith("sandbox.signed", "p1", "sandbox-receipt");
+  expect(complete).toHaveBeenCalledWith("sandbox-receipt");
 });

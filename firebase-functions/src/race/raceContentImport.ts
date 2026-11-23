@@ -4,7 +4,7 @@ import {
   RaceCategoryIdSchema,
   RaceDifficultyBandSchema,
   type RaceCategoryId,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {z} from "zod";
 import type {ExistingRaceContentRecord} from "./raceContentMigration";
 import {RACE_MIN_POOL_SIZE, RACE_POOL_SIZE, validateRacePool, type RacePoolIssue} from "./raceContentValidation";

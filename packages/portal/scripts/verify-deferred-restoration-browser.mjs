@@ -1,3 +1,4 @@
+import {openSolarGame} from './solar-browser-fixture.mjs';
 import path from 'node:path';
 
 // Actual hosted game, Three resources and DOM event dispatch; native mode uses real WebGL.
@@ -5,8 +6,7 @@ export async function verifyDeferredRestoration({page,width,url,baseline,metric,
  const value=field=>page.evaluate(field=>window.probe[field],field),frames=()=>page.evaluate(()=>window.pendingFrames()),live=()=>page.evaluate(()=>window.liveResources()),settle=()=>page.waitForTimeout(100);
  for(const scenario of nativeRenderer?['hidden','resume-failure']:['hidden','zero-layout','multiplayer','retire-pending','newer-loss','resume-failure']) {
   const check=(name,actual,expected)=>metric(scenario+': '+name,actual,expected);
-  await page.goto(url+'?custom=1&harness=race');await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-  if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+  await openSolarGame(page,url+'?custom=1&harness=race');
   await page.keyboard.type('pian');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
   const token=await page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame).activeGame.sessionToken);
   await page.evaluate(()=>{window.controlFrames();window.releaseScene();});await page.locator('.solar-system canvas').waitFor();await page.waitForFunction(()=>window.probe.observers.some(row=>row.active));

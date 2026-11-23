@@ -1,4 +1,4 @@
-import type {GameModal} from "../../gameSession";
+import type {GameModal, GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {HINT_COIN_COST, SKIP_COIN_COST} from "./commerceCosts";
 
@@ -45,15 +45,30 @@ export function HintModalPage({
   );
 }
 
-/** Renders the server-authoritative classic-riddle skip prompt. */
+/** Confirms a paid Classic skip or leaving an unfinished Daily riddle. */
 export function SkipModalPage({
+  gameMode,
   balance,
   onClose,
   onOpenModal,
   onRequestAction,
   commerceAvailable,
   pending,
-}: CoinActionModalPageProps) {
+}: CoinActionModalPageProps & {
+  /** Selects paid Classic skipping or the Daily mode-change warning. */
+  gameMode: GameSessionState["gameMode"];
+}) {
+  /** Copy follows the active locale while the warning remains open. */
+  const tr = useTranslator();
+  if (gameMode === "challenge") {
+    return <div className="modal-actions">
+      <p>{tr("GameScreenAlerts.DAILY_SKIP_MESSAGE")}</p>
+      <button className="play-primary" disabled={pending} onClick={() => {onRequestAction(); onClose();}}>
+        {tr("GameScreenAlerts.DAILY_SKIP_CONTINUE_BUTTON")}
+      </button>
+      <button className="play-secondary" onClick={onClose}>{tr("CommonAlerts.CANCEL_BUTTON")}</button>
+    </div>;
+  }
   return (
     <CoinActionPrompt
       balance={balance}

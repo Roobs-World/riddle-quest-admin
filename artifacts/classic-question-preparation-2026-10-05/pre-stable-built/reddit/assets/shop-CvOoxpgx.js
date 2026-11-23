@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-Czjbc987.js";var t,n;function r(){return(r=e((()=>{t={COINS_SUFFIX:` pieces`,LOADING_TEXT:`Chargement de la boutique...`,NO_PACKS_AVAILABLE:`Aucun pack de pieces disponible pour le moment.`,PURCHASE_BUTTON:`ACHETER`,TITLE:`BOUTIQUE DE PIECES`,YOUR_BALANCE:`Votre solde`},n={CoinShop:t}})))()}r();export{n as default};

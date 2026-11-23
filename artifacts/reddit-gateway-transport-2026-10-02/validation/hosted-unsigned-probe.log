@@ -1,2 +1,0 @@
-$ node scripts/check-hosted-gateway.mjs
-Hosted Reddit gateway route is live and rejects unsigned requests

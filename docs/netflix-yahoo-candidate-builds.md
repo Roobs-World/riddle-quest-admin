@@ -18,6 +18,6 @@ The Netflix candidate bundles the same audited 17-locale, 180-riddle production 
 Preview either built artifact locally with:
 
 ```bash
-pnpm --filter @qwordly/portal preview:netflix
-pnpm --filter @qwordly/portal preview:yahoo
+pnpm --filter @riddle-quest/portal preview:netflix
+pnpm --filter @riddle-quest/portal preview:yahoo
 ```

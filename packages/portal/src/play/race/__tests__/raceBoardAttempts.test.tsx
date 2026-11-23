@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import type {ScoredGuess} from "@qwordly/core/game";
+import type {ScoredGuess} from "@riddle-quest/core/game";
 import {renderToStaticMarkup} from "react-dom/server";
 import {ControlledGuessBoard} from "../../GameFrameControls";
 import {raceBoardAttempts} from "../logic/raceBoardAttempts";

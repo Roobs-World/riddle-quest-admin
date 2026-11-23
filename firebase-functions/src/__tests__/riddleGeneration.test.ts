@@ -450,6 +450,20 @@ describe("riddleGeneration", () => {
   });
 
   describe("generateAndAppendRiddles", () => {
+    test("requires medium difficulty for every third new Classic index across retries", async () => {
+      mockGenerateUniqueRiddle
+        .mockResolvedValueOnce(["What is blue?", "sky", "easy"])
+        .mockResolvedValueOnce(["What is red?", "fire", "easy"])
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(["What moves leaves without hands?", "wind", "medium"]);
+
+      await riddleGeneration.generateAndAppendRiddles(3);
+
+      expect(mockGenerateUniqueRiddle.mock.calls.map(call => call[2].difficulty)).toEqual([undefined, undefined, "medium", "medium"]);
+      expect(mockSet).toHaveBeenCalledTimes(3);
+      expect(mockSet.mock.calls[2][1]).toMatchObject({classicIndex: 3, difficultyBand: "medium"});
+    });
+
     test("should successfully generate and store unique riddles", async () => {
       (mockGenerateUniqueRiddle as any)
         .mockResolvedValueOnce(["What is blue?", "sky", "easy"])
@@ -562,6 +576,7 @@ describe("riddleGeneration", () => {
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], expect.objectContaining({mode: "daily", difficulty: "medium"}));
       expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
           riddleId: "current",
@@ -987,7 +1002,52 @@ describe("riddleGeneration", () => {
     });
   });
 
-  describe("durable supply deadline", () => {
+  describe("durable supply generation", () => {
+    test("stores approved riddles before propagating the original provider failure", async () => {
+      /** Retains provider classification after saving the already approved content. */
+      const providerError = Object.assign(new Error("provider unavailable"), {status: 503});
+      mockGenerateUniqueRiddle
+        .mockResolvedValueOnce(["A fruit with crisp flesh and a core?", "apple", "easy"])
+        .mockResolvedValueOnce(["A device with hands that measures passing hours?", "clock", "medium"])
+        .mockRejectedValueOnce(providerError);
+
+      await expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale("ar", 5, Number.MAX_SAFE_INTEGER))
+        .rejects.toBe(providerError);
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(3);
+      expect(mockSet).toHaveBeenCalledTimes(2);
+      expect(mockSet).toHaveBeenNthCalledWith(1, expect.anything(), expect.objectContaining({
+        locale: "ar", classicIndex: 1, answer: "apple", difficultyBand: "easy",
+      }));
+      expect(mockSet).toHaveBeenNthCalledWith(2, expect.anything(), expect.objectContaining({
+        locale: "ar", classicIndex: 2, answer: "clock", difficultyBand: "medium",
+      }));
+      expect(mockCommit).toHaveBeenCalledTimes(1);
+    });
+
+    test("propagates a first-attempt provider failure without storing an empty batch", async () => {
+      /** No content exists to persist when the provider fails before the first approval. */
+      const providerError = Object.assign(new Error("provider unavailable"), {status: 503});
+      mockGenerateUniqueRiddle.mockRejectedValueOnce(providerError);
+
+      await expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale("ar", 5, Number.MAX_SAFE_INTEGER))
+        .rejects.toBe(providerError);
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(1);
+      expect(mockSet).not.toHaveBeenCalled();
+      expect(mockCommit).not.toHaveBeenCalled();
+    });
+
+    test("propagates a partial-batch storage failure instead of treating it as a provider outage", async () => {
+      mockGenerateUniqueRiddle
+        .mockResolvedValueOnce(["A fruit with crisp flesh and a core?", "apple", "easy"])
+        .mockRejectedValueOnce(Object.assign(new Error("provider unavailable"), {status: 503}));
+      mockCommit.mockRejectedValueOnce(new Error("storage unavailable"));
+
+      await expect(riddleGeneration.generateLocalizedClassicRiddlesForLocale("ar", 5, Number.MAX_SAFE_INTEGER))
+        .rejects.toThrow("Failed to store classic riddles in Firestore for locale ar.");
+      expect(mockSet).toHaveBeenCalledTimes(1);
+      expect(mockCommit).toHaveBeenCalledTimes(1);
+    });
+
     test("stores a quality-approved partial batch before returning at the worker deadline", async () => {
       /** Provides clock behavior. */
       let clock = 1000;

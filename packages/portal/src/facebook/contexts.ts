@@ -1,4 +1,4 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import type {NativeSocialCapability, PlatformResult} from "../platform/types";
 
 /** Describes context value. */

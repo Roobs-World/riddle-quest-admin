@@ -193,9 +193,9 @@ banner "Riddle Quest · Reddit Games setup"
 
 stage "Authenticate deployment tools"
 say "This verifies the accounts that will own the Reddit app and Firebase release."
-if ! pnpm --filter @qwordly/reddit-app exec devvit whoami; then
-  pnpm --filter @qwordly/reddit-app exec devvit login
-  pnpm --filter @qwordly/reddit-app exec devvit whoami
+if ! pnpm --filter @riddle-quest/reddit-app exec devvit whoami; then
+  pnpm --filter @riddle-quest/reddit-app exec devvit login
+  pnpm --filter @riddle-quest/reddit-app exec devvit whoami
 fi
 pnpm --dir firebase-functions exec firebase projects:list >/dev/null
 say "Firebase access to the configured project is available."
@@ -230,15 +230,15 @@ if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
   warn "The worktree is dirty. Commit the reviewed implementation before producing upload evidence."
   exit 1
 fi
-pnpm --filter @qwordly/reddit-app build:package
-pnpm --filter @qwordly/reddit-app audit:performance
+pnpm --filter @riddle-quest/reddit-app build:package
+pnpm --filter @riddle-quest/reddit-app audit:performance
 warn "This bootstrap playtest upload is non-promotable and is not a production release receipt."
 say "Check existing versions in the app dashboard; automatic prerelease bumps can collide in Devvit 0.14.1."
 ask REDDIT_PLAYTEST_VERSION "Enter an unused explicit prerelease version (major.minor.patch.prerelease):"
 confirm "Upload a private prerelease?" || exit 1
-env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app playtest:upload "$REDDIT_PLAYTEST_VERSION"
+env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @riddle-quest/reddit-app playtest:upload "$REDDIT_PLAYTEST_VERSION"
 say "Run this in a second terminal and wait for Playtest ready before continuing:"
-say "env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit playtest $REDDIT_TEST_SUBREDDIT --show-timestamps"
+say "env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @riddle-quest/reddit-app exec devvit playtest $REDDIT_TEST_SUBREDDIT --show-timestamps"
 pause "Confirm the private version is installed and its exact version identifier is recorded."
 # BEGIN guarded Reddit secrets
 say "The existing REDDIT_UID_SECRET is permanent account identity material. This wizard never replaces it."
@@ -260,9 +260,9 @@ fi
 confirm "Write a new gateway version and the matching Devvit setting, keeping the UID key unchanged?" || exit 1
 printf '%s' "$REDDIT_GATEWAY_SECRET" | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --dir firebase-functions exec firebase functions:secrets:set REDDIT_GATEWAY_SECRET --project riddle-quest-ec2b2 --data-file=- >/dev/null 2>&1
 say "Firebase gateway secret stored."
-printf '%s\n' "$REDDIT_GATEWAY_SECRET" | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit settings set redditGatewaySecret >/dev/null 2>&1
+printf '%s\n' "$REDDIT_GATEWAY_SECRET" | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @riddle-quest/reddit-app exec devvit settings set redditGatewaySecret >/dev/null 2>&1
 say "Devvit gateway secret stored."
-printf 'sandbox\n' | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @qwordly/reddit-app exec devvit settings set redditEnvironment >/dev/null 2>&1
+printf 'sandbox\n' | env -u DEBUG -u FIREBASE_DEBUG_MODE pnpm --filter @riddle-quest/reddit-app exec devvit settings set redditEnvironment >/dev/null 2>&1
 say "Devvit sandbox environment stored."
 unset REDDIT_GATEWAY_SECRET
 say "The gateway value was sent directly to providers and was not written to a file. The UID key was preserved."
@@ -284,8 +284,8 @@ pause "Confirm the installed version identifier and hosted smoke-test evidence a
 stage "Capture contracts and device evidence"
 say "Exercise multiple developer, moderator, regular, anonymous, inviter, invitee, buyer, and refund accounts."
 step "Capture sanitized auth, post-entry, payment, refund, realtime, and notification payloads."
-say 'Pipe each raw JSON payload through: pnpm --filter @qwordly/reddit-app capture:contract <type> -'
-say 'Store only sanitized output under docs/evidence/reddit-contracts, then run: pnpm --filter @qwordly/reddit-app validate:contracts'
+say 'Pipe each raw JSON payload through: pnpm --filter @riddle-quest/reddit-app capture:contract <type> -'
+say 'Store only sanitized output under docs/evidence/reddit-contracts, then run: pnpm --filter @riddle-quest/reddit-app validate:contracts'
 step "Run inline/expanded, login reload, visibility, deletion, recovery, race, referral, and payment journeys."
 step "Repeat the required matrix on Reddit web and physical iOS and Android devices."
 warn "Never save raw secrets, session tokens, Reddit IDs, or unsanitized payment records in the repository."
@@ -307,7 +307,7 @@ pnpm release:reddit
 say "Record the candidate source commit, SHA-256, receipt, and read-only handoff path."
 warn "Production ingestion is blocked until an exact-byte Devvit adapter or equivalent authoritative proof exists."
 step "Do not run devvit upload or devvit publish for this candidate; both create unproven bytes or a new version."
-step "After an approved ingestion path exists, bind hosted evidence to this candidate and run: pnpm --filter @qwordly/reddit-app release:promotion"
+step "After an approved ingestion path exists, bind hosted evidence to this candidate and run: pnpm --filter @riddle-quest/reddit-app release:promotion"
 pause "Confirm the candidate and its remote-release blocker are recorded without claiming upload or publication."
 
 finish

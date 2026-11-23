@@ -1,4 +1,4 @@
-import {RaceMatchResponseSchema, type RaceMatchRequest, type RaceMatchResponse, type RaceLocale} from "@qwordly/core/race";
+import {RaceMatchResponseSchema, type RaceMatchRequest, type RaceMatchResponse, type RaceLocale} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {findRecordedRaceMatch} from "../race/raceMatchmaking";
 import {isRedditFirebaseUid} from "./redditSecurity";

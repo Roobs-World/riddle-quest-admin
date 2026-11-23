@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
-import {RACE_RULES, type RaceRunView, type SubmitRaceGuessResponse} from "@qwordly/core/race";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import {RACE_RULES, type RaceRunView, type SubmitRaceGuessResponse} from "@riddle-quest/core/race";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {RacePlay} from "../RacePlay";
 /** Complete deck and authoritative run for deterministic reconciliation scenarios. */
 const run = (): RaceRunView => {

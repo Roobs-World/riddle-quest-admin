@@ -33,7 +33,7 @@ export function createFacebookAdsCapability({
   /** Server-controlled release switch for rewarded video. */
   rewardedEnabled?: boolean;
   /** Stores ad free. */
-  adFree: boolean;
+  adFree: boolean | (() => boolean);
   /** Stores now. */
   now?: () => number;
 }): AdsCapability | undefined {
@@ -57,7 +57,9 @@ export function createFacebookAdsCapability({
   );
   if (!interstitialAvailable && !rewardedAvailable) return undefined;
   /** Provides state behavior. */
-  let state: FacebookInterstitialState = createFacebookInterstitialState(adFree);
+  const hasAdFreeEntitlement = () => typeof adFree === "function" ? adFree() : adFree;
+  /** Current interstitial readiness, cooldown, and entitlement state. */
+  let state: FacebookInterstitialState = createFacebookInterstitialState(hasAdFreeEntitlement());
   /** Provides showing interstitial behavior. */
   let showingInterstitial = false;
   /** Provides showing rewarded behavior. */
@@ -78,11 +80,12 @@ export function createFacebookAdsCapability({
       }
       if (
         interstitialsDisabled ||
+        hasAdFreeEntitlement() ||
         !interstitialAvailable ||
         showingInterstitial ||
         showingRewarded ||
         placement !== "result" ||
-        !canShowFacebookInterstitial(state, "result", startedAtMs)
+        !canShowFacebookInterstitial({...state, adFree: hasAdFreeEntitlement()}, "result", startedAtMs)
       ) {
         return {status: "unavailable", message: "facebook-interstitial-suppressed"};
       }
@@ -94,6 +97,7 @@ export function createFacebookAdsCapability({
           /** Provides ad behavior. */
           const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
           await ad.loadAsync();
+          if (hasAdFreeEntitlement()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           await ad.showAsync();
           impressionDisplayed = true;
           /** Completes d at ms. */

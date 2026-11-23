@@ -134,7 +134,7 @@ describe("Race callable deployment options", () => {
       /** Captured callable provisioning options. */
       deploymentOptions: unknown;
     }).deploymentOptions)
-      .toMatchObject({minInstances: 1, invoker: "public", enforceAppCheck: true});
+      .toMatchObject({minInstances: 0, invoker: "public", enforceAppCheck: true});
   });
 
   it.each([["findRaceMatch", findRaceMatch], ["recordRaceAnalytics", recordRaceAnalytics]])(
@@ -143,7 +143,7 @@ describe("Race callable deployment options", () => {
         /** Captured callable provisioning options for both supported backend regions. */
         deploymentOptions: unknown;
       }).deploymentOptions)
-        .toMatchObject({region: ["us-central1", "europe-west1"], minInstances: 1, invoker: "public", enforceAppCheck: true});
+        .toMatchObject({region: ["us-central1", "europe-west1"], minInstances: 0, invoker: "public", enforceAppCheck: true});
     });
 
   it.each([
@@ -171,15 +171,15 @@ describe("Race callable deployment options", () => {
   });
 
   it("keeps the latency-sensitive abandon callable warm", () => {
-    expect(raceAbandonCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
+    expect(raceAbandonCallableOptions).toMatchObject({minInstances: 0, invoker: "public"});
   });
 
   it("keeps the latency-sensitive hint callable warm", () => {
-    expect(raceHintCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
+    expect(raceHintCallableOptions).toMatchObject({minInstances: 0, invoker: "public"});
   });
 
   it("keeps the countdown-critical start callable warm", () => {
-    expect(raceStartCallableOptions).toMatchObject({minInstances: 1, invoker: "public"});
+    expect(raceStartCallableOptions).toMatchObject({minInstances: 0, invoker: "public"});
   });
 });
 

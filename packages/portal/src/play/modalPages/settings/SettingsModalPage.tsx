@@ -1,9 +1,18 @@
 import {LiveRacePushConsent} from "../../race/components/LiveRacePushConsent";
-import {useContext, type ChangeEvent} from "react";
+import {useContext, useSyncExternalStore, type ChangeEvent} from "react";
+import {resolveYouTubeLocale, youtubeText} from "@riddle-quest/solo";
+import {isJestWebTarget} from "../../../platform/webTargetEnvironment";
 import {ProfileSubscriptionContext} from "../profile/ProfileSubscriptionContext";
-import type {GameModal} from "../../gameSession";
+import type {GameModal} from "@riddle-quest/hosted/play/gameSession";
 import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../i18n";
-import {setPlayerLocale} from "../../playerPreferences";
+import {
+  isPlayerHighContrastEnabled,
+  isPlayerReducedMotionEnabled,
+  setPlayerHighContrast,
+  setPlayerLocale,
+  setPlayerReducedMotion,
+  subscribeToPlayerAccessibilityPreferences,
+} from "../../playerPreferences";
 
 /** Props required by the settings modal page. */
 export type SettingsModalPageProps = {
@@ -19,7 +28,7 @@ export type SettingsModalPageProps = {
   commerceAvailable?: boolean;
 };
 
-/** Renders sound, language, help, legal, and shop settings. */
+/** Renders sound, accessibility, language, help, legal, and shop settings. */
 export function SettingsModalPage({
   locale,
   muted,
@@ -31,6 +40,12 @@ export function SettingsModalPage({
   const tr = useTranslator();
   /** Target-specific subscription management shared with Profile. */
   const subscriptionControls = useContext(ProfileSubscriptionContext);
+  /** Applied accessibility choices also update when the platform restores preferences. */
+  const reducedMotion = useSyncExternalStore(subscribeToPlayerAccessibilityPreferences, isPlayerReducedMotionEnabled, () => false);
+  /** Current contrast choice includes the platform value and browser fallback. */
+  const highContrast = useSyncExternalStore(subscribeToPlayerAccessibilityPreferences, isPlayerHighContrastEnabled, () => false);
+  /** Android and hosted settings reuse the same translated accessibility labels. */
+  const accessibilityLocale = resolveYouTubeLocale(locale);
   /** Persists and immediately activates the selected locale. */
   const changeLocale = (event: ChangeEvent<HTMLSelectElement>) => {
     /** Provides next locale behavior. */
@@ -44,8 +59,16 @@ export function SettingsModalPage({
         <span>{tr("Settings.SOUND_TOGGLE")}</span>
         <strong>{muted ? tr("Settings.TOGGLE_OFF") : tr("Settings.TOGGLE_ON")}</strong>
       </button>
+      <button className="settings-row" aria-pressed={reducedMotion} onClick={() => setPlayerReducedMotion(!reducedMotion)}>
+        <span>{youtubeText(accessibilityLocale, "reducedMotion")}</span>
+        <strong>{reducedMotion ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
+      </button>
+      <button className="settings-row" aria-pressed={highContrast} onClick={() => setPlayerHighContrast(!highContrast)}>
+        <span>{youtubeText(accessibilityLocale, "highContrast")}</span>
+        <strong>{highContrast ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
+      </button>
       <LiveRacePushConsent />
-      <label className="settings-row">
+      {!isJestWebTarget && <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
         <select value={locale} onChange={changeLocale}>
           {LANGUAGE_OPTIONS.map((language) => (
@@ -54,7 +77,7 @@ export function SettingsModalPage({
             </option>
           ))}
         </select>
-      </label>
+      </label>}
       <button className="settings-row" onClick={() => onOpenModal("instructions")}>
         <span>{tr("Settings.HELP_BUTTON")}</span>
         <strong aria-hidden="true">›</strong>

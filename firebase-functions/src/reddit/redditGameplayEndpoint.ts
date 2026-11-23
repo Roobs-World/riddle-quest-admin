@@ -29,7 +29,7 @@ import {
   RecordFacebookTournamentRunResponseSchema,
   classifyRaceMatchFailure,
   UpdateLiveRaceSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {joinLiveRace, retireLiveRaceJoin, confirmLiveGuessReceipt, updateLiveRace, listLiveRaceHistory, listLiveRaceChallenges, getLiveRaceChallenge} from "../race/raceLiveCallables";
 import {liveRaceGatewayFailure} from "../race/raceLiveFailures";
 import {findRedditRaceMatch} from "./redditMatchmaking";
@@ -61,14 +61,14 @@ import {disconnectRedditPresence, pollRedditPresence} from "./redditPresence";
 import {blockRival, reportRival} from "../social/socialSafetyCallables";
 import {grantVerifiedRedditOrder, refundVerifiedRedditOrder} from "./redditCommerceLedger";
 import {bindRedditReferralToken, issueRedditReferralToken} from "./redditReferrals";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 
 /** Provides gateway secret behavior. */
 const gatewaySecret = defineSecret("REDDIT_GATEWAY_SECRET");
 /** Provides uid secret behavior. */
 const uidSecret = defineSecret("REDDIT_UID_SECRET");
 /** Every Reddit question, guess and race action shares this endpoint, so one warm instance avoids idle cold starts. */
-const options = {secrets: [gatewaySecret, uidSecret], invoker: "public" as const, timeoutSeconds: 60, minInstances: 1};
+const options = {secrets: [gatewaySecret, uidSecret], invoker: "public" as const, timeoutSeconds: 60, minInstances: 0};
 /** Defines the max body bytes value. */
 const MAX_BODY_BYTES = 80 * 1_024;
 

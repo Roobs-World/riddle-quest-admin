@@ -1,9 +1,0 @@
-{
-  "name": "types-tsdoc-preflight",
-  "status": "terminal",
-  "exitCode": 0,
-  "logs": [
-    "types-preflight.log",
-    "tsdoc-preflight.log"
-  ]
-}

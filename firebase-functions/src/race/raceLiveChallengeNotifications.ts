@@ -1,6 +1,7 @@
+import {isAndroidAccountProvider} from "../android/androidUser";
 import {Timestamp, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_INVITE_MS, type LiveRaceChallenge} from "@qwordly/core/race";
+import {LIVE_RACE_INVITE_MS, type LiveRaceChallenge} from "@riddle-quest/core/race";
 import {createUsernameReservationId, normalizeUsernameForReservation} from "../profile/usernameReservations";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
 import {raceProviderScope} from "./raceEligibility";
@@ -35,7 +36,7 @@ export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string
     /** Raw provider IDs and Firebase UIDs are never accepted from the browser. */
     const ticket = seat.data() as LiveTicket | undefined, recipientId = reservation.data()?.userId;
     if (!ticket?.privateChallenge || ticket.userId !== userId || typeof recipientId !== "string" || recipientId === userId ||
-        !["jest", "facebook"].includes(raceProviderScope(userId) ?? "") || raceProviderScope(recipientId) !== raceProviderScope(userId))
+        !["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? "") || raceProviderScope(recipientId) !== raceProviderScope(userId))
       throw new HttpsError("not-found", "Invitation recipient unavailable.");
     /** Accounts, blocks and rate receipts share the recipient binding transaction. */
     const rateRef = db.doc(`users/${userId}/liveChallengeRate/current`);
@@ -50,7 +51,8 @@ export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string
       tx.get(db.doc(`users/${recipientId}/blockedRivals/${userId}`)), tx.get(rateRef), tx.get(eventRef), tx.get(recipientRateRef),
     ]);
     assertJestAccountActive(deleted);
-    if (!creator.exists || !recipient.exists || recipientDeleted.exists || blocked.exists || reverse.exists ||
+    if ((raceProviderScope(userId) === "android" && (!isAndroidAccountProvider(creator.data()?.androidProvider) || !isAndroidAccountProvider(recipient.data()?.androidProvider))) ||
+        !creator.exists || !recipient.exists || recipientDeleted.exists || blocked.exists || reverse.exists ||
         recipient.data()?.usernameReservationId !== reservationId || typeof recipient.data()?.username !== "string" ||
         normalizeUsernameForReservation(recipient.data()!.username) !== normalizeUsernameForReservation(input.recipientUsername))
       throw new HttpsError("not-found", "Invitation recipient unavailable.");

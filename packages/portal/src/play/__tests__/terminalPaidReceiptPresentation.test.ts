@@ -1,14 +1,16 @@
 import {expect,it,jest} from '@jest/globals';
+import type {GameToHostMessage} from '@riddle-quest/core/bridge';
 /** Terminal authority or exact unresolved payment fixture. */
 const mockEffects:Array<()=>unknown>=[];
 /** Terminal authority or exact unresolved payment fixture. */
 const mockLayoutEffects:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T,>(fn:T)=>fn,useMemo:<T,>(fn:()=>T)=>fn(),useEffect:(fn:()=>unknown)=>mockEffects.push(fn),useLayoutEffect:(fn:()=>unknown)=>mockLayoutEffects.push(fn),useRef:<T,>(current:T)=>({current}),useState:<T,>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
 import {useGameMessageRouter} from '../useGameMessageRouter';
-import {createInitialGameSession,gameSessionReducer} from '../gameSession';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery,type PendingPlayRecoveryAdapters} from '../game/hooks/useProvisionalPlayRecovery';
+import {createInitialGameSession,gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {pendingPlayScope,type PendingGuessJournal} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@riddle-quest/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from '../game/hooks/useProvisionalPlayRecovery';
+import type {PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
 it.each((['win','loss'] as const).flatMap(kind=>(['hint','skip'] as const).map(operation=>({kind,operation,holdCharge:true,buffered:false}))))('terminal $kind preserves authority after accepted $operation',async({kind,operation,holdCharge,buffered})=>{
  mockEffects.length=0;mockLayoutEffects.length=0;
  /** Terminal authority or exact unresolved payment fixture. */
@@ -37,7 +39,7 @@ const intervals:Array<()=>void>=[];
 /** Terminal authority or exact unresolved payment fixture. */
 const stateRef={current:terminal};
 /** Terminal authority or exact unresolved payment fixture. */
-const post=jest.fn();
+const post=jest.fn<(message:GameToHostMessage)=>void>();
 /** Terminal authority or exact unresolved payment fixture. */
 const adapters:PendingPlayRecoveryAdapters={journal:storage,clock:{now:()=>now,setTimeout:()=>1,clearTimeout:()=>{},setInterval:fn=>{intervals.push(fn as ()=>void);return intervals.length;},clearInterval:()=>{}}};
  /** Terminal authority or exact unresolved payment fixture. */
@@ -45,11 +47,13 @@ const prior=Object.getOwnPropertyDescriptor(globalThis,'window');Object.definePr
  try{
 /** Real receipt handler retains successor ownership after payment settlement. */
 const recovery=useProvisionalPlayRecovery({state:terminal,stateRef,adapters,dispatch:action=>{stateRef.current=gameSessionReducer(stateRef.current,action);},postToHost:post,playFeedback:()=>{}});for(/** Terminal authority or exact unresolved payment fixture. */
-const effect of mockLayoutEffects)effect();await new Promise<void>(resolve=>setImmediate(resolve));for(/** Terminal authority or exact unresolved payment fixture. */
+const effect of mockLayoutEffects)effect();await new Promise<void>(resolve=>setImmediate(resolve));
+// Writer readiness commits recovery before passive effects, without remounting its owner.
+for(const effect of mockLayoutEffects.slice(1))effect();for(/** Terminal authority or exact unresolved payment fixture. */
 const effect of mockEffects)effect();
   expect(stateRef.current.lastOutcome?.kind).toBe(kind);expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);
   expect(Boolean(storage.read(scope)?.coinAction)||stateRef.current.pendingCoinSpend===null).toBe(true);
-  if(holdCharge){expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
+  if(holdCharge){if(!record.coinAction)throw new Error("Expected the held paid request.");expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);expect(post).toHaveBeenCalledWith(record.coinAction);expect(post.mock.calls.every(call=>call[0].type!=="game:submitGuess")).toBe(true);
     now=26000;for(const interval of intervals)interval();expect(post.mock.calls.filter(call=>call[0].requestId===record.coinAction!.requestId)).toHaveLength(2);
     expect(stateRef.current.engineSnapshot?.gameOver).toBe(true);expect(storage.read(scope)?.coinAction).toEqual(record.coinAction);
     /** Fresh confirmed presentation and balance before an older immutable paid reply. */

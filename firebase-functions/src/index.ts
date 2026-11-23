@@ -9,6 +9,9 @@
  * declarative.
  */
 import {getApps, initializeApp} from "firebase-admin/app";
+import {setGlobalOptions} from "firebase-functions/v2";
+
+setGlobalOptions({minInstances: 0, preserveExternalChanges: true});
 
 // Initialize the Firebase Admin SDK once for all functions in this project.
 if (getApps().length === 0) initializeApp();
@@ -50,6 +53,13 @@ import {
   verifyJestReferrals,
 } from "./jest/jestEndpoints";
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
+import {grantFacebookPurchase, facebookPaymentWebhook} from "./facebook/facebookPayments";
+import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "./android/androidReferralCallables";
+import {deliverAndroidReferralPlay} from "./android/androidReferralDelivery";
+import {setAndroidPushSubscription, sendAndroidDailyReminders} from "./android/androidNotifications";
+import {provisionAndroidAccount} from "./android/provisionAndroidAccount";
+import {grantAndroidPurchase, syncAndroidSubscriptions} from "./android/androidPurchaseEndpoints";
+import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "./android/androidAttestation";
 import {facebookDataDeletionCallback, facebookDataDeletionStatus} from "./facebook/facebookDataDeletionEndpoints";
 import {listFacebookTournament, recordFacebookTournament} from "./race/facebookTournamentCallable";
 import {blockRival, reportRival} from "./social/socialSafetyCallables";
@@ -63,7 +73,6 @@ import {
   listFacebookContextBoard,
   recordFacebookContextRun,
 } from "./race/facebookContextCallables";
-import {facebookContextRetentionScheduler} from "./race/facebookContextRetentionScheduler";
 import {getFacebookClientConfiguration} from "./facebook/facebookClientConfigurationCallable";
 import {
   acceptFacebookNotificationPermissionPrompt,
@@ -72,7 +81,6 @@ import {
 import {deleteRedditAccount, exchangeRedditIdentity} from "./reddit/redditEndpoints";
 import {redditStorage} from "./reddit/redditStorageEndpoint";
 import {redditGameplay} from "./reddit/redditGameplayEndpoint";
-import {redditProfileRetentionScheduler} from "./reddit/redditProfileRetentionScheduler";
 import {yahooOAuthCallback, yahooOAuthStart} from "./yahoo/yahooOAuthEndpoints";
 import {
   confirmYahooStripeCheckout,
@@ -94,8 +102,6 @@ export {
   completeGame,
   submitSinglePlayerGuess,
   dailyChallengeScheduler,
-  facebookContextRetentionScheduler,
-  redditProfileRetentionScheduler,
   getLeaderboard,
   listRaceCategories,
   listRaceInbox,
@@ -120,8 +126,21 @@ export {
   retryJestAccountDeletion,
   syncJestSubscriptions,
   verifyJestReferrals,
+  provisionAndroidAccount,
+  setAndroidPushSubscription,
+  createAndroidReferral,
+  bindAndroidReferralEntry,
+  getAndroidReferralStatus,
+  deliverAndroidReferralPlay,
+  sendAndroidDailyReminders,
+  grantAndroidPurchase,
+  syncAndroidSubscriptions,
+  issueAndroidAttestationNonce,
+  exchangeAndroidAttestation,
   issueFacebookIdentityNonce,
   exchangeFacebookIdentity,
+  grantFacebookPurchase,
+  facebookPaymentWebhook,
   facebookDataDeletionCallback,
   facebookDataDeletionStatus,
   recordFacebookTournament,
@@ -152,11 +171,9 @@ export {
   yahooStripeWebhook,
 };
 
-export {deliverRaceSettlementEvent, deliverRacePerformanceEvent, settleRaceDeadlines} from "./race/raceSettlementJobs";
-export {reconcileRaceMatchProjections} from "./race/raceProjectionReconciliation";
-export {monitorRaceRecoveryHealth} from "./race/raceRecoveryHealth";
+export {deliverRaceSettlementEvent, deliverRacePerformanceEvent} from "./race/raceSettlementJobs";
 
-export {replenishClassicSupply} from "./riddles/classicSupplyWorker";
+export {replenishClassicSupplyOnDemand, retryClassicSupplyOnDemand} from "./riddles/classicSupplyWorker";
 
 export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/raceLiveCallables";
 export {setLiveRacePushSubscription, deliverLiveRaceChallengePush} from "./race/raceLivePushJobs";

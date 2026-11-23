@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 import {createAchievementPlayer} from "../modalPages/profile/profileStats";
 
 /** Profile fixture containing representative single-player and multiplayer statistics. */

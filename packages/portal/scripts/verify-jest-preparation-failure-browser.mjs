@@ -49,7 +49,7 @@ try {
       resolveId(id,importer){if(importer===path.join(root,'src/jest/JestPlayApp.tsx')&&id in overrides)return '\0startup-fixture:'+id;},
       load(id){if(id.startsWith('\0startup-fixture:'))return overrides[id.slice('\0startup-fixture:'.length)];},
     }],
-    resolve:{alias:{'@qwordly/core/referrals':path.join(root,'../core/src/referrals/index.ts'),'@qwordly/core/bridge/constants':path.join(root,'../core/src/bridge/constants.ts'),'@qwordly/core/race':path.join(root,'../core/src/race/index.ts')}},
+    resolve:{alias:{'@riddle-quest/core/referrals':path.join(root,'../core/src/referrals/index.ts'),'@riddle-quest/core/bridge/constants':path.join(root,'../core/src/bridge/constants.ts'),'@riddle-quest/core/race':path.join(root,'../core/src/race/index.ts')}},
     build:{outDir:'dist'},
   });
   server=createServer(async(request,response)=>{

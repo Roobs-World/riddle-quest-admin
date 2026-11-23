@@ -1,7 +1,7 @@
 import {getApps,initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {createHash} from "node:crypto";
-import {RACE_RULES, type CancelRaceInviteRequest} from "@qwordly/core/race";
+import {RACE_RULES, type CancelRaceInviteRequest} from "@riddle-quest/core/race";
 import {getRaceEntryForUser,cancelRaceInviteForUser} from "../../race/raceInvitation";
 import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
 

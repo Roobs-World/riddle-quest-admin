@@ -1,7 +1,7 @@
 import {createFacebookTournamentPresentation} from "../FacebookTournamentPresentation";
 import {createFacebookNotificationCapability} from "../FacebookNotificationCapability";
 import type {FacebookInstantSdk, FacebookInstantTournament} from "../fbinstant";
-import type {ListFacebookTournamentResponse} from "@qwordly/core/race";
+import type {ListFacebookTournamentResponse} from "@riddle-quest/core/race";
 
 /** Both production adapters share the same SDK instance and native dialog gate. */
 const fixture = () => {

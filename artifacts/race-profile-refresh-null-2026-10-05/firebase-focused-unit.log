@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       28 passed, 28 total
-Snapshots:   0 total
-Time:        0.279 s, estimated 1 s
-Ran all test suites matching src/play/__tests__/firebaseServiceOwnership.test.ts|src/play/__tests__/firebaseServices.test.ts|src/play/__tests__/firebaseRiddleOwnership.test.ts.

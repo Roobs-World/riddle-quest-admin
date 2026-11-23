@@ -1,9 +1,12 @@
-import {FACEBOOK_PRODUCTS} from "@qwordly/core/pricing/facebookCatalog";
+import {FACEBOOK_PRODUCTS} from "@riddle-quest/core/pricing/facebookCatalog";
 import type {CommerceCapability, CommerceProduct, PlatformResult} from "../platform/types";
 import {
   FacebookPurchaseRecovery,
   parseFacebookUnconsumedPurchases,
   type FacebookSignedPurchaseGrant,
+  type FacebookPurchaseGrant,
+  type FacebookPurchaseCompletion,
+  type FacebookRecoverableCharge,
 } from "./FacebookPurchaseRecovery";
 import type {FacebookInstantPayments, FacebookInstantProduct} from "./fbinstant";
 
@@ -37,7 +40,7 @@ export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
       Object.keys(item).some((key) => ![...keys, "imageURI"].includes(key)) ||
       !bounded(item.title, 512) ||
       !bounded(item.productID, 256) ||
-      !FACEBOOK_PRODUCTS[item.productID] ||
+      !Object.hasOwn(FACEBOOK_PRODUCTS, item.productID) ||
       !bounded(item.description, 2_048) ||
       (item.imageURI != null && item.imageURI !== "" && !bounded(item.imageURI, 2_048)) ||
       !bounded(item.price, 128) ||
@@ -53,7 +56,15 @@ export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
     ) {
       throw new Error("facebook-product-usd-price-mismatch");
     }
-    return item as unknown as FacebookInstantProduct;
+    return {
+      title: item.title,
+      productID: item.productID,
+      description: item.description,
+      price: item.price,
+      priceCurrencyCode: item.priceCurrencyCode,
+      priceAmount,
+      ...(typeof item.imageURI === "string" ? {imageURI: item.imageURI} : {}),
+    };
   });
   if (new Set(products.map(({productID}) => productID)).size !== products.length) {
     throw new Error("facebook-products-duplicate");
@@ -61,30 +72,27 @@ export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
   return products;
 }
 
-/** Staged commerce adapter. Do not expose it until the signed-request grant dependency is live. */
+/** Projects the authoritative receipt and balances returned to the host. */
+type PurchaseValue = Pick<FacebookPurchaseGrant, "providerReceiptId" | "newCoins" | "coinsAwarded">;
+
+/** Meta checkout consumes purchases only after the authoritative grant commits. */
 export class FacebookCommerceCapability implements CommerceCapability {
   /** Stores recovery. */
   private readonly recovery: FacebookPurchaseRecovery;
   /** Stores payments. */
   private readonly payments: FacebookInstantPayments;
-  /** Stores grant. */
-  private readonly grant: FacebookSignedPurchaseGrant;
   /** Stores operation tail. */
   private operationTail: Promise<void> = Promise.resolve();
   /** Stores active purchase. */
-  private activePurchase?: Promise<
-    PlatformResult<{
-      /** Stores provider receipt id. */
-      providerReceiptId: string;
-    }>
-  >;
+  private activePurchase?: Promise<PlatformResult<PurchaseValue>>;
   /** Stores active recovery. */
   private activeRecovery?: Promise<PlatformResult<void>>;
+  /** Retains an unsettled charge so an explicit retry cannot charge the player again. */
+  private readonly pendingPurchases = new Map<string, FacebookRecoverableCharge>();
 
   /** Creates a facebook commerce capability instance. */
   constructor(payments: FacebookInstantPayments, grant: FacebookSignedPurchaseGrant) {
     this.payments = payments;
-    this.grant = grant;
     this.recovery = new FacebookPurchaseRecovery(payments, grant);
   }
 
@@ -109,13 +117,8 @@ export class FacebookCommerceCapability implements CommerceCapability {
   }
 
   /** Provides purchase behavior. */
-  purchase(productId: string): Promise<
-    PlatformResult<{
-      /** Stores provider receipt id. */
-      providerReceiptId: string;
-    }>
-  > {
-    if (!FACEBOOK_PRODUCTS[productId]) {
+  purchase(productId: string): Promise<PlatformResult<PurchaseValue>> {
+    if (!Object.hasOwn(FACEBOOK_PRODUCTS, productId)) {
       return Promise.resolve({status: "terminal-failure", message: "facebook-product-unsupported"});
     }
     if (this.activePurchase) return Promise.resolve({status: "unavailable", message: "facebook-purchase-in-progress"});
@@ -129,26 +132,34 @@ export class FacebookCommerceCapability implements CommerceCapability {
   }
 
   /** Provides run purchase behavior. */
-  private async runPurchase(productId: string): Promise<
-    PlatformResult<{
-      /** Stores provider receipt id. */
-      providerReceiptId: string;
-    }>
-  > {
+  private async runPurchase(productId: string): Promise<PlatformResult<PurchaseValue>> {
     try {
-      /** Provides [purchase] behavior. */
+      /** A temporary grant or consumption failure always retries its original charge first. */
+      const cachedPurchase = this.pendingPurchases.get(productId);
+      if (cachedPurchase && !this.recovery.isQuarantined(cachedPurchase)) {
+        /** Known permanent rejections permit checking other existing same-SKU receipts. */
+        const completion = await this.completePurchase(cachedPurchase);
+        if (completion.status !== "rejected") return this.purchaseResult(completion);
+      }
+      this.pendingPurchases.delete(productId);
+      /** Meta may retain receipts belonging to a deleted game-account generation. */
+      const pendingPurchases = parseFacebookUnconsumedPurchases(await this.payments.getPurchasesAsync());
+      for (const pendingPurchase of pendingPurchases) {
+        if (pendingPurchase.productID !== productId || this.recovery.isQuarantined(pendingPurchase)) continue;
+        /** Existing receipts are attempted before any new paid dialog can open. */
+        const completion = await this.completePurchase(pendingPurchase);
+        if (completion.status !== "rejected") return this.purchaseResult(completion);
+      }
+      /** One explicit user action may create at most one new provider charge. */
       const [purchase] = parseFacebookUnconsumedPurchases([await this.payments.purchaseAsync({productID: productId})]);
+      if (!purchase) return {status: "terminal-failure", message: "facebook-purchase-invalid"};
       if (purchase.productID !== productId) {
         return {status: "terminal-failure", message: "facebook-purchase-product-mismatch"};
       }
-      /** Provides result behavior. */
-      const result = await this.grant({signedRequest: purchase.signedRequest});
-      if (result.granted !== true || !bounded(result.providerReceiptId, 1_024) || typeof result.consume !== "boolean") {
-        return {status: "terminal-failure", message: "facebook-purchase-grant-invalid"};
-      }
-      if (result.consume) await this.payments.consumePurchaseAsync(purchase.purchaseToken);
-      return {status: "success", value: {providerReceiptId: result.providerReceiptId}};
+      return this.purchaseResult(await this.completePurchase(purchase));
     } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error &&
+        (error.code === "USER_INPUT" || error.code === "USER_CANCELLED")) return {status: "cancelled"};
       return {
         status: "retryable-failure",
         message: error instanceof Error ? error.message : "facebook-purchase-failed",
@@ -156,11 +167,46 @@ export class FacebookCommerceCapability implements CommerceCapability {
     }
   }
 
+  /** Keeps retryable charges pending while sharing recovery's permanent-rejection quarantine. */
+  private async completePurchase(purchase: FacebookRecoverableCharge): Promise<FacebookPurchaseCompletion> {
+    this.pendingPurchases.set(purchase.productID, purchase);
+    /** Fulfillment consumes only after a durable, validated server grant. */
+    const completion = await this.recovery.complete(purchase);
+    if (completion.status !== "invalid-grant") this.pendingPurchases.delete(purchase.productID);
+    return completion;
+  }
+
+  /** Converts fulfillment outcomes without starting another checkout after a newly created charge fails. */
+  private purchaseResult(completion: FacebookPurchaseCompletion): PlatformResult<PurchaseValue> {
+    switch (completion.status) {
+      case "granted":
+        return {status: "success", value: {
+          providerReceiptId: completion.grant.providerReceiptId,
+          newCoins: completion.grant.newCoins,
+          coinsAwarded: completion.grant.coinsAwarded,
+        }};
+      case "rejected":
+        return {status: "terminal-failure", message: completion.message};
+      case "invalid-grant":
+        return {status: "terminal-failure", message: "facebook-purchase-grant-invalid"};
+      default: {
+        /** Makes future fulfillment states require an explicit host result. */
+        const unreachable: never = completion;
+        return unreachable;
+      }
+    }
+  }
+
   /** Provides recover behavior. */
   recover(): Promise<PlatformResult<void>> {
     if (this.activeRecovery) return this.activeRecovery;
     /** Provides operation behavior. */
-    const operation = this.runExclusive(() => this.recovery.recover());
+    const operation = this.runExclusive(async () => {
+      /** Retires cached transient receipts only after recovery has completed safely. */
+      const result = await this.recovery.recover();
+      if (result.status === "success") this.pendingPurchases.clear();
+      return result;
+    });
     this.activeRecovery = operation;
     void operation.finally(() => {
       if (this.activeRecovery === operation) this.activeRecovery = undefined;

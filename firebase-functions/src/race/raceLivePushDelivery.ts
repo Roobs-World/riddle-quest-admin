@@ -1,3 +1,4 @@
+import {isAndroidAccountProvider} from "../android/androidUser";
 import {createHash} from "node:crypto";
 import {type Firestore} from "firebase-admin/firestore";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
@@ -6,7 +7,7 @@ import {createFacebookNotificationDispatchLedger} from "../facebook/facebookNoti
 import {isFacebookFeatureEnabled} from "../facebook/facebookFeatureFlags";
 import {raceProviderScope} from "./raceEligibility";
 import {type LiveChallengePushEvent} from "./raceLiveChallengeNotifications";
-import {LIVE_RACE_INVITE_MS} from "@qwordly/core/race";
+import {LIVE_RACE_INVITE_MS} from "@riddle-quest/core/race";
 import {type LiveTicket} from "./raceLiveState";
 import {liveChallengePushCopy} from "./raceLivePushCopy";
 
@@ -32,7 +33,7 @@ export async function deliverLiveRacePush(db: Firestore, eventId: string,
     const snapshot = await tx.get(ref), event = snapshot.data() as LiveChallengePushEvent | undefined;
     if (!event || event.status !== "queued") return null;
     if (event.challengeId !== `live_${eventId}` || !Number.isSafeInteger(event.createdAtMs) || event.createdAtMs > nowMs ||
-        !["jest", "facebook"].includes(raceProviderScope(event.recipientId) ?? "") ||
+        !["jest", "facebook", "android"].includes(raceProviderScope(event.recipientId) ?? "") ||
         raceProviderScope(event.creatorId) !== raceProviderScope(event.recipientId)) {tx.update(ref, {status: "skipped"}); return null;}
     /** Content, targeting, consent and safety are checked immediately before the irreversible claim. */
     const [seat, creator, recipient, deleted, creatorDeleted, blocked, reverse, subscription] = await Promise.all([
@@ -43,7 +44,8 @@ export async function deliverLiveRacePush(db: Firestore, eventId: string,
     ]);
     /** Outbox data cannot manufacture an invitation or change the original deadline. */
     const ticket = seat.data() as LiveTicket | undefined;
-    if (!ticket?.privateChallenge || ticket.userId !== event.creatorId || ticket.inviteRecipientId !== event.recipientId ||
+    if ((raceProviderScope(event.recipientId) === "android" && (!isAndroidAccountProvider(recipient.data()?.androidProvider) || !isAndroidAccountProvider(creator.data()?.androidProvider))) ||
+        !ticket?.privateChallenge || ticket.userId !== event.creatorId || ticket.inviteRecipientId !== event.recipientId ||
         ticket.cancelled || ticket.matchId || event.expiresAtMs !== ticket.createdAtMs + LIVE_RACE_INVITE_MS || nowMs >= event.expiresAtMs ||
         nowMs > ticket.seenAtMs + 30_000 || !creator.exists || !recipient.exists || deleted.exists || creatorDeleted.exists || blocked.exists || reverse.exists) {
       tx.update(ref, {status: "skipped"}); return null;

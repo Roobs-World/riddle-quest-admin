@@ -47,19 +47,22 @@ export async function commitJestStartupSession({
   try {
     await gate.run(async () => {
       if (!isActive() || !gate.isOpen()) return;
-      /** Restored preferences select the language before the hosted game mounts. */
-      const preferences = applyPlayerPreferences(session.preferences);
+      /** Ignore older multilingual preferences before preparing this English-only target. */
+      const englishSession = {...session, preferences: {...session.preferences, locale: "en"}};
+      /** Browser preferences match the supported language before hosted play mounts. */
+      applyPlayerPreferences(englishSession.preferences);
       /** Content and profile preparation share the locale's download window. */
       const [, readySession] = await Promise.all([
-        setLocaleAndWait(preferences.locale as Locale),
-        prepareSession?.(session, preferences.locale as Locale) ?? session,
+        setLocaleAndWait("en"),
+        prepareSession?.(englishSession, "en") ?? englishSession,
       ]);
       if (!isActive() || !gate.isOpen()) return;
       /** The same target player may have a newer unsaved checkpoint from the retiring guest/session visit. */
       const playerData = enablePlayerStateWrites(readySession.playerData, readySession.player.playerId);
       /** Preserve the authority-hydrated session while installing the reconciled client checkpoint. */
       const committedSession = playerData !== undefined && playerData !== readySession.playerData
-        ? {...readySession, playerData} : readySession;
+        ? {...readySession, preferences: {...readySession.preferences, locale: "en"}, playerData}
+        : {...readySession, preferences: {...readySession.preferences, locale: "en"}};
       /** Saves d profile. */
       const savedProfile = committedSession.playerData?.profile;
       setEngagementProgress({

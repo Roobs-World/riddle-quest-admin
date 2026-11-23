@@ -1,22 +1,17 @@
-import {completionPresentationKey} from "./completionPresentation";
-import {getConfirmedRiddleWin} from "./ConfirmedRiddleOutcome";
-import {useEffect, useLayoutEffect, useRef, useState} from "react";
+import {completionPresentationKey, isCompletionAdvancePending} from "@riddle-quest/hosted/play/completionPresentation";
+import {useEffect, useId, useLayoutEffect, useRef} from "react";
 import "../styles.modal-shell.css";
 import "../styles.modal-rewards.css";
 import "../styles.modal-commerce.css";
 import "../styles.account.css";
 import "../styles.profile-details.css";
-import type {GameModal, GameSessionState} from "./gameSession";
+import {isBlockingGameModal, type GameModal, type GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "./i18n";
 import {SpinningWheel} from "./SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";
-import {RewardFanfareContent, VictoryFanfareContent} from "./modalPages/fanfare/FanfareModalContent";
-import {
-  createRewardFanfareSteps,
-  createVictoryFanfareSteps,
-  getActiveCoinAward,
-  getActiveFanfareStep,
-} from "./modalPages/fanfare/fanfareSequence";
+import {FanfareTabs} from "./modalPages/fanfare/FanfareTabs";
+import {createVictoryFanfareSteps} from "./modalPages/fanfare/fanfareSequence";
+import {VictoryModalContent} from "./modalPages/fanfare/VictoryModalContent";
 /** A nested confirmation owns focus ahead of its containing modal. */
 const getModalFocusScope = (modal: HTMLElement | null): HTMLElement | null =>
   modal?.querySelector<HTMLElement>("[role=alertdialog]") ?? modal;
@@ -94,10 +89,8 @@ export function GameModalView({
 }: GameModalViewProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
-  /** Provides [victory step index, set victory step index] behavior. */
-  const [victoryStepIndex, setVictoryStepIndex] = useState(0);
-  /** Provides [reward step index, set reward step index] behavior. */
-  const [rewardStepIndex, setRewardStepIndex] = useState(0);
+  /** Stable accessible identifier connecting the victory dialog to its milestone tabs. */
+  const milestoneId = useId();
   /** Provides modal ref behavior. */
   const modalRef = useRef<HTMLElement | null>(null);
   /** Last native focus can resume after another surface temporarily covers this modal. */
@@ -110,7 +103,7 @@ export function GameModalView({
   }, [onClose, state.modal, state.guessPending, continuationPending, interactionBlocked]);
 
   /** A page switch remains part of the same modal interaction. */
-  const modalOpen = state.modal !== null;
+  const modalOpen = isBlockingGameModal(state.modal);
   useEffect(() => {
     if (!modalOpen) return;
     // Remember the gameplay trigger once. A Settings/Profile child button may
@@ -183,7 +176,7 @@ export function GameModalView({
   }, [state.modal]);
 
   useEffect(() => {
-    if (!state.modal || interactionBlocked) {
+    if (!modalOpen || interactionBlocked) {
       return;
     }
     /** Provides modal behavior. */
@@ -215,29 +208,20 @@ export function GameModalView({
         externalNotice.removeAttribute("aria-hidden");
       }
     };
-  }, [state.guessPending, state.lastRewards, state.modal, continuationPending, interactionBlocked]);
-
-  useEffect(() => {
-    setVictoryStepIndex(0);
-  }, [state.lastOutcome?.id]);
-
-  useEffect(() => {
-    setRewardStepIndex(0);
-  }, [state.auxiliaryFanfare?.id]);
+  }, [modalOpen, state.guessPending, state.lastRewards, state.modal, continuationPending, interactionBlocked]);
 
   if (!state.modal) {
     return null;
   }
-  /** Provides victory steps behavior. */
-  const victorySteps = createVictoryFanfareSteps(state.lastRewards);
-  /** Provides auxiliary steps behavior. */
-  const auxiliarySteps = createRewardFanfareSteps(state.auxiliaryFanfare);
-  /** Provides active victory step behavior. */
-  const activeVictoryStep = getActiveFanfareStep(victorySteps, victoryStepIndex);
-  /** Provides active reward step behavior. */
-  const activeRewardStep = getActiveFanfareStep(auxiliarySteps, rewardStepIndex);
-  /** Provides active coin award behavior. */
-  const activeCoinAward = getActiveCoinAward(state, activeVictoryStep, activeRewardStep);
+  if (state.modal === "reward") {
+    return <FanfareTabs
+      key={state.auxiliaryFanfare?.id ?? "reward"}
+      state={state}
+      paused={interactionBlocked || state.paused}
+      onBalancePreview={onCoinBalancePreview}
+      onComplete={onClose}
+    />;
+  }
   /** Provides titles behavior. */
   const titles: Record<Exclude<GameModal, null>, string> = {
     victory: tr("VictoryModal.TITLE"),
@@ -253,58 +237,30 @@ export function GameModalView({
     credits: tr("Credits.TITLE"),
     about: tr("AboutLegal.TITLE"),
     hint: tr("GameScreenAlerts.HINT_MODAL_TITLE"),
-    skip: tr("GameScreenAlerts.SKIP_MODAL_TITLE"),
+    skip: tr(state.gameMode === "challenge" ? "GameScreenAlerts.DAILY_SKIP_MODAL_TITLE" : "GameScreenAlerts.SKIP_MODAL_TITLE"),
     username: tr("Profile.UPDATE_USERNAME_TITLE"),
     treasure: tr("Profile.TREASURE_CHEST_TITLE"),
     reward: tr("CoinPurchase.TITLE"),
   };
-  /** Provides active fanfare step behavior. */
-  const activeFanfareStep = state.modal === "victory" ? activeVictoryStep : activeRewardStep;
-  if (activeFanfareStep?.kind === "achievement") {
-    titles[state.modal] = tr("Achievements.FANFARE_TITLE");
-  } else if (activeFanfareStep?.kind === "level") {
-    titles.victory = tr("LevelUpFanfare.TITLE");
-  } else if (activeFanfareStep?.kind === "referral") {
-    titles.reward = tr("VictoryModal.REFERRAL_REWARD_TITLE");
-  }
   /** Indicates whether is mandatory outcome. */
   const isMandatoryOutcome =
-    state.modal === "victory" || (state.modal === "continue" && (state.guessPending || continuationPending));
-  /** Provides advance victory fanfare behavior. */
-  const advanceVictoryFanfare = () => {
-    if (victoryStepIndex + 1 < victorySteps.length) {
-      setVictoryStepIndex((index) => index + 1);
-      return;
-    }
-    if (!state.completionAcknowledged && state.riddle && getConfirmedRiddleWin(state.riddle)) return;
-    onClose();
-    window.dispatchEvent(
-      new CustomEvent("riddle-quest:victory-dismissed", {
-        detail: {
-          outcomeKey: state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null,
-        },
-      }),
-    );
-    onNext();
-  };
-  /** Provides advance reward fanfare behavior. */
-  const advanceRewardFanfare = () => {
-    if (rewardStepIndex + 1 < auxiliarySteps.length) {
-      setRewardStepIndex((index) => index + 1);
-      return;
-    }
-    onClose();
-  };
+    state.modal === "victory" || state.modal === "continue" && (state.guessPending || continuationPending);
 
   return (
     <div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
       {state.modal !== "profile" && state.modal !== "continue" ? <SpinningWheel /> : null}
+      {state.modal === "victory" && state.lastRewards ? <FanfareTabs
+        key={`milestones-${state.lastOutcome?.id ?? "victory"}`} id={milestoneId} state={state}
+        steps={createVictoryFanfareSteps(state.lastRewards).filter(step => step.kind !== "victory")}
+        paused={interactionBlocked || state.paused} onBalancePreview={onCoinBalancePreview}
+        onComplete={() => undefined} /> : null}
       <section
         ref={modalRef}
         className={`game-modal modal-${state.modal}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="game-modal-title"
+        aria-owns={state.modal === "victory" && state.lastRewards ? milestoneId : undefined}
         onMouseDown={(event) => event.stopPropagation()}
         onFocusCapture={(event) => {
           if (event.target instanceof HTMLElement) lastFocusedControlRef.current = event.target;
@@ -316,30 +272,15 @@ export function GameModalView({
             ×
           </button>
         )}
-        <h2 id="game-modal-title">{titles[state.modal]}</h2>
-
-        {state.modal === "victory" && (
-          <VictoryFanfareContent
-            activeCoinAward={activeCoinAward}
-            activeStep={activeVictoryStep}
-            onAdvance={advanceVictoryFanfare}
-            onBalancePreview={onCoinBalancePreview}
-            state={state}
-            stepCount={victorySteps.length}
-            stepIndex={victoryStepIndex}
-          />
-        )}
-
-        {state.modal === "reward" && state.auxiliaryFanfare && (
-          <RewardFanfareContent
-            activeCoinAward={activeCoinAward}
-            activeStep={activeRewardStep}
-            onAdvance={advanceRewardFanfare}
-            onBalancePreview={onCoinBalancePreview}
-            stepCount={auxiliarySteps.length}
-            stepIndex={rewardStepIndex}
-          />
-        )}
+        {state.modal === "victory" ? <VictoryModalContent key={state.lastOutcome?.id ?? "victory"}
+          state={state} onBalancePreview={onCoinBalancePreview} onAdvance={() => {
+            if (isCompletionAdvancePending(state)) return;
+            onClose();
+            window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed", {
+              detail: {outcomeKey: state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null},
+            }));
+            onNext();
+          }} /> : <h2 id="game-modal-title">{titles[state.modal]}</h2>}
 
         <GameModalPages
           state={state}

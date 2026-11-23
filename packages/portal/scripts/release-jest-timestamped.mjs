@@ -15,7 +15,6 @@ import {
   readdirSync,
   renameSync,
   rmSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import {homedir} from "node:os";
@@ -30,9 +29,11 @@ import {
   createReleaseSandboxArguments,
   findUnresolvedUploadBarriers,
   fingerprintReleaseDependencies,
+  linkReleaseSnapshotDependencies,
   RIDDLE_QUEST_JEST_GAME_ID,
   resolveReleaseCredentialPath,
   resolveRiddleQuestJestGameId,
+  snapshotPnpmStoreIndex,
 } from "./jest-release-safety.mjs";
 
 const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
@@ -71,7 +72,7 @@ const operatorHomeDirectory = homedir();
 if (process.platform !== "linux") {
   throw new Error("Secure Jest releases require Linux and functional bubblewrap; refusing an unsandboxed fallback");
 }
-const releaseSandboxDirectory = mkdtempSync("/tmp/riddle-quest-release-sandbox-");
+const releaseSandboxDirectory = mkdtempSync("/var/tmp/riddle-quest-release-sandbox-");
 const releaseDebugLogQuarantineDirectory = join(
   repositoryDirectory,
   ".firebase",
@@ -345,7 +346,7 @@ const isolatedPnpmLicenseStoreDirectory = join(
   basename(operatorPnpmStoreDirectory),
 );
 mkdirSync(isolatedPnpmLicenseStoreDirectory, {mode: 0o700, recursive: true});
-copyFileSync(operatorPnpmStoreIndexPath, join(isolatedPnpmLicenseStoreDirectory, "index.db"));
+await snapshotPnpmStoreIndex(operatorPnpmStoreIndexPath, join(isolatedPnpmLicenseStoreDirectory, "index.db"));
 chmodSync(join(isolatedPnpmLicenseStoreDirectory, "index.db"), 0o600);
 addReadOnlyDirectoryBind(
   operatorPnpmStoreFilesDirectory,
@@ -367,7 +368,7 @@ addReadOnlyDirectoryBind(operatorCorepackCache, isolatedCorepackCache);
 // read-only bind fails even when the required runtimes are already installed.
 const operatorFirebaseEmulatorCache = join(operatorHomeDirectory, ".cache", "firebase", "emulators");
 const isolatedFirebaseEmulatorCache = join(isolatedHomeDirectory, ".cache", "firebase", "emulators");
-if (existsSync(operatorFirebaseEmulatorCache)) {
+if (process.env.JEST_RELEASE_SKIP_TESTS !== "true" && existsSync(operatorFirebaseEmulatorCache)) {
   cpSync(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, {recursive: true});
 }
 
@@ -593,11 +594,7 @@ const materializeCommittedSource = () => {
   run("/usr/bin/tar", ["-xf", archive, "-C", immutableSourceDirectory], {env: gateEnvironment});
   rmSync(archive, {force: true});
 
-  for (const relativeDirectory of ["", join("packages", "core"), join("packages", "portal")]) {
-    const installedModules = join(repositoryDirectory, relativeDirectory, "node_modules");
-    const immutableModules = join(immutableSourceDirectory, relativeDirectory, "node_modules");
-    if (existsSync(installedModules)) symlinkSync(installedModules, immutableModules, "dir");
-  }
+  linkReleaseSnapshotDependencies({repositoryDirectory, immutableSourceDirectory});
 };
 
 const trustedScriptsDirectory = join(releaseSandboxDirectory, "trusted-scripts");
@@ -707,7 +704,7 @@ try {
   // Known Console metadata and assets are part of ordinary builds. A real
   // timestamped release additionally requires the two owner-approved identity
   // decisions before this process reads credentials or can transmit bytes.
-  runPnpm(["--filter", "@qwordly/portal", "check:jest-console:release"], gateEnvironment);
+  runPnpm(["--filter", "@riddle-quest/portal", "check:jest-console:release"], gateEnvironment);
 
   // The long gate receives metadata only: no upload token, email, credential
   // path, Sentry token, or unrelated ambient environment. Release credentials
@@ -717,7 +714,7 @@ try {
   // Capture the installed graph while the read-only package store is available.
   // The credential-bearing rebuild consumes this frozen input without querying pnpm.
   const frozenLicenseInventoryPath = join(gatePreflightDirectory, "license-inventory.json");
-  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "@qwordly/portal", "licenses", "list", "--json"], {
+  const licenseInventory = JSON.parse(run("pnpm", ["--filter", "@riddle-quest/portal", "licenses", "list", "--json"], {
     captureOutput: true,
     env: {...gateEnvironment, pnpm_config_store_dir: isolatedPnpmLicenseStoreDirectory},
   }).stdout);

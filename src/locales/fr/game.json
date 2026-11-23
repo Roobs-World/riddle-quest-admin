@@ -1,13 +1,13 @@
 {
   "GameMessages": {
-    "GAME_LOST": "Partie perdue: Reponse - ",
-    "GAME_WON": "Partie gagnee: Essais - ",
-    "HINT_USED": "Indice utilise: Cout - ",
+    "GAME_LOST": "Partie perdue : bonne réponse - ",
+    "GAME_WON": "Partie gagnée : essais - ",
+    "HINT_USED": "Indice utilisé : coût - ",
     "IN_MODE": " en mode ",
     "MODE_SUFFIX": ".",
-    "RETRY_BUTTON_PRESSED": "Bouton recommencer presse",
+    "RETRY_BUTTON_PRESSED": "Bouton Réessayer pressé",
     "FALLBACK_CLUE_SINGLE": "Résolvez ce mot.",
-    "FALLBACK_CLUE_TEMPLATE": "Résolvez ce mot de {length} lettre."
+    "FALLBACK_CLUE_TEMPLATE": "Résolvez ce mot de {length} lettres."
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",
@@ -17,8 +17,8 @@
     "PASSWORD_LABEL": "Mot de passe",
     "SIGN_IN_WITH_EMAIL": "Connexion par e-mail",
     "SIGNING_IN": "Connexion...",
-    "GUEST_WARNING": "Jouez en invite ou connectez-vous pour synchroniser progression, pieces et classement.",
-    "HOST_STATUS_READY": "Hote connecte",
+    "GUEST_WARNING": "Jouez en invité ou connectez-vous pour synchroniser progression, pièces et classement.",
+    "HOST_STATUS_READY": "Hôte connecté",
     "STARTUP_CONNECTING": "Connexion à Jest…",
     "STARTUP_PLAYER": "Chargement du compte joueur…",
     "STARTUP_PROGRESS": "Chargement de la progression sauvegardée…",
@@ -27,7 +27,7 @@
     "GAME_FRAME_TITLE": "Cadre de jeu Riddle Quest",
     "PLAY_CLASSIC": "Classique",
     "PLAY_DAILY": "Quotidien",
-    "OPEN_GAME": "Charger une enigme",
+    "OPEN_GAME": "Charger une énigme",
     "NOTIFICATION_PLAYER_FALLBACK": "Joueur",
     "NOTIFICATION_DAILY_CTA": "Résoudre",
     "NOTIFICATION_STREAK_CTA": "Lancer une série",
@@ -35,13 +35,13 @@
     "NOTIFICATION_DAILY_BODY": "{name}, l’Énigme Cosmique du jour est prête. Résolvez-la pour {coins}+ pièces.",
     "NOTIFICATION_STREAK_BODY": "Vous avez {wins} victoires et une meilleure série de {streak} jours. L’énigme vaut {coins}+ pièces.",
     "NOTIFICATION_WEEKLY_BODY": "Niveau {level} : une nouvelle Énigme Cosmique est prête. Gagnez {coins}+ pièces.",
-    "PURCHASE_COMPLETE": "{coins} pieces ajoutees.",
+    "PURCHASE_COMPLETE": "{coins} pièces ajoutées.",
     "PROFILE_PROGRESS": "Niveau {level} avec {xp} XP.",
-    "ACHIEVEMENTS_EMPTY": "Aucun succes debloque pour le moment.",
+    "ACHIEVEMENTS_EMPTY": "Aucun succès débloqué pour le moment.",
     "PAUSE_GAME": "Mettre en pause",
     "RESUME_GAME": "Reprendre le jeu",
     "PAUSED": "En pause",
-    "BRIDGE_ERROR": "Le pont du jeu a recu un message invalide.",
-    "PROVIDER_NOT_CONFIGURED": "Ce fournisseur web n'est pas encore configure."
+    "BRIDGE_ERROR": "Le pont du jeu a reçu un message invalide.",
+    "PROVIDER_NOT_CONFIGURED": "Ce fournisseur web n'est pas encore configuré."
   }
 }

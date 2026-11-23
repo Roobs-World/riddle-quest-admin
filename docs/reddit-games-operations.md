@@ -1,5 +1,7 @@
 # Reddit Games operations
 
+As of 16 October 2026, the hourly Reddit profile-retention schedule is removed. Social reads still suppress logically expired profiles, and the bounded operator retention command remains available. Untouched expired records are not guaranteed automatic physical deletion. Analytics does not perform this deletion.
+
 For first-time app/community provisioning, secrets, a non-promotable private
 playtest, and the sandbox Firebase deployment, run the resumable guarded wizard:
 
@@ -22,7 +24,7 @@ denied Cloud Functions hostname. The current local package calls the first-party
 `www.roobsworld.com` proxy. The public route now passes the unsigned-request
 check, returning JSON `signature-required`; authenticated forwarding and Reddit's
 host approval still require hosted evidence. Run
-`pnpm --filter @qwordly/reddit-app check:hosted-gateway` before a private upload.
+`pnpm --filter @riddle-quest/reddit-app check:hosted-gateway` before a private upload.
 Production approval and publication are not complete. HTTP-fetch
 approval for the current host, payment eligibility, policy review, multi-role
 playtests, physical iOS/Android tests, hosted evidence, and exact-artifact release
@@ -39,7 +41,7 @@ For another private bootstrap upload, choose an unused numeric prerelease versio
 from the app dashboard and pass it explicitly:
 
 ```bash
-pnpm --filter @qwordly/reddit-app playtest:upload <major.minor.patch.prerelease>
+pnpm --filter @riddle-quest/reddit-app playtest:upload <major.minor.patch.prerelease>
 ```
 
 Devvit 0.14.1 computes `upload --bump prerelease` from the latest stable version,
@@ -61,7 +63,7 @@ After inspecting the exact provider version, record its authoritative outcome
 without uploading anything:
 
 ```bash
-pnpm --filter @qwordly/reddit-app playtest:resolve <version> accepted --confirm-version <version>
+pnpm --filter @riddle-quest/reddit-app playtest:resolve <version> accepted --confirm-version <version>
 ```
 
 Use `confirmed-absent` only when Reddit definitively confirms no such version was
@@ -176,16 +178,16 @@ local solo play only; valuable persistence and social actions require trusted Re
 identity. Login reloads the post, so guest state must be preserved before prompting.
 
 Devvit owns the webview CSP. Keep client requests same-origin and validate the built
-package with `pnpm --filter @qwordly/reddit-app validate`; do not weaken the boundary
+package with `pnpm --filter @riddle-quest/reddit-app validate`; do not weaken the boundary
 with a permissive HTML meta policy.
 
 ## Build and local verification
 
 ```bash
-pnpm --filter @qwordly/portal build:reddit
-pnpm --filter @qwordly/reddit-app build
-pnpm --filter @qwordly/reddit-app validate
-pnpm --filter @qwordly/reddit-app playtest
+pnpm --filter @riddle-quest/portal build:reddit
+pnpm --filter @riddle-quest/reddit-app build
+pnpm --filter @riddle-quest/reddit-app validate
+pnpm --filter @riddle-quest/reddit-app playtest
 ```
 
 The package must retain the inline localized launch entry, regular game entry, CJS
@@ -246,11 +248,11 @@ and injected browser checks do not establish hosted approval. See
 
 Capture each real `auth`, `payment`, `refund`, `post-entry`, `realtime`, and
 `notification` JSON payload without writing its raw bytes to the repository. Pipe
-it through `pnpm --filter @qwordly/reddit-app capture:contract <type> -` and store
+it through `pnpm --filter @riddle-quest/reddit-app capture:contract <type> -` and store
 only the resulting sanitized JSON under `docs/evidence/reddit-contracts`. The
 capture command strips credentials, provider IDs, profiles, and URL query data and
 records a source digest and timestamp. Run
-`pnpm --filter @qwordly/reddit-app validate:contracts`; the immutable release gate
+`pnpm --filter @riddle-quest/reddit-app validate:contracts`; the immutable release gate
 will fail until all six provenance-bound fixture types pass validation.
 
 Create the immutable candidate only after the contract fixtures pass:
@@ -266,7 +268,7 @@ archive input. Do not treat the bootstrap playtest upload as release evidence.
 
 After an approved exact-byte ingestion path exists and the retained candidate has
 been reviewed, populate `docs/evidence/reddit-hosted-evidence.json` from the adjacent
-example. `pnpm --filter @qwordly/reddit-app release:promotion` requires the immutable
+example. `pnpm --filter @riddle-quest/reddit-app release:promotion` requires the immutable
 artifact hash/version/commit, proves the hash and commit match the gated receipt and
 read-only handoff, validates the complete five-Function and four-rules Firebase
 deployment, fetch/payment/policy/security approvals, all four roles, all six critical
@@ -310,7 +312,7 @@ pnpm --dir firebase-functions reddit:profiles:retention --project riddle-quest-e
 Only aggregate counts are emitted. An `invalid` count requires investigation of
 malformed state or failed transactions; do not discard a mapping to clear a cache.
 `complete: false` means the bounded page has a backlog or failure. Monitor those
-counts and repeat bounded apply pages as required. The 50-record hourly budget
+counts and repeat bounded apply pages as required. The 50-record operator-page budget
 makes no exact physical deletion deadline; social reads already suppress the cache
 at its 24-hour logical expiry. Missing/malformed expiry fields need separate
 operator inspection. Never configure identity/account TTL or recreate missing rows.

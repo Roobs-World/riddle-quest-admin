@@ -1,9 +1,9 @@
-import {getCoinPackBuyingPower} from "@qwordly/core/game";
-import {DEFAULT_PRODUCT_PRICING, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
+import {getCoinPackBuyingPower} from "@riddle-quest/core/game";
+import {DEFAULT_PRODUCT_PRICING, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@riddle-quest/core/pricing/catalog";
 import {useSubscriptionManagement} from "./useSubscriptionManagement";
 import coinUrl from "../../../../../../assets/images/coin.svg";
 import {useTranslator} from "../../i18n";
-import type {ProductSummary} from "../../types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 
 /** Inputs required to display the platform product catalog. */
 export type ShopModalPageProps = {
@@ -15,7 +15,7 @@ export type ShopModalPageProps = {
   onPurchase: (productId: string) => void;
 };
 
-/** Localizes game-owned fallback copy while preserving provider-authored descriptions. */
+/** Localizes game-owned product badges. */
 function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTranslator>) {
   /** Game-owned pricing metadata used only for localized fallback copy. */
   const local = DEFAULT_PRODUCT_PRICING.find((item) => item.productId === product.productId);
@@ -26,8 +26,6 @@ function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTrans
     "BEST VALUE": "CoinShop.BADGE_BEST_VALUE",
   };
   return {
-    description: local && product.description === local.description
-      ? tr("CoinShop.PACK_DESCRIPTION", {coins: product.coins.toLocaleString()}) : product.description,
     badge: local && product.featuredBadge === local.featuredBadge && local.featuredBadge
       ? tr(badgeKeys[local.featuredBadge]) : product.featuredBadge,
   };
@@ -48,7 +46,7 @@ export const SUBSCRIPTION_BENEFIT_KEYS = [
   "CoinShop.SUBSCRIPTION_BENEFIT_RENEWAL",
 ] as const;
 
-/** Renders products supplied by the Jest platform purchase catalog. */
+/** Renders products supplied by the current platform purchase catalog. */
 export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
@@ -77,7 +75,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
         {loading && products.length === 0 ? <p role="status">{tr("Accessibility.LOADING")}</p> : null}
         {!loading && !catalogError && products.length === 0 ? <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p> : null}
         {visibleProducts.map((product) => {
-          /** Localized game-owned labels and provider-authored product description. */
+          /** Localized game-owned product badge. */
           const copy = shopProductCopy(product, tr);
           /** Whole-action alternatives explain the actual value of the provider coin grant. */
           const buyingPower = getCoinPackBuyingPower(product.coins);
@@ -91,7 +89,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
               <span className="shop-subscription-icon" aria-hidden="true">
                 ★
               </span>
-            ) : (
+            ) : product.productType === "durable" ? null : (
               <img className="shop-product-coins" src={coinUrl} alt="" />
             )}
             <h3 className="shop-product-name">{product.name}</h3>
@@ -101,12 +99,14 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
                   ? tr("CoinShop.SUBSCRIPTION_ACTIVE")
                   : `${product.displayPrice} / ${tr(`CoinShop.PERIOD_${product.billingPeriod?.toUpperCase() ?? "MONTHLY"}`)}`}
               </span>
-            ) : (
+            ) : product.productType === "durable" ? null : (
               <span className="shop-product-amount">
                 {product.coins.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}
               </span>
             )}
-            <small className="shop-product-description">{copy.description}</small>
+            {(product.productType === "subscription" || product.productType === "durable") && product.description ? (
+              <small className="shop-product-description">{product.description}</small>
+            ) : null}
             {product.productType === "subscription" ? (
               <div className="shop-subscription-benefits">
                 <strong>{tr("CoinShop.SUBSCRIPTION_BENEFITS_TITLE")}</strong>

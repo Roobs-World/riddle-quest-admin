@@ -1,7 +1,7 @@
 {
   "StatsModal": {
     "AVG_GUESSES": "Số lần đoán trung bình (thắng)",
-    "BEST_STREAK": "Dải hay nhất",
+    "BEST_STREAK": "Chuỗi tốt nhất",
     "CHALLENGE_WINS": "Số lần thắng trong thử thách",
     "CURRENT_STREAK": "Chuỗi hiện tại",
     "DAILY_PUZZLES": "Câu đố hàng ngày",
@@ -12,10 +12,10 @@
     "PERFORMANCE_SECTION": "Hiệu suất",
     "TITLE": "Thống kê",
     "TOTAL_SCORE": "Tổng điểm",
-    "TOTAL_WINS": "Tổng số tiền thắng",
+    "TOTAL_WINS": "Tổng số trận thắng",
     "TOTAL_WORDS_GUESSED": "Tổng số từ đã đoán",
     "WIN_RATE": "Tỷ lệ thắng",
     "WINS_STREAKS_SECTION": "Số lần thắng và chuỗi",
-    "XP": "kinh nghiệm"
+    "XP": "XP"
   }
 }

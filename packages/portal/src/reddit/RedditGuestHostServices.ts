@@ -1,7 +1,7 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
-import {computeFeedback, splitGraphemes} from "@qwordly/core/game";
-import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@qwordly/core/bridge";
-import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "../play/types";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
+import {computeFeedback, splitGraphemes} from "@riddle-quest/core/game";
+import type {BridgeProfile, BridgeRiddle, BridgeUser} from "@riddle-quest/core/bridge";
+import type {AuthSnapshot, CompletionResult, HostServices, SinglePlayerGuessResult} from "@riddle-quest/hosted/hostTypes";
 import type {SavedGame} from "../platform/types";
 import {parseSavedGame} from "../platform/playerDataValidation";
 

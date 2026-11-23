@@ -2,8 +2,8 @@ import definitions from "./release-targets.json" with {type: "json"};
 /** Common packages are declarations, distinct from build/test dependencies. */
 const sharedRuntimePackages = ["react", "react-dom", "scheduler", "three", "zod", "@babel/runtime"];
 /** Packages permitted only in Firebase-backed provider adapters. */
-const firebaseRuntimePackages = ["firebase", "@firebase/*", "@sentry/browser", "@sentry/core", "@sentry/browser-utils", "@sentry/conventions", "@sentry/feedback", "@sentry/replay", "@sentry/replay-canvas", "web-vitals", "idb"];
-const providerRuntimePackages = {jest: firebaseRuntimePackages, facebook: firebaseRuntimePackages, reddit: ["@devvit/*", "valibot", "jwt-decode"]};
+const firebaseRuntimePackages = ["firebase", "@firebase/*", "@sentry/browser", "@sentry/core", "@sentry/browser-utils", "@sentry/conventions", "@sentry/feedback", "@sentry/replay", "@sentry/replay-canvas", "web-vitals", "idb", "tslib"];
+const providerRuntimePackages = {jest: [...firebaseRuntimePackages, "html2canvas-pro"], facebook: firebaseRuntimePackages, reddit: ["@devvit/*", "valibot", "jwt-decode"]};
 /** Canonical build facts consumed by Vite, dependency enforcement and release evidence. */
 export const webBuildFacts = Object.freeze(Object.fromEntries(
   ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"].map(target => [target,
@@ -17,7 +17,7 @@ export function createReleaseRegistry(plans, html5 = {}) {
   const targets = new Set();
   return Object.freeze(plans.map(plan => {
     if (!/^[a-z][a-z0-9-]*$/.test(plan.target) || targets.has(plan.target)) throw new Error(`Invalid or duplicate target: ${plan.target}`);
-    if (!plan.dashboardName) throw new Error(`Missing dashboard mapping: ${plan.target}`);
+    if (!plan.displayName) throw new Error(`Missing display name: ${plan.target}`);
     targets.add(plan.target);
     const neutral = html5[plan.target];
     return Object.freeze({...plan,

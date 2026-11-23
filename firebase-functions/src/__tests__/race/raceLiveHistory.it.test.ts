@@ -1,10 +1,11 @@
+import {setEmulatorSystemTime} from "../helpers/emulatorClock";
 import {initializeApp, deleteApp, getApps, type App} from "firebase-admin/app";
 import {createHmac} from "node:crypto";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {listLiveRaceHistoryForUser} from "../../race/raceLiveHistory";
 import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
-import {LIVE_RACE_HISTORY_MS} from "@qwordly/core/race";
+import {LIVE_RACE_HISTORY_MS} from "@riddle-quest/core/race";
 import {redditGameplay} from "../../reddit/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../reddit/redditEndpoints";
 import {redditFirebaseUid, hashRedditGatewayPayload, canonicalRedditGatewayAssertion} from "../../reddit/redditSecurity";
@@ -31,6 +32,7 @@ beforeAll(() => {
   app = initializeApp({projectId: PROJECT}, "live-history-fixture"); db = getFirestore(app);
 });
 beforeEach(clear);
+afterEach(() => jest.useRealTimers());
 afterAll(async () => {if (db) await clear(); if (app) await deleteApp(app); if (gatewayApp) await deleteApp(gatewayApp);});
 
 /** A real match settles a forfeit once; history observes rather than reproducing its grant. */
@@ -48,6 +50,14 @@ async function completed(provider: "facebook" | "reddit", suffix = "first", nowM
   const a = await joinLiveRaceForUser(ids[0], {locale, categoryId: "history", requestId: `history-a-${suffix}`}, {db, nowMs});
   /** Real matching selects the already waiting creator. */
   const b = await joinLiveRaceForUser(ids[1], {locale, categoryId: "history", requestId: `history-b-${suffix}`}, {db, nowMs: nowMs + 1000});
+  /** Canonical shared match that supplies each participant's first issued question. */
+  const paired = (await db.doc(`liveRaceMatches/${a.ticketId}`).get()).data()!;
+  for (const [seat, view] of [a, b].entries()) {
+    /** First owned question answered before creating the retained terminal history. */
+    const riddle = paired.runs[seat].riddles[0];
+    await updateLiveRaceForUser(ids[seat], {ticketId: view.ticketId, action: "guess", requestId: `history-played-${suffix}-${seat}`,
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: nowMs + 7000});
+  }
   await updateLiveRaceForUser(ids[1], {ticketId: b.ticketId, action: "leave", requestId: `history-leave-${suffix}`}, {db, nowMs: nowMs + 8000});
   return {ids, seats: [a, b]};
 }
@@ -114,7 +124,7 @@ it("returns the exact history response through the real signed Reddit gateway an
     await db.doc(`providerIdentities/${redditProviderIdentityId("riddle-quest", userId)}`).set({provider: "reddit", appName: "riddle-quest",
       providerUserId: userId, accountGeneration: 1, status: "active", uid: ids[0]});
     await db.doc("raceConfig/rollout").set({enabled: true, percentage: 100, allowlistHashes: []});
-    jest.spyOn(Date, "now").mockReturnValue(NOW + 9000);
+    setEmulatorSystemTime(NOW + 9000);
     await send({locale: "en", limit: 20});
     expect(status).toBe(200);
     expect(body).toEqual({ok: true, result: await listLiveRaceHistoryForUser(ids[0], {locale: "en", limit: 20}, {db, nowMs: NOW + 9000})});
@@ -125,7 +135,7 @@ it("returns the exact history response through the real signed Reddit gateway an
     await send({locale: "en", limit: 20});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
   } finally {
-    jest.restoreAllMocks();
+    jest.restoreAllMocks(); jest.useRealTimers();
     for (const [key, value] of Object.entries(original)) {if (value === undefined) delete process.env[key]; else process.env[key] = value;}
   }
 });

@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=
 assert.ok(['development','production'].includes(mode));
 const lifecycle=process.env.CHECKPOINT_COMMIT_LIFECYCLE??'visibility',browserName=process.env.CHECKPOINT_COMMIT_BROWSER??'chromium';
 assert.ok(['visibility','pagehide','both'].includes(lifecycle));assert.ok(['chromium','firefox'].includes(browserName));
-const output=path.resolve(process.env.CHECKPOINT_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/checkpoint-commit-2026-10-04',mode));
+const output=path.resolve(process.env.CHECKPOINT_COMMIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/checkpoint-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/checkpoint-commit-'));let server,browser;const observations=[];
 try{
@@ -19,8 +19,8 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameSessionPersistence} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameSessionPersistence.ts'))};
-import {createSavedGame} from ${JSON.stringify(path.join(root,'src/play/GameSessionCheckpoints.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createSavedGame} from ${JSON.stringify(path.join(root,'../hosted/src/play/GameSessionCheckpoints.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 const lifecycle=${JSON.stringify(lifecycle)};
 const scenario=new URL(location.href).searchParams.get('scenario')??'spec-state';
 window.probe={saves:[],suspended:0,adds:0,removes:0,listeners:new Set(),errors:[],unhandled:[],initialBackground:false};

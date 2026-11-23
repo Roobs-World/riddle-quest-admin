@@ -8,12 +8,36 @@ import {
   type ListFacebookTournamentResponse,
   type RecordFacebookContextRunResponse,
   type RecordFacebookTournamentRunResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
+import type {FacebookPurchaseGrant} from "./FacebookPurchaseRecovery";
 
 /** Defines the facebook tournament duration ms value. */
 const FACEBOOK_TOURNAMENT_DURATION_MS = 24 * 60 * 60 * 1_000;
 /** Defines the facebook firestore timestamp max ms value. */
 const FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS = 253_402_300_799_999;
+
+/** Accepts only the authoritative grant before native consumption or balance updates. */
+export function parseFacebookPurchaseGrant(value: unknown): Required<FacebookPurchaseGrant> {
+  if (typeof value !== "object" || value === null || Array.isArray(value) ||
+    !("granted" in value) || value.granted !== true ||
+    !("providerReceiptId" in value) || typeof value.providerReceiptId !== "string" ||
+    !/^[a-f0-9]{64}$/u.test(value.providerReceiptId) ||
+    !("consume" in value) || typeof value.consume !== "boolean" ||
+    !("newCoins" in value) || typeof value.newCoins !== "number" ||
+    !Number.isSafeInteger(value.newCoins) || value.newCoins < 0 ||
+    !("coinsAwarded" in value) || typeof value.coinsAwarded !== "number" ||
+    !Number.isSafeInteger(value.coinsAwarded) || value.coinsAwarded < 0 ||
+    !("removeInterstitialAds" in value) || typeof value.removeInterstitialAds !== "boolean" ||
+    Object.keys(value).length !== 6) throw new Error("Invalid Facebook purchase grant response.");
+  return {
+    granted: true,
+    providerReceiptId: value.providerReceiptId,
+    consume: value.consume,
+    newCoins: value.newCoins,
+    coinsAwarded: value.coinsAwarded,
+    removeInterstitialAds: value.removeInterstitialAds,
+  };
+}
 
 /** Parses only the authoritative balance; no arbitrary provider reward/receipt is accepted. */
 export function parseFacebookRewardedContinue(value: unknown): {

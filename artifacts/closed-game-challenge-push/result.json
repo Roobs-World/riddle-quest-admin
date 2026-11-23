@@ -1,9 +1,0 @@
-{
-  "gameClosed": true,
-  "browserNotifications": 1,
-  "duplicateReplaced": true,
-  "expiredRejected": true,
-  "malformedRejected": true,
-  "providerPushInjected": true,
-  "workerAsset": "liveChallengePushWorker-Bjl8qL5j.js"
-}

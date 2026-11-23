@@ -1,3 +1,5 @@
+import {Timestamp} from "firebase-admin/firestore";
+import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
 
@@ -23,8 +25,8 @@ it.each(["poll", "guess"] as const)("delivers a human %s within three database r
       players: [player, {...player, displayName: "Bob", level: 10}],
       runs: [liveRun(base, OWNER, ticketId, startsAtMs), liveRun(base, RIVAL, rivalId, startsAtMs)]};
     /** Every independent database read incurs the same deterministic 200ms RPC cost. */
-    const documents = new Map<string, unknown>([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: "expiry"}],
-      [`liveRaceMatches/${ticketId}`, match]]);
+    const documents = new Map<string, unknown>([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}],
+      [`liveRaceMatches/${ticketId}`, {...match, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}]]);
     /** Provides reads behavior. */
     const reads: string[] = [];
     /** Provides transaction behavior. */
@@ -34,7 +36,7 @@ it.each(["poll", "guess"] as const)("delivers a human %s within three database r
       path: string}) => {
         reads.push(ref.path);
         await new Promise(resolve => setTimeout(resolve, 200));
-        return {exists: documents.has(ref.path), data: () => structuredClone(documents.get(ref.path))};
+        return {exists: documents.has(ref.path), data: () => cloneLiveRaceFixture(documents.get(ref.path))};
       },
       set: (ref: {/** Stores path. */
       /** Stores path. */

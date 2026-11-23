@@ -1,4 +1,4 @@
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 import {liveRun, advanceLiveBot, type LiveMatch} from "../../race/raceLiveState";
 import {settleLiveFinish} from "../../race/raceLiveScoring";
 

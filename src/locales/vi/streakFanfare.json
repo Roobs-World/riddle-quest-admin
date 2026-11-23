@@ -1,8 +1,8 @@
 {
   "StreakFanfare": {
-    "COINS_SUFFIX": "tiền xu",
+    "COINS_SUFFIX": " xu",
     "CONTINUE_BUTTON": "Tiếp tục đi",
-    "STREAK_SUFFIX": "-Dải ngày",
+    "STREAK_SUFFIX": " ngày liên tiếp",
     "TITLE": "Chuỗi tăng lên!"
   }
 }

@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       61 passed, 61 total
-Snapshots:   0 total
-Time:        39.683 s
-Ran all test suites within paths "src/__tests__/race/raceLive.it.test.ts", "src/__tests__/race/raceLiveInvitation.it.test.ts", "src/__tests__/race/facebookLiveReferrals.it.test.ts".

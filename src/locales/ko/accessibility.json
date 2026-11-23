@@ -11,7 +11,7 @@
     "DELETE_LAST_LETTER": "마지막으로 입력한 문자 삭제",
     "GAME_HEADER": "로고 및 코인 잔액이 포함된 게임 헤더",
     "GAME_LOSS_NOTIFICATION": "게임 패배 알림",
-    "GO_BACK": "이동 뒤로",
+    "GO_BACK": "뒤로 가기",
     "LETTER_PREFIX": "글자 ",
     "LOADING": "로드 중",
     "LOADING_LEADERBOARD": "리더보드 로드 중",
@@ -23,13 +23,13 @@
     "OPEN_SETTINGS": "설정 열기",
     "OPEN_SETTINGS_HINT": "게임 설정, 사운드 옵션 및 계정 관리에 액세스",
     "SHARE_SYSTEM": "공유",
-    "SUBMIT_GUESS": "에 공유현재 추측 제출",
+    "SUBMIT_GUESS": "현재 추측 제출",
     "UNMUTE_SOUND": "사운드 음소거 해제",
     "VIRTUAL_KEYBOARD": "가상 키보드",
     "LANDING_ATTRIBUTION_LINK": "제작자 Roobs World",
     "LOGO_BUTTON": "로고",
     "MODAL_SEQUENCE_GO_TO_HINT": "이 팝업으로 다시 이동",
     "MODAL_SEQUENCE_GO_TO_POPUP": "{popupIndex}개의 팝업 {total}로 이동",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current} 중 {total}"
+    "MODAL_SEQUENCE_PROGRESS": "팝업 {current}/{total}"
   }
 }

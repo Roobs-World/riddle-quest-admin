@@ -13,10 +13,10 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
-import {RACE_RECOVERY_KEY,RACE_RECOVERY_TTL_MS} from '@qwordly/core/race';
+import {RACE_RECOVERY_KEY,RACE_RECOVERY_TTL_MS} from '@riddle-quest/core/race';
 const field=new URLSearchParams(location.search).get('case'),authority=createFakeRaceServices();
 window.calls=[];window.provider={find:async request=>{window.calls.push(request);return {status:'cancelled'};}};
 window.currentProvider=field==='available'?window.provider:undefined;window.failResolver=field==='throws';window.newer=field==='newer';window.recoveryKey=RACE_RECOVERY_KEY;

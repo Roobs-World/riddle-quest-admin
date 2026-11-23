@@ -42,7 +42,7 @@ markJestPlayable(platform);document.getElementById('root').innerHTML='<button>Pl
 let browser,server;
 const results=[];
 try {
-  await build({root:scratch,configFile:false,logLevel:'error',define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},build:{outDir:'dist'},resolve:{alias:{'@qwordly/core/bridge/constants':path.join(root,'../core/src/bridge/constants.ts'),'@qwordly/core/race':path.join(root,'../core/src/race/index.ts')}}});
+  await build({root:scratch,configFile:false,logLevel:'error',define:{'import.meta.env.VITE_PLATFORM_TARGET':JSON.stringify('jest')},build:{outDir:'dist'},resolve:{alias:{'@riddle-quest/core/bridge/constants':path.join(root,'../core/src/bridge/constants.ts'),'@riddle-quest/core/race':path.join(root,'../core/src/race/index.ts')}}});
   server=createServer(async(request,response)=>{
     try {
       const file=path.join(scratch,'dist',new URL(request.url,'http://localhost').pathname==='/'?'index.html':new URL(request.url,'http://localhost').pathname);

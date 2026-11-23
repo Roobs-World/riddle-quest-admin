@@ -1,0 +1,54 @@
+{
+  "unitAndServer": {
+    "race": {
+      "numPassedTestSuites": 4,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 84,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    },
+    "solo": {
+      "numPassedTestSuites": 4,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 31,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    },
+    "completion": {
+      "numPassedTestSuites": 2,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 10,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    },
+    "server": {
+      "numPassedTestSuites": 3,
+      "numFailedTestSuites": 0,
+      "numPassedTests": 50,
+      "numFailedTests": 0,
+      "numPendingTests": 0
+    }
+  },
+  "passedUnitAndServerTests": 175,
+  "passedRaceBrowserCases": 42,
+  "passedHostedGameplayBrowserCases": 5,
+  "additionalPassedLocalGameplayBrowserCases": 5,
+  "allSilent": true,
+  "uploadedVersionId": "01a17045-d20f-7599-ac28-477a7a9b90a6",
+  "artifact": {
+    "files": 419,
+    "mismatches": [],
+    "extraFiles": [],
+    "zipSha256": "d79cc0bef94181f4cc074b0e06e581561253adee6545ce6f7634882668f5f26b"
+  },
+  "providerMode": "Controlled transport for race UI and Jest mock gameplay for hosted checks; backend integration uses isolated Firestore and Realtime Database emulators.",
+  "productionApplicationChangesRequired": false,
+  "publication": {
+    "activeVersionId": "01a17045-d20f-7599-ac28-477a7a9b90a6",
+    "isActive": true,
+    "isPublished": false,
+    "revisionStatus": "draft",
+    "inReview": false,
+    "blocker": "Connected-browser Simulator game frame remains blank; sixteen required checks remain and final submission is disabled."
+  }
+}

@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "@qwordly/core/race";
+import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "@riddle-quest/core/race";
 import {LiveRaceInvitationCard} from "./LiveRaceInvitationCard";
 import {tr} from "../../i18n";
 

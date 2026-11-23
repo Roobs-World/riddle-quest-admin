@@ -1,4 +1,0 @@
-{
-  "schema": "packages/core/src/race/raceSchemas.ts",
-  "unit-test": "packages/core/src/race/__tests__/raceValidationWork.test.ts"
-}

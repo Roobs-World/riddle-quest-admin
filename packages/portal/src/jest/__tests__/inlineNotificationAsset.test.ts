@@ -27,61 +27,66 @@ it.each(["png", "jpeg", "webp"])("accepts %s inline images", (format) => {
   expect(isValidNotificationAsset(`data:image/${format};base64,YQ==`)).toBe(true);
 });
 
-it.each(["", "https://example.com/card.png", "data:image/gif;base64,YQ==", "data:image/svg+xml;base64,YQ==",
+it.each(["https://example.com/card.png", `https://example.com/${"x".repeat(2048 - "https://example.com/".length)}`])("accepts HTTPS asset %s", (asset) => {
+  expect(isValidNotificationAsset(asset)).toBe(true);
+});
+
+it.each(["", "http://example.com/card.png", "https://example.com/card image.png", `https://example.com/${"x".repeat(2049 - "https://example.com/".length)}`, "data:image/gif;base64,YQ==", "data:image/svg+xml;base64,YQ==",
   "data:image/png;base64,", "data:image/png;base64,YQ", "data:image/png;base64,!!!!", "data:image/png;base64,Y=Q="])("rejects invalid inline asset %s", (asset) => {
   expect(isValidNotificationAsset(asset)).toBe(false);
 });
 
-it("enforces the decoded 2MB boundary, including base64 padding", () => {
+it("enforces the complete 2MB data URL boundary, including its prefix and base64 expansion", () => {
   /** Generates precisely sized decoded payloads. */
   const asset = (bytes: number) => `data:image/png;base64,${Buffer.alloc(bytes).toString("base64")}`;
-  expect(isValidNotificationAsset(asset(2 * 1024 * 1024))).toBe(true);
-  expect(isValidNotificationAsset(asset(2 * 1024 * 1024 + 1))).toBe(false);
+  /** Largest complete base64 block that fits with the PNG data URL prefix. */
+  const maximumDecodedBytes = Math.floor((2 * 1024 * 1024 - "data:image/png;base64,".length) / 4) * 3;
+  expect(isValidNotificationAsset(asset(maximumDecodedBytes))).toBe(true);
+  expect(isValidNotificationAsset(asset(maximumDecodedBytes + 1))).toBe(false);
 });
 
-it("creates a 3:2 card from existing translated content and prefers it to the library reference", () => {
+it("creates a 3:2 card from existing translated content and prefers it to the library reference", async () => {
   /** Captured surface and draw operations. */
   const {canvas, context} = installCanvas();
-  expect(notificationAsset(content, "approved-card")).toEqual({asset: png});
+  expect(await notificationAsset(content, "approved-card")).toEqual({asset: png});
   expect(canvas).toMatchObject({width: 900, height: 600});
   expect(context.fillText).toHaveBeenCalledWith(content.title, 60, 100, 780);
   expect(context.fillText).toHaveBeenCalledWith(content.ctaText, 84, 532, 732);
-  expect(canvas.toDataURL).toHaveBeenCalledWith("image/png");
 });
 
-it("wraps writing systems without spaces by Unicode code point", () => {
+it("wraps writing systems without spaces by Unicode code point", async () => {
   /** Draw calls verify wrapping for scripts without spaces. */
   const {context} = installCanvas();
-  expect(createNotificationAsset({...content, body: "界".repeat(40)})).toBe(png);
+  expect(await createNotificationAsset({...content, body: "界".repeat(40)})).toBe(png);
   expect(context.fillText).toHaveBeenCalledWith("界".repeat(21), 60, 195, 780);
   expect(context.fillText).toHaveBeenCalledWith("界".repeat(19), 60, 247, 780);
 });
 
-it("keeps ordinary words together when wrapping notification text", () => {
+it("keeps ordinary words together when wrapping notification text", async () => {
   /** Draw calls verify complete words at line boundaries. */
   const {context} = installCanvas();
-  createNotificationAsset({...content, body: "A friend finished. Check the result."});
+  await createNotificationAsset({...content, body: "A friend finished. Check the result."});
   expect(context.fillText).toHaveBeenCalledWith("A friend finished.", 60, 195, 780);
   expect(context.fillText).toHaveBeenCalledWith("Check the result.", 60, 247, 780);
 });
 
-it("falls back instead of sending a card whose text overlaps the call to action", () => {
+it("falls back instead of sending a card whose text overlaps the call to action", async () => {
   installCanvas();
-  expect(notificationAsset({...content, body: Array(8).fill("abcdefghijklm").join(" ")}, "approved-card"))
+  expect(await notificationAsset({...content, body: Array(8).fill("abcdefghijklm").join(" ")}, "approved-card"))
     .toEqual({assetReference: "approved-card"});
 });
 
-it("keeps reference/Hero fallbacks when canvas is unavailable, throws, or produces an oversized image", () => {
-  expect(notificationAsset(content, "approved-card")).toEqual({assetReference: "approved-card"});
-  expect(notificationAsset(content)).toEqual({});
+it("keeps reference/Hero fallbacks when canvas is unavailable, throws, or produces an oversized image", async () => {
+  expect(await notificationAsset(content, "approved-card")).toEqual({assetReference: "approved-card"});
+  expect(await notificationAsset(content)).toEqual({});
   installCanvas(png, false);
-  expect(createNotificationAsset(content)).toBeNull();
+  expect(await createNotificationAsset(content)).toBeNull();
   /** Controllable encoded image generation. */
   const {canvas} = installCanvas();
   canvas.toDataURL.mockImplementation(() => {throw new Error("Canvas unavailable");});
-  expect(notificationAsset(content, "approved-card")).toEqual({assetReference: "approved-card"});
+  expect(await notificationAsset(content, "approved-card")).toEqual({assetReference: "approved-card"});
   installCanvas(`data:image/png;base64,${Buffer.alloc(2 * 1024 * 1024 + 1).toString("base64")}`);
-  expect(notificationAsset(content, "approved-card")).toEqual({assetReference: "approved-card"});
+  expect(await notificationAsset(content, "approved-card")).toEqual({assetReference: "approved-card"});
 });
 
 it("renders only three personalized cards and reuses them across all seven reminders", async () => {

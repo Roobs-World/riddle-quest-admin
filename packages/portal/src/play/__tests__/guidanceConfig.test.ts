@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import {createInitialGameSession} from "../gameSession";
+import {createInitialGameSession} from "@riddle-quest/hosted/play/gameSession";
 import {
   createGuidanceStorageKey,
   createTooltipTourStorageKey,
@@ -12,7 +12,7 @@ import {
   hasSeenTooltipTour,
   PROFILE_TOUR,
 } from "../guidance/guidanceConfig";
-import type {ProductSummary} from "../types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 
 /** Provides a purchasable coin pack so shop guidance is eligible. */
 const shopProduct: ProductSummary = {
@@ -42,7 +42,7 @@ describe("guidance configuration", () => {
     expect(createGuidanceStorageKey("onboarding")).toBe("riddleQuest:onboarding:anonymous");
     expect(createGuidanceStorageKey("onboarding", "user-1")).toBe("riddleQuest:onboarding:user-1");
     expect(createTooltipTourStorageKey("gameTour", "user-1")).toBe(
-      "riddleQuest:tooltipSequenceSeen:gameTour:v3:user-1",
+      "riddleQuest:tooltipSequenceSeen:gameTour:v4:user-1",
     );
     expect(createTooltipTourStorageKey("gameTour", "user-1", "v2")).toBe(
       "riddleQuest:tooltipSequenceSeen:gameTour:v2:user-1",
@@ -58,19 +58,36 @@ describe("guidance configuration", () => {
   it("selects onboarding and game tour steps for each player mode", () => {
     expect(getOnboardingTotalSteps()).toBe(2);
     expect(getGameTour("classic")).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
-    expect(getGameTour("challenge")).toEqual(["gameHint", "submitAnswer"]);
+    expect(getGameTour("challenge")).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("classic", false)).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
-    expect(getGameTour("challenge", false)).toEqual(["gameHint", "submitAnswer"]);
+    expect(getGameTour("challenge", false)).toEqual(["gameHint", "submitAnswer", "gameSkip"]);
     expect(getGameTour("classic", false, false)).toEqual(["submitAnswer"]);
     expect(getGameTour("classic", true, false)).toEqual(["submitAnswer"]);
+    expect(getGameTour("challenge", false, false)).toEqual(["submitAnswer", "gameSkip"]);
+    expect(getGameTour("classic", true, true, true, true)).toEqual([
+      "gameCoins", "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
+    ]);
+    expect(getGameTour("challenge", true, true, true, true)).toEqual([
+      "gameCoins", "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
+    ]);
+    expect(getGameTour("classic", false, true, true, true)).toEqual([
+      "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
+    ]);
+    expect(getGameTour("classic", true, false, true, true)).toEqual(["submitAnswer", "gameMultiplayer"]);
+    expect(getGameTour("challenge", true, false, true, true)).toEqual(["submitAnswer", "gameSkip", "gameMultiplayer"]);
     expect(getProfileTour()).toEqual(PROFILE_TOUR);
     expect(getProfileTour(false)).toEqual(PROFILE_TOUR.filter(id => id !== "profileTreasure"));
   });
 
   it("introduces the coin shop at the start of a later riddle, never before the first win", () => {
-    expect(getGameTour("classic")).not.toContain("gameCoins");
+    expect(getGameTour("classic", true, true, true, false)).toEqual([
+      "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
+    ]);
+    expect(getGameTour("classic", true, true, true, true)).toEqual([
+      "gameCoins", "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
+    ]);
     /** Provides first riddle state behavior. */
-    const firstRiddle = {
+    const firstRiddle: ReturnType<typeof createInitialGameSession> = {
       ...createInitialGameSession(),
       products: [shopProduct],
       riddle: {riddleId: "riddle-2"} as NonNullable<ReturnType<typeof createInitialGameSession>["riddle"]>,
@@ -108,17 +125,20 @@ describe("guidance configuration", () => {
     expect(coinTip({...firstRiddle, profile: {} as typeof firstRiddle.profile}, null)).toBe(false);
   });
 
-  it("keeps returning players' completed legacy game tour and its coin step as seen", () => {
+  it("reintroduces the current game tour while retaining legacy coin guidance markers", () => {
     expect(hasSeenTooltipTour(createMarkers([]), "gameTour", "user-1")).toBe(false);
     expect(hasSeenContextualTooltip(createMarkers([]), "gameCoins", "user-1")).toBe(false);
     /** Provides legacy markers behavior. */
     const legacy = createMarkers(["riddleQuest:tooltipSequenceSeen:gameTour:v2:user-1"]);
-    expect(hasSeenTooltipTour(legacy, "gameTour", "user-1")).toBe(true);
+    expect(hasSeenTooltipTour(legacy, "gameTour", "user-1")).toBe(false);
     expect(hasSeenContextualTooltip(legacy, "gameCoins", "user-1")).toBe(true);
     expect(hasSeenContextualTooltip(legacy, "hintAfterWrongGuess", "user-1")).toBe(false);
     expect(hasSeenTooltipTour(legacy, "profileTour", "user-1")).toBe(false);
-    /** Provides current markers behavior. */
-    const current = createMarkers(["riddleQuest:tooltipSequenceSeen:gameTour:v3:user-1"]);
+    /** The previous tour does not include the newly introduced Daily and multiplayer controls. */
+    const previous = createMarkers(["riddleQuest:tooltipSequenceSeen:gameTour:v3:user-1"]);
+    expect(hasSeenTooltipTour(previous, "gameTour", "user-1")).toBe(false);
+    /** Current tour completion suppresses its replay without marking unseen coin guidance. */
+    const current = createMarkers(["riddleQuest:tooltipSequenceSeen:gameTour:v4:user-1"]);
     expect(hasSeenTooltipTour(current, "gameTour", "user-1")).toBe(true);
     expect(hasSeenContextualTooltip(current, "gameCoins", "user-1")).toBe(false);
     expect(
@@ -177,6 +197,7 @@ describe("guidance configuration", () => {
         kind: "win" as const,
         riddleId: "riddle-1",
         gameMode: "challenge" as const,
+        sessionToken: "daily-win-session-token-0001",
         attempts: 2,
         isCorrect: true,
       },

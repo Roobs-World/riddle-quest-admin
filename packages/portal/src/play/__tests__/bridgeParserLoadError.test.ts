@@ -10,7 +10,7 @@ describe("bridge parser startup recovery", () => {
     const cause = new TypeError("Failed to fetch dynamically imported module: /assets/validation.js");
     /** The actual dynamic import is the failure boundary, rather than a mocked message router. */
     const load = jest.fn(() => {throw cause;});
-    jest.doMock("@qwordly/core/bridge", load);
+    jest.doMock("@riddle-quest/core/bridge", load);
     try {
       await jest.isolateModulesAsync(async () => {
         /** A fresh router starts without a warm parser cache. */
@@ -36,7 +36,7 @@ describe("bridge parser startup recovery", () => {
         expect(command).not.toHaveBeenCalled();
       });
     } finally {
-      jest.dontMock("@qwordly/core/bridge");
+      jest.dontMock("@riddle-quest/core/bridge");
     }
   });
 

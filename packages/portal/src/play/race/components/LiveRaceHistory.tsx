@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
-import {ListLiveRaceHistoryResponseSchema, type ListLiveRaceHistoryResponse, type LiveRaceCapability, type RaceLocale} from "@qwordly/core/race";
+import {ListLiveRaceHistoryResponseSchema, type ListLiveRaceHistoryResponse, type LiveRaceCapability, type RaceLocale} from "@riddle-quest/core/race";
 import {tr} from "../../i18n";
 import {LiveRaceSafety} from "./LiveRaceSafety";
+import {liveRacePlayerName} from "../logic/liveRacePlayerName";
 
 /** A provider's history read and content locale own the visible rows and their actions. */
 type LiveRaceHistoryProps = {
@@ -68,7 +69,7 @@ function LiveRaceHistoryPanel({transport, locale, onRematch}: LiveRaceHistoryPro
         <header><strong>{tr(entry.result === "win" ? "RaceTo10.RESULT_PLAYER_WIN" : entry.result === "loss" ? "RaceTo10.RESULT_OPPONENT_WIN" : "RaceTo10.RESULT_TIE")}</strong>
           <time dateTime={new Date(entry.createdAtMs).toISOString()}>{new Intl.DateTimeFormat(locale, {dateStyle: "short", timeStyle: "short"}).format(entry.createdAtMs)}</time></header>
         <div className="live-race-history-score"><span><span>{tr("RaceTo10.YOU")}</span><strong>{entry.correctCount}/10</strong></span>
-          <span><span>{masked || entry.opponent.bot ? tr("RaceTo10.LIVE_OPPONENT") : entry.opponent.displayName}</span>
+          <span><span>{masked ? tr("RaceTo10.LIVE_OPPONENT") : liveRacePlayerName(entry.opponent)}</span>
             <strong>{masked ? "—" : `${entry.opponent.correctCount}/10`}</strong></span></div>
         {entry.rewardCoins === 50 && <p>{tr("RaceTo10.LIVE_REWARD", {coins: entry.rewardCoins})}</p>}
         {entry.opponentAvailable && !entry.opponent.bot && transport.rematch && onRematch &&

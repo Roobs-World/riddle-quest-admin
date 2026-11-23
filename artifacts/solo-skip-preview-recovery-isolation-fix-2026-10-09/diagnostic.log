@@ -1,5 +1,0 @@
-Test Suites: 1 passed, 1 total
-Tests:       27 skipped, 2 passed, 29 total
-Snapshots:   0 total
-Time:        0.197 s, estimated 1 s
-Ran all test suites with tests matching "preserves recovery target across a failed".

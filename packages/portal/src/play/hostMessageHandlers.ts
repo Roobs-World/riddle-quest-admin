@@ -1,9 +1,9 @@
 import {BridgeParserLoadError, createHostMessageRouter, type HostMessageHandlers} from "./bridgeRouter";
 import {trackEvent} from "../analytics/events";
 import {tr} from "./i18n";
-import {createRequestId} from "./requestIds";
-import type {RaceOutcome} from "@qwordly/core/race";
-import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "./types";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
+import type {RaceOutcome} from "@riddle-quest/core/race";
+import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 import type {HostAuthorityModules} from "./HostAuthorityModules";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import type {HostCompletionInput} from "./hostCompletionEffects";
@@ -229,7 +229,7 @@ export const createPlayHostMessageHandlers = ({
   resize: () => undefined,
   recordAchievements: (message) => persistAchievementProjection(message.payload.achievementIds),
   loadRiddle: async (message) => {
-    await loadAndPostRiddle({...message.payload, gameMode}, message.requestId);
+    await loadAndPostRiddle(message.payload, message.requestId);
   },
   submitGuess: async (message) => {
     try {
@@ -379,6 +379,8 @@ export const createPlayHostMessageHandlers = ({
       setNotice(
         result.purchaseType === "subscription"
           ? tr("CoinShop.SUBSCRIPTION_ACTIVE_NOTICE")
+          : result.purchaseType === "durable"
+            ? tr("CommonAlerts.SUCCESS_TITLE")
           : tr("WebPortal.PURCHASE_COMPLETE", {coins: result.coinsAwarded ?? 0}),
       );
       postOperation(message.requestId, "purchase", true, result);

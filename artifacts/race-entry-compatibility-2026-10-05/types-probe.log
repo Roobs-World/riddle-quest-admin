@@ -1,3 +1,0 @@
-src/race/raceInvitation.ts(249,31): error TS2345: Argument of type '"blocked" | "claimed" | "deleted" | "inactive" | "invalid" | "locale" | "missing" | "provider"' is not assignable to parameter of type 'RaceEligibilityReason | null'.
-  Type '"claimed"' is not assignable to type 'RaceEligibilityReason | null'.
-src/race/raceInvitation.ts(259,3): error TS2741: Property 'entry' is missing in type '{ status: "ready"; challenge: { challengeId: string; rivalryChallengeId?: string | undefined; creator: { displayName: string; avatarUrl?: string | null | undefined; }; categoryId: "film" | ... 4 more ... | "science"; ... 5 more ...; status: "active" | ... 1 more ... | "revoked"; }; viewerRole?: "creator" | ... 1 mor...' but required in type 'RaceEntryResolution'.

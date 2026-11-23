@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
-import {LiveRaceViewSchema, type JoinLiveRace} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, type JoinLiveRace, type RetireLiveRaceJoin} from "@riddle-quest/core/race";
 
 /** Exercises both rematch entry points and explicit inbox acceptance through each actual target adapter. */
 export async function installLiveRematchJourney(page: Page, target: "Facebook" | "Reddit", requestUrls: string[]) {
@@ -8,6 +8,8 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
   const joins: JoinLiveRace[] = [];
   /** Explicit recipient acceptance has its own server-issued handle. */
   const accepts: JoinLiveRace[] = [];
+  /** Every private lobby retires only its own original join once. */
+  const retirements: RetireLiveRaceJoin[] = [];
   /** Existing inbox preview is sufficient; it must not trigger one extra request per notice. */
   let previewReads = 0;
   /** Fixture release moves the first private lobby to a terminal tie only when requested. */
@@ -49,6 +51,16 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     requestUrls.push(route.request().url());
     return reply(route, snapshot(input.ticketId, input.action));
   });
+  await page.route(target === "Reddit" ? "**/api/game/race.live.retire" : "**/retireLiveRaceJoin", route => {
+    /** Rematch and inbox cleanup belong to their private original joins. */
+    const raw = route.request().postDataJSON(), input = RetireLiveRaceJoinSchema.parse(target === "Reddit" ? raw : raw.data);
+    if (![...joins, ...accepts].some(join => join.requestId === input.requestId)) return route.fallback();
+    expect(input.expectedOwnerId).toBe(target === "Facebook" ? "jest-guest" : "reddit-account");
+    expect(retirements.some(previous => previous.requestId === input.requestId)).toBe(false);
+    retirements.push(input);
+    requestUrls.push(route.request().url());
+    return reply(route, {status: "retired"});
+  });
   await page.route(target === "Reddit" ? "**/api/game/race.live.inbox" : "**/listLiveRaceChallenges", route => {
     requestUrls.push(route.request().url());
     /** Inbox reads have no account or content authority selector. */
@@ -71,6 +83,8 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
   });
   return async (activeLocale: string) => {
     locale = activeLocale;
+    /** Private rematches and accepted invitations show the owned seat in the friend lobby. */
+    const ownedSeat = page.locator('.friend-lobby-seat[data-occupied="true"]').getByText(`${target}Solver`, {exact: true});
     /** Facebook captures the synchronized native context while Reddit has no provider selector. */
     const facebookContextId = target === "Facebook" ? await page.evaluate(() => window.FBInstant?.context?.getID()) : undefined;
     if (target === "Facebook") expect(facebookContextId).toEqual(expect.any(String));
@@ -78,7 +92,9 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     await page.locator(".race-error").waitFor();
     expect(await page.locator(".race-error").innerText()).not.toContain("private rematch diagnostic");
     await page.locator(".race-error button").click();
-    await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
+    await ownedSeat.waitFor();
+    expect(await page.locator(".friend-lobby-count").innerText()).toBe("1/2");
+    expect(await page.locator(".live-race-lobby").count()).toBe(0);
     expect(joins[0]).toEqual(joins[1]);
     // Facebook's trusted gameplay harness uses the existing synthetic host account; native provider identity is tested separately.
     expect(joins[0]).toEqual({locale, categoryId: "history", rematchOfTicketId: "d".repeat(64), requestId: expect.any(String),
@@ -94,7 +110,7 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     });
     await page.screenshot({path: `/tmp/live-race-rematch-${target.toLowerCase()}.png`});
     await page.locator(".live-race-victory .live-race-rematch").click();
-    await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
+    await ownedSeat.waitFor();
     expect(joins.at(-1)).toMatchObject({locale, categoryId: "history", rematchOfTicketId: "e".repeat(64)});
     expect(joins.at(-1)!.requestId).not.toBe(joins[0].requestId);
     expect(await page.locator(".live-race-invite-share").count()).toBe(0);
@@ -104,7 +120,9 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     expect(await page.locator(".live-race-invitation").count()).toBe(1);
     expect(accepts).toHaveLength(0); expect(previewReads).toBe(0);
     await page.locator(".live-race-invitation button").click();
-    await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
+    await ownedSeat.waitFor();
+    expect(await page.locator(".friend-lobby-count").innerText()).toBe("2/2");
+    expect(await page.locator(".friend-lobby").getAttribute("data-state")).toBe("starting");
     expect(accepts).toEqual([{locale, categoryId: "history", challengeId: incomingId, requestId: expect.any(String),
       retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
       ...(target === "Facebook" ? {facebookContextId} : {})}]);

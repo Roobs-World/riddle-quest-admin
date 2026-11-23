@@ -3,7 +3,7 @@ import {
   grantVerifiedFacebookPurchase,
   refundVerifiedFacebookPurchase,
 } from "../facebook/facebookCommerceLedger";
-import {FACEBOOK_PRODUCTS} from "@qwordly/core/pricing/facebookCatalog";
+import {FACEBOOK_PRODUCTS} from "@riddle-quest/core/pricing/facebookCatalog";
 
 /** Describes stored. */
 type Stored = Record<string, unknown>;
@@ -93,7 +93,7 @@ it("namespaces opaque purchase and refund receipts and rejects unbounded IDs", (
   expect(() => facebookCommerceReceiptId("purchase", "x".repeat(1_025))).toThrow("invalid-purchase-id");
 });
 
-it("fails closed before any grant or refund read when commerce is disabled", async () => {
+it("rejects new grants before any read when commerce is disabled", async () => {
   /** Provides previous behavior. */
   const previous = process.env.FACEBOOK_DISABLED_FEATURES;
   process.env.FACEBOOK_DISABLED_FEATURES = "commerce";
@@ -101,19 +101,53 @@ it("fails closed before any grant or refund read when commerce is disabled", asy
     /** Provides fixture behavior. */
     const fixture = database({[`users/${uid}`]: {coins: 300}});
     await expect(grantVerifiedFacebookPurchase(fixture.db, purchase())).rejects.toThrow("facebook-commerce-disabled");
-    await expect(
-      refundVerifiedFacebookPurchase(fixture.db, {
-        eventId: "disabled-refund",
-        paymentId: `payment-${coinPack}`,
-        productId: coinPack,
-        refundedAtMs: 1_700_000_000_001,
-      }),
-    ).rejects.toThrow("facebook-commerce-disabled");
     expect(fixture.transaction.get).not.toHaveBeenCalled();
     expect(fixture.transaction.create).not.toHaveBeenCalled();
     expect(fixture.transaction.update).not.toHaveBeenCalled();
     expect(fixture.transaction.set).not.toHaveBeenCalled();
     expect(fixture.documents.get(`users/${uid}`)).toEqual({coins: 300});
+  } finally {
+    if (previous === undefined) delete process.env.FACEBOOK_DISABLED_FEATURES;
+    else process.env.FACEBOOK_DISABLED_FEATURES = previous;
+  }
+});
+
+it("reconciles a verified refund exactly once while the checkout kill switch is active", async () => {
+  /** Existing accepted purchase remains refundable after checkout is disabled. */
+  const fixture = database({[`users/${uid}`]: {coins: 0}});
+  await grantVerifiedFacebookPurchase(fixture.db, purchase());
+  fixture.documents.set(`users/${uid}`, {coins: 25});
+  /** Original operator switch is restored after the test. */
+  const previous = process.env.FACEBOOK_DISABLED_FEATURES;
+  /** Repeated delivery identifies the same accepted refund. */
+  const refund = {
+    eventId: "disabled-refund",
+    paymentId: `payment-${coinPack}`,
+    productId: coinPack,
+    refundedAtMs: 1_700_000_000_001,
+  };
+  process.env.FACEBOOK_DISABLED_FEATURES = "commerce";
+  try {
+    await expect(refundVerifiedFacebookPurchase(fixture.db, refund)).resolves.toEqual({
+      alreadyProcessed: false,
+      uid,
+      coins: 0,
+      coinsRemoved: 25,
+      coinDebt: 225,
+      removeInterstitialAds: false,
+      accountDeleted: false,
+    });
+    await expect(refundVerifiedFacebookPurchase(fixture.db, refund)).resolves.toEqual({
+      alreadyProcessed: true,
+      uid,
+      coins: 0,
+      coinsRemoved: 0,
+      coinDebt: 225,
+      removeInterstitialAds: false,
+      accountDeleted: false,
+    });
+    expect(fixture.documents.get(`users/${uid}`)?.coins).toBe(0);
+    expect(fixture.documents.get(`facebookCommerceAccounts/${uid}`)?.coinDebt).toBe(225);
   } finally {
     if (previous === undefined) delete process.env.FACEBOOK_DISABLED_FEATURES;
     else process.env.FACEBOOK_DISABLED_FEATURES = previous;
@@ -128,12 +162,14 @@ it("grants once before consumption and never stores a raw payment ID or token", 
     coins: 550,
     coinDebt: 0,
     removeInterstitialAds: false,
+    coinsAwarded: 250,
   });
   await expect(grantVerifiedFacebookPurchase(fixture.db, purchase())).resolves.toEqual({
     alreadyProcessed: true,
     coins: 550,
     coinDebt: 0,
     removeInterstitialAds: false,
+    coinsAwarded: 0,
   });
   expect(fixture.documents.get(`users/${uid}`)?.coins).toBe(550);
   expect(JSON.stringify([...fixture.documents])).not.toContain("provider-token-never-stored-raw");
@@ -214,12 +250,14 @@ it.each(
     coins: initialCoins + grossCoins,
     coinDebt: 0,
     removeInterstitialAds: grantsAdFree,
+    coinsAwarded: grossCoins,
   });
   await expect(grantVerifiedFacebookPurchase(fixture.db, verifiedPurchase)).resolves.toEqual({
     alreadyProcessed: true,
     coins: initialCoins + grossCoins,
     coinDebt: 0,
     removeInterstitialAds: grantsAdFree,
+    coinsAwarded: 0,
   });
   /** Provides verified refund behavior. */
   const verifiedRefund = {

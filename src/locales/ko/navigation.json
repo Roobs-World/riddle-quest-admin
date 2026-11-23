@@ -11,7 +11,7 @@
   },
   "NavigationMessages": {
     "ERROR_LOADING_NEXT_RIDDLE": "다음 클래식 수수께끼 로드 오류:",
-    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ 인덱스 ",
+    "NO_CLASSIC_RIDDLE_FOUND": "⚠️ 다음 인덱스에서 클래식 수수께끼를 찾을 수 없습니다: ",
     "SERVER_GENERATES_RIDDLES": "에서 클래식 수수께끼를 찾을 수 없습니다. 추측을 제출하면 서버가 자동으로 새로운 수수께끼를 생성합니다."
   }
 }

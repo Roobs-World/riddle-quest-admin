@@ -1,7 +1,0 @@
-Category layout and selected contrast passed: {"width":280,"height":740,"locale":"en"}
-Category layout and selected contrast passed: {"width":320,"height":740,"locale":"de"}
-Category layout and selected contrast passed: {"width":390,"height":844,"locale":"de"}
-Category layout and selected contrast passed: {"width":390,"height":844,"locale":"ar"}
-Category layout and selected contrast passed: {"width":844,"height":390,"locale":"en"}
-Retired links, category selection, PvP-only return navigation and missing live capability passed.
-Bot fallback UI passed at 390px; server deadline advanced through the injected transport.

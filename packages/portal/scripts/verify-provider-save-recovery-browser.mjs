@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -5,14 +6,18 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
+const browserScope=process.env.PORTAL_BROWSER_SCOPE;
+assert.ok(browserScope===undefined||browserScope==='jest-facebook','PORTAL_BROWSER_SCOPE must be jest-facebook or unset');
+const providers=browserScope==='jest-facebook'?['facebook']:['facebook','reddit'];
+if(browserScope&&process.env.PROVIDER_RECOVERY_ONLY)assert.ok(providers.includes(process.env.PROVIDER_RECOVERY_ONLY.split(':')[0]),'PROVIDER_RECOVERY_ONLY is outside PORTAL_BROWSER_SCOPE');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.PROVIDER_RECOVERY_REACT_MODE??'development',baseline=process.env.PROVIDER_RECOVERY_BASELINE_DIR,wakeBaseline=process.env.PROVIDER_RECOVERY_WAKE_BASELINE_DIR;
-const output=path.resolve(process.env.PROVIDER_RECOVERY_REPORT_DIR??path.join(root,'../../artifacts/provider-save-recovery-2026-10-03',mode));
+const output=path.resolve(process.env.PROVIDER_RECOVERY_REPORT_DIR??path.join(root,'../../builds/test-evidence/provider-save-recovery-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/provider-save-'));
 let server,browser;const observations=[];
 try {
- for(const provider of ['facebook','reddit']){
+ for(const provider of providers){
   const dir=path.join(scratch,provider);await mkdir(dir);
   const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
@@ -67,13 +72,13 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
 window.preference=()=>setPlayerHighContrast(true);window.draft=()=>Array.from(document.querySelector('.guess-row')?.querySelectorAll('.cell')??[]).map(x=>x.textContent.trim()).join('');
 `;
   await writeFile(path.join(dir,'main.tsx'),source);await writeFile(path.join(dir,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(dir,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
-  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,'src/platform/PlayerSaveRecovery.ts'))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
+  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,'src/platform/PlayerSaveRecovery.ts'))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
  }
- server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,parts=pathname.split('/').filter(Boolean),provider=parts.shift();if(!['facebook','reddit'].includes(provider))throw new Error('unknown-fixture');const file=path.join(scratch,provider,'dist',parts.join('/')||'index.html');res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port;
+ server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,parts=pathname.split('/').filter(Boolean),provider=parts.shift();if(!providers.includes(provider))throw new Error('unknown-fixture');const file=path.join(scratch,provider,'dist',parts.join('/')||'index.html');res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.PROVIDER_RECOVERY_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(r=>{process.once('SIGINT',r);process.once('SIGTERM',r);});}
  else {
  browser=await chromium.launch({headless:true});
- for(const provider of ['facebook','reddit'])for(const width of [390,1280])for(const scenario of (baseline?['auto']:['auto','offline','hidden','pause','wake-budget','manual','preferences','healthy','retire','deletion'])){
+ for(const provider of providers)for(const width of [390,1280])for(const scenario of (baseline?['auto']:['auto','offline','hidden','pause','wake-budget','manual','preferences','healthy','retire','deletion'])){
   if(process.env.PROVIDER_RECOVERY_ONLY&&process.env.PROVIDER_RECOVERY_ONLY!==provider+':'+scenario)continue;
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage();const metric=(name,actual,expected)=>{observations.push({provider,width,scenario,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
   await page.goto(url+'/'+provider+'/?scenario='+scenario);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();await page.evaluate(()=>document.activeElement?.blur());
@@ -83,6 +88,7 @@ window.preference=()=>setPlayerHighContrast(true);window.draft=()=>Array.from(do
    await page.evaluate(()=>{window.probe.failPreferences=1;window.preference();});await page.waitForFunction(()=>window.probe.failures.length>0);await page.waitForFunction(()=>window.durablePreferences().highContrast===true);
    metric('rejected preference recovers without another change',await page.evaluate(()=>window.durablePreferences().highContrast),true);metric('other initialized preferences remain saved',await page.evaluate(()=>window.durablePreferences().locale),'en');
   }else{
+   await waitForAnswerInputReady(page);
    await page.evaluate(persistent=>window.probe.failDraft=persistent?-1:1,['offline','hidden','manual','pause','wake-budget','retire','deletion'].includes(scenario));
    await page.keyboard.type('pian');await page.waitForFunction(()=>window.draft()==='PIAN'&&window.probe.failures.length>0);
    const count=()=>page.evaluate(()=>window.probe.writes.filter(x=>x?.activeGame?.currentLetters.join('')==='PIAN').length);

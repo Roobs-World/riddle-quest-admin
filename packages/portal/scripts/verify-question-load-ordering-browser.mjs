@@ -9,7 +9,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.QUESTION_ORDER_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.QUESTION_ORDER_REPORT_DIR??path.join(root,'../../artifacts/question-load-ordering-2026-10-05',mode));
+const output=path.resolve(process.env.QUESTION_ORDER_REPORT_DIR??path.join(root,'../../builds/test-evidence/question-load-ordering-2026-10-05',mode));
 const baseline=process.env.QUESTION_ORDER_BASELINE_DIR;
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/question-order-'));

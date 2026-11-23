@@ -1,2 +1,0 @@
-$ node scripts/audit-e2e-coverage.mjs
-E2E coverage audit passed: 15 Playwright suites and 63 emulator suites are reachable through pnpm test:e2e.

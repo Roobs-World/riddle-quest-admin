@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo} from "react";
-import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {JEST_REFERRAL_REFERENCES, JEST_REFERRAL_REWARD_COINS} from "@riddle-quest/core/referrals";
 import {tr} from "../../play/i18n";
 import type {
   ReferralRaceShareInput,
@@ -28,6 +28,7 @@ export function useJestSharing({
   session,
   platform,
   backend,
+  sharingEnabled,
   withPlatformActivity,
   withBackgroundPlatformActivity,
   trackFunnel,
@@ -41,6 +42,8 @@ export function useJestSharing({
   platform: JestPlatformPort;
   /** Stores backend. */
   backend: JestBackendPort;
+  /** Synchronous account-deletion check for dialogs opened directly by a click. */
+  sharingEnabled: () => boolean;
   /** Stores with platform activity. */
   withPlatformActivity: WithPlatformActivity;
   /** Stores with background platform activity. */
@@ -50,6 +53,8 @@ export function useJestSharing({
   /** Retains the legacy browser event driver only inside the trusted Jest test harness. */
   authHarness?: boolean;
 }): ReferralSharingCapability | null {
+  /** Game-owned display name included in the invitation text. */
+  const inviterName = session?.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
   useEffect(() => {
     if (!session?.player.registered || !("serviceWorker" in navigator)) return;
     /** Worker clicks refresh pending notices without accepting or interrupting an existing match. */
@@ -122,8 +127,6 @@ export function useJestSharing({
   const shareResult = useCallback(
     (detail: ReferralResultShareInput) => {
       if (!session) return;
-      /** Provides inviter name behavior. */
-      const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
       /** Provides game mode behavior. */
       const gameMode = detail.gameMode === "challenge" ? "challenge" : "classic";
       /** Provides attempts behavior. */
@@ -148,15 +151,15 @@ export function useJestSharing({
       /** Provides referral reference behavior. */
       const referralReference = createUniqueJestReferralReference("result");
       trackFunnel("viral_share_intent", {surface: "victory", campaign: "friend_challenge_v2", gameMode});
-      void withPlatformActivity(async () => {
+      void withPlatformActivity(() => {
         /** Provides share image behavior. */
-        const shareImage = await sizeCheckedScreenshotProvider(() =>
+        const shareImage = sizeCheckedShareImage(
           captureVictoryShareImage({
             title: tr("VictoryModal.SHARE_RESULT_TITLE"),
             summary: `${gameType} · ${attempts} ${attemptLabel}`,
             emojiGrid,
           }),
-        )();
+        );
         return platform.shareReferral({
           reference: referralReference,
           shareTitle: tr("VictoryModal.SHARE_RESULT_TITLE"),
@@ -192,7 +195,7 @@ export function useJestSharing({
           });
         });
     },
-    [locale, platform, session, trackFunnel, withPlatformActivity],
+    [locale, platform, session, inviterName, trackFunnel, withPlatformActivity],
   );
 
   /** Provides share race behavior. */
@@ -209,8 +212,6 @@ export function useJestSharing({
         return "error";
       /** Provides challenge id behavior. */
       const challengeId = detail.challengeId;
-      /** Provides inviter name behavior. */
-      const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
       /** Provides seconds behavior. */
       const seconds = (detail.preview.adjustedTimeToBeatMs / 1_000).toFixed(1);
       /** Provides summary behavior. */
@@ -220,11 +221,11 @@ export function useJestSharing({
       trackFunnel("viral_share_intent", {surface: "race", campaign: "race_to_10_v1"});
       try {
         /** Provider result for the referral dialog request. */
-        const result = await withPlatformActivity(async () => {
+        const result = await withPlatformActivity(() => {
           /** Provides share image behavior. */
-          const shareImage = await sizeCheckedScreenshotProvider(() =>
+          const shareImage = sizeCheckedShareImage(
             captureVictoryShareImage({title: tr("RaceTo10.TITLE"), summary, emojiGrid: "🏁 10/10"}),
-          )();
+          );
           return platform.shareReferral({
             reference: referralReference,
             shareTitle: tr("RaceTo10.TITLE"),
@@ -260,7 +261,7 @@ export function useJestSharing({
         return "error";
       }
     },
-    [locale, platform, session, trackFunnel, withPlatformActivity],
+    [locale, platform, session, inviterName, trackFunnel, withPlatformActivity],
   );
 
   /** Shares a private PvP lobby through Jest's native dialog, including the host's SMS share option. */
@@ -268,23 +269,23 @@ export function useJestSharing({
     /** Server-issued private lobby handle. */
     challengeId: string;
   }): Promise<ReferralShareOutcome> => {
-    if (!session || !/^live_[a-f0-9]{64}$/.test(challengeId)) return "error";
+    if (!session || !sharingEnabled() || !/^live_[a-f0-9]{64}$/.test(challengeId)) return "error";
     try {
-      /** Opening a native dialog is not proof that a message was delivered. */
-      const result = await withPlatformActivity(() => platform.shareReferral({
-        reference: "live_pvp_v1", shareTitle: tr("RaceTo10.CHALLENGE_FRIEND"),
-        shareText: tr("RaceTo10.CHALLENGED_BY", {name: session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK")}),
-        entryPayload: {inviteKind: "race", campaign: "live_pvp_v1", challengeDestination: "multiplayer", challengeId},
-      }));
+      // Jest opens its platform-owned dialog through the SDK bridge after lobby reservation.
+      /** Provider outcome for sharing this private lobby, independent of recipient acceptance. */
+      const result = await platform.shareReferral({
+        reference: createUniqueJestReferralReference("race"),
+        shareTitle: tr("RaceTo10.CHALLENGE_FRIEND"),
+        shareText: tr("RaceTo10.LIVE_INVITE_MESSAGE", {name: inviterName}),
+        entryPayload: {inviteKind: "race", campaign: "live_pvp_v1", challengeDestination: "multiplayer", challengeId, inviterName},
+      });
       return result.status === "success" ? "success" : result.status === "cancelled" ? "cancelled" : "error";
     } catch {return "error";}
-  }, [locale, platform, session, withPlatformActivity]);
+  }, [locale, platform, session, inviterName, sharingEnabled]);
 
   /** Opens Jest's provider-owned profile invite dialog with custom referral details. */
   const shareInvite = useCallback(() => {
     if (!session) return;
-    /** Provides inviter name behavior. */
-    const inviterName = session.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
     /** Provides reward message behavior. */
     const rewardMessage = tr("VictoryModal.REFERRAL_REWARD_MESSAGE", {coins: JEST_REFERRAL_REWARD_COINS});
     /** Custom preview prepared synchronously so the SDK call remains in the button's click dispatch. */
@@ -327,7 +328,7 @@ export function useJestSharing({
           campaign: "open_invite_v1",
         });
       });
-  }, [locale, platform, session, trackFunnel]);
+  }, [locale, platform, session, inviterName, trackFunnel]);
   useEffect(() => {
     if (!authHarness || !session) return;
     /** Provides on result behavior. */
@@ -340,13 +341,15 @@ export function useJestSharing({
       const detail = (event as CustomEvent<ReferralRaceShareInput>).detail;
       if (detail) void shareRace(detail);
     };
-    window.addEventListener("riddle-quest:share-referral", onResult);
-    window.addEventListener("riddle-quest:share-race", onRace);
-    window.addEventListener("riddle-quest:share-invite", shareInvite);
+    /** Harness listeners registered together so cleanup removes the exact same callbacks. */
+    const handlers: [string, EventListener][] = [
+      ["riddle-quest:share-referral", onResult],
+      ["riddle-quest:share-race", onRace],
+      ["riddle-quest:share-invite", shareInvite],
+    ];
+    for (const [event, handler] of handlers) window.addEventListener(event, handler);
     return () => {
-      window.removeEventListener("riddle-quest:share-referral", onResult);
-      window.removeEventListener("riddle-quest:share-race", onRace);
-      window.removeEventListener("riddle-quest:share-invite", shareInvite);
+      for (const [event, handler] of handlers) window.removeEventListener(event, handler);
     };
   }, [authHarness, session, shareInvite, shareRace, shareResult]);
 
@@ -359,6 +362,7 @@ export function useJestSharing({
             shareInvite,
             shareRace,
             shareLiveRace,
+            autoOpenLiveRaceInvite: true,
             /** Guests cannot register a server-owned push subscription. */
             ...(session.player.registered ? {setLiveRacePush: async (enabled: boolean) => {
               try {return await (await import("../notifications/liveChallengePush")).setJestLiveChallengePush(enabled);}

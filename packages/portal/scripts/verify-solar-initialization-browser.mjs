@@ -1,3 +1,4 @@
+import {openSolarGame} from './solar-browser-fixture.mjs';
 import path from 'node:path';
 
 // Holds the actual lazy native module download; only GPU calls and clocks are controlled.
@@ -15,8 +16,7 @@ export async function verifySolarInitialization({page,width,url,baseline,metric,
   let releaseDownload,downloadReached,requests=0;
   const gate=new Promise(resolve=>releaseDownload=resolve),reached=new Promise(resolve=>downloadReached=resolve);
   await page.route(`**/assets/${sceneAsset}`,async route=>{requests++;downloadReached();await gate;await route.continue();});
-  await page.goto(url+'?custom=1&harness=race');await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-  if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+  await openSolarGame(page,url+'?custom=1&harness=race');
   await page.keyboard.type('pia');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIA'));
   const ownedToken=await token();
   await page.evaluate(()=>{window.controlFrames();window.releaseScene();});await reached;

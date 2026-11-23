@@ -1,10 +1,10 @@
 import {describe, expect, it} from "@jest/globals";
-import {completeMockOnboarding, prepareProvisionalNextLevel} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding, prepareProvisionalNextLevel} from "./mockOnboarding.jest-playwright.support";
 import AxeBuilder from "@axe-core/playwright";
 import {expectConformingHtml} from "./webStandards.jest-playwright.support";
 import {chromium, type Page} from "@playwright/test";
 import {version as reactVersion} from "react";
-import {SOLO_COIN_COSTS} from "@qwordly/core/game";
+import {SOLO_COIN_COSTS} from "@riddle-quest/core/game";
 import {getProfileTour} from "../guidance/guidanceConfig";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -112,7 +112,12 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   if (await guestContinue.isVisible()) {
     await guestContinue.click();
   }
-  /** Provides first tour tooltip behavior; new players start on the riddle, not the coin shop. */
+  /** The seeded profile already has five wins, so its tour begins with the coin shop. */
+  const coinTooltip = page.locator(".tooltip-backdrop[data-tooltip-id='gameCoins']");
+  await coinTooltip.waitFor();
+  expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
+  await coinTooltip.getByRole("button", {name: /got it/i}).click();
+  /** Gameplay guidance follows the experienced player's coin-shop introduction. */
   const hintTooltip = page.locator(".tooltip-card");
   await hintTooltip.getByRole("heading", {name: /use a hint/i}).waitFor();
   expect(await hintTooltip.getAttribute("aria-labelledby")).toBe("guidance-tooltip-gameHint-title");
@@ -136,8 +141,8 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
   expect(spotlightBox!.x + spotlightBox!.width).toBeGreaterThan(hintButtonBox!.x + hintButtonBox!.width);
   /** Keeps the game fixed while each tour target is highlighted. */
   const headerTop = await page.locator(".game-header").evaluate((element) => element.getBoundingClientRect().top);
-  // Classic tour: hint, submit, skip. The coin shop step is deferred until after the first level.
-  for (let step = 0; step < 3; step += 1) {
+  for (const tooltipId of ["gameHint", "submitAnswer", "gameSkip", "gameMultiplayer"]) {
+    await page.locator(`.tooltip-backdrop[data-tooltip-id='${tooltipId}']`).waitFor();
     expect(await page.locator("[data-tooltip-id='gameCoins']").count()).toBe(0);
     await page.waitForTimeout(180);
     expect(await page.locator(".game-app").evaluate((element) => element.scrollTop)).toBe(0);
@@ -152,14 +157,6 @@ const completeOnboardingAndTours = async (page: Page, checkTooltipAccessibility 
       }),
     ).toEqual({filter: "none", background: "rgba(0, 0, 0, 0)", image: "none"});
     await page.getByRole("button", {name: /got it/i}).click();
-  }
-  // A harness profile that has already won meets the coin shop at the start of a riddle, after the gameplay tour.
-  /** Provides coin tooltip behavior. */
-  const coinTooltip = page.locator(".tooltip-backdrop[data-tooltip-id='gameCoins']");
-  await coinTooltip.waitFor({state: "visible", timeout: 1_000}).catch(() => undefined);
-  if (await coinTooltip.isVisible()) {
-    expect(await coinTooltip.getByText(/tap this button to buy coins to fuel your adventure/i).isVisible()).toBe(true);
-    await coinTooltip.getByRole("button", {name: /got it/i}).click();
   }
   await page.locator(".tooltip-backdrop").waitFor({state: "detached"});
 };
@@ -177,7 +174,7 @@ describeBrowser("standalone Jest browser game", () => {
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
     if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-      execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
+      execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:jest"], {
         cwd: path.resolve(packageRoot, "../.."),
         stdio: "inherit",
       });
@@ -248,6 +245,12 @@ describeBrowser("standalone Jest browser game", () => {
       });
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        window.addEventListener("riddle-quest:host-to-game", event => {
+          /** The mock authority's latest identity/profile projection. */
+          const message = (event as CustomEvent).detail;
+          if (message?.type === "host:init" || message?.type === "host:authState")
+            Reflect.set(window, "__latestHostAuthState", message.payload);
+        });
         Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 8});
         Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 8});
         Object.defineProperty(navigator, "connection", {
@@ -389,6 +392,13 @@ describeBrowser("standalone Jest browser game", () => {
       await page.screenshot({path: "/tmp/jest-feedback-solo.png"});
       /** Provides main game coin balance behavior. */
       const mainGameCoinBalance = (await page.locator(".game-header .coin-pill strong").innerText()).trim();
+      /** The current navigation design keeps PvP visible and large enough to tap. */
+      const multiplayerEntry = page.getByRole("button", {name: /^multiplayer$/i});
+      expect(await multiplayerEntry.isVisible()).toBe(true);
+      /** Rendered touch target replaces assertions about literal CSS declarations. */
+      const multiplayerEntryBox = await multiplayerEntry.boundingBox();
+      expect(multiplayerEntryBox?.width ?? 0).toBeGreaterThanOrEqual(44);
+      expect(multiplayerEntryBox?.height ?? 0).toBeGreaterThanOrEqual(44);
       await page.evaluate(() => {
         localStorage.setItem("riddleQuest:activeRaceRun", "expired-run-from-previous-session");
         Object.assign(window, {__multiplayerCommands: [] as string[]});
@@ -430,6 +440,12 @@ describeBrowser("standalone Jest browser game", () => {
       await page.screenshot({path: "/tmp/jest-feedback-multiplayer-unavailable.png"});
 
       await page.evaluate((newCoins) => {
+        /** Real multiplayer supplies the refreshed profile as well as its reward receipt. */
+        const current = Reflect.get(window, "__latestHostAuthState");
+        if (!current?.profile || !current?.user) throw new Error("Mock authority profile unavailable");
+        window.dispatchEvent(new CustomEvent("riddle-quest:host-to-game", {
+          detail: {type: "host:authState", payload: {user: current.user, profile: {...current.profile, coins: newCoins}}},
+        }));
         window.dispatchEvent(
           new CustomEvent("riddle-quest:host-to-game", {
             detail: {
@@ -448,44 +464,49 @@ describeBrowser("standalone Jest browser game", () => {
           }),
         );
       }, Number(mainGameCoinBalance) + 25);
-      /** Provides multiplayer achievement popup behavior. */
-      const multiplayerAchievementPopup = page.locator(".modal-reward");
+      /** Automatic achievement tabs must leave gameplay available. */
+      const multiplayerAchievementTabs = page.locator(".fanfare-tabs");
       // Live multiplayer keeps its own focus and interaction surface. Ancillary rewards
       // remain queued until the player returns to the single-player surface.
-      expect(await multiplayerAchievementPopup.count()).toBe(0);
+      expect(await multiplayerAchievementTabs.count()).toBe(0);
       await page.locator(".race-close").click();
       await page.locator(".race-screen").waitFor({state: "detached"});
-      await multiplayerAchievementPopup.getByRole("heading", {name: /achievement unlocked/i}).waitFor();
-      await expectAccessible(page, "achievement reward");
-      expect(await multiplayerAchievementPopup.getByText("Race Debut", {exact: true}).isVisible()).toBe(true);
-      await multiplayerAchievementPopup.getByRole("button", {name: /^next$/i}).click();
-      /** Provides multiplayer continue behavior. */
-      const multiplayerContinue = multiplayerAchievementPopup.getByRole("button", {name: /awesome/i});
-      await multiplayerContinue.waitFor({state: "visible"});
-      // Granted coins never wait for a chest tap, and the CTA is never disabled for collection.
-      expect(await multiplayerContinue.isDisabled()).toBe(false);
-      expect(await multiplayerAchievementPopup.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
-      await multiplayerAchievementPopup.locator(".reward-chest img[src*='chest-open']").waitFor();
+      await multiplayerAchievementTabs.getByText("Race Debut", {exact: true}).waitFor();
+      expect(await page.locator(".modal-reward").count()).toBe(0);
+      expect(await page.locator(".game-content").evaluate(element => (element as HTMLElement).inert)).toBe(false);
+      expect(await multiplayerAchievementTabs.getByRole("button").count()).toBe(0);
+      await expectAccessible(page, "automatic achievement reward");
       await page.waitForFunction(
         (expected) => document.querySelector(".game-header .coin-pill strong")?.textContent?.trim() === expected,
         String(Number(mainGameCoinBalance) + 25),
       );
-      await multiplayerContinue.click();
-      await multiplayerAchievementPopup.waitFor({state: "detached"});
+      await multiplayerAchievementTabs.waitFor({state: "detached"});
       /** Provides daily page behavior. */
       const dailyPage = await browser.newPage({viewport: {width: 390, height: 844}});
       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
       await dailyPage.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+      await installCompletedMockGameTour(dailyPage);
       await dailyPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await dailyPage.goto(`${hostedBrowserUrl}/?harness=jest&gameMode=challenge`);
       await completeMockOnboarding(dailyPage);
       await dailyPage.locator(".game-mode-label").getByText(/daily/i).waitFor({timeout: 15_000});
-      expect(await dailyPage.locator("[data-tooltip='gameSkip']").count()).toBe(0);
+      await dailyPage.getByRole("button", {name: /^multiplayer$/i}).click();
+      await dailyPage.locator('.race-screen[role="dialog"]').waitFor();
+      await dailyPage.locator(".race-close").click();
+      expect(await dailyPage.locator(".game-mode-label").innerText()).toBe("Daily");
+      expect(await dailyPage.getByRole("button", {name: /^skip$/i}).isVisible()).toBe(true);
+      await dailyPage.getByRole("button", {name: /^skip$/i}).click();
+      await dailyPage.getByRole("dialog", {name: "Leave the Daily riddle?"}).waitFor();
+      expect(await dailyPage.locator(".modal-skip").innerText()).toContain("Your Daily riddle will stay unfinished.");
+      await dailyPage.getByRole("button", {name: "Cancel", exact: true}).click();
+      expect(await dailyPage.locator(".game-mode-label").innerText()).toBe("Daily");
+      await dailyPage.getByRole("button", {name: /^skip$/i}).click();
+      await dailyPage.getByRole("button", {name: "Play Classic", exact: true}).click();
+      await dailyPage.locator(".game-mode-label").getByText(/classic/i).waitFor();
       await dailyPage.close();
       /** Provides release modal chunk behavior. */
       let releaseModalChunk: () => void = () => undefined;
@@ -504,10 +525,10 @@ describeBrowser("standalone Jest browser game", () => {
         await modalChunkGate;
         await route.continue();
       });
+      await installCompletedMockGameTour(compactPage);
       await compactPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
@@ -883,9 +904,10 @@ describeBrowser("standalone Jest browser game", () => {
       const modalCloseBox = await page.locator(".modal-x").boundingBox();
       expect(modalCloseBox?.width).toBe(44);
       expect(modalCloseBox?.height).toBe(44);
-      for (const text of [/sound/i, /language/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
+      for (const text of [/sound/i, /reduced motion/i, /high contrast/i, /help/i, /credits/i, /about/i, /buy coins/i]) {
         expect(await page.getByText(text).first().isVisible()).toBe(true);
       }
+      expect(await page.getByRole("combobox", {name: "Language", exact: true}).count()).toBe(0);
       expect(await page.getByText(/show activity to rivals/i).count()).toBe(0);
       await expectAccessible(page, "settings");
       await expectModalCentered(page);
@@ -992,7 +1014,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(feedbackLatency).toBeLessThan(250);
       await page.waitForFunction(() => "__heldGuess" in window);
       await page.locator(".modal-victory").waitFor({timeout: 2000});
-      expect(await page.locator(".sequence-progress").textContent()).toMatch(/^1\/[2-9]\d*$/);
+      expect(await page.locator(".modal-victory .reward-continue").innerText()).toMatch(/^next(?: level)?$/i);
       await page.waitForFunction((previousWins) => {
         /** Replaying this saved riddle retains earned progress until authority confirms it. */
         const raw = localStorage.getItem("riddleQuest:mockJestPlayerData");
@@ -1024,13 +1046,6 @@ describeBrowser("standalone Jest browser game", () => {
       });
       console.info(`Immediate correct-answer feedback: ${feedbackLatency.toFixed(1)}ms with server response held`);
       expect(await page.locator(".game-content").evaluate((element) => (element as HTMLElement).inert)).toBe(true);
-      for (
-        let step = 0;
-        step < 10 && (await page.getByRole("heading", {name: /achievement unlocked/i}).isVisible());
-        step += 1
-      ) {
-        await page.getByRole("button", {name: /^next$/i}).click();
-      }
       await page.getByRole("heading", {name: /nice job/i}).waitFor();
       // The victory result is the only surface for the reward: no coin notice is layered under it.
       expect(await page.locator(".game-notice").count()).toBe(0);
@@ -1086,18 +1101,9 @@ describeBrowser("standalone Jest browser game", () => {
         await page.setViewportSize(viewport);
         await expectRewardModalFits(page);
       }
-      // Complete every reward step before returning to gameplay.
-      for (let step = 0; step < 10 && (await page.locator(".modal-victory").count()) > 0; step += 1) {
-        /** Reward step before advancing. */
-        const priorStep = await page.locator(".modal-victory .sequence-progress").textContent();
-        await victoryContinue.click();
-        await page.waitForFunction(previous => {
-          /** Reward modal currently rendered. */
-          const modal = document.querySelector(".modal-victory");
-          return !modal || modal.querySelector(".sequence-progress")?.textContent !== previous;
-        }, priorStep);
-        await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
-      }
+      // One primary action returns to gameplay without stepping through milestone dialogs.
+      await victoryContinue.click();
+      await page.locator(".modal-victory").waitFor({state: "detached"});
       // Dismiss any remaining guidance; the coin shop tip only appears at the start of a riddle after a win,
       // never at the stage transition, and this harness profile already met it after the gameplay tour.
       /** Post-win guidance card. */
@@ -1224,6 +1230,7 @@ describeBrowser("standalone Jest browser game", () => {
       await lowEndContext.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       /** Exercises the low-end gameplay and loss screens. */
       const lowEndPage = await lowEndContext.newPage();
+      await installCompletedMockGameTour(lowEndPage);
       await lowEndPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
@@ -1233,7 +1240,6 @@ describeBrowser("standalone Jest browser game", () => {
           value: {effectiveType: "4g", saveData: false},
         });
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await lowEndPage.goto(`${hostedBrowserUrl}/?harness=jest&dailyCompleted=1`);
@@ -1372,10 +1378,10 @@ describeBrowser("standalone Jest browser game", () => {
       await bufferedContext.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       /** The buffered page used by this regression scenario. */
       const bufferedPage = await bufferedContext.newPage();
+      await installCompletedMockGameTour(bufferedPage);
       await bufferedPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       // Recovery is tested for an existing account; the guest registration flow has its own scenarios.
@@ -1445,10 +1451,10 @@ describeBrowser("standalone Jest browser game", () => {
       await rejectedContext.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       /** The rejected page used by this regression scenario. */
       const rejectedPage = await rejectedContext.newPage();
+      await installCompletedMockGameTour(rejectedPage);
       await rejectedPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       // Recovery is tested for an existing account; the guest registration flow has its own scenarios.
@@ -1507,10 +1513,10 @@ describeBrowser("standalone Jest browser game", () => {
       await reloadContext.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       /** Page used to verify journal recovery after navigation. */
       const reloadPage = await reloadContext.newPage();
+      await installCompletedMockGameTour(reloadPage);
       await reloadPage.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         window.addEventListener(
           "riddle-quest:game-to-host",
@@ -1600,6 +1606,10 @@ describeBrowser("standalone Jest browser game", () => {
       expect(await registeredPage.getByRole("button", {name: /start free trial|^subscribe$/i}).count()).toBe(0);
       expect(await registeredPage.getByRole("button", {name: /cancel subscription/i}).count()).toBe(0);
       await registeredPage.getByRole("button", {name: "Close", exact: true}).click();
+      await registeredPage.getByRole("button", {name: "Settings", exact: true}).click();
+      await registeredPage.getByRole("button", {name: /cancel subscription/i}).waitFor();
+      expect(await registeredPage.getByText("Premium active", {exact: true}).isVisible()).toBe(true);
+      await registeredPage.getByRole("button", {name: "Close", exact: true}).click();
       await registeredPage.getByRole("button", {name: "Profile", exact: true}).click();
       await registeredPage.locator(".tooltip-card").getByRole("heading", {name: /^profile$/i}).waitFor();
       // This registered player opens Profile for the first time in the subscription scenario.
@@ -1617,13 +1627,14 @@ describeBrowser("standalone Jest browser game", () => {
         .first()
         .getByRole("button")
         .click();
-      await registeredPage.locator(".modal-reward").waitFor();
-      expect(await registeredPage.locator(".modal-reward").innerText()).toMatch(/\+250/);
-      /** Provides purchase continue behavior. */
-      const purchaseContinue = registeredPage.getByRole("button", {name: /awesome/i});
-      expect(await purchaseContinue.isDisabled()).toBe(false);
+      /** Purchased coins appear automatically without blocking the puzzle or asking for another tap. */
+      const purchaseTab = registeredPage.locator('.fanfare-tab.current[data-kind="purchase"]');
+      await purchaseTab.waitFor();
+      expect(await purchaseTab.innerText()).toMatch(/\+250/);
+      expect(await registeredPage.locator(".modal-reward").count()).toBe(0);
+      expect(await registeredPage.locator(".game-content").evaluate(element => (element as HTMLElement).inert)).toBe(false);
       expect(await registeredPage.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
-      await purchaseContinue.click();
+      await registeredPage.locator(".fanfare-tabs").waitFor({state: "detached"});
       await registeredPage.locator(".game-shell-alert").waitFor({state: "detached", timeout: 5_000});
       await registeredPage
         .getByRole("button", {name: /^profile$/i})

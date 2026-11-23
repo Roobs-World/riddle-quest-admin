@@ -1,5 +1,5 @@
 import {forwardRef, useRef} from "react";
-import {splitGraphemes} from "@qwordly/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import {tr} from "../../i18n";
 import {useNativeAnswerBackspace} from "../../../input/useNativeAnswerBackspace";
 

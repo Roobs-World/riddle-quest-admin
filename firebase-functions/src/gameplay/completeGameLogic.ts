@@ -1,13 +1,13 @@
-import {getSoloWinCoins, normalizeEconomyDifficulty, type EconomyDifficulty} from "@qwordly/core/game";
-import {getDailyDate, getDailyMidnight, shiftDailyDate} from "@qwordly/core/validation/dailyCalendar";
-import {countCoinRewardAchievements} from "@qwordly/core/game";
+import {getSoloWinCoins, normalizeEconomyDifficulty, type EconomyDifficulty} from "@riddle-quest/core/game";
+import {getDailyDate, getDailyStart, shiftDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
+import {countCoinRewardAchievements} from "@riddle-quest/core/game";
 import * as functions from "firebase-functions";
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
 import {HttpsError} from "firebase-functions/v2/https";
 import {prepareUserDocumentCompletion} from "./firestoreService";
 import type {Player, PlayerStats} from "../validation/firestoreSchemas";
-import type {CompleteGameRequestData, CompleteGameResponseData} from "@qwordly/core/validation/requestSchemas";
+import type {CompleteGameRequestData, CompleteGameResponseData} from "@riddle-quest/core/validation/requestSchemas";
 import {findNewAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "../shared/sentry";
@@ -21,14 +21,15 @@ import {
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
 } from "../shared/constants";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 import {computeNextDailyWinStreak, getCompletionDay} from "../daily/dailyStreak";
 import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
-import {lowerCaseGraphemes} from "@qwordly/core/game";
+import {lowerCaseGraphemes} from "@riddle-quest/core/game";
 import {finalizeAuthoritativeSession} from "./singlePlayerSession";
 import {assertPlayableSinglePlayerAnswer} from "./singlePlayerAnswerPolicy";
 import {getSafeErrorMetadata} from "../shared/errorMetadata";
 import {completionBindingMatches, getSinglePlayerCompletionBindingRef} from "./singlePlayerCompletionBinding";
+import {settleAndroidReferralAfterPlay} from "../android/androidReferrals";
 import {settleFacebookReferralAfterAuthoritativeWin} from "../facebook/facebookReferrals";
 import {settleRedditReferralAfterAuthoritativeWin} from "../reddit/redditReferrals";
 
@@ -60,7 +61,7 @@ export type AuthoritativeCompleteGameData = CompleteGameRequestData & {
   terminalAt?: Date;
 };
 
-/** Narrow recovery window around regional midnight for a committed terminal win. */
+/** Narrow recovery window around regional Daily rollover for a committed terminal win. */
 export const DAILY_COMPLETION_ROLLOVER_GRACE_MS = 15 * 60 * 1_000;
 /** Retains loss replay receipts beyond the longest valid private session. */
 export const LOSS_COMPLETION_RECEIPT_TTL_MS = 45 * 24 * 60 * 60 * 1_000;
@@ -93,8 +94,8 @@ export function isDailyCompletionDateEligible(
   if (!isCorrect || !terminalAt) return false;
   /** Provides rollover behavior. */
   if (!/^\d{4}-\d{2}-\d{2}$/.test(challengeDate)) return false;
-  /** Authoritative next regional midnight used to validate terminal Daily recovery. */
-  const rollover = getDailyMidnight(locale, shiftDailyDate(challengeDate, 1));
+  /** Authoritative next regional Daily rollover used to validate terminal Daily recovery. */
+  const rollover = getDailyStart(locale, shiftDailyDate(challengeDate, 1));
   /** Provides rollover ms behavior. */
   const rolloverMs = rollover.getTime();
   return (
@@ -381,7 +382,7 @@ async function commitAuthoritativeCompletion(
         newWinStreak = computeNextDailyWinStreak(
           currentStats.winStreak,
           user.lastDailyChallengeCompletedAt,
-          getDailyMidnight(data.locale, data.challengeDate!),
+          getDailyStart(data.locale, data.challengeDate!),
           data.locale,
           user.lastCompletedDailyChallengeKey,
         );
@@ -462,7 +463,7 @@ async function commitAuthoritativeCompletion(
             lastDailyChallengeCompletedAt:
               data.challengeDate === getDailyDate(data.locale)
                 ? admin.firestore.FieldValue.serverTimestamp()
-                : admin.firestore.Timestamp.fromDate(getDailyMidnight(data.locale, data.challengeDate!)),
+                : admin.firestore.Timestamp.fromDate(getDailyStart(data.locale, data.challengeDate!)),
             lastCompletedDailyChallengeKey: data.challengeDate ?? data.completionKey,
           }
         : {}),
@@ -477,14 +478,18 @@ async function commitAuthoritativeCompletion(
 
   // A failed settlement makes the callable retryable. On retry the completion
   // receipt replays safely and the referral transaction resumes idempotently.
+  /** Google-only conversion is proved by this committed completion receipt, including safe replay. */
+  const androidReferral = !auth.isAnonymous ? await settleAndroidReferralAfterPlay(db, auth.uid, {kind: "solo", receiptId}) : {inviteeCoins: 0, inviterCoins: 0, completionReceiptId: undefined};
   if (data.isCorrect) {
     /** Provides facebook referral behavior. */
-    const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid);
+    const facebookReferral = await settleFacebookReferralAfterAuthoritativeWin(auth.uid, Date.now(), db, receiptId);
     /** Provides reddit referral behavior. */
-    const redditReferral = await settleRedditReferralAfterAuthoritativeWin(auth.uid);
+    const redditReferral = await settleRedditReferralAfterAuthoritativeWin(auth.uid, Date.now(), db, receiptId);
     /** Provides referral behavior. */
     const referral = {
-      inviteeCoins: facebookReferral.inviteeCoins + redditReferral.inviteeCoins,
+      inviteeCoins: (facebookReferral.completionReceiptId === receiptId ? facebookReferral.inviteeCoins : 0) +
+        (redditReferral.completionReceiptId === receiptId ? redditReferral.inviteeCoins : 0) +
+        (androidReferral.completionReceiptId === receiptId ? androidReferral.inviteeCoins : 0),
     };
     if (referral.inviteeCoins > 0 && result.rewardBreakdown) {
       result = {

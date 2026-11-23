@@ -1,2 +1,0 @@
-$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-live-progress-authority.json
-Recorded multiplayer:race-live-progress-authority for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

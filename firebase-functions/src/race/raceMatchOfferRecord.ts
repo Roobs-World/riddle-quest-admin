@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceCategoryIdSchema, RaceLocaleSchema} from "@qwordly/core/race";
+import {RaceCategoryIdSchema, RaceLocaleSchema} from "@riddle-quest/core/race";
 import {raceMatchPolicySnapshot, RaceMatchPolicySchema, RaceMatchExperimentAssignmentSchema} from "./raceMatchPolicy";
 
 /** Historical identities remain opaque single path segments. */
@@ -15,7 +15,7 @@ const Offer = z.looseObject({
   recordingFingerprint: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   recordVersion: z.literal(1).optional(), requestId: z.string().min(1).max(160).optional(), userId: Id, challengeId: Id, fingerprint: z.string().min(1).max(1000),
   createdAtMs: Count, expiresAtMs: Count,
-  provider: z.enum(["jest", "facebook", "reddit"]).optional(), locale: RaceLocaleSchema.optional(), categoryId: RaceCategoryIdSchema.optional(),
+  provider: z.enum(["jest", "facebook", "reddit", "android"]).optional(), locale: RaceLocaleSchema.optional(), categoryId: RaceCategoryIdSchema.optional(),
   matchPolicyVersion: z.number().int().min(1).max(3).optional(), matchPolicyRevision: z.number().int().min(1).max(1000000).optional(),
   matchPolicyHash: z.string().regex(/^[a-f0-9]{64}$/).optional(), matchPolicySnapshot: RaceMatchPolicySchema.optional(),
   matchExperiment: RaceMatchExperimentAssignmentSchema.optional(),

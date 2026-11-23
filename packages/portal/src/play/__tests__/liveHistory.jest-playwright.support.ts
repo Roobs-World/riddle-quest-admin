@@ -4,17 +4,19 @@ import type {Page, Route} from "@playwright/test";
 /** Exercises target transport, locale validation, bounded read retirement and current Activity presentation. */
 export async function installLiveHistoryJourney(page: Page, target: "Facebook" | "Reddit", requestUrls: string[]) {
   /** Existing context tests see a valid empty history until this dedicated journey begins. */
-  let mode: "empty" | "failure" | "results" | "blocked" | "wrong-locale" | "late" = "empty";
+  let mode: "empty" | "failure" | "results" | "blocked" | "wrong-locale" | "late" | "guest" | "legacy-bot" = "empty";
   /** The original HTTP observer can finish after the player retires its tab. */
   let pending: Route | undefined;
   /** Captured inputs verify strict provider transport without user or opponent selectors. */
   const requests: unknown[] = [];
   /** Current authority response keeps synthetic rows within the logical retention window. */
   const reply = (route: Route, locale: string, name = "HistoryRival") => {
+    /** Bots retain synthetic scores even without an available human profile. */
+    const bot = mode === "guest" || mode === "legacy-bot";
     /** Only the result vocabulary accepted by the real public schema is emitted. */
     const value = {locale, serverNowMs: Date.now(), entries: mode === "empty" ? [] : [{ticketId: "d".repeat(64), categoryId: "history",
-      createdAtMs: Date.now() - 60_000, result: "win", correctCount: 10, rewardCoins: 50, opponentAvailable: mode !== "blocked",
-      opponent: {displayName: mode === "blocked" ? "Opponent" : name, avatarUrl: null, level: 1, bot: false, correctCount: mode === "blocked" ? 0 : 6}}]};
+      createdAtMs: Date.now() - 60_000, result: "win", correctCount: 10, rewardCoins: 50, opponentAvailable: mode !== "blocked" && !bot,
+      opponent: {displayName: mode === "blocked" ? "Opponent" : mode === "guest" ? "Guest_ABC123" : mode === "legacy-bot" ? "Riddle Bot" : name, avatarUrl: null, level: 1, bot, correctCount: mode === "blocked" ? 0 : 6}}]};
     return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify(target === "Reddit" ? {ok: true, result: value} : {data: value})});
   };
   await page.route(target === "Reddit" ? "**/api/game/race.live.history" : "**/listLiveRaceHistory", route => {
@@ -65,6 +67,19 @@ export async function installLiveHistoryJourney(page: Page, target: "Facebook" |
     expect(await page.locator(".live-race-history-score").innerText()).toContain("—");
     expect(await page.locator(".live-race-history .live-race-safety").count()).toBe(0);
     expect(await page.locator(".live-race-history .live-race-rematch").count()).toBe(0);
+    /** Literal oracles cover the actual French and Arabic adapter journeys independently of production translation code. */
+    const legacyOpponentLabel = locale === "fr" ? "Adversaire" : locale === "ar" ? "الخصم" : "Opponent";
+    /** Real Facebook and Reddit adapters preserve assigned guests and localise retained legacy labels. */
+    for (const [botMode, label] of [["guest", "Guest_ABC123"], ["legacy-bot", legacyOpponentLabel]] as const) {
+      await page.locator('.race-hub-tabs [role="tab"]').first().click();
+      mode = botMode;
+      await page.locator('.race-hub-tabs [role="tab"]').nth(1).click();
+      await page.locator(".live-race-history-entry").getByText(label, {exact: true}).waitFor();
+      expect(await page.locator(".live-race-history-score").innerText()).toContain("6/10");
+      expect(await page.locator(".live-race-history-entry").innerText()).not.toMatch(/\bbot\b|🤖/i);
+      expect(await page.locator(".live-race-history .live-race-safety").count()).toBe(0);
+      expect(await page.locator(".live-race-history .live-race-rematch").count()).toBe(0);
+    }
     await page.locator('.race-hub-tabs [role="tab"]').first().click();
     mode = "wrong-locale";
     await page.locator('.race-hub-tabs [role="tab"]').nth(1).click();

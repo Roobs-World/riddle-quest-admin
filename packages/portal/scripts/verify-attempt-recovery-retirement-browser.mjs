@@ -11,7 +11,7 @@ const mode = process.env.ATTEMPT_RETIRE_REACT_MODE ?? 'development';
 const engine = process.env.ATTEMPT_RETIRE_BROWSER ?? 'chromium';
 assert.ok(['development', 'production'].includes(mode));
 assert.ok(['chromium', 'firefox'].includes(engine));
-const output = path.resolve(process.env.ATTEMPT_RETIRE_REPORT_DIR ?? path.join(portal, '../../artifacts/attempt-recovery-commit-retirement-2026-10-06', engine + '-' + mode));
+const output = path.resolve(process.env.ATTEMPT_RETIRE_REPORT_DIR ?? path.join(portal, '../../builds/test-evidence/attempt-recovery-commit-retirement-2026-10-06', engine + '-' + mode));
 await mkdir(output, {recursive: true});await mkdir(path.join(portal, 'node_modules/.cache'), {recursive: true});
 const scratch = await mkdtemp(path.join(portal, 'node_modules/.cache/attempt-recovery-retirement-'));
 let browser, server, activePage, browserVersion;
@@ -22,7 +22,7 @@ try {
   await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useAttemptRecovery} from ${JSON.stringify(path.join(portal, 'src/play/game/hooks/useAttemptRecovery.ts'))};
-import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal, 'src/play/gameSession.ts'))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal, '../hosted/src/play/gameSession.ts'))};
 import {ContinueModalPage} from ${JSON.stringify(path.join(portal, 'src/play/modalPages/commerce/ContinueActions.tsx'))};
 import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal, 'src/play/GameFrameControls.tsx'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(portal, 'src/play/fakeServices.ts'))};

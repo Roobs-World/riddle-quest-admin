@@ -1,7 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-{
-  "mode": "production",
-  "baseline": false,
-  "checks": 66,
-  "failures": []
-}

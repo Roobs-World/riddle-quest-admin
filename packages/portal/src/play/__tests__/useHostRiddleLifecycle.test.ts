@@ -1,5 +1,5 @@
 import {expect, it, jest} from "@jest/globals";
-import type {HostServices} from "../types";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 jest.mock("react", () => ({useCallback: <T>(callback: T) => callback, useEffect: () => undefined,
   useMemo: <T>(factory: () => T) => factory(), useLayoutEffect: (effect: () => void) => effect(),
   useRef: <T>(current: T) => ({current}), useState: <T>(initial: T) => [initial, jest.fn()]}));

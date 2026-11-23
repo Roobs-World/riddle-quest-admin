@@ -1,5 +1,5 @@
 import {existsSync, readdirSync, readFileSync, statSync} from "node:fs";
-import {fileURLToPath} from "node:url";
+import {fileURLToPath, pathToFileURL} from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const portalTargetHtmlPaths = [
@@ -33,9 +33,23 @@ collectProductionFiles(`${repositoryRoot}/packages/portal/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
 productionFiles.push(...portalTargetHtmlPaths);
 
+/** Audits source text for network references that bypass encrypted transport. */
+export function hasPlaintextNetworkReference(path, source) {
+  if (path === "firebase-functions/src/android/playDeveloperApi.ts") {
+    // Google's runtime metadata token transport is fixed to this private endpoint.
+    source = source.replace(/\bconst METADATA_TOKEN_URL\s*=\s*"http:\/\/metadata\.google\.internal\/computeMetadata\/v1\/instance\/service-accounts\/default\/token";/u, "");
+  }
+  if (path === "firebase-functions/src/profile/avatarUpload.ts" &&
+    /\bconst emulator\s*=\s*process\.env\.FUNCTIONS_EMULATOR\s*===\s*"true"\s*\?\s*process\.env\.FIREBASE_STORAGE_EMULATOR_HOST\s*:\s*undefined;/u.test(source)) {
+    // Exempt only the guarded emulator origin; the production fallback must stay encrypted.
+    source = source.replace(/\bconst origin\s*=\s*emulator\s*\?\s*new URL\(`http:\/\/\$\{emulator\}`\)\.origin\s*:\s*"https:\/\/firebasestorage\.googleapis\.com";/u, "");
+  }
+  return /(?:http|ws):\/\/(?!localhost(?::|\/)|127\.0\.0\.1(?::|\/)|\[::1\](?::|\/))/iu.test(source);
+}
+
 const plaintextNetworkReferences = productionFiles.flatMap((path) => {
   const source = readFileSync(path, "utf8");
-  return /(?:http|ws):\/\/(?!localhost(?::|\/)|127\.0\.0\.1(?::|\/)|\[::1\](?::|\/))/iu.test(source)
+  return hasPlaintextNetworkReference(path.slice(repositoryRoot.length + 1), source)
     ? [path.slice(repositoryRoot.length + 1)]
     : [];
 });
@@ -142,7 +156,13 @@ const requirements = [
     `Production source contains plaintext network URLs: ${plaintextNetworkReferences.join(", ")}`],
 ];
 
-const failures = requirements.filter(([passed]) => !passed).map(([, message]) => message);
-if (failures.length > 0) throw new Error(`Security configuration audit failed:\n- ${failures.join("\n- ")}`);
+/** Verifies the collected production sources and deployment security configuration. */
+export function auditSecurityConfiguration() {
+  const failures = requirements.filter(([passed]) => !passed).map(([, message]) => message);
+  if (failures.length > 0) throw new Error(`Security configuration audit failed:\n- ${failures.join("\n- ")}`);
+}
 
-console.log("Security configuration audit passed: production endpoints, CSP, and HSTS enforce encrypted transport.");
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  auditSecurityConfiguration();
+  console.log("Security configuration audit passed: production endpoints, CSP, and HSTS enforce encrypted transport.");
+}

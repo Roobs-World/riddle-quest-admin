@@ -10,6 +10,7 @@ export const BROWSER_CALLABLE_TIMEOUT_SECONDS = 60;
  * is intentionally no production feature flag that can disable attestation.
  */
 export const browserCallableSecurityOptions = Object.freeze({
+  minInstances: 0,
   enforceAppCheck: process.env.FUNCTIONS_EMULATOR !== "true",
   invoker: "public",
   timeoutSeconds: BROWSER_CALLABLE_TIMEOUT_SECONDS,

@@ -1,12 +1,12 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "@qwordly/core/race";
+import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "@riddle-quest/core/race";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
 import {startRaceRunForUser} from "../../race/raceService";
 import {buildDeterministicRaceDeck, listRaceCategoriesForLocale, loadEligibleContent, requestDocumentId} from "../../race/raceSetupService";
 import {raceDeckContentVersion} from "../../race/raceDeckSnapshot";
-import {graphemeLength} from "@qwordly/core/game";
+import {graphemeLength} from "@riddle-quest/core/game";
 import type {LiveMatch, LiveTicket} from "../../race/raceLiveState";
 
 /** Every canonical mutation belongs to this pass's private loopback demo. */
@@ -221,8 +221,17 @@ it.each(["public", "private", "bot"] as const)("recovers and settles an already-
   /** Current answer-free prompt remains available and the server still handles terminal settlement. */
   const owner = entry === "bot" ? A : B, nowMs = view.startsAtMs! + 1000;
   expect((await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "poll", requestId: "accepted-future-recovery"}, {db, nowMs})).phase).toBe("racing");
+  /** Human seats must play before a forfeit can grant participation badges or winner coins. */
+  const participants = entry === "bot" ? [{seat: 0, userId: A, ticketId: source.ticketId}]
+    : [{seat: 0, userId: A, ticketId: source.ticketId}, {seat: 1, userId: B, ticketId: view.ticketId}];
+  for (const participant of participants) {
+    /** First canonical question establishes a genuine accepted answer for this human seat. */
+    const riddle = match.runs[participant.seat].riddles[0];
+    await updateLiveRaceForUser(participant.userId, {ticketId: participant.ticketId, action: "guess", requestId: `accepted-future-played-${participant.seat}`,
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs});
+  }
   /** Forfeiture still commits the original once-only match result and rewards. */
-  const terminal = await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "leave", requestId: "accepted-future-forfeit"}, {db, nowMs});
+  const terminal = await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "leave", requestId: "accepted-future-forfeit"}, {db, nowMs: nowMs + 1000});
   expect(terminal.phase).toBe("result");
   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 200,

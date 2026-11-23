@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_CONFIRM_REACT_MODE??'development',baseline=process.env.LIVE_CONFIRM_BASELINE_DIR;
-const output=path.resolve(process.env.LIVE_CONFIRM_REPORT_DIR??path.join(root,'../../artifacts/live-confirmation-retirement-2026-10-04',mode));
+const output=path.resolve(process.env.LIVE_CONFIRM_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-confirmation-retirement-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-confirmation-'));
 const source=`
@@ -15,7 +15,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
-import {RACE_RULES,LiveRaceViewSchema,LiveRaceChallengeSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema,LiveRaceChallengeSchema} from '@riddle-quest/core/race';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URLSearchParams(location.search).get('scenario')??'close',challengeId='live_'+'a'.repeat(64);
@@ -43,7 +43,8 @@ try {
  browser=await chromium.launch({headless:true});const quick=process.env.LIVE_CONFIRM_QUICK==='1';
  for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const scenario of process.env.LIVE_CONFIRM_SCENARIOS?.split(',')??(quick?['close']:['close','owner','provider','remove','late-error','available','invalid','unavailable','stable'])) {
   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();const metric=(name,actual,expected)=>{observations.push({width,height,scenario,name,actual,expected});};
-  await page.goto(url+'/?scenario='+scenario);await page.locator('.live-race-invitation .race-primary').click();await page.waitForFunction(()=>Boolean(window.releaseConfirmation));
+  await page.goto(url+'/?scenario='+scenario);await page.waitForFunction(()=>Boolean(window.releaseConfirmation));
+  metric('SDK invitation joins once before confirmation',await page.evaluate(()=>window.probe.joins.length),1);
   metric('real invitation acceptance keeps its exact selector',await page.evaluate(()=>window.probe.joins[0].challengeId),'live_'+'a'.repeat(64));metric('confirmation is issued once',await page.evaluate(()=>window.probe.confirmations),1);metric('held confirmation owns its command deadline',await page.evaluate(()=>[...window.pendingDeliveryTimers.values()]),[10000]);
   const retired=['close','close-minimal','owner','provider','remove','late-error'].includes(scenario);
   if(retired){if(scenario==='close'||scenario==='close-minimal'||scenario==='late-error')await page.keyboard.press('Escape');else await page.evaluate(scenario=>scenario==='owner'?window.replaceOwner():scenario==='provider'?window.replace():window.remove(),scenario);

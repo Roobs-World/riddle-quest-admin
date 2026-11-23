@@ -3,7 +3,7 @@ import {
   JEST_REFERRAL_REFERENCES,
   isJestRewardedReferralReference,
   type JestReferralReference,
-} from "@qwordly/core/referrals";
+} from "@riddle-quest/core/referrals";
 
 /** Maximum platform player-ID bytes accepted from a signed referral snapshot. */
 const MAX_REFERRAL_PLAYER_ID_BYTES = 512;

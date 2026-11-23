@@ -1,3 +1,0 @@
-{
-  "sdk-tests": "firebase-functions/src/__tests__/race/raceLiveCreatorRecovery.it.test.ts"
-}

@@ -1,4 +1,4 @@
-import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
+import {LIVE_RACE_WIN_COINS, LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, LiveRaceViewSchema, RACE_RULES, type LiveRaceView} from "@riddle-quest/core/race";
 import {raceOperationAtMs, toRaceRunView, type RaceRunRecord} from "./raceEngine";
 import {liveFinishMs} from "./raceLiveScoring";
 import type {FacebookLiveContextBinding} from "./facebookLiveContextBinding";
@@ -9,6 +9,7 @@ export type LiveTicket = {
   /** Original optional Facebook score destination, captured before play. */ facebookContext?: FacebookLiveContextBinding;
   /** Sanitized creator content is retained only as a surviving player's frozen deck source. */ deleted?: boolean;
   /** Private lobbies never enter the public queue or select a bot. */ privateChallenge?: boolean;
+  /** Marks a resumable public lobby under the existing join contract. */ waitForPlayer?: true;
   /** Direct invitations reserve acceptance for one server-resolved recipient. */ inviteRecipientId?: string;
   /** Immutable caller-owned terminal seat binds rematch retries and recipient selection. */ rematchOfTicketId?: string;
   /** Authenticated account. */ userId: string;
@@ -20,6 +21,11 @@ export type LiveTicket = {
   /** Server account identity snapshot. */ player: LiveRaceView["player"];
   /** Private authoritative riddle run. */ run: RaceRunRecord;
 };
+
+/** Private invitations retain their lifetime; every public search receives an opponent within seconds. */
+export function liveRaceSearchEndsAtMs(ticket: Pick<LiveTicket, "createdAtMs" | "privateChallenge" | "waitForPlayer">): number {
+  return ticket.createdAtMs + (ticket.privateChallenge ? LIVE_RACE_INVITE_MS : LIVE_RACE_WAIT_MS);
+}
 /** Private seat data is replaced as a whole by existing account deletion cleanup. */
 type LiveSeatRun = RaceRunRecord & {
   /** Viewer-owned balance includes one-time badge grants after authoritative settlement. */ settlementCoins?: number;
@@ -118,7 +124,8 @@ export function liveView(ticketId: string, ticket: LiveTicket, match: LiveMatch 
   }
   return LiveRaceViewSchema.parse({ticketId, phase: ticket.cancelled ? "cancelled" : !match ? "searching" :
     terminal ? "result" : observedAtMs < match.startsAtMs ? "countdown" : "racing",
-    serverNowMs: observedAtMs, searchEndsAtMs: ticket.createdAtMs + (ticket.privateChallenge ? LIVE_RACE_INVITE_MS : LIVE_RACE_WAIT_MS), startsAtMs: match?.startsAtMs ?? null,
+    serverNowMs: observedAtMs, searchEndsAtMs: liveRaceSearchEndsAtMs(ticket), startsAtMs: match?.startsAtMs ?? null,
+    ...(ticket.waitForPlayer ? {waitForPlayer: true} : {}),
     player: {...ticket.player, correctCount: own?.correctCount ?? 0},
     opponent: match ? {...match.players[1 - seat], correctCount: rival?.correctCount ?? 0} : null,
     ...(own ? {actionAvailableAtMs: own.startedAtMs} : {}),

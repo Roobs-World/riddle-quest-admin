@@ -10,8 +10,8 @@
     "CLOSE_STATISTICS": "Cerrar estadísticas",
     "DELETE_LAST_LETTER": "Eliminar la última letra ingresada",
     "GAME_HEADER": "Encabezado del juego con logotipo y saldo de monedas",
-    "GAME_LOSS_NOTIFICATION": "Notificación de pérdida de juego",
-    "GO_BACK": "Go atrás",
+    "GAME_LOSS_NOTIFICATION": "Notificación de partida perdida",
+    "GO_BACK": "Volver atrás",
     "LETTER_PREFIX": "Letra ",
     "LOADING": "Cargando",
     "LOADING_LEADERBOARD": "Cargando tabla de clasificación",
@@ -23,13 +23,13 @@
     "OPEN_SETTINGS": "Abrir configuración",
     "OPEN_SETTINGS_HINT": "Acceder a la configuración del juego, opciones de sonido y administración de cuentas",
     "SHARE_SYSTEM": "Compartir",
-    "SUBMIT_GUESS": "Enviar estimación actual",
+    "SUBMIT_GUESS": "Enviar el intento actual",
     "UNMUTE_SOUND": "Activar sonido",
     "VIRTUAL_KEYBOARD": "Teclado virtual",
     "LANDING_ATTRIBUTION_LINK": "Hecho por Roobs World",
     "LOGO_BUTTON": "Logotipo",
     "MODAL_SEQUENCE_GO_TO_HINT": "Volver a esta ventana emergente",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Ir a la ventana emergente {popupIndex} de {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current} de {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Ventana emergente {current} de {total}"
   }
 }

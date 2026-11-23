@@ -1,6 +1,0 @@
-{
-  "mode": "production",
-  "checks": 258,
-  "traces": 30,
-  "failures": []
-}

@@ -15,7 +15,7 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {ACHIEVEMENT_MILESTONES} from '@qwordly/core/game';
+import {ACHIEVEMENT_MILESTONES} from '@riddle-quest/core/game';
 import {AchievementsModalPage} from ${JSON.stringify(path.join(root, 'src/play/modalPages/profile/ProfileStatsModalPages.tsx'))};
 import {AchievementFanfare} from ${JSON.stringify(path.join(root, 'src/play/modalPages/fanfare/FanfareModalContent.tsx'))};
 import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, 'src/play/i18n.ts'))};

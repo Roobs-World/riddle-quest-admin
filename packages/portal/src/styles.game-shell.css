@@ -75,8 +75,9 @@
   display: block;
 }
 .game-mode-label {
-  justify-self: center;
-  position: relative;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   color: #fff;
   font:
     400 clamp(20px, 5vw, 30px)/1 "Poetsen One",
@@ -84,6 +85,7 @@
     sans-serif;
 }
 .coin-pill {
+  grid-column: 4;
   justify-self: end;
   height: 48px;
   display: inline-flex;

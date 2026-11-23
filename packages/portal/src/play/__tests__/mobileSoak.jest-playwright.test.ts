@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
-import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {createTooltipTourStorageKey} from "../guidance/guidanceConfig";
 
 /** Provides describe soak behavior. */
 const describeSoak = process.env.PORTAL_SOAK_TESTS === "1" ? describe : describe.skip;
@@ -22,7 +23,7 @@ describeSoak("low-end mobile stability", () => {
       /** Provides package root behavior. */
       const packageRoot = path.resolve(__dirname, "../../..");
       if (process.env.PORTAL_USE_EXISTING_BUILD !== "1") {
-        execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:jest"], {
+        execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:jest"], {
           cwd: path.resolve(packageRoot, "../.."),
           stdio: "inherit",
         });
@@ -85,12 +86,12 @@ describeSoak("low-end mobile stability", () => {
         if (message.type() === "error") runtimeErrors.push(message.text());
       });
       page.on("pageerror", (error) => runtimeErrors.push(error.message));
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         Object.defineProperty(navigator, "hardwareConcurrency", {configurable: true, value: 4});
         Object.defineProperty(navigator, "deviceMemory", {configurable: true, value: 4});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
 
@@ -111,7 +112,7 @@ describeSoak("low-end mobile stability", () => {
           await letterA.waitFor({state: "visible", timeout: 5_000});
         } catch (error) {
           /** Provides state behavior. */
-          const state = await page.evaluate(() => ({
+          const state = await page.evaluate((tourKey) => ({
             activeDialogs: Array.from(document.querySelectorAll("[role='dialog'], [role='alertdialog']"), (dialog) => ({
               className: dialog.className,
               text: dialog.textContent?.slice(0, 120),
@@ -119,8 +120,8 @@ describeSoak("low-end mobile stability", () => {
             gameInert: document.querySelector(".game-app")?.hasAttribute("inert"),
             keyboardButtons: document.querySelectorAll(".keyboard button").length,
             onboardingSeen: localStorage.getItem("riddleQuest:onboarding:jest-guest"),
-            tourSeen: localStorage.getItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest"),
-          }));
+            tourSeen: localStorage.getItem(tourKey),
+          }), createTooltipTourStorageKey("gameTour", "jest-guest"));
           throw new Error(`Mobile soak did not reach an interactive keyboard: ${JSON.stringify(state)}`, {
             cause: error,
           });

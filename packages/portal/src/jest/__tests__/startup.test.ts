@@ -181,10 +181,10 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
 });
 
-it("grants and completes incomplete purchases before a later identity exchange failure", async () => {
+it.each([false, true])("recovers signed purchases before a later identity failure when registered=%s", async (registered) => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
-  platform.player.registered = true;
+  platform.player.registered = registered;
   platform.getIncompletePurchases = jest.fn(async () => ({
     status: "success" as const,
     value: {
@@ -464,19 +464,18 @@ it("restores saved progress but skips the registered-only profile for guests", a
     status: "success",
     value: {player: {registered: false}, playerData: null, profile: null},
   });
-  expect(order).toEqual(["preferences", "playerData", "exchange", "firebase"]);
+  expect(order).toEqual(["preferences", "playerData", "exchange", "firebase", "recover"]);
   expect(updates).toEqual(["player", "game"]);
 });
 
-it("skips Jest purchase recovery for guests", async () => {
+it("checks and reconciles purchases for a guest's own player identity", async () => {
   /** Provides the isolated guest platform. */
   const platform = new MockJestPlatform();
-  /** Fails if a guest attempts to inspect provider purchases. */
-  platform.getIncompletePurchases = jest.fn(async () => {
-    throw new Error("guest purchase recovery must not run");
-  });
-  /** Fails if a guest attempts to reconcile provider purchases. */
-  const reconcile = jest.fn();
+  /** Empty signed recovery page still proves the guest's startup was checked. */
+  const page = {purchases: [], purchasesSigned: "signed-guest-purchases", hasMore: false};
+  platform.getIncompletePurchases = jest.fn(async () => ({status: "success" as const, value: page}));
+  /** The coordinator receives the same guest identity and signed page. */
+  const reconcile = jest.fn(async () => ({status: "success" as const, value: 0}));
 
   await expect(
     startJestSession(
@@ -487,8 +486,8 @@ it("skips Jest purchase recovery for guests", async () => {
     ),
   ).resolves.toMatchObject({status: "success", value: {player: {registered: false}}});
 
-  expect(platform.getIncompletePurchases).not.toHaveBeenCalled();
-  expect(reconcile).not.toHaveBeenCalled();
+  expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(1);
+  expect(reconcile).toHaveBeenCalledWith(platform.player.playerId, page);
 });
 
 it("stops startup on an authoritative tombstone without Firebase auth or purchase recovery", async () => {

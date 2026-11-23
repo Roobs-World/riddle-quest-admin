@@ -2,6 +2,8 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
+import {liveJoinIntentRef} from "../../race/raceLiveJoinIntent";
+import {requestDocumentId} from "../../race/raceSetupService";
 
 /** Authenticated fixture identities share one provider. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
@@ -31,12 +33,16 @@ beforeEach(async () => {
   for (const [index, user] of [A, B, C].entries()) batch.set(db.doc(`users/${user}`), {username: ["Alice", "Bob", "Charlie"][index], coins: 100});
   await batch.commit();
 });
-afterAll(clear);
+afterAll(async () => {await clear(); await db.terminate();});
 /** Reserves Alice's private lobby with a stable idempotency key. */
 const reserve = () => joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "private-lobby-001", createChallenge: true}, {db, nowMs: NOW});
 /** Explicitly accepts Alice's existing lobby. */
 const accept = (userId: string, challengeId: string, nowMs = NOW + 1000, requestId = "accept-private-001") =>
   joinLiveRaceForUser(userId, {locale: "en", categoryId: "history", requestId, challengeId}, {db, nowMs});
+/** A creator reopening their SMS link claims only the original ticket under a fresh browser journey. */
+const resume = (challengeId: string, nowMs = NOW + 1000, requestId = "creator-link-resume") =>
+  joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId, challengeId,
+    retirementAware: true, expectedOwnerId: A}, {db, nowMs});
 
 it("previews without joining and reserves exactly one rival in the original lobby", async () => {
   /** Repeated publication retains one private seat. */
@@ -63,6 +69,16 @@ it("recovers a lost acceptance response without resetting the countdown or creat
   expect((await db.collection("liveRaceTickets").get()).size).toBe(2);
 });
 
+it("limits an accepted SMS invitation preview to its creator and recipient", async () => {
+  /** Creator lobby and its share handle before recipient acceptance restricts preview access. */
+  const a = await reserve(), challengeId = `live_${a.ticketId}`;
+  expect(await getLiveRaceChallengeForUser(C, challengeId, {db, nowMs: NOW + 1000})).toMatchObject({status: "available"});
+  await accept(B, challengeId);
+  expect(await getLiveRaceChallengeForUser(A, challengeId, {db, nowMs: NOW + 2000})).toMatchObject({status: "own"});
+  expect(await getLiveRaceChallengeForUser(B, challengeId, {db, nowMs: NOW + 2000})).toMatchObject({status: "accepted"});
+  await expect(getLiveRaceChallengeForUser(C, challengeId, {db, nowMs: NOW + 2000})).rejects.toMatchObject({code: "not-found"});
+});
+
 it("keeps private invitations out of public searches and bot fallback", async () => {
   /** Public search cannot consume a reserved invitation. */
   const a = await reserve();
@@ -71,10 +87,81 @@ it("keeps private invitations out of public searches and bot fallback", async ()
   expect((await db.collection("liveRaceMatches").get()).size).toBe(0);
 });
 
-it("rejects self, cross-provider, expired, cancelled, offline and blocked invitations", async () => {
+it("recovers the creator's exact waiting lobby from its shared link without reserving a rival", async () => {
+  /** Original creator lobby recovered through its own shared link. */
+  const a = await reserve(), challengeId = `live_${a.ticketId}`;
+  expect(await getLiveRaceChallengeForUser(A, challengeId, {db, nowMs: NOW + 1000})).toMatchObject({status: "own"});
+  expect(await resume(challengeId)).toMatchObject({ticketId: a.ticketId, challengeId, phase: "searching", opponent: null});
+  expect((await db.doc(`liveRaceTickets/${a.ticketId}`).get()).data()?.seenAtMs).toBe(NOW + 1000);
+  expect((await liveJoinIntentRef(db, A, "creator-link-resume").get()).data()).toMatchObject({ticketId: a.ticketId, retired: false});
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(1);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(0);
+  /** A refreshed creator heartbeat permits the intended recipient to join the same lobby. */
+  expect(await accept(B, challengeId, NOW + 31_000)).toMatchObject({phase: "countdown", opponent: {displayName: "Alice"}});
+});
+
+it("recovers the creator's existing unfinished match after the original invite deadline", async () => {
+  /** Original private invitation retained across a late recipient acceptance. */
+  const a = await reserve(), challengeId = `live_${a.ticketId}`;
+  await resume(challengeId, NOW + 890_000);
+  /** Recipient seat whose original countdown must survive creator recovery. */
+  const b = await accept(B, challengeId, NOW + 891_000);
+  expect(await getLiveRaceChallengeForUser(A, challengeId, {db, nowMs: NOW + 900_001})).toMatchObject({status: "own"});
+  expect(await resume(challengeId, NOW + 900_001, "creator-matched-resume")).toMatchObject({
+    ticketId: a.ticketId, phase: "racing", startsAtMs: b.startsAtMs, opponent: {displayName: "Bob", bot: false},
+  });
+  expect((await db.doc(`liveRaceMatches/${a.ticketId}`).get()).data()?.observedAtMs).toBe(NOW + 900_001);
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(2);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+});
+
+it.each(["expired", "cancelled"])("cannot create or renew a creator lobby from an %s shared link", async reason => {
+  /** Creator invitation and boundary time for expired or cancelled link recovery. */
+  const a = await reserve(), challengeId = `live_${a.ticketId}`, nowMs = reason === "expired" ? NOW + 900_000 : NOW + 2000;
+  if (reason === "cancelled") await updateLiveRaceForUser(A, {ticketId: a.ticketId, action: "leave", requestId: "creator-link-close"}, {db, nowMs: NOW + 1000});
+  /** Ticket snapshot used to prove rejected recovery does not renew the lobby. */
+  const before = await db.doc(`liveRaceTickets/${a.ticketId}`).get();
+  expect(await getLiveRaceChallengeForUser(A, challengeId, {db, nowMs})).toMatchObject({status: "unavailable"});
+  await expect(resume(challengeId, nowMs)).rejects.toMatchObject({code: "failed-precondition"});
+  expect((await db.doc(`liveRaceTickets/${a.ticketId}`).get()).updateTime?.valueOf()).toBe(before.updateTime?.valueOf());
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(1);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(0);
+  expect((await liveJoinIntentRef(db, A, "creator-link-resume").get()).exists).toBe(false);
+});
+
+it("cannot replace a newer creator seat with an old shared link or an unrelated join intent", async () => {
+  /** Original private invitation whose pointer is later replaced. */
+  const a = await reserve(), challengeId = `live_${a.ticketId}`;
+  await resume(challengeId);
+  /** A replaced pointer must invalidate the old link even before its original expiry. */
+  const pointer = db.doc(`liveRacePlayers/${requestDocumentId(A, "active-live-race")}`);
+  await pointer.delete();
+  /** New creator lobby that stale links must never displace. */
+  const replacement = await joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "replacement-private-lobby", createChallenge: true}, {db, nowMs: NOW + 2000});
+  /** Replacement ticket snapshot used to detect writes from stale recovery. */
+  const before = await db.doc(`liveRaceTickets/${replacement.ticketId}`).get();
+  expect(await getLiveRaceChallengeForUser(A, challengeId, {db, nowMs: NOW + 2001})).toMatchObject({status: "unavailable"});
+  await expect(resume(challengeId, NOW + 2001, "stale-creator-link")).rejects.toMatchObject({code: "failed-precondition"});
+  await expect(resume(`live_${replacement.ticketId}`, NOW + 2001)).rejects.toMatchObject({code: "invalid-argument"});
+  expect((await pointer.get()).data()?.ticketId).toBe(replacement.ticketId);
+  expect((await db.doc(`liveRaceTickets/${replacement.ticketId}`).get()).updateTime?.valueOf()).toBe(before.updateTime?.valueOf());
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(2);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(0);
+});
+
+it("requires the creator's original category and language when resuming their shared link", async () => {
+  /** Original private invitation whose language and category remain immutable. */
+  const a = await reserve(), challengeId = `live_${a.ticketId}`;
+  for (const selection of [{locale: "en", categoryId: "science"}, {locale: "fr", categoryId: "history"}] satisfies Pick<Parameters<typeof joinLiveRaceForUser>[1], "locale" | "categoryId">[]) {
+    await expect(joinLiveRaceForUser(A, {...selection, requestId: "creator-changed-selection", challengeId}, {db, nowMs: NOW + 1000})).rejects.toMatchObject({code: "failed-precondition"});
+  }
+  expect(await resume(challengeId)).toMatchObject({ticketId: a.ticketId, phase: "searching"});
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(1);
+});
+
+it("rejects cross-provider, expired, cancelled, offline and blocked invitations", async () => {
   /** Invitation existence cannot bypass authentication or safety boundaries. */
   const a = await reserve();
-  await expect(accept(A, a.challengeId!)).rejects.toMatchObject({code: "failed-precondition"});
   await expect(accept(`facebook_${"b".repeat(40)}`, a.challengeId!)).rejects.toMatchObject({code: "not-found"});
   await expect(accept(B, a.challengeId!, NOW + 900_000)).rejects.toMatchObject({code: "failed-precondition"});
   await expect(accept(B, a.challengeId!, NOW + 31_000)).rejects.toMatchObject({code: "unavailable"});

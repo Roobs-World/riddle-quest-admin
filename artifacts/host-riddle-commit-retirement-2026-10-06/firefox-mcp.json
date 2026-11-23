@@ -1,9 +1,0 @@
-{
-  "content": [
-    {
-      "type": "text",
-      "text": "Error: Process (pid=676226) unexpectedly closed with status 0"
-    }
-  ],
-  "isError": true
-}

@@ -1,5 +1,0 @@
-{
-  "validation": "firebase-functions/src/race/raceContentValidation.ts",
-  "tests": "firebase-functions/src/__tests__/race/racePoolValidationWork.test.ts",
-  "sdk-tests": "firebase-functions/src/__tests__/race/racePoolValidationWork.it.test.ts"
-}

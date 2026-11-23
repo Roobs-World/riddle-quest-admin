@@ -85,8 +85,8 @@ export type JestBackendClientOptions = {
   requestTimeoutMs?: number;
 };
 
-/** Default deadline for identity, purchase, referral, and entitlement requests. */
-export const JEST_BACKEND_REQUEST_TIMEOUT_MS = 15_000;
+/** Bounds signed HTTP requests while allowing a cold backend to start under the loading heartbeat. */
+export const JEST_BACKEND_REQUEST_TIMEOUT_MS = 30_000;
 
 /**
  * Resolves and validates a Jest backend URL before any signed identity or
@@ -155,6 +155,8 @@ export class JestBackendClient implements JestBackendPort {
   ): Promise<T> {
     /** Provides controller behavior. */
     const controller = new AbortController();
+    /** A retry shares the original deadline rather than starting another request budget. */
+    const deadline = Date.now() + this.requestTimeoutMs;
     /** Provides timeout behavior. */
     let timeout: ReturnType<typeof setTimeout> | undefined;
     /** Provides timeout message behavior. */
@@ -162,12 +164,23 @@ export class JestBackendClient implements JestBackendPort {
     /** Provides request behavior. */
     const request = async (): Promise<T> => {
       /** Provides response behavior. */
-      const response = await fetch(`${this.baseUrl.replace(/\/$/, "")}/${path}`, {
+      const url = `${this.baseUrl.replace(/\/$/, "")}/${path}`;
+      /** Serialize before the transport catch so programming failures are never retried. */
+      const requestOptions = {
         method: "POST",
         headers: {"content-type": "application/json"},
         body: JSON.stringify(body),
         signal: controller.signal,
-      });
+      } satisfies RequestInit;
+      /** Only a rejected native fetch may retry subscription reconciliation once. */
+      let response: Response;
+      try {
+        response = await fetch(url, requestOptions);
+      } catch (error) {
+        if (path !== "syncJestSubscriptions" || !(error instanceof TypeError) || controller.signal.aborted ||
+          Date.now() >= deadline) throw error;
+        response = await fetch(url, requestOptions);
+      }
       if (!response.ok) {
         /** Maps ped. */
         const mapped = await mapHttpError?.(response);

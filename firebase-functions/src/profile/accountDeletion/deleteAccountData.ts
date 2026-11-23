@@ -1,3 +1,6 @@
+import {deleteAndroidReferralData} from "../../android/androidReferralDeletion";
+import {anonymizeFacebookPaymentTokens} from "../../facebook/facebookPaymentDeletion";
+import {anonymizeAndroidPurchaseGrants} from "../../android/androidPurchaseDeletion";
 import {admin} from "../../shared/firebaseAdmin";
 import {createJestPurchaseGrantId} from "../../jest/jestPurchaseReceipts";
 import {createJestReferralVerificationId} from "../../jest/jestReferralReceipts";
@@ -163,6 +166,8 @@ async function anonymizeFacebookReferralSettlements(field: "inviteeUid" | "invit
         ...(typeof data.inviteeCoins === "number" ? {inviteeCoins: data.inviteeCoins} : {}),
         ...(typeof data.inviterCoins === "number" ? {inviterCoins: data.inviterCoins} : {}),
         ...(data.settledAtMs === undefined ? {} : {settledAtMs: data.settledAtMs}),
+        ...(typeof data.completionReceiptId === "string" && /^[0-9a-f]{64}$/.test(data.completionReceiptId)
+          ? {completionReceiptId: data.completionReceiptId} : {}),
       });
     });
     await batch.commit();
@@ -188,6 +193,8 @@ async function anonymizeRedditReferralSettlements(field: "inviteeUid" | "inviter
         ...(typeof data.inviteeCoins === "number" ? {inviteeCoins: data.inviteeCoins} : {}),
         ...(typeof data.inviterCoins === "number" ? {inviterCoins: data.inviterCoins} : {}),
         ...(data.settledAtMs === undefined ? {} : {settledAtMs: data.settledAtMs}),
+        ...(typeof data.completionReceiptId === "string" && /^[0-9a-f]{64}$/.test(data.completionReceiptId)
+          ? {completionReceiptId: data.completionReceiptId} : {}),
       });
     });
     await batch.commit();
@@ -293,12 +300,16 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
     db.collection("redditPlayerStorage").doc(userId).delete(),
     db.collection("redditCommerceAccounts").doc(userId).delete(),
     db.collection("facebookCommerceAccounts").doc(userId).delete(),
+    db.collection("androidCommerceAccounts").doc(userId).delete(),
     db.collection("facebookNotificationPromptLeases").doc(userId).delete(),
     db.collection("facebookReferralBindings").doc(userId).delete(),
     db.collection("redditReferralBindings").doc(userId).delete(),
     anonymizePurchaseGrantDocuments(userId),
+    anonymizeAndroidPurchaseGrants(userId),
+    deleteAndroidReferralData(userId),
     anonymizeFacebookCommerceDocuments("facebookCommerceReceipts", userId),
     anonymizeFacebookCommerceDocuments("facebookCommerceRefunds", userId),
+    anonymizeFacebookPaymentTokens(userId),
     anonymizeRedditCommerceDocuments("redditCommerceReceipts", userId),
     anonymizeRedditCommerceDocuments("redditCommerceRefunds", userId),
     anonymizeFacebookReferralSettlements("inviteeUid", userId),

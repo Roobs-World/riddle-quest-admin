@@ -1,4 +1,4 @@
-import {classifyRaceMatchFailure, type RaceMatchFailure} from "@qwordly/core/race";
+import {classifyRaceMatchFailure, type RaceMatchFailure} from "@riddle-quest/core/race";
 import type {MatchmakingResult} from "./types";
 
 /** Keeps provider failure details out of display text while preserving recovery semantics. */

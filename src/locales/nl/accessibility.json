@@ -11,10 +11,10 @@
     "DELETE_LAST_LETTER": "Verwijder de laatst ingevoerde letter",
     "GAME_HEADER": "Spelkop met logo en muntsaldo",
     "GAME_LOSS_NOTIFICATION": "Melding van spelverlies",
-    "GO_BACK": "Go terug",
+    "GO_BACK": "Ga terug",
     "LETTER_PREFIX": "Letter ",
     "LOADING": "Laden",
-    "LOADING_LEADERBOARD": "Leiderbord laden",
+    "LOADING_LEADERBOARD": "Klassement laden",
     "MUTE_SOUND": "Geluid dempen",
     "NAVIGATE_TO_PREFIX": "Navigeer naar ",
     "NEXT_LEVEL_HINT": "Ga naar het volgende niveau nadat je dit hebt voltooid",
@@ -30,6 +30,6 @@
     "LOGO_BUTTON": "Logo van de app",
     "MODAL_SEQUENCE_GO_TO_HINT": "Ga terug naar deze pop-up",
     "MODAL_SEQUENCE_GO_TO_POPUP": "Ga naar pop-up {popupIndex} van {total}",
-    "MODAL_SEQUENCE_PROGRESS": "Popup {current} van {total}"
+    "MODAL_SEQUENCE_PROGRESS": "Pop-up {current} van {total}"
   }
 }

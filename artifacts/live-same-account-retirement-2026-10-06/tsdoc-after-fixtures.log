@@ -1,3 +1,0 @@
-TSDoc audit failed: 2 production declarations are undocumented.
-- firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts:30 profile
-- firebase-functions/src/__tests__/race/raceLiveJoinRetirement.it.test.ts:122 calls

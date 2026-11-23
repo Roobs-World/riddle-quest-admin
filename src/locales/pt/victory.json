@@ -11,11 +11,17 @@
     "TOTAL_COINS_LABEL": "Total de moedas",
     "YOU_WON_TITLE": "VOCÊ GANHOU!",
     "SHARE_ATTEMPT_PLURAL": "tentativas",
-    "SHARE_ATTEMPT_SINGULAR": "tentar",
+    "SHARE_ATTEMPT_SINGULAR": "tentativa",
     "SHARE_CLASSIC_MODE_LABEL": "Modo Clássico",
     "SHARE_DAILY_CHALLENGE_LABEL": "Desafio diário",
     "SHARE_MESSAGE_TEMPLATE": "Resolvi o Riddle Quest {gameType} de hoje em {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nVocê consegue bater minha pontuação?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Confira meu resultado Riddle Quest!",
-    "INVITE_FRIEND": "Convide um amigo"
+    "INVITE_FRIEND": "Convide um amigo",
+    "REWARD_CLASSIC": "Enigma clássico",
+    "REWARD_DAILY": "Enigma diário",
+    "REWARD_LEVEL_BONUS": "Bônus de nível",
+    "REWARD_STREAK_BONUS": "Bônus de sequência",
+    "REWARD_ACHIEVEMENT_BONUS": "Bônus de conquista",
+    "REWARD_REFERRAL_BONUS": "Bônus por convite"
   }
 }

@@ -5,16 +5,16 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
-const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.PENDING_SCOPE_MODE??'development',engine=process.env.PENDING_SCOPE_BROWSER??'chromium',evidence=path.resolve(process.env.PENDING_SCOPE_REPORT_DIR??path.join(portal,'../../artifacts/pending-play-scope-retirement-2026-10-06',engine+'-'+mode));await mkdir(evidence,{recursive:true});assert.ok(['development','production'].includes(mode));assert.ok(['chromium','firefox'].includes(engine));const observations=[];let browserVersion;
+const portal=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.PENDING_SCOPE_MODE??'development',engine=process.env.PENDING_SCOPE_BROWSER??'chromium',evidence=path.resolve(process.env.PENDING_SCOPE_REPORT_DIR??path.join(portal,'../../builds/test-evidence/pending-play-scope-retirement-2026-10-06',engine+'-'+mode));await mkdir(evidence,{recursive:true});assert.ok(['development','production'].includes(mode));assert.ok(['chromium','firefox'].includes(engine));const observations=[];let browserVersion;
 await mkdir(path.join(portal,'node_modules/.cache'),{recursive:true});const scratch=await mkdtemp(path.join(portal,'node_modules/.cache/pending-scope-retirement-'));let browser,server,result;
 try{
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(scratch,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useProvisionalPlayRecovery} from ${JSON.stringify(path.join(portal,'src/play/game/hooks/useProvisionalPlayRecovery.ts'))};
-import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'src/play/gameSession.ts'))};
-import {createPendingPlayJournalStorage} from ${JSON.stringify(path.join(portal,'src/play/pendingPlayJournalDiagnostics.ts'))};
-import {pendingPlayScope} from ${JSON.stringify(path.join(portal,'src/play/pendingGuessJournal.ts'))};
+import {gameSessionReducer,createInitialGameSession} from ${JSON.stringify(path.join(portal,'../hosted/src/play/gameSession.ts'))};
+import {createPendingPlayJournalStorage} from ${JSON.stringify(path.join(portal,'../hosted/src/play/pendingPlayJournalDiagnostics.ts'))};
+import {pendingPlayScope} from ${JSON.stringify(path.join(portal,'../hosted/src/play/pendingGuessJournal.ts'))};
 import {ControlledGuessBoard,ControlledKeyboard} from ${JSON.stringify(path.join(portal,'src/play/GameFrameControls.tsx'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(portal,'src/styles.css'))};

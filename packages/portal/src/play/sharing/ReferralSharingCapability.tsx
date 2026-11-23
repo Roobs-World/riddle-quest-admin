@@ -48,6 +48,8 @@ export type ReferralSharingCapability = {
     /** Opaque server-owned invitation. */
     challengeId: string;
   }) => Promise<ReferralShareOutcome>;
+  /** The provider can open its invite dialog after an explicitly requested private lobby is reserved. */
+  autoOpenLiveRaceInvite?: boolean;
   /** Explicit self-managed browser-push consent, supplied only by supported target adapters. */
   setLiveRacePush?: (enabled: boolean) => Promise<boolean>;
   /** Shares a published multiplayer challenge and distinguishes dismissal from failure. */

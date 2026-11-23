@@ -32,6 +32,11 @@ export function decodeAvatarDataUrl(imageDataUrl: string): {
 }
 
 /** Provides avatar download url behavior. */
-export const avatarDownloadUrl = (bucketName: string, objectPath: string, downloadToken: string) =>
-  `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(bucketName)}/o/` +
-  `${encodeURIComponent(objectPath)}?alt=media&token=${encodeURIComponent(downloadToken)}`;
+export const avatarDownloadUrl = (bucketName: string, objectPath: string, downloadToken: string) => {
+  /** Emulator objects must never produce a URL pointing at the production bucket. */
+  const emulator = process.env.FUNCTIONS_EMULATOR === "true" ? process.env.FIREBASE_STORAGE_EMULATOR_HOST : undefined;
+  /** Native targets translate loopback to their configured emulator host at the device boundary. */
+  const origin = emulator ? new URL(`http://${emulator}`).origin : "https://firebasestorage.googleapis.com";
+  return `${origin}/v0/b/${encodeURIComponent(bucketName)}/o/` +
+    `${encodeURIComponent(objectPath)}?alt=media&token=${encodeURIComponent(downloadToken)}`;
+};

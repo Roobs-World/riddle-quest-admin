@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_COUNTDOWN_REACT_MODE??'development',baseline=process.env.LIVE_COUNTDOWN_BASELINE_FILE;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.LIVE_COUNTDOWN_REPORT_DIR??path.join(root,'../../artifacts/live-countdown-clock-2026-10-05',mode));
+const output=path.resolve(process.env.LIVE_COUNTDOWN_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-countdown-clock-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-countdown-'));
 let browser,server;const observations=[];
@@ -18,7 +18,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.probe={samples:0,wakeups:0,slots:[],active:new Map(),calls:[],errors:[],unhandled:[],offset:0,joins:0};
 window.addEventListener('error',e=>probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>probe.unhandled.push(String(e.reason)));

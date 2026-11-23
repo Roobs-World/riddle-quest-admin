@@ -1,8 +1,8 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": " para",
-    "LOADING_TEXT": "Magasa yukleniyor...",
-    "NO_PACKS_AVAILABLE": "Su an para paketi mevcut degil.",
+    "LOADING_TEXT": "Mağaza yükleniyor...",
+    "NO_PACKS_AVAILABLE": "Şu an para paketi mevcut değil.",
     "PURCHASE_BUTTON": "SATIN AL",
     "PERIOD_MONTHLY": "ay",
     "PERIOD_WEEKLY": "hafta",
@@ -18,9 +18,8 @@
     "SUBSCRIPTION_BENEFIT_STATUS": "Riddle Quest hesabında Premium statüsü",
     "SUBSCRIPTION_BENEFIT_SUPPORT": "Riddle Quest ekibine destek ol",
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Otomatik olarak yenilenir. Profil veya Ayarlar'dan istediğin zaman iptal et.",
-    "TITLE": "PARA MAGASASI",
+    "TITLE": "PARA MAĞAZASI",
     "YOUR_BALANCE": "Bakiyeniz",
-    "PACK_DESCRIPTION": "Bakiyenize {coins} jeton ekleyin.",
     "BADGE_STARTER": "BAŞLANGIÇ",
     "BADGE_POPULAR": "POPÜLER",
     "BADGE_BEST_VALUE": "EN İYİ FİYAT",

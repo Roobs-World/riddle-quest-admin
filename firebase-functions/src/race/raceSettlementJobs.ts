@@ -1,7 +1,6 @@
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions";
 import {admin} from "../shared/firebaseAdmin";
-import {onScheduleWithSentry} from "../shared/sentryHandlers";
 import {processRaceDeadline} from "./raceDeadlineRecovery";
 import {deliverRaceSettlement} from "./raceSettlementDelivery";
 import {deliverRacePerformance} from "./racePerformanceDelivery";
@@ -38,13 +37,21 @@ export async function processRaceSettlementJobs(db: Firestore = admin.firestore(
 /** Retry-enabled delivery of a committed creator settlement event. */
 export const deliverRaceSettlementEvent = onDocumentCreated({
   document: "raceSettlementOutbox/{runId}", region: "us-central1", retry: true,
-}, async (event) => {await deliverRaceSettlement(event.params.runId);});
+}, async (event) => {
+  await deliverRaceSettlement(event.params.runId);
+  await requireCompletedRaceDelivery("raceSettlementOutbox", event.params.runId);
+});
 
 /** Retry-enabled owner-only performance projection; recording popularity never updates the creator repeatedly. */
 export const deliverRacePerformanceEvent = onDocumentCreated({document: "racePerformanceOutbox/{runId}", region: "us-central1", retry: true},
-  async (event) => {await deliverRacePerformance(event.params.runId);});
+  async (event) => {
+    await deliverRacePerformance(event.params.runId);
+    await requireCompletedRaceDelivery("racePerformanceOutbox", event.params.runId);
+  });
 
-/** Resolves closed-browser race deadlines and recovers undelivered outbox events. */
-export const settleRaceDeadlines = onScheduleWithSentry("settleRaceDeadlines", {
-  schedule: "every 1 minutes", timeZone: "UTC", region: "us-central1", timeoutSeconds: 120,
-}, async () => {await processRaceSettlementJobs();});
+/** An early Eventarc retry must not acknowledge an outbox receipt still in backoff. */
+export async function requireCompletedRaceDelivery(collection: "raceSettlementOutbox" | "racePerformanceOutbox", runId: string): Promise<void> {
+  /** Canonical receipt whose pending state must keep Eventarc retries alive. */
+  const receipt = await admin.firestore().collection(collection).doc(runId).get();
+  if (receipt.exists && receipt.data()?.delivered !== true) throw new Error("Race delivery remains pending.");
+}

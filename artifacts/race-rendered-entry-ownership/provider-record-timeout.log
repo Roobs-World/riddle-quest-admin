@@ -1,8 +1,0 @@
-Provider record deadline UI passed: 1280px tournaments success; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 1280px tournaments failure; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 1280px inbox success; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 1280px inbox failure; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 390px tournaments success; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 390px tournaments failure; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 390px inbox success; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.
-Provider record deadline UI passed: 390px inbox failure; no early retry, one deadline retry, late reply ignored, timers cleared, no repeated race mutation.

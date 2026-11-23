@@ -1,6 +1,6 @@
 {
   "CommonAlerts": {
-    "CANCEL_BUTTON": "Stornieren",
+    "CANCEL_BUTTON": "Abbrechen",
     "CANNOT_OPEN_BROWSER_SUFFIX": " in Ihrem Browser.",
     "CANNOT_OPEN_PREFIX": "Kann nicht geöffnet werden ",
     "CANNOT_OPEN_VISIT_SUFFIX": ". Bitte besuchen Sie ",
@@ -9,7 +9,7 @@
     "COULD_NOT_OPEN_TRY_AGAIN": ". Bitte versuchen Sie es später erneut.",
     "ERROR_TITLE": "Fehler",
     "INFO_TITLE": "Informationen",
-    "OFFLINE_MESSAGE": "Bitte verbinden Sie sich erneut, um mit der Wiedergabe fortzufahren.",
+    "OFFLINE_MESSAGE": "Bitte verbinden Sie sich erneut, um weiterzuspielen.",
     "OFFLINE_TITLE": "Keine Internetverbindung",
     "OK_BUTTON": "Bestätigen",
     "SUCCESS_TITLE": "Erfolgreich",

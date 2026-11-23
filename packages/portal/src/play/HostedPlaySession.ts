@@ -1,10 +1,10 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import type {PlatformCapabilities, PlayerData, PlayerDataUpdate} from "../platform/types";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "./accountDeletionServiceGate";
 import {createHostAuthorityModules, type HostAuthorityModules} from "./HostAuthorityModules";
 import type {ReferralSharingCapability} from "./sharing/ReferralSharingCapability";
-import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "./types";
+import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "@riddle-quest/hosted/hostTypes";
 
 /** Target-owned facts required to assemble one hosted-play session. */
 export type HostedPlaySession = Readonly<{
@@ -93,6 +93,9 @@ type SessionAuthorityAssembly = Readonly<{
 /** Retains only the current commerce/capability assembly for an active target provider. */
 const assemblyCache = new WeakMap<HostServices, SessionAuthorityAssembly>();
 
+/** Admission precedes the deletion queue and survives catalog-driven assemblies. */
+const activePlatformPurchases = new WeakSet<HostServices["requestPurchase"]>();
+
 /** Stable gameplay and admission owned by one provider and optional deletion gate. */
 type GameplayAuthorityAssembly = Readonly<{
   /** Provider operations remain attached to this deletion lifetime. */
@@ -141,6 +144,23 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
   const services = input.accountDeletionServiceGate
     ? coordinateHostServices(configured, input.accountDeletionServiceGate)
     : configured;
+  /** Stable purchase callback whose concurrent invocations share admission. */
+  const purchaseOwner = input.platformPurchase ?? input.hostServices.requestPurchase;
+  /** Admits one checkout at a time for the same platform purchase callback. */
+  const requestPurchase: HostServices["requestPurchase"] = async productId => {
+    if (activePlatformPurchases.has(purchaseOwner)) return {
+      success: false,
+      cancelled: true,
+      productId,
+      purchaseType: services.products.find(product => product.productId === productId)?.productType ?? "consumable",
+    };
+    activePlatformPurchases.add(purchaseOwner);
+    try {
+      return await services.requestPurchase(productId);
+    } finally {
+      activePlatformPurchases.delete(purchaseOwner);
+    }
+  };
   /** Stable gameplay does not retire a prepared question when only commerce presentation changes. */
   const gameplay = assembleGameplay(input);
   /** Current capability permissions remain target-owned while operations use their stable provider. */
@@ -157,7 +177,7 @@ const assembleAuthority = (input: HostedPlaySessionInput): SessionAuthorityAssem
     raceAvailable: input.raceAvailable,
     services,
     authority: {...authority, ...(authority.commerce ? {commerce: {
-      ...authority.commerce, products: services.products, requestPurchase: services.requestPurchase,
+      ...authority.commerce, products: services.products, requestPurchase,
     }} : {})},
   };
   // Existing callers retain their own assemblies; the cache needs only the latest one.

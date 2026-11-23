@@ -1,6 +1,0 @@
-{
-  "service": "firebase-functions/src/race/raceLiveService.ts",
-  "invitation": "firebase-functions/src/race/raceLiveInvitation.ts",
-  "latency-test": "firebase-functions/src/__tests__/race/raceLiveLatency.test.ts",
-  "emulator-test": "firebase-functions/src/__tests__/race/raceLiveIdentityPayload.it.test.ts"
-}

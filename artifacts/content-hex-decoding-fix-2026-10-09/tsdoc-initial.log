@@ -1,6 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 3 production declarations are undocumented.
-- packages/core/src/__tests__/contentProtection.test.ts:60 original
-- packages/core/src/contentProtection.ts:20 bytes
-- packages/core/src/contentProtection.ts:22 high
-[ELIFECYCLE] Command failed with exit code 1.

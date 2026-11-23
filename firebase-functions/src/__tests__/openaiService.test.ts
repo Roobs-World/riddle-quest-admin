@@ -20,10 +20,12 @@ const mockOpenAI = jest.fn().mockImplementation(() => ({
 
 jest.mock("openai", () => ({
   __esModule: true,
-  default: mockOpenAI,
+  default: Object.assign(mockOpenAI, {
+    APIConnectionTimeoutError: jest.requireActual<typeof import("openai")>("openai").APIConnectionTimeoutError,
+  }),
 }));
 
-import {GeneratedRiddleSchema, generateUniqueRiddle, resetOpenAIClient} from "../riddles/openaiService";
+import {GeneratedRiddleSchema, generateUniqueRiddle, resetOpenAIClient, type RiddleGenerationOptions} from "../riddles/openaiService";
 import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../shared/constants";
 
 /** Parses d riddle response. */
@@ -577,6 +579,80 @@ describe("OpenAI Service", () => {
       });
     });
 
+    test.each([
+      ["sdk timeout", "generate"], ["sdk timeout", "blind-solve"], ["sdk timeout", "review"],
+      ["response abort", "generate"], ["response abort", "blind-solve"], ["response abort", "review"],
+    ])("lets background Daily retry a %s during %s without capturing the attempt", async (failure, operation) => {
+      /** Simulates the transport interrupt without making a network request. */
+      const abort = new DOMException("private transport details", "AbortError");
+      /** Uses the real SDK error type so the fixture keeps its prototype. */
+      const {APIConnectionTimeoutError} = jest.requireActual<typeof import("openai")>("openai");
+      /** Models either the wrapped timeout or a direct response abort. */
+      const error = failure === "sdk timeout"
+        ? Object.assign(new APIConnectionTimeoutError(), {cause: abort})
+        : abort;
+      if (operation !== "generate") mockParse.mockResolvedValueOnce(parsedRiddleResponse("What flies without wings?", "time"));
+      if (operation === "review") mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("time"));
+      mockParse.mockRejectedValueOnce(error);
+      mockApprovedRiddle("What flies without wings?", "time");
+
+      await expect(generateUniqueRiddle("en", [], {mode: "daily", background: true})).resolves.toBeNull();
+      expect(mockLogger.warn).toHaveBeenCalledWith("OpenAI daily riddle request interrupted.", {
+        model: expect.any(String),
+        operation,
+        locale: "en",
+        errorClass: failure === "sdk timeout" ? "APIConnectionTimeoutError" : "AbortError",
+      });
+      await expect(generateUniqueRiddle("en", [], {mode: "daily", background: true}))
+        .resolves.toEqual(["What flies without wings?", "time", "easy"]);
+      expect(mockParse).toHaveBeenCalledTimes(["generate", "blind-solve", "review"].indexOf(operation) + 4);
+      expect(mockCaptureException).not.toHaveBeenCalled();
+    });
+
+    test.each([
+      ["provider outage", "generate"], ["provider outage", "blind-solve"], ["provider outage", "review"],
+      ["response abort", "generate"], ["response abort", "blind-solve"], ["response abort", "review"],
+    ])("passes a background Classic %s during %s to the durable worker without reporting it", async (failure, operation) => {
+      /** Preserves the original provider status or transport exception for worker classification. */
+      const error = failure === "provider outage"
+        ? Object.assign(new Error("private provider response"), {status: 503})
+        : new DOMException("private transport details", "AbortError");
+      if (operation !== "generate") mockParse.mockResolvedValueOnce(parsedRiddleResponse("What flies without wings?", "time"));
+      if (operation === "review") mockParse.mockResolvedValueOnce(approvedBlindSolveResponse("time"));
+      mockParse.mockRejectedValueOnce(error);
+
+      await expect(generateUniqueRiddle("en", [], {mode: "classic", background: true})).rejects.toBe(error);
+      expect(mockParse).toHaveBeenCalledTimes(["generate", "blind-solve", "review"].indexOf(operation) + 1);
+      expect(mockCaptureException).not.toHaveBeenCalled();
+      expect(mockLogger.error).not.toHaveBeenCalled();
+    });
+
+    test.each<[string, RiddleGenerationOptions]>([
+      ["foreground Daily", {mode: "daily", background: false}],
+      ["foreground Classic", {mode: "classic", background: false}],
+      ["background Multiplayer", {mode: "multiplayer", background: true}],
+    ])("continues reporting transport interruptions in %s", async (_label, options) => {
+      /** Genuine response transport abort used outside the scheduled Daily retry boundary. */
+      const abort = new DOMException("private transport details", "AbortError");
+      mockParse.mockRejectedValueOnce(abort);
+
+      await expect(generateUniqueRiddle("en", [], options)).resolves.toBeNull();
+      expect(mockCaptureException).toHaveBeenCalledWith(abort, expect.objectContaining({operation: "generate", locale: "en"}));
+      expect(mockLogger.error).toHaveBeenCalledTimes(1);
+    });
+
+    test.each(["caller abort", "same-name ordinary error"])("continues reporting a %s in background Daily", async (failure) => {
+      /** Distinguishes an SDK caller cancellation from a transport response abort. */
+      const {APIUserAbortError} = jest.requireActual<typeof import("openai")>("openai");
+      /** Error names alone cannot qualify an exception for recoverable classification. */
+      const error = failure === "caller abort" ? new APIUserAbortError() : Object.assign(new Error("private details"), {name: "AbortError"});
+      mockParse.mockRejectedValueOnce(error);
+
+      await expect(generateUniqueRiddle("en", [], {mode: "daily", background: true})).resolves.toBeNull();
+      expect(mockCaptureException).toHaveBeenCalledWith(error, expect.objectContaining({operation: "generate", locale: "en"}));
+      expect(mockLogger.error).toHaveBeenCalledTimes(1);
+    });
+
     test.each([1, 2, 3])("rejects a candidate when model call %i times out and permits a later recovery", async (failedCall) => {
       /** Models the SDK timeout without including provider request data in telemetry. */
       const timeout = Object.assign(new Error("private timeout details"), {
@@ -624,7 +700,7 @@ describe("OpenAI Service", () => {
         }
         mockParse.mockRejectedValueOnce(apiError);
 
-        await expect(generateUniqueRiddle("fr")).resolves.toBeNull();
+        await expect(generateUniqueRiddle("fr", [], {mode: "daily", background: true})).resolves.toBeNull();
         expect(mockParse).toHaveBeenCalledTimes(["generate", "blind-solve", "review"].indexOf(operation) + 1);
         expect(mockCaptureException).toHaveBeenCalledWith(apiError, {
           operation,

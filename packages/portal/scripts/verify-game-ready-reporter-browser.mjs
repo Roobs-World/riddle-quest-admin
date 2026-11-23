@@ -11,7 +11,7 @@ const component=path.join(root,'src/play/game/hooks/useGameBridgeLifecycle.ts');
 const baseline=process.env.GAME_READY_BASELINE_SOURCE;
 const reactMode=process.env.GAME_READY_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
-const output=path.resolve(process.env.GAME_READY_REPORT_DIR??path.join(root,'../../artifacts/game-bridge-idle-2026-10-03',reactMode==='production'?'production':''));
+const output=path.resolve(process.env.GAME_READY_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-bridge-idle-2026-10-03',reactMode==='production'?'production':''));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-ready-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));

@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRecovery} from "@qwordly/core/race";
+import type {RaceRecovery} from "@riddle-quest/core/race";
 import type {MatchmakingCapability} from "../../../platform/types";
 import {catalog, harness, preview} from "./raceSession.support";
 

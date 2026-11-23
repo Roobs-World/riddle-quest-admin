@@ -1,4 +1,4 @@
-import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@qwordly/core/pricing/catalog";
+import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "@riddle-quest/core/pricing/catalog";
 
 /** Defines the jest coin products value. */
 export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freeze({

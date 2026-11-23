@@ -11,7 +11,7 @@
     "DELETE_LAST_LETTER": "Son girilen harfi sil",
     "GAME_HEADER": "Logo ve jeton bakiyesi içeren oyun başlığı",
     "GAME_LOSS_NOTIFICATION": "Oyun kaybı bildirimi",
-    "GO_BACK": "Go geri",
+    "GO_BACK": "Geri dön",
     "LETTER_PREFIX": "Harf ",
     "LOADING": "Yükleniyor",
     "LOADING_LEADERBOARD": "Skor tablosu yükleniyor",
@@ -29,7 +29,7 @@
     "LANDING_ATTRIBUTION_LINK": "Yapan: Roobs World",
     "LOGO_BUTTON": "Logo düğmesi",
     "MODAL_SEQUENCE_GO_TO_HINT": "Bu açılır pencereye geri dönün",
-    "MODAL_SEQUENCE_GO_TO_POPUP": "{popupIndex} açılır penceresine gidin {total}",
+    "MODAL_SEQUENCE_GO_TO_POPUP": "{total} açılır pencereden {popupIndex}. pencereye gidin",
     "MODAL_SEQUENCE_PROGRESS": "Popup {current} / {total}"
   }
 }

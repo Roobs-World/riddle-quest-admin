@@ -1,2 +1,0 @@
-$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-known-event-aggregates.json
-Recorded multiplayer:race-known-event-aggregates for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

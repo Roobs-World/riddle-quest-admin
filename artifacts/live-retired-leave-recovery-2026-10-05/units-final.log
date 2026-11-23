@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       59 passed, 59 total
-Snapshots:   0 total
-Time:        0.347 s, estimated 1 s
-Ran all test suites matching src/play/race/__tests__/liveRaceRetirement.test.ts|src/play/race/__tests__/liveRaceDeliveryDeadline.test.ts|src/play/race/__tests__/liveRaceInvitationFailure.test.ts.

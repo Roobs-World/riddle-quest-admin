@@ -1,0 +1,104 @@
+{
+  "client": {
+    "isActive": true,
+    "buildStatus": "ready",
+    "versionId": "01a17045-d20f-7599-ac28-477a7a9b90a6",
+    "baseUrl": "https://019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com/019faa68-f3ec-755d-9ab5-c887fb426801/1.0.0-dev.20261025-feedback-final/",
+    "checkedFiles": 419,
+    "matchingFiles": 419,
+    "bytes": 4715843,
+    "failures": [],
+    "retryEvidence": [
+      {
+        "file": "assets/aboutLegal-DDFGPNCH.js",
+        "attempt": 1,
+        "status": 200,
+        "matches": true
+      }
+    ]
+  },
+  "backend": {
+    "checkedAt": "2026-10-25T02:46:52.307328+00:00",
+    "project": "riddle-quest-ec2b2",
+    "allFunctionsActive": true,
+    "allBuildsSucceeded": true,
+    "allRevisionsReadyAndHealthy": true,
+    "allEndpointsReachableAndEnforceAuth": true,
+    "allComparedSourceFilesMatch": true,
+    "sourceConfig": {
+      "runtime": "nodejs22",
+      "minInstances": 0,
+      "minInstancesDeclarationFound": true
+    },
+    "deployedConfig": {
+      "runtime": "nodejs22",
+      "allRuntimeMatchSource": true,
+      "minInstanceCount": "Omitted in Functions API and minScale absent in Cloud Run revisions; this is the platform default of zero, consistent with source minInstances: 0."
+    },
+    "scope": "Read-only production metadata, immutable deployment source hash comparisons, and unauthenticated HTTP requests. No authenticated gameplay, deployment or configuration changes."
+  },
+  "endpointChecks": [
+    {
+      "function": "joinLiveRace",
+      "region": "europe-west1",
+      "url": "https://europe-west1-riddle-quest-ec2b2.cloudfunctions.net/joinLiveRace",
+      "httpStatus": 401,
+      "body": {
+        "error": {
+          "message": "Unauthenticated",
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "authenticated": false,
+      "expected": "UNAUTHENTICATED before gameplay mutation"
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "europe-west1",
+      "url": "https://europe-west1-riddle-quest-ec2b2.cloudfunctions.net/updateLiveRace",
+      "httpStatus": 401,
+      "body": {
+        "error": {
+          "message": "Unauthenticated",
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "authenticated": false,
+      "expected": "UNAUTHENTICATED before gameplay mutation"
+    },
+    {
+      "function": "joinLiveRace",
+      "region": "us-central1",
+      "url": "https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/joinLiveRace",
+      "httpStatus": 401,
+      "body": {
+        "error": {
+          "message": "Unauthenticated",
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "authenticated": false,
+      "expected": "UNAUTHENTICATED before gameplay mutation"
+    },
+    {
+      "function": "updateLiveRace",
+      "region": "us-central1",
+      "url": "https://us-central1-riddle-quest-ec2b2.cloudfunctions.net/updateLiveRace",
+      "httpStatus": 401,
+      "body": {
+        "error": {
+          "message": "Unauthenticated",
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "authenticated": false,
+      "expected": "UNAUTHENTICATED before gameplay mutation"
+    }
+  ],
+  "publication": {
+    "isPublished": false,
+    "revisionStatus": "draft",
+    "inReview": false,
+    "blocker": "Browser automation pauses the Simulator game document response after HTTP 200, before its frame commits. The mandatory checklist remains incomplete. No moderation submission is claimed."
+  }
+}

@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.BUFFERED_TERMINAL_REACT_MODE??'development';
 const baseline=process.env.BUFFERED_TERMINAL_BASELINE_DIR;
 const reducerBaseline=process.env.BUFFERED_TERMINAL_REDUCER_BASELINE_DIR;
-const output=path.resolve(process.env.BUFFERED_TERMINAL_REPORT_DIR??path.join(root,'../../artifacts/buffered-terminal-recovery-2026-10-03',mode));
+const output=path.resolve(process.env.BUFFERED_TERMINAL_REPORT_DIR??path.join(root,'../../builds/test-evidence/buffered-terminal-recovery-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/buffered-terminal-'));let browser,server;
 const observations=[];
@@ -22,8 +22,8 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/play/PlayHostApp.tsx'))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/play/HostedPlaySession.ts'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/fakeServices.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
-import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'src/play/pendingGuessJournal.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
+import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,'../hosted/src/play/pendingGuessJournal.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
@@ -125,7 +125,14 @@ window.profile=()=>source.loadProfile(uid);
    metric('later draft survives victory dismissal',await row(queued?1:0),'CL');
    metric('later draft cursor survives victory dismissal',await page.locator('.guess-row').nth(queued?1:0).locator('.cell').nth(2).getAttribute('aria-current'),'true');
    metric('restoring old journal gameplay preserves the authoritative completion balance',Number((await page.locator('[data-coin-meter] strong').textContent()).replaceAll(',','')),await page.evaluate(async()=>(await window.profile()).coins));
-   if(queued){await page.evaluate(()=>window.releaseFuture());await page.waitForFunction(()=>window.readJournal()===null);}
+   if(queued){
+    await page.evaluate(()=>window.releaseFuture());
+    await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:operationResult'&&x.requestId==='retained-next-guess'&&x.payload.operation==='guess'&&x.payload.ok));
+    await page.waitForFunction(()=>window.readJournal()?.queue.length===0);
+    metric('acknowledged successor leaves no replayable delivery',await page.evaluate(()=>{const j=window.readJournal();return[j?.queue,j?.successors,j?.coinAction??null,j?.skipPreview??null];}),[[],[],null,null]);
+    metric('settled journal retains only the matching successor draft',await page.evaluate(()=>{const j=window.readJournal();return[j?.scope,j?.riddle.riddleId,j?.riddle.sessionToken,j?.riddle.gameMode,j?.riddle.index,j?.confirmedClassicIndex,j?.draft,j?.draftActiveSlotIndex];}),await page.evaluate(()=>['jest-guest:1:en',window.probe.next.riddleId,window.probe.next.sessionToken,'classic',2,2,['C','L','','',''],2]));
+    metric('settled checkpoint contains the acknowledged wrong row exactly once',await page.evaluate(()=>{const j=window.readJournal();return[j?.base.guesses,j?.base.engineSnapshot?.attemptsUsed,j?.base.currentLetters,j?.base.activeSlotIndex,j?.base.engineSnapshot?.gameOver,j?.base.lastOutcome];}),[[{guess:['z','z','z','z','z'],feedback:['red','red','red','red','red']}],1,['C','L','','',''],2,false,null]);
+   }
    }
    metric('authority completion advances once',await page.evaluate(async()=>{const p=await window.profile(),b=window.probe.before;return[p.gamesPlayed-b.gamesPlayed,p.wins-b.wins,p.classicIndex];}),[1,1,2]);
    metric('recovery introduces no paid action',await page.evaluate(()=>window.probe.spends),[]);

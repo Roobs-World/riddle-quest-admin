@@ -12,7 +12,7 @@
     "EMAIL_PERMISSION_REQUIRED": "E-mail jest wymagany, ale nie został podany przez dostawcę uwierzytelniania. Upewnij się, że przyznano uprawnienia do poczty e-mail.",
     "GENERIC_UNEXPECTED_ERROR": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.",
     "PLAY_RESTORED": "Nie udało się potwierdzić odpowiedzi. Przywrócono ostatni potwierdzony postęp.",
-    "GUESS_CANNOT_BE_EMPTY": "Pewna wartość nie może być pusta",
+    "GUESS_CANNOT_BE_EMPTY": "Odpowiedź nie może być pusta",
     "INVALID_DATA_FORMAT": "Nieprawidłowy format danych. Sprawdź wprowadzone dane.",
     "NETWORK_ERROR_CHECK_CONNECTION": "Błąd sieci. Sprawdź swoje połączenie.",
     "NETWORK_REQUEST_FAILED": "Żądanie sieciowe nie powiodło się",

@@ -1,4 +1,0 @@
-{
-  "exitCode": 1,
-  "reason": "Current Playwright default Firefox1543 was absent; installed Firefox1538 binary exists. Using existing pinned binary explicitly for actual runtime verification. No downloads/install/config changes."
-}

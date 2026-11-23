@@ -1,7 +1,7 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort, PlatformResult} from "./types";
-import {DEFAULT_PRODUCT_PRICING} from "@qwordly/core/pricing/catalog";
-import type {ProductSummary} from "../play/types";
+import {DEFAULT_PRODUCT_PRICING} from "@riddle-quest/core/pricing/catalog";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 
 /** Represents a page read from Jest's incomplete-purchase recovery queue. */
@@ -43,6 +43,8 @@ export class JestPurchaseCoordinator {
   private readonly platform: JestPlatformPort;
   /** Stores backend. */
   private readonly backend: JestBackendPort;
+  /** Holds the whole preflight, checkout, and entitlement verification sequence. */
+  private subscriptionCheckoutPending = false;
 
   /** Creates a jest purchase coordinator instance. */
   constructor(platform: JestPlatformPort, backend: JestBackendPort) {
@@ -103,16 +105,16 @@ export class JestPurchaseCoordinator {
       captureBrowserException(error, {component: "jest_purchases", operation: "sync_subscriptions"});
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
     }
+    /** Any existing holding suppresses alternative offers for the same Premium entitlement. */
+    const hasActiveSubscription = activeSkus.size > 0 || result.value.subscriptions.some((entry) =>
+      entry.status === "active");
     return {
       status: "success",
       value: result.value.subscriptions.flatMap((subscription) => {
         // SDK state can suppress a sale; only the backend grants paid access.
         /** Suppresses checkout when either source reports an existing holding. */
         const active = activeSkus.has(subscription.sku) || subscription.status === "active";
-        /** Hides alternative offers when provider and verified state disagree. */
-        const disputed = result.value.subscriptions.some((entry) =>
-          entry.status === "active" && !activeSkus.has(entry.sku));
-        if (!active && (blockedSkus.has(subscription.sku) || disputed)) return [];
+        if (!active && (hasActiveSubscription || blockedSkus.has(subscription.sku))) return [];
         if (
           !Number.isFinite(subscription.price) ||
           !isCurrency(subscription.currency) ||
@@ -146,6 +148,12 @@ export class JestPurchaseCoordinator {
   async subscribe(
     subscriptionSku: string,
     playerId: string,
+    options: {
+      /** Locale for the fresh catalog verified after acquiring the checkout lock. */
+      locale?: string;
+      /** Publishes verified holdings before the provider checkout can start. */
+      onCatalog?: (catalog: readonly ProductSummary[]) => void;
+    } = {},
   ): Promise<
     PlatformResult<{
       /** Stores active sku. */
@@ -156,52 +164,34 @@ export class JestPurchaseCoordinator {
       premiumCoinsAwarded: number;
       /** Coin balance after verification, when the backend reported it. */
       newCoins?: number;
+      /** Excludes provider test transactions from revenue reporting. */
+      sandbox?: boolean;
+      /** Distinguishes restored access from a newly completed checkout. */
+      recoveredExistingSubscription?: true;
     }>
   > {
-    /** Starts ed. */
-    const started = await this.platform.beginSubscription(subscriptionSku);
-    if (started.status !== "success") {
-      if (started.status !== "unavailable" || started.message !== "already_subscribed") return started;
-      /** Provides refreshed behavior. */
-      const refreshed = await this.platform.getSubscriptions();
-      if (refreshed.status !== "success") return refreshed;
-      try {
-        /** Provides verified behavior. */
-        const verified = await this.backend.syncSubscriptions(refreshed.value.subscriptionsSigned, playerId);
-        return verified.activeSkus.includes(subscriptionSku)
-          ? {
-              status: "success",
-              value: {
-                activeSku: subscriptionSku,
-                blockedSkus: verified.blockedSkus ?? [],
-                premiumCoinsAwarded: verified.premiumCoinsAwarded ?? 0,
-                newCoins: verified.newCoins,
-              },
-            }
-          : started;
-      } catch (error) {
-        captureBrowserException(error, {component: "jest_purchases", operation: "refresh_subscription"});
-        return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
-      }
-    }
+    if (this.subscriptionCheckoutPending) return {status: "cancelled"};
+    this.subscriptionCheckoutPending = true;
     try {
-      /** Provides verified behavior. */
-      const verified = await this.backend.syncSubscriptions(started.value.subscriptionSigned, playerId);
-      if (!verified.activeSkus.includes(subscriptionSku)) {
-        return {status: "terminal-failure", message: "Subscription entitlement was not active"};
-      }
-      return {
-        status: "success",
-        value: {
-          activeSku: subscriptionSku,
-          blockedSkus: verified.blockedSkus ?? [],
-          premiumCoinsAwarded: verified.premiumCoinsAwarded ?? 0,
-          newCoins: verified.newCoins,
+      /** Lazy checkout implementation keeps the cross-tab billing lock with the payment flow. */
+      const {checkoutSubscription} = await import("./subscriptionCheckout");
+      return await checkoutSubscription({
+        platform: this.platform,
+        backend: this.backend,
+        subscriptionSku,
+        playerId,
+        getSubscriptions: async () => {
+          /** Fresh verified offers read after this checkout acquires its account lock. */
+          const catalog = await this.getSubscriptions(playerId, options.locale);
+          if (catalog.status === "success") options.onCatalog?.(catalog.value);
+          return catalog;
         },
-      };
+      });
     } catch (error) {
-      captureBrowserException(error, {component: "jest_purchases", operation: "subscribe"});
+      captureBrowserException(error, {component: "jest_purchases", operation: "subscription_checkout"});
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
+    } finally {
+      this.subscriptionCheckoutPending = false;
     }
   }
 
@@ -217,6 +207,8 @@ export class JestPurchaseCoordinator {
       newCoins: number;
       /** Stores newly unlocked achievement ids. */
       newlyUnlockedAchievementIds?: string[];
+      /** Excludes provider test transactions from revenue reporting. */
+      sandbox?: boolean;
     }>
   > {
     /** Starts ed. */
@@ -229,18 +221,22 @@ export class JestPurchaseCoordinator {
         playerId,
         started.value.purchase.purchaseToken,
       );
-      /** Completes d. */
-      const completed = await this.platform.completePurchase(started.value.purchase.purchaseToken);
-      return completed.status === "success"
-        ? {
-            status: "success",
-            value: {
-              coinsAwarded: grant.coinsAwarded,
-              newCoins: grant.newCoins,
-              newlyUnlockedAchievementIds: grant.newlyUnlockedAchievementIds,
-            },
-          }
-        : completed;
+      try {
+        /** Provider confirmation cannot undo a grant already accepted by the game authority. */
+        const completed = await this.platform.completePurchase(started.value.purchase.purchaseToken);
+        if (completed.status !== "success") throw new Error("message" in completed ? completed.message : completed.status);
+      } catch (error) {
+        captureBrowserException(error, {component: "jest_purchases", operation: "complete_purchase"});
+      }
+      return {
+        status: "success",
+        value: {
+          coinsAwarded: grant.coinsAwarded,
+          newCoins: grant.newCoins,
+          newlyUnlockedAchievementIds: grant.newlyUnlockedAchievementIds,
+          ...(started.value.purchase.sandbox === true ? {sandbox: true} : {}),
+        },
+      };
     } catch (error) {
       captureBrowserException(error, {component: "jest_purchases", operation: "purchase"});
       return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
@@ -275,6 +271,9 @@ export class JestPurchaseCoordinator {
       }
       if (!result.value.hasMore) return {status: "success", value: count};
     }
-    return {status: "terminal-failure", message: "Incomplete purchase pagination exceeded safety limit"};
+    /** Reports queue exhaustion at its origin, as SDK and grant failures are reported. */
+    const error = new Error("Incomplete purchase pagination exceeded safety limit");
+    captureBrowserException(error, {component: "jest_purchases", operation: "reconcile_pagination"});
+    return {status: "terminal-failure", message: error.message};
   }
 }

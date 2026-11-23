@@ -8,6 +8,8 @@ const mockRecursiveDelete = jest.fn();
 const mockReferralVerificationDelete = jest.fn();
 /** Direct deletion mock for legacy document-ID-owned records. */
 const mockDirectDocumentDelete = jest.fn();
+/** Native raw subscription receipts must disappear with their owning account. */
+const mockAndroidCommerceDelete = jest.fn();
 /** Direct deletion mock for the provider-neutral Reddit player snapshot. */
 const mockRedditPlayerStorageDelete = jest.fn();
 /** Permanent pseudonymous Jest account-deletion guard write mock. */
@@ -169,6 +171,8 @@ jest.mock("../shared/firebaseAdmin", () => ({
               ? {delete: mockReferralVerificationDelete, path: `${collection}/${id}`}
               : collection === "redditPlayerStorage"
                 ? {delete: mockRedditPlayerStorageDelete, path: `${collection}/${id}`}
+                : collection === "androidCommerceAccounts"
+                  ? {delete: () => mockAndroidCommerceDelete(id), path: `${collection}/${id}`}
                 : collection === "tutorialProgress" ||
                     collection === "facebookCommerceAccounts" ||
                     collection === "redditCommerceAccounts" ||
@@ -213,6 +217,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
 }));
 
 import {deleteAccount} from "../profile/accountDeletion";
+import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
 import {createJestPurchaseGrantId} from "../jest/jestPurchaseReceipts";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 import {hashRaceCohortUser} from "../race/raceRollout";
@@ -544,6 +549,49 @@ describe("deleteAccount", () => {
     expect(mockJestDeletionSet).toHaveBeenCalledTimes(1);
     expect(mockActiveOperationsGet).toHaveBeenCalledTimes(1);
     expect(mockDeleteUser).not.toHaveBeenCalledWith("attacker-selected-user");
+  });
+
+  it.each(["facebook", "reddit"] as const)("preserves only validated %s completion attribution while removing both referral identities", async provider => {
+    /** Opaque solo receipt retained so the surviving invitee can replay its original reward. */
+    const completionReceiptId = "a".repeat(64);
+    queryDocuments.set(`${provider}ReferralSettlements:inviterUid:user-1`, [
+      queryDocument(`${provider}ReferralSettlements/attributed`, {
+        provider, inviterUid: "user-1", inviteeUid: "other-user", inviteeCoins: 100, inviterCoins: 100,
+        settledAtMs: 123, completionReceiptId,
+      }),
+      queryDocument(`${provider}ReferralSettlements/malformed`, {
+        provider, inviterUid: "user-1", inviteeUid: "other-user", inviteeCoins: 100, inviterCoins: 100,
+        settledAtMs: 123, completionReceiptId: "player@example.com",
+      }),
+      queryDocument(`${provider}ReferralSettlements/legacy`, {
+        provider, inviterUid: "user-1", inviteeUid: "other-user", inviteeCoins: 100, inviterCoins: 100,
+        settledAtMs: 123,
+      }),
+    ]);
+
+    await deleteAccountForUser("user-1");
+
+    expect(mockBatchSet).toHaveBeenCalledWith({path: `${provider}ReferralSettlements/attributed`}, {
+      provider, replayProtection: true, inviteeCoins: 100, inviterCoins: 100, settledAtMs: 123, completionReceiptId,
+    });
+    for (const receipt of ["malformed", "legacy"]) {
+      expect(mockBatchSet).toHaveBeenCalledWith({path: `${provider}ReferralSettlements/${receipt}`}, {
+        provider, replayProtection: true, inviteeCoins: 100, inviterCoins: 100, settledAtMs: 123,
+      });
+    }
+    expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
+  });
+
+  it("removes Android purchase identity and order ids while preserving replay protection", async () => {
+    queryDocuments.set("androidPurchaseGrants:uid:user-1", [queryDocument("androidPurchaseGrants/token-hash", {
+      uid: "user-1", productId: "coinpack1", coins: 250, orderId: "GPA-private-order", grantedAt: "timestamp",
+    })]);
+    await expect((deleteAccount as unknown as (request: unknown) => Promise<unknown>)({auth: {uid: "user-1", token: {}}, data: {}}))
+      .resolves.toEqual({success: true});
+    expect(mockBatchSet).toHaveBeenCalledWith({path: "androidPurchaseGrants/token-hash"}, {
+      provider: "android", replayProtection: true, productId: "coinpack1", coins: 250, grantedAt: "timestamp",
+    });
+    expect(mockAndroidCommerceDelete).toHaveBeenCalledWith("user-1");
   });
 
   it("removes Jest referral identity while preserving anonymized anti-replay receipts", async () => {

@@ -1,4 +1,4 @@
-import type {BridgeProfile} from "@qwordly/core/bridge";
+import type {BridgeProfile} from "@riddle-quest/core/bridge";
 
 /** Derived progression values displayed by profile modal pages. */
 export type ProfileProgress = {

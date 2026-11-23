@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -8,7 +9,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.SAVE_RECOVERY_REACT_MODE??'development',baseline=process.env.SAVE_RECOVERY_BASELINE_DIR;
-const output=path.resolve(process.env.SAVE_RECOVERY_REPORT_DIR??path.join(root,'../../artifacts/game-save-recovery-2026-10-03',mode));
+const output=path.resolve(process.env.SAVE_RECOVERY_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-save-recovery-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/save-recovery-'));
 const source=`
@@ -25,11 +26,11 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
-window.probe={saves:[],guesses:0,completions:0,errors:[],unhandled:[]};
+window.probe={saves:[],guesses:0,completions:0,hostedIdentities:[],errors:[],unhandled:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
-const service=createFakeHostServices();let freshProfile=null;const services={...service,auth:{subscribe:listener=>service.auth.subscribe(snapshot=>listener(freshProfile?{...snapshot,profile:freshProfile}:snapshot))},loadProfile:async()=>freshProfile??await service.loadProfile(),submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
+const service=createFakeHostServices();let freshProfile=null;const services={...service,auth:{subscribe:listener=>service.auth.subscribe(snapshot=>{const user=snapshot.user?{...snapshot.user,uid:player.playerId==='jest-player'?snapshot.user.uid:'firebase-'+player.playerId}:null;window.probe.hostedIdentities.push({playerId:player.playerId,uid:user?.uid??null});listener({...snapshot,user,...(freshProfile?{profile:freshProfile}:{})});})},loadProfile:async()=>freshProfile??await service.loadProfile(),submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
 
 window.storageProbe={writes:[],preferenceWrites:[],flushes:0,failures:[],initializations:0,failDraft:0,failPreferences:0,failClear:0};let release,released=false,lastOperation,releaseNext;const heldFlush=new Promise(r=>release=r);let holdNext=false;
 let player={playerId:'jest-player',registered:new URL(location.href).searchParams.has('registered')};const stores=new Map(),durable=new Map();
@@ -76,7 +77,7 @@ if(id.endsWith('/useJestPlayerStateWrites.ts'))code=code.replace('return useMemo
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage();const metric=(name,actual,expected)=>{observations.push({width,registered,scenario,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
   await page.goto(url+(registered?'?registered=1':''));await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
   if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
-  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
+  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await waitForAnswerInputReady(page);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
   metric('native input remains playable',await page.evaluate(()=>window.draft()),'PIAN');
   metric('SDK initialized',await page.evaluate(()=>window.storageProbe.initializations>0),true);
   await page.clock.install();
@@ -109,6 +110,7 @@ if(id.endsWith('/useJestPlayerStateWrites.ts'))code=code.replace('return useMemo
    metric('disabled session never retries',await draftWrites(),1);
   } else if(scenario==='other-player') {
    await page.evaluate(()=>window.restart(true));await page.locator('[data-host-epoch="1"]').waitFor();await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();await page.clock.runFor(7001);await page.evaluate(()=>window.awaitQueue());
+   metric('hosted identity follows the replacement target player',await page.evaluate(()=>window.probe.hostedIdentities.at(-1)),{playerId:'other-player',uid:'firebase-other-player'});
    metric('replacement player never imports old draft',await page.evaluate(()=>window.storageProbe.writes.filter(x=>x.playerId==='other-player').every(x=>!x.value.activeGame)),true);
    metric('replacement retains authority profile',await page.evaluate(()=>window.durableData().riddleQuestPlayerState.profile.coins),80);
   } else if(scenario==='clear') {

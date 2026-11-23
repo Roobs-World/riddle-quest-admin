@@ -50,7 +50,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     // builds cannot silently disable the platform capabilities under test.
     /** Provides dist directory behavior. */
     const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
-    execFileSync("pnpm", ["--filter", "@qwordly/portal", "build:facebook"], {
+    execFileSync("pnpm", ["--filter", "@riddle-quest/portal", "build:facebook"], {
       cwd: path.resolve(packageRoot, "../.."),
       env: {
         ...process.env,
@@ -643,7 +643,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       // A provider with disabled checkout must never advertise purchasing in its tour.
       await successPage.locator('.tooltip-backdrop[data-tooltip-id="gameHint"]').waitFor();
       expect(await successPage.locator('[data-tooltip="gameCoins"]').count()).toBe(0);
-      for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
+      for (const id of ["gameHint", "submitAnswer", "gameSkip", "gameMultiplayer"]) {
         /** Current tour step whose acknowledgement advances the provider-safe guidance. */
         const tooltip = successPage.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
         await tooltip.waitFor();

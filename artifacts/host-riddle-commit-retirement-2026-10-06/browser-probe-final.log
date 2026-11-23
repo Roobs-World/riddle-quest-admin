@@ -1,7 +1,0 @@
-{
-  "engine": "chromium",
-  "mode": "development",
-  "cases": 5,
-  "checks": 55,
-  "failures": []
-}

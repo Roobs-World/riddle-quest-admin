@@ -1,11 +1,11 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {BridgeProfile, HostToGameMessage} from "@qwordly/core/bridge";
-import type {ListRaceCategoriesResponse} from "@qwordly/core/race";
+import type {BridgeProfile, HostToGameMessage} from "@riddle-quest/core/bridge";
+import type {ListRaceCategoriesResponse} from "@riddle-quest/core/race";
 import {trackEvent} from "../analytics/events";
 import type {Locale} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {isRaceTo10Enabled} from "./race/logic/raceFeatureFlag";
-import type {AuthSnapshot, HostServices} from "./types";
+import type {AuthSnapshot, HostServices} from "@riddle-quest/hosted/hostTypes";
 import type {HostAuthorityModules} from "./HostAuthorityModules";
 
 /** Result fields that can change profile state after a multiplayer operation. */

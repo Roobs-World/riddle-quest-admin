@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import {RACE_CHALLENGE_TTL_MS, type RaceLocale} from "@qwordly/core/race";
+import {RACE_CHALLENGE_TTL_MS, type RaceLocale} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
 

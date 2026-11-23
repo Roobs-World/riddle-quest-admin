@@ -4,6 +4,12 @@ import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 
 /** Selects only the index needed to decide whether supply is low. */
 const mockSelect = jest.fn();
+/** Returns the existing supply request during a transaction. */
+const mockJob = jest.fn();
+/** Captures an activity-triggered reactivation of the request. */
+const mockUpdateJob = jest.fn();
+/** Runs the request-recovery callback against the controlled transaction. */
+const mockRunTransaction = jest.fn(async operation => operation({get: mockJob, update: mockUpdateJob}));
 /** Provides mock get behavior. */
 const mockGet = jest.fn();
 /** Provides mock create behavior. */
@@ -41,7 +47,7 @@ mockSelect.mockReturnValue(query);
 
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
-    firestore: Object.assign(() => ({collection: mockCollection}), {
+    firestore: Object.assign(() => ({collection: mockCollection, runTransaction: mockRunTransaction}), {
       FieldValue: {serverTimestamp: jest.fn(() => "server-time")},
     }),
   },
@@ -62,6 +68,7 @@ import {triggerClassicRiddleGenerationIfNeeded} from "../riddles/riddleSupply";
 describe("riddle supply", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockJob.mockResolvedValue({exists: true, data: () => ({completed: true})});
     mockWhere.mockReturnValue(query);
     mockOrderBy.mockReturnValue(query);
     mockLimit.mockReturnValue(query);
@@ -120,6 +127,20 @@ describe("riddle supply", () => {
 
     await triggerClassicRiddleGenerationIfNeeded("player-2", 10, "fr");
 
+    expect(mockGenerateForLocale).not.toHaveBeenCalled();
+  });
+
+  it("reactivates an unfinished request after a prolonged outage only when a player needs supply", async () => {
+    mockGet.mockResolvedValue({empty: false, docs: [{data: () => ({classicIndex: 11})}]});
+    mockCreate.mockRejectedValue({code: 6});
+    /** An unfinished request older than Eventarc's retry window. */
+    let job = {nextAttemptAtMs: 0, requestedAt: {toMillis: () => Date.now() - 86400001}};
+    mockJob.mockImplementation(async () => ({exists: true, data: () => job}));
+    mockUpdateJob.mockImplementation((_ref, update) => {job = {...job, ...update};});
+    await triggerClassicRiddleGenerationIfNeeded("player-2", 10, "fr");
+    expect(mockUpdateJob).toHaveBeenCalledWith(expect.anything(), {requeuedAtMs: expect.any(Number), nextAttemptAtMs: expect.any(Number)});
+    await triggerClassicRiddleGenerationIfNeeded("player-2", 10, "fr");
+    expect(mockUpdateJob).toHaveBeenCalledTimes(1);
     expect(mockGenerateForLocale).not.toHaveBeenCalled();
   });
 

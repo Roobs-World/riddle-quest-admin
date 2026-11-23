@@ -1,9 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 6 production declarations are undocumented.
-- packages/portal/src/play/__tests__/LeaderboardModalPage.test.tsx:48 html
-- packages/portal/src/play/__tests__/LeaderboardModalPage.test.tsx:57 html
-- packages/portal/src/play/__tests__/gameSession.test.ts:556 state
-- packages/portal/src/play/__tests__/gameSession.test.ts:566 state
-- packages/portal/src/play/__tests__/gameSession.test.ts:575 state
-- packages/portal/src/play/game/hooks/useGameOperations.ts:27 requestId
-[ELIFECYCLE] Command failed with exit code 1.

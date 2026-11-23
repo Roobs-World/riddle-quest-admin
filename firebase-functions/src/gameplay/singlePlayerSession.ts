@@ -1,15 +1,16 @@
-import {normalizeEconomyDifficulty} from "@qwordly/core/game";
-import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {androidReferralPlayPatch} from "../android/androidReferralIdentity";
+import {normalizeEconomyDifficulty} from "@riddle-quest/core/game";
+import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 import {coerceToDate} from "../daily/dailyStreak";
-import {countCoinRewardAchievements} from "@qwordly/core/game";
+import {countCoinRewardAchievements} from "@riddle-quest/core/game";
 import {createHash, randomUUID} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {splitGraphemes} from "@qwordly/core/game";
+import {splitGraphemes} from "@riddle-quest/core/game";
 import type {
   GetHintRequestSchema,
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "@qwordly/core/validation/requestSchemas";
+} from "@riddle-quest/core/validation/requestSchemas";
 import type {z} from "zod";
 import type {Player, PlayerProgress} from "../validation/firestoreSchemas";
 import {admin} from "../shared/firebaseAdmin";
@@ -270,6 +271,9 @@ export async function submitAuthoritativeGuess(
       if (transition.state.terminal && !state.terminal) {
         await recordTerminalCompletionBinding(transaction, userId, request.sessionToken, transition.state);
       }
+      /** First accepted native guess closes acquisition in the same transaction. */
+      const referralActivity = androidReferralPlayPatch(userSnapshot.data() ?? {});
+      if (referralActivity.androidReferralPlayed) transaction.update(userRef, referralActivity);
       transaction.set(sessionRef, {
         ...transition.state,
         ...(transition.state.terminal && !state.terminal
@@ -395,7 +399,7 @@ export async function grantAuthoritativeContinue(
     const continuedState = {...state};
     delete continuedState.lastGuess;
     delete continuedState.lastGuessResult;
-    if (cost > 0) transaction.update(userRef, {coins: newCoins});
+    if (cost > 0) transaction.update(userRef, {coins: newCoins, ...androidReferralPlayPatch(userSnapshot.data() ?? {})});
     transaction.set(sessionRef, {
       ...continuedState,
       hasUsedContinue: true,
@@ -485,6 +489,7 @@ export async function purchaseAuthoritativeHint(
         : {}),
     };
     transaction.update(userRef, {
+      ...androidReferralPlayPatch(userSnapshot.data() ?? {}),
       coins: newCoins,
       stats,
       unlockedAchievements: [...(user.unlockedAchievements ?? []), ...newAchievements],
@@ -557,6 +562,7 @@ export async function skipAuthoritativeRiddle(
       costDeducted: SKIP_COST_CLASSIC,
     };
     transaction.update(userRef, {
+      ...androidReferralPlayPatch(userSnapshot.data() ?? {}),
       coins: result.newCoins,
       progress: newProgress,
       "stats.classicSkipped": Number((user.stats as Record<string, unknown>)?.classicSkipped ?? 0) + 1,

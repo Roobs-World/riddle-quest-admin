@@ -1,6 +1,7 @@
 import {createHash} from "node:crypto";
-import {existsSync, lstatSync, readFileSync, readdirSync, readlinkSync} from "node:fs";
+import {existsSync, lstatSync, readFileSync, readdirSync, readlinkSync, symlinkSync} from "node:fs";
 import {dirname, isAbsolute, join, relative, resolve, sep} from "node:path";
+import {DatabaseSync, backup} from "node:sqlite";
 
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const gitCommitPattern = /^[0-9a-f]{40}$/;
@@ -8,6 +9,13 @@ const unresolvedUploadSuffix = ".unresolved-upload.json";
 
 /** Fixed host executable used for the fail-closed Linux release sandbox. */
 export const BUBBLEWRAP_PATH = "/usr/bin/bwrap";
+
+/** Snapshots committed pnpm records, including WAL pages, without changing the installed store. */
+export async function snapshotPnpmStoreIndex(source, destination) {
+  const database = new DatabaseSync(source, {readOnly: true});
+  try {await backup(database, destination);}
+  finally {database.close();}
+}
 
 /** The only Jest game this repository is allowed to upload or activate. */
 export const RIDDLE_QUEST_JEST_GAME_ID = "019faa68-f3ec-755d-9ab5-c887fb426801";
@@ -265,6 +273,8 @@ export const findUnresolvedUploadBarriers = ({receiptDirectory, sourceCommit}) =
 };
 
 const mutableDependencyCacheDirectories = new Set([".cache", ".rolldown", ".vite", ".vite-temp"]);
+const releaseWorkspacePackageDirectories = ["core", "hosted", "solo", "portal"]
+  .map((name) => join("packages", name));
 const dependencyInputs = [
   "package.json",
   "pnpm-lock.yaml",
@@ -272,17 +282,26 @@ const dependencyInputs = [
   join("firebase-functions", "package.json"),
   join("firebase-functions", "package-lock.json"),
   join("firebase-functions", "packages", "core", "package.json"),
-  join("packages", "core", "package.json"),
-  join("packages", "portal", "package.json"),
+  ...releaseWorkspacePackageDirectories.map((directory) => join(directory, "package.json")),
   "node_modules",
   join("firebase-functions", "node_modules"),
-  join("packages", "core", "node_modules"),
-  join("packages", "portal", "node_modules"),
+  ...releaseWorkspacePackageDirectories.map((directory) => join(directory, "node_modules")),
 ];
+
+/** Reuses only the fingerprinted workspace installations inside committed release sources. */
+export const linkReleaseSnapshotDependencies = ({repositoryDirectory, immutableSourceDirectory}) => {
+  for (const directory of ["", ...releaseWorkspacePackageDirectories]) {
+    symlinkSync(
+      join(repositoryDirectory, directory, "node_modules"),
+      join(immutableSourceDirectory, directory, "node_modules"),
+      "dir",
+    );
+  }
+};
 
 const portablePath = (value) => value.split(sep).join("/");
 
-const hashDependencyEntry = (hash, root, absolutePath) => {
+const hashDependencyEntry = (hash, root, absolutePath, workspaceModulesDirectory) => {
   const entry = lstatSync(absolutePath);
   const name = portablePath(relative(root, absolutePath)) || ".";
   const mode = (entry.mode & 0o777).toString(8);
@@ -294,8 +313,12 @@ const hashDependencyEntry = (hash, root, absolutePath) => {
     hash.update(`directory\0${name}\0${mode}\0`);
     for (const child of readdirSync(absolutePath, {withFileTypes: true})
       .filter((candidate) => !mutableDependencyCacheDirectories.has(candidate.name))
+      .filter((candidate) => !(absolutePath === workspaceModulesDirectory && (
+        candidate.name === ".pnpm-task-run-state-v1" && candidate.isDirectory() ||
+        candidate.name === ".pnpm-workspace-state-v1.json" && candidate.isFile()
+      )))
       .sort((left, right) => left.name < right.name ? -1 : left.name > right.name ? 1 : 0)) {
-      hashDependencyEntry(hash, root, join(absolutePath, child.name));
+      hashDependencyEntry(hash, root, join(absolutePath, child.name), workspaceModulesDirectory);
     }
     return;
   }
@@ -317,7 +340,7 @@ export const fingerprintReleaseDependencies = ({repositoryDirectory}) => {
       throw new Error(`Missing release dependency input: ${absolutePath}`);
     }
     hash.update(`root\0${portablePath(input)}\0`);
-    hashDependencyEntry(hash, absolutePath, absolutePath);
+    hashDependencyEntry(hash, absolutePath, absolutePath, join(repositoryDirectory, "node_modules"));
   }
   return hash.digest("hex");
 };

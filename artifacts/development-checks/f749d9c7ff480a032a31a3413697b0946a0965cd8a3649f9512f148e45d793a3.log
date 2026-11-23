@@ -1,6 +1,0 @@
-i  emulators: Shutting down emulators.
-
-Error: Could not spawn `java -version`. Please make sure Java is installed and on your system PATH.
-
-
-Command failed: env PATH=/home/craig-beswetherick/.nvm/versions/node/v22.23.1/bin:/home/craig-beswetherick/.nvm/versions/node/v24.17.0/bin:/usr/local/bin:/usr/bin:/bin pnpm --dir firebase-functions exec firebase emulators:exec --only firestore --project demo-riddle-quest-live-seat-browser node ../packages/portal/scripts/verify-live-race-seat-recovery-browser.mjs

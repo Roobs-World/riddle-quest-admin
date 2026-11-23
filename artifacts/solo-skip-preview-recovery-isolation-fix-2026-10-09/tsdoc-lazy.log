@@ -1,4 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 1 production declarations are undocumented.
-- packages/portal/src/play/loadOptionalSkipPreview.ts:10 current
-[ELIFECYCLE] Command failed with exit code 1.

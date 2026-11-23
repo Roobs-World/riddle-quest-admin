@@ -14,8 +14,14 @@
     "SHARE_ATTEMPT_SINGULAR": "محاولة",
     "SHARE_CLASSIC_MODE_LABEL": "الوضع الكلاسيكي",
     "SHARE_DAILY_CHALLENGE_LABEL": "التحدي اليومي",
-    "SHARE_MESSAGE_TEMPLATE": "لقد قمت بحل مشكلة Riddle Quest {gameType} اليوم في {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nيمكنك التغلب على درجاتي؟\n\n#Riddle Quest #WordPuzzle #BrainGame",
+    "SHARE_MESSAGE_TEMPLATE": "لقد حللت لغز Riddle Quest {gameType} اليوم في {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nهل يمكنك التغلب على نتيجتي؟\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "اطلع على نتيجة Riddle Quest الخاصة بي!",
-    "INVITE_FRIEND": "ادعُ صديقًا"
+    "INVITE_FRIEND": "ادعُ صديقًا",
+    "REWARD_CLASSIC": "لغز كلاسيكي",
+    "REWARD_DAILY": "اللغز اليومي",
+    "REWARD_LEVEL_BONUS": "مكافأة الارتقاء بالمستوى",
+    "REWARD_STREAK_BONUS": "مكافأة السلسلة",
+    "REWARD_ACHIEVEMENT_BONUS": "مكافأة الإنجاز",
+    "REWARD_REFERRAL_BONUS": "مكافأة الدعوة"
   }
 }

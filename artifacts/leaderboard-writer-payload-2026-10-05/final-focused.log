@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       74 passed, 74 total
-Snapshots:   0 total
-Time:        1.208 s
-Ran all test suites matching src/__tests__/leaderboard.test.ts|src/__tests__/completeGameTransaction.test.ts|src/__tests__/singlePlayerContentPreparationLatency.test.ts|src/__tests__/singlePlayerCompletionRepairLatency.test.ts.

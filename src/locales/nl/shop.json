@@ -1,9 +1,9 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "munten",
+    "COINS_SUFFIX": " munten",
     "LOADING_TEXT": "Winkel laden...",
     "NO_PACKS_AVAILABLE": "Er zijn momenteel geen muntpakketten beschikbaar.",
-    "PURCHASE_BUTTON": "AANKOOP",
+    "PURCHASE_BUTTON": "KOPEN",
     "PERIOD_MONTHLY": "maand",
     "PERIOD_WEEKLY": "week",
     "PERIOD_YEARLY": "jaar",
@@ -20,7 +20,6 @@
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Wordt automatisch verlengd. Altijd opzegbaar via Profiel of Instellingen.",
     "TITLE": "MUNTWINKEL",
     "YOUR_BALANCE": "Jouw saldo",
-    "PACK_DESCRIPTION": "Voeg {coins} munten toe aan je saldo.",
     "BADGE_STARTER": "STARTER",
     "BADGE_POPULAR": "POPULAIR",
     "BADGE_BEST_VALUE": "BESTE AANBIEDING",

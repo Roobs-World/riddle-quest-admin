@@ -16,6 +16,18 @@ _Avoid_: Reddit ZIP, Reddit web build
 A self-contained Web Target hosted by YouTube whose play state belongs only to that Playable surface.
 _Avoid_: YouTube app, YouTube account
 
+**Android App**:
+The bare React Native client in `packages/android` for Google Play. It shares server-issued Classic, Daily, Race to 10, profiles, achievements and confirmed economy with the hosted game through shared controllers. Native adapters provide storage, lifecycle, Google account linking, avatar selection, sharing, notifications and Play Billing. Google linking preserves the Firebase uid and is required before new paid checkouts and rewarded referrals; the backend verifies every purchase and conversion. The explicitly selected Offline Surface has separate local progress and non-purchasable currency. Android never imports another target's provider SDK, ads or analytics.
+_Avoid_: Mobile build, native port, Play version of the web game
+
+**Android Google identity**:
+A Google subject verified in Firebase authentication claims and bound to an Android Global Game Account. A server-only subject hash preserves referral eligibility, replay protection and daily limits across account deletion and recreation. Linking Google to anonymous play preserves the existing Firebase uid and Play purchase binding.
+_Avoid_: Anonymous installation, referral token, Jest player
+
+**Shared Solo Logic**:
+The provider-neutral local solo play package `@riddle-quest/solo` (content parsing, save schema, economy, achievements, copy, input editing, local authority, and React controllers) consumed unchanged by the web Playable targets and the Android App.
+_Avoid_: YouTube module, playable folder, duplicated native rules
+
 **Bundled Content Pack**:
 A versioned, reviewed set of canonical riddles and aligned localizations shipped inside a Web Target.
 _Avoid_: Live catalog, remote content

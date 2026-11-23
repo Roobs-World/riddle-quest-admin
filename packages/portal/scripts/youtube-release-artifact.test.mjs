@@ -514,7 +514,7 @@ test("report writer refuses a source identity changed after suite verification",
 test("generated verification outputs do not alter release source identity", async context => {
   const fixture = await createReleaseFixture(context);
   const original = await captureSourceIdentity(fixture.repositoryDirectory);
-  const generated = ["artifacts/progress.json", ".codex/run.json", "docs/reports/platform-release-readiness/src/data.json"];
+  const generated = ["artifacts/progress.json", ".codex/run.json"];
   for (const file of generated) {
     await mkdir(path.dirname(path.join(fixture.repositoryDirectory, file)), {recursive: true});
     await writeFile(path.join(fixture.repositoryDirectory, file), "generated output\n");

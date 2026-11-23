@@ -1,4 +1,4 @@
-import {RACE_DECK_SIZE, RACE_MAX_ADJUSTED_TIME_MS, RACE_TARGET_CORRECT, type RaceLocale} from "@qwordly/core/race";
+import {RACE_DECK_SIZE, RACE_MAX_ADJUSTED_TIME_MS, RACE_TARGET_CORRECT, type RaceLocale} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {isRedditFirebaseUid} from "../reddit/redditSecurity";

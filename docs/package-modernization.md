@@ -1,30 +1,57 @@
 # Package modernization
 
-Last reviewed: 2026-08-21.
+Last reviewed: 2026-11-22.
 
-The workspace uses current direct releases from the npm registry, with one compatibility family documented below. New package capabilities are adopted when they improve production behavior, development feedback, security, or maintainability without changing game semantics.
+Direct dependencies, security overrides, the standalone worker and native SDK pins were reviewed against current stable releases. Compatibility and release-age constraints are recorded below. The workspace and CI use pnpm 12.21.0.
 
 ## Adopted capabilities
 
-- React 19.2 with the stable React Compiler 1.0, wired through the official `@vitejs/plugin-react` v6 preset for automatic component and hook memoization.
-- Vite 8's Rolldown build pipeline, native TypeScript path resolution, integrated DevTools, and browser error/warning forwarding during development.
-- OpenAI SDK 7's Responses API with Zod structured outputs, stable prompt-cache routing keys, concise output, current reasoning configuration, and `store: false` for stateless riddle generation and review.
-- Jest 30 global cleanup in every workspace to reduce cross-suite memory retention. The scalability refactor retains its mandatory 100% coverage gate.
+- React 19.3.1 with stable React Compiler 1.0 through the official `@vitejs/plugin-react` v6 preset. Android's Metro and Jest resolvers select its own React and Firebase instances when loading shared code.
+- Vite 8.3.8 and Rolldown 1.2.19, native TypeScript path resolution, DevTools, and browser error forwarding during development.
+- OpenAI SDK 7.62 with Responses API structured outputs, prompt-cache routing, and `store: false` for stateless riddle generation and review.
+- Jest 30.5.2 with its environment, timers, globals and mock overrides aligned to the same release. Existing coverage thresholds remain in force.
 - Zod 4's current `.check()` refinement API instead of deprecated `.superRefine()` usage.
-- Firebase's modular browser SDK, Firestore Lite for client reads, second-generation callable functions, App Check enforcement, and Node 22—the newest runtime currently supported by Firebase Functions.
-- Sentry 10's current span API, explicit PII disabling, encrypted DSN validation, and application-specific telemetry redaction.
+- Firebase 13.4 for browser/native clients, Firestore Lite for client reads, second-generation callable functions and App Check. Functions retains its verified Node 22 production runtime and compatible Firebase dependencies.
+- Sentry 11.16 with explicit PII disabling, encrypted DSN validation and application-specific telemetry redaction.
 - TypeScript 6 strict checking with explicit environment types and options that prepare the project for the native TypeScript 7 compiler.
 
-## Compatibility constraint
+## Compatibility constraints
 
-The React Compiler pipeline uses Babel 7.29 rather than Babel 8. Babel 8 is the registry's newest major, but `ts-jest` 29—the current TypeScript transformer compatible with Jest 30—declares Babel `<8`. Babel 7.29 is also explicitly supported by `@rolldown/plugin-babel`. Keeping this compatible set avoids unresolved peers and preserves the repository's mock-hoisting semantics. Revisit when the Jest TypeScript transformer supports Babel 8 or Vite provides a non-Babel React Compiler path.
+| Dependency family | Selected versions | Constraint |
+| --- | --- | --- |
+| Portal compiler | Babel 8.1.3 | Vite and its React Compiler pipeline use Babel 8. |
+| Jest and Android Babel | Core 7.29.13; current Babel 7 native plugins | Jest's current-node-syntax preset and React Native's transformer still load Babel 7-only plugins. A scoped `babel-jest` package extension supplies its private Babel 7 dependency, preserving transformation and mock hoisting alongside Portal's Babel 8. |
+| Functions Firebase | `firebase` 12.19.0; app 0.16.2; app-compat 0.5.18; rules testing 5.0.2 | New Firebase 13 components require Node >=24.12.0. The production backend remains Node 22. Only firebase-admin's database-compat child is pinned to the compatible 2.1.7; client Firebase 13 keeps its own newer children. |
+| Firebase Realtime Database | Browser/native app 0.16.7; Functions app 0.16.2 | Database 1.1.6 imports app without declaring its peer. A package extension binds it to its caller's registry. Real SDK and compiled-browser regressions prevent a second app registry from entering the client. |
+| TypeScript tooling | Transformer API 6.0.2; compiler alias 7.0.2; typescript-eslint 8.72.2 | The transformer uses the classic TypeScript API. typescript-eslint 8.73 adds an optional native peer requiring a TypeScript 7.1 nightly, so the latest compatible stable parser/plugin family remains 8.72.2. |
+| React Native | 0.88.1 with CLI 20.2.0 and its matching Hermes compiler | The official CLI compatibility table pairs CLI 21 with React Native 0.89. Gradle, AGP and Kotlin remain matched to React Native. |
+| Android Google ID | 1.2.0 | Version 1.2.1 failed the real release compile because its Kotlin 2.4 metadata is incompatible with the current Kotlin 2.2 compiler. FCM updates to 26.0.2. |
+| Legacy gRPC web transport | Private google-protobuf 3.21.4 | The legacy gRPC package requires 3.x. Devvit keeps its separate current 4.x dependency. |
+| Hono | 4.13.19 | Version 4.13.20 was published inside pnpm's default 24-hour release-age window at review time. No release-age exception is retained. |
+| Sentry worker Sandbox | Exact 4.0.0 | 4.1.0 adds CommonJS-only Drives 1.0.0, which requires ESM-only workflow serde and crashes the actual Vercel Node 24 runtime. The failure was reproduced with `--no-experimental-require-module`; the real 4.0 SDK passes that runtime regression. |
 
-The archived `image-size` 2.0.2 package remains a transitive dependency of the current Devvit CLI and has no upstream release for GHSA-5p2g-fcmc-qvqq or GHSA-w3rx-r6r6-pgpr. The workspace applies a minimal `pnpm` patch that rejects undersized HEIF/JXL boxes and zero/truncated ICNS entries. The two advisory exceptions are permitted only while `scripts/image-size-security-patch.test.mjs` verifies both the exact patch wiring and bounded malformed-input behavior. Remove the patch and exceptions together when Devvit replaces the dependency.
+The [Firebase Functions runtime guide](https://firebase.google.com/docs/functions/manage-functions#set_nodejs_version), [React Native CLI compatibility table](https://github.com/react-native-community/cli#compatibility), [typescript-eslint native-backend documentation](https://typescript-eslint.io/packages/parser/#experimental-typescript-7-native-backend), and [pnpm dependency-resolution settings](https://pnpm.io/settings#minimumreleaseage) explain the relevant provider/tooling constraints. Exact package engines and dependency ranges were also checked in published npm metadata.
+
+Devvit CLI 0.15.4 uses `image-size` 2.0.4, whose upstream HEIF, ICNS and JXL parsers reject the malformed inputs covered by the former local backport. The backport and the GHSA-5p2g-fcmc-qvqq and GHSA-w3rx-r6r6-pgpr audit exceptions have been removed together. `scripts/image-size-security-patch.test.mjs` resolves the parser actually installed under Devvit, requires version 2.0.4 or newer, and retains timeout-bounded malformed-input probes.
+
+The remaining braces 3.0.3 backport and its advisory exception stay paired with their existing regression check. Transitive security overrides use the newest releases within each consumer's compatible major family.
+
+The standalone Sentry worker uses compatible Sandbox 4.0.0 and Codex 0.171.0. Its narrow OIDC 4.0.9 override removes the audited vulnerable transitive chain. The worker production audit has no findings. Worker tests, the actual SDK runtime and the downloaded Codex binary's supported flags were checked.
+
+The immutable Jest release takes a consistent SQLite backup of pnpm's package index, including committed WAL pages, into its private license store. The operator's store stays read-only. License generation accepts both pnpm's native executable and its JavaScript entrypoint.
+
+The dependency fingerprint excludes pnpm 12's generated task-status directory and workspace-validation cache only at the workspace's top-level `node_modules`. Package contents, manifests, lockfiles, `.modules.yaml`, modes and symlink targets remain checked; same-named entries inside packages remain checked too.
+
+Functions explicitly sets zero warm instances and preserves unspecified externally managed runtime options. The updated SDK otherwise emits reset values for omitted maximum-instance settings. The built-manifest capacity audit rejects those resets, so a package update cannot silently remove deployed capacity limits. Explicit source options still take precedence.
+
+Jest resolves its locale loader to an English-only module before bundling, so unused translations no longer enter its archive. Other targets retain their catalogs. Its build also removes the unused Analytics script URL and Crashlytics version entry from Firebase's shared app metadata. Tests compare every remaining script URL and product mapping with the installed SDK, exercise its actual URL validator, and reject unexpected source changes. Artifact security and size limits remain unchanged.
+
+The audit has no production findings. Three moderate development-only advisories remain in the upstream Firebase/Jest tooling chains for OpenTelemetry, glob and minimatch. Their fixes require major-version changes to those transitive APIs; this update retains the versions selected by their current consumers.
 
 ## Deliberate non-adoptions
 
 - React `Activity` and `useEffectEvent` are semantic APIs, not global optimizations. They should be introduced only where a specific UI lifecycle requires them.
 - Sentry log forwarding remains disabled because Firebase logging is already authoritative; duplicating every log would add telemetry volume and cost.
-- Firebase Functions remains on Node 22 because Node 24 is not currently offered as a Firebase Functions runtime, even though local tooling uses Node 24.
+- The backend deployment runtime remains Node 22; local tooling uses Node 24.
 
 `pnpm check:modern-packages` prevents the adopted configuration from silently regressing. Run `pnpm outdated -r`, `pnpm peers check`, and `pnpm audit --prod` during each package review.

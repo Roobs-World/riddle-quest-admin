@@ -45,7 +45,9 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
           ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
           : selectedScenario === "returning-turkish"
             ? {locale: "tr", onboardingComplete: true}
-            : {};
+            : selectedScenario === "localized-coin-catalog"
+              ? {locale: "ar"}
+              : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */
@@ -279,7 +281,10 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
             hasMore: false,
           };
         },
-        completePurchase: async () => ({result: "success"}),
+        completePurchase: async () => {
+          state.calls.push("sdk.payments.completePurchase");
+          return {result: "success"};
+        },
         beginPurchase: async () => ({result: "cancel"}),
         getSubscriptions: async () => {
           state.calls.push("sdk.payments.getSubscriptions");

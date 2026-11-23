@@ -1,4 +1,4 @@
-import {contentProtectionRequest, protectContent} from "@qwordly/core/contentProtection";
+import {contentProtectionRequest, protectContent} from "@riddle-quest/core/contentProtection";
 import type {
   CallableFunction,
   CallableOptions,

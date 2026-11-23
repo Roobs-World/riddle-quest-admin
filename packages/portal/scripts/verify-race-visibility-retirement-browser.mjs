@@ -14,7 +14,7 @@ await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptio
 await writeFile(path.join(scratch,'index.html'),'<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,'scripts/fixtures/RetainedRaceHarness.tsx'))};
 import {tr} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 window.sessionSetups=0;window.sessionCleanups=0;window.suspended=false;window.tickCalls=0;window.gameVisible=true;

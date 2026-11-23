@@ -1,3 +1,0 @@
-{
-  "reason": "The purchased fixture account initially omitted its first_purchase achievement. The real backend correctly awarded its existing purchase reward during hint processing, offsetting the hint fee. The corrected fixture seeds both existing hint and purchase achievements; strict one-charge balance/stat assertions pass. No production fix was needed."
-}

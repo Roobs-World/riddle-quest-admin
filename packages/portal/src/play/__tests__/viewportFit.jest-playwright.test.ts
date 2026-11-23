@@ -3,14 +3,16 @@ import {chromium} from "@playwright/test";
 import {createServer} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 
 /** Exercises the real fitting hook and CSS across short phone viewports. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 describeBrowser("phone viewport fitting", () => {
   it("settles without alternating clue wrapping or clipping navigation", async () => {
     /** Serves the built Jest artifact for supplementary layout regression coverage. */
-    const root = path.resolve(__dirname, "../../../../../builds/jest");
+    const root = process.env.PORTAL_JEST_BUILD_DIR
+      ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
+      : path.resolve(__dirname, "../../../../../builds/jest");
     /** Serves the selected layout artifact without external SDK traffic. */
     const server = createServer(async (request, response) => {
       /** Resolves the requested bundled asset. */
@@ -42,18 +44,19 @@ describeBrowser("phone viewport fitting", () => {
       expect(await unavailablePage.locator(".riddle-card h1").count()).toBe(0);
       await unavailablePage.getByRole("button", {name: "Settings", exact: true}).click();
       await unavailablePage.getByRole("dialog", {name: "Settings", exact: true}).waitFor();
-      await unavailablePage.getByRole("combobox", {name: "Language", exact: true}).selectOption("es");
-      await unavailablePage.getByRole("dialog").getByRole("button", {name: /^(Close|Cerrar)$/}).click();
-      await unavailablePage.getByRole("button", {name: "Configuración", exact: true}).waitFor();
+      expect(await unavailablePage.getByRole("combobox", {name: "Language", exact: true}).count()).toBe(0);
+      await unavailablePage.getByRole("dialog").getByRole("button", {name: "Close", exact: true}).click();
+      expect(await unavailablePage.locator("html").getAttribute("lang")).toBe("en");
+      await unavailablePage.getByRole("status").filter({hasText: "No daily challenge available at the moment."}).waitFor();
       expect(await unavailablePage.locator(".riddle-card h1").count()).toBe(0);
       await unavailablePage.close();
       for (const [width, height] of [[384, 650], [412, 650], [360, 600], [360, 650], [320, 568], [390, 640], [412, 720], [424, 661]]) {
         /** Creates an isolated guest layout at each fixed phone size. */
         const page = await browser.newPage({viewport: {width, height}, isMobile: true, hasTouch: true});
         await page.route("https://cdn.jest.com/**", route => route.fulfill({status: 200, body: ""}));
+        await installCompletedMockGameTour(page);
         await page.addInitScript(() => {
           Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
-          localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
           localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:v2:jest-guest", "seen");
           sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         });

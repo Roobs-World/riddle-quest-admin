@@ -1,4 +1,0 @@
-[
-  "firebase-functions/src/__tests__/redditLiveGuessReceiptGateway.it.test.ts",
-  "packages/portal/src/__tests__/firebase.test.ts"
-]

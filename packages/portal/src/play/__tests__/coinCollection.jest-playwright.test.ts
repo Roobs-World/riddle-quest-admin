@@ -1,4 +1,4 @@
-import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 import {describe, expect, it} from "@jest/globals";
 import {execFileSync} from "node:child_process";
 import {existsSync} from "node:fs";
@@ -11,7 +11,7 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 
 describeBrowser("solo coin collection and successor routing", () => {
   it.each([{mode: "classic", continued: false}, {mode: "challenge", continued: false}, {mode: "classic", continued: true}])(
-    "enables Next Level and loads a playable successor after $mode coin collection (continued=$continued)", async ({mode, continued}) => {
+    "shows the confirmed balance and loads a playable successor after $mode rewards (continued=$continued)", async ({mode, continued}) => {
     /** Provides dist dir behavior. */
     const distDir = process.env.PORTAL_JEST_BUILD_DIR
       ? path.resolve(process.env.PORTAL_JEST_BUILD_DIR)
@@ -61,6 +61,7 @@ describeBrowser("solo coin collection and successor routing", () => {
       page.setDefaultTimeout(10_000);
       // The SDK is injected by this mock harness; avoid an unrelated external startup request.
       await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         /** Observe correlated content failures without changing bridge delivery. */
@@ -79,7 +80,6 @@ describeBrowser("solo coin collection and successor routing", () => {
           value: {effectiveType: "4g", saveData: false},
         });
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         /** The coin meter's Web Animations call fails so the award must still complete without it. */
         const animate = Element.prototype.animate;
@@ -116,30 +116,24 @@ describeBrowser("solo coin collection and successor routing", () => {
       const chest = page.locator(".modal-victory .reward-chest");
       // The provisional victory opens before the confirmed coin award arrives.
       await chest.waitFor({timeout: 15_000});
-      /** Provides next level behavior. */
-      const nextLevel = page.getByRole("button", {name: /next level/i});
-      /** Provides continue reward behavior. */
-      const continueReward = page.locator(".modal-victory .reward-continue");
+      /** The primary win action advances Daily and Classic directly. */
+      const nextRound = page.locator(".modal-victory .reward-continue");
       // Coins are already granted: the CTA never waits on the chest celebration.
-      expect(await continueReward.isDisabled()).toBe(false);
+      expect(await nextRound.isDisabled()).toBe(false);
+      expect(await nextRound.innerText()).toMatch(/^next(?: level)?$/i);
       expect(await page.getByRole("button", {name: /tap the chest/i}).count()).toBe(0);
-      // The meter animation failure is installed before page load (see addInitScript) because the
-      // celebration auto-starts shortly after the popup opens.
+      /** The win panel displays the confirmed total independently of the decorative counter. */
+      const confirmedTotal = Number((await page.locator(".coin-award > span").innerText()).replace(/[^\d]/g, ""));
+      expect(Number.isSafeInteger(confirmedTotal) && confirmedTotal >= 0).toBe(true);
+      // A failed celebration must still leave the actual header at the confirmed balance.
       await page.waitForFunction(
-        () => document.querySelector(".coin-award")?.getAttribute("data-coin-collection") === "complete",
-        undefined,
+        (total) => document.querySelector(".game-header .coin-pill strong")?.textContent?.trim() === total.toLocaleString(),
+        confirmedTotal,
         {timeout: 3_500},
       );
-      expect(await continueReward.isEnabled()).toBe(true);
-      for (let step = 0; step < 10 && (await nextLevel.count()) === 0; step += 1) {
-        /** Provides prior step behavior. */
-        const priorStep = (await page.locator(".modal-victory .sequence-progress").innerText()).split("/")[0];
-        await continueReward.click();
-        await page.waitForFunction(previous => document.querySelector(".modal-victory .sequence-progress")?.textContent?.trim().split("/")[0] !== previous, priorStep);
-        await page.waitForFunction(() => !document.querySelector<HTMLButtonElement>(".modal-victory .reward-continue")?.disabled);
-      }
-      expect(await nextLevel.isEnabled()).toBe(true);
-      await nextLevel.click();
+      expect(await page.locator(".modal-victory").evaluate(element => element.scrollHeight <= element.clientHeight + 1)).toBe(true);
+      expect(await nextRound.isEnabled()).toBe(true);
+      await nextRound.click();
       await page.locator(".modal-victory").waitFor({state: "detached"});
       await page.getByText(mode === "classic" ? /face and hands/i : /what has keys/i).waitFor();
       expect(await page.locator(".game-mode-label").textContent()).toMatch(/classic/i);

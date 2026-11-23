@@ -17,6 +17,7 @@ describe("utility modal pages", () => {
     const mutedHtml = renderToString(<SettingsModalPage locale="en" muted onOpenModal={noop} onToggleMute={noop} />);
     expect(enabledHtml).toContain("settings-page");
     expect(enabledHtml).toContain("English");
+    expect(enabledHtml).toContain("<select");
     expect(enabledHtml).toContain("On");
     expect(mutedHtml).toContain("Off");
     expect(enabledHtml).not.toContain("Show activity to rivals");

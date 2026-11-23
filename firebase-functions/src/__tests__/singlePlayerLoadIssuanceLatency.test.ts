@@ -43,7 +43,7 @@ jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNee
 import {getCurrentClassicRiddle, getCurrentDailyChallenge} from "../daily/dailyChallenge";
 import {ensureAuthoritativeSession} from "../gameplay/singlePlayerSession";
 import {getSinglePlayerCompletionKey, getSinglePlayerContentKey} from "../gameplay/singlePlayerAnswerPolicy";
-import {getDailyDate} from "@qwordly/core/validation/dailyCalendar";
+import {getDailyDate} from "@riddle-quest/core/validation/dailyCalendar";
 
 it.each((["classic", "challenge"] as const).flatMap(mode => [false, true].map(resumed => ({mode, resumed}))))(
   "projects $mode resumed $resumed from committed issuance without a follow-up read", async ({mode, resumed}) => {

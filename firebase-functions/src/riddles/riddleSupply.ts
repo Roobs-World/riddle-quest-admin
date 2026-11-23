@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
-import type {SupportedLocale} from "@qwordly/core/validation";
+import type {SupportedLocale} from "@riddle-quest/core/validation";
 import {RIDDLE_GENERATION_THRESHOLD} from "../shared/constants";
 import {captureException} from "../shared/sentry";
 
@@ -63,6 +63,20 @@ export async function triggerClassicRiddleGenerationIfNeeded(
       });
     } catch (error) {
       if (isAlreadyExistsError(error)) {
+        // Player activity can restart a request after Eventarc's retry window has expired.
+        await admin.firestore().runTransaction(async transaction => {
+          /** Existing deterministic request inspected before reactivation. */
+          const snapshot = await transaction.get(requestRef);
+          /** Persisted completion and retry state owned by the worker. */
+          const current = snapshot.data();
+          /** Server clock shared by the retry and outage-age checks. */
+          const nowMs = Date.now();
+          if (!snapshot.exists || current?.completed === true || current?.nextAttemptAtMs > nowMs) return;
+          /** Most recent activation determines the minimum recovery interval. */
+          const requestedAtMs = current?.requeuedAtMs ?? current?.requestedAt?.toMillis?.();
+          if (!Number.isFinite(requestedAtMs) || nowMs - requestedAtMs < 24 * 60 * 60 * 1000) return;
+          transaction.update(requestRef, {requeuedAtMs: nowMs, nextAttemptAtMs: nowMs});
+        });
         functions.logger.info(`Riddle replenishment is already claimed for ${locale} at ${highestClassicIndex}.`);
         return;
       }

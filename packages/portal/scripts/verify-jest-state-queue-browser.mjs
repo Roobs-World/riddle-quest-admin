@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -8,7 +9,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.JEST_QUEUE_REACT_MODE??'development',baseline=process.env.JEST_QUEUE_BASELINE_DIR;
-const output=path.resolve(process.env.JEST_QUEUE_REPORT_DIR??path.join(root,'../../artifacts/jest-state-queue-2026-10-03',mode));
+const output=path.resolve(process.env.JEST_QUEUE_REPORT_DIR??path.join(root,'../../builds/test-evidence/jest-state-queue-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/jest-queue-'));
 const source=`
@@ -25,11 +26,11 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
-window.probe={saves:[],guesses:0,completions:0,errors:[],unhandled:[]};
+window.probe={saves:[],guesses:0,completions:0,hostedIdentities:[],errors:[],unhandled:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
-const service=createFakeHostServices();let freshProfile=null;const services={...service,auth:{subscribe:listener=>service.auth.subscribe(snapshot=>listener(freshProfile?{...snapshot,profile:freshProfile}:snapshot))},loadProfile:async()=>freshProfile??await service.loadProfile(),submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
+const service=createFakeHostServices();let freshProfile=null;const services={...service,auth:{subscribe:listener=>service.auth.subscribe(snapshot=>{const user=snapshot.user?{...snapshot.user,uid:player.playerId==='jest-player'?snapshot.user.uid:'firebase-'+player.playerId}:null;window.probe.hostedIdentities.push({playerId:player.playerId,uid:user?.uid??null});listener({...snapshot,user,...(freshProfile?{profile:freshProfile}:{})});})},loadProfile:async()=>freshProfile??await service.loadProfile(),submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
 
 window.storageProbe={writes:[],flushes:0,failures:[],initializations:0};let release,released=false;const heldFlush=new Promise(r=>release=r);
 let player={playerId:'jest-player',registered:new URL(location.href).searchParams.has('registered')};const stores=new Map();
@@ -72,7 +73,7 @@ if(id.endsWith('/useJestPlayerStateWrites.ts'))code=code.replace('return useMemo
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage();const metric=(name,actual,expected)=>{observations.push({width,registered,scenario,name,actual,expected});if(!baseline)assert.deepEqual(actual,expected,name);};
   await page.goto(url+(registered?'?registered=1':''));await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
   if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
-  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
+  await page.waitForFunction(()=>window.storageProbe.writes.length===1);await waitForAnswerInputReady(page);await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('pian');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');
   for(let i=0;i<10;i++){await page.keyboard.press('Backspace');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIA');await page.keyboard.type('n');await page.waitForFunction(()=>window.latestCheckpoint()?.currentLetters.join('')==='PIAN');}
   await page.evaluate(()=>window.mergeProfile());
   metric('24 physical answer edits reach checkpoint hook',await page.evaluate(()=>window.probe.saves.filter(x=>'activeGame' in x).length),24);
@@ -84,6 +85,7 @@ if(id.endsWith('/useJestPlayerStateWrites.ts'))code=code.replace('return useMemo
    if(scenario==='drain-restart')await page.evaluate(()=>{window.oldDrain=window.writes.drainAndClear();});
    await page.evaluate(other=>window.restart(other),scenario!=='same-player');
    await page.locator('[data-host-epoch="1"]').waitFor();await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();await page.waitForTimeout(50);
+   metric('hosted identity follows the committed target player',await page.evaluate(()=>window.probe.hostedIdentities.at(-1)),{playerId:scenario==='same-player'?'jest-player':'other-player',uid:scenario==='same-player'?'jest-guest':'firebase-other-player'});
    metric('startup keeps fresh authority profile',await page.evaluate(()=>window.committed.playerData.profile.coins),80);
    metric('startup checkpoint remains isolated by target player',await page.evaluate(()=>window.committed.playerData.activeGame?.currentLetters.join('')??''),scenario==='same-player'?'PIAN':'');
    metric('host restores same-player draft without importing another player',await page.evaluate(()=>window.draft()),scenario==='same-player'?'PIAN':'');

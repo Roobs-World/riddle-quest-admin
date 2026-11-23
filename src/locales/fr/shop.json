@@ -1,8 +1,8 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": " pieces",
+    "COINS_SUFFIX": " pièces",
     "LOADING_TEXT": "Chargement de la boutique...",
-    "NO_PACKS_AVAILABLE": "Aucun pack de pieces disponible pour le moment.",
+    "NO_PACKS_AVAILABLE": "Aucun pack de pièces disponible pour le moment.",
     "PURCHASE_BUTTON": "ACHETER",
     "PERIOD_MONTHLY": "mois",
     "PERIOD_WEEKLY": "semaine",
@@ -18,9 +18,8 @@
     "SUBSCRIPTION_BENEFIT_STATUS": "Statut Premium sur votre compte Riddle Quest",
     "SUBSCRIPTION_BENEFIT_SUPPORT": "Soutenez l’équipe derrière Riddle Quest",
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Renouvellement automatique. Résiliable à tout moment depuis Profil ou Paramètres.",
-    "TITLE": "BOUTIQUE DE PIECES",
+    "TITLE": "BOUTIQUE DE PIÈCES",
     "YOUR_BALANCE": "Votre solde",
-    "PACK_DESCRIPTION": "Ajoutez {coins} pièces à votre solde.",
     "BADGE_STARTER": "DÉBUTANT",
     "BADGE_POPULAR": "POPULAIRE",
     "BADGE_BEST_VALUE": "MEILLEURE OFFRE",

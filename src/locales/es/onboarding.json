@@ -1,13 +1,13 @@
 {
   "Instructions": {
     "COLOR_CLUES_TITLE": "Pistas de color",
-    "COLOR_CORRECT": "La letra es correcta y esta en la posicion correcta",
-    "COLOR_MISPLACED": "La letra esta en la palabra pero en la posicion incorrecta",
-    "COLOR_WRONG": "La letra no esta en la palabra",
+    "COLOR_CORRECT": "La letra es correcta y está en la posición correcta",
+    "COLOR_MISPLACED": "La letra está en la palabra pero en la posición incorrecta",
+    "COLOR_WRONG": "La letra no está en la palabra",
     "GOAL_DESCRIPTION": "Adivina el acertijo oculto en 5 intentos usando las pistas de color.",
     "GOAL_TITLE": "El objetivo",
-    "GOT_IT_BUTTON": "Entendido!",
-    "TIPS_DESCRIPTION": "Comienza con letras comunes y usa el color para reducir tus intentos. Recuerda, solo tienes 5 intentos!",
+    "GOT_IT_BUTTON": "¡Entendido!",
+    "TIPS_DESCRIPTION": "Comienza con letras comunes y usa el color para reducir tus intentos. Recuerda, ¡solo tienes 5 intentos!",
     "TIPS_TITLE": "Consejos"
   },
   "WelcomeBackModal": {
@@ -15,8 +15,8 @@
     "TITLE": "Bienvenido de nuevo"
   },
   "WelcomeModal": {
-    "EARN_COINS_TEXT": "Gana monedas, supera desafios diarios y sube en el marcador.",
-    "LETS_PLAY": "A Jugar",
+    "EARN_COINS_TEXT": "Gana monedas, supera desafíos diarios y sube en el marcador.",
+    "LETS_PLAY": "¡A jugar!",
     "SOLVE_RIDDLES_TEXT": "Resuelve acertijos adivinando la respuesta letra por letra. Usa las pistas de color para guiar cada intento."
   }
 }

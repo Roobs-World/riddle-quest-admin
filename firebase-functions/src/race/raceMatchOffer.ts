@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions";
-import type {StartRaceRunRequest} from "@qwordly/core/race";
+import type {StartRaceRunRequest} from "@riddle-quest/core/race";
 import type {RaceRunRecord} from "./raceEngine";
 import {parseRaceMatchOffer} from "./raceMatchOfferRecord";
 import {racePerformanceSample} from "./raceMatchPerformance";

@@ -2,14 +2,16 @@
 import {readFile} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {listPlatformReleasePlans} from "./release/platform-releases.mjs";
+import {expectedName} from "./release/release-target-names.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
 export async function auditPlatformMonetization() {
-  const [policySource, dashboardSource, jestPurchases, facebookEntry, facebookBootstrap, facebookCommerce,
+  const [policySource, jestPurchases, facebookEntry, facebookBootstrap, facebookCommerce,
     redditConfigSource, redditProductsSource, redditClient, youtubeAudit, standaloneAudit, yahooEntry] = await Promise.all([
-    read("config/platform-monetization.json"), read("docs/reports/platform-release-readiness/src/data.json"),
+    read("config/platform-monetization.json"),
     read("packages/portal/src/jest/purchases.ts"), read("packages/portal/src/facebook/FacebookPlatformEntry.tsx"),
     read("packages/portal/src/facebook/FacebookPlatformBootstrap.ts"),
     read("packages/portal/src/facebook/FacebookCommerceCapability.ts"), read("packages/reddit-app/devvit.json"),
@@ -18,23 +20,20 @@ export async function auditPlatformMonetization() {
     read("packages/portal/scripts/audit-standalone-artifact.mjs"), read("packages/portal/targets/yahoo/index.html"),
   ]);
   const policy = JSON.parse(policySource);
-  const dashboard = JSON.parse(dashboardSource);
   const failures = [];
   const rows = policy.platforms;
   const names = rows.map(({platform}) => platform);
-  const expected = new Set([
-    ...dashboard.queries.provider_release_evidence.rows.map(({platform}) => platform),
-    ...dashboard.queries.html5_distribution_candidates.rows.map(({platform}) => platform),
-  ]);
+  /** Every executable release target needs a canonical monetization policy. */
+  const expected = new Set(listPlatformReleasePlans().map(expectedName));
   if (policy.schemaVersion !== 1 || new Set(names).size !== names.length) failures.push("Monetization policy must contain unique v1 platform rows.");
   for (const platform of expected) if (!names.includes(platform)) failures.push(`${platform} is missing a monetization policy.`);
   for (const {platform, iap, ads, gate} of rows) {
     if (![platform, iap, ads, gate].every((value) => typeof value === "string" && value.trim())) failures.push(`${platform || "Unknown platform"} has an incomplete monetization policy.`);
   }
-  if (JSON.stringify(dashboard.queries.monetization_readiness?.rows) !== JSON.stringify(rows)) failures.push("Dashboard monetization rows do not match the canonical policy.");
   if (!/getIncompletePurchases/u.test(jestPurchases) || !/completePurchase/u.test(jestPurchases) || !/backend\.grantPurchase/u.test(jestPurchases)) failures.push("Jest purchase grant/recovery ordering is missing.");
   if (!/createFacebookAdsCapability/u.test(facebookEntry) || !/VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID/u.test(facebookEntry) || !/VITE_FACEBOOK_REWARDED_PLACEMENT_ID/u.test(facebookEntry)) failures.push("Facebook ad capability or placement boundary is missing.");
-  if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Unverified Facebook IAP must remain unreachable.");
+  if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Facebook commerce must remain unavailable before authentication.");
+  if (!/new FacebookCommerceSession/u.test(facebookEntry) || !/clientConfiguration\.commerceEnabled/u.test(facebookEntry)) failures.push("Facebook payments must use the authenticated server-gated adapter.");
   if (!/price:\s*product\.price/u.test(facebookCommerce)) failures.push("Facebook commerce must preserve Meta's formatted catalog price.");
   const redditConfig = JSON.parse(redditConfigSource);
   const redditProducts = JSON.parse(redditProductsSource);

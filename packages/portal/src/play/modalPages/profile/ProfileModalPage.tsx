@@ -4,7 +4,7 @@ import chestUrl from "../../../../../../assets/images-web/chest-closed.png";
 import {useProviderProfile} from "../../ProviderProfileContext";
 import {useContext, useLayoutEffect, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
-import type {GameModal, GameSessionState} from "../../gameSession";
+import type {GameModal, GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../ranks";
 import {RankedAvatar} from "../../RankedAvatar";
@@ -269,7 +269,7 @@ export function ProfileModalPage({
       </div>
       <LiveRacePushConsent />
       {subscriptionControls}
-      <div className="profile-danger-zone">
+      {platformRegistered !== false && <div className="profile-danger-zone">
         <button
           ref={deleteTriggerRef}
           type="button"
@@ -278,8 +278,8 @@ export function ProfileModalPage({
         >
           {tr("Profile.DELETE_ACCOUNT_BUTTON")}
         </button>
-      </div>
-      {deleteConfirmationOpen ? (
+      </div>}
+      {platformRegistered !== false && deleteConfirmationOpen ? (
         <div className="profile-delete-backdrop">
           <section
             ref={deleteDialogRef}

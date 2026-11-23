@@ -1,7 +1,7 @@
 import type {
   ListFacebookContextBoardRequest, ListFacebookContextBoardResponse,
   RecordFacebookContextRunRequest, RecordFacebookContextRunResponse,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import type {ContextBoardCapability} from "../platform/types";
 import type {FacebookContextCoordinator} from "./contexts";
 

@@ -1,7 +1,7 @@
-import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
 
 /** Describes bridge parsers. */
-type BridgeParsers = Pick<typeof import("@qwordly/core/bridge"), "parseGameToHostMessage" | "parseHostToGameMessage">;
+type BridgeParsers = Pick<typeof import("@riddle-quest/core/bridge"), "parseGameToHostMessage" | "parseHostToGameMessage">;
 
 /** A failed lazy validation load requires a new document, distinct from invalid message data. */
 export class BridgeParserLoadError extends Error {
@@ -19,7 +19,7 @@ let bridgeParsers: BridgeParsers | null = null;
 
 /** Loads bridge parsers. */
 const loadBridgeParsers = (): Promise<BridgeParsers> => {
-  bridgeParsersPromise ??= import("@qwordly/core/bridge").then((loaded) => {
+  bridgeParsersPromise ??= import("@riddle-quest/core/bridge").then((loaded) => {
     bridgeParsers = loaded;
     return loaded;
   }).catch((error) => {throw new BridgeParserLoadError(error);});

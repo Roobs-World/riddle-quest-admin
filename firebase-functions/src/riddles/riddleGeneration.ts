@@ -1,10 +1,10 @@
-import type {EconomyDifficulty} from "@qwordly/core/game";
+import type {EconomyDifficulty} from "@riddle-quest/core/game";
 import {logger} from "firebase-functions/v2";
 import {admin} from "../shared/firebaseAdmin";
 import {generateUniqueRiddle} from "./openaiService";
 import {captureException} from "../shared/sentry";
 import {RiddleCollections} from "../validation/firestoreSchemas";
-import {SUPPORTED_LOCALES, type SupportedLocale} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES, type SupportedLocale} from "@riddle-quest/core/validation";
 import {
   areLocalizedClassicRiddlesSeeded,
   areLocalizedClassicRiddlesSeededForLocale,
@@ -70,8 +70,18 @@ export async function generateLocalizedClassicRiddlesForLocale(
     const riddle = await generateUniqueRiddle(
       locale,
       [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
-      {mode: "classic", background: workerDeadlineAtMs !== undefined, excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
-    );
+      {
+        mode: "classic",
+        background: workerDeadlineAtMs !== undefined,
+        difficulty: (startingIndex + newRiddles.length) % 3 === 0 ? "medium" : undefined,
+        excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)],
+      },
+    ).catch(async (error: unknown) => {
+      if (newRiddles.length > 0) {
+        await storeLocalizedClassicRiddlesInFirestore(locale, newRiddles, startingIndex);
+      }
+      throw error;
+    });
     if (!riddle) {
       logger.warn(
         `Failed to generate unique classic riddle for locale ${locale}, retrying... (attempt ${attemptCount}/${maxAttempts})`,
@@ -205,7 +215,11 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
     const riddle = await generateUniqueRiddle(
       "en",
       [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
-      {mode: "classic", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+      {
+        mode: "classic",
+        difficulty: (startingIndex + newRiddles.length) % 3 === 0 ? "medium" : undefined,
+        excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)],
+      },
     );
 
     if (riddle) {
@@ -320,7 +334,7 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
     const riddle = await generateUniqueRiddle(
       "en",
       [...existing.answers, ...generatedAttempts.map((item) => item.answer)],
-      {mode: "daily", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
+      {mode: "daily", difficulty: "medium", excludedQuestions: [...existing.questions, ...generatedAttempts.map((item) => item.question)]},
     );
 
     if (riddle) {

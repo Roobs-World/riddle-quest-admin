@@ -1,8 +1,10 @@
 import {existsSync, lstatSync} from "node:fs";
 import {chromium} from "@playwright/test";
+import {assertExactDeployedJestBuildUrl} from "../src/jest/__tests__/deployedJestBuildIdentity.ts";
 
 const gameId = process.env.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801";
 const gameUrl = process.env.JEST_DEPLOYED_GAME_URL || "https://jest.com/g/riddle-q";
+const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION;
 const subscriptionSku = process.env.JEST_SANDBOX_SUBSCRIPTION_SKU ||
   "com.roobsworld.riddlequest.premium.monthly";
 const statePath = process.env.JEST_SANDBOX_STORAGE_STATE ||
@@ -10,6 +12,7 @@ const statePath = process.env.JEST_SANDBOX_STORAGE_STATE ||
 const functionsBaseUrl = (process.env.JEST_FUNCTIONS_BASE_URL ||
   "https://us-central1-riddle-quest-ec2b2.cloudfunctions.net").replace(/\/$/, "");
 
+if (!expectedBuildVersion) throw new Error("JEST_EXPECTED_BUILD_VERSION is required for exact-build verification.");
 if (!existsSync(statePath)) {
   throw new Error(`Missing Jest sandbox browser state: ${statePath}`);
 }
@@ -62,6 +65,7 @@ async function loadPlayableGame() {
     await page.waitForTimeout(100);
   }
   if (!game || game.isDetached()) throw new Error("The deployed Jest game frame was not found.");
+  assertExactDeployedJestBuildUrl({buildVersion: expectedBuildVersion, gameId, url: game.url()});
 
   const playableContent = game.locator(".onboarding-card-welcome, .riddle-card h1").first();
   const startupError = game.locator(".route-missing");
@@ -168,25 +172,34 @@ try {
   if (await game.evaluate(() => typeof globalThis.JestSDK.payments.cancelSubscription) !== "function") {
     throw new Error("The live Jest SDK does not expose subscription cancellation.");
   }
-  await game.evaluate((sku) => {
-    globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__ = undefined;
-    globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_TEST__ =
-      globalThis.JestSDK.payments.cancelSubscription({subscriptionSku: sku});
-    void globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_TEST__.then((result) => {
-      globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__ = result;
-    });
-  }, subscriptionSku);
-  const cancel = page.getByRole("button", {name: /cancel subscription|confirm cancellation|cancel plan/i}).last();
-  await cancel.waitFor({state: "visible", timeout: 15_000});
-  await cancel.click();
-  await game.waitForFunction(
-    () => globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__ !== undefined,
-    undefined,
-    {timeout: 30_000},
-  );
+  /** Accepts only the cancellation confirmation initiated by this sandbox test. */
+  const confirmCancellation = async (dialog) => {
+    if (dialog.type() === "confirm" && /cancel|subscription/i.test(dialog.message())) await dialog.accept();
+    else await dialog.dismiss();
+  };
+  page.on("dialog", confirmCancellation);
+  try {
+    await game.evaluate((sku) => {
+      globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__ = undefined;
+      globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_TEST__ =
+        globalThis.JestSDK.payments.cancelSubscription({subscriptionSku: sku});
+      void globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_TEST__.then((result) => {
+        globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__ = result;
+      });
+    }, subscriptionSku);
+    const cancel = page.getByRole("button", {name: /cancel subscription|confirm cancel(?:lation)?|cancel plan/i}).last();
+    const deadline = Date.now() + 30_000;
+    while (Date.now() < deadline) {
+      if (await game.evaluate(() => globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__ !== undefined)) break;
+      if (await cancel.isVisible()) await cancel.click();
+      await page.waitForTimeout(100);
+    }
+  } finally {
+    page.off("dialog", confirmCancellation);
+  }
   const cancellation = await game.evaluate(() => globalThis.__RIDDLE_QUEST_SUBSCRIPTION_CANCEL_RESULT__);
   if (cancellation?.result !== "success") {
-    throw new Error(`Jest did not confirm subscription cancellation (${cancellation?.result ?? "unknown"}).`);
+    throw new Error(`Jest did not confirm subscription cancellation (${cancellation?.error ?? cancellation?.result ?? "unknown"}).`);
   }
 
   const afterCancellation = await readAndSyncSubscription(game);
@@ -195,6 +208,7 @@ try {
   }
 
   console.log(JSON.stringify({
+    build: expectedBuildVersion,
     checkout: "sandbox-zero-dollar",
     subscriptionSku,
     price: active.subscription.price,

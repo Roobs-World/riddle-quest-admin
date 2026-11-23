@@ -1,6 +1,6 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "đồng xu",
+    "COINS_SUFFIX": " xu",
     "LOADING_TEXT": "Đang tải cửa hàng...",
     "NO_PACKS_AVAILABLE": "Hiện tại không có gói tiền xu nào có sẵn.",
     "PURCHASE_BUTTON": "MUA HÀNG",
@@ -20,7 +20,6 @@
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Tự động gia hạn. Hủy bất cứ lúc nào trong Hồ sơ hoặc Cài đặt.",
     "TITLE": "CỬA HÀNG ĐỒNG XU",
     "YOUR_BALANCE": "Số dư của bạn",
-    "PACK_DESCRIPTION": "Thêm {coins} xu vào số dư của bạn.",
     "BADGE_STARTER": "KHỞI ĐẦU",
     "BADGE_POPULAR": "PHỔ BIẾN",
     "BADGE_BEST_VALUE": "GIÁ TRỊ TỐT NHẤT",

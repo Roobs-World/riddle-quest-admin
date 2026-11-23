@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {readFileSync, realpathSync} from "node:fs";
+import {existsSync, readFileSync, realpathSync} from "node:fs";
 import {createRequire} from "node:module";
 import {dirname, join, resolve} from "node:path";
 import {spawnSync} from "node:child_process";
@@ -7,22 +7,36 @@ import test from "node:test";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const workspaceConfig = readFileSync(join(repositoryRoot, "pnpm-workspace.yaml"), "utf8");
-const patchPath = join(repositoryRoot, "patches/image-size@2.0.2.patch");
-const patch = readFileSync(patchPath, "utf8");
+const devvitRoot = realpathSync(join(repositoryRoot, "packages/reddit-app/node_modules/devvit"));
+const cliPackage = createRequire(join(devvitRoot, "package.json")).resolve("@devvit/cli/package.json");
+const imageSizeEntry = createRequire(cliPackage).resolve("image-size");
 
-test("the image-size audit exceptions stay bound to the reviewed patch", () => {
-  assert.match(workspaceConfig, /image-size@2\.0\.2: patches\/image-size@2\.0\.2\.patch/u);
-  assert.match(workspaceConfig, /GHSA-5p2g-fcmc-qvqq/u);
-  assert.match(workspaceConfig, /GHSA-w3rx-r6r6-pgpr/u);
-  assert.match(patch, /Invalid HEIF, invalid ispe box size/u);
-  assert.match(patch, /Invalid ICNS, invalid entry length/u);
-  assert.match(patch, /Invalid JXL, invalid jxlp box size/u);
+/** Resolves metadata from the same installed parser entry that the Devvit CLI loads. */
+function installedImageSizeManifest() {
+  let directory = dirname(imageSizeEntry);
+  for (;;) {
+    const manifestPath = join(directory, "package.json");
+    if (existsSync(manifestPath)) {
+      const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+      if (manifest.name === "image-size") return manifest;
+    }
+    const parent = dirname(directory);
+    if (parent === directory) throw new Error("Cannot locate Devvit's installed image-size manifest");
+    directory = parent;
+  }
+}
+
+test("Devvit uses the upstream fixed parser without obsolete advisory exceptions", () => {
+  const manifest = installedImageSizeManifest();
+  assert.match(manifest.version, /^\d+\.\d+\.\d+$/u);
+  const [major, minor, patch] = manifest.version.split(".").map(Number);
+  assert.ok(major > 2 || (major === 2 && (minor > 0 || patch >= 4)),
+    `Devvit must use image-size 2.0.4 or newer; installed ${manifest.version}`);
+  assert.doesNotMatch(workspaceConfig, /image-size@2\.0\.2|GHSA-5p2g-fcmc-qvqq|GHSA-w3rx-r6r6-pgpr/u);
+  assert.equal(existsSync(join(repositoryRoot, "patches/image-size@2.0.2.patch")), false);
 });
 
 test("malformed HEIF, ICNS, and JXL inputs terminate without looping", () => {
-  const devvitRoot = realpathSync(join(repositoryRoot, "packages/reddit-app/node_modules/devvit"));
-  const cliPackage = join(dirname(devvitRoot), "@devvit/cli/package.json");
-  const imageSizeEntry = createRequire(cliPackage).resolve("image-size");
   const prelude = String.raw`
     const assert = require("node:assert/strict");
     const {imageSize} = require(${JSON.stringify(imageSizeEntry)});

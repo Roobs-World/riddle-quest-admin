@@ -1,7 +1,0 @@
-{
-  "live-service": "firebase-functions/src/race/raceLiveService.ts",
-  "live-invitation": "firebase-functions/src/race/raceLiveInvitation.ts",
-  "sdk-test": "firebase-functions/src/__tests__/race/raceLiveDeckCompatibility.it.test.ts",
-  "compatibility": "firebase-functions/src/race/raceDeckCompatibility.ts",
-  "work-test": "firebase-functions/src/__tests__/race/raceDeckCompatibilityWork.test.ts"
-}

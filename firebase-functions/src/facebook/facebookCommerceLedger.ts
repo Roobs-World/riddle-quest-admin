@@ -1,8 +1,9 @@
 import {createHash} from "node:crypto";
 import type {DocumentReference, Firestore, Transaction} from "firebase-admin/firestore";
-import {resolveFacebookProduct} from "@qwordly/core/pricing/facebookCatalog";
+import {resolveFacebookProduct} from "@riddle-quest/core/pricing/facebookCatalog";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../jest/jestAccountDeletion";
+import {facebookPaymentTokenSchema} from "./facebookPaymentContracts";
 
 /** Renders the provider interface. */
 const PROVIDER = "facebook" as const;
@@ -13,6 +14,8 @@ type CommerceAccount = {
   coinDebt: number;
   /** Stores remove interstitial ads. */
   removeInterstitialAds: boolean;
+  /** Verified durable purchase receipts that currently support ad removal. */
+  durableReceiptIds: string[];
 };
 
 /** Describes verified facebook purchase. */
@@ -99,9 +102,16 @@ const accountFrom = (value: Record<string, unknown> | undefined): CommerceAccoun
   if (value?.removeInterstitialAds !== undefined && typeof value.removeInterstitialAds !== "boolean") {
     throw new Error("invalid-facebook-commerce-entitlement");
   }
+  /** Stored durable receipt identifiers validated before entitlement calculation. */
+  const durableReceiptIds = value?.durableReceiptIds ?? [];
+  if (!Array.isArray(durableReceiptIds) || !durableReceiptIds.every((id): id is string => typeof id === "string" && /^[0-9a-f]{64}$/u.test(id)) ||
+    new Set(durableReceiptIds).size !== durableReceiptIds.length || durableReceiptIds.length > 0 && value?.removeInterstitialAds !== true) {
+    throw new Error("invalid-facebook-commerce-durable-receipts");
+  }
   return {
     coinDebt: optionalNonNegativeInteger("coin-debt", value?.coinDebt),
     removeInterstitialAds: value?.removeInterstitialAds === true,
+    durableReceiptIds,
   };
 };
 
@@ -169,10 +179,44 @@ export function facebookCommerceReceiptId(kind: "purchase" | "refund", externalI
 }
 
 /** Provides token hash behavior. */
-const tokenHash = (purchaseToken: string): string => {
+export const facebookCommerceTokenId = (purchaseToken: string): string => {
   assertBounded("purchase-token", purchaseToken, 8_192);
   return createHash("sha256").update(`${PROVIDER}\0token\0${purchaseToken}`).digest("hex");
 };
+
+/** The callable supplies references derived from the verified webhook owner. */
+export type FacebookPaymentGrantAuthorization = {
+  /** Webhook token document that establishes payment ownership and refund state. */
+  tokenRef: DocumentReference;
+  /** Provider identity document whose generation must still authorize the grant. */
+  providerRef: DocumentReference;
+  /** Authenticated account generation expected by the grant transaction. */
+  accountGeneration: number;
+};
+
+/** Rechecks owner, deletion generation, refund state and token uniqueness in the grant transaction. */
+async function authorizePaymentGrant(transaction: Transaction, authorization: FacebookPaymentGrantAuthorization,
+  input: VerifiedFacebookPurchase, receiptId: string): Promise<void> {
+  /** Latest webhook token and identity state read in the grant transaction. */
+  const [tokenSnapshot, providerSnapshot] = await Promise.all([
+    transaction.get(authorization.tokenRef), transaction.get(authorization.providerRef),
+  ]);
+  /** Validated webhook state that must match the caller's receipt and account. */
+  const token = facebookPaymentTokenSchema.parse(tokenSnapshot.data());
+  /** Current provider identity checked against the authenticated account. */
+  const provider = providerSnapshot.data();
+  if (authorization.tokenRef.id !== facebookCommerceTokenId(input.purchaseToken) ||
+    token.providerIdentityId !== authorization.providerRef.id || token.owner.kind !== "bound" ||
+    token.owner.accountGeneration !== authorization.accountGeneration || token.productId !== input.productId ||
+    token.owner.uidHash !== createHash("sha256").update(input.uid).digest("hex") ||
+    !token.purchaseSeen || token.refundAtMs !== null ||
+    token.purchaseReceiptId !== null && token.purchaseReceiptId !== receiptId ||
+    input.purchasedAtMs < token.owner.generationStartedAtMs ||
+    provider?.provider !== "facebook" || provider.status !== "active" || provider.uid !== input.uid ||
+    provider.accountGeneration !== authorization.accountGeneration) {
+    throw new Error("facebook-payment-owner-invalid");
+  }
+}
 
 /** Provides require uid behavior. */
 const requireUid = (uid: string): void => {
@@ -217,7 +261,11 @@ async function readCommerceState(
 export async function grantVerifiedFacebookPurchase(
   db: Firestore,
   input: VerifiedFacebookPurchase,
-): Promise<FacebookPurchaseResult> {
+  authorization?: FacebookPaymentGrantAuthorization,
+): Promise<FacebookPurchaseResult & {
+  /** New spendable coins credited by this grant, excluding receipt replays. */
+  coinsAwarded: number
+}> {
   assertCommerceEnabled();
   requireUid(input.uid);
   assertBounded("payment-id", input.paymentId, 1_024);
@@ -227,7 +275,7 @@ export async function grantVerifiedFacebookPurchase(
   /** Provides receipt id behavior. */
   const receiptId = facebookCommerceReceiptId("purchase", input.paymentId);
   /** Provides purchase token hash behavior. */
-  const purchaseTokenHash = tokenHash(input.purchaseToken);
+  const purchaseTokenHash = facebookCommerceTokenId(input.purchaseToken);
   /** Provides r ref. */
   const userRef = db.collection("users").doc(input.uid);
   /** Provides account ref behavior. */
@@ -245,6 +293,7 @@ export async function grantVerifiedFacebookPurchase(
       readCommerceState(transaction, userRef, accountRef),
     ]);
     assertJestAccountActive(deletion);
+    if (authorization) await authorizePaymentGrant(transaction, authorization, input, receiptId);
     /** Provides current coins behavior. */
     const currentCoins = userCoins(state.user);
     if (receipt.exists) {
@@ -268,6 +317,7 @@ export async function grantVerifiedFacebookPurchase(
         coins: currentCoins,
         coinDebt: state.account.coinDebt,
         removeInterstitialAds: state.account.removeInterstitialAds,
+        coinsAwarded: 0,
       };
     }
 
@@ -279,6 +329,7 @@ export async function grantVerifiedFacebookPurchase(
     const nextAccount: CommerceAccount = {
       coinDebt: state.account.coinDebt - debtRepaid,
       removeInterstitialAds: state.account.removeInterstitialAds || product.entitlement === "remove_interstitial_ads",
+      durableReceiptIds: product.kind === "durable" ? [...state.account.durableReceiptIds, receiptId] : state.account.durableReceiptIds,
     };
     /** Provides coins behavior. */
     const coins = safeAdd("coin-balance", currentCoins, coinsGranted);
@@ -297,11 +348,13 @@ export async function grantVerifiedFacebookPurchase(
       purchasedAtMs: input.purchasedAtMs,
       refundedAtMs: null,
     });
+    if (authorization) transaction.update(authorization.tokenRef, {purchaseReceiptId: receiptId});
     return {
       alreadyProcessed: false,
       coins,
       coinDebt: nextAccount.coinDebt,
       removeInterstitialAds: nextAccount.removeInterstitialAds,
+      coinsAwarded: coinsGranted,
     };
   });
 }
@@ -311,15 +364,27 @@ export async function refundVerifiedFacebookPurchase(
   db: Firestore,
   input: VerifiedFacebookRefund,
 ): Promise<FacebookRefundResult> {
-  assertCommerceEnabled();
+  return refundVerifiedFacebookPurchaseReceipt(db, {...input,
+    purchaseReceiptId: facebookCommerceReceiptId("purchase", input.paymentId)});
+}
+
+/** Refunds continue during a checkout kill switch and never require retaining raw payment IDs. */
+export async function refundVerifiedFacebookPurchaseReceipt(
+  db: Firestore,
+  input: Omit<VerifiedFacebookRefund, "paymentId"> & {
+    /** Opaque purchase receipt identifier retained for refund reconciliation. */
+    purchaseReceiptId: string
+  },
+): Promise<FacebookRefundResult> {
   assertBounded("refund-event-id", input.eventId, 1_024);
+  if (!/^[0-9a-f]{64}$/u.test(input.purchaseReceiptId)) throw new Error("invalid-facebook-receipt-id");
   if (!Number.isSafeInteger(input.refundedAtMs) || input.refundedAtMs <= 0) throw new Error("invalid-refund-time");
   /** Provides product behavior. */
   const product = resolveFacebookProduct(input.productId);
   /** Provides purchase ref behavior. */
   const purchaseRef = db
     .collection("facebookCommerceReceipts")
-    .doc(facebookCommerceReceiptId("purchase", input.paymentId));
+    .doc(input.purchaseReceiptId);
   /** Provides refund ref behavior. */
   const refundRef = db.collection("facebookCommerceRefunds").doc(facebookCommerceReceiptId("refund", input.eventId));
 
@@ -405,7 +470,11 @@ export async function refundVerifiedFacebookPurchase(
     /** Provides account ref behavior. */
     const accountRef = db.collection("facebookCommerceAccounts").doc(uid);
     /** Provides state behavior. */
-    const state = await readCommerceState(transaction, userRef, accountRef);
+    const [state, deletion] = await Promise.all([
+      readCommerceState(transaction, userRef, accountRef),
+      transaction.get(getJestAccountDeletionRef(db, uid)),
+    ]);
+    assertJestAccountActive(deletion);
     /** Provides current coins behavior. */
     const currentCoins = userCoins(state.user);
     if (priorRefund.exists) {
@@ -464,9 +533,13 @@ export async function refundVerifiedFacebookPurchase(
     /** Provides debt added behavior. */
     const debtAdded = grossCoins - coinsRemoved;
     /** Provides next account behavior. */
+    const durableReceiptIds = receipt.kind === "durable"
+      ? state.account.durableReceiptIds.filter(id => id !== purchaseRef.id) : state.account.durableReceiptIds;
+    /** Commerce debt and remaining durable entitlements after this refund. */
     const nextAccount: CommerceAccount = {
       coinDebt: safeAdd("coin-debt", state.account.coinDebt, debtAdded),
-      removeInterstitialAds: receipt.kind === "durable" ? false : state.account.removeInterstitialAds,
+      removeInterstitialAds: receipt.kind === "durable" ? durableReceiptIds.length > 0 : state.account.removeInterstitialAds,
+      durableReceiptIds,
     };
     /** Provides coins behavior. */
     const coins = currentCoins - coinsRemoved;

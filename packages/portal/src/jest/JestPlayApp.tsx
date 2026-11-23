@@ -1,10 +1,9 @@
 import {PlayerSaveRecoveryLayout} from "../play/PlayerSaveRecoveryLayout";
-import {JestProfileSubscriptions} from "./JestProfileSubscriptions";
 import {ProfileSubscriptionContext} from "../play/modalPages/profile/ProfileSubscriptionContext";
-import {completionPresentationKey} from "../play/completionPresentation";
+import {completionPresentationKey} from "@riddle-quest/hosted/play/completionPresentation";
 import {ProviderProfileContext} from "../play/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../play/modalPages/commerce/ShopSubscriptionContext";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {PlayHostApp} from "../play/PlayHostApp";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
@@ -29,9 +28,10 @@ import {configurePlatformAnalytics, trackScreen} from "../analytics/events";
 import {hasTrustedTestHarnessMarker} from "../testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
-import {JestAccountDeleted, JestRegistrationAlert, JestStartupError, JestStartupProgress} from "./JestSessionViews";
+import {JestAccountDeleted, JestStartupError, JestStartupProgress} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
+import {useJestPurchaseRecovery} from "./useJestPurchaseRecovery";
 import {captureBrowserException} from "../observability/browserErrorReporter";
 import {
   ACCOUNT_DELETION_PENDING_PHASE,
@@ -54,9 +54,18 @@ import {useJestFunnelTracking, useJestPlatformActivity} from "./useJestPlatformO
 import {useJestPresence} from "./useJestPresence";
 import {useJestRegistration} from "./useJestRegistration";
 import {createJestHostedPlaySession} from "./JestHostedPlaySession";
-import {createFirebaseRaceMatchmaking} from "../play/firebaseRaceMatchmaking";
+import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
+import {hasLiveRaceLobby} from "../play/race/logic/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../platform/startupWarmup";
+
+/** Account-management controls load when Profile or Settings first renders them. */
+const JestProfileSubscriptions = lazy(() => import("./JestProfileSubscriptions")
+  .then(module => ({default: module.JestProfileSubscriptions})));
+
+/** Guest registration controls load only when the player reaches a registration prompt. */
+const JestRegistrationAlert = lazy(() => import("./JestRegistrationAlert")
+  .then(module => ({default: module.JestRegistrationAlert})));
 
 /**
  * Overlaps Firebase connection setup, SDK chunk downloads and App Check
@@ -142,16 +151,19 @@ export function JestPlayApp() {
         captureBrowserException(error, {component: "jest_avatar_sync"});
       });
   }, [authHarness, mockRuntime, session]);
+  /** Registration preserves the active lobby; the account owner keys actual identity replacement. */
+  const matchmaking = useMemo(() => !authHarness && !mockRuntime ? createJestRaceMatchmaking() : undefined,
+    [authHarness, mockRuntime]);
   /** Keeps host authority assembly stable while player progress and SDK activity update. */
   const platformCapabilities = useMemo(
     () => ({
-      ...(!authHarness && !mockRuntime ? {matchmaking: createFirebaseRaceMatchmaking()} : {}),
+      ...(matchmaking ? {matchmaking} : {}),
       accountUpgrade: {
         state: session?.player.registered ? ("complete" as const) : ("available" as const),
         begin: async () => ({status: "unavailable" as const, message: "Use the Jest registration controls."}),
       },
     }),
-    [authHarness, mockRuntime, session?.player.registered],
+    [matchmaking, session?.player.registered],
   );
   /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);
@@ -234,13 +246,14 @@ export function JestPlayApp() {
     session,
     platform,
     backend,
+    sharingEnabled: notificationOperationGate.isOpen,
     withPlatformActivity,
     withBackgroundPlatformActivity,
     trackFunnel,
     authHarness,
   });
   /** Provides [jest products, set jest products] behavior. */
-  const [jestProducts, setJestProducts, refreshProducts, catalogState] = useJestProductCatalog({
+  const [jestProducts, setJestProducts, refreshProducts, catalogState, refreshBackgroundProducts] = useJestProductCatalog({
     purchases,
     session,
     subscriptionsEnabled,
@@ -272,6 +285,9 @@ export function JestPlayApp() {
     setProducts: setJestProducts,
     subscriptionsEnabled,
     trackFunnel,
+  });
+  useJestPurchaseRecovery({
+    purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, refreshBackgroundProducts, hostServices,
   });
   /** Provides authenticate jest identity behavior. */
   const authenticateJestIdentity = useCallback(
@@ -388,7 +404,7 @@ export function JestPlayApp() {
               /** Authoritative profile remains mandatory before showing the balance or enabling play. */
               const [{loadUserDocument}, {toBridgeProfile}] = await Promise.all([
                 import("../firebase"),
-                import("../play/profileMapper"),
+                import("@riddle-quest/hosted/profileMapper"),
               ]);
               /** Profile created or restored by the authoritative identity exchange. */
               const profileData = await loadUserDocument(readySession.firebaseUid);
@@ -611,19 +627,21 @@ export function JestPlayApp() {
         </div>
       ) : null}
       {!session.player.registered && showRegistration ? (
-        <JestRegistrationAlert
-          blocked={pendingPlatformOperations > 0 || registrationPending}
-          session={session}
-          onRegister={register}
-          onDismiss={dismissRegistration}
-        />
+        <Suspense fallback={null}>
+          <JestRegistrationAlert
+            blocked={pendingPlatformOperations > 0 || registrationPending}
+            session={session}
+            onRegister={register}
+            onDismiss={dismissRegistration}
+          />
+        </Suspense>
       ) : null}
       <PlayerSaveRecoveryLayout recovery={playerStateWrites.recovery}>
       <ProviderProfileContext.Provider
         value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}
       >
         <ShopSubscriptionContext.Provider value={subscriptionActions}>
-          <ProfileSubscriptionContext.Provider value={subscriptionsEnabled ? <JestProfileSubscriptions /> : null}>
+          <ProfileSubscriptionContext.Provider value={subscriptionsEnabled ? <Suspense fallback={null}><JestProfileSubscriptions /></Suspense> : null}>
           <PlayHostApp
             session={createJestHostedPlaySession({
               hostServices,
@@ -631,7 +649,7 @@ export function JestPlayApp() {
               initialGameMode: session.entryIntent.gameMode,
               initialRaceChallengeId: resolveRaceChallengeId(session.entryIntent),
               initialRaceInbox: session.entryIntent.challengeDestination === "inbox",
-              initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer",
+              initialRaceLobby: session.entryIntent.challengeDestination === "multiplayer" || hasLiveRaceLobby(session.firebaseUid, locale),
               registrationName: session.entryIntent.customName,
               registrationInviterName: session.entryIntent.inviterName,
               platformProducts: jestProducts,

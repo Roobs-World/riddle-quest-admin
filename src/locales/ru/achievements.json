@@ -1,13 +1,13 @@
 {
   "Achievements": {
-    "COINS_SUFFIX": " Монеты",
+    "COINS_SUFFIX": " монет",
     "FANFARE_TITLE": "Достижение разблокировано!",
     "MODAL_TITLE": "Достижения",
-    "MORE_UNLOCKED_SUFFIX": " больше разблокировано",
+    "MORE_UNLOCKED_SUFFIX": " ещё разблокировано",
     "NEW_ACHIEVEMENT": "Новое достижение",
     "NICE_BUTTON": "Хорошо",
     "UNLOCKED_ALERT_MESSAGE": "Проверьте свой профиль, чтобы увидеть свои новые достижения.",
-    "UNLOCKED_ALERT_OK": "ХОРОШО",
+    "UNLOCKED_ALERT_OK": "ОК",
     "UNLOCKED_ALERT_TITLE": "Достижения разблокированы!",
     "MILESTONES": {
       "wins_10": {
@@ -36,7 +36,7 @@
       },
       "daily_3": {
         "NAME": "Ежедневные задания: 3",
-        "DESCRIPTION": "Завершите 3 ежедневных заданий"
+        "DESCRIPTION": "Завершите 3 ежедневных задания"
       },
       "daily_365": {
         "NAME": "Ежедневные задания: 365",
@@ -99,7 +99,7 @@
       },
       "streak_3": {
         "NAME": "На волне",
-        "DESCRIPTION": "Достигните серии побед в 3 дней"
+        "DESCRIPTION": "Достигните серии побед в 3 дня"
       },
       "streak_7": {
         "NAME": "Неудержимый",

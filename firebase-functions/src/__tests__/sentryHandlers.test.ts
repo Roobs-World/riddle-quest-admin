@@ -1,4 +1,4 @@
-import {readProtectedContent} from "@qwordly/core/contentProtection";
+import {readProtectedContent} from "@riddle-quest/core/contentProtection";
 import {jest} from "@jest/globals";
 
 /** Captures exceptions routed through the handler wrappers. */

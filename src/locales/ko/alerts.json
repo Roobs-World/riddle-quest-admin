@@ -1,11 +1,14 @@
 {
   "GameScreenAlerts": {
-    "CLASSIC_LABEL": "권위 있는",
+    "CLASSIC_LABEL": "클래식",
     "CONTINUE_NOT_ENOUGH_COINS_MESSAGE": "계속하려면 코인이 충분하지 않습니다.",
     "COST_COINS_MIDDLE": " 동전.",
     "COST_COINS_PREFIX": "비용: ",
     "COST_COINS_SUFFIX": " 동전.",
     "DAILY_CHALLENGE_LABEL": "일일 도전",
+    "DAILY_SKIP_MODAL_TITLE": "일일 수수께끼를 나갈까요?",
+    "DAILY_SKIP_MESSAGE": "일일 수수께끼는 미완료 상태로 남습니다. 클래식 모드로 전환할까요?",
+    "DAILY_SKIP_CONTINUE_BUTTON": "클래식 플레이",
     "GUEST_MODE_NOTICE_MESSAGE": "게스트 모드에서는 진행 상황이 손실될 수 있으며 리더보드와 같은 일부 기능을 사용할 수 없습니다.",
     "HINT_ERROR_TITLE": "오류",
     "HINT_MODAL_TITLE": "사용 힌트?",

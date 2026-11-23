@@ -1,1 +1,0 @@
-AssertionError: Fresh client artifacts differ from previous browser-tested bytes. Whole-build equality was an overly broad preflight assumption; actual tested Jest and Reddit outputs match exactly.

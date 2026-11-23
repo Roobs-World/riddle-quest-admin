@@ -1,8 +1,8 @@
 {
   "StreakFanfare": {
-    "COINS_SUFFIX": "Monete",
+    "COINS_SUFFIX": " Monete",
     "CONTINUE_BUTTON": "Continua così",
-    "STREAK_SUFFIX": "-Giorni consecutivi",
+    "STREAK_SUFFIX": " giorni consecutivi",
     "TITLE": "Serie aumentata!"
   }
 }

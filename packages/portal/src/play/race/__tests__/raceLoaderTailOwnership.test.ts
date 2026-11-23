@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {RacePlay, type RacePlayClock} from "../RacePlay";
 
 /** Loader completion adapters can replace delivery before returning their timer handle. */

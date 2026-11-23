@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {ProductSummary} from "../../play/types";
+import type {ProductSummary} from "@riddle-quest/hosted/hostTypes";
 import type {JestPurchaseCoordinator} from "../purchases";
 import type {JestSession} from "../types";
 
@@ -53,9 +53,7 @@ const session = (registered: boolean): JestSession => ({
 const flushCatalogLoad = async () => {
   expect(mockEffects).toHaveLength(1);
   mockEffects[0]();
-  await Promise.resolve();
-  await Promise.resolve();
-  await Promise.resolve();
+  await new Promise((resolve) => setTimeout(resolve, 0));
 };
 
 /** Creates harness. */
@@ -92,6 +90,144 @@ beforeEach(() => {
 });
 
 describe("useJestProductCatalog", () => {
+  it("shares one in-flight catalog read with overlapping routine browser wakes", async () => {
+    /** Provider response remains pending while independent UI signals request the same wallet. */
+    const {getProducts, state, withPlatformActivity} = createHarness(session(true), false);
+    /** Releases the single admitted provider response. */
+    let finish: ((result: Awaited<ReturnType<JestPurchaseCoordinator["getProducts"]>>) => void) | undefined;
+    getProducts.mockImplementation(() => new Promise(resolve => {finish = resolve;}));
+    /** Modal opening and recovery overlap before either provider response settles. */
+    const first = state[2]();
+    /** Routine foreground wake must join the UI's already admitted read. */
+    const second = state[4]();
+    expect(getProducts).toHaveBeenCalledTimes(1);
+    expect(withPlatformActivity).toHaveBeenCalledTimes(1);
+    if (!finish) throw new Error("Catalog read did not start");
+    finish({status: "success", value: []});
+    await Promise.all([first, second]);
+    expect(mockSetProducts).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts a fresh explicit read after a mutation and ignores the earlier pending snapshot", async () => {
+    /** A provider snapshot admitted before a mutation remains held. */
+    let finish: ((result: Awaited<ReturnType<JestPurchaseCoordinator["getProducts"]>>) => void) | undefined;
+    /** Explicit refreshes must observe provider changes even inside the background freshness interval. */
+    const {getProducts, state} = createHarness(session(true), false);
+    getProducts.mockImplementationOnce(() => new Promise(resolve => {finish = resolve;}))
+      .mockResolvedValueOnce({status: "success", value: [product("updated-offer", "consumable")]});
+    /** Request admitted before the provider mutation. */
+    const beforeMutation = state[2]();
+    await state[2]();
+    expect(getProducts).toHaveBeenCalledTimes(2);
+    if (!finish) throw new Error("Earlier catalog read did not start");
+    finish({status: "success", value: [product("old-offer", "consumable")]});
+    await beforeMutation;
+    expect(mockSetProducts).toHaveBeenCalledTimes(1);
+    expect(mockSetProducts).toHaveBeenLastCalledWith([product("updated-offer", "consumable")]);
+  });
+
+  it("limits routine foreground catalog reads to the ten-second background interval", async () => {
+    /** Clock controls browser signals without changing provider completion behavior. */
+    const clock = jest.spyOn(Date, "now").mockReturnValue(1_000);
+    try {
+      /** One initialized wallet receives frequent background wake requests. */
+      const {getProducts, state} = createHarness(session(true), false);
+      getProducts.mockResolvedValue({status: "success", value: []});
+      await state[2]();
+      for (let second = 1; second <= 30; second++) {
+        clock.mockReturnValue(1_000 + second * 1_000);
+        await state[4]();
+      }
+      expect(getProducts).toHaveBeenCalledTimes(4);
+      await state[2]();
+      expect(getProducts).toHaveBeenCalledTimes(5);
+    } finally {clock.mockRestore();}
+  });
+
+  it("does not begin a routine catalog read while its document is hidden", async () => {
+    /** Original browser descriptor is restored after controlling background visibility. */
+    const originalDocument = Object.getOwnPropertyDescriptor(globalThis, "document");
+    /** Visibility can change independently from the session that owns the catalog. */
+    const page = {visibilityState: "hidden"};
+    Object.defineProperty(globalThis, "document", {configurable: true, value: page});
+    try {
+      /** Hidden queued work waits for a later real foreground request. */
+      const {getProducts, state} = createHarness(session(true), false);
+      getProducts.mockResolvedValue({status: "success", value: []});
+      await state[4]();
+      expect(getProducts).not.toHaveBeenCalled();
+      page.visibilityState = "visible";
+      await state[4]();
+      expect(getProducts).toHaveBeenCalledTimes(1);
+    } finally {
+      if (originalDocument) Object.defineProperty(globalThis, "document", originalDocument);
+      else Reflect.deleteProperty(globalThis, "document");
+    }
+  });
+
+  it("refreshes after a backwards clock adjustment instead of retaining a future timestamp", async () => {
+    /** A wall-clock correction must not extend the ten-second freshness interval. */
+    const clock = jest.spyOn(Date, "now").mockReturnValue(60_000);
+    try {
+      /** One completed read precedes the browser's clock correction. */
+      const {getProducts, state} = createHarness(session(true), false);
+      getProducts.mockResolvedValue({status: "success", value: []});
+      await state[2]();
+      clock.mockReturnValue(1_000);
+      await state[4]();
+      expect(getProducts).toHaveBeenCalledTimes(2);
+    } finally {clock.mockRestore();}
+  });
+
+  it.each(["player", "firebase", "registration"])("never joins a pending catalog across a %s replacement", async change => {
+    /** First account leaves its provider response pending during the identity transition. */
+    const firstSession = {...session(false), firebaseUid: "jest:first"};
+    /** Old provider response is released after the new owner has published. */
+    let finish: ((result: Awaited<ReturnType<JestPurchaseCoordinator["getProducts"]>>) => void) | undefined;
+    /** Captures the old committed account's pending request. */
+    const first = createHarness(firstSession, false);
+    first.getProducts.mockImplementation(() => new Promise(resolve => {finish = resolve;}));
+    /** Provider request admitted for the retired identity. */
+    const retired = first.state[2]();
+    /** New ownership differs along exactly one boundary. */
+    const nextSession = {...firstSession,
+      firebaseUid: change === "firebase" ? "jest:second" : firstSession.firebaseUid,
+      player: {...firstSession.player, playerId: change === "player" ? "player-2" : "player-1", registered: change === "registration"}};
+    /** Replacement request must not wait for or reuse the old provider response. */
+    const second = createHarness(nextSession, false);
+    second.getProducts.mockResolvedValue({status: "success", value: [product("new-wallet", "consumable")]});
+    await second.state[4]();
+    expect(second.getProducts).toHaveBeenCalledTimes(1);
+    if (!finish) throw new Error("Retired catalog read did not start");
+    finish({status: "success", value: [product("old-wallet", "consumable")]});
+    await retired;
+    expect(mockSetProducts).toHaveBeenLastCalledWith([product("new-wallet", "consumable")]);
+  });
+
+  it("starts both independent catalogs while consumables remain pending", async () => {
+    /** Consumable offer returned only after the delayed product request resolves. */
+    const consumable = product("coins-250", "consumable");
+    /** Subscription offer available while the independent consumable request is pending. */
+    const subscription = product("premium", "subscription");
+    /** Catalog request controls and refresh action from the real hook fixture. */
+    const {getProducts, getSubscriptions, state} = createHarness(session(true), true);
+    /** Releases the delayed consumable catalog after both provider requests have started. */
+    let finishProducts: ((value: Awaited<ReturnType<JestPurchaseCoordinator["getProducts"]>>) => void) | undefined;
+    getProducts.mockImplementation(() => new Promise((resolve) => {finishProducts = resolve;}));
+    getSubscriptions.mockResolvedValue({status: "success", value: [subscription]});
+
+    /** Combined catalog refresh awaiting the delayed consumable response. */
+    const refresh = state[2]();
+    expect(getProducts).toHaveBeenCalledTimes(1);
+    expect(getSubscriptions).toHaveBeenCalledTimes(1);
+    expect(mockSetProducts).not.toHaveBeenCalled();
+    if (!finishProducts) throw new Error("Product request did not start");
+    finishProducts({status: "success", value: [consumable]});
+    await refresh;
+    expect(mockSetProducts).toHaveBeenLastCalledWith([subscription, consumable]);
+    expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: false});
+  });
+
   it("keeps an empty catalog until a Jest session exists", async () => {
     /** Provides {get products, state, with platform activity} behavior. */
     const {getProducts, state, withPlatformActivity} = createHarness(null);
@@ -103,7 +239,7 @@ describe("useJestProductCatalog", () => {
     expect(mockSetProducts).not.toHaveBeenCalled();
   });
 
-  it("loads subscriptions before consumables for a registered player", async () => {
+  it("presents subscriptions before consumables for a registered player", async () => {
     /** Provides consumable behavior. */
     const consumable = product("coins-250", "consumable");
     /** Provides subscription behavior. */
@@ -116,8 +252,8 @@ describe("useJestProductCatalog", () => {
     await flushCatalogLoad();
 
     expect(withPlatformActivity).toHaveBeenCalledTimes(1);
-    expect(getProducts).toHaveBeenCalledWith(expect.any(String));
-    expect(getSubscriptions).toHaveBeenCalledWith("player-1", expect.any(String));
+    expect(getProducts).toHaveBeenCalledWith("en");
+    expect(getSubscriptions).toHaveBeenCalledWith("player-1", "en");
     expect(mockSetProducts).toHaveBeenCalledWith([subscription, consumable]);
     expect(trackFunnel).not.toHaveBeenCalled();
   });
@@ -135,17 +271,20 @@ describe("useJestProductCatalog", () => {
     expect(mockSetProducts).toHaveBeenCalledWith([consumable]);
   });
 
-  it("does not request subscription data for a guest", async () => {
+  it("offers subscriptions to guests alongside consumables", async () => {
     /** Provides consumable behavior. */
     const consumable = product("coins-250", "consumable");
+    /** Inactive subscription offer that remains visible to a guest player. */
+    const subscription = product("premium-monthly", "subscription");
     /** Provides {get products, get subscriptions} behavior. */
-    const {getProducts, getSubscriptions} = createHarness(session(false));
+    const {getProducts, getSubscriptions} = createHarness(session(false), true);
     getProducts.mockResolvedValue({status: "success", value: [consumable]});
+    getSubscriptions.mockResolvedValue({status: "success", value: [subscription]});
 
     await flushCatalogLoad();
 
-    expect(getSubscriptions).not.toHaveBeenCalled();
-    expect(mockSetProducts).toHaveBeenCalledWith([consumable]);
+    expect(getSubscriptions).toHaveBeenCalledWith("player-1", "en");
+    expect(mockSetProducts).toHaveBeenCalledWith([subscription, consumable]);
   });
 
   it("reports product and subscription failures independently", async () => {

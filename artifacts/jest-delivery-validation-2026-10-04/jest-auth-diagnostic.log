@@ -1,6 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-Test Suites: 1 passed, 1 total
-Tests:       72 skipped, 3 passed, 75 total
-Snapshots:   0 total
-Time:        6.237 s
-Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "starts a guest through signed identity|registers with a stable player id|reports first_milestone".

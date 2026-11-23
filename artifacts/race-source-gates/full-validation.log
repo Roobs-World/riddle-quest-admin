@@ -1,2 +1,0 @@
-$ node scripts/release/complete-development-task.mjs docs/development-tasks/race-source-gates.json
-Recorded multiplayer:race-source-gates for jest, facebook, reddit, youtube, netflix, yahoo, gamesnacks in the local dashboard.

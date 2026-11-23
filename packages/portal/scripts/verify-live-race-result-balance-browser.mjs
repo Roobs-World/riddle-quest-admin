@@ -21,7 +21,7 @@ import {PlayHostApp} from ${JSON.stringify(path.join(root, "src/play/PlayHostApp
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root, "src/play/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root, "src/play/fakeServices.ts"))};
 import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/play/race/LiveRaceGame.tsx"))};
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 localStorage.setItem('riddleQuest:onboarding:jest-guest','seen');
 const base=createFakeHostServices({dailyCompleted:true});
 let profile; base.auth.subscribe(snapshot=>{profile=snapshot.profile;});

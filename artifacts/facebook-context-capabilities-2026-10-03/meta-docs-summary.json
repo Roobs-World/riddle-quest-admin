@@ -1,9 +1,0 @@
-{
-  "source": "authenticated Meta Social Technologies MCP devtools_discovery search_docs",
-  "title": "API Reference",
-  "url": "https://developers.facebook.com/documentation/games/build/zero-permissions/api-reference",
-  "finding": "The reference directs clients to use getSupportedAPIs() to check availability when the client does not support an operation.",
-  "directWebModuleFetch": "v8 FBInstant and Context module URLs unavailable through web tool",
-  "providerMutation": false,
-  "credentialsRetained": false
-}

@@ -1,5 +1,0 @@
-Test Suites: 1 passed, 1 total
-Tests:       68 skipped, 6 passed, 74 total
-Snapshots:   0 total
-Time:        17.192 s
-Ran all test suites within paths "src/jest/__tests__/authentication.jest-playwright.test.ts".

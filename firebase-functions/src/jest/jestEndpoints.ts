@@ -12,7 +12,7 @@ import {
   type VerifiedJestSubscription,
 } from "./jestProductCatalog";
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../shared/constants";
-import {JEST_REFERRAL_REWARD_COINS} from "@qwordly/core/referrals";
+import {JEST_REFERRAL_REWARD_COINS} from "@riddle-quest/core/referrals";
 import {captureException, flushSentry} from "../shared/sentry";
 import {onRequestWithSentry} from "../shared/sentryHandlers";
 import {
@@ -249,7 +249,7 @@ const resolveSignedJestPlayer = (playerSigned: string) => {
 /** Provides exchange jest identity behavior. */
 export const exchangeJestIdentity = onRequestWithSentry(
   "exchangeJestIdentity",
-  {...jestHttpOptions, minInstances: 1},
+  {...jestHttpOptions, minInstances: 0},
   async (request, response) => {
     if (!acceptJestRequest(request, response)) return;
     try {

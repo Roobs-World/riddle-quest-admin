@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "Wyzwanie codzienne",
     "SHARE_MESSAGE_TEMPLATE": "Rozwiązałem dzisiejsze Riddle Quest {gameType} w {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nCzy możesz pobić mój wynik?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Sprawdź mój wynik Riddle Quest!",
-    "INVITE_FRIEND": "Zaproś znajomego"
+    "INVITE_FRIEND": "Zaproś znajomego",
+    "REWARD_CLASSIC": "Zagadka klasyczna",
+    "REWARD_DAILY": "Zagadka dnia",
+    "REWARD_LEVEL_BONUS": "Premia za poziom",
+    "REWARD_STREAK_BONUS": "Premia za serię",
+    "REWARD_ACHIEVEMENT_BONUS": "Premia za osiągnięcie",
+    "REWARD_REFERRAL_BONUS": "Premia za zaproszenie"
   }
 }

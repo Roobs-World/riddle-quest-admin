@@ -1,5 +1,0 @@
-{
-  "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": "828fccecbff2330a0ad526b543ee4b2c84bfa8e72b3fa46c8ad9575f49e69c58",
-  "packages/portal/package.json": "a9ffbb518977b12b69b16b79d36ca18d3a36b3e306bfd0668d0dec29c1047dae",
-  "packages/portal/scripts/verify-game-ready-commit-browser.mjs": "3431d0e1f03c9b90122d9caed160a08f4ebe38c0791629683023b2d7ab7b1de2"
-}

@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {HttpsError} from "firebase-functions/v2/https";
-import {RaceCategoryIdSchema} from "@qwordly/core/race";
+import {RaceCategoryIdSchema} from "@riddle-quest/core/race";
 import {admin} from "../shared/firebaseAdmin";
 import {FacebookLiveContextBindingSchema} from "./facebookLiveContextBinding";
 

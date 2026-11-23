@@ -1,9 +1,10 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import {useCallback, useEffect, useState} from "react";
 import {trackScreen} from "../analytics/events";
 import {resolveActivityPresence} from "../presence/activityPresence";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
-import type {GameSessionState} from "./gameSessionTypes";
+import type {GameSessionState} from "@riddle-quest/hosted/play/gameSessionTypes";
+import {isBlockingGameModal} from "@riddle-quest/hosted/play/gameSession";
 import {isSupportedLocale, type Locale} from "./i18n";
 import {isRaceHarness} from "./race/logic/raceFeatureFlag";
 
@@ -88,7 +89,7 @@ export function useGameSurfaceCoordination({
   /** Whether a playable riddle is present beneath overlays. */
   const hasActiveRiddle = Boolean(session.riddle);
   /** Whether a modal currently owns the overlay surface. */
-  const modalOpen = Boolean(session.modal);
+  const modalOpen = isBlockingGameModal(session.modal);
 
   useEffect(() => {
     /** Stable analytics name for the currently visible surface. */

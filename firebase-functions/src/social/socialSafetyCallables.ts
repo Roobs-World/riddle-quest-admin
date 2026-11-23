@@ -1,4 +1,4 @@
-import {BlockSocialRivalRequestSchema, ReportSocialRivalRequestSchema} from "@qwordly/core/race";
+import {BlockSocialRivalRequestSchema, ReportSocialRivalRequestSchema} from "@riddle-quest/core/race";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";

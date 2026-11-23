@@ -1,11 +1,11 @@
 import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
-import {BRIDGE_PROTOCOL_VERSION} from "@qwordly/core/bridge/constants";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
+import {BRIDGE_PROTOCOL_VERSION} from "@riddle-quest/core/bridge/constants";
 import musicUrl from "../../../../assets/audio-web/music.webm";
 import {isFacebookWebTarget} from "../platform/webTargetEnvironment";
-import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer} from "./gameSession";
+import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "@riddle-quest/hosted/play/gameSession";
 import {tr} from "./i18n";
-import {createRequestId} from "./requestIds";
+import {createRequestId} from "@riddle-quest/hosted/play/requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "./localBridge";
 import {ShopSubscriptionContext} from "./modalPages/commerce/ShopSubscriptionContext";
 import {GuidanceOverlay} from "./guidance/GuidanceOverlay";
@@ -44,7 +44,7 @@ import {
   useViewportFit,
 } from "./game/hooks";
 import {getMobileCapabilities, shouldLoadDecorativeWebGl} from "./performance/mobileCapabilities";
-import type {ListRaceCategoriesResponse, RaceLocale} from "@qwordly/core/race";
+import type {ListRaceCategoriesResponse, RaceLocale} from "@riddle-quest/core/race";
 import type {ActivePresenceState} from "../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "./useGameSurfaceCoordination";
 import {useClassicQuestionPreparation} from "./game/hooks/useClassicQuestionPreparation";
@@ -54,7 +54,7 @@ import type {AttemptRecoveryCapability} from "../platform/types";
 
 import {DecorativeSolarSystem} from "./DecorativeSolarSystem";
 import {GameSurfaceBoundary, GameSurfaceRecovery} from "./GameSurfaceRecovery";
-import {completionPresentationKey} from "./completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "@riddle-quest/hosted/play/completionPresentation";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "./playerPreferences";
 
 /** Provides game frame app behavior. */
@@ -251,9 +251,11 @@ export function GameFrameApp({
     delete account,
   } behavior. */
   const {
+    inputReady,
     waitingForSkippedRiddle,
     coinActionsReady,
     canSubmit,
+    submitPending,
     submitGuess,
     handleQueuedGuessResult,
     acceptRiddleResult,
@@ -342,6 +344,9 @@ export function GameFrameApp({
 
   useGameSessionPersistence({state, stateRef, restoredGame, dispatch, onSaveGame});
 
+  /** Hosted answer edits wait for the synchronous journal; utility navigation stays available. */
+  const answerInputReady = !onSaveGame || inputReady;
+
   /** Provides type keyboard letter behavior. */
   const typeKeyboardLetter = useCallback(
     (letter: string) => {
@@ -357,7 +362,7 @@ export function GameFrameApp({
   }, [playFeedback]);
   useAnswerKeyboard({
     locale: state.riddle?.evaluation?.locale ?? state.locale,
-    active: online && !interactionBlocked && canEditCurrentGuess(state) && !guidanceActive && !raceOpen,
+    active: answerInputReady && online && !interactionBlocked && canEditCurrentGuess(state) && !guidanceActive && !raceOpen,
     onLetter: typeKeyboardLetter,
     onBackspace: deleteKeyboardLetter,
     onSubmit: submitGuess,
@@ -377,8 +382,8 @@ export function GameFrameApp({
       <div
         ref={contentRef}
         className="game-content"
-        inert={state.modal !== null || terminalSurfaceRecovery || guidanceActive || raceOpen || !online ? true : undefined}
-        aria-hidden={state.modal !== null || terminalSurfaceRecovery || guidanceActive || raceOpen || !online ? true : undefined}
+        inert={isBlockingGameModal(state.modal) || terminalSurfaceRecovery || guidanceActive || raceOpen || !online ? true : undefined}
+        aria-hidden={isBlockingGameModal(state.modal) || terminalSurfaceRecovery || guidanceActive || raceOpen || !online ? true : undefined}
       >
         <GameHeader
           state={state}
@@ -406,21 +411,24 @@ export function GameFrameApp({
               <div className="riddle-card">
                 <h1>{state.riddle.text}</h1>
               </div>
-              <GuessBoard state={state} dispatch={dispatch} />
+              <GuessBoard state={state} dispatch={dispatch} disabled={!answerInputReady} />
             </section>
 
-            <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} />
+            <Keyboard state={state} dispatch={dispatch} playFeedback={playFeedback} disabled={!answerInputReady} />
 
             <section className="game-input-actions" aria-label={tr("Navigation.GAME")}>
               {economyAvailable && <button data-tooltip="gameHint" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "hint"})}>
                 <HintIcon />
                 {tr("Navigation.HINT_BUTTON")}
               </button>}
-              <button data-tooltip="submitAnswer" className="submit-action" onClick={submitGuess} disabled={!canSubmit}>
-                {tr("GameScreenAlerts.SUBMIT_BUTTON")}
+              <button data-tooltip="submitAnswer" className="submit-action" onClick={submitGuess}
+                aria-busy={submitPending || undefined} disabled={!answerInputReady || !canSubmit}>
+                {tr(submitPending ? "Accessibility.LOADING" : "GameScreenAlerts.SUBMIT_BUTTON")}
               </button>
-              {economyAvailable && state.gameMode === "classic" && (
-                <button data-tooltip="gameSkip" disabled={state.guessPending && !canDraftWhileConfirming(state)} onClick={() => dispatch({type: "openModal", modal: "skip"})}>
+              {(economyAvailable || state.gameMode === "challenge") && (
+                <button data-tooltip="gameSkip"
+                  disabled={state.guessPending && (state.gameMode === "challenge" || !canDraftWhileConfirming(state))}
+                  onClick={() => dispatch({type: "openModal", modal: "skip"})}>
                   <ForwardIcon />
                   {tr("GameScreenAlerts.SKIP_BUTTON")}
                 </button>
@@ -442,9 +450,10 @@ export function GameFrameApp({
               >
                 <SettingsIcon />
               </button>
-              {raceEnabled && state.gameMode === "classic" && (
+              {raceEnabled && (
                 <button
                   className="multiplayer-navigation-action"
+                  data-tooltip="gameMultiplayer"
                   onClick={() => setRaceOpen(true)}
                   aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}
                 >
@@ -474,14 +483,15 @@ export function GameFrameApp({
             onNext={state.lastOutcome?.kind === "win" ? () => {
               /** Explicit Next releases the normal victory-load guard before asking authority. */
               const current = stateRef.current;
-              if (!current.lastOutcome || !current.completionAcknowledged || current.guessPending || current.pendingCoinSpend || recovery.isPending()) return;
+              if (!current.lastOutcome || current.guessPending || current.pendingCoinSpend || recovery.isPending() ||
+                isCompletionAdvancePending(current)) return;
               dispatch({type: "closeModal"});
               if (current.lastOutcome.kind === "win") window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed", {
                 detail: {outcomeKey: completionPresentationKey(current.lastOutcome)},
               }));
               requestRiddle();
             } : undefined}
-            nextBlocked={state.guessPending || !state.completionAcknowledged}
+            nextBlocked={state.guessPending || isCompletionAdvancePending(state)}
             continuation={state.modal === "continue" ? {
               economyAvailable,
               onDecline: () => {if (!recovery.isPending() && !stateRef.current.guessPending && !stateRef.current.pendingCoinSpend) dispatch({type: "declineContinue"});},
@@ -494,8 +504,9 @@ export function GameFrameApp({
               onOpenModal: (modal) => dispatch({type: "openModal", modal}),
               commerceAvailable: false,
             } : undefined}
-            coinAction={state.modal === "hint" || (state.modal === "skip" && state.gameMode === "classic") ? {
+            coinAction={state.modal === "hint" || state.modal === "skip" ? {
               kind: state.modal,
+              gameMode: state.gameMode,
               balance: state.profile?.coins ?? 0,
               pending: recovery.pending || !coinActionsReady || (state.modal === "hint" && Boolean(state.engineSnapshot?.gameOver)),
               onClose: () => dispatch({type: "closeModal"}),
@@ -532,6 +543,8 @@ export function GameFrameApp({
         <GuidanceOverlay
           state={state}
           economyAvailable={economyAvailable}
+          commerceAvailable={commerceAvailable}
+          multiplayerAvailable={raceEnabled}
           modal={state.modal}
           suspended={raceOpen || (failedModalOwner === surfaceOwner && Boolean(state.modal || terminalSurfaceRecovery))}
           onActiveChange={setGuidanceActive}

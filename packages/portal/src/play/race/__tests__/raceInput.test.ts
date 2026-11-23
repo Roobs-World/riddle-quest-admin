@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRiddlePrompt} from "@qwordly/core/race";
+import type {RaceRiddlePrompt} from "@riddle-quest/core/race";
 import {deleteRaceLetter, insertRaceLetter, insertRaceText, isRaceSlotEditable} from "../logic/raceInput";
 
 /** Creates a deterministic riddle for answer-input tests. */

@@ -32,5 +32,28 @@ test("backend production coverage retains the unit thresholds and includes the e
   assert.ok(!config.testMatch.some(pattern => pattern.includes("!**/__tests__/**/*.it.test.ts")));
   const workflow = await readFile(new URL("../../.github/workflows/production-readiness.yml", import.meta.url), "utf8");
   const workspace = workflow.split("  functions-node22:")[0];
-  assert.match(workspace, /actions\/setup-java@.*[\s\S]*java-version: "21"[\s\S]*pnpm test:coverage/u);
+  const backend = workflow.split("  functions-node22:")[1].split("  browser-and-rules:")[0];
+  assert.match(workspace, /pnpm test:coverage:jest-facebook/u);
+  assert.match(backend, /node-version-file: firebase-functions\/\.nvmrc/u);
+  assert.match(backend, /pnpm --dir firebase-functions check:types/u);
+  assert.match(backend, /actions\/setup-java@.*[\s\S]*java-version: "21"[\s\S]*pnpm --dir firebase-functions test:coverage/u);
+});
+
+test("Jest and Facebook readiness preserves parked targets while bounding its runtime scope", async () => {
+  const workflow = await readFile(new URL("../../.github/workflows/production-readiness.yml", import.meta.url), "utf8");
+  for (const script of ["check:types:jest-facebook", "test:coverage:jest-facebook", "build:jest-facebook"]) {
+    assert.equal(typeof root.scripts[script], "string");
+    assert.doesNotMatch(root.scripts[script], /@riddle-quest\/(?:android|reddit-app)|build:(?:web|all-targets|reddit|youtube|netflix|yahoo|gamesnacks)(?:\s|$)/u);
+  }
+  assert.match(root.scripts["test:coverage"], /@riddle-quest\/android test:coverage/u);
+  assert.match(portal.scripts["verify:all-targets"], /pnpm build:all-targets/u);
+  assert.match(workflow, /pnpm test:e2e:jest-facebook/u);
+  assert.doesNotMatch(workflow, /JEST_FACEBOOK_BROWSER_SHARD|matrix\.shard/u);
+  assert.match(workflow, /needs: \[workspace-node24, functions-node22\]/u);
+  assert.match(workflow, /run: node packages\/portal\/scripts\/prepare-facebook-draft\.mjs/u);
+  assert.doesNotMatch(workflow, /run: pnpm --filter @riddle-quest\/portal preflight:facebook-upload/u);
+  assert.ok(workflow.includes("group: production-readiness-${{ github.workflow }}-${{ github.ref }}"));
+  assert.match(workflow, /DEVELOPMENT_TARGETS: '\["jest","facebook"\]'/u);
+  assert.doesNotMatch(workflow, /pnpm (?:check:types|test:coverage|build|test:e2e)\s*$/mu);
+  assert.doesNotMatch(workflow, /reddit-app build|test:youtube-content|check:youtube-progress/u);
 });

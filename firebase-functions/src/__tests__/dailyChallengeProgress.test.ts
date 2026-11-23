@@ -73,9 +73,9 @@ describe("daily challenge progress rollover", () => {
       resolveDailyChallengeProgress(player({lastDailyChallengeCompletedAt: NOW.getTime(), progress: undefined}), 1),
     ).toEqual({currentQuestion: 0, hasCompletedToday: true, questionsCompleted: 1});
   });
-  it("resets an English completion at London midnight rather than UTC midnight", () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-09T23:01:00Z"));
-    expect(resolveDailyChallengeProgress(player({lastDailyChallengeCompletedAt: new Date("2026-08-09T22:55:00Z").getTime()}), 1)).toMatchObject({hasCompletedToday: false});
+  it("resets an English completion at London 09:00", () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-10T08:01:00Z"));
+    expect(resolveDailyChallengeProgress(player({lastDailyChallengeCompletedAt: new Date("2026-08-10T07:55:00Z").getTime()}), 1)).toMatchObject({hasCompletedToday: false});
   });
 
 });

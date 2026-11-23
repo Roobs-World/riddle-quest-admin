@@ -455,34 +455,92 @@ describe("atomic authoritative completion", () => {
     expect(mockDocuments.get(`users/${USER_ID}`)?.coins).toBe(335);
   });
 
-  it("adds the idempotent Facebook first-win referral to the returned authoritative balance", async () => {
-    /** Provides facebook uid behavior. */
-    const facebookUid = `facebook_${"a".repeat(40)}`;
-    /** Provides inviter uid behavior. */
-    const inviterUid = `facebook_${"b".repeat(40)}`;
-    mockDocuments.set(`users/${facebookUid}`, {...user(), userId: facebookUid});
+  it.each(["facebook", "reddit"] as const)("attributes the %s referral to its earning completion across retries and later wins", async provider => {
+    /** Provider identity whose first accepted solo win settles the invitation. */
+    const inviteeUid = `${provider}_${"a".repeat(40)}`;
+    /** Referrer balance independently detects duplicate wallet grants. */
+    const inviterUid = `${provider}_${"b".repeat(40)}`;
+    mockDocuments.set(`users/${inviteeUid}`, {...user(), userId: inviteeUid});
     mockDocuments.set(`users/${inviterUid}`, {...user(), userId: inviterUid, coins: 500});
-    mockDocuments.set(`facebookReferralBindings/${facebookUid}`, {
-      provider: "facebook",
-      inviteeUid: facebookUid,
+    mockDocuments.set(`${provider}ReferralBindings/${inviteeUid}`, {
+      provider,
+      inviteeUid,
       inviterUid,
       tokenId: "c".repeat(64),
       boundAtMs: Date.now() - 1,
       settledAtMs: null,
     });
-    /** Provides request behavior. */
+    /** The first completion owns the referral bonus and keeps it on retry. */
     const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
-    /** Provides first behavior. */
-    const first = await completeAuthoritativeGame(request, {uid: facebookUid});
-    /** Provides replay behavior. */
-    const replay = await completeAuthoritativeGame(request, {uid: facebookUid});
+    /** Authoritative result after both the solo and referral transactions commit. */
+    const first = await completeAuthoritativeGame(request, {uid: inviteeUid});
+    /** Re-delivery cannot transfer the bonus to a different completion. */
+    const replay = await completeAuthoritativeGame(request, {uid: inviteeUid});
 
     expect(first).toMatchObject({
       coinsEarned: 125,
       rewardBreakdown: {referralBonus: 100, totalAwarded: 125, newBalance: 425},
     });
     expect(replay).toEqual(first);
-    expect(mockDocuments.get(`users/${facebookUid}`)?.coins).toBe(425);
+    expect(mockDocuments.get(`users/${inviteeUid}`)?.coins).toBe(425);
+    expect(mockDocuments.get(`users/${inviterUid}`)?.coins).toBe(600);
+
+    mockFinalizeAuthoritativeSession.mockResolvedValue({
+      attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
+      completionKey: "classic:2", classicIndex: 2, terminal: true,
+    });
+    /** A later win crosses a level but cannot earn the earlier referral again. */
+    const nextRequest = {riddleId: "classic-2", gameMode: "classic" as const, sessionToken: TOKEN_B};
+    /** Displayed reward and balance must equal this completion's actual wallet mutation. */
+    const next = await completeAuthoritativeGame(nextRequest, {uid: inviteeUid});
+    expect(next).toMatchObject({
+      coinsEarned: 35,
+      rewardBreakdown: {baseWinCoins: 25, levelUpBonus: 10, totalAwarded: 35, newBalance: 460},
+    });
+    expect(next.rewardBreakdown?.referralBonus).toBeUndefined();
+    expect(await completeAuthoritativeGame(nextRequest, {uid: inviteeUid})).toEqual(next);
+    expect(mockDocuments.get(`users/${inviteeUid}`)?.coins).toBe(460);
+    expect(mockDocuments.get(`users/${inviterUid}`)?.coins).toBe(600);
+    // Account deletion removes both referral identities but retains validated
+    // receipt attribution for the surviving invitee's completion replay.
+    mockDocuments.set(`${provider}ReferralSettlements/${hash(`riddle-quest\0${provider}-referral\0settlement\0${inviteeUid}`)}`, {
+      provider, replayProtection: true, inviteeCoins: 100, inviterCoins: 100, settledAtMs: Date.now(),
+      completionReceiptId: hash(`${inviteeUid}\0classic\0classic:1`),
+    });
+    mockDocuments.delete(`users/${inviterUid}`);
+    mockFinalizeAuthoritativeSession.mockResolvedValue({
+      attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
+      completionKey: "classic:1", classicIndex: 1, terminal: true,
+    });
+    expect(await completeAuthoritativeGame(request, {uid: inviteeUid})).toEqual(first);
+    expect(mockDocuments.get(`users/${inviteeUid}`)?.coins).toBe(460);
+    mockFinalizeAuthoritativeSession.mockResolvedValue({
+      attempts: 2, lastGuess: "piano", answer: "piano", locale: "en",
+      completionKey: "classic:2", classicIndex: 2, terminal: true,
+    });
+    expect(await completeAuthoritativeGame(nextRequest, {uid: inviteeUid})).toEqual(next);
+    expect(mockDocuments.get(`users/${inviteeUid}`)?.coins).toBe(460);
+    expect(mockDocuments.has(`users/${inviterUid}`)).toBe(false);
+  });
+
+  it.each(["facebook", "reddit"] as const)("does not attach a legacy or race %s referral settlement to a new solo completion", async provider => {
+    /** Older and multiplayer settlements have no solo completion attribution. */
+    const inviteeUid = `${provider}_${"a".repeat(40)}`;
+    /** Existing referrer receipt must stay paid exactly once. */
+    const inviterUid = `${provider}_${"b".repeat(40)}`;
+    mockDocuments.set(`users/${inviteeUid}`, {...user(), userId: inviteeUid, coins: 400});
+    mockDocuments.set(`users/${inviterUid}`, {...user(), userId: inviterUid, coins: 600});
+    mockDocuments.set(`${provider}ReferralSettlements/${hash(`riddle-quest\0${provider}-referral\0settlement\0${inviteeUid}`)}`, {
+      provider, inviteeUid, inviterUid, inviteeCoins: 100, inviterCoins: 100, settledAtMs: Date.now() - 1,
+    });
+    /** Current win has no evidence that it earned the historical referral. */
+    const request = {riddleId: "classic-1", gameMode: "classic" as const, sessionToken: TOKEN_A};
+    /** Only the current base grant belongs in this receipt and balance. */
+    const first = await completeAuthoritativeGame(request, {uid: inviteeUid});
+    expect(first).toMatchObject({coinsEarned: 25, rewardBreakdown: {totalAwarded: 25, newBalance: 425}});
+    expect(first.rewardBreakdown?.referralBonus).toBeUndefined();
+    expect(await completeAuthoritativeGame(request, {uid: inviteeUid})).toEqual(first);
+    expect(mockDocuments.get(`users/${inviteeUid}`)?.coins).toBe(425);
     expect(mockDocuments.get(`users/${inviterUid}`)?.coins).toBe(600);
   });
 
@@ -643,12 +701,12 @@ describe("atomic authoritative completion", () => {
   });
 
   it("receipts a prior-day parallel Daily loss as a replay-safe no-op after a rollover win", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T23:05:00.000Z"));
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T08:05:00.000Z"));
     mockFinalizeAuthoritativeSession.mockResolvedValue({
       attempts: 2,
       lastGuess: "piano",
       terminal: true,
-      terminalAt: {toDate: () => new Date("2026-08-11T22:59:00.000Z")},
+      terminalAt: {toDate: () => new Date("2026-08-12T07:59:00.000Z")},
       answer: "piano",
       locale: "en",
       completionKey: "challenge:2026-08-11",
@@ -730,8 +788,8 @@ describe("atomic authoritative completion", () => {
     expect(mockDocuments.get(`users/${USER_ID}`)).toEqual(before);
   });
 
-  it("recovers a server-proven 23:59 Daily win just after London rollover", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T23:05:00.000Z"));
+  it("recovers a server-proven 08:59 Daily win just after London rollover", async () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T08:05:00.000Z"));
     mockDocuments.set(`users/${USER_ID}`, {
       ...user(),
       lastDailyChallengeCompletedAt: {toDate: () => new Date("2026-08-10T12:00:00.000Z")},
@@ -742,7 +800,7 @@ describe("atomic authoritative completion", () => {
       attempts: 2,
       lastGuess: "piano",
       terminal: true,
-      terminalAt: {toDate: () => new Date("2026-08-11T22:59:00.000Z")},
+      terminalAt: {toDate: () => new Date("2026-08-12T07:59:00.000Z")},
       answer: "piano",
       locale: "en",
       completionKey: "challenge:2026-08-11",
@@ -758,13 +816,13 @@ describe("atomic authoritative completion", () => {
     expect(result).toMatchObject({isCorrect: true, newWinStreak: 2});
     expect(mockDocuments.get(`users/${USER_ID}`)).toMatchObject({
       lastCompletedDailyChallengeKey: "2026-08-11",
-      lastDailyChallengeCompletedAt: "2026-08-10T23:00:00.000Z",
+      lastDailyChallengeCompletedAt: "2026-08-11T08:00:00.000Z",
       progress: {dailyChallengeIndex: 1},
     });
   });
 
   it("rejects rollover recovery after a newer Daily entitlement was attempted", async () => {
-    jest.useFakeTimers().setSystemTime(new Date("2026-08-11T23:05:00.000Z"));
+    jest.useFakeTimers().setSystemTime(new Date("2026-08-12T08:05:00.000Z"));
     mockDocuments.set(`users/${USER_ID}`, {
       ...user(),
       lastDailyChallengeAttemptedKey: "2026-08-12",
@@ -773,7 +831,7 @@ describe("atomic authoritative completion", () => {
       attempts: 1,
       lastGuess: "piano",
       terminal: true,
-      terminalAt: {toDate: () => new Date("2026-08-11T22:59:00.000Z")},
+      terminalAt: {toDate: () => new Date("2026-08-12T07:59:00.000Z")},
       answer: "piano",
       locale: "en",
       completionKey: "challenge:2026-08-11",

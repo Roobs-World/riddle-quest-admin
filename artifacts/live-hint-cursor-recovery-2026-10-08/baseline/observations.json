@@ -1,9 +1,0 @@
-[
-  {
-    "width": 390,
-    "method": "physical",
-    "name": "hint cursor skips populated cells",
-    "actual": 1,
-    "expected": 2
-  }
-]

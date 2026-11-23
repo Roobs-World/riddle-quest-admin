@@ -1,5 +1,0 @@
-{
-  "packages/portal/src/play/game/hooks/useGameBridgeLifecycle.ts": "00a0f36dfad77e8a7c578e4c62a522f3c84046f630197381e7704872a5947deb",
-  "packages/portal/package.json": "a629963260a4ef6e94a8436bf9fc8eb2e70eb2e6d14c1fcb8991c3773cc4e729",
-  "packages/portal/scripts/verify-resize-setup-retirement-browser.mjs": "0595b208eac336b019512608eaf013df554ffaabaca36af164e306fb90799970"
-}

@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
-import type {GameSessionAction} from "../gameSession";
+import type {GameSessionAction} from "@riddle-quest/hosted/play/gameSession";
 
 /** Describes effect. */
 type Effect = () => void | (() => void);
@@ -10,7 +10,7 @@ jest.mock("react", () => ({
   useEffect: (effect: Effect) => effects.push(effect),
 }));
 
-import {createInitialGameSession, gameSessionReducer} from "../gameSession";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
 import {useReferralReward} from "../game/hooks/useReferralReward";
 
 /** Provides riddle behavior. */

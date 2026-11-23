@@ -1,5 +1,16 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
+import {RACE_CHALLENGE_TTL_MS, type ListFacebookContextBoardResponse} from "@riddle-quest/core/race";
+
+/** Supplies valid server-window semantics to immediate and deliberately held context responses. */
+export function createRaceContextBoardFixture(locale: ListFacebookContextBoardResponse["locale"], adjustedTimeMs: number): ListFacebookContextBoardResponse {
+  /** One clock sample anchors both endpoints of the weekly fixture window. */
+  const startsAtMs = Date.now() - 1000;
+  /** The same current-player standing appears in the rows and summary. */
+  const currentPlayer = {rank: 1, adjustedTimeMs, isCurrentPlayer: true};
+  return {locale, startsAtMs, endsAtMs: startsAtMs + RACE_CHALLENGE_TTL_MS,
+    sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false, standings: [currentPlayer], currentPlayer};
+}
 
 /** Installs controlled provider context dialogs behind the actual HTML5 SDK adapter. */
 export async function installRaceContextDialogs(page: Page, nativeMatching = true, deliverContextEvents = true, contextChallenges = false): Promise<void> {
@@ -16,11 +27,8 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
     const request = route.request().postDataJSON().data;
     await page.evaluate(value => Reflect.set(window, "__contextBoardRequest", value), request);
     /** New context has visibly distinct identity-free standings. */
-    const currentPlayer = {rank: 1, adjustedTimeMs: request.contextId === "context-external" ? 4500 : request.contextId === "context-new" ? 2000 : 9000, isCurrentPlayer: true};
-    await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
-      locale: request.locale, startsAtMs: Date.now() - 1000, endsAtMs: Date.now() - 1000 + 604800000, sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false,
-      standings: [currentPlayer], currentPlayer,
-    }})});
+    const adjustedTimeMs = request.contextId === "context-external" ? 4500 : request.contextId === "context-new" ? 2000 : 9000;
+    await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: createRaceContextBoardFixture(request.locale, adjustedTimeMs)})});
   });
   await page.addInitScript(({nativeMatching, deliverContextEvents, contextChallenges}) => {
     /** Extend the existing SDK fixture while preserving identity and profile overlay contracts. */
@@ -113,12 +121,7 @@ export async function verifyRaceContextDialogs(page: Page, screenshotPath = "/tm
       const request = route.request().postDataJSON().data;
       if (request.contextId !== "context-slow") {await route.fallback(); return;}
       releaseOld = async () => {
-        /** Owns the deliberately delayed context response. */
-        const currentPlayer = {rank: 1, adjustedTimeMs: 27000, isCurrentPlayer: true};
-        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
-          locale: request.locale, startsAtMs: Date.now() - 1000, endsAtMs: Date.now() + 604800000,
-          sortOrder: "LOWER_IS_BETTER", rewardsEnabled: false, standings: [currentPlayer], currentPlayer,
-        }})});
+        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: createRaceContextBoardFixture(request.locale, 27000)})});
       };
       markOldRead();
   });

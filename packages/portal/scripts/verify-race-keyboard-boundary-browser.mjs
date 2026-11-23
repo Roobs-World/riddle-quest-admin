@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.RACE_BOUNDARY_REACT_MODE??'development',baseline=process.env.RACE_BOUNDARY_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.RACE_BOUNDARY_REPORT_DIR??path.join(root,'../../artifacts/race-keyboard-boundary-2026-10-04',mode));
+const output=path.resolve(process.env.RACE_BOUNDARY_REPORT_DIR??path.join(root,'../../builds/test-evidence/race-keyboard-boundary-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/race-keyboard-boundary-'));let server,browser;const observations=[];
 try{
@@ -16,7 +16,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RaceContextBoard} from ${JSON.stringify(path.join(root,'src/play/race/RaceContextBoard.tsx'))};
 import {RaceTournamentEntry} from ${JSON.stringify(path.join(root,'src/play/race/RaceTournamentEntry.tsx'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};

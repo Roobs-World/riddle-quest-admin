@@ -1,9 +1,0 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.countCoinRewardAchievements = countCoinRewardAchievements;
-/** Hint badges recognize usage without refunding their action cost. */
-const NON_PAYING_ACHIEVEMENTS = new Set(["hint_user", "hints_10", "hints_25"]);
-/** Counts coin-eligible badges while preserving all achievement unlocks. */
-function countCoinRewardAchievements(achievementIds) {
-    return achievementIds.filter((id) => !NON_PAYING_ACHIEVEMENTS.has(id)).length;
-}

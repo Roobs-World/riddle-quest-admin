@@ -8,7 +8,7 @@ import {processRaceDeliveryQueue} from "../../race/raceDeliveryQueue";
 import {replayRaceDelivery} from "../../race/raceDeliveryRecovery";
 import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
 import {Timestamp} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS} from "@qwordly/core/race";
+import {LIVE_RACE_WAIT_MS} from "@riddle-quest/core/race";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {settleRedditReferralAfterAuthoritativeWin} from "../../reddit/redditReferrals";
 
@@ -89,9 +89,9 @@ async function pair(players = PLAYERS, bindReferral = true) {
   return b ? [a, b] : [a];
 }
 
-/** Solves the private creator deck through normal commands rather than manufacturing a terminal projection. */
-async function finish(userId: string, ticketId: string, from = 0, firstGuessMs = START + 6000) {
-  for (let i = from; i < 10; i++) {
+/** Answers up to the requested correct count through normal commands against the private creator deck. */
+async function finish(userId: string, ticketId: string, from = 0, firstGuessMs = START + 6000, totalCorrect = 10) {
+  for (let i = from; i < totalCorrect; i++) {
     /** Provides ticket behavior. */
     const ticket = (await db.doc(`liveRaceTickets/${ticketId}`).get()).data()!;
     /** Provides match behavior. */
@@ -174,6 +174,8 @@ it("settles a human fallback-bot win without rewarding the bot", async () => {
 it("uses an authoritative forfeit win without requiring an official ten-solve tournament score", async () => {
   /** Provides seats behavior. */
   const seats = await pair();
+  await finish(PLAYERS[0], seats[0].ticketId, 0, START + 6000, 1);
+  await finish(PLAYERS[1], seats[1].ticketId, 0, START + 6000, 1);
   await updateLiveRaceForUser(PLAYERS[1], {ticketId: seats[1].ticketId, action: "leave", requestId: "referral-forfeit"}, {db, nowMs: START + 7000});
   /** Provides event behavior. */
   const event = (await db.collection("racePerformanceOutbox").get()).docs[0];
@@ -181,6 +183,10 @@ it("uses an authoritative forfeit win without requiring an official ten-solve to
   await deliverRacePerformance(event.id, db, START + 8000);
   expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()).toMatchObject({coins: 300, stats: {multiplayerWins: 1}});
   expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()).toMatchObject({coins: 125, stats: {multiplayerWins: 0}});
+  await deliverRacePerformance(event.id, db, START + 9000);
+  expect((await db.doc(`users/${PLAYERS[0]}`).get()).data()?.coins).toBe(300);
+  expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(400);
+  expect((await db.collection("redditReferralSettlements").get()).size).toBe(1);
 });
 
 it("keeps the referral lifetime grant settled when the same player wins another live match", async () => {

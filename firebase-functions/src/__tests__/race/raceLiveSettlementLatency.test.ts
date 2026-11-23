@@ -1,3 +1,6 @@
+import {Timestamp} from "firebase-admin/firestore";
+import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
+import {applyRaceGuess} from "../../race/raceEngine";
 import {updateLiveRaceForUser} from "../../race/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
 import {JEST_ACCOUNT_DELETION_COLLECTION} from "../../jest/jestAccountDeletion";
@@ -25,19 +28,20 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
     /** The match began before this result observation. */
     const startsAtMs = NOW - 1000;
     /** Private runs retain the real engine and public projection. */
-    const runs = users.map((user, seat) => liveRun(base, user, ticketIds[seat]!, startsAtMs)) as LiveMatch["runs"];
+    const runs = users.map((user, seat) => applyRaceGuess(liveRun(base, user, ticketIds[seat]!, startsAtMs),
+      {riddleId: "q0", guess: "piano"}, NOW).run) as LiveMatch["runs"];
     /** Public identity is still present until fresh privacy checks complete. */
     const players = users.map((_, seat) => ({displayName: seat ? "Bob" : "Alice", avatarUrl: null, bot: false, correctCount: 0})) as LiveMatch["players"];
     /** Terminal state has not granted either human account yet. */
     const match: LiveMatch = {tickets: [...ticketIds], startsAtMs, observedAtMs: NOW, players, runs, winner};
     /** In-memory persistence gives every read the same 200ms transport cost. */
-    const documents = new Map<string, unknown>([[`liveRaceMatches/${ticketIds[0]}`, match]]);
+    const documents = new Map<string, unknown>([[`liveRaceMatches/${ticketIds[0]}`, {...match, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}]]);
     users.forEach((userId, seat) => {
       /** Facebook destinations remain frozen independently for each private ticket. */
       const ticket: LiveTicket = {userId, pool: "pool", createdAtMs: startsAtMs - 5000, seenAtMs: startsAtMs,
         matchId: ticketIds[0], player: players[seat]!, run: runs[seat]!,
         ...(provider === "facebook" ? {facebookContext: {contextKey: ticketIds[seat]!, createdAtMs: startsAtMs - 5000, joinedAtMs: startsAtMs - 2000}} : {})};
-      documents.set(`liveRaceTickets/${ticketIds[seat]}`, {...ticket, expiresAt: "expiry"});
+      documents.set(`liveRaceTickets/${ticketIds[seat]}`, {...ticket, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)});
       documents.set(`users/${userId}`, {coins: 100});
     });
     /** Read trace proves canonical checks remain present and no document is fetched twice. */
@@ -54,7 +58,7 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
         reads.push(ref.path);
         await new Promise(resolve => setTimeout(resolve, 200));
         if (sourceReadFails && ref.path === `liveRaceTickets/${ticketIds[1]}`) throw new Error("Winner source read unavailable");
-        return {ref, exists: documents.has(ref.path), data: () => structuredClone(documents.get(ref.path))};
+        return {ref, exists: documents.has(ref.path), data: () => cloneLiveRaceFixture(documents.get(ref.path))};
       },
       set: (ref: {
         /** Canonical document path. */
@@ -70,7 +74,7 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
       }, value: unknown) => {writes.push(ref.path); documents.set(ref.path, {...documents.get(ref.path) as object, ...value as object});},
     };
     /** Discarding an attempt must also discard every tentative profile or match write. */
-    const initialDocuments = structuredClone(documents);
+    const initialDocuments = new Map([...documents].map(([path, value]) => [path, cloneLiveRaceFixture(value)]));
     /** Only the first invocation retries; later polls exercise receipt idempotency. */
     let firstInvocation = true;
     /** Isolated database invokes the actual settlement implementation. */
@@ -78,7 +82,7 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
       runTransaction: async (operation: (value: typeof transaction) => unknown) => {
         if (firstInvocation && retryDeletion) {
           await operation(transaction);
-          documents.clear(); initialDocuments.forEach((value, path) => documents.set(path, structuredClone(value)));
+          documents.clear(); initialDocuments.forEach((value, path) => documents.set(path, cloneLiveRaceFixture(value)));
           documents.set(`${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`, {recreationBlocked: true});
           writes.length = 0;
         }

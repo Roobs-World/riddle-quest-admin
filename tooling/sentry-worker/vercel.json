@@ -1,10 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "",
+  "installCommand": "npm ci --ignore-scripts",
   "buildCommand": "",
   "functions": {
-    "api/sentry-webhook.js": {"maxDuration": 60}
+    "api/sentry-webhook.js": {"maxDuration": 300, "includeFiles": "worker/**"}
   },
   "crons": [{"path": "/api/sentry-webhook", "schedule": "0 * * * *"}]
 }

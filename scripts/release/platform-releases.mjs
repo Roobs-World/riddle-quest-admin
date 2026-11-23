@@ -123,7 +123,7 @@ export function releaseEndToEndGate(plan) {
     return {executable: "node", args: ["scripts/release/verify-packaged-games.mjs", "--target", plan.target]};
   }
   if (plan.target === "reddit") {
-    return {executable: "pnpm", args: ["--filter", "@qwordly/portal", "test:reddit:playwright"],
+    return {executable: "pnpm", args: ["--filter", "@riddle-quest/portal", "test:reddit:playwright"],
       environment: {PORTAL_USE_EXISTING_BUILD: "1"}};
   }
   return null;

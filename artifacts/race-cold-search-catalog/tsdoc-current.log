@@ -1,6 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 3 production declarations are undocumented.
-- packages/portal/src/jest/__tests__/JestHostedPlaySession.test.ts:5 session
-- packages/portal/src/jest/__tests__/JestHostedPlaySession.test.ts:10 session
-- packages/portal/src/play/__tests__/useHostRiddleLifecycle.test.ts:53 lifecycle
-[ELIFECYCLE] Command failed with exit code 1.

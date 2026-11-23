@@ -1,5 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RaceRunResponseSchema} from "@qwordly/core/race";
+import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS, RaceRunResponseSchema} from "@riddle-quest/core/race";
 import {createFakeRaceServices} from "../testing/fakeRaceServices";
 import {projectInstantRaceHint} from "../logic/racePresentation";
 

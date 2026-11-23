@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {RacePlay} from "../RacePlay";
-import type {GameToHostMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage} from "@riddle-quest/core/bridge";
 import {catalog, harness, racing} from "./raceSession.support";
 
 describe("Race Session outbound journey ownership", () => {

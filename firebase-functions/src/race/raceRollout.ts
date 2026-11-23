@@ -7,10 +7,11 @@ import {
   type RaceAccessResponse,
   type RaceAnalyticsEventRequest,
   type RaceLocale,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {isFacebookFirebaseUid} from "../facebook/facebookSecurity";
+import {raceProviderScope, assertAndroidRaceAccount} from "./raceEligibility";
 import {isRedditFirebaseUid} from "../reddit/redditSecurity";
 
 /** Describes firestore. */
@@ -67,11 +68,16 @@ export async function getRaceAccessForUser(
   locale: RaceLocale,
   dbInput?: Firestore,
 ): Promise<RaceAccessResponse> {
-  if (locale !== "en" && !isFacebookFirebaseUid(userId) && !isRedditFirebaseUid(userId)) {
+  if (locale !== "en" && !isFacebookFirebaseUid(userId) && !isRedditFirebaseUid(userId) && raceProviderScope(userId) !== "android") {
     return {enabled: false, locale, reason: "rollout_disabled"};
   }
   /** Provides db behavior. */
   const db = dbInput ?? admin.firestore();
+  if (raceProviderScope(userId) === "android") {
+    /** Retains profile for this operation. */
+    const profile = await db.doc(`users/${userId}`).get();
+    assertAndroidRaceAccount(userId, profile.data());
+  }
   return evaluateRaceRollout(await readRolloutConfig(db), userId, locale);
 }
 
@@ -137,7 +143,8 @@ export async function recordRaceAnalyticsForUser(
   input: RaceAnalyticsEventRequest,
   options: {
     /** Stores db. */
-    db?: Firestore; /** Stores now ms. */
+    db?: Firestore;
+    /** Stores now ms. */
     /** Stores now ms. */
     nowMs?: number;
   } = {},

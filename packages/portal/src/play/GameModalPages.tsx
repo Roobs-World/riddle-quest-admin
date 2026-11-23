@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import type {GameModal, GameSessionState} from "./gameSession";
+import type {GameModal, GameSessionState} from "@riddle-quest/hosted/play/gameSession";
 import {
   ContinueModalPage,
   HintModalPage,
@@ -152,8 +152,9 @@ export function GameModalPages({
         />
       )}
 
-      {state.modal === "skip" && state.gameMode === "classic" && (
+      {state.modal === "skip" && (economyAvailable || state.gameMode === "challenge") && (
         <SkipModalPage
+          gameMode={state.gameMode}
           balance={balance}
           onClose={onClose}
           onOpenModal={onOpenModal}

@@ -1,8 +1,0 @@
-$ node scripts/audit-tsdoc.mjs
-TSDoc audit failed: 5 production declarations are undocumented.
-- packages/portal/src/play/__tests__/webStandards.jest-playwright.support.ts:11 packageRoot
-- packages/portal/src/play/__tests__/webStandards.jest-playwright.support.ts:12 retained
-- packages/portal/src/play/__tests__/webStandards.jest-playwright.support.ts:13 directory
-- packages/portal/src/play/__tests__/webStandards.jest-playwright.support.ts:15 document
-- packages/portal/src/play/__tests__/webStandards.jest-playwright.support.ts:35 {violations}
-[ELIFECYCLE] Command failed with exit code 1.

@@ -1,6 +1,0 @@
-[
-  "packages/portal/src/play/race/LiveRaceGame.tsx",
-  "packages/portal/src/play/race/__tests__/liveRaceDraftReceiptRecovery.test.ts",
-  "packages/portal/src/play/race/logic/liveRaceDraftCheckpoint.ts",
-  "packages/portal/src/play/race/logic/liveRaceDraftStorage.ts"
-]

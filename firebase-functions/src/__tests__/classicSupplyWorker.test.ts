@@ -10,7 +10,7 @@ let job: Record<string, unknown>;
 /** Provides clock behavior. */
 let clock: number;
 /** Provides ref behavior. */
-const ref = {};
+const ref = {get: jest.fn(async () => ({exists: true, data: () => ({...job})}))};
 /** Provides transaction behavior. */
 const transaction = {get: jest.fn(async () => ({data: () => ({...job})})), update: jest.fn((_, values) => Object.assign(job, values))};
 /** Masked reads retain the same canonical snapshot/error injector for each transaction attempt. */
@@ -26,7 +26,7 @@ jest.mock("../riddles/riddleGeneration", () => ({generateLocalizedClassicRiddles
 /** Provides warn behavior. */
 const warn = jest.fn();
 jest.mock("firebase-functions", () => ({logger: {warn}}));
-import {isTransientProviderError, processClassicSupplyJob, processClassicSupplyJobs, TRANSIENT_REPORT_THRESHOLD} from "../riddles/classicSupplyWorker";
+import {isTransientProviderError, processClassicSupplyJob, processClassicSupplyJobs, handleClassicSupplyRequest, TRANSIENT_REPORT_THRESHOLD} from "../riddles/classicSupplyWorker";
 /** Builds a provider SDK error carrying an HTTP status. */
 const providerError = (status: number) => Object.assign(new Error("provider"), {status});
 
@@ -81,6 +81,15 @@ describe("durable Classic supply worker", () => {
     expect(await pending).toBe("generated");
     expect(generate).toHaveBeenCalledTimes(1);
   });
+  it("leaves a failed job unacknowledged until its provider retry can complete", async () => {
+    generate.mockRejectedValueOnce(new Error("provider failure"));
+    await expect(handleClassicSupplyRequest("ar_20")).rejects.toThrow("remains pending");
+    await expect(handleClassicSupplyRequest("ar_20")).rejects.toThrow("remains pending");
+    expect(generate).toHaveBeenCalledTimes(1);
+    clock += 300000;
+    await expect(handleClassicSupplyRequest("ar_20")).resolves.toBeUndefined();
+    expect(job.completed).toBe(true);
+  });
   it("backs off provider failures and permits a later retry", async () => {
     generate.mockRejectedValueOnce(new Error("provider failure"));
     expect(await processClassicSupplyJob("ar_20")).toBe("retry");
@@ -94,7 +103,13 @@ describe("durable Classic supply worker", () => {
   it("classifies rate limits, provider outages and dropped connections as transient", () => {
     for (const status of [408, 409, 429, 500, 503]) expect(isTransientProviderError(providerError(status))).toBe(true);
     for (const status of [400, 401, 403, 404, 422]) expect(isTransientProviderError(providerError(status))).toBe(false);
-    for (const name of ["APIConnectionError", "APIConnectionTimeoutError", "AbortError", "TimeoutError"]) {
+    /** Real SDK transport subclasses do not set their instance name. */
+    const {APIConnectionError, APIConnectionTimeoutError} = jest.requireActual<typeof import("openai")>("openai");
+    for (const error of [new APIConnectionError({message: "connection"}), new APIConnectionTimeoutError()]) {
+      expect(error.name).toBe("Error");
+      expect(isTransientProviderError(error)).toBe(true);
+    }
+    for (const name of ["AbortError", "TimeoutError"]) {
       expect(isTransientProviderError(Object.assign(new Error("network"), {name}))).toBe(true);
     }
     expect(isTransientProviderError(new Error("invalid model output"))).toBe(false);

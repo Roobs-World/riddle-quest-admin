@@ -1,3 +1,7 @@
+import {Timestamp} from "firebase-admin/firestore";
+import {RACE_DECK_SIZE} from "@riddle-quest/core/race";
+import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
+import {requestDocumentId} from "../../race/raceSetupService";
 import {updateLiveRaceForUser} from "../../race/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/raceLiveState";
 
@@ -8,7 +12,7 @@ const ticketId = "a".repeat(64), rivalId = "b".repeat(64);
 
 /** Valid private deck exercising the real engine. */
 const base = {locale: "en" as const, categoryId: "history" as const, contentVersion: "observation-v1",
-  riddles: Array.from({length: 30}, (_, position) => ({position, riddleId: `q${position}`,
+  riddles: Array.from({length: RACE_DECK_SIZE}, (_, position) => ({position, riddleId: `q${position}`,
     canonicalRiddleId: `history:${position}`, text: `Historical clue number ${position}`, answer: "piano"}))};
 
 /** Database fake recording transaction modes and writes. */
@@ -25,13 +29,28 @@ function createDb(documents: Map<string, unknown>) {
     writes.push(ref.path);
     if (value !== undefined) documents.set(ref.path, value);
   };
+  /** Document snapshot used by both individual and projected batch reads. */
+  const snapshot = (ref: {
+    /** Document path addressed by this snapshot read. */
+    path: string;
+  }) => ({
+    ref, id: ref.path.split("/").at(-1), exists: documents.has(ref.path),
+    data: () => cloneLiveRaceFixture(documents.get(ref.path)),
+  });
   /** Transaction stub backed by the document map. */
   const transaction = {
     get: async (ref: {
-    /** Document path. */
-    path: string;
-  }) =>
-      ({exists: documents.has(ref.path), data: () => structuredClone(documents.get(ref.path))}),
+      /** Document path for an individual transaction read. */
+      path: string;
+    }) => snapshot(ref),
+    getAll: async (...refs: Array<{
+      /** Document path included in a transaction batch read. */
+      path: string;
+    } | {
+      /** Projected fields requested by a Firestore batch read. */
+      fieldMask: string[];
+    }>) =>
+      refs.flatMap(ref => "path" in ref ? [snapshot(ref)] : []),
     set: write, create: write, delete: write,
     update: (ref: {
     /** Document path. */
@@ -67,8 +86,8 @@ function racingDocuments(): Map<string, unknown> {
   const match: LiveMatch = {tickets: [ticketId, rivalId], startsAtMs, observedAtMs: NOW, participantIds: [OWNER, RIVAL],
     players: [player, {...player, displayName: "Bob"}],
     runs: [liveRun(base, OWNER, ticketId, startsAtMs), liveRun(base, RIVAL, rivalId, startsAtMs)]};
-  return new Map<string, unknown>([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: "expiry"}],
-    [`liveRaceMatches/${ticketId}`, match]]);
+  return new Map<string, unknown>([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}],
+    [`liveRaceMatches/${ticketId}`, {...match, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}]]);
 }
 
 /** Polls the owner's seat. */
@@ -108,7 +127,10 @@ it("keeps lease-refreshing lobby polls on the read-write path", async () => {
     player: {displayName: "Alice", avatarUrl: null, level: 3, bot: false, correctCount: 0},
     run: liveRun(base, OWNER, ticketId, NOW)};
   /** Fake database. */
-  const {db, modes, writes} = createDb(new Map([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: "expiry"}]]));
+  const {db, modes, writes} = createDb(new Map<string, unknown>([[`liveRaceTickets/${ticketId}`, {...ticket, expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}],
+    [`liveRacePlayers/${requestDocumentId(OWNER, "active-live-race")}`, {ticketId}],
+    [`users/${OWNER}`, {username: "Alice", level: 3}],
+    ["liveRaceQueues/pool", {tickets: [ticketId], expiresAt: Timestamp.fromMillis(NOW + 86_400_000)}]]));
   await expect(poll(db, "poll-1")).resolves.toMatchObject({phase: "searching"});
   await expect(poll(db, "poll-2")).resolves.toMatchObject({phase: "searching"});
   expect(modes).toEqual(["read-write", "read-write"]);

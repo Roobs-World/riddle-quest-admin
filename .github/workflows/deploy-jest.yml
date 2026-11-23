@@ -2,6 +2,12 @@ name: Upload and activate Jest build
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_runner_usage:
+        description: Verify and activate a Jest build using Actions allowance, up to 360 runner minutes
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: read
@@ -13,7 +19,7 @@ concurrency:
 jobs:
   deploy:
     name: Verify, upload and activate Jest build
-    if: github.ref == 'refs/heads/jest'
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     environment: jest-production
@@ -29,9 +35,9 @@ jobs:
           distribution: temurin
           java-version: "21"
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
         timeout-minutes: 15
       - name: Install the release sandbox
         run: sudo apt-get update && sudo apt-get install --yes bubblewrap

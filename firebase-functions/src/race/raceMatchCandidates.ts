@@ -1,6 +1,6 @@
 import {admin} from "../shared/firebaseAdmin";
 import {z} from "zod";
-import {RaceCategoryIdSchema, RaceLocaleSchema, RACE_RULES_VERSION} from "@qwordly/core/race";
+import {RaceCategoryIdSchema, RaceLocaleSchema, RACE_RULES_VERSION} from "@riddle-quest/core/race";
 import {raceProviderScope, type RaceProviderScope} from "./raceEligibility";
 import type {RaceChallengeRecord} from "./raceSetupService";
 import {raceDifficultyAdjustedMs, RACE_MATCH_NORMALIZATION_VERSION} from "./raceMatchPerformance";
@@ -31,7 +31,7 @@ export type RaceMatchCandidate = {
 export const RaceMatchCandidateSchema = z.object({
   performanceBucket: z.number().int().nonnegative(), selectionKey: z.string().regex(/^[a-f0-9]{64}$/),
   challengeId: z.string().min(1).max(160).refine(value => !value.includes("/")),
-  creatorId: z.string().regex(/^(jest|facebook|reddit)_[a-f0-9]{40}$/), provider: z.enum(["jest", "facebook", "reddit"]),
+  creatorId: z.string().regex(/^(?:(?:jest|facebook|reddit)_[a-f0-9]{40}|[A-Za-z0-9]{28})$/), provider: z.enum(["jest", "facebook", "reddit", "android"]),
   locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema, rulesVersion: z.literal(RACE_RULES_VERSION),
   contentVersion: z.string().min(1), adjustedFinishMs: z.number().int().nonnegative(),
   performanceMs: z.number().finite().min(1000).max(300000), matchPolicyVersion: z.literal(RACE_MATCH_NORMALIZATION_VERSION),

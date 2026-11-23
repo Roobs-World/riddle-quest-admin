@@ -7,7 +7,7 @@
     "REFERRAL_REWARD_MESSAGE": "Registreer je via mijn uitnodiging en we krijgen allebei {coins} munten!",
     "OPEN_INVITE_MESSAGE": "{name} daagt je uit voor Riddle Quest. Registreer je via deze uitnodiging en jullie krijgen allebei {coins} munten!",
     "REFERRAL_REWARD_TITLE": "Een vriend doet mee!",
-    "TITLE": "LEUKE BAAN!",
+    "TITLE": "GOED GEDAAN!",
     "TOTAL_COINS_LABEL": "Totaal aantal munten",
     "YOU_WON_TITLE": "JE HEBT GEWONNEN!",
     "SHARE_ATTEMPT_PLURAL": "pogingen",
@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "Dagelijkse uitdaging",
     "SHARE_MESSAGE_TEMPLATE": "Ik heb de Riddle Quest {gameType} van vandaag opgelost in {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nKun jij mijn score verbeteren?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Bekijk mijn Riddle Quest resultaat!",
-    "INVITE_FRIEND": "Nodig een vriend uit"
+    "INVITE_FRIEND": "Nodig een vriend uit",
+    "REWARD_CLASSIC": "Klassiek raadsel",
+    "REWARD_DAILY": "Dagelijks raadsel",
+    "REWARD_LEVEL_BONUS": "Levelbonus",
+    "REWARD_STREAK_BONUS": "Reeksbonus",
+    "REWARD_ACHIEVEMENT_BONUS": "Prestatiebonus",
+    "REWARD_REFERRAL_BONUS": "Uitnodigingsbonus"
   }
 }

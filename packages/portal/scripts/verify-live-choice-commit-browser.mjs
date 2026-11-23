@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_CHOICE_REACT_MODE??'development',baseline=process.env.LIVE_CHOICE_BASELINE_DIR;
-const output=path.resolve(process.env.LIVE_CHOICE_REPORT_DIR??path.join(root,'../../artifacts/live-choice-commit-2026-10-04',mode));
+const output=path.resolve(process.env.LIVE_CHOICE_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-choice-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-choice-'));
 const source=`
@@ -15,7 +15,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,'src/play/race/RaceTo10Game.tsx'))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,'src/play/race/testing/fakeRaceServices.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
-import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
 const scenario=new URLSearchParams(location.search).get('scenario')??'idle';

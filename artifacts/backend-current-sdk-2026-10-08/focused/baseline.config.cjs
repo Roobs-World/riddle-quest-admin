@@ -1,1 +1,0 @@
-const base=require("/home/craig-beswetherick/Documents/riddle-quest/artifacts/backend-current-sdk-2026-10-08/focused/integration.config.cjs");module.exports={...base,transform:{...base.transform,["^.+\\.ts$"]:["/home/craig-beswetherick/Documents/riddle-quest/artifacts/backend-current-sdk-2026-10-08/focused/baseline-transform.cjs"]}};

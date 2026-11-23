@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type KeyboardEvent} from "react";
-import {ListFacebookTournamentResponseSchema, type ListFacebookTournamentResponse, type LiveRaceView, type LiveRaceCapability} from "@qwordly/core/race";
+import {ListFacebookTournamentResponseSchema, type ListFacebookTournamentResponse, type LiveRaceView, type LiveRaceCapability} from "@riddle-quest/core/race";
 import {RaceTo10Game} from "./RaceTo10Game";
 import type {RaceTo10GameProps} from "./RaceTo10Game.types";
 import {RaceTournamentPanel} from "./components/RaceLobbyPanels";

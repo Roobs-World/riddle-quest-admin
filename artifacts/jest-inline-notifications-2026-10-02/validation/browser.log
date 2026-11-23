@@ -1,7 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-$ jest --config jest.config.cjs --runInBand src/jest/__tests__/authentication.jest-playwright.test.ts -t 'schedules decodable inline daily and race cards|registers with a stable player id|shares a race challenge and schedules|does not schedule race reminders'
-Test Suites: 1 passed, 1 total
-Tests:       70 skipped, 4 passed, 74 total
-Snapshots:   0 total
-Time:        6.387 s, estimated 10 s
-Ran all test suites matching src/jest/__tests__/authentication.jest-playwright.test.ts with tests matching "schedules decodable inline daily and race cards|registers with a stable player id|shares a race challenge and schedules|does not schedule race reminders".

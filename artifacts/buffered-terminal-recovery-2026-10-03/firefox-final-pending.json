@@ -1,8 +1,0 @@
-{
-  "content": [
-    {
-      "type": "text",
-      "text": "Script ran on page and returned:\n```json\n{\n  \"root\": 2,\n  \"requestIds\": [\n    \"retained-next-guess\"\n  ],\n  \"draft\": [\n    \"C\",\n    \"L\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"slot\": 2,\n  \"delivered\": 0,\n  \"rows\": [\n    \"piano\",\n    \"\",\n    \"\",\n    \"\",\n    \"\"\n  ],\n  \"nextDisabled\": true,\n  \"pending\": {\n    \"id\": \"00000000-0000-4000-8000-000000000001-win-1\",\n    \"kind\": \"win\",\n    \"riddleId\": \"classic-fake-1\",\n    \"gameMode\": \"classic\",\n    \"sessionToken\": \"00000000-0000-4000-8000-000000000001\",\n    \"attempts\": 1,\n    \"isCorrect\": true\n  },\n  \"errors\": [],\n  \"unhandled\": []\n}\n```"
-    }
-  ]
-}

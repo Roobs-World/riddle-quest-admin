@@ -6,7 +6,7 @@ import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
-import type {GameToHostMessage, HostToGameMessage} from "@qwordly/core/bridge";
+import type {GameToHostMessage, HostToGameMessage} from "@riddle-quest/core/bridge";
 import {injectRaceAnalyticsFailure, observeRaceCountdown, verifyRecordedLayout, verifyRaceCountdownTiming, verifyAutomaticSkip, verifyFinalSkipResult, verifyGuessDraftConfirmation, verifyHintDraftPreservation, verifyHintConfirmationRecovery, verifyLostHintDeliveryRecovery, verifySuccessorDraftRecovery, verifyWrongRunPaidRollback, verifyTerminalHintResult, verifyAcceptedRaceRecording, observeAcceptedRaceRecording, captureMultiplayerEvidence, verifyOutcomeConfirmationRecovery} from "./raceRecovery.jest-playwright.support";
 
 import {
@@ -130,7 +130,7 @@ describeBrowser("Jest authentication integration", () => {
 
   afterAll(async () => {
     await browser?.close();
-    await new Promise<void>((resolve, reject) => server?.close((error) => (error ? reject(error) : resolve())));
+    if (server?.listening) await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
   });
 
   it("renders the preloaded next riddle before a delayed skip response returns", async () => {
@@ -414,10 +414,10 @@ describeBrowser("Jest authentication integration", () => {
     expect(keyboardCoverage).toBeGreaterThan(0.98);
     /** Visual styles shared with the main-game keyboard at phone widths. */
     const multiplayerKeyboardStyle = await creator.page.locator(".race-gameplay .keyboard").evaluate((keyboard) => {
-      /** First letter key. */
-      const letterKey = keyboard.querySelector<HTMLElement>(".key:not(.utility)")!;
       /** Backspace key. */
       const utilityKey = keyboard.querySelector<HTMLElement>(".key.utility")!;
+      /** A letter in the same row shares Backspace's available flex width. */
+      const letterKey = utilityKey.parentElement!.querySelector<HTMLElement>(".key:not(.utility)")!;
       /** Rendered letter-key style. */
       const letterStyle = getComputedStyle(letterKey);
       return {

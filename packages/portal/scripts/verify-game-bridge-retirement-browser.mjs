@@ -7,14 +7,14 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.GAME_RETIRE_REACT_MODE??'development',baseline=process.env.GAME_RETIRE_BASELINE_DIR;
-const output=path.resolve(process.env.GAME_RETIRE_REPORT_DIR??path.join(root,'../../artifacts/game-bridge-retirement-2026-10-04',mode));
+const output=path.resolve(process.env.GAME_RETIRE_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-bridge-retirement-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-retire-'));
 const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useGameMessageListener} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useGameBridgeLifecycle.ts'))};
 import {useCompletionDelivery} from ${JSON.stringify(path.join(root,'src/play/game/hooks/useCompletionDelivery.ts'))};
 import {useGameMessageRouter} from ${JSON.stringify(path.join(root,'src/play/useGameMessageRouter.ts'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {createGameMessageRouter} from ${JSON.stringify(path.join(root,'src/play/bridgeRouter.ts'))};
 import {HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};

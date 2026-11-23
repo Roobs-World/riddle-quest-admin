@@ -7,7 +7,7 @@
     "REFERRAL_REWARD_MESSAGE": "Daftar melalui undangan saya dan kita berdua mendapat {coins} koin!",
     "OPEN_INVITE_MESSAGE": "{name} menantangmu bermain Riddle Quest. Daftar melalui undangan ini dan kalian berdua mendapat {coins} koin!",
     "REFERRAL_REWARD_TITLE": "Seorang teman bergabung!",
-    "TITLE": "PEKERJAAN BAGUS!",
+    "TITLE": "KERJA BAGUS!",
     "TOTAL_COINS_LABEL": "Total koin",
     "YOU_WON_TITLE": "ANDA MENANG!",
     "SHARE_ATTEMPT_PLURAL": "upaya",
@@ -16,6 +16,12 @@
     "SHARE_DAILY_CHALLENGE_LABEL": "Tantangan Harian",
     "SHARE_MESSAGE_TEMPLATE": "Saya menyelesaikan Riddle Quest {gameType} hari ini dalam {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nBisakah kamu mengalahkan skorku?\n\n#Riddle Quest #WordPuzzle #BrainGame",
     "SHARE_RESULT_TITLE": "Lihat hasil Riddle Quest saya!",
-    "INVITE_FRIEND": "Undang teman"
+    "INVITE_FRIEND": "Undang teman",
+    "REWARD_CLASSIC": "Teka-teki klasik",
+    "REWARD_DAILY": "Teka-teki harian",
+    "REWARD_LEVEL_BONUS": "Bonus naik level",
+    "REWARD_STREAK_BONUS": "Bonus kemenangan beruntun",
+    "REWARD_ACHIEVEMENT_BONUS": "Bonus pencapaian",
+    "REWARD_REFERRAL_BONUS": "Bonus undangan"
   }
 }

@@ -1,8 +1,8 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import {PlayerProjectionPersistence} from "../PlayerProjectionPersistence";
 import type {PlatformStorage, PlayerData} from "../types";
-import {createSavedGame} from "../../play/GameSessionCheckpoints";
-import {createInitialGameSession, gameSessionReducer} from "../../play/gameSession";
+import {createSavedGame} from "@riddle-quest/hosted/play/GameSessionCheckpoints";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
 import {LocalAccountDeletionGate} from "../../play/LocalAccountDeletionGate";
 
 /** Controlled adapter acknowledgement exposes waiting and in-flight work. */

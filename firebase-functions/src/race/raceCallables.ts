@@ -1,5 +1,5 @@
-import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "@qwordly/core/race";
-import {RaceEntryRequestSchema} from "@qwordly/core/race";
+import {RaceEntryResponseSchema, CancelRaceInviteRequestSchema} from "@riddle-quest/core/race";
+import {RaceEntryRequestSchema} from "@riddle-quest/core/race";
 import {getRaceEntryForUser, cancelRaceInviteForUser} from "./raceInvitation";
 import {
   AbandonRaceRunRequestSchema,
@@ -31,7 +31,7 @@ import {
   ReadyRaceRunRequestSchema,
   SubmitRaceGuessRequestSchema,
   SubmitRaceGuessResponseSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {
@@ -57,33 +57,33 @@ import {onCallWithSentry} from "../shared/sentryHandlers";
 /** Keeps browser multiplayer beside eur3 while retaining existing regional clients. */
 const jestWebCallableOptions = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
 
-/** Keeps discovery, race input and recovery responsive for the first player after idle. */
+/** Interactive race requests scale to zero between use. */
 export const raceInteractiveCallableOptions = {
   ...jestWebCallableOptions,
-  minInstances: 1,
+  minInstances: 0,
 };
 
-/** Discovery and analytics inherit the shared regions and retain their warm instances. */
+/** Discovery and analytics share the regional request-only capacity policy. */
 export const raceDiscoveryCallableOptions = {
   ...raceInteractiveCallableOptions,
 };
 
-/** Deployment options that keep the latency-sensitive hint callable warm. */
+/** Hint requests share the request-only capacity policy. */
 export const raceHintCallableOptions = {
   ...jestWebCallableOptions,
-  minInstances: 1,
+  minInstances: 0,
 };
 
-/** Deployment options that keep the countdown-critical start callable warm. */
+/** Race starts share the request-only capacity policy. */
 export const raceStartCallableOptions = {
   ...jestWebCallableOptions,
-  minInstances: 1,
+  minInstances: 0,
 };
 
-/** Deployment options that keep the latency-sensitive abandon callable warm. */
+/** Abandon requests share the request-only capacity policy. */
 export const raceAbandonCallableOptions = {
   ...jestWebCallableOptions,
-  minInstances: 1,
+  minInstances: 0,
 };
 
 /** Provides require user id behavior. */

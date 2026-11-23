@@ -1,13 +1,13 @@
 {
   "GameMessages": {
-    "GAME_LOST": "Permainan Kalah: Jawaban Benar -",
-    "GAME_WON": "Permainan Dimenangkan: Percobaan -",
-    "HINT_USED": "Petunjuk yang Digunakan: Biaya -",
-    "IN_MODE": "di",
-    "MODE_SUFFIX": "modus.",
+    "GAME_LOST": "Permainan Kalah: Jawaban Benar - ",
+    "GAME_WON": "Permainan Dimenangkan: Percobaan - ",
+    "HINT_USED": "Petunjuk Digunakan: Biaya - ",
+    "IN_MODE": " dalam mode ",
+    "MODE_SUFFIX": ".",
     "RETRY_BUTTON_PRESSED": "Tombol coba lagi ditekan",
     "FALLBACK_CLUE_SINGLE": "Pecahkan kata ini.",
-    "FALLBACK_CLUE_TEMPLATE": "Selesaikan kata dengan huruf {length} ini."
+    "FALLBACK_CLUE_TEMPLATE": "Pecahkan kata {length} huruf ini."
   },
   "WebPortal": {
     "APP_TITLE": "Riddle Quest",

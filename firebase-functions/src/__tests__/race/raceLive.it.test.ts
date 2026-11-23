@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS, RACE_RULES, type LiveRaceView} from "@qwordly/core/race";
+import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS, RACE_RULES, type LiveRaceView} from "@riddle-quest/core/race";
 import type {LiveMatch} from "../../race/raceLiveState";
 import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
 
@@ -37,7 +37,7 @@ beforeEach(async () => {
     avatarUrl: "https://example.com/avatar.png"});
   await batch.commit();
 });
-afterAll(clear);
+afterAll(async () => {await clear(); await db.terminate();});
 /** Provides join behavior. */
 const join = (user: string, requestId: string, nowMs = NOW) => joinLiveRaceForUser(user, {locale: "en", categoryId: "history", requestId}, {db, nowMs});
 /** Provides update behavior. */
@@ -137,6 +137,7 @@ it("ends both players immediately on the tenth solved riddle and grants 50 coins
   await db.doc(`users/${A}`).update({"stats.multiplayerWins": 4, "stats.multiplayerGamesPlayed": 7, "stats.totalWins": 12});
   /** Matched live seats for an existing multiplayer winner. */
   const {a, b} = await pair();
+  await answer(B, b, NOW + 6000, "played-before-winning-opponent");
   /** Latest accepted progress for this seat. */
   let current = a;
   for (let i = 0; i < 10; i++) current = await answer(A, current, NOW + 6000 + i * 1000, `answer-alice-${i}`);
@@ -160,6 +161,8 @@ it("grants eligible live race badges exactly once alongside terminal statistics"
     unlockedAchievements: [{achievementId: "hint_user", unlockedAt: NOW - 1000}]});
   /** Both authoritative seats establish one terminal settlement receipt. */
   const {a, b} = await pair();
+  await answer(A, a, NOW + 6000, "badge-winner-played");
+  await answer(B, b, NOW + 6000, "badge-loser-played");
   await update(B, b, NOW + 7000, "leave", "badge-terminal-forfeit");
   /** Persisted balances and badges must remain unchanged on repeated result reads. */
   const profiles = await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`));
@@ -182,6 +185,7 @@ it("retains existing badge receipts across a new match and only grants its win r
   await db.doc(`users/${A}`).update({unlockedAchievements: badges, "stats.multiplayerWins": 1});
   /** Both authoritative seats establish one terminal settlement receipt. */
   const {a, b} = await pair();
+  await answer(A, a, NOW + 6000, "already-earned-winner-played");
   await update(B, b, NOW + 7000, "leave", "already-earned-forfeit");
   expect(await update(A, a, NOW + 8000)).toMatchObject({newCoins: 150, rewardCoins: 50});
   /** The winning account projection confirms terminal rewards and counters. */
@@ -232,10 +236,10 @@ it("seats a bot within seconds of an unanswered search and then starts a five-se
   const startsAtMs = NOW + LIVE_RACE_WAIT_MS + LIVE_RACE_COUNTDOWN_MS;
   expect(bot).toMatchObject({phase: "countdown", startsAtMs, opponent: {bot: true, correctCount: 0}});
   expect((await update(A, a, startsAtMs + 12000)).opponent?.correctCount).toBe(1);
-  expect((await update(A, a, startsAtMs + 120000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0, newCoins: 125});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(125);
+  expect((await update(A, a, startsAtMs + 120000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
   await Promise.all([update(A, a, startsAtMs + 121000), update(A, a, startsAtMs + 121000)]);
-  expect((await db.doc(`users/${A}`).get()).data()!.stats?.multiplayerGamesPlayed).toBe(1);
+  expect((await db.doc(`users/${A}`).get()).data()!.stats?.multiplayerGamesPlayed ?? 0).toBe(0);
   expect((await db.doc("users/bot").get()).exists).toBe(false);
 });
 
@@ -303,16 +307,16 @@ it.each(["block", "delete"] as const)("settles an active %s privacy boundary wit
   expect(result).toMatchObject({phase: "result", result: "tie", rewardCoins: 0,
     opponent: {displayName: "Riddle Quest player", avatarUrl: null}});
   expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(125);
-  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(boundary === "delete" ? 100 : 125);
+  expect((await db.doc(`users/${B}`).get()).data()!.coins).toBe(100);
   if (boundary === "delete") await expect(update(B, b, NOW + 9000)).rejects.toThrow("account-deleted");
   else expect(await update(B, b, NOW + 9000)).toMatchObject({phase: "result", result: "tie", rewardCoins: 0});
   expect((await db.doc(`users/${A}`).get()).data()!.stats.multiplayerGamesPlayed).toBe(1);
-  expect((await db.doc(`users/${B}`).get()).data()!.stats?.multiplayerGamesPlayed ?? 0).toBe(boundary === "delete" ? 0 : 1);
+  expect((await db.doc(`users/${B}`).get()).data()!.stats?.multiplayerGamesPlayed ?? 0).toBe(0);
 });
 
 it("cancels a countdown without paying a win and rewards an in-game forfeit only once", async () => {
   /** Provides {a, b} behavior. */
-  const {a, b} = await pair();
+  const {b} = await pair();
   expect((await update(B, b, NOW + 2000, "leave", "countdown-leave"))).toMatchObject({result: "tie", rewardCoins: 0});
   expect((await db.doc(`users/${A}`).get()).data()!.stats?.multiplayerWins ?? 0).toBe(0);
   expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
@@ -320,6 +324,7 @@ it("cancels a countdown without paying a win and rewards an in-game forfeit only
   const nextA = await join(A, "next-after-cancel", NOW + 10000);
   /** Provides next b behavior. */
   const nextB = await join(B, "next-b-after-cancel", NOW + 11000);
+  await answer(A, nextA, NOW + 16000, "competitive-forfeit-winner-played");
   await update(B, nextB, NOW + 17000, "leave", "forfeit-after-start");
   expect((await update(A, nextA, NOW + 18000))).toMatchObject({result: "win", rewardCoins: 50});
 });
@@ -549,8 +554,8 @@ it("does not turn an in-game forfeit back into a countdown cancellation", async 
   expect(older.phase).toBe("racing");
   expect(older.serverNowMs).toBeGreaterThanOrEqual(NOW + 7000);
   await update(B, b, NOW + 2000, "leave", "clock-late-forfeit");
-  expect(await update(A, a, NOW + 2000)).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
-  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(200);
+  expect(await update(A, a, NOW + 2000)).toMatchObject({phase: "result", result: "win", rewardCoins: 0});
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
 });
 
 it("admits reordered guesses after already accepted live progress without rewinding their event clocks", async () => {
@@ -605,6 +610,8 @@ it("does not count a cancelled countdown as a played match", async () => {
 it("records both participants once on a started forfeit", async () => {
   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
   const {a, b} = await pair();
+  await answer(A, a, NOW + 6000, "forfeit-statistics-played-a");
+  await answer(B, b, NOW + 6000, "forfeit-statistics-played-b");
   await update(A, a, NOW + 7000, "leave", "started-forfeit-statistics");
   await Promise.all([update(A, a, NOW + 8000), update(B, b, NOW + 8000)]);
   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
@@ -617,6 +624,8 @@ it("records both participants once on a started forfeit", async () => {
 it("counts a timed-out human draw once without awarding a win reward", async () => {
   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
   const {a, b} = await pair();
+  await answer(A, a, NOW + 6000, "draw-statistics-played-a");
+  await answer(B, b, NOW + 6000, "draw-statistics-played-b");
   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
   const end = NOW + 6000 + RACE_RULES.maxAdjustedTimeMs;
   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
@@ -638,6 +647,8 @@ it.each([
 ])("rejects invalid or overflowing totals before recording any settlement grant: %j", async invalid => {
   /** Authoritative fixture or persisted projection used to verify one-time match settlement. */
   const {a, b} = await pair();
+  await answer(A, a, NOW + 6000, "invalid-totals-played-a");
+  await answer(B, b, NOW + 6000, "invalid-totals-played-b");
   await db.doc(`users/${A}`).update(invalid);
   /** Captures account state before an idempotent read or rejected settlement. */
   const before = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(profile => profile.data());

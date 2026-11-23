@@ -22,6 +22,7 @@ describe("browser callable security", () => {
     /** Provides browser callable security options behavior. */
     const browserCallableSecurityOptions = loadOptions();
     expect(browserCallableSecurityOptions).toEqual({
+      minInstances: 0,
       enforceAppCheck: true,
       invoker: "public",
       timeoutSeconds: 60,

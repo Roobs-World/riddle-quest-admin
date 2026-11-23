@@ -1,4 +1,4 @@
-import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS} from "@qwordly/core/race";
+import {RACE_HINT_PENALTY_MS, RACE_SKIP_PENALTY_MS} from "@riddle-quest/core/race";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import {
   abandonedRaceResponseFixture,

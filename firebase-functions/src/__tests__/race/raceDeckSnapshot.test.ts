@@ -1,4 +1,4 @@
-import {RACE_RULES} from "@qwordly/core/race";
+import {RACE_RULES} from "@riddle-quest/core/race";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, raceRecordingFingerprint, assertRacePreparedRecording} from "../../race/raceDeckSnapshot";
 import {parseChallengeRecord} from "../../race/raceSetupService";
 import {applyRaceHint, toRaceRunView, type RaceRunRecord} from "../../race/raceEngine";

@@ -1,7 +1,7 @@
-import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {useReferralSharing} from "../../sharing/ReferralSharingCapability";
 import {tr} from "../../i18n";
-import {type LiveRaceCapability} from "@qwordly/core/race";
+import {type LiveRaceCapability} from "@riddle-quest/core/race";
 import {LiveRaceDirectInvite} from "./LiveRaceDirectInvite";
 
 /** One visit to a lobby and its target-owned native callback owns dialog feedback. */
@@ -12,9 +12,10 @@ type NativeInviteOwner = {
 };
 
 /** Opens only the active platform's native invitation dialog for a reserved live lobby. */
-export function LiveRaceInviteShare({challengeId, transport}: {
+export function LiveRaceInviteShare({challengeId, transport, autoOpen = false}: {
   /** Server-issued invitation handle, never a player identity. */ challengeId: string;
   /** Target-owned direct invitation delivery. */ transport?: LiveRaceCapability;
+  /** Only an explicit creator action may open the provider dialog after reservation. */ autoOpen?: boolean;
 }) {
   /** Optional platform behavior supplied by the authenticated target adapter. */
   const sharing = useReferralSharing();
@@ -28,39 +29,45 @@ export function LiveRaceInviteShare({challengeId, transport}: {
   useLayoutEffect(() => {owner.current = selectedOwner;}, [selectedOwner]);
   /** Immediate exclusion survives lobby/provider replacement until native settlement. */
   const lock = useRef(false);
-  /** The original effect lifetime suppresses all feedback after retirement. */
-  const lifetime = useRef<AbortController | null>(null);
+  /** Pending native results may update only this still-mounted lobby visit. */
+  const mounted = useRef(false);
+  /** Effect replay and polling cannot open the same automatic invitation twice. */
+  const openedAutomatically = useRef(false);
   /** Native dialog currently owns input. */
   const [busy, setBusy] = useState(false);
   /** Failure copy belongs only to the lobby/provider visit that opened the dialog. */
   const [failedOwner, setFailedOwner] = useState<NativeInviteOwner | null>(null);
-  useEffect(() => {
-    /** StrictMode effect replay receives its own presentation lifetime. */
-    const abort = new AbortController(); lifetime.current = abort;
-    return () => abort.abort();
+  useLayoutEffect(() => {
+    mounted.current = true;
+    return () => {mounted.current = false;};
   }, []);
   /** Sends the invite without treating a dialog success as recipient acceptance. */
-  const send = async () => {
-    /** The click captures exact ownership before opening provider UI synchronously. */
-    const selected = owner.current, signal = lifetime.current?.signal;
-    if (lock.current || !selected.shareChallenge || !signal || signal.aborted) return;
+  const send = useCallback(async () => {
+    /** Both automatic and explicit sends retain the exact committed lobby and provider. */
+    const selected = owner.current;
+    if (lock.current || !selected.shareChallenge || !mounted.current) return;
     lock.current = true;
     setBusy(true);
     setFailedOwner(null);
     try {
       /** Only declared success or expected dismissal avoid the retry notice. */
       const result = await selected.shareChallenge({challengeId: selected.challengeId});
-      if (!signal.aborted && owner.current === selected && result !== "success" && result !== "cancelled")
+      if (mounted.current && owner.current === selected && result !== "success" && result !== "cancelled")
         setFailedOwner(selected);
-    } catch {if (!signal.aborted && owner.current === selected) setFailedOwner(selected);}
+    } catch {if (mounted.current && owner.current === selected) setFailedOwner(selected);}
     finally {
       // Elapsed time cannot prove that native UI has closed: keep exclusion until settlement.
       lock.current = false;
-      if (!signal.aborted) setBusy(false);
+      if (mounted.current) setBusy(false);
     }
-  };
+  }, []);
+  useEffect(() => {
+    if (!autoOpen || !sharing?.autoOpenLiveRaceInvite || !shareChallenge || openedAutomatically.current) return;
+    openedAutomatically.current = true;
+    void send();
+  }, [autoOpen, sharing?.autoOpenLiveRaceInvite, shareChallenge, send]);
   return shareChallenge ? <div className="live-race-invite-share">
-    <button className="race-primary" disabled={busy} aria-busy={busy} onClick={() => void send()}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>
+    <button className="race-secondary" disabled={busy} aria-busy={busy} onClick={() => void send()}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>
     {failedOwner === selectedOwner && <p role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>}
     {transport?.sendChallenge && <LiveRaceDirectInvite challengeId={challengeId} transport={transport} />}
   </div> : null;

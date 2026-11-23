@@ -1,5 +1,5 @@
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_WIN_COINS} from "@qwordly/core/race";
+import {LIVE_RACE_WIN_COINS} from "@riddle-quest/core/race";
 import {createHash} from "node:crypto";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef} from "../jest/jestAccountDeletion";

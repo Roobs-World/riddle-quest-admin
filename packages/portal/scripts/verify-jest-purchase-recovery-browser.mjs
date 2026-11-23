@@ -128,7 +128,7 @@ try {
         while(!(authority.get(key)?.grantAttempts)&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,10));
         assert.equal(authority.get(key)?.grantAttempts,1,'Held grant request must reach the authority fixture.');
       }
-      if(outcome!=='rejected')await page.clock.fastForward(15_100);
+      if(outcome!=='rejected')await page.clock.fastForward(outcome==='timeout'?30_100:15_100);
       if(baseline){
         await page.waitForTimeout(100);
         const observed=await page.evaluate(()=>({calls:window.__RIDDLE_QUEST_JEST_AUTH_TEST__.calls,pending:window.readPendingPurchases(),completed:JSON.parse(sessionStorage.getItem('completedPurchaseTokens')??'[]'),overlay:!!document.getElementById('host-loading'),retryVisible:[...document.querySelectorAll('button')].some(button=>button.innerText==='Retry'),startupFailureVisible:document.body.innerText.includes('Startup failed')}));

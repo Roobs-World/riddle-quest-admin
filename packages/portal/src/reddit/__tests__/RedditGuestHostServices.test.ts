@@ -1,9 +1,9 @@
 import {createRedditGuestHostServices} from "../RedditGuestHostServices";
-import {computeFeedback} from "@qwordly/core/game";
-import {createSavedGame} from "../../play/GameSessionCheckpoints";
-import {createInitialGameSession, gameSessionReducer} from "../../play/gameSession";
-import {BridgeRiddleSchema} from "@qwordly/core/bridge";
-import type {HostServices} from "../../play/types";
+import {computeFeedback} from "@riddle-quest/core/game";
+import {createSavedGame} from "@riddle-quest/hosted/play/GameSessionCheckpoints";
+import {createInitialGameSession, gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {BridgeRiddleSchema} from "@riddle-quest/core/bridge";
+import type {HostServices} from "@riddle-quest/hosted/hostTypes";
 
 it.each([1, 5])("recovers an accepted win on attempt %s before completion delivery", async count => {
   /** Drives the actual authority, reducer and provider checkpoint before replacing the page. */

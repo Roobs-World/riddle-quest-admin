@@ -2,7 +2,9 @@ const base = require("./jest.config.js");
 
 module.exports = {
   ...base,
+  reporters: ["default", "<rootDir>/scripts/test-progress-reporter.cjs"],
   testMatch: [
+    "**/__tests__/dailyPublicationConcurrency.it.test.ts",
     "**/__tests__/race/raceInvitationCreatorRecovery.it.test.ts",
     "**/__tests__/race/raceLiveGuessReceipt.it.test.ts",
     "**/__tests__/race/raceLiveGuessReceiptLookup.it.test.ts",
@@ -32,7 +34,9 @@ module.exports = {
     "**/__tests__/singlePlayerLoadIssuedState.it.test.ts",
     "**/__tests__/singlePlayerSkipContext.it.test.ts",
     "**/__tests__/race/raceLive.it.test.ts",
+    "**/__tests__/race/raceLivePublicWait.it.test.ts",
     "**/__tests__/race/raceLiveSignals.it.test.ts",
+    "**/__tests__/race/raceLiveStreamAdmission.it.test.ts",
     "**/__tests__/race/raceLivePush.it.test.ts",
     "**/__tests__/race/raceLiveAccountDeletion.it.test.ts",
     "**/src/__tests__/race/facebookLiveTournamentDelivery.it.test.ts",

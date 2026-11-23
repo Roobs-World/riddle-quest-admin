@@ -1,9 +1,8 @@
 {
   "LevelUpFanfare": {
-    "COINS_SUFFIX": " Paralar",
+    "COINS_SUFFIX": " Para",
     "CONTINUE_BUTTON": "Muhteşem",
     "LEVEL_PREFIX": "Seviye ",
-    "TITLE": "Seviye Atlayın!",
-    "PROFILE_GUIDANCE": "Yeni seviyen ve rutben Profil icinde. Bu kutlamadan sonra profil simgesine dokun."
+    "TITLE": "Seviye Atladın!"
   }
 }

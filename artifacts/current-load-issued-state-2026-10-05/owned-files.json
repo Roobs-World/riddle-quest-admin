@@ -1,5 +1,0 @@
-{
-  "daily": "firebase-functions/src/daily/dailyChallenge.ts",
-  "latency-test": "firebase-functions/src/__tests__/singlePlayerLoadIssuanceLatency.test.ts",
-  "emulator-test": "firebase-functions/src/__tests__/singlePlayerLoadIssuedState.it.test.ts"
-}

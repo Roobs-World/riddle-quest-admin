@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       53 passed, 53 total
-Snapshots:   0 total
-Time:        0.298 s, estimated 1 s
-Ran all test suites matching src/play/__tests__/classicQuestionPreparation.test.ts|src/play/__tests__/useHostRiddleLifecycle.test.ts|src/play/__tests__/useHostRiddleRecovery.test.ts|src/play/__tests__/HostedPlaySession.test.ts.

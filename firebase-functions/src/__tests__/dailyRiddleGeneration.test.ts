@@ -4,12 +4,21 @@ import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 const mockGet = jest.fn();
 /** Provides mock set behavior. */
 const mockSet = jest.fn();
+/** Records writes made inside the publication transaction. */
+const mockTransactionSet = jest.fn((_reference: unknown, data: unknown) => mockSet(data));
+/** Runs the publication callback against controlled transaction reads and writes. */
+const mockRunTransaction = jest.fn(async (callback: (transaction: {
+  /** Reads the current document inside the transaction fixture. */
+  get: typeof mockGet;
+  /** Records a publication write requested by the transaction fixture. */
+  set: typeof mockTransactionSet;
+}) => Promise<boolean>) => callback({get: mockGet, set: mockTransactionSet}));
 /** Provides mock get localized daily doc ref behavior. */
-const mockGetLocalizedDailyDocRef = jest.fn(() => ({get: mockGet, set: mockSet}));
+const mockGetLocalizedDailyDocRef = jest.fn(() => ({get: mockGet, set: mockSet, firestore: {runTransaction: mockRunTransaction}}));
 /** Provides mock generate unique riddle behavior. */
 const mockGenerateUniqueRiddle = jest.fn();
 
-jest.mock("@qwordly/core/validation", () => ({SUPPORTED_LOCALES: ["en"]}));
+jest.mock("@riddle-quest/core/validation", () => ({SUPPORTED_LOCALES: ["en"]}));
 jest.mock("../shared/firebaseAdmin", () => ({
   admin: {firestore: {FieldValue: {serverTimestamp: () => "server-time"}}},
 }));
@@ -43,7 +52,10 @@ describe("immutable localized Daily generation", () => {
   it("writes a playable dated document and never overwrites legacy current", async () => {
     await generateLocalizedDailyChallengeForDate("2026-08-12");
 
-    expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], {mode: "daily", background: true, excludedQuestions: []});
+    expect(mockGenerateUniqueRiddle).toHaveBeenCalledWith("en", [], {
+      mode: "daily", difficulty: "medium", background: true, excludedQuestions: [],
+      previousReview: undefined, onReviewRejected: expect.any(Function),
+    });
     expect(mockGetLocalizedDailyDocRef).toHaveBeenCalledWith("en", "2026-08-12");
     expect(mockSet).toHaveBeenCalledWith(
       expect.objectContaining({

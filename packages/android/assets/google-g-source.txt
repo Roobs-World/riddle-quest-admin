@@ -1,0 +1,2 @@
+Google Sign in with Google icon, downloaded unmodified from https://developers.google.com/static/identity/images/g-logo.png
+Brand usage: https://developers.google.com/identity/branding-guidelines

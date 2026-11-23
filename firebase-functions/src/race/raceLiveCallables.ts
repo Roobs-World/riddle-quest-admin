@@ -2,8 +2,8 @@ import {streamLiveRaceChanges} from "./raceLiveStream";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {JoinLiveRaceSchema, UpdateLiveRaceSchema, LiveRaceViewSchema, GetLiveRaceChallengeSchema, LiveRaceChallengeSchema,
-  SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema} from "@qwordly/core/race";
-import {RetireLiveRaceJoinSchema, RetireLiveRaceJoinResponseSchema} from "@qwordly/core/race";
+  SendLiveRaceChallengeSchema, SendLiveRaceChallengeResponseSchema, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema} from "@riddle-quest/core/race";
+import {RetireLiveRaceJoinSchema, RetireLiveRaceJoinResponseSchema} from "@riddle-quest/core/race";
 import {retireLiveRaceJoinForUser} from "./raceLiveRetirement";
 import {listLiveRaceHistoryForUser} from "./raceLiveHistory";
 import {admin} from "../shared/firebaseAdmin";
@@ -14,13 +14,13 @@ import {validateCallableRequest, validateCallableResponse} from "../validation/c
 import {assertRaceAccess} from "./raceRollout";
 import {getLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "./raceLiveService";
-import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} from "@qwordly/core/race";
+import {LiveGuessReceiptQuerySchema, LiveGuessReceiptResultSchema} from "@riddle-quest/core/race";
 import {confirmLiveGuessReceiptForUser} from "./raceLiveGuessReceipt";
 
 /** Live transport uses the same authenticated regional boundary as recorded races. */
 const options = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
-/** Repeated input and matchmaking use the existing interactive race warm-instance policy. */
-const interactiveOptions = {...options, minInstances: 1};
+/** Repeated input and matchmaking allocate capacity only on demand. */
+const interactiveOptions = {...options, minInstances: 0};
 /** Optional recovery observes private proof without creating a mutation lease or renewing a seat. */
 export const confirmLiveGuessReceipt = onCallWithSentry("confirmLiveGuessReceipt", options, async request => {
   /** Authentication exclusively selects the account; the bounded locator selects an owned attempt. */

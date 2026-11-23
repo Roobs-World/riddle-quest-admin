@@ -3,7 +3,7 @@ import {
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
   UsernameSchema,
-} from "@qwordly/core/validation";
+} from "@riddle-quest/core/validation";
 
 export {USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH};
 

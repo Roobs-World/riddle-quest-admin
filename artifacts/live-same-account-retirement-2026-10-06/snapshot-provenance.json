@@ -1,9 +1,0 @@
-{
-  "firebase-functions/src/race/raceLiveInvitation.ts": "artifacts/race-live-deck-compatibility-2026-10-05/live-invitation-after.ts",
-  "firebase-functions/src/race/raceLiveService.ts": "artifacts/race-live-deck-compatibility-2026-10-05/live-service-fixed.ts",
-  "packages/core/src/race/raceLiveSchemas.ts": "artifacts/race-unicode-cells-2026-10-05/live-schemas-fixed.ts",
-  "firebase-functions/src/race/raceLiveState.ts": "git HEAD (verified against preceding source manifest)",
-  "firebase-functions/src/race/raceLiveCallables.ts": "git HEAD (verified against preceding source manifest)",
-  "firebase-functions/src/index.ts": "git HEAD (verified against preceding source manifest)",
-  "firebase-functions/firestore.indexes.json": "git HEAD (verified against preceding source manifest)"
-}

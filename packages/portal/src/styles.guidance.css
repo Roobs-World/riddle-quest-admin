@@ -42,7 +42,7 @@
   overscroll-behavior: contain;
   border: 3px solid rgba(255, 204, 112, 0.92);
   border-radius: 32px;
-  background: var(--play-panel) url("../../../assets/images/home-bg.svg") center / 115% 115% no-repeat;
+  background: var(--play-panel) url("../../../assets/images/home-bg.svg?no-inline") center / 115% 115% no-repeat;
   box-shadow:
     0 28px 80px rgba(0, 0, 0, 0.52),
     0 0 0 1px rgba(255, 255, 255, 0.55) inset,
@@ -347,17 +347,10 @@
     gap: 0;
     padding-bottom: 0;
   }
-  .keyboard > div {
-    gap: 2px;
-  }
   .keyboard .key {
-    width: min(39px, 7.6vw);
     height: 32px;
     min-height: 32px;
     font-size: 20px;
-  }
-  .keyboard .key.utility {
-    width: 48px;
   }
   .game-input-actions {
     padding: 0 8px;
@@ -417,9 +410,6 @@
     width: 88%;
     gap: 0;
   }
-  .keyboard > div {
-    gap: 2px;
-  }
   .game-input-actions button {
     min-width: 0;
     min-height: 60px;
@@ -453,13 +443,9 @@
     font-size: 28px;
   }
   .keyboard .key {
-    width: min(39px, 7.6vw);
     height: 32px;
     min-height: 32px;
     font-size: 20px;
-  }
-  .keyboard .key.utility {
-    width: 48px;
   }
 }
 
@@ -516,9 +502,6 @@
   .keyboard {
     gap: 0;
     padding-bottom: 0;
-  }
-  .keyboard > div {
-    gap: 2px;
   }
   .keyboard .key {
     height: 32px;
@@ -633,16 +616,12 @@
     gap: 2px;
     padding-bottom: 0;
   }
-  .keyboard > div {
-    gap: 4px;
-  }
   .key {
-    width: calc((100% - 36px) / 10);
     height: 40px;
     font-size: 20px;
   }
   .key.utility {
-    width: 54px;
+    min-width: 56px;
   }
   .game-input-actions {
     grid-column: 2;
@@ -710,23 +689,14 @@
     width: 100%;
     gap: 4px;
   }
-  .game-content > .keyboard > div,
-  .race-gameplay > .keyboard > div {
-    gap: 3px;
-  }
   .game-content > .keyboard .key,
   .race-gameplay > .keyboard .key {
-    width: calc((100% - 27px) / 10);
     height: 48px;
     min-height: 48px;
     border: 1px solid rgba(255, 255, 255, 0.34);
     border-radius: 9px;
     background: rgba(255, 255, 255, 0.12);
     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.28);
-  }
-  .game-content > .keyboard .key.utility,
-  .race-gameplay > .keyboard .key.utility {
-    width: calc((100% - 27px) / 10);
   }
   .game-content > .keyboard .key.green,
   .race-gameplay > .keyboard .key.green {

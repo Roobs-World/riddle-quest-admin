@@ -22,7 +22,7 @@
     "PERMISSION_DENIED_FUNCTION": "ليس لديك إذن لاستدعاء هذه الوظيفة.",
     "PLEASE_ENTER_VALID_EMAIL": "الرجاء إدخال عنوان بريد إلكتروني صالح.",
     "RESOURCE_NOT_FOUND": "لم يتم العثور على المورد",
-    "RIDDLE_ID_REQUIRED": "معرف Riddle مطلوب",
+    "RIDDLE_ID_REQUIRED": "معرف اللغز مطلوب",
     "SERVICE_TEMPORARILY_UNAVAILABLE": "الخدمة غير متاحة مؤقتًا. الرجاء المحاولة مرة أخرى.",
     "SIGN_IN_TO_CONTINUE": "يرجى تسجيل الدخول للمتابعة.",
     "TOO_MANY_FAILED_ATTEMPTS": "عدد كبير جدًا من المحاولات الفاشلة. يرجى المحاولة مرة أخرى لاحقًا.",

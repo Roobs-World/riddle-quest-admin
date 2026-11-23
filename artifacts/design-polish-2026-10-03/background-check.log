@@ -1,7 +1,0 @@
-packages/portal/src/styles.game-shell.css: all background and opacity declarations unchanged
-packages/portal/src/styles.puzzle.css: all background and opacity declarations unchanged
-packages/portal/src/styles.guidance.css: all background and opacity declarations unchanged
-packages/portal/src/playable/styles.css: all background and opacity declarations unchanged
-.game-app: complete rule unchanged
-.solar-system: complete rule unchanged
-.solar-system canvas: complete rule unchanged

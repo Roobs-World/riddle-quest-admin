@@ -115,7 +115,7 @@ git rev-parse HEAD
 4. Treat bot subscription and scheduled reminders as two separate features. Subscribing successfully does not demonstrate reminder delivery.
 5. Ask the developer to read the deployed configuration and compare it with local configuration. Do not assume a local environment edit changed production.
 6. If you omit a feature, have the developer remove or correct its buttons, onboarding promises and translated copy.
-7. Run `pnpm check:facebook-copy` and `pnpm --filter @qwordly/portal check:locales` after copy changes. New text must exist in every supported locale; removed keys must be checked for remaining use and removed consistently.
+7. Run `pnpm check:facebook-copy` and `pnpm --filter @riddle-quest/portal check:locales` after copy changes. New text must exist in every supported locale; removed keys must be checked for remaining use and removed consistently.
 8. Record the scope decision in the release evidence and update affected tracker rows honestly.
 9. Retain the existing owner boundary: public publication requires final approval. Routine preparation is already in scope; do not invent an extra approval step for each read-only check.
 
@@ -157,7 +157,7 @@ git rev-parse HEAD
 6. Run the evidence wizard if the values need collecting:
 
 ```sh
-pnpm --filter @qwordly/portal facebook:setup
+pnpm --filter @riddle-quest/portal facebook:setup
 ```
 
 7. Read its receipt under `packages/portal/.facebook-setup-receipts`. The wizard does not obtain the Firebase App ID or deploy configuration. A developer must deliberately enter reviewed non-secrets in the Functions environment.
@@ -663,9 +663,9 @@ pnpm --dir firebase-functions race:translations:import --project riddle-quest-ec
 
 ## P5-03 — [ ] Implement signed purchase/refund boundaries and wire recovery
 
-**Who:** Developer. **Status:** Staged ledger/recovery tests exist; real contract and runtime activation are unfinished.
+**Who:** Developer. **Status:** Native checkout, receipt verification, signed V2 webhook ownership, refunds and recovery are implemented. Meta permission approval, callback subscription and hosted acceptance remain outstanding. See [Facebook payments](facebook-payments.md).
 
-**New documentation finding:** The current [IAP guide](https://developers.facebook.com/documentation/games/monetize/in-app-purchases) and [v8 Payments reference](https://developers.facebook.com/documentation/games/sdk-reference/v8.0/payments) differ in their listed signed claims and grant/consume advice. The tutorial mentions `player_id`; the reference's listed signed-purchase fields do not. Do not add a verifier that assumes an undocumented player binding. Obtain the actual contract/private fixtures, reconcile the discrepancy with Meta, and preserve durable grant-before-consume recovery.
+**Current contract:** The [IAP guide](https://developers.facebook.com/documentation/games/monetize/in-app-purchases) and [v8 Payments reference](https://developers.facebook.com/documentation/games/sdk-reference/v8.0/payments) do not establish purchase ownership through a signed player identifier. `developerPayload` is deprecated. The implementation verifies the receipt and joins its purchase token to Meta's raw-body authenticated [V2 payment webhook](https://developers.facebook.com/documentation/games/monetize/iap-webhooks), whose `user_id` is the game-scoped player ID. Checkout stays unavailable until a permitted webhook subscription is operational and `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1` is deliberately configured. Durable grants commit before consumable consumption.
 
 1. Complete P0-06 purchase/unconsumed/refund contract capture.
 2. Document exact signed fields, algorithm/key source, raw bytes required, app/player binding, product identifier, token/transaction scope, issue time and event replay identity.
@@ -720,7 +720,7 @@ pnpm --dir firebase-functions race:translations:import --project riddle-quest-ec
 8. Developer: confirm the local implementation still calls `getRewardedVideoAsync`, loads the ad and waits for `showAsync()` success before calling `grantFacebookRewardedContinue`. Confirm failed, cancelled and no-fill results do not call that endpoint. The implementation exists; inspect it rather than building a second ad flow.
 9. Confirm the endpoint requires Facebook authentication, App Check, a matching unexpired single-player session and all five confirmed wrong guesses. Confirm it shares the existing one-continue limit with paid continuation and enforces account deletion plus the `rewarded_ads` server switch. Do not add a browser-supplied amount, identity or funding selector to the paid endpoint.
 10. From the repository root, run `pnpm check:types`, `pnpm check:facebook-copy`, `pnpm check:facebook-secrets` and `pnpm check:facebook-commerce-activation`, one command at a time. Stop and record any failure. The new button text is already translated in all 16 supported locales.
-11. Run `pnpm --filter @qwordly/portal test`, `pnpm --filter @qwordly/portal test:facebook:playwright`, `pnpm --dir firebase-functions test:deploy-scripts` and `pnpm verify:functions:node22`. Save results without tokens. The browser command uses injected ads, not real impressions, so it cannot complete steps 3–6 or the real-device checks.
+11. Run `pnpm --filter @riddle-quest/portal test`, `pnpm --filter @riddle-quest/portal test:facebook:playwright`, `pnpm --dir firebase-functions test:deploy-scripts` and `pnpm verify:functions:node22`. Save results without tokens. The browser command uses injected ads, not real impressions, so it cannot complete steps 3–6 or the real-device checks.
 12. Run `pnpm build:jest`, `pnpm build:facebook`, `pnpm build:reddit`, `pnpm build:youtube`, `pnpm build:netflix` and `pnpm build:yahoo`. Confirm each isolation audit passes. Facebook ad code/buttons must not become part of another target's artifact.
 13. Cloud operator: read O-03 and inspect the latest source/configuration changes with their owners. Include the new `grantFacebookRewardedContinue` export in the reviewed full Functions deployment unit. The export audit now expects 23 Facebook entry points. Do not publish a selectively forced, mismatched backend or deploy another person's unreviewed changes.
 14. Deploy the reviewed backend using O-03 while `rewarded_ads` is still disabled. Verify the new endpoint exists and disabled claims fail without altering the balance or attempt count. Record deployed source/configuration revisions. Local tests are not evidence that this endpoint is already deployed.
@@ -865,9 +865,9 @@ pnpm check:facebook-profile-boundary
 pnpm check:facebook-commerce-activation
 pnpm check:facebook-copy
 pnpm check:types
-pnpm --filter @qwordly/portal check:locales
-pnpm --filter @qwordly/portal check:licenses
-pnpm --filter @qwordly/portal test:release-scripts
+pnpm --filter @riddle-quest/portal check:locales
+pnpm --filter @riddle-quest/portal check:licenses
+pnpm --filter @riddle-quest/portal test:release-scripts
 ```
 
 6. Build every required isolated target; complete release content must pass its own gates:
@@ -894,11 +894,11 @@ pnpm --dir firebase-functions test:race:rules
 10. Run injected browser verification against existing builds:
 
 ```sh
-PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:facebook:playwright
-PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:jest-local:playwright
-PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:reddit:playwright
-PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:youtube:playwright
-PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @qwordly/portal test:standalone:playwright
+PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:facebook:playwright
+PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:jest-local:playwright
+PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:reddit:playwright
+PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:youtube:playwright
+PORTAL_USE_EXISTING_BUILD=1 pnpm --filter @riddle-quest/portal test:standalone:playwright
 ```
 
 11. Verify Facebook critical initial resources are below 5 MiB and total below 200 MiB, root configuration is present and private credentials/source maps/symlinks are absent.
@@ -995,20 +995,14 @@ pnpm --dir packages/portal facebook:draft promote --archive-hash EXACT_64_HEX_SH
 7. Test public monetization only through a deliberately approved purchase/ad test method with the owner aware of any actual charge. Do not fabricate a sandbox purchase on a production-only path.
 8. Repeat public startup/core play on supported web/iOS/Android surfaces.
 9. Verify the expected production version/hash and backend revisions.
-10. Open the existing private monitoring viewer, if the configured collector is accessible:
-
-```sh
-node tooling/deployment-monitor/preview.mjs
-```
-
-11. Open `http://127.0.0.1:4179`. Confirm collection health and snapshot freshness; use Cloud Logging/Functions dashboards for the actual deployed services if the viewer is unavailable.
-12. Review request failures, auth/App Check rejection, latency, storage failures, ad/payment faults, deletion/support queue and physical-device issues at the agreed times.
-13. Do not label backend requests as players/sessions. The collector lacks complete Facebook gameplay/performance exports, and its runbook says no email/Slack alerts are configured.
-14. Assign a human to inspect dashboards during this window, or have the owner approve a real alerting implementation. Do not assume an email will arrive.
-15. When a feature is unsafe, use P6-03's verified switch procedure. Restart sessions where required, confirm the effect and record incident time/revision.
-16. If core safety/identity is broken, follow the approved broader rollback/public-availability response and stop announcing a successful launch.
-17. Write a final release report containing version/hash, backend revisions, review references, smoke outcomes, supported surfaces, scope exclusions, incident contacts and recovery steps.
-18. Update this checklist and the progress tracker with actual evidence. Keep post-release unresolved work visible.
+10. Open Cloud Logging and the Cloud Functions metrics for the deployed services.
+11. Review request failures, auth/App Check rejection, latency, storage failures, ad/payment faults, deletion/support queue and physical-device issues at the agreed times.
+12. Do not label backend requests as players/sessions. No email or Slack alerting is configured.
+13. Assign a human to inspect dashboards during this window, or have the owner approve a real alerting implementation. Do not assume an email will arrive.
+14. When a feature is unsafe, use P6-03's verified switch procedure. Restart sessions where required, confirm the effect and record incident time/revision.
+15. If core safety/identity is broken, follow the approved broader rollback/public-availability response and stop announcing a successful launch.
+16. Write a final release report containing version/hash, backend revisions, review references, smoke outcomes, supported surfaces, scope exclusions, incident contacts and recovery steps.
+17. Update this checklist and the progress tracker with actual evidence. Keep post-release unresolved work visible.
 
 **Done when:** Non-role play passes, monitoring has an accountable operator and the agreed launch window closes with a recorded result.
 

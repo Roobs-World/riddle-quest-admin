@@ -2,13 +2,12 @@
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Guarda un video per ottenere un tentativo extra",
     "COIN_EXTRA_GO_BUTTON": "{coins} monete per un tentativo extra",
-    "EXTRA_GO_PROMPT": "Tentativi finiti. Ottieni un tentativo extra o salta questo enigma.",
-    "OPEN_SHOP_BUTTON": "Negozio aperto",
+    "OPEN_SHOP_BUTTON": "Apri negozio",
     "OUT_OF_ATTEMPTS": "Finiti i tentativi.",
     "SKIP_LEVEL_PREFIX": "Usa ",
     "SKIP_LEVEL_SUFFIX": " monete per saltare il livello",
     "SKIP_PUZZLE_BUTTON": "Salta l'enigma",
-    "USE_COINS_PREFIX": "Utilizzare",
+    "USE_COINS_PREFIX": "Usa ",
     "USE_COINS_SUFFIX": " monete per riprovare"
   }
 }

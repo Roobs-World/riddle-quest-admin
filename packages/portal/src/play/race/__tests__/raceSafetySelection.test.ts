@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceInboxItem} from "@qwordly/core/race";
+import type {RaceInboxItem} from "@riddle-quest/core/race";
 import {harness} from "./raceSession.support";
 
 /** Distinct rivals make local block cleanup observable through the public inbox. */

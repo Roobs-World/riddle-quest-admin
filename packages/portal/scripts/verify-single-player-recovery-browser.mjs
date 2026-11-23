@@ -9,14 +9,14 @@ import {chromium} from "@playwright/test";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/solo-recovery-"));
-const output = path.resolve(process.env.SOLO_RECOVERY_REPORT_DIR ?? path.join(root, "../../artifacts/game-reliability-2026-10-02"));
+const output = path.resolve(process.env.SOLO_RECOVERY_REPORT_DIR ?? path.join(root, "../../builds/test-evidence/game-reliability-2026-10-02"));
 await mkdir(output, {recursive: true});
 const completionPath = path.join(root, "src/play/game/hooks/useCompletionDelivery.ts");
 const lifecyclePath = path.join(root, "src/play/useHostRiddleLifecycle.ts");
 const raceInputPath = path.join(root, "src/play/race/components/NativeAnswerInput.tsx");
 const playableInputPath = path.join(root, "src/playable/YouTubeNativeAnswerInput.tsx");
 const authPath = path.join(root, "src/play/useHostAuthSession.ts");
-const sessionPath = path.join(root, "src/play/gameSession.ts");
+const sessionPath = path.join(root, "../hosted/src/play/gameSession.ts");
 const samples = [];
 const baselineFiles = new Set((process.env.SOLO_RECOVERY_BASELINE_FILES ?? "").split(",").filter(Boolean));
 const source = `

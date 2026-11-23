@@ -2,9 +2,12 @@ name: Release all platforms
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v*"
+    inputs:
+      confirm_runner_usage:
+        description: Run all platform releases using Actions allowance, up to 760 runner minutes
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: read
@@ -16,6 +19,7 @@ concurrency:
 jobs:
   verify-and-package:
     name: Verify and package every supported target
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     environment: jest-production
@@ -31,11 +35,11 @@ jobs:
           distribution: temurin
           java-version: "21"
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
       - name: Build the shared core package the targets import
-        run: pnpm --filter @qwordly/core build
+        run: pnpm --filter @riddle-quest/core build
       - name: Verify every configured target
         run: pnpm verify:all-targets
       - name: Discard regenerated browser evidence before the clean-source adapters
@@ -56,7 +60,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/release/run-platform-release.mjs facebook
-          if pnpm --filter @qwordly/reddit-app validate:contracts; then
+          if pnpm --filter @riddle-quest/reddit-app validate:contracts; then
             node scripts/release/run-platform-release.mjs reddit
           else
             echo "Reddit release handoff skipped: capture the six sanitized production contract fixtures first."
@@ -68,12 +72,6 @@ jobs:
         run: node scripts/release/package-neutral-handoffs.mjs
       - name: Verify packaged gameplay before recording readiness
         run: pnpm test:release-artifacts:browser
-      - name: Record the verified release evidence in the dashboard
-        run: node scripts/release/record-release-automation.mjs
-        env:
-          ITCH_BUTLER_CONFIGURED: ${{ secrets.ITCH_BUTLER_API_KEY != '' && vars.ITCH_GAME_TARGET != '' }}
-          JEST_PUBLISH_CONFIGURED: ${{ secrets.JEST_GAME_UPLOAD_TOKEN != '' }}
-          REDDIT_CONTRACTS_CONFIGURED: false
       - name: Hand the verified packages to the finalize job
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -88,10 +86,10 @@ jobs:
             build-html5.zip.source.json
             builds/
             packages/reddit-app/dist/
-            docs/reports/platform-release-readiness/src/data.json
 
   youtube:
     name: Verify and package the YouTube Playable
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     steps:
@@ -106,11 +104,11 @@ jobs:
           distribution: temurin
           java-version: "21"
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @qwordly/portal exec playwright install --with-deps chromium
+      - run: pnpm --filter @riddle-quest/portal exec playwright install --with-deps chromium
       - name: Build the shared core package the targets import
-        run: pnpm --filter @qwordly/core build
+        run: pnpm --filter @riddle-quest/core build
       - name: Build the solo artifacts the YouTube browser suite also plays
         run: pnpm build:netflix && pnpm build:yahoo
       - name: Run the YouTube release adapter
@@ -127,6 +125,7 @@ jobs:
 
   finalize:
     name: Verify every release target and publish the handoffs
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     needs: [verify-and-package, youtube]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -138,7 +137,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: corepack enable
-      - run: corepack prepare pnpm@11.21.0 --activate
+      - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
@@ -148,12 +147,6 @@ jobs:
           name: release-youtube-${{ github.sha }}
       - name: Verify every release target end to end
         run: node scripts/release/verify-release-target-e2e.mjs
-      - name: Install release dashboard dependencies
-        run: npm ci
-        working-directory: docs/reports/platform-release-readiness
-      - name: Build the release dashboard
-        run: npm run build
-        working-directory: docs/reports/platform-release-readiness
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: riddle-quest-release-${{ github.sha }}
@@ -170,10 +163,10 @@ jobs:
             builds/reddit
             builds/yahoo
             builds/gamesnacks
-            docs/reports/platform-release-readiness/dist/index.html
 
   itch:
     name: Publish itch.io when configured
+    if: github.ref == 'refs/heads/jest' && inputs.confirm_runner_usage
     needs: finalize
     runs-on: ubuntu-24.04
     timeout-minutes: 10

@@ -1,7 +1,0 @@
-firebase-functions                       | [WARN] Unsupported engine: wanted: {"node":"22"} (current: {"node":"v24.17.0","pnpm":"11.21.0"})
-
-Test Suites: 4 passed, 4 total
-Tests:       42 passed, 42 total
-Snapshots:   0 total
-Time:        0.3 s, estimated 1 s
-Ran all test suites matching src/platform/__tests__/PlayerProjectionRecovery.test.ts|src/platform/__tests__/PlayerProjectionPersistence.test.ts|src/facebook/__tests__/FacebookPlatformBootstrap.test.ts|src/facebook/__tests__/createFacebookLifecycle.test.ts.

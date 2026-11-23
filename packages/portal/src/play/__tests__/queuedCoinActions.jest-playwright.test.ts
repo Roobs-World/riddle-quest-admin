@@ -1,8 +1,8 @@
-import {completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
+import {installCompletedMockGameTour, completeMockOnboarding} from "./mockOnboarding.jest-playwright.support";
 import {afterAll, beforeAll, describe, it, jest} from "@jest/globals";
 import {chromium, expect, type Browser, type Page} from "@playwright/test";
 import {createServer, type Server} from "node:http";
-import {readFile} from "node:fs/promises";
+import {mkdir, readFile} from "node:fs/promises";
 import path from "node:path";
 /** Runs against the injected Jest harness in the built artifact. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
@@ -51,6 +51,119 @@ describeBrowser("queued coin actions", () => {
     browser = await chromium.launch({headless: true});
   });
 
+  it.each([false, true])("keeps the final visible draft letter through immediate reload (hinted=%s)", async hinted => {
+    /** Touch input and navigation exercise the exact built artifact's save boundary. */
+    const page = await browser.newPage({viewport: {width: 320, height: 568}, hasTouch: true});
+    await page.route("https://cdn.jest.com/**", route => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await installCompletedMockGameTour(page);
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
+      await completeMockOnboarding(page);
+      if (hinted) {
+        await page.getByRole("button", {name: /^hint$/i}).tap();
+        await page.locator(".modal-hint .play-primary").tap();
+        await expect(page.locator(".modal-hint")).toHaveCount(0);
+        await expect(page.locator("[data-coin-meter] strong")).toHaveText("275");
+      } else {
+        await page.locator(".keyboard").getByRole("button", {name: "P", exact: true}).tap();
+      }
+      await page.locator(".keyboard").getByRole("button", {name: "I", exact: true}).tap();
+      /** A visible letter must have reached the checkpoint before navigation begins. */
+      const draft = page.locator(".guess-row").first();
+      for (let lap = 0; lap < 6; lap += 1) {
+        await expect(draft).toHaveText("PI");
+        if (!hinted && lap === 5) {
+          await page.locator(".game-header .coin-pill").tap();
+          await page.locator(".game-shop-grid article:not(.shop-subscription-card)").first().getByRole("button").tap();
+          await expect(page.locator(".fanfare-tabs")).toBeVisible();
+          await page.locator(".fanfare-tabs").waitFor({state: "hidden"});
+          await expect(page.locator("[data-coin-meter] strong")).toHaveText("550");
+        }
+        await page.locator(".keyboard").getByRole("button", {name: "A", exact: true}).tap();
+        await expect(draft).toHaveText("PIA");
+        // Keep navigation adjacent to the visible-letter assertion; storage reads or waits hide the race.
+        await page.reload();
+        await completeMockOnboarding(page);
+        await expect(draft).toHaveText("PIA");
+        await expect(draft.locator(".cell").nth(3)).toHaveAttribute("aria-current", "true");
+        if (hinted) await expect(draft.locator(".cell").first()).toBeDisabled();
+        await page.locator(".keyboard").getByRole("button", {name: "Backspace", exact: true}).tap();
+      }
+      await expect(draft).toHaveText("PI");
+      await page.locator(".keyboard").getByRole("button", {name: "Backspace", exact: true}).tap();
+      await page.locator(".keyboard").getByRole("button", {name: "Backspace", exact: true}).tap();
+      await expect(draft).toHaveText(hinted ? "P" : "");
+      await page.reload();
+      await completeMockOnboarding(page);
+      await expect(draft).toHaveText(hinted ? "P" : "");
+      await expect(draft.locator(".cell").nth(hinted ? 1 : 0)).toHaveAttribute("aria-current", "true");
+      if (hinted) await expect(draft.locator(".cell").first()).toBeDisabled();
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText("300");
+    } finally {await page.close();}
+  });
+
+  it.each([390, 1280])("warns before leaving Daily through Skip without spending coins at %ipx", async (width) => {
+    /** Isolated viewport runs the real built game with the injected provider. */
+    const page = await browser.newPage({viewport: {width, height: 844}});
+    await page.route("https://cdn.jest.com/**", route => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
+    try {
+      await installCompletedMockGameTour(page);
+      await page.addInitScript(() => {
+        Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
+        sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
+      });
+      await page.goto(`${origin}/?harness=jest&gameMode=challenge`);
+      await completeMockOnboarding(page);
+      await expect(page.locator(".game-mode-label")).toHaveText("Daily");
+      /** Mode switching must preserve the displayed wallet. */
+      const balance = await page.locator("[data-coin-meter] strong").innerText();
+      /** Cancellation must leave the same Daily question visible. */
+      const riddle = await page.locator(".riddle-card h1").innerText();
+      await page.evaluate(() => {
+        /** Records commands after startup to detect unintended charges or completion. */
+        const messages: string[] = [];
+        Reflect.set(window, "__dailySkipMessages", messages);
+        window.addEventListener("riddle-quest:game-to-host", event => {
+          if (event instanceof CustomEvent && typeof event.detail?.type === "string") messages.push(event.detail.type);
+        });
+      });
+      /** The restored control stays beside Submit in both modes. */
+      const skip = page.getByRole("button", {name: /^skip$/i});
+      await expect(skip).toBeInViewport();
+      await skip.click();
+      /** A named modal must require an explicit mode-change choice. */
+      const warning = page.getByRole("dialog", {name: "Leave the Daily riddle?"});
+      await expect(warning).toContainText("Your Daily riddle will stay unfinished. Switch to Classic mode?");
+      await expect(warning).not.toContainText("Cost:");
+      /** Keeps mobile and desktop evidence of the rendered warning. */
+      const output = path.resolve(__dirname, "../../../../../builds/test-evidence/daily-skip-warning");
+      await mkdir(output, {recursive: true});
+      await page.screenshot({path: path.join(output, `warning-${width}.png`)});
+      await warning.getByRole("button", {name: "Cancel", exact: true}).click();
+      await expect(page.locator(".game-mode-label")).toHaveText("Daily");
+      await expect(page.locator(".riddle-card h1")).toHaveText(riddle);
+      await expect(skip).toBeFocused();
+      await skip.click();
+      await page.keyboard.press("Escape");
+      await expect(warning).toBeHidden();
+      await expect(page.locator(".game-mode-label")).toHaveText("Daily");
+      await skip.click();
+      await warning.getByRole("button", {name: "Play Classic", exact: true}).click();
+      await expect(page.locator(".game-mode-label")).toHaveText("Classic");
+      await expect(page.locator("[data-coin-meter] strong")).toHaveText(balance);
+      /** Confirming the warning may load content but cannot spend or grant rewards. */
+      const messages = await page.evaluate(() => Reflect.get(window, "__dailySkipMessages"));
+      expect(messages).toContain("game:loadRiddle");
+      for (const type of ["game:skipRiddle", "game:spendCoins", "game:completeGame"]) expect(messages).not.toContain(type);
+      await skip.click();
+      await expect(page.locator(".modal-skip")).toContainText("100");
+    } finally { await page.close(); }
+  });
+
   it.each([390, 1280])("shows shop buying power and correct action costs at %ipx", async (width) => {
     /** Injected game page at the viewport under verification. */
     const page = await browser.newPage({viewport: {width, height: 844}});
@@ -60,10 +173,10 @@ describeBrowser("queued coin actions", () => {
     page.on("pageerror", (error) => errors.push(error.message));
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
@@ -84,7 +197,10 @@ describeBrowser("queued coin actions", () => {
       for (let index = 0; index < grants.length; index += 1) {
         await expect(cards.nth(index)).toContainText(`Up to ${(grants[index] / 25).toLocaleString()} hints or ${(grants[index] / 50).toLocaleString()} extra attempts.`);
       }
-      await page.screenshot({path: path.resolve(__dirname, `../../../../../artifacts/coin-economy/shop-${width}.png`), fullPage: true});
+      /** Directory retaining mobile and desktop shop screenshots. */
+      const evidence = path.resolve(__dirname, "../../../../../builds/test-evidence/coin-economy");
+      await mkdir(evidence, {recursive: true});
+      await page.screenshot({path: path.join(evidence, `shop-${width}.png`), fullPage: true});
       await cards.last().getByRole("button").scrollIntoViewIfNeeded();
       await expect(cards.last().getByRole("button")).toBeInViewport();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
@@ -102,10 +218,10 @@ describeBrowser("queued coin actions", () => {
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         /** Captured actions expose reducer transitions without changing authority. */
@@ -142,10 +258,10 @@ describeBrowser("queued coin actions", () => {
     const page = await browser.newPage({viewport: {width: 390, height: 844}});
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
@@ -173,10 +289,10 @@ describeBrowser("queued coin actions", () => {
     page.setDefaultTimeout(8_000);
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
         /** Interrupt delivery before authority, then allow journal recovery on reload. */
@@ -206,11 +322,31 @@ describeBrowser("queued coin actions", () => {
       await page.locator(".guess-row button:not([disabled])").first().click();
       await page.keyboard.type("PI");
       await expect(page.locator(".guess-row").first()).toHaveText("PI");
+      /** The recovery checkpoint must belong to the original paid question. */
+      const paidQuestion = await page.evaluate(() => {
+        /** Unaccepted delivery record captured before the page reloads. */
+        const key = Object.keys(localStorage).find(key => key.includes("pendingPlay:v1:"));
+        if (!key) throw new Error("Missing unaccepted Continue journal");
+        /** Issued question identity remains independent of the saved checkpoint. */
+        const journal = JSON.parse(localStorage.getItem(key)!);
+        return {riddleId: journal.riddle.riddleId, sessionToken: journal.riddle.sessionToken};
+      });
       await page.evaluate(() => sessionStorage.setItem("allowContinueRecovery", "yes"));
       await page.reload();
       await completeMockOnboarding(page);
       await page.getByText(/what has keys/i).waitFor();
-      await page.waitForFunction(() => !Object.keys(localStorage).some((key) => key.includes("pendingPlay:v1:")));
+      await page.waitForFunction(() => Object.keys(localStorage).filter(key => key.includes("pendingPlay:v1:")).every(key => {
+        /** Settled Continue retains its current draft without retaining any paid or guess delivery. */
+        const journal = JSON.parse(localStorage.getItem(key)!);
+        return journal.queue.length === 0 && !journal.coinAction && !journal.skipPreview && journal.successors.length === 0;
+      }));
+      await expect.poll(() => page.evaluate(() => {
+        /** Settled input is durable in provider player data after its delivery journal retires. */
+        const game = JSON.parse(localStorage.getItem("riddleQuest:mockJestPlayerData") ?? "{}").activeGame;
+        return game ? {riddleId: game.riddleId, sessionToken: game.sessionToken, gameMode: game.gameMode,
+          draft: game.currentLetters, slot: game.activeSlotIndex, continued: game.engineSnapshot.hasUsedContinue} : null;
+      })).toEqual({...paidQuestion, gameMode: "classic", draft: ["P", "I", "", "", ""], slot: 2, continued: true});
+      await expect.poll(() => page.evaluate(() => Object.keys(localStorage).filter(key => key.includes("pendingPlay:v1:")).length)).toBe(0);
       await expect(page.locator(".modal-continue")).toHaveCount(0);
       await expect(page.locator(".guess-row:has(button:not([disabled]))")).toHaveText("PI");
       await expect(page.locator("[data-coin-meter] strong")).toHaveText(String(coinsBefore - 50));
@@ -226,10 +362,10 @@ describeBrowser("queued coin actions", () => {
     // The SDK is injected by this mock harness; avoid an unrelated external startup request.
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       // Paid Skip is Classic-only; start after the Daily challenge has been completed.
@@ -263,10 +399,10 @@ describeBrowser("queued coin actions", () => {
     // The SDK is injected by this mock harness; avoid an unrelated external startup request.
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
@@ -353,10 +489,10 @@ describeBrowser("queued coin actions", () => {
     page.setDefaultTimeout(4_000);
     await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
     try {
+      await installCompletedMockGameTour(page);
       await page.addInitScript(() => {
         Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
         localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-        localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
         sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
       });
       await page.goto(`${origin}/?harness=jest&dailyCompleted=1`);
@@ -419,6 +555,7 @@ describeBrowser("queued coin actions", () => {
       await page.route("https://cdn.jest.com/**", (route) => route.fulfill({status: 200, contentType: "application/javascript", body: ""}));
       page.setDefaultTimeout(4_000);
       try {
+        await installCompletedMockGameTour(page);
         await page.addInitScript(() => {
           Object.assign(window, {__RIDDLE_QUEST_BROWSER_TEST__: true});
           window.addEventListener("riddle-quest:host-to-game", (event) => {
@@ -430,7 +567,6 @@ describeBrowser("queued coin actions", () => {
               Reflect.set(window, "__hintResult", message);
           });
           localStorage.setItem("riddleQuest:onboarding:jest-guest", "seen");
-          localStorage.setItem("riddleQuest:tooltipSequenceSeen:gameTour:v2:jest-guest", "seen");
           localStorage.setItem("riddleQuest:tooltipSequenceSeen:profileTour:jest-guest", "seen");
           localStorage.setItem("riddleQuest:tooltipSeen:hintAfterWrongGuess:jest-guest", "seen");
           sessionStorage.setItem("riddleQuest:welcomeSession:jest-guest", "seen");
@@ -523,11 +659,16 @@ describeBrowser("queued coin actions", () => {
           return;
         }
         /** Original paid identity must survive replay without a second charge request. */
-        const requestId = await page.evaluate(() => {
-          /** Durable record containing the confirmed action. */
+        const paidRequest = await page.evaluate(() => {
+          /** Durable record binds the original action and question before recovery. */
           const key = Object.keys(localStorage).find((key) => key.includes("pendingPlay:v1:"))!;
-          return JSON.parse(localStorage.getItem(key)!).coinAction.requestId;
+          /** Original delivery supplies the expected request and question identity. */
+          const journal = JSON.parse(localStorage.getItem(key)!);
+          return {requestId: journal.coinAction.requestId, riddleId: journal.riddle.riddleId,
+            sessionToken: journal.riddle.sessionToken};
         });
+        /** Compare payment identity separately from the provider checkpoint. */
+        const {requestId, ...paidQuestion} = paidRequest;
         if (recovery === "reload") {
           await page.addInitScript(() => {
             Reflect.set(window, "__paidRequests", []);
@@ -542,16 +683,23 @@ describeBrowser("queued coin actions", () => {
           await completeMockOnboarding(page);
         } else await page.evaluate(() => Reflect.get(window, "__releaseGuess")());
         await page.waitForFunction(() => Reflect.get(window, "__paidRequests").length === 1);
-        await page.waitForFunction((action) => Object.keys(localStorage)
+        await page.waitForFunction(() => Object.keys(localStorage)
           .filter(key => key.includes("pendingPlay:v1:"))
           .every(key => {
-            if (action !== "skip") return false;
-            /** Settled paid work may leave a durable draft for the displayed successor. */
+            /** Settled paid work may retain a confirmed hint or successor draft without pending delivery. */
             const journal = JSON.parse(localStorage.getItem(key)!);
             return journal.queue.length === 0 && !journal.coinAction && !journal.skipPreview;
-          }), action);
+          }));
         if (action === "hint") {
           await expect(page.locator(".guess-row").nth(1).locator(".cell").first()).toHaveText("P");
+          await expect(page.locator(".guess-row").nth(1).locator(".cell").first()).toBeDisabled();
+          await expect.poll(() => page.evaluate(() => {
+            /** Settled input is durable in provider player data after its delivery journal retires. */
+            const game = JSON.parse(localStorage.getItem("riddleQuest:mockJestPlayerData") ?? "{}").activeGame;
+            return game ? {riddleId: game.riddleId, sessionToken: game.sessionToken, gameMode: game.gameMode,
+              draft: game.currentLetters, slot: game.activeSlotIndex, hints: game.hintRevealedIndices} : null;
+          })).toEqual({...paidQuestion, gameMode: "classic", draft: ["P", "", "", "", ""], slot: 1, hints: [0]});
+          await expect.poll(() => page.evaluate(() => Object.keys(localStorage).filter(key => key.includes("pendingPlay:v1:")).length)).toBe(0);
           await page.evaluate(() => {
             /** Duplicate result must not overwrite the accepted hint or coin balance. */
             const message = Reflect.get(window, "__hintResult");
@@ -565,6 +713,7 @@ describeBrowser("queued coin actions", () => {
             );
           });
           await expect(page.locator(".guess-row").nth(1).locator(".cell").first()).toHaveText("P");
+          await expect(page.locator("[data-coin-meter] strong")).toHaveText("275");
         } else {
           await expect(page.locator(".riddle-surface h1")).not.toContainText("What has keys");
           await page.waitForFunction(() => Reflect.has(window, "__skipLoad"));

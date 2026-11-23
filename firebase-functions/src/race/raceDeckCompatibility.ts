@@ -1,5 +1,5 @@
-import {splitGraphemes} from "@qwordly/core/game";
-import {RACE_ANSWER_TEXT_UNITS, RACE_DECK_SIZE, RaceLocaleSchema, RacePreloadedRiddleSchema, type RaceLocale} from "@qwordly/core/race";
+import {splitGraphemes} from "@riddle-quest/core/game";
+import {RACE_ANSWER_TEXT_UNITS, RACE_DECK_SIZE, RaceLocaleSchema, RacePreloadedRiddleSchema, type RaceLocale} from "@riddle-quest/core/race";
 import {HttpsError} from "firebase-functions/v2/https";
 import type {RaceRiddleSnapshot, RaceRunRecord} from "./raceEngine";
 

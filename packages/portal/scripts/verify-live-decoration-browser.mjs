@@ -1,3 +1,4 @@
+import {openSolarGame} from './solar-browser-fixture.mjs';
 import path from 'node:path';
 
 // Uses the solar fixture's actual frame, hosted authority, Three resources and controlled graphics driver.
@@ -9,8 +10,7 @@ export async function verifyLiveDecoration({page,width,url,baseline,metric,outpu
  const token=()=>page.evaluate(()=>window.probe.saves.findLast(row=>row.activeGame)?.activeGame.sessionToken);
  const settle=()=>page.waitForTimeout(100);
  const motion=async(value,platform=false)=>{await page.evaluate(({value,platform})=>platform?window.applyMotion(value):window.setMotion(value),{value,platform});await settle();};
- const start=async(query='')=>{await page.goto(url+'?custom=1&harness=race'+(scheduler==='timer'?'&timer=1':'')+query);await page.getByText('What has keys but cannot open doors?',{exact:true}).waitFor();
-  if(await page.getByRole('button',{name:"Let's Play",exact:true}).count())await page.getByRole('button',{name:"Let's Play",exact:true}).click();
+ const start=async(query='')=>{await openSolarGame(page,url+'?custom=1&harness=race'+(scheduler==='timer'?'&timer=1':'')+query);
   await page.keyboard.type('pian');await page.waitForFunction(()=>window.probe.saves.some(row=>row.activeGame?.currentLetters.join('').toUpperCase()==='PIAN'));
   await page.evaluate(()=>window.controlFrames());await settle();};
  const mount=async()=>{await page.evaluate(()=>window.releaseScene());await page.locator('.solar-system canvas').waitFor({state:'attached'});

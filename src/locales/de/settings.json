@@ -1,7 +1,7 @@
 {
   "Settings": {
     "ABOUT_BUTTON": "Über",
-    "ACCOUNT_DELETION_BUTTON": "Löschen Konto",
+    "ACCOUNT_DELETION_BUTTON": "Konto löschen",
     "CLOSE_BUTTON": "Schließen",
     "CREDITS_BUTTON": "Mitwirkende",
     "DATA_EXPORT_BUTTON": "Meine Daten exportieren",
@@ -12,7 +12,7 @@
     "LOGOUT_BUTTON": "Abmelden",
     "LOGOUT_ERROR_MESSAGE": "Abmeldung konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
     "LOGOUT_ERROR_TITLE": "Fehler",
-    "SOUND_TOGGLE": "Klang",
+    "SOUND_TOGGLE": "Ton",
     "TERMS_BUTTON": "Nutzungsbedingungen",
     "TITLE": "Einstellungen",
     "TOGGLE_OFF": "Aus",

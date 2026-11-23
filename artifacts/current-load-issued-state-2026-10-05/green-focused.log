@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       62 passed, 62 total
-Snapshots:   0 total
-Time:        6.315 s, estimated 7 s
-Ran all test suites matching src/__tests__/singlePlayerLoadIssuanceLatency.test.ts|src/__tests__/dailyChallenge.test.ts|src/__tests__/singlePlayerSessionTransactions.test.ts.

@@ -1,8 +1,0 @@
-{
-  "packages/portal/src/play/game/hooks/useCompletionDelivery.ts": "0474f0b90aec81308d1bc17e69ad0643b4a2491af8838f4ca53ba892d78c65d9",
-  "packages/portal/src/play/useGameMessageRouter.ts": "4efe34fb7dbdb772ce4e8769aecf8d0ff3060f83457c875eb643849bd6d2261d",
-  "packages/portal/package.json": "7689d133673a79aa6085126863ecdee0442f83fecb3b17779219a8d3656d485e",
-  "packages/portal/src/play/__tests__/useCompletionDelivery.test.ts": "423e4259988a5d616749aa3c2529f364fa65d070b37f657d78cdfd383f061445",
-  "packages/portal/src/play/__tests__/useGameMessageRouter.test.ts": "21130e3bf9515230fa491e0fcd21a7a15fb24f5d9a4c9fcaba2d1d1ef32af2e6",
-  "packages/portal/scripts/verify-completion-outcome-commit-browser.mjs": "35b11e0b4d840a2f8c9e54cfb34b210897f1f7b384c36bc4a34de8cffa403330"
-}

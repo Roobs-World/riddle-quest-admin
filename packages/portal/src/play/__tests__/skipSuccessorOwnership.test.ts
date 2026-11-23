@@ -2,10 +2,11 @@ import {expect,it,jest} from '@jest/globals';
 /** Exercises paid successor ownership against the actual recovery handler. */
 const effects:Array<()=>unknown>=[],layouts:Array<()=>unknown>=[];
 jest.mock('react',()=>({useCallback:<T>(fn:T)=>fn,useEffect:(fn:()=>unknown)=>effects.push(fn),useLayoutEffect:(fn:()=>unknown)=>layouts.push(fn),useRef:<T>(current:T)=>({current}),useState:<T>(initial:T|(()=>T))=>[typeof initial==='function'?(initial as ()=>T)():initial,jest.fn()]}));
-import {createInitialGameSession,gameSessionReducer} from '../gameSession';
-import {pendingPlayScope,type PendingGuessJournal} from "../pendingGuessJournal";
-import {createPendingPlayJournalStorage} from "../pendingPlayJournalDiagnostics";
-import {useProvisionalPlayRecovery,type PendingPlayRecoveryAdapters} from '../game/hooks/useProvisionalPlayRecovery';
+import {createInitialGameSession,gameSessionReducer} from "@riddle-quest/hosted/play/gameSession";
+import {pendingPlayScope,type PendingGuessJournal} from "@riddle-quest/hosted/play/pendingGuessJournal";
+import {createPendingPlayJournalStorage} from "@riddle-quest/hosted/play/pendingPlayJournalDiagnostics";
+import {useProvisionalPlayRecovery} from '../game/hooks/useProvisionalPlayRecovery';
+import type {PendingPlayRecoveryAdapters} from "@riddle-quest/hosted/play/pendingPlayAdapters";
 it.each((['early','late'] as const).flatMap(phase=>(['valid','origin','wrong-index','wrong-mode','advanced'] as const).map(target=>({phase,target}))))('$phase Skip successor accepts only its owned question: $target',async ({phase,target})=>{
  effects.length=0;layouts.length=0;
  /** Exercises paid successor ownership against the actual recovery handler. */
@@ -33,7 +34,9 @@ it.each((['early','late'] as const).flatMap(phase=>(['valid','origin','wrong-ind
  try{
   /** Exercises paid successor ownership against the actual recovery handler. */
   const recovery=useProvisionalPlayRecovery({state:loaded,stateRef,adapters,dispatch:action=>{stateRef.current=gameSessionReducer(stateRef.current,action);},postToHost:post,playFeedback:()=>{}});
-  for(const effect of layouts)effect();await new Promise<void>(resolve=>setImmediate(resolve));for(const effect of effects)effect();
+  for(const effect of layouts)effect();await new Promise<void>(resolve=>setImmediate(resolve));
+  // Writer readiness commits recovery before passive effects, without remounting its owner.
+  for(const effect of layouts.slice(1))effect();for(const effect of effects)effect();
   if(phase==='late')recovery.handleQueuedGuessResult({type:'host:operationResult',requestId:action.requestId,payload:{operation:'skip',ok:true,data:{newCoins:550}}});
   if(target==='advanced')stateRef.current=gameSessionReducer(stateRef.current,{type:'loadRiddle',riddle:{...next,index:3,riddleId:'classic-3',sessionToken:'00000000-0000-4000-8000-000000000003'}});
   /** Exercises paid successor ownership against the actual recovery handler. */

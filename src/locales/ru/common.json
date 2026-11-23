@@ -11,11 +11,11 @@
     "INFO_TITLE": "Информация",
     "OFFLINE_MESSAGE": "Пожалуйста, подключитесь повторно, чтобы продолжить игру.",
     "OFFLINE_TITLE": "Нет подключения к Интернету",
-    "OK_BUTTON": "ХОРОШО",
+    "OK_BUTTON": "ОК",
     "SUCCESS_TITLE": "Успех",
     "UNABLE_TO_OPEN_TITLE": "Невозможно открыть"
   },
   "CommonButtons": {
-    "RETRY": "Повторите попытку."
+    "RETRY": "Повторить"
   }
 }

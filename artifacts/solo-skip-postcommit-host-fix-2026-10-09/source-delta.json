@@ -1,7 +1,0 @@
-{
-  "changed": [
-    "packages/portal/src/play/__tests__/hostMessageHandlers.test.ts",
-    "packages/portal/src/play/hostMessageHandlers.ts"
-  ],
-  "added": []
-}

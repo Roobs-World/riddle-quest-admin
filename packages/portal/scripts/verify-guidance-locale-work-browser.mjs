@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.GUIDANCE_LOCALE_REACT_MODE??'development',baseline=process.env.GUIDANCE_LOCALE_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.GUIDANCE_LOCALE_REPORT_DIR??path.join(root,'../../artifacts/guidance-locale-work-2026-10-05',mode));
+const output=path.resolve(process.env.GUIDANCE_LOCALE_REPORT_DIR??path.join(root,'../../builds/test-evidence/guidance-locale-work-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/guidance-locale-'));
 let browser,server;const observations=[];
@@ -18,7 +18,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {GuidanceOverlay} from ${JSON.stringify(path.join(root,'src/play/guidance/GuidanceOverlay.tsx'))};
-import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import {getCurrentLocale,setLocaleAndWait,tr,useLocale} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
 import {applyPlayerPreferences,completePlayerOnboarding} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};

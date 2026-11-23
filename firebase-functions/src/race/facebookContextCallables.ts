@@ -1,12 +1,12 @@
 import {z} from "zod";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
-import {SUPPORTED_LOCALES} from "@qwordly/core/validation";
+import {SUPPORTED_LOCALES} from "@riddle-quest/core/validation";
 import {
   ListFacebookContextBoardRequestSchema,
   ListFacebookContextBoardResponseSchema,
   RecordFacebookContextRunRequestSchema,
   RecordFacebookContextRunResponseSchema,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";

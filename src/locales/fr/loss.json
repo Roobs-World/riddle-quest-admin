@@ -1,14 +1,13 @@
 {
   "LossModal": {
     "VIDEO_EXTRA_GO_BUTTON": "Regarde une vidéo pour obtenir un essai supplémentaire",
-    "COIN_EXTRA_GO_BUTTON": "{coins} pieces pour un essai supplementaire",
-    "EXTRA_GO_PROMPT": "Plus d essais. Obtenez un essai supplementaire ou passez cette enigme.",
+    "COIN_EXTRA_GO_BUTTON": "{coins} pièces pour un essai supplémentaire",
     "OPEN_SHOP_BUTTON": "Ouvrir la boutique",
-    "OUT_OF_ATTEMPTS": "Plus d essais.",
+    "OUT_OF_ATTEMPTS": "Plus d'essais.",
     "SKIP_LEVEL_PREFIX": "Utiliser ",
-    "SKIP_LEVEL_SUFFIX": " pieces pour passer le niveau",
-    "SKIP_PUZZLE_BUTTON": "Passer l enigme",
+    "SKIP_LEVEL_SUFFIX": " pièces pour passer le niveau",
+    "SKIP_PUZZLE_BUTTON": "Passer l'énigme",
     "USE_COINS_PREFIX": "Utiliser ",
-    "USE_COINS_SUFFIX": " pieces pour reessayer"
+    "USE_COINS_SUFFIX": " pièces pour réessayer"
   }
 }

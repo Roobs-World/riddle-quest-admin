@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.LIVE_WAKE_REACT_MODE??'development';assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.LIVE_WAKE_REPORT_DIR??path.join(root,'../../artifacts/live-recovery-wakeups-2026-10-05',mode));
+const output=path.resolve(process.env.LIVE_WAKE_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-recovery-wakeups-2026-10-05',mode));
 const baseline=process.env.LIVE_WAKE_BASELINE_DIR;
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-recovery-wakeups-'));const observations=[];let browser,server;
@@ -17,7 +17,7 @@ try {
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};import ${JSON.stringify(path.join(root,'src/styles.race-gameplay.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

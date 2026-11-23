@@ -1,6 +1,6 @@
 import {expect} from "@jest/globals";
 import type {Page} from "@playwright/test";
-import {LiveRaceViewSchema, RACE_RULES} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RACE_RULES} from "@riddle-quest/core/race";
 
 /** Restores the game-owned Reddit board through the shipped same-origin adapter. */
 export async function verifyRedditTournamentBoard(page: Page) {

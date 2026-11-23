@@ -1,9 +1,9 @@
-import type {EconomyDifficulty} from "@qwordly/core/game";
+import type {EconomyDifficulty} from "@riddle-quest/core/game";
 import type {PlayerProgress} from "../validation/firestoreSchemas";
 import type {
   SubmitSinglePlayerGuessRequestData,
   SubmitSinglePlayerGuessResponseData,
-} from "@qwordly/core/validation/requestSchemas";
+} from "@riddle-quest/core/validation/requestSchemas";
 
 /** Authoritative response for one replay-safe hint purchase. */
 export type AuthoritativeHintResult = {

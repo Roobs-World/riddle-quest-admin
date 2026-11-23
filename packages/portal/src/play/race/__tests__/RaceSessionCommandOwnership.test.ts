@@ -1,6 +1,6 @@
 import {describe,expect,it} from "@jest/globals";
 import {recorded,racing} from "./raceSession.support";
-import type {RaceRunView} from "@qwordly/core/race";
+import type {RaceRunView} from "@riddle-quest/core/race";
 
 /** Changes a retained rendering reference without changing any canonical authority data. */
 const mutate = (run:RaceRunView,field:string):void => {

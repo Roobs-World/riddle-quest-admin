@@ -1,8 +1,0 @@
-de: critiqued 15/180
-de: translated 30/180
-de: critiqued 30/180
-Error: translation-answer-invalid:de:race:geography:07:grapheme_length
-    at Object.translate (/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/scripts/race-content-translate.js:135:32)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-    at async generateRaceTranslationBundle (/home/craig-beswetherick/Documents/riddle-quest/firebase-functions/lib/race/raceTranslationGenerator.js:128:47)
-    at async /home/craig-beswetherick/Documents/riddle-quest/firebase-functions/scripts/race-content-translate.js:177:22

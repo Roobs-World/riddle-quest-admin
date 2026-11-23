@@ -1,9 +1,0 @@
-{
-  "goal": "active",
-  "candidates": [
-    "Validate retained live ticket decks before new public/private/bot match creation; preserve searching recovery and leave.",
-    "Validate recorded invitation preview before claiming a new recipient; preserve creator and accepted-attempt recovery.",
-    "Compare race catalog/private answer shape policy with the Unicode letter-and-mark-only client isValidGuess policy; current fixtures often use digits. Build actual native-input repro before adding policy restrictions."
-  ],
-  "subagentAudits": "Read-only contract review identified the canonical expansion/history/draft bounds; read-only retained-race audit identified new-match boundaries."
-}

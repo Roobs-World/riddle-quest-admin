@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.RESIZE_SETUP_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
 const baseline=process.env.RESIZE_SETUP_BASELINE_DIR;
-const output=path.resolve(process.env.RESIZE_SETUP_REPORT_DIR??path.join(root,'../../artifacts/resize-setup-retirement-2026-10-04',mode));
+const output=path.resolve(process.env.RESIZE_SETUP_REPORT_DIR??path.join(root,'../../builds/test-evidence/resize-setup-retirement-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/resize-setup-'));
 const component=path.join(root,'src/play/game/hooks/useGameBridgeLifecycle.ts');

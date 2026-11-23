@@ -7,7 +7,7 @@ import {createRequire} from "node:module";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 const require = createRequire(import.meta.url);
-const {RACE_RULES} = require("@qwordly/core/race");
+const {RACE_RULES} = require("@riddle-quest/core/race");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive:true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/live-delivery-"));
@@ -26,6 +26,8 @@ import React from 'react'; import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/play/race/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/play/race/testing/fakeRaceServices.ts"))};
+import {LIVE_RACE_JOIN_DEADLINE_MS} from ${JSON.stringify(path.join(root,"src/play/race/logic/liveRaceDeliveryDeadline.ts"))};
+window.liveJoinDeadlineMs=LIVE_RACE_JOIN_DEADLINE_MS;
 const services=createFakeRaceServices(); const user=new URLSearchParams(location.search).get('user') || 'Alice';
 window.deliveryCalls=[]; window.freezeJoinOnce=new URLSearchParams(location.search).get('fault')==='join';
 const call=async(action,input)=>{
@@ -108,7 +110,7 @@ try {
   reset();const context=await browser.newContext({viewport});const a=await context.newPage(),b=await context.newPage();const errors=[];
   for(const page of [a,b])page.on('pageerror',error=>errors.push(error.message));
   await a.goto(baseUrl+'/?user=Alice'+(renderOnly||responsiveOnly||backoffOnly||rejectionOnly||commandRecoveryOnly||cooldownOnly?'':'&fault=join'));await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
-  await a.locator('.live-race-self strong').waitFor({timeout:15000});
+  await a.locator('.live-race-self strong').waitFor({timeout:new URL(a.url()).searchParams.get('fault')==='join'?await a.evaluate(()=>window.liveJoinDeadlineMs+5000):15000});
   const joins=await a.evaluate(()=>window.deliveryCalls.filter(item=>item.action==='join'));
   if(!renderOnly&&!responsiveOnly&&!backoffOnly&&!rejectionOnly&&!commandRecoveryOnly&&!cooldownOnly){assert.equal(joins.length,2);assert.equal(joins[0].requestId,joins[1].requestId);
   console.log('Hung join recovered with the same request ID at '+viewport.width+'px.');}

@@ -1,5 +1,5 @@
 {
-  "name": "@qwordly/reddit-app",
+  "name": "@riddle-quest/reddit-app",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -7,15 +7,15 @@
     "node": ">=22.0.0 <25.0.0"
   },
   "scripts": {
-    "build:client": "pnpm --filter @qwordly/portal build:reddit && node scripts/stage-client.mjs",
+    "build:client": "pnpm --filter @riddle-quest/portal build:reddit && node scripts/stage-client.mjs",
     "stage:client": "node scripts/stage-client.mjs",
-    "prebuild:server": "pnpm --filter @qwordly/core build",
+    "prebuild:server": "pnpm --filter @riddle-quest/core build",
     "build:server": "vite build",
     "build": "pnpm build:client && pnpm build:server",
     "build:package": "pnpm build:client && pnpm build:server && pnpm validate",
     "build:package:from-client": "pnpm stage:client && pnpm build:server && pnpm validate",
-    "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --write",
-    "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@qwordly/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --check",
+    "licenses:generate": "RIDDLE_QUEST_LICENSE_PACKAGE=@riddle-quest/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --write",
+    "licenses:check": "RIDDLE_QUEST_LICENSE_PACKAGE=@riddle-quest/reddit-app RIDDLE_QUEST_LICENSE_OUTPUT=$PWD/third-party-licenses.reddit.txt node ../portal/scripts/generate-third-party-licenses.mjs --check",
     "audit:performance": "node scripts/audit-performance.mjs",
     "check:types": "tsc6 -p tsconfig.json --noEmit",
     "test": "node --experimental-strip-types --test src/server/*.test.ts scripts/*.test.mjs",
@@ -36,18 +36,20 @@
     "prepublishOnly": "node scripts/direct-release-guard.mjs publish"
   },
   "dependencies": {
-    "@devvit/web": "0.14.6",
-    "@hono/node-server": "2.1.3",
-    "@qwordly/core": "workspace:*",
-    "devvit": "0.14.6",
-    "hono": "4.13.11"
+    "@devvit/web": "0.15.4",
+    "@hono/node-server": "2.1.11",
+    "@riddle-quest/core": "workspace:*",
+    "devvit": "0.15.4",
+    "hono": "4.13.19"
   },
   "devDependencies": {
-    "@types/node": "^26.6.3",
-    "chrome-launcher": "1.2.1",
+    "@types/node": "^26.6.6",
+    "chrome-launcher": "1.2.3",
     "google-protobuf": "4.0.3",
-    "lighthouse": "13.5.0",
+    "lighthouse": "13.6.0",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "vite": "8.3.1"
+    "vite": "8.3.8",
+    "@devvit/server": "0.15.4",
+    "@devvit/shared": "0.15.4"
   }
 }

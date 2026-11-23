@@ -1,9 +1,0 @@
-{
-  "packages/portal/src/play/ConfirmedRiddleOutcome.ts": "155f542f81507b0e1a78e040c6c7493ecf643fa0a7a5230392eec8a7cd7eef79",
-  "packages/portal/src/play/gameSession.ts": "a0a013c6378eea213be4762a99b9a80465e6a7a9777d2b3694ab6bbb5784d662",
-  "packages/portal/src/play/pendingGuessJournal.ts": "3aaefdf41061dff45fd9d0b66ea2f6f8805b384944630d3f836b13e842c5a513",
-  "packages/portal/src/play/game/hooks/useProvisionalPlayRecovery.ts": "91c00d7d828739dfb77a104158351debf4efec8b354ab274df4f37e6ac143b65",
-  "packages/portal/src/play/__tests__/confirmedLossRecovery.test.ts": "25352652322fdebf8aa7748ff5e719784eccc6d95bf996ce89cf52d876eaabcc",
-  "packages/portal/scripts/verify-authority-loss-recovery-browser.mjs": "bbccd594fb867b124eb0314cb9f72883c5961398921177bac77de1e6d61b782c",
-  "packages/portal/package.json": "21f36301348c20dacf581654374d02a76263851840a56ad72fd0ac2f2eb2f426"
-}

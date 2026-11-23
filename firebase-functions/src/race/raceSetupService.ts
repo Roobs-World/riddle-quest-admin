@@ -15,7 +15,7 @@ import {
   type RaceCategoryId,
   type RaceLocale,
   type RaceChallengePreview,
-} from "@qwordly/core/race";
+} from "@riddle-quest/core/race";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "./raceDeckSnapshot";
 import {assertRaceStoredRecord} from "./raceStoredRecords";
 import {logger} from "firebase-functions";
@@ -362,7 +362,7 @@ const deterministicSort = <
     return stableHash(`${seed}:${leftId}`).localeCompare(stableHash(`${seed}:${rightId}`));
   });
 
-/** Builds an easier deterministic deck from a validated category pool. */
+/** Builds a deterministic easy/medium deck from the validated category pool. */
 export function buildDeterministicRaceDeck(
   records: ExistingRaceContentRecord[],
   options: {
@@ -391,12 +391,14 @@ export function buildDeterministicRaceDeck(
     );
   }
 
+  /** Selection is confined to the same eligible locale/category subset that passed validation. */
+  const pool = records.filter(record => record.locale === options.locale && record.data.categoryId === options.categoryId && record.data.raceEligible === true);
   /** Provides selected behavior. */
   const selected: ExistingRaceContentRecord[] = [];
   for (const difficultyBand of ["easy", "medium"] as const) {
     selected.push(
       ...deterministicSort(
-        records.filter((record) => record.data.difficultyBand === difficultyBand),
+        pool.filter((record) => record.data.difficultyBand === difficultyBand),
         `${options.seed}:${difficultyBand}`,
       ).slice(0, RACE_DECK_DIFFICULTY_COUNTS[difficultyBand]),
     );

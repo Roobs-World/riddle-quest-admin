@@ -15,7 +15,7 @@ await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, "index.html"), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, "main.tsx"), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {BridgeLeaderboardEntrySchema, GameLoadLeaderboardMessageSchema} from '@qwordly/core/bridge';
+import {BridgeLeaderboardEntrySchema, GameLoadLeaderboardMessageSchema} from '@riddle-quest/core/bridge';
 import {LeaderboardModalPage} from ${JSON.stringify(path.join(root, "src/play/modalPages/leaderboard/LeaderboardModalPage.tsx"))};
 import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/play/i18n.ts"))};
 import ${JSON.stringify(path.join(root, "src/styles.css"))};

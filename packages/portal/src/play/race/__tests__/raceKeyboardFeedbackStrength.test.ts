@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import type {ScoredGuess} from "@qwordly/core/game";
+import type {ScoredGuess} from "@riddle-quest/core/game";
 import {getRaceLetterStates} from "../logic/racePresentation";
 
 /** Confirmed duplicate-letter evaluations must preserve the strongest available keyboard fact. */

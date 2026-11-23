@@ -1,6 +1,0 @@
-
-Test Suites: 4 passed, 4 total
-Tests:       51 passed, 51 total
-Snapshots:   0 total
-Time:        0.786 s, estimated 1 s
-Ran all test suites matching src/__tests__/race/raceService.test.ts|src/__tests__/race/raceContent.test.ts|src/__tests__/race/raceContentImport.test.ts|src/__tests__/race/raceLiveLatency.test.ts.

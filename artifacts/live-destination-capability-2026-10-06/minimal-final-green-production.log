@@ -1,7 +1,0 @@
-{
-  "mode": "production",
-  "browserVersion": "153.0.8010.12",
-  "cases": 3,
-  "checks": 18,
-  "failures": []
-}

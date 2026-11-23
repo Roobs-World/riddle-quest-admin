@@ -1,4 +1,4 @@
-import {protectContent} from "@qwordly/core/contentProtection";
+import {protectContent} from "@riddle-quest/core/contentProtection";
 /** Provides mock get doc behavior. */
 const mockGetDoc = jest.fn();
 /** Provides mock doc behavior. */

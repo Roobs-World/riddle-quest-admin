@@ -1,4 +1,4 @@
-import type {RaceLocale} from "@qwordly/core/race";
+import type {RaceLocale} from "@riddle-quest/core/race";
 import {assertRaceDeckCompatible} from "../../race/raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "../../race/raceEngine";
 

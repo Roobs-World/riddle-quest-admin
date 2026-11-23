@@ -1,9 +1,9 @@
 {
   "CoinShop": {
-    "COINS_SUFFIX": "monete",
+    "COINS_SUFFIX": " monete",
     "LOADING_TEXT": "Caricamento negozio...",
     "NO_PACKS_AVAILABLE": "Nessun pacchetto di monete è disponibile al momento.",
-    "PURCHASE_BUTTON": "ACQUISTO",
+    "PURCHASE_BUTTON": "ACQUISTA",
     "PERIOD_MONTHLY": "mese",
     "PERIOD_WEEKLY": "settimana",
     "PERIOD_YEARLY": "anno",
@@ -19,8 +19,7 @@
     "SUBSCRIPTION_BENEFIT_SUPPORT": "Sostieni il team dietro Riddle Quest",
     "SUBSCRIPTION_BENEFIT_RENEWAL": "Si rinnova automaticamente. Annulla quando vuoi da Profilo o Impostazioni.",
     "TITLE": "NEGOZIO DI MONETE",
-    "YOUR_BALANCE": "Il tuo equilibrio",
-    "PACK_DESCRIPTION": "Aggiungi {coins} monete al tuo saldo.",
+    "YOUR_BALANCE": "Il tuo saldo",
     "BADGE_STARTER": "INIZIALE",
     "BADGE_POPULAR": "POPOLARE",
     "BADGE_BEST_VALUE": "MIGLIOR OFFERTA",

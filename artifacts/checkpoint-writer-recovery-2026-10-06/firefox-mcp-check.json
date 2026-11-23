@@ -1,6 +1,0 @@
-{
-  "tool": "mcp__firefox_devtools__get_firefox_info",
-  "isError": true,
-  "message": "Error: Process (pid=757831) unexpectedly closed with status 0",
-  "coverage": "Native Firefox 153 exercised through the injected maintained Playwright harness instead."
-}

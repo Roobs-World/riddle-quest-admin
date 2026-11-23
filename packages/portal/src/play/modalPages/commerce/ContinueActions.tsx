@@ -1,4 +1,4 @@
-import type {GameModal} from "../../gameSession";
+import type {GameModal} from "@riddle-quest/hosted/play/gameSession";
 import {useTranslator} from "../../i18n";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "./commerceCosts";
 import {isFacebookWebTarget} from "../../../platform/webTargetEnvironment";
@@ -58,7 +58,6 @@ export function ContinueModalPage({
   );
   return (
     <div className="modal-actions continue-actions">
-      <p>{tr("LossModal.EXTRA_GO_PROMPT")}</p>
       <div className="continue-balance">
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>

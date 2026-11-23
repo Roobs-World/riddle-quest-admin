@@ -12,6 +12,8 @@ import sunTextureUrl from "../../../../assets/3d-web/tex_sun_spots_02.webp";
 import sunCoronaTextureUrl from "../../../../assets/3d-web/tex_sun_corona-v2.webp";
 import {runWhenLayoutReady} from "./game/layoutReady";
 import {SOLAR_SYSTEM_CONFIG, type MoonConfig, type PlanetConfig} from "./solarConfig";
+import {createSolarSpacecraft} from "./solarSpacecraft";
+import {createSolarGravityBodies} from "./solarGravity";
 import {
   advanceFrameBasedAngle,
   advanceSolarOrbitAngle,
@@ -259,6 +261,10 @@ export function SolarSystem({
           };
 
           scene.add(new THREE.AmbientLight(0xb6c6ff, 1.1));
+          scene.add(camera);
+          /** Shares the solar scene's clock, pause state, and graphics resource lifetime. */
+          const spacecraft = createSolarSpacecraft({camera, resources, scene,
+            bodies: createSolarGravityBodies(SOLAR_SYSTEM_CONFIG)});
           /** Provides sunlight behavior. */
           const sunlight = new THREE.PointLight(0xffe0a6, 1100, 260);
           sunlight.position.set(0, 30, 0);
@@ -411,6 +417,9 @@ export function SolarSystem({
             );
             planet.name = config.name;
             orbit.add(planet);
+            if (config.name === "Earth") {
+              spacecraft.orbitEarth({orbit, planet, radius: config.size});
+            }
 
             /** Provides atmosphere behavior. */
             const atmosphere = new THREE.Mesh(
@@ -526,9 +535,9 @@ export function SolarSystem({
               }
               for (const runtime of runtimes) {
                 runtime.orbit.rotation.y = advanceSolarOrbitAngle(
-                  runtime.orbit.rotation.y,
+                  0,
                   runtime.config.orbitSpeed,
-                  deltaSeconds,
+                  animationElapsed,
                 );
                 runtime.planet.rotation.y = advanceSolarRotationAngle(
                   runtime.planet.rotation.y,
@@ -541,6 +550,7 @@ export function SolarSystem({
                   mesh.position.set(Math.cos(angle) * config.distance, 0, Math.sin(angle) * config.distance);
                 });
               }
+              spacecraft.animate(animationElapsed);
               renderer.render(scene, camera);
             },
           });

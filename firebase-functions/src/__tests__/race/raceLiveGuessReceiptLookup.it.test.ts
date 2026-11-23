@@ -1,10 +1,10 @@
 import {confirmLiveGuessReceiptForUser} from "../../race/raceLiveGuessReceipt";
-import {LiveGuessReceiptQuerySchema} from "@qwordly/core/race";
+import {LiveGuessReceiptQuerySchema} from "@riddle-quest/core/race";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
-import {type LiveRaceView} from "@qwordly/core/race";
+import {type LiveRaceView} from "@riddle-quest/core/race";
 import type {LiveMatch} from "../../race/raceLiveState";
 import {getJestAccountDeletionRef} from "../../jest/jestAccountDeletion";
 

@@ -1,3 +1,4 @@
+import {waitForAnswerInputReady} from "./helpers/answer-readiness.mjs";
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -7,7 +8,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.STATIC_KEYBOARD_REACT_MODE??'development',baseline=process.env.STATIC_KEYBOARD_BASELINE_DIR;
-const output=path.resolve(process.env.STATIC_KEYBOARD_REPORT_DIR??path.join(root,'../../artifacts/static-keyboard-work-2026-10-04',mode));
+const output=path.resolve(process.env.STATIC_KEYBOARD_REPORT_DIR??path.join(root,'../../builds/test-evidence/static-keyboard-work-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/static-keyboard-'));
 const source=`
@@ -17,7 +18,7 @@ import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/play/PlayHostApp.
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/play/HostedPlaySession.ts'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/fakeServices.ts'))};
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES} from '@qwordly/core/race';import {computeFeedback} from '@qwordly/core/game';
+import {RACE_RULES} from '@riddle-quest/core/race';import {computeFeedback} from '@riddle-quest/core/game';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
@@ -58,6 +59,7 @@ try {
   const answer=target==='playable'?'rome':'piano',prefix=answer.slice(0,-1),suffix=answer.slice(-1),keyboard=page.locator(target==='playable'?'.yt-keyboard':'.keyboard');
   const letters=()=>page.locator(target==='playable'?'.yt-guess-row.current .yt-tile':'.guess-row:has([aria-current="true"]) button').allTextContents().then(values=>values.join('').toLowerCase());
   const focus=async()=>{if(target==='playable'||target==='race')await page.locator(target==='playable'?'.yt-answer-native':'.race-native-answer-input').focus();else await page.evaluate(()=>document.activeElement?.blur());};
+  if(target==='solo')await waitForAnswerInputReady(page);
   await focus();await page.keyboard.type(prefix);await page.waitForFunction(({target,prefix})=>[...document.querySelectorAll(target==='playable'?'.yt-guess-row.current .yt-tile':'.guess-row:has([aria-current="true"]) button')].map(x=>x.textContent).join('').toLowerCase()===prefix,{target,prefix});
   metric('physical input starts the correct draft',await letters(),prefix);
   metric('fixed key order is unchanged',await keyboard.locator('button').evaluateAll(buttons=>buttons.map(b=>b.textContent.trim()).filter(text=>/^[A-Z]$/.test(text)).join('')),'QWERTYUIOPASDFGHJKLZXCVBNM');

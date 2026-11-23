@@ -1,5 +1,5 @@
 import {describe, expect, it} from "@jest/globals";
-import type {RaceRecovery} from "@qwordly/core/race";
+import type {RaceRecovery} from "@riddle-quest/core/race";
 import {catalog, fixture, harness} from "./raceSession.support";
 
 /** Optional storage can be denied independently of authority and transport. */

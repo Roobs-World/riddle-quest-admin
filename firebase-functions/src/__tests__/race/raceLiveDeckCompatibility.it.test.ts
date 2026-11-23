@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "@qwordly/core/race";
+import {LIVE_RACE_WAIT_MS, type LiveRaceView, type RaceLocale} from "@riddle-quest/core/race";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/raceLiveInvitation";
 import {requestDocumentId} from "../../race/raceSetupService";
@@ -40,7 +40,7 @@ beforeEach(async () => {
   for (const [index, owner] of [A, B, C].entries()) batch.set(db.doc(`users/${owner}`), {username: ["Alice", "Bob", "Charlie"][index], coins: 100});
   await batch.commit();
 });
-afterAll(clear);
+afterAll(async () => {await clear(); await db.terminate();});
 /** Creates the original canonical seat through the production service. */
 const reserve = (entry: Entry, locale: RaceLocale = "en") => joinLiveRaceForUser(A,
   {locale, categoryId: "history", requestId: "frozen-source-seat", ...(entry === "private" ? {createChallenge: true} : {})}, {db, nowMs: NOW});
@@ -221,8 +221,17 @@ it.each(["public", "private", "bot"] as const)("recovers and settles an already-
   /** Current answer-free prompt remains available and the server still handles terminal settlement. */
   const owner = entry === "bot" ? A : B, nowMs = view.startsAtMs! + 1000;
   expect((await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "poll", requestId: "accepted-future-recovery"}, {db, nowMs})).phase).toBe("racing");
+  /** Human seats that must record a correct answer before terminal rewards are eligible. */
+  const participants = entry === "bot" ? [{seat: 0, userId: A, ticketId: source.ticketId}]
+    : [{seat: 0, userId: A, ticketId: source.ticketId}, {seat: 1, userId: B, ticketId: view.ticketId}];
+  for (const participant of participants) {
+    /** First canonical riddle used to establish genuine play for this seat. */
+    const riddle = match.runs[participant.seat].riddles[0];
+    await updateLiveRaceForUser(participant.userId, {ticketId: participant.ticketId, action: "guess", requestId: `accepted-future-played-${participant.seat}`,
+      riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs});
+  }
   /** Forfeiture still commits the original once-only match result and rewards. */
-  const terminal = await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "leave", requestId: "accepted-future-forfeit"}, {db, nowMs});
+  const terminal = await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "leave", requestId: "accepted-future-forfeit"}, {db, nowMs: nowMs + 1000});
   expect(terminal.phase).toBe("result");
   expect((await ref.get()).data()).toMatchObject({winner: entry === "bot" ? 1 : 0, rewardCoins: entry === "bot" ? 0 : 50});
   expect((await db.doc(`users/${A}`).get()).data()).toMatchObject({coins: entry === "bot" ? 125 : 200,
@@ -230,6 +239,6 @@ it.each(["public", "private", "bot"] as const)("recovers and settles an already-
   expect((await db.doc(`users/${B}`).get()).data()?.coins).toBe(entry === "bot" ? 100 : 125);
   /** Later terminal reads do not grant badges or victory coins again. */
   const accounts = (await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(snapshot => snapshot.data());
-  expect((await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "poll", requestId: "accepted-terminal-recovery"}, {db, nowMs: nowMs + 1000})).phase).toBe("result");
+  expect((await updateLiveRaceForUser(owner, {ticketId: view.ticketId, action: "poll", requestId: "accepted-terminal-recovery"}, {db, nowMs: nowMs + 2000})).phase).toBe("result");
   expect((await db.getAll(db.doc(`users/${A}`), db.doc(`users/${B}`))).map(snapshot => snapshot.data())).toEqual(accounts);
 });

@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.NATIVE_CALLBACK_REACT_MODE??'development';
-const output=path.resolve(process.env.NATIVE_CALLBACK_REPORT_DIR??path.join(root,'../../artifacts/native-editor-callbacks-2026-10-04',mode));
+const output=path.resolve(process.env.NATIVE_CALLBACK_REPORT_DIR??path.join(root,'../../builds/test-evidence/native-editor-callbacks-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/native-editor-callbacks-'));
 const observations=[];let browser,server;

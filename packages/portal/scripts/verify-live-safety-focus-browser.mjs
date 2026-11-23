@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium,firefox} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.SAFETY_FOCUS_REACT_MODE??'development';
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.SAFETY_FOCUS_REPORT_DIR??path.join(root,'../../artifacts/live-safety-focus-2026-10-08/permanent',mode+'-'+(process.env.SAFETY_FOCUS_ENGINE??'chromium')));
+const output=path.resolve(process.env.SAFETY_FOCUS_REPORT_DIR??path.join(root,'../../builds/test-evidence/live-safety-focus-2026-10-08/permanent',mode+'-'+(process.env.SAFETY_FOCUS_ENGINE??'chromium')));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/live-poll-scheduling-'));let browser,server;const observations=[];
 try{
@@ -16,7 +16,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES,LiveRaceViewSchema} from '@qwordly/core/race';
+import {RACE_RULES,LiveRaceViewSchema} from '@riddle-quest/core/race';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};import ${JSON.stringify(path.join(root,'src/styles.race-gameplay.css'))};import ${JSON.stringify(path.join(root,'src/styles.race-lobby.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

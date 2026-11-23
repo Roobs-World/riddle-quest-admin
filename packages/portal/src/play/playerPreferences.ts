@@ -1,4 +1,5 @@
 import {LANGUAGE_OPTIONS, detectDeviceLanguage, setLocale, type Locale} from "./i18n";
+import {isJestWebTarget} from "../platform/webTargetEnvironment";
 import {
   readBrowserStorage,
   removeBrowserStorage,
@@ -32,6 +33,7 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   activeRace: "riddleQuest:activeRaceRun",
   raceRecovery: "riddleQuest:raceRecovery",
   raceDraft: "riddleQuest:raceDraft",
+  liveRaceLobby: "riddleQuest:liveRaceLobby",
 } as const;
 
 /** Local-storage prefixes containing app-owned tooltip state. */
@@ -132,7 +134,7 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   const storedLocale = parseLocale(safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale));
   /** Provides locale behavior. */
   const locale =
-    parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
+    isJestWebTarget ? "en" : parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
   /** Stores d sound enabled. */
   const storedSoundEnabled = readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled);
   /** Provides muted behavior. */
@@ -163,9 +165,11 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
 
 /** Persists and applies a locale selected by the player. */
 export function setPlayerLocale(locale: Locale): void {
-  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, locale);
-  setLocale(locale);
-  emitPreferenceChange({locale});
+  /** Platform persistence and the rendered locale must use the same target policy. */
+  const nextLocale = isJestWebTarget ? "en" : locale;
+  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, nextLocale);
+  setLocale(nextLocale);
+  emitPreferenceChange({locale: nextLocale});
 }
 
 /** Persists a sound preference when game state changes it. */
@@ -251,6 +255,26 @@ export function subscribeToPlayerReducedMotion(subscriber: () => void): () => vo
     motionSubscribers.delete(subscriber);
     if (media?.removeEventListener) media.removeEventListener("change", subscriber);
     else media?.removeListener?.(subscriber);
+  };
+}
+
+/** Observes both accessibility choices, including platform restores and OS contrast changes. */
+export function subscribeToPlayerAccessibilityPreferences(subscriber: () => void): () => void {
+  /** Shared application notifications already cover changes to either preference. */
+  const stopObservingMotion = subscribeToPlayerReducedMotion(subscriber);
+  /** OS contrast changes matter until a platform or player choice overrides them. */
+  const contrastMedia = typeof window !== "undefined" && typeof window.matchMedia === "function"
+    ? [window.matchMedia("(prefers-contrast: more)"), window.matchMedia("(forced-colors: active)")] : [];
+  contrastMedia.forEach((media) => {
+    if (media.addEventListener) media.addEventListener("change", subscriber);
+    else media.addListener?.(subscriber);
+  });
+  return () => {
+    stopObservingMotion();
+    contrastMedia.forEach((media) => {
+      if (media.removeEventListener) media.removeEventListener("change", subscriber);
+      else media.removeListener?.(subscriber);
+    });
   };
 }
 

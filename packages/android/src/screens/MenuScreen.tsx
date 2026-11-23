@@ -1,0 +1,110 @@
+import type {LocalSoloAuthority, YouTubeAuthoritySnapshot, YouTubeContent, YouTubeCopyKey, YouTubeLocale} from "@riddle-quest/solo";
+import {StyleSheet, View} from "react-native";
+import {ModeCard} from "../components/ModeCard";
+import {ActionButton, Banner, Eyebrow, Heading, Notice, Screen} from "../components/Primitives";
+import {SaveBanner, StatusHeader} from "../components/StatusViews";
+import {spacing} from "../theme";
+/** A way back to the hosted surface, when the build has one. */
+export type OnlineAction = Readonly<{
+  /** Localized button label. */
+  label: string;
+  /** Switches to hosted play. */
+  onPress: () => void;
+}>;
+/** Props for {@link MenuScreen}. */
+export type MenuScreenProps = Readonly<{
+  /** Active locale. */
+  locale: YouTubeLocale;
+  /** Locale-aligned bundled content. */
+  content: YouTubeContent;
+  /** Local gameplay authority. */
+  authority: LocalSoloAuthority;
+  /** Latest authority projection. */
+  snapshot: YouTubeAuthoritySnapshot;
+  /** Current UTC day. */
+  today: string;
+  /** Latest localized operation failure. */
+  notice: YouTubeCopyKey | null;
+  /** Runs one authority transition. */
+  run: (action: () => Promise<unknown>) => Promise<void>;
+  /** Localized copy lookup. */
+  text: (key: YouTubeCopyKey) => string;
+  /** Opens the progress screen. */
+  onShowProgress: () => void;
+  /** Returns to hosted play, when the build has it. */
+  online?: OnlineAction;
+}>;
+/** Mode selection with recovery, guidance, and save-status banners. */
+export function MenuScreen({locale, content, authority, snapshot, today, notice, run, text, onShowProgress, online}: MenuScreenProps) {
+  /** Durable progression. */
+  const progression = snapshot.save.progression;
+  /** Whether material transitions are unavailable. */
+  const materialDisabled = snapshot.busy || snapshot.paused || snapshot.saveBlocked;
+  /** Whether every classic riddle is solved. */
+  const classicComplete = progression.classicIndex >= content.classicOrder.length;
+  /** Whether today's daily is already complete. */
+  const dailyComplete = Boolean(progression.lastDailyCompletedDate && progression.lastDailyCompletedDate >= today);
+  return (
+    <Screen paused={snapshot.paused} testID="screen-menu">
+      <StatusHeader snapshot={snapshot} locale={locale} />
+      {snapshot.saveBlocked && <SaveBanner text={text} retry={() => run(() => authority.retryPendingSave())} />}
+      {snapshot.recoveryNotice && (
+        <Banner
+          message={text("recovered")}
+          actionLabel={text("dismiss")}
+          onAction={() => authority.dismissRecoveryNotice()}
+          testID="recovery-banner"
+        />
+      )}
+      {!snapshot.save.preferences.guidanceComplete && (
+        <Banner
+          message={`${text("chooseMode")}: ${text("classic")} · ${text("daily")}`}
+          actionLabel={text("dismiss")}
+          onAction={() => {
+            void run(() => authority.completeGuidance());
+          }}
+          disabled={materialDisabled}
+          testID="guidance-banner"
+        />
+      )}
+      {notice && (
+        <Notice error testID="notice">
+          {text(notice)}
+        </Notice>
+      )}
+      <View style={styles.intro}>
+        <Eyebrow>{text("title")}</Eyebrow>
+        <Heading testID="menu-heading">{text("chooseMode")}</Heading>
+      </View>
+      <View style={styles.modes}>
+        <ModeCard
+          glyph="🪐"
+          title={text("classic")}
+          caption={classicComplete ? text("classicComplete") : `${progression.classicIndex + 1}/${content.classicOrder.length}`}
+          disabled={materialDisabled || classicComplete}
+          onPress={() => {
+            void run(() => authority.start("classic"));
+          }}
+          testID="start-classic"
+        />
+        <ModeCard
+          glyph="☀️"
+          title={text("daily")}
+          caption={dailyComplete ? text("dailyComplete") : today}
+          disabled={materialDisabled || dailyComplete}
+          onPress={() => {
+            void run(() => authority.start("daily"));
+          }}
+          testID="start-daily"
+        />
+      </View>
+      <ActionButton label={text("progress")} onPress={onShowProgress} disabled={materialDisabled} testID="show-progress" />
+      {online && <ActionButton label={online.label} onPress={online.onPress} disabled={materialDisabled} testID="play-online" />}
+    </Screen>
+  );
+}
+/** Styles for the menu. */
+const styles = StyleSheet.create({
+  intro: {gap: spacing.xs},
+  modes: {flexDirection: "row", gap: spacing.md},
+});

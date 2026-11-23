@@ -11,7 +11,7 @@ const host=path.join(root,'src/play/PlayHostApp.tsx');
 const baseline=process.env.COMPLETION_EFFECTS_BASELINE_SOURCE;
 const handlers=path.join(root,'src/play/hostMessageHandlers.ts'),effects=path.join(root,'src/play/hostCompletionEffects.ts');
 const handlersBaseline=process.env.COMPLETION_EFFECTS_HANDLERS_BASELINE_SOURCE,effectsBaseline=process.env.COMPLETION_EFFECTS_HELPER_BASELINE_SOURCE;
-const output=path.resolve(process.env.COMPLETION_EFFECTS_REPORT_DIR??path.join(root,'../../artifacts/game-completion-effects-2026-10-03'));
+const output=path.resolve(process.env.COMPLETION_EFFECTS_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-completion-effects-2026-10-03'));
 await mkdir(output,{recursive:true});
 await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/completion-effects-'));
@@ -72,9 +72,12 @@ try{
   }catch{response.writeHead(404).end();}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));browser=await chromium.launch({headless:true});
   for(const width of [1280,390]){
-    const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage(),errors=[];
-    page.on('pageerror',error=>errors.push(error.message));
-    const mount=async()=>{await page.goto(`http://127.0.0.1:${server.address().port}`);await page.evaluate(()=>window.mount());
+    const context=await browser.newContext({viewport:{width,height:844}}),errors=[];
+    let page;
+    // Each mount is an independent scenario; retire its page before loading the next fixture.
+    const mount=async()=>{await page?.close();page=await context.newPage();
+      page.on('pageerror',error=>errors.push(error.message));
+      await page.goto(`http://127.0.0.1:${server.address().port}`);await page.evaluate(()=>window.mount());
       await page.waitForFunction(()=>window.playable&&document.body.dataset.owner==='Alice');};
     const check=async(name,expected)=>{const actual=await page.evaluate(()=>({records:window.probe.records.length,shows:window.probe.shows.length,acks:window.probe.acks.length,levelEnds:window.probe.events.filter(event=>event.name==='level_end').length,
         levelUps:window.probe.events.filter(event=>event.name==='level_up').length,unlocks:window.probe.events.filter(event=>event.name==='unlock_achievement').length}));

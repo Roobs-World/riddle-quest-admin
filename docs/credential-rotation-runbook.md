@@ -12,7 +12,7 @@ content-authoring command uses an owner-private OpenAI key before release.
 Rotate every private credential that appeared in tracked local configuration or
 was exposed outside its intended owner-only boundary:
 
-- Firebase Admin service account key from `firebase-functions/qwordly-admin-sdk.json`
+- Firebase Admin service account key from `firebase-functions/riddle-quest-admin-sdk.json`
 - Values from tracked `.env`
 - Values from `firebase-functions/.env.default.backup`
 - Values from `firebase-functions/.runtimeconfig.json`

@@ -1,6 +1,0 @@
-
-Test Suites: 3 passed, 3 total
-Tests:       146 passed, 146 total
-Snapshots:   0 total
-Time:        0.658 s, estimated 1 s
-Ran all test suites matching raceCallables.test.ts|raceMatchOfferRecord.test.ts|raceMatchCalibration.test.ts.

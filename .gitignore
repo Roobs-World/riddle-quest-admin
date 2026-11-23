@@ -28,7 +28,7 @@ yarn-error.log*
 firebase-functions/lib/
 firebase-functions/.emulator-data/
 firebase-functions/*admin-sdk*.json
-firebase-functions/qwordly-admin-sdk.json
+firebase-functions/riddle-quest-admin-sdk.json
 firebase-functions/.runtimeconfig.json
 firebase-functions/artifacts/notification-copy-backups/
 
@@ -154,3 +154,10 @@ artifacts/content-reset-backup-*.json
 # Verification runs copy whole target builds into artifacts/<run>/built/.
 # Their built-sha256.json manifests stay tracked as evidence; the copies stay local.
 artifacts/**/built/
+
+# Local source snapshot captured during verification; too large for GitHub
+artifacts/goal-completion-2026-10-24/riddle/final/upload-source/
+
+# Test reports, verification evidence, and release snapshots stay local
+artifacts/
+firebase-functions/qwordly-admin-sdk.json

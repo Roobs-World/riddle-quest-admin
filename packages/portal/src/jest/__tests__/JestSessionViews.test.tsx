@@ -1,6 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
-import {JestAccountDeleted, JestRegistrationAlert} from "../JestSessionViews";
+import {JestAccountDeleted} from "../JestSessionViews";
+import {JestRegistrationAlert} from "../JestRegistrationAlert";
 import type {JestSession} from "../types";
 
 /** Ignores button callbacks in static markup assertions. */

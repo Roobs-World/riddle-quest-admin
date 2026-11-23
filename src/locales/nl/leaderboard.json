@@ -1,6 +1,6 @@
 {
   "Leaderboard": {
-    "GUEST_UNAVAILABLE": "Log in om XP, overwinningen en streaks op het klassement te vergelijken.",
+    "GUEST_UNAVAILABLE": "Log in om XP, overwinningen en reeksen op het klassement te vergelijken.",
     "LOAD_ERROR": "Kan het klassement niet laden. Probeer het opnieuw.",
     "NEXT_PAGE": "Volgende pagina",
     "NO_SCORES_YET": "Nog geen scores — wees de eerste die op het bord komt!",
@@ -8,9 +8,9 @@
     "PREVIOUS_PAGE": "Vorige pagina",
     "RETRY_BUTTON": "Opnieuw proberen",
     "TAB_MULTIPLAYER_WINS": "Multiplayerzeges",
-    "TAB_STREAK": "Streep",
-    "TAB_WINS": "Winnen",
-    "TAB_XP": "ervaring",
-    "TITLE": "Leiderbord"
+    "TAB_STREAK": "Reeks",
+    "TAB_WINS": "Overwinningen",
+    "TAB_XP": "XP",
+    "TITLE": "Klassement"
   }
 }

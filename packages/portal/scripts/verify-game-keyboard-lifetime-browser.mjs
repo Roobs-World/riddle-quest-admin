@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.KEYBOARD_REACT_MODE??'development',baseline=process.env.KEYBOARD_BASELINE_DIR;
-const output=path.resolve(process.env.KEYBOARD_REPORT_DIR??path.join(root,'../../artifacts/game-keyboard-lifetime-2026-10-03',mode));
+const output=path.resolve(process.env.KEYBOARD_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-keyboard-lifetime-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/game-keyboard-'));
 const source=`
@@ -17,7 +17,7 @@ import {PlayHostApp} from ${JSON.stringify(path.join(root,'src/play/PlayHostApp.
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,'src/play/HostedPlaySession.ts'))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,'src/play/fakeServices.ts'))};
 import {LiveRaceGame} from ${JSON.stringify(path.join(root,'src/play/race/LiveRaceGame.tsx'))};
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};

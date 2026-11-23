@@ -1,8 +1,0 @@
-{
-  "revision": "8dc08e65f3a72f964137e68eff70487eb7bbf700",
-  "changes": [
-    "docs/facebook-instant-games-operations.md",
-    "packages/portal/src/facebook/__tests__/facebookBrowser.jest-playwright.test.ts",
-    "packages/portal/src/play/__tests__/hostedBrowser.jest-playwright.test.ts"
-  ]
-}

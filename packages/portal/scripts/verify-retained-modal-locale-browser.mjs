@@ -50,7 +50,7 @@ const keys={
   leaderboard:['Leaderboard.TITLE','Leaderboard.NO_SCORES_YET'],
   hint:['GameScreenAlerts.HINT_NOT_ENOUGH_COINS_MESSAGE','LossModal.OPEN_SHOP_BUTTON'],
   skip:['GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE','LossModal.OPEN_SHOP_BUTTON'],
-  continue:['LossModal.EXTRA_GO_PROMPT','Profile.TOTAL_COINS_LABEL'],
+  continue:['LossModal.OPEN_SHOP_BUTTON','Profile.TOTAL_COINS_LABEL'],
 };
 const requested=(process.env.RETAINED_MODAL_CASES??Object.keys(keys).map(modal=>modal+'-locale').concat(['profile-blocked','settings-blocked','profile-confirm']).join(',')).split(',');
 let browser,server;const cases=[];

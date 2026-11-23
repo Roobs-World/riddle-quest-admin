@@ -1,9 +1,8 @@
 {
   "LevelUpFanfare": {
-    "COINS_SUFFIX": " Монеты",
+    "COINS_SUFFIX": " монет",
     "CONTINUE_BUTTON": "Отлично",
     "LEVEL_PREFIX": "Уровень ",
-    "TITLE": "Повышайте уровень!",
-    "PROFILE_GUIDANCE": "Новый уровень и ранг уже ждут вас в профиле. После празднования нажмите значок профиля."
+    "TITLE": "Новый уровень!"
   }
 }

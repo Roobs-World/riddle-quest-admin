@@ -11,7 +11,7 @@ const component=path.join(root,'src/play/race/components/LiveRaceInvitationCard.
 const baseline=process.env.LIVE_PREVIEW_BASELINE_SOURCE;
 const reactMode=process.env.LIVE_PREVIEW_REACT_MODE??'development';
 assert.ok(['development','production'].includes(reactMode));
-const output=path.resolve(process.env.LIVE_PREVIEW_REPORT_DIR??path.join(root,'../../artifacts/game-invitation-preview-2026-10-03',reactMode==='production'?'production':''));
+const output=path.resolve(process.env.LIVE_PREVIEW_REPORT_DIR??path.join(root,'../../builds/test-evidence/game-invitation-preview-2026-10-03',reactMode==='production'?'production':''));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/invitation-preview-'));
 await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
@@ -101,7 +101,8 @@ try{
     await metric('refreshed cached preview accepts its current canonical category',await page.evaluate(()=>window.probe.accepted.at(-1)),{categoryId:'history',locale:'en',challengeId:'live_'+'a'.repeat(64)});
     for(const status of ['available','accepted','unavailable','own']){
       await mount();await page.evaluate(status=>window.release(1,window.row('Alice','a',status)),status);await page.getByRole('heading',{name:'Alice challenged you',exact:true}).waitFor();
-      await inspect('server '+status+' status gates acceptance',{names:['Alice challenged you'],canAccept:['available','accepted'].includes(status),retry:false});
+      await inspect('server '+status+' status gates acceptance',{names:['Alice challenged you'],canAccept:['available','accepted','own'].includes(status),retry:false});
+      if(status==='own'){await page.getByRole('button',{name:'Friend lobby',exact:true}).click();await metric('creator recovers only the validated original invitation',await page.evaluate(()=>window.probe.accepted.at(-1)),{categoryId:'mixed',locale:'en',challengeId:'live_'+'a'.repeat(64),resumeChallenge:true});}
     }
     await mount();await load();await page.evaluate(()=>window.locale('fr'));await inspect('content language mismatch hides acceptance immediately',{names:['Alice challenged you'],canAccept:false,retry:false});
     await mount();await page.clock.runFor(8000);await inspect('stalled preview exposes bounded retry',{names:[],canAccept:false,retry:true});

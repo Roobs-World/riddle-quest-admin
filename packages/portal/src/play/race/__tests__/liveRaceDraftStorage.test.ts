@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import {LiveRaceViewSchema, RACE_RULES} from "@qwordly/core/race";
+import {LiveRaceViewSchema, RACE_RULES} from "@riddle-quest/core/race";
 import {createLiveRaceDraft, editLiveRaceDraft} from "../logic/liveRaceDraft";
 import {createLiveRaceDraftStorage, LIVE_RACE_DRAFT_TTL_MS} from "../logic/liveRaceDraftStorage";
 

@@ -2,6 +2,32 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {assertTargetDependency, runtimePackage, targetDependencyEvidencePath} from '../webTargetDependencies.ts';
 const targets = ['jest', 'facebook', 'reddit', 'youtube', 'netflix', 'yahoo', 'gamesnacks'];
+test('retained-race artifact validates the configured inventory directory and rebuilds altered bytes', {timeout: 180_000}, async t => {
+  const {mkdtemp,readFile,writeFile,rm}=await import('node:fs/promises');
+  const {tmpdir}=await import('node:os');
+  const path=await import('node:path');
+  const {fileURLToPath}=await import('node:url');
+  const {execFile}=await import('node:child_process');
+  const {promisify}=await import('node:util');
+  const temporary=await mkdtemp(path.join(tmpdir(),'retained-inventory-test-'));
+  t.after(()=>rm(temporary,{recursive:true,force:true}));
+  const evidence=path.join(temporary,'evidence');
+  const run=async()=>JSON.parse((await promisify(execFile)(process.execPath,['scripts/build-retained-race-test-artifact.mjs'],{
+    cwd:fileURLToPath(new URL('..',import.meta.url)),maxBuffer:32*1024*1024,timeout:120_000,
+    env:{...process.env,TMPDIR:temporary,RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR:evidence},
+  })).stdout);
+  const built=await run();
+  assert.equal(built.inventoryFile,targetDependencyEvidencePath('jest',built.directory,evidence));
+  const inventory=JSON.parse(await readFile(built.inventoryFile,'utf8'));
+  assert.equal(inventory.outputDirectory,built.directory);
+  assert.ok(inventory.modules.includes('packages/portal/scripts/fixtures/RetainedRaceHarness.tsx'));
+  assert.deepEqual(await run(),built);
+  const entry=path.join(built.directory,'index.html');
+  const original=await readFile(entry,'utf8');
+  await writeFile(entry,original+'\n<!-- altered test artifact -->');
+  await run();
+  assert.equal(await readFile(entry,'utf8'),original);
+});
 test('each target rejects every other provider module, including resolved aliases and dynamic imports', () => {
   for (const target of targets) for (const owner of targets) {
     const id = `/workspace/packages/portal/src/${owner}/adapter.ts`;
@@ -19,6 +45,15 @@ test('transitive SDK packages and tooling fail closed on every artifact', () => 
       '/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), /undeclared runtime/u);
   }
   assert.equal(runtimePackage('/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), '@firebase/app');
+});
+
+test('Firestore TypeScript runtime helpers remain limited to Firebase-backed targets', () => {
+  const helper = '/node_modules/.pnpm/tslib@2.9.1/node_modules/tslib/tslib.es6.mjs';
+  assert.equal(runtimePackage(helper), 'tslib');
+  for (const target of targets) {
+    if (['jest', 'facebook'].includes(target)) assert.doesNotThrow(() => assertTargetDependency(target, helper));
+    else assert.throws(() => assertTargetDependency(target, helper), /undeclared runtime package tslib/u);
+  }
 });
 
 test('real bundler rejects aliased and lazy provider imports plus SDK packages before minification', async t => {
@@ -193,7 +228,7 @@ test('published inventory reflects final chunk bytes after private map cleanup',
   const expected = createNotice(new Set(['react']));
   const metadata = JSON.parse(await readFile(path.join(repository,'node_modules/.modules.yaml'),'utf8'));
   const storeDirectory = process.env.RIDDLE_QUEST_LICENSE_STORE_DIR ?? metadata.storeDir;
-  const inventory = execFileSync('pnpm',['--filter','@qwordly/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024,env:{...process.env,pnpm_config_store_dir:storeDirectory}});
+  const inventory = execFileSync('pnpm',['--filter','@riddle-quest/portal','licenses','list','--json'],{cwd:repository,encoding:'utf8',maxBuffer:32*1024*1024,env:{...process.env,pnpm_config_store_dir:storeDirectory}});
   const file = path.join(directory,'inventory.json');
   await writeFile(file,inventory,{mode:0o400});
   process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = file;
@@ -301,4 +336,13 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
   assert.notEqual(relative.status, 0);
   assert.match(relative.stderr, /Dependency evidence directory must be absolute/u);
   assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
+});
+
+
+test('Jest screenshot renderer stays exclusive to the Jest artifact', () => {
+  const renderer = '/workspace/node_modules/html2canvas-pro/dist/html2canvas-pro.esm.js';
+  assert.doesNotThrow(() => assertTargetDependency('jest', renderer));
+  for (const target of targets.filter(target => target !== 'jest')) {
+    assert.throws(() => assertTargetDependency(target, renderer), /undeclared runtime package html2canvas-pro/u);
+  }
 });

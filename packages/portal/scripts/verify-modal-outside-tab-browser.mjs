@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),mode=process.env.MODAL_OUTSIDE_REACT_MODE??'development',baseline=process.env.MODAL_OUTSIDE_BASELINE_DIR;
 assert.ok(['development','production'].includes(mode));
-const output=path.resolve(process.env.MODAL_OUTSIDE_REPORT_DIR??path.join(root,'../../artifacts/modal-outside-tab-2026-10-05',mode));
+const output=path.resolve(process.env.MODAL_OUTSIDE_REPORT_DIR??path.join(root,'../../builds/test-evidence/modal-outside-tab-2026-10-05',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/modal-outside-tab-'));let server,browser;const observations=[];
 try{
@@ -16,7 +16,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {GameModalView} from ${JSON.stringify(path.join(root,'src/play/GameModalView.tsx'))};
-import {createInitialGameSession} from ${JSON.stringify(path.join(root,'src/play/gameSession.ts'))};
+import {createInitialGameSession} from ${JSON.stringify(path.join(root,'../hosted/src/play/gameSession.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});

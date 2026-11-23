@@ -1,6 +1,0 @@
-{
-  "runs": 20,
-  "over100ms": 8,
-  "maxDomCommitMs": null,
-  "maxRafObservedMs": 123.09999999403954
-}

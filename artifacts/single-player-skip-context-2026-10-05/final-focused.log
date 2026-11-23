@@ -1,6 +1,0 @@
-
-Test Suites: 5 passed, 5 total
-Tests:       69 passed, 69 total
-Snapshots:   0 total
-Time:        7.832 s
-Ran all test suites matching src/__tests__/gameLogic.test.ts|src/__tests__/singlePlayerSessionTransactions.test.ts|src/__tests__/singlePlayerSkipPreparationLatency.test.ts|src/__tests__/getHint.test.ts|src/__tests__/dailyChallenge.test.ts.

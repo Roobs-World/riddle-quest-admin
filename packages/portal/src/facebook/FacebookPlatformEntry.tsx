@@ -1,5 +1,6 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {LiveRaceView} from "@qwordly/core/race";
+import type {LiveRaceView} from "@riddle-quest/core/race";
+import type {ProductSummary, PurchaseResult} from "@riddle-quest/hosted/hostTypes";
 import type {RaceTo10GameProps} from "../play/race/RaceTo10Game.types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {PlayHostApp} from "../play/PlayHostApp";
@@ -19,6 +20,7 @@ import {createFacebookContextBoard} from "./contextBoard";
 import {createFacebookContextMatchmaking} from "./liveContextMatchmaking";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
+import {FacebookCommerceSession, facebookPaymentsAvailable} from "./FacebookCommerceSession";
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
 import {FacebookNotificationPromptCoordinator} from "./FacebookNotificationPromptCoordinator";
 import {createFacebookNotificationCapability} from "./FacebookNotificationCapability";
@@ -110,6 +112,13 @@ export function FacebookPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
   const [presenceAvailable, setPresenceAvailable] = useState(false);
+  /** Current SDK catalog and purchase callback exposed to hosted play. */
+  const [commercePresentation, setCommercePresentation] = useState<{
+    /** Visible Facebook product summaries for the authenticated account. */
+    products: ProductSummary[];
+    /** Checkout callback owned by the current commerce session. */
+    purchase: (productId: string) => Promise<PurchaseResult>;
+  }>();
   /** Provides player persistence ref behavior. */
   const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
   /** Provides preferences ref behavior. */
@@ -135,6 +144,10 @@ export function FacebookPlatformEntry() {
     let unsubscribePause: (() => void) | undefined;
     /** Provides unsubscribe resume behavior. */
     let unsubscribeResume: (() => void) | undefined;
+    /** Removes the payment recovery listener when the account session retires. */
+    let unsubscribeCommerceResume: (() => void) | undefined;
+    /** Payment lifecycle controller for the authenticated Facebook account. */
+    let commerceSession: FacebookCommerceSession | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
     /** Native context events belong to this authenticated entry lifetime. */
@@ -161,6 +174,8 @@ export function FacebookPlatformEntry() {
         const userId = await authenticateFacebook(sdk);
         /** Provides ads behavior. */
         let ads = undefined;
+        /** Latest verified ad-removal entitlement passed to the ad adapter. */
+        let removeInterstitialAds: boolean | undefined;
         /** Facebook-only continuation capability bound to the current authenticated session. */
         let attemptRecovery: import("../platform/types").AttemptRecoveryCapability | undefined;
         /** Provides tournaments behavior. */
@@ -208,10 +223,34 @@ export function FacebookPlatformEntry() {
             claimFacebookNotificationPermissionPrompt,
             acceptFacebookNotificationPermissionPrompt,
             grantFacebookRewardedContinue,
+            grantFacebookPurchase,
           } = await import("./firebaseClient");
           /** Provides client configuration behavior. */
           const clientConfiguration = (await getFacebookClientConfiguration()).data;
           configurationLoaded = true;
+          removeInterstitialAds = clientConfiguration.removeInterstitialAds;
+          if (ageCategory === "13_plus" && clientConfiguration.commerceEnabled && facebookPaymentsAvailable(sdk)) {
+            /** Payment session connected to this authenticated host and deletion gate. */
+            const commerce = new FacebookCommerceSession({
+              sdk,
+              payments: sdk.payments,
+              isActive: () => active && deletionGateRef.current.isOpen(),
+              runBackground: operation => deletionGateRef.current.run(operation),
+              grant: async input => (await grantFacebookPurchase(input)).data,
+              readConfiguration: async () => (await getFacebookClientConfiguration()).data,
+              onProducts: products => {
+                if (active && deletionGateRef.current.isOpen()) {
+                  setCommercePresentation({products, purchase: commerce.requestPurchase});
+                }
+              },
+              onEntitlement: value => {removeInterstitialAds = value;},
+              reportFailure: error => captureBrowserException(error, {component: "facebook_commerce", operation: "recovery"}),
+              refreshProfile: () => hostServices.loadProfile(userId),
+            });
+            commerceSession = commerce;
+            commerce.start();
+            unsubscribeCommerceResume = session.capabilities.lifecycle?.onResume?.(() => commerce.refresh());
+          }
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
             notifications = createFacebookNotificationCapability(sdk);
@@ -238,7 +277,7 @@ export function FacebookPlatformEntry() {
                 : "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
               rewardedEnabled: clientConfiguration.rewardedAdsEnabled,
-              adFree: clientConfiguration.removeInterstitialAds,
+              adFree: () => removeInterstitialAds !== false,
             });
             attemptRecovery = createFacebookRewardedContinue({ads,
               isActive: () => active && deletionGateRef.current.isOpen(),
@@ -252,13 +291,13 @@ export function FacebookPlatformEntry() {
               list: async locale => (await listFacebookTournament({locale})).data,
               reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
-              list: async (locale: import("@qwordly/core/race").RaceLocale) => {
+              list: async (locale: import("@riddle-quest/core/race").RaceLocale) => {
                 /** Validated official standings for the exact player locale and UTC window. */
                 const board = (await listFacebookTournament({locale})).data;
                 if (presentation) void presentation.projectBoard(board);
                 return board;
               },
-              record: async (runId: string, locale: import("@qwordly/core/race").RaceLocale) => {
+              record: async (runId: string, locale: import("@riddle-quest/core/race").RaceLocale) => {
                 /** Official success is returned independently of provider score delivery. */
                 const result = (await recordFacebookTournament({runId, locale})).data;
                 if (presentation) void presentation.projectRecord(result);
@@ -363,6 +402,7 @@ export function FacebookPlatformEntry() {
                 ...baseCapabilities,
                 nativeSocial: contextCoordinator,
                 ...(ads ? {ads} : {}),
+                ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
                 ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
@@ -374,6 +414,7 @@ export function FacebookPlatformEntry() {
               capabilities: {
                 ...baseCapabilities,
                 ...(ads ? {ads} : {}),
+                ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
                 ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
@@ -475,6 +516,8 @@ export function FacebookPlatformEntry() {
       stopAnalytics?.();
       unsubscribePause?.();
       unsubscribeResume?.();
+      unsubscribeCommerceResume?.();
+      commerceSession?.retire();
       unsubscribePreferences?.();
       unsubscribeContext?.();
       void stopPresence?.();
@@ -580,9 +623,9 @@ export function FacebookPlatformEntry() {
         /** Stores riddle id. */
         riddleId: string; /** Stores game mode. */
         /** Stores game mode. */
-        gameMode: import("../play/types").WebGameMode;
+        gameMode: import("@riddle-quest/hosted/hostTypes").WebGameMode;
       },
-      result: import("../play/types").CompletionResult,
+      result: import("@riddle-quest/hosted/hostTypes").CompletionResult,
     ) => {
       try {
         await notificationPromptRef.current?.afterAuthoritativeCompletion(result.isCorrect);
@@ -597,7 +640,7 @@ export function FacebookPlatformEntry() {
   );
 
   /** Handles authoritative race result. */
-  const handleAuthoritativeRaceResult = useCallback(async (result: import("@qwordly/core/race").RaceOutcome) => {
+  const handleAuthoritativeRaceResult = useCallback(async (result: import("@riddle-quest/core/race").RaceOutcome) => {
     try {
       await notificationPromptRef.current?.afterAuthoritativeCompletion(result.result === "player_win");
     } catch (error) {
@@ -643,6 +686,8 @@ export function FacebookPlatformEntry() {
           hostServices,
           hostConfigurationWarning,
           platformCapabilities: startup.session.capabilities,
+          platformProducts: commercePresentation?.products,
+          platformPurchase: commercePresentation?.purchase,
           platformPlayerId: startup.session.playerId,
           initialPlayerData: startup.playerData,
           ...startup.launch,

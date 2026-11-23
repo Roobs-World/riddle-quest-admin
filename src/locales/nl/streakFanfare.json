@@ -1,8 +1,8 @@
 {
   "StreakFanfare": {
-    "COINS_SUFFIX": "Munten",
+    "COINS_SUFFIX": " Munten",
     "CONTINUE_BUTTON": "Blijf doorgaan",
-    "STREAK_SUFFIX": "-Dagreeks",
-    "TITLE": "Streepje vergroot!"
+    "STREAK_SUFFIX": "-daagse reeks",
+    "TITLE": "Reeks verlengd!"
   }
 }

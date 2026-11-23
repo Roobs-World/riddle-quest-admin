@@ -11,13 +11,13 @@ import {chromium} from "@playwright/test";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 await mkdir(path.join(root, "node_modules/.cache"), {recursive: true});
 const scratch = await mkdtemp(path.join(root, "node_modules/.cache/race-dialog-keyboard-ownership-"));
-const output = path.resolve(root, "../../artifacts/race-dialog-keyboard-ownership");
+const output = path.resolve(process.env.RACE_DIALOG_KEYBOARD_REPORT_DIR ?? path.join(root, "../../artifacts/race-dialog-keyboard-ownership"));
 await mkdir(output, {recursive: true});
 const source = `
 import React from 'react';
 import ${JSON.stringify(path.join(root, "src/styles.css"))};
 import {createRoot} from 'react-dom/client';
-import {RACE_RULES} from '@qwordly/core/race';
+import {RACE_RULES} from '@riddle-quest/core/race';
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/fixtures/RetainedRaceHarness.tsx"))};
 const now=Date.now(),view={runId:'keyboard-run',role:'creator',status:'active',categoryId:'mixed',locale:'en',rules:RACE_RULES,
  correctCount:0,wallElapsedMs:1000,totalPenaltyMs:0,adjustedElapsedMs:1000,

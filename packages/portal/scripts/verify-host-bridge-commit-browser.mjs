@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.env.HOST_COMMIT_REACT_MODE??'development',baseline=process.env.HOST_COMMIT_BASELINE_DIR;
-const output=path.resolve(process.env.HOST_COMMIT_REPORT_DIR??path.join(root,'../../artifacts/host-bridge-commit-2026-10-04',mode));
+const output=path.resolve(process.env.HOST_COMMIT_REPORT_DIR??path.join(root,'../../builds/test-evidence/host-bridge-commit-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/host-commit-'));
 const source=`
@@ -20,7 +20,7 @@ import {useHostAuthSession} from ${JSON.stringify(path.join(root,'src/play/useHo
 import {createHostMessageRouter,BridgeParserLoadError} from ${JSON.stringify(path.join(root,'src/play/bridgeRouter.ts'))};
 import {dispatchLocalBridge,GAME_TO_HOST_EVENT} from ${JSON.stringify(path.join(root,'src/play/localBridge.ts'))};
 import {configureBrowserErrorReporter} from ${JSON.stringify(path.join(root,'src/observability/browserErrorReporter.ts'))};
-import {BRIDGE_PROTOCOL_VERSION} from '@qwordly/core/bridge';
+import {BRIDGE_PROTOCOL_VERSION} from '@riddle-quest/core/bridge';
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
 import ${JSON.stringify(path.join(root,'src/styles.css'))};

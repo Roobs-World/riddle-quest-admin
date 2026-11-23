@@ -16,7 +16,7 @@ export function createHtml5HandoffPreparation({root = releaseRepository, run = e
   const receipt = `${archive}.source.json`;
   async function prepare() {
     await Promise.all([archive, receipt, path.join(root, 'build-html5.sha256')].map(file => rm(file, {force: true})));
-    await run('pnpm', ['--filter', '@qwordly/portal', 'build:netflix'], {cwd: root});
+    await run('pnpm', ['--filter', '@riddle-quest/portal', 'build:netflix'], {cwd: root});
     await run('zip', ['-q', '-r', archive, '.'], {cwd: path.join(root, 'builds/netflix')});
     const {stdout: entries} = await run('unzip', ['-Z1', archive], {cwd: root});
     if (!entries.split('\n').includes('index.html') || entries.split('\n').some(entry =>
