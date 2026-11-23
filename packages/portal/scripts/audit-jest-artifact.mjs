@@ -43,7 +43,7 @@ const forbidden = [
   ["Facebook App Check adapter", /Facebook App Check|facebook-app-check-(?:expiry-invalid|token-provider)/i],
   [
     "Facebook callable endpoint",
-    /\b(?:getFacebookClientConfiguration|listFacebookTournament|recordFacebookTournament|listFacebookContextBoard|recordFacebookContextRun|exchangeFacebookIdentity|issueFacebookIdentityNonce|bindFacebookReferral|createFacebookReferral|joinFacebookContext|leaveFacebookContext)\b/,
+    /\b(?:getFacebookClientConfiguration|grantFacebookPurchase|grantFacebookRewardedContinue|facebookPaymentWebhook|listFacebookTournament|recordFacebookTournament|listFacebookContextBoard|recordFacebookContextRun|exchangeFacebookIdentity|issueFacebookIdentityNonce|bindFacebookReferral|createFacebookReferral|joinFacebookContext|leaveFacebookContext)\b/,
   ],
   ["Expo module", /(?:from|require\()\s*["'](?:expo|expo-[^"']+)/],
   ["React Native module", /(?:from|require\()\s*["']react-native(?:[\/"'])/],
@@ -51,7 +51,7 @@ const forbidden = [
   ["External authentication provider", /\b(?:Clerk|Auth0|accounts\.google\.com|appleid\.apple\.com)\b/i],
   [
     "Advertising integration",
-    /\b(?:AdMob|adsbygoogle|rewarded[ -]?ad|interstitial[ -]?ad)\b|(?:googlesyndication|doubleclick)\.net/i,
+    /\b(?:AdMob|adsbygoogle|getInterstitialAdAsync|getRewardedVideoAsync|FacebookAdsCapability|FacebookInterstitialPolicy|rewarded[ -]?ad|interstitial[ -]?ad)\b|(?:googlesyndication|doubleclick)\.net/i,
   ],
   ["Vibration API", /\bnavigator\.vibrate\b/],
   ["Haptics UI", /\bhaptic(?:s| feedback)\b/i],

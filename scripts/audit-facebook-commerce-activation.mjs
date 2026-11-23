@@ -2,6 +2,10 @@ import {readdirSync, readFileSync, statSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 
 const ACTIVATION_PATTERN = /\b(?:FacebookCommerceCapability|FacebookPurchaseRecovery|verifyFacebookSignedPurchase)\b/u;
+const FACEBOOK_COMMERCE_RUNTIME = new Set([
+  "packages/portal/src/facebook/FacebookCommerceSession.ts",
+  "packages/portal/src/facebook/facebookCallableResponses.ts",
+]);
 
 const collect = (directory, output = []) => {
   for (const name of readdirSync(directory)) {
@@ -14,17 +18,30 @@ const collect = (directory, output = []) => {
   return output;
 };
 
-/** Keeps unverified commerce code unreachable until captured Meta contracts exist. */
-export function auditFacebookCommerceActivation({runtimeSources, bootstrapSource}) {
+/** Confines checkout to the authenticated Facebook session and its server authority. */
+export function auditFacebookCommerceActivation({runtimeSources, bootstrapSource, serverSources = []}) {
+  const activated = runtimeSources.filter(({source}) => ACTIVATION_PATTERN.test(source));
   const failures = runtimeSources
-    .filter(({source}) => ACTIVATION_PATTERN.test(source))
-    .map(({name}) => `Staged Facebook commerce imported or activated by runtime source: ${name}`);
+    .filter(({name, source}) => ACTIVATION_PATTERN.test(source) && !FACEBOOK_COMMERCE_RUNTIME.has(name.replace(/^\/+/, "")))
+    .map(({name}) => `Facebook commerce imported outside its authenticated target adapter: ${name}`);
   if (!/\bcommerce:\s*false\s*,/u.test(bootstrapSource)) {
     failures.push("Facebook bootstrap must keep commerce capability availability false.");
   }
   if (/\bcapabilities\s*:\s*\{[^}]*\bcommerce\s*:/su.test(bootstrapSource) ||
     /\bnew\s+FacebookCommerceCapability\b/u.test(bootstrapSource)) {
-    failures.push("Facebook bootstrap must not expose the staged commerce capability.");
+    failures.push("Facebook bootstrap must not expose commerce before authentication.");
+  }
+  if (activated.length > 0) {
+    const authority = serverSources.join("\n");
+    for (const boundary of [
+      "verifyFacebookSignedPurchase",
+      "grantVerifiedFacebookPurchase",
+      "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED",
+      "timingSafeEqual",
+      "facebookPaymentTokens",
+    ]) {
+      if (!authority.includes(boundary)) failures.push(`Facebook commerce authority is missing ${boundary}.`);
+    }
   }
   return failures;
 }
@@ -42,7 +59,9 @@ if (isMain) {
   const failures = auditFacebookCommerceActivation({
     runtimeSources: paths.map((path) => ({name: path.slice(root.length), source: readFileSync(path, "utf8")})),
     bootstrapSource: readFileSync(bootstrapPath, "utf8"),
+    serverSources: ["facebookPaymentContracts.ts", "facebookPayments.ts", "facebookCommerceLedger.ts"].map((name) =>
+      readFileSync(`${root}/firebase-functions/src/facebook/${name}`, "utf8")),
   });
   if (failures.length > 0) throw new Error(`Facebook commerce-activation audit failed:\n- ${failures.join("\n- ")}`);
-  console.log("Facebook commerce-activation audit passed: unverified commerce remains unreachable.");
+  console.log("Facebook commerce-activation audit passed: target-local adapter, authenticated startup, receipt and webhook authority.");
 }

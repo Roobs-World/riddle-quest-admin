@@ -1,4 +1,5 @@
 import {deleteAndroidReferralData} from "../../android/androidReferralDeletion";
+import {anonymizeFacebookPaymentTokens} from "../../facebook/facebookPaymentDeletion";
 import {anonymizeAndroidPurchaseGrants} from "../../android/androidPurchaseDeletion";
 import {admin} from "../../shared/firebaseAdmin";
 import {createJestPurchaseGrantId} from "../../jest/jestPurchaseReceipts";
@@ -308,6 +309,7 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
     deleteAndroidReferralData(userId),
     anonymizeFacebookCommerceDocuments("facebookCommerceReceipts", userId),
     anonymizeFacebookCommerceDocuments("facebookCommerceRefunds", userId),
+    anonymizeFacebookPaymentTokens(userId),
     anonymizeRedditCommerceDocuments("redditCommerceReceipts", userId),
     anonymizeRedditCommerceDocuments("redditCommerceRefunds", userId),
     anonymizeFacebookReferralSettlements("inviteeUid", userId),

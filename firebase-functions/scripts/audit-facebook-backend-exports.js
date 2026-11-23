@@ -7,6 +7,8 @@ const path = require("node:path");
 const EXPECTED_FACEBOOK_EXPORTS = Object.freeze([
   "issueFacebookIdentityNonce",
   "exchangeFacebookIdentity",
+  "grantFacebookPurchase",
+  "facebookPaymentWebhook",
   "facebookDataDeletionCallback",
   "facebookDataDeletionStatus",
   "recordFacebookTournament",

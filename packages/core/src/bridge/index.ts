@@ -475,7 +475,7 @@ export const HostInitMessageSchema = envelope(
       .array(
         z.object({
           productId: z.string().min(1),
-          productType: z.enum(["consumable", "subscription"]).optional(),
+          productType: z.enum(["consumable", "durable", "subscription"]).optional(),
           name: z.string().min(1),
           description: z.string(),
           coins: z.number().int().nonnegative(),

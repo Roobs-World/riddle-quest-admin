@@ -1,5 +1,6 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {LiveRaceView} from "@riddle-quest/core/race";
+import type {ProductSummary, PurchaseResult} from "@riddle-quest/hosted/hostTypes";
 import type {RaceTo10GameProps} from "../play/race/RaceTo10Game.types";
 import {SpinningWheelLoader} from "../play/SpinningWheelLoader";
 import {PlayHostApp} from "../play/PlayHostApp";
@@ -19,6 +20,7 @@ import {createFacebookContextBoard} from "./contextBoard";
 import {createFacebookContextMatchmaking} from "./liveContextMatchmaking";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
+import {FacebookCommerceSession, facebookPaymentsAvailable} from "./FacebookCommerceSession";
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
 import {FacebookNotificationPromptCoordinator} from "./FacebookNotificationPromptCoordinator";
 import {createFacebookNotificationCapability} from "./FacebookNotificationCapability";
@@ -110,6 +112,10 @@ export function FacebookPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
   const [presenceAvailable, setPresenceAvailable] = useState(false);
+  const [commercePresentation, setCommercePresentation] = useState<{
+    products: ProductSummary[];
+    purchase: (productId: string) => Promise<PurchaseResult>;
+  }>();
   /** Provides player persistence ref behavior. */
   const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
   /** Provides preferences ref behavior. */
@@ -135,6 +141,8 @@ export function FacebookPlatformEntry() {
     let unsubscribePause: (() => void) | undefined;
     /** Provides unsubscribe resume behavior. */
     let unsubscribeResume: (() => void) | undefined;
+    let unsubscribeCommerceResume: (() => void) | undefined;
+    let commerceSession: FacebookCommerceSession | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
     /** Native context events belong to this authenticated entry lifetime. */
@@ -161,6 +169,7 @@ export function FacebookPlatformEntry() {
         const userId = await authenticateFacebook(sdk);
         /** Provides ads behavior. */
         let ads = undefined;
+        let removeInterstitialAds: boolean | undefined;
         /** Facebook-only continuation capability bound to the current authenticated session. */
         let attemptRecovery: import("../platform/types").AttemptRecoveryCapability | undefined;
         /** Provides tournaments behavior. */
@@ -208,10 +217,33 @@ export function FacebookPlatformEntry() {
             claimFacebookNotificationPermissionPrompt,
             acceptFacebookNotificationPermissionPrompt,
             grantFacebookRewardedContinue,
+            grantFacebookPurchase,
           } = await import("./firebaseClient");
           /** Provides client configuration behavior. */
           const clientConfiguration = (await getFacebookClientConfiguration()).data;
           configurationLoaded = true;
+          removeInterstitialAds = clientConfiguration.removeInterstitialAds;
+          if (ageCategory === "13_plus" && clientConfiguration.commerceEnabled && facebookPaymentsAvailable(sdk)) {
+            const commerce = new FacebookCommerceSession({
+              sdk,
+              payments: sdk.payments,
+              isActive: () => active && deletionGateRef.current.isOpen(),
+              runBackground: operation => deletionGateRef.current.run(operation),
+              grant: async input => (await grantFacebookPurchase(input)).data,
+              readConfiguration: async () => (await getFacebookClientConfiguration()).data,
+              onProducts: products => {
+                if (active && deletionGateRef.current.isOpen()) {
+                  setCommercePresentation({products, purchase: commerce.requestPurchase});
+                }
+              },
+              onEntitlement: value => {removeInterstitialAds = value;},
+              reportFailure: error => captureBrowserException(error, {component: "facebook_commerce", operation: "recovery"}),
+              refreshProfile: () => hostServices.loadProfile(userId),
+            });
+            commerceSession = commerce;
+            commerce.start();
+            unsubscribeCommerceResume = session.capabilities.lifecycle?.onResume?.(() => commerce.refresh());
+          }
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
             notifications = createFacebookNotificationCapability(sdk);
@@ -238,7 +270,7 @@ export function FacebookPlatformEntry() {
                 : "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
               rewardedEnabled: clientConfiguration.rewardedAdsEnabled,
-              adFree: clientConfiguration.removeInterstitialAds,
+              adFree: () => removeInterstitialAds !== false,
             });
             attemptRecovery = createFacebookRewardedContinue({ads,
               isActive: () => active && deletionGateRef.current.isOpen(),
@@ -363,6 +395,7 @@ export function FacebookPlatformEntry() {
                 ...baseCapabilities,
                 nativeSocial: contextCoordinator,
                 ...(ads ? {ads} : {}),
+                ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
                 ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
@@ -374,6 +407,7 @@ export function FacebookPlatformEntry() {
               capabilities: {
                 ...baseCapabilities,
                 ...(ads ? {ads} : {}),
+                ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
                 ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
@@ -475,6 +509,8 @@ export function FacebookPlatformEntry() {
       stopAnalytics?.();
       unsubscribePause?.();
       unsubscribeResume?.();
+      unsubscribeCommerceResume?.();
+      commerceSession?.retire();
       unsubscribePreferences?.();
       unsubscribeContext?.();
       void stopPresence?.();
@@ -643,6 +679,8 @@ export function FacebookPlatformEntry() {
           hostServices,
           hostConfigurationWarning,
           platformCapabilities: startup.session.capabilities,
+          platformProducts: commercePresentation?.products,
+          platformPurchase: commercePresentation?.purchase,
           platformPlayerId: startup.session.playerId,
           initialPlayerData: startup.playerData,
           ...startup.launch,

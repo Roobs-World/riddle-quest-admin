@@ -52,7 +52,18 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
     ) {
       throw new Error("facebook-purchase-invalid");
     }
-    return item as unknown as FacebookInstantPurchase;
+    return {
+      isConsumed: false,
+      paymentActionType: item.paymentActionType,
+      paymentID: item.paymentID,
+      productID: item.productID,
+      purchasePlatform: item.purchasePlatform,
+      purchasePrice: item.purchasePrice,
+      purchaseTime,
+      purchaseToken: item.purchaseToken,
+      signedRequest: item.signedRequest,
+      ...(typeof item.developerPayload === "string" ? {developerPayload: item.developerPayload} : {}),
+    };
   });
   for (const key of ["paymentID", "purchaseToken"] as const) {
     if (new Set(purchases.map((purchase) => purchase[key])).size !== purchases.length) {
@@ -63,18 +74,20 @@ export function parseFacebookUnconsumedPurchases(value: unknown): FacebookInstan
 }
 
 /** Describes facebook signed purchase grant. */
+export type FacebookPurchaseGrant = {
+  granted: true;
+  providerReceiptId: string;
+  consume: boolean;
+  newCoins?: number;
+  coinsAwarded?: number;
+  removeInterstitialAds?: boolean;
+};
+
 export type FacebookSignedPurchaseGrant = (input: {
   /** Stores signed request. */ /** Stores signed request. */
   /** Stores signed request. */
   signedRequest: string;
-}) => Promise<{
-  /** Stores granted. */
-  granted: true;
-  /** Stores provider receipt id. */
-  providerReceiptId: string;
-  /** Stores consume. */
-  consume: boolean;
-}>;
+}) => Promise<FacebookPurchaseGrant>;
 
 /** Recovers unconsumed SDK purchases while preserving authoritative grant-before-consume ordering. */
 export class FacebookPurchaseRecovery {

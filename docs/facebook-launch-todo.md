@@ -663,9 +663,9 @@ pnpm --dir firebase-functions race:translations:import --project riddle-quest-ec
 
 ## P5-03 — [ ] Implement signed purchase/refund boundaries and wire recovery
 
-**Who:** Developer. **Status:** Staged ledger/recovery tests exist; real contract and runtime activation are unfinished.
+**Who:** Developer. **Status:** Native checkout, receipt verification, signed V2 webhook ownership, refunds and recovery are implemented. Meta permission approval, callback subscription and hosted acceptance remain outstanding. See [Facebook payments](facebook-payments.md).
 
-**New documentation finding:** The current [IAP guide](https://developers.facebook.com/documentation/games/monetize/in-app-purchases) and [v8 Payments reference](https://developers.facebook.com/documentation/games/sdk-reference/v8.0/payments) differ in their listed signed claims and grant/consume advice. The tutorial mentions `player_id`; the reference's listed signed-purchase fields do not. Do not add a verifier that assumes an undocumented player binding. Obtain the actual contract/private fixtures, reconcile the discrepancy with Meta, and preserve durable grant-before-consume recovery.
+**Current contract:** The [IAP guide](https://developers.facebook.com/documentation/games/monetize/in-app-purchases) and [v8 Payments reference](https://developers.facebook.com/documentation/games/sdk-reference/v8.0/payments) do not establish purchase ownership through a signed player identifier. `developerPayload` is deprecated. The implementation verifies the receipt and joins its purchase token to Meta's raw-body authenticated [V2 payment webhook](https://developers.facebook.com/documentation/games/monetize/iap-webhooks), whose `user_id` is the game-scoped player ID. Checkout stays unavailable until a permitted webhook subscription is operational and `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1` is deliberately configured. Durable grants commit before consumable consumption.
 
 1. Complete P0-06 purchase/unconsumed/refund contract capture.
 2. Document exact signed fields, algorithm/key source, raw bytes required, app/player binding, product identifier, token/transaction scope, issue time and event replay identity.

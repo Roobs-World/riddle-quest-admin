@@ -8,6 +8,7 @@ import type {
 import {firebaseFunctions} from "../firebase";
 import {
   parseFacebookClientConfiguration,
+  parseFacebookPurchaseGrant,
   parseFacebookRewardedContinue,
   parseFacebookNotificationPromptAcceptance,
   parseFacebookNotificationPromptClaim,
@@ -16,6 +17,14 @@ import {
   parseFacebookTournamentRecordResponse,
   parseFacebookTournamentResponse,
 } from "./facebookCallableResponses";
+
+const grantFacebookPurchaseRaw = httpsCallable<{signedRequest: string}, unknown>(firebaseFunctions, "grantFacebookPurchase");
+
+/** Sends only Meta's signed receipt to the verified purchase boundary. */
+export const grantFacebookPurchase = async (input: {signedRequest: string}) => {
+  const result = await grantFacebookPurchaseRaw(input);
+  return {...result, data: parseFacebookPurchaseGrant(result.data)};
+};
 
 /** Facebook-only extra-attempt boundary; it never accepts a grant amount. */
 const grantFacebookRewardedContinueRaw = httpsCallable<{

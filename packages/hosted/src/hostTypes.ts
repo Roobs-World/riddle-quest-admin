@@ -37,7 +37,7 @@ export type ProductSummary = {
   /** Stores product id. */
   productId: string;
   /** Stores product type. */
-  productType?: "consumable" | "subscription";
+  productType?: "consumable" | "durable" | "subscription";
   /** Stores name. */
   name: string;
   /** Stores description. */
@@ -166,7 +166,7 @@ export type PurchaseResult =
       /** Stores product id. */
       productId: string;
       /** Stores purchase type. */
-      purchaseType?: "consumable" | "subscription";
+      purchaseType?: "consumable" | "durable" | "subscription";
       /** Stores coins awarded. */
       coinsAwarded?: number;
       /** Stores new coins. */
@@ -182,7 +182,7 @@ export type PurchaseResult =
       /** Stores product id. */
       productId: string;
       /** Stores purchase type. */
-      purchaseType: "consumable" | "subscription";
+      purchaseType: "consumable" | "durable" | "subscription";
       /** Prevents cancelled checkouts from carrying a coin grant. */
       coinsAwarded?: never;
       /** Prevents cancelled checkouts from carrying a new balance. */

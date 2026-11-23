@@ -147,6 +147,17 @@ function validateFacebookDeployEnvironment(environment) {
       errors.push("FACEBOOK_DISABLED_FEATURES contains an unknown or duplicate capability.");
     }
   }
+  if (environment.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED !== undefined &&
+    !["0", "1"].includes(environment.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED.trim())) {
+    errors.push("FACEBOOK_PAYMENTS_WEBHOOK_ENABLED must be 0 or 1 when configured.");
+  }
+  if (environment.FACEBOOK_PAYMENT_ENVIRONMENTS !== undefined) {
+    const values = environment.FACEBOOK_PAYMENT_ENVIRONMENTS.split(",").map(value => value.trim());
+    if (values.some(value => !["PROD", "DEV", "DEV_EXTERNAL", "TEST"].includes(value)) ||
+      new Set(values).size !== values.length) {
+      errors.push("FACEBOOK_PAYMENT_ENVIRONMENTS must contain unique PROD, DEV, DEV_EXTERNAL or TEST values.");
+    }
+  }
   if (errors.length > 0) {
     throw new Error(`Facebook deployment environment validation failed:\n- ${errors.join("\n- ")}`);
   }

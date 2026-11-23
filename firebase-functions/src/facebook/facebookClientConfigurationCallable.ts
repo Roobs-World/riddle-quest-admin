@@ -1,4 +1,4 @@
-import {getFirestore} from "firebase-admin/firestore";
+import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
@@ -37,7 +37,7 @@ export function resolveFacebookClientConfiguration(
   return FacebookClientConfigurationResponseSchema.parse({
     interstitialsEnabled: isFacebookFeatureEnabled("interstitials", disabledFeatures),
     notificationsEnabled: isFacebookFeatureEnabled("notifications", disabledFeatures),
-    commerceEnabled: isFacebookFeatureEnabled("commerce", disabledFeatures),
+    commerceEnabled: isFacebookFeatureEnabled("commerce", disabledFeatures) && process.env.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED === "1",
     rewardedAdsEnabled: isFacebookFeatureEnabled("rewarded_ads", disabledFeatures),
     referralsEnabled: isFacebookFeatureEnabled("referrals", disabledFeatures),
     matchmakingEnabled: isFacebookFeatureEnabled("matchmaking", disabledFeatures),
@@ -63,6 +63,16 @@ export const getFacebookClientConfiguration = onCallWithSentry(
     const commerceAccount = await getFirestore().collection("facebookCommerceAccounts").doc(request.auth.uid).get();
     /** Provides configuration behavior. */
     const configuration = resolveFacebookClientConfiguration(commerceAccount.data());
+    if (configuration.commerceEnabled) {
+      const identities = await getFirestore().collection("providerIdentities").where("uid", "==", request.auth.uid).limit(2).get();
+      const identity = identities.size === 1 ? identities.docs[0].data() : undefined;
+      const generation = request.auth.token.accountGeneration;
+      const startedAt = generation === 1 ? identity?.createdAt : identity?.lastDeletedAt;
+      configuration.commerceEnabled = identity?.provider === "facebook" && identity.status === "active" &&
+        identity.accountGeneration === generation && typeof generation === "number" && Number.isSafeInteger(generation) &&
+        generation >= 1 && startedAt instanceof Timestamp &&
+        Date.now() >= (generation === 1 ? Math.floor(startedAt.toMillis() / 1_000) : Math.ceil(startedAt.toMillis() / 1_000)) * 1_000;
+    }
     if (configuration.presenceEnabled !== presenceEnabled) {
       throw new Error("facebook-presence-feature-gate-drift");
     }

@@ -46,7 +46,7 @@ export const SUBSCRIPTION_BENEFIT_KEYS = [
   "CoinShop.SUBSCRIPTION_BENEFIT_RENEWAL",
 ] as const;
 
-/** Renders products supplied by the Jest platform purchase catalog. */
+/** Renders products supplied by the current platform purchase catalog. */
 export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
@@ -89,7 +89,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
               <span className="shop-subscription-icon" aria-hidden="true">
                 ★
               </span>
-            ) : (
+            ) : product.productType === "durable" ? null : (
               <img className="shop-product-coins" src={coinUrl} alt="" />
             )}
             <h3 className="shop-product-name">{product.name}</h3>
@@ -99,12 +99,12 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
                   ? tr("CoinShop.SUBSCRIPTION_ACTIVE")
                   : `${product.displayPrice} / ${tr(`CoinShop.PERIOD_${product.billingPeriod?.toUpperCase() ?? "MONTHLY"}`)}`}
               </span>
-            ) : (
+            ) : product.productType === "durable" ? null : (
               <span className="shop-product-amount">
                 {product.coins.toLocaleString()} {tr("CoinShop.COINS_SUFFIX")}
               </span>
             )}
-            {product.productType === "subscription" && product.description ? (
+            {(product.productType === "subscription" || product.productType === "durable") && product.description ? (
               <small className="shop-product-description">{product.description}</small>
             ) : null}
             {product.productType === "subscription" ? (

@@ -379,6 +379,8 @@ export const createPlayHostMessageHandlers = ({
       setNotice(
         result.purchaseType === "subscription"
           ? tr("CoinShop.SUBSCRIPTION_ACTIVE_NOTICE")
+          : result.purchaseType === "durable"
+            ? tr("CommonAlerts.SUCCESS_TITLE")
           : tr("WebPortal.PURCHASE_COMPLETE", {coins: result.coinsAwarded ?? 0}),
       );
       postOperation(message.requestId, "purchase", true, result);

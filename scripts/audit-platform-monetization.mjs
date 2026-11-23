@@ -32,7 +32,8 @@ export async function auditPlatformMonetization() {
   }
   if (!/getIncompletePurchases/u.test(jestPurchases) || !/completePurchase/u.test(jestPurchases) || !/backend\.grantPurchase/u.test(jestPurchases)) failures.push("Jest purchase grant/recovery ordering is missing.");
   if (!/createFacebookAdsCapability/u.test(facebookEntry) || !/VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID/u.test(facebookEntry) || !/VITE_FACEBOOK_REWARDED_PLACEMENT_ID/u.test(facebookEntry)) failures.push("Facebook ad capability or placement boundary is missing.");
-  if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Unverified Facebook IAP must remain unreachable.");
+  if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Facebook commerce must remain unavailable before authentication.");
+  if (!/new FacebookCommerceSession/u.test(facebookEntry) || !/clientConfiguration\.commerceEnabled/u.test(facebookEntry)) failures.push("Facebook payments must use the authenticated server-gated adapter.");
   if (!/price:\s*product\.price/u.test(facebookCommerce)) failures.push("Facebook commerce must preserve Meta's formatted catalog price.");
   const redditConfig = JSON.parse(redditConfigSource);
   const redditProducts = JSON.parse(redditProductsSource);

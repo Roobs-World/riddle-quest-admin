@@ -53,6 +53,7 @@ import {
   verifyJestReferrals,
 } from "./jest/jestEndpoints";
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "./facebook/facebookEndpoints";
+import {grantFacebookPurchase, facebookPaymentWebhook} from "./facebook/facebookPayments";
 import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "./android/androidReferralCallables";
 import {deliverAndroidReferralPlay} from "./android/androidReferralDelivery";
 import {setAndroidPushSubscription, sendAndroidDailyReminders} from "./android/androidNotifications";
@@ -138,6 +139,8 @@ export {
   exchangeAndroidAttestation,
   issueFacebookIdentityNonce,
   exchangeFacebookIdentity,
+  grantFacebookPurchase,
+  facebookPaymentWebhook,
   facebookDataDeletionCallback,
   facebookDataDeletionStatus,
   recordFacebookTournament,

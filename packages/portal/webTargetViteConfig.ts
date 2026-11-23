@@ -731,6 +731,7 @@ export function createWebTargetViteConfig({
         "@riddle-quest/core/bridge/constants": fileURLToPath(new URL("../core/src/bridge/constants.ts", import.meta.url)),
         "@riddle-quest/core/bridge": fileURLToPath(new URL("../core/src/bridge/index.ts", import.meta.url)),
         "@riddle-quest/core/pricing/catalog": fileURLToPath(new URL("../core/src/pricing/catalog.ts", import.meta.url)),
+        "@riddle-quest/core/pricing/facebookCatalog": fileURLToPath(new URL("../core/src/pricing/facebookCatalog.ts", import.meta.url)),
         "@riddle-quest/core/pricing/redditCatalog": fileURLToPath(new URL("../core/src/pricing/redditCatalog.ts", import.meta.url)),
         "@riddle-quest/core/race": fileURLToPath(new URL("../core/src/race/index.ts", import.meta.url)),
         "@riddle-quest/core/referrals": fileURLToPath(new URL("../core/src/referrals/index.ts", import.meta.url)),
