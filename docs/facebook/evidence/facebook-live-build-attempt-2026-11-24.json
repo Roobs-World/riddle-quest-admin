@@ -1,0 +1,149 @@
+{
+  "date": "2026-11-24",
+  "appId": "1748953042991569",
+  "authorization": "User requested: try and push a build live",
+  "sourceCommit": "373502637028f00b4c14ccbd33182b6d96485748",
+  "build": {
+    "archiveSha256": "9a854a3f27bb51606f3e17402e45ce6f7c1b575b77cbe6f50d58203727f5fff5",
+    "archiveBytes": 2897859,
+    "archiveEntries": 417,
+    "sourceClean": true,
+    "artifactAuditPassed": true,
+    "testsRun": false,
+    "browserHarnessesRun": false
+  },
+  "upload": {
+    "command": "pnpm facebook:draft upload --archive-hash 9a854a3f27bb51606f3e17402e45ce6f7c1b575b77cbe6f50d58203727f5fff5",
+    "attemptedAt": "2026-11-24T11:52:24.181Z",
+    "recordedAt": "2026-11-24T11:52:26.535Z",
+    "binaryUploadAttempts": 1,
+    "stages": [
+      {
+        "stage": "session",
+        "httpStatus": 200,
+        "responseSha256": "7404afad8443d77d078db42e3a9fe913e345da965ca3fe3d89cd7f50bbe21e2f"
+      },
+      {
+        "stage": "archive",
+        "httpStatus": 403,
+        "responseSha256": "e99de958c47a2d98e7007a5abf1fc0867f074f27ed230cbaaa9ae7e8f1f830cc",
+        "providerError": {
+          "reason": "provider-rejected"
+        }
+      }
+    ],
+    "providerAcceptance": false,
+    "processingCompleted": false,
+    "retried": false
+  },
+  "reconciliation": {
+    "inventories": [
+      {
+        "phase": "before",
+        "checkedAt": "2026-11-24T11:52:12.983Z",
+        "httpStatus": 200,
+        "complete": true,
+        "versions": [
+          {
+            "bundleInstanceId": "26805848032447156",
+            "version": 6
+          },
+          {
+            "bundleInstanceId": "27778256935185834",
+            "version": 5
+          },
+          {
+            "bundleInstanceId": "28232737223063645",
+            "version": 4
+          },
+          {
+            "bundleInstanceId": "28625402820405523",
+            "version": 3
+          },
+          {
+            "bundleInstanceId": "28534304219568921",
+            "version": 2
+          },
+          {
+            "bundleInstanceId": "29649806651275216",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "phase": "after",
+        "checkedAt": "2026-11-24T11:53:09.565Z",
+        "httpStatus": 200,
+        "complete": true,
+        "versions": [
+          {
+            "bundleInstanceId": "26805848032447156",
+            "version": 6
+          },
+          {
+            "bundleInstanceId": "27778256935185834",
+            "version": 5
+          },
+          {
+            "bundleInstanceId": "28232737223063645",
+            "version": 4
+          },
+          {
+            "bundleInstanceId": "28625402820405523",
+            "version": 3
+          },
+          {
+            "bundleInstanceId": "28534304219568921",
+            "version": 2
+          },
+          {
+            "bundleInstanceId": "29649806651275216",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "phase": "confirmed",
+        "checkedAt": "2026-11-24T11:54:16.829Z",
+        "httpStatus": 200,
+        "complete": true,
+        "versions": [
+          {
+            "bundleInstanceId": "26805848032447156",
+            "version": 6
+          },
+          {
+            "bundleInstanceId": "27778256935185834",
+            "version": 5
+          },
+          {
+            "bundleInstanceId": "28232737223063645",
+            "version": 4
+          },
+          {
+            "bundleInstanceId": "28625402820405523",
+            "version": 3
+          },
+          {
+            "bundleInstanceId": "28534304219568921",
+            "version": 2
+          },
+          {
+            "bundleInstanceId": "29649806651275216",
+            "version": 1
+          }
+        ]
+      }
+    ],
+    "inventoryChanged": false,
+    "finalBarrierStatus": "reconciled-absent",
+    "privateEvidenceSha256": "58e6b4b6d299b4007b5f26ee1056396bb6981063a5fe95489169a11288628ee2",
+    "allHandoffsSettled": true
+  },
+  "productionAssignmentChanged": false,
+  "gamePublished": false,
+  "reviewSubmitted": false,
+  "secretsExposed": false,
+  "diagnosticLimit": "Meta returned HTTP 403 at archive transfer with only the fixed provider-rejected diagnostic. The exact remote cause is not established by this response.",
+  "browserLimitations": "No connected CUA browser. Chrome remote debugging unavailable; Firefox exited before opening a page. No dashboard fallback or processing/production inspection claimed."
+}

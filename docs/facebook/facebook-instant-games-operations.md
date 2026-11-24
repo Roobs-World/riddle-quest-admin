@@ -214,6 +214,8 @@ On 24 November 2026, Meta accepted this app's complete Gaming App Access Token f
 
 The [remote upload evidence](evidence/facebook-remote-upload-2026-11-24.json) records the built candidate, rejected transfer and authenticated inventory reconciliation. No new bundle was created, and both retained handoffs were settled as absent without retransmitting.
 
+The later [explicit live-build attempt](evidence/facebook-live-build-attempt-2026-11-24.json) used clean source `373502637` after restoring the token format and adding safe error diagnostics. Meta again accepted the session with HTTP 200 and rejected the archive with HTTP 403. Full inventories before, after and on confirmation still contained only versions 1–6. The attempt was reconciled absent without a retry. No new bundle, production assignment, game publication or review submission resulted; the exact remote rejection cause remains unestablished.
+
 With the token saved in the root `.env`:
 
 ```sh
