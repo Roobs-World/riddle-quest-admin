@@ -25,7 +25,7 @@ import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMo
 import {configurePlatformAnalytics, trackScreen} from "../../../../src/observability/analytics/events";
 import {GoogleAnalyticsConsent} from "../../../../src/observability/analytics/GoogleAnalyticsConsent";
 import {firebaseEnvironment} from "../../../../src/platform/firebase/browserEnvironment";
-import {hasTrustedTestHarnessMarker} from "../../../../src/app/testing/testHarness";
+import {hasTrustedTestHarnessMarker} from "../../../../src/app/services/testHarnessPolicy";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
 import {JestAccountDeleted, JestStartupError, JestStartupProgress} from "./JestSessionViews";

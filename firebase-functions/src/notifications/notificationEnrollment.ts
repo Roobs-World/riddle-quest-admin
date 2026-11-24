@@ -3,7 +3,7 @@ import {Timestamp} from "firebase-admin/firestore";
 import type {DecodedIdToken} from "firebase-admin/auth";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
-import {AccountPushDevice} from "./notificationDevices";
+import {AccountPushDevice, managerRegistrationAcknowledged, renewPairedBrowserDevice} from "./notificationDevices";
 import {FirebasePushTarget} from "../../../src/notifications/contracts/firebasePush";
 import {admin} from "../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef, runWithJestAccountOperationLease} from "../shared/accountDeletion";
@@ -11,7 +11,7 @@ import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {raceProviderScope} from "../race/access/raceProviderScope";
 import {validateCallableRequest} from "../validation/callableValidation";
-import {managerOrigin, pushDigest} from "./notificationBridge";
+import {managerOrigin, notificationBridgeSecret, pushDigest} from "./notificationBridge";
 
 const Enrollment = z.object({locale: z.string().regex(/^[a-z]{2}(?:-[A-Za-z]{2})?$/u).max(16)}).strict();
 
@@ -58,7 +58,7 @@ export const createNotificationEnrollment = onCallWithSentry("createNotification
 const EnrollmentStatus = z.object({pairingCode: z.string().regex(/^[a-f0-9]{64}$/u).optional()}).strict();
 
 export const getNotificationEnrollmentStatus = onCallWithSentry("getNotificationEnrollmentStatus", {
-  ...browserCallableSecurityOptions, region: "europe-west1",
+  ...browserCallableSecurityOptions, region: "europe-west1", secrets: [notificationBridgeSecret],
 }, async request => {
   const input = validateCallableRequest(EnrollmentStatus, request.data, "getNotificationEnrollmentStatus");
   const auth = request.auth;
@@ -70,6 +70,7 @@ export const getNotificationEnrollmentStatus = onCallWithSentry("getNotification
     assertJestAccountActive(deleted);
     if (!user.exists || user.data()?.notificationsEnabled === false) return {registeredDevices: 0, enrollmentComplete: false};
     enrollmentTarget(uid, auth.token, user.data());
+    if (input.pairingCode) await renewPairedBrowserDevice(uid, input.pairingCode);
     let registeredDevices = 0;
     let cursor: FirebaseFirestore.QueryDocumentSnapshot | undefined;
     for (;;) {
@@ -78,7 +79,7 @@ export const getNotificationEnrollmentStatus = onCallWithSentry("getNotification
       const page = await query.get();
       for (const row of page.docs) {
         const device = AccountPushDevice.safeParse(row.data());
-        if (device.success && device.data.uid === uid && device.data.enabled && device.data.managerRevision === device.data.revision && device.data.expiresAtMs > Date.now()) registeredDevices += 1;
+        if (device.success && device.data.uid === uid && device.data.enabled && managerRegistrationAcknowledged(device.data) && device.data.expiresAtMs > Date.now()) registeredDevices += 1;
       }
       if (page.docs.length < 200) break;
       cursor = page.docs.at(-1);
@@ -88,7 +89,7 @@ export const getNotificationEnrollmentStatus = onCallWithSentry("getNotification
       const pairing = (await db.doc(`notificationPairings/${pushDigest(input.pairingCode)}`).get()).data();
       if (pairing?.uid === uid && typeof pairing.deviceHash === "string" && /^[a-f0-9]{64}$/u.test(pairing.deviceHash)) {
         const device = AccountPushDevice.safeParse((await db.doc(`accountPushDevices/${pairing.deviceHash}`).get()).data());
-        enrollmentComplete = device.success && device.data.uid === uid && device.data.enabled && device.data.managerRevision === device.data.revision && device.data.expiresAtMs > Date.now();
+        enrollmentComplete = device.success && device.data.uid === uid && device.data.enabled && managerRegistrationAcknowledged(device.data) && device.data.expiresAtMs > Date.now();
       }
     }
     return {registeredDevices, enrollmentComplete};

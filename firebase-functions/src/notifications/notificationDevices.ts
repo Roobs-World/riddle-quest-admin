@@ -11,7 +11,7 @@ const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
 const Time = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 export const AccountPushDevice = z.object({
   uid: z.string().min(1).max(128), target: FirebasePushTarget, locale: z.string().max(16), enabled: z.boolean(),
-  revision: Time, expiresAtMs: Time, endpointHash: Hash, pairingHash: Hash, subscription: FirebasePushSubscription, managerRevision: Time.optional(),
+  revision: Time, expiresAtMs: Time, endpointHash: Hash, pairingHash: Hash, subscription: FirebasePushSubscription, managerRevision: Time.optional(), managerExpiresAtMs: Time.optional(),
 });
 const Pairing = z.object({uid: z.string().min(1).max(128), target: FirebasePushTarget, locale: z.string().max(16),
   expiresAtMs: Time, deviceHash: Hash.optional()});
@@ -25,7 +25,8 @@ async function synchronizeDevice(deviceHash: string, device: z.infer<typeof Acco
   const db = admin.firestore(), ref = db.doc(`accountPushDevices/${deviceHash}`);
   await db.runTransaction(async tx => {
     const current = await tx.get(ref);
-    if (current.data()?.uid === device.uid && current.data()?.revision === device.revision) tx.update(ref, {managerRevision: device.revision});
+    if (current.data()?.uid === device.uid && current.data()?.revision === device.revision && current.data()?.expiresAtMs === device.expiresAtMs)
+      tx.update(ref, {managerRevision: device.revision, managerExpiresAtMs: device.expiresAtMs});
   });
 }
 
@@ -98,7 +99,39 @@ export async function browserDeviceStatus(deviceToken: string, disable: boolean,
     return {device: updated, effectiveEnabled};
   });
   if (!committed) return {registered: false, enabled: false, expiresAtMs: 0, revision: 0};
-  if ((committed.effectiveEnabled || !committed.device.enabled) && committed.device.managerRevision !== committed.device.revision)
+  if ((committed.effectiveEnabled || !committed.device.enabled) && !managerRegistrationAcknowledged(committed.device))
     await synchronizeDevice(deviceHash, committed.device);
   return {registered: true, enabled: committed.effectiveEnabled, expiresAtMs: committed.device.expiresAtMs, revision: committed.device.revision};
+}
+
+export function managerRegistrationAcknowledged(device: z.infer<typeof AccountPushDevice>): boolean {
+  return device.managerRevision === device.revision && (device.managerExpiresAtMs ?? device.expiresAtMs) === device.expiresAtMs;
+}
+
+/** Authenticated gameplay may extend an existing proof, never create or reactivate a device. */
+export async function renewPairedBrowserDevice(uid: string, pairingCode: string): Promise<void> {
+  const db = admin.firestore(), pairingRef = db.doc(`notificationPairings/${pushDigest(pairingCode)}`);
+  const committed = await db.runTransaction(async tx => {
+    const [pairingSnapshot, user, deleted] = await Promise.all([tx.get(pairingRef), tx.get(db.doc(`users/${uid}`)), tx.get(getJestAccountDeletionRef(db, uid))]);
+    const pairing = Pairing.safeParse(pairingSnapshot.data());
+    if (!pairing.success || pairing.data.uid !== uid || !pairing.data.deviceHash || !user.exists ||
+        user.data()?.notificationsEnabled === false || deleted.exists) return null;
+    const deviceHash = pairing.data.deviceHash, ref = db.doc(`accountPushDevices/${deviceHash}`);
+    const parsed = AccountPushDevice.safeParse((await tx.get(ref)).data());
+    const now = Date.now();
+    if (!parsed.success || parsed.data.uid !== uid || parsed.data.pairingHash !== pairingRef.id ||
+        parsed.data.target !== pairing.data.target || !parsed.data.enabled || parsed.data.expiresAtMs <= now) return null;
+    const device = parsed.data;
+    if (device.expiresAtMs >= now + 7 * 86_400_000)
+      return managerRegistrationAcknowledged(device) ? null : {deviceHash, device};
+    const endpointRef = db.doc(`accountPushEndpoints/${device.endpointHash}`), endpoint = await tx.get(endpointRef);
+    if (endpoint.data()?.uid !== uid || endpoint.data()?.deviceHash !== deviceHash) return null;
+    const expiresAtMs = now + PUSH_DEVICE_TTL_MS;
+    const updated = {...device, expiresAtMs, managerExpiresAtMs: device.managerExpiresAtMs ?? device.expiresAtMs};
+    tx.update(ref, {expiresAtMs, managerExpiresAtMs: updated.managerExpiresAtMs, expiresAt: Timestamp.fromMillis(expiresAtMs), updatedAtMs: now});
+    tx.update(pairingRef, {expiresAt: Timestamp.fromMillis(expiresAtMs)});
+    tx.update(endpointRef, {expiresAt: Timestamp.fromMillis(expiresAtMs)});
+    return {deviceHash, device: updated};
+  });
+  if (committed) await synchronizeDevice(committed.deviceHash, committed.device);
 }

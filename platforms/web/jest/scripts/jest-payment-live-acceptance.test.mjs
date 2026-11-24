@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import {EventEmitter} from "node:events";
 import {Script} from "node:vm";
+import {registerHooks} from "node:module";
 import test from "node:test";
-import {JEST_COIN_PRODUCTS} from "../server/jestProductCatalog.ts";
-import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../../firebase-functions/src/shared/constants.ts";
 import {
   assertCompletedJestPaymentSettlement, assertNoRelevantJestPaymentErrors, assertSandboxJestCheckout,
   captureJestPaymentGameErrors,
@@ -12,6 +11,23 @@ import {
   readJestPaymentCatalog, readJestPaymentGameErrors, readJestPaymentWalletBalance, readJestSandboxCheckout,
   settleSandboxJestPurchase, verifyReloadedJestPaymentWallet,
 } from "./jest-payment-live-acceptance.mjs";
+
+const canonicalSourceRoots = [new URL("../../../../firebase-functions/src/", import.meta.url).href,
+  new URL("../../../../src/", import.meta.url).href];
+const sourceResolver = registerHooks({resolve(specifier, context, nextResolve) {
+  try {return nextResolve(specifier, context);}
+  catch (error) {
+    if (error.code === "ERR_MODULE_NOT_FOUND" && specifier.startsWith(".") && specifier.endsWith(".js") &&
+        canonicalSourceRoots.some(root => context.parentURL?.startsWith(root)))
+      return nextResolve(specifier.slice(0, -3) + ".ts", context);
+    throw error;
+  }
+}});
+let JEST_COIN_PRODUCTS, ACHIEVEMENT_UNLOCK_COIN_REWARD;
+try {
+  ({JEST_COIN_PRODUCTS} = await import("../../../../firebase-functions/src/shared/productCatalog.ts"));
+  ({ACHIEVEMENT_UNLOCK_COIN_REWARD} = await import("../../../../firebase-functions/src/shared/constants.ts"));
+} finally {sourceResolver.deregister();}
 
 const sku = "com.roobsworld.riddlequest.coinpack1";
 const token = "test-purchase-token";

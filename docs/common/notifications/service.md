@@ -138,3 +138,11 @@ Use https://riddle-quest-admin.vercel.app for routine management. The longer tea
 The browser initializes Zod with `jitless: true` before loading application schemas. This prevents its dynamic-code capability probe from producing a CSP warning; `script-src` remains restricted to `self`. The `__cf_bm` cookie belongs to Cloudflare bot management, not the application session.
 
 The public Google OAuth authorization URL identifies Google Cloud project number `329028367192`, which the connected project inventory maps to `riddle-quest-ec2b2`. It does not use project `qwordly-6ba44`, number `26666910831`, named in the restriction email. No Cloud project resources or credentials were changed during this check.
+
+## Notification service release on November 24, 2026
+
+The Firebase account-linked enrollment functions and deletion handlers are deployed in `riddle-quest-ec2b2`. The reviewed Firebase device migration is applied as `20261124080803_firebase_push_devices`. Vercel deployment `dpl_HbWQc1xRLbLzDx8ZrEKfodbK9fHp` serves the manager and `/push/` enrollment page. Desktop and mobile page checks passed; worker, manifest and public configuration returned HTTP 200. Firebase reported 141 canonical accounts and zero enrolled browser devices at verification.
+
+The dedicated scheduler credential is stored in Supabase Vault and Vercel. After explicit approval to enable campaign delivery, the first scheduled run at 08:27 UTC completed with HTTP 200. No campaign was created by the release. TTL cleanup is active for the five new private notification collections. Credentials were configured privately; temporary key material was removed.
+
+The Jest notification client upload completed processing as inactive version `01a20c95-dd01-713b-b291-2e8ee5db350c`. Its source is `4b0f40a4b3410d96740e2992ad9cf834dbb156d5`; later source changes repair release guards and test fixtures. The full checks requested after that upload remain blocked by unrelated Android coverage thresholds and six interface suites. No replacement upload, activation, publication or review submission was performed after that failure. Facebook artifact and browser preflight checks pass, but remote upload requires Meta upload access beyond the connected read-only permissions. See the [release evidence](evidence/connected-release-2026-11-24.json).

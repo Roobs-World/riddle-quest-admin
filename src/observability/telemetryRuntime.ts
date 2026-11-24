@@ -1,5 +1,5 @@
 import {firebaseEnvironment} from "../platform/firebase/browserEnvironment";
-import {hasTrustedTestHarnessMarker} from "../app/testing/testHarness";
+import {hasTrustedTestHarnessMarker} from "../app/services/testHarnessPolicy";
 
 /**
  * Decides whether a browser runtime may send production telemetry.

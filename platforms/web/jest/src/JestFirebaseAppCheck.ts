@@ -7,7 +7,7 @@ import {
 } from "firebase/app-check";
 import {firebaseApp} from "../../../../src/platform/firebase/browserClient";
 import {firebaseEnvironment} from "../../../../src/platform/firebase/browserEnvironment";
-import {hasTrustedTestHarnessMarker} from "../../../../src/app/testing/testHarness";
+import {hasTrustedTestHarnessMarker} from "../../../../src/app/services/testHarnessPolicy";
 
 /** Indicates whether a trusted harness route may bypass browser attestation. */
 const isHarnessRoute =

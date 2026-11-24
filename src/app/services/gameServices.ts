@@ -1,7 +1,7 @@
 import {cloneProductPricingCatalog} from "../../commerce/pricing/catalog";
 import type {HostServices} from "../../platform/contracts/hostServices";
 import {toProductSummaries} from "../../platform/contracts/hostServices";
-import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testing/testHarness";
+import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "./testHarnessPolicy";
 
 /** Describes host services mode. */
 export type HostServicesMode = "firebase" | "fake";

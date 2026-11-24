@@ -259,7 +259,7 @@
         "functions": 100,
         "lines": 100
       },
-      "src/app/testing/testHarness.ts": {
+      "src/app/services/testHarnessPolicy.ts": {
         "statements": 100,
         "branches": 100,
         "functions": 100,

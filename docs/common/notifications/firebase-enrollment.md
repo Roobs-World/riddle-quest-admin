@@ -10,7 +10,7 @@ The game opens a window synchronously from that action and calls `createNotifica
 
 The shared `/push/` page requests browser permission, installs its own service worker and registers the browser subscription. A server-only Vercel bridge redeems the code against Firebase. The client cannot select another UID or provider. Firebase binds the subscription to the verified account and sends only an opaque device hash, target, revision, locale and expiry to the manager. A completed pairing is confirmed to the originating game through a checked popup message and a fresh authenticated Firebase query.
 
-Previously granted permission does not require another prompt. Opening a fresh connection link on that browser enrolls it automatically after permission and account checks. A returning enrollment page verifies that a local subscription still exists before renewing its Firebase lease. New devices must grant permission once; historical Firebase logins cannot recover missing subscriptions. On iOS, the player installs the enrollment page on the Home Screen and transfers the one-time connection code to that installed app.
+Previously granted permission does not require another prompt. Opening a fresh connection link on that browser enrolls it automatically after permission and account checks. A returning enrollment page verifies that a local subscription still exists before renewing its Firebase lease. Authenticated game startup also renews an existing unexpired paired device when fewer than seven days remain, without reopening the page or changing its registration revision. Manager acknowledgements include the lease expiry, so a temporary synchronization failure is retried. This cannot create a subscription or restore revoked consent. New devices must grant permission once; historical Firebase logins cannot recover missing subscriptions. On iOS, the player installs the enrollment page on the Home Screen and transfers the one-time connection code to that installed app.
 
 ## Shared platform capability
 
@@ -44,9 +44,9 @@ Prepare these values without putting secret values into source, browser variable
 | Vercel | `FIREBASE_NOTIFICATION_TARGETS`, initially only the released and verified game adapters |
 | Game builds | `VITE_NOTIFICATION_SERVICE_URL`, the exact enrollment service origin |
 
-Apply the reviewed `firebase_push_devices` Supabase migration, deploy the four new Firebase functions and updated deletion handlers, then deploy the website and release the affected games. Configure TTL on `expiresAt` for `accountPushDevices`, `accountPushEndpoints`, `accountPushDeliveries`, `notificationPairings` and `notificationPairingLimits`; runtime expiry checks already fail closed independently of TTL cleanup. Preserve the scheduler setup described in [service operations](service.md).
+The reviewed migration, Firebase functions, website and scheduler are deployed; see [release operations](service.md#notification-service-release-on-november-24-2026). Updated game versions still require activation after their release checks. TTL is configured on `expiresAt` for `accountPushDevices`, `accountPushEndpoints`, `accountPushDeliveries`, `notificationPairings` and `notificationPairingLimits`; runtime expiry checks already fail closed independently of TTL cleanup. Preserve the scheduler setup described in [service operations](service.md).
 
-Source and build verification do not authorize game uploads, activation or publication. End-to-end enrollment and live push delivery remain acceptance work after the coordinated release.
+Source and build verification do not authorize game uploads, activation or publication. Real-device enrollment and live push delivery remain acceptance work after the updated client is activated or opened through its inactive preview.
 
 ## References
 

@@ -17,22 +17,21 @@ const run = promisify(execFile);
 async function fixture(context) {
   const root = await mkdtemp(path.join(tmpdir(), "rq-facebook-release-state-"));
   context.after(() => rm(root, {recursive: true, force: true}));
-  const portal = path.join(root, "packages", "web-game");
-  const scripts = path.join(portal, "scripts");
-  const receipts = path.join(portal, ".facebook-upload-receipts");
+  const scripts = path.join(root, "platforms", "web", "facebook", "scripts");
+  const receipts = path.join(root, ".facebook-upload-receipts");
   await mkdir(scripts, {recursive: true});
   await mkdir(receipts);
   for (const name of ["facebook-draft-evidence.mjs", "facebook-release-artifact.mjs", "facebook-release-state.mjs", "prepare-facebook-draft.mjs"]) {
     await copyFile(new URL(name, import.meta.url), path.join(scripts, name));
   }
-  await writeFile(path.join(root, ".gitignore"), "./.facebook-upload-receipts/\n./build-facebook.zip\n");
+  await writeFile(path.join(root, ".gitignore"), ".facebook-upload-receipts/\nbuild-facebook.zip\n");
   await run("/usr/bin/git", ["init", "--quiet"], {cwd: root});
   await run("/usr/bin/git", ["add", "."], {cwd: root});
   await run("/usr/bin/git", ["-c", "user.name=Local Test", "-c", "user.email=test@example.invalid", "commit", "--quiet", "-m", "isolated fixture"], {cwd: root});
   const {stdout} = await run("/usr/bin/git", ["rev-parse", "HEAD"], {cwd: root});
   const bytes = Buffer.from("exact Facebook archive fixture");
   const hash = facebookArtifactSha256(bytes);
-  const archivePath = path.join(portal, "build-facebook.zip");
+  const archivePath = path.join(root, "build-facebook.zip");
   await writeFile(archivePath, bytes);
   await writePrivateFacebookJson(path.join(receipts, "gated-artifact.json"), createFacebookArtifactRecord({
     archiveBytes: bytes.length, archiveEntries: 1, archivePath, archiveSha256: hash,

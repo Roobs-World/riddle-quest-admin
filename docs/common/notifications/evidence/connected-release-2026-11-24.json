@@ -1,0 +1,239 @@
+{
+  "date": "2026-11-24",
+  "firebase": {
+    "project": "riddle-quest-ec2b2",
+    "sourceCommit": "a68a6d1bc9e026a9b92ccd875f19a70c292964c6",
+    "deployComplete": true,
+    "functions": [
+      "createNotificationEnrollment(europe-west1)",
+      "dispatchFirebaseNotification(europe-west1)",
+      "getNotificationEnrollmentStatus(europe-west1)",
+      "setNotificationPreference(europe-west1)",
+      "notificationBrowserBridge(europe-west1)",
+      "dispatchAndroidNotification(europe-west1)",
+      "facebookDataDeletionCallback(us-central1)",
+      "setAndroidPushSubscription(europe-west1)",
+      "retryJestAccountDeletion(us-central1)",
+      "deleteAccount(us-central1)",
+      "setAndroidPushSubscription(us-central1)",
+      "deleteRedditAccount(us-central1)"
+    ]
+  },
+  "vercel": {
+    "origin": "https://riddle-quest-admin.vercel.app",
+    "deploymentId": "dpl_HbWQc1xRLbLzDx8ZrEKfodbK9fHp",
+    "ready": true
+  },
+  "migration": {
+    "project": {
+      "ref": "vqyjgcqyudqonfhgymoy",
+      "name": "riddle-quest-notifications",
+      "mcp_ref_verified": true
+    },
+    "submitted_sql_sha256": "e71c40fa493b40cf33702b20bfd266b67078ecb66d5600003d78b4e8ef6e6e82",
+    "migration": {
+      "version": "20261124080803",
+      "name": "firebase_push_devices",
+      "applied_now": true,
+      "listed_exactly_once": true
+    },
+    "verification": {
+      "expected_base_migrations_present": true,
+      "all_six_tables_rls_enabled": true,
+      "transport_constraints_match_reviewed_sql": true,
+      "firebase_android_web_push_preserved": true,
+      "firebase_function_security_invoker": true,
+      "no_public_anon_authenticated_execute": true,
+      "service_role_execute_present": true,
+      "all_four_function_signatures_and_bodies_match": true,
+      "all_four_functions_service_role_only": true,
+      "table_columns_and_grants_preserved": true,
+      "unrelated_constraints_preserved": true
+    },
+    "advisors": {
+      "security": {
+        "warnings": 1,
+        "errors": 0,
+        "info": 1,
+        "warning": "auth_leaked_password_protection",
+        "remediation": "[Leaked password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection)"
+      },
+      "performance": {
+        "warnings": 0,
+        "errors": 0,
+        "info": 1
+      }
+    },
+    "scheduler": {
+      "ready": false,
+      "extensions": {
+        "pg_cron": false,
+        "pg_net": false,
+        "vault": true
+      },
+      "notification_manager_dispatch_count": 0,
+      "vault_names": {
+        "notification_service_url": false,
+        "notification_cron_secret": false
+      },
+      "configuration_changed": false
+    }
+  },
+  "scheduler": {
+    "project": "vqyjgcqyudqonfhgymoy",
+    "configured": true,
+    "active": true,
+    "verification": {
+      "pg_cron_installed": true,
+      "pg_net_installed": true,
+      "service_url_matches": true,
+      "cron_secret_matches": true,
+      "dispatch_job_count": 1,
+      "exactly_one_active_postgres_job": true,
+      "job_command_excludes_literal_secret": true,
+      "no_new_public_security_definer_execution": true
+    },
+    "brieflyActiveBeforeStop": true,
+    "disabledVia": "cron.alter_job",
+    "activationAuthorization": "Explicit user approval to enable scheduled campaign delivery",
+    "disabledBeforeApproval": {
+      "dispatch_job_count": 1,
+      "all_disabled": true,
+      "recorded_runs": 0
+    },
+    "firstScheduledRun": {
+      "recorded_runs": 1,
+      "status": "succeeded",
+      "start_time_utc": "2026-11-24 08:27:01.113709+00",
+      "end_time_utc": "2026-11-24 08:27:01.15079+00",
+      "observed_http_status": 200,
+      "active_job_count": 1
+    },
+    "manualInvocations": 0,
+    "campaignsCreatedByAgent": 0,
+    "cronTableGrantsChanged": false,
+    "secretValuesExposed": false,
+    "sourceBugFix": "PostgreSQL-compatible character class plus length bounds replaces unsupported {32,256} repetition"
+  },
+  "liveVerification": {
+    "enrollmentPageStatus": 200,
+    "workerStatus": 200,
+    "manifestStatus": 200,
+    "configurationStatus": 200,
+    "desktopWidth": 1280,
+    "mobileWidth": 390,
+    "pageErrors": 0,
+    "horizontalOverflow": false,
+    "firebaseAccountsObserved": 141,
+    "registeredBrowserDevicesObserved": 0,
+    "ttlCollectionsActive": 5
+  },
+  "notificationCampaignsCreated": 0,
+  "manualDispatchInvoked": false,
+  "jestUpload": {
+    "project": "Jest Riddle-Q",
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "sourceCommit": "4b0f40a4b3410d96740e2992ad9cf834dbb156d5",
+    "version": "1.0.0-dev.20261124080415.4b0f40a4b341.b36e9542",
+    "versionId": "01a20c95-dd01-713b-b291-2e8ee5db350c",
+    "processing": "ready",
+    "isActive": false,
+    "previewUrl": "https://jest.com/g/riddle-q?versionId=01a20c95-dd01-713b-b291-2e8ee5db350c",
+    "archive": {
+      "file": "1.0.0-dev.20261124080415.4b0f40a4b341.b36e9542.zip",
+      "bytes": 2629992,
+      "sha256": "8c6b87b433cca8b23c673ef7befd1fc58a826e7de0a6cbf7dc6691b23e2eb031",
+      "entries": 100
+    },
+    "requiredChecks": {
+      "state": "failed",
+      "blockingStep": "test:coverage",
+      "detail": "Earlier stale audit, resolver and fixture failures were corrected; full gate still fails Android coverage and six interface suites."
+    },
+    "publicationChanged": false,
+    "subsequentGateAttempts": [
+      {
+        "sourceCommit": "a68a6d1bc9e026a9b92ccd875f19a70c292964c6",
+        "uploaded": false,
+        "failedStep": "Functions ESLint",
+        "reason": "no-control-regex in native notificationManagerProtocol.ts",
+        "equivalentFixPrepared": true,
+        "fullFunctionsLintAfterFix": "passed"
+      }
+    ]
+  },
+  "otherConnections": {
+    "sourceCommitInspected": "4b0f40a4b3410d96740e2992ad9cf834dbb156d5",
+    "facebook": {
+      "appId": "1748953042991569",
+      "connectorPermission": "read",
+      "connectorUploadCapability": false,
+      "assetUploadTokenConfigured": false,
+      "browserDashboardAuthenticated": false,
+      "browserCheckPassed": true,
+      "browserCheckSeconds": 23.529,
+      "archivePath": "build-facebook.zip",
+      "archiveSha256": "97f2be0529929d9cc4552f82313151de2962421c394b6bd5cf731a5aa02760a7",
+      "archiveBytes": 2897859,
+      "uploaded": false
+    },
+    "reddit": {
+      "cliVersion": "0.15.4",
+      "authenticated": false,
+      "immutableRemoteUploadSupported": false,
+      "guard": "Direct Reddit upload disabled because Devvit rebuilds or creates a new version",
+      "uploaded": false
+    },
+    "android": {
+      "uploadKeystorePresent": false,
+      "keystorePropertiesPresent": false,
+      "existingBundlePresent": true,
+      "signedBundleVerified": false,
+      "playUploadConnectionFound": false,
+      "uploaded": false
+    },
+    "otherWebTargets": {
+      "connectedUploadAdapterFound": false,
+      "notes": "YouTube, Netflix, Yahoo and GameSnacks retain candidate/manual handoff release boundaries; no connected upload endpoint found."
+    }
+  },
+  "finalReleaseChecks": {
+    "functionsNode22": {
+      "suitesPassed": 147,
+      "testsPassed": 2011
+    },
+    "rulesCoverage": {
+      "suitesPassed": 39,
+      "testsPassed": 428,
+      "coveragePercent": 100
+    },
+    "youtubeUnits": {
+      "suitesPassed": 8,
+      "testsPassed": 62
+    },
+    "facebookBrowserPreflight": "passed",
+    "androidBehavior": {
+      "suitesPassed": 29,
+      "testsPassed": 249
+    },
+    "fullGatePassed": false,
+    "blockers": [
+      "Android coverage below unchanged thresholds",
+      "Six interface test suites fail in unrelated fixture/contracts and one missing race-results translation"
+    ],
+    "activationPerformed": false,
+    "replacementJestUploadAfterFailedGate": false
+  },
+  "automaticDeviceRenewal": {
+    "pairedGameplayRefresh": true,
+    "keepsRegistrationRevision": true,
+    "checksCurrentOwnerConsentAndDeletion": true,
+    "managerLeaseAcknowledgementRetry": true,
+    "verification": {
+      "isolatedDemoFirestoreEmulator": true,
+      "testsPassed": 12
+    },
+    "productionUpdatePending": true
+  }
+}

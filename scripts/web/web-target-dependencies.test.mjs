@@ -12,7 +12,7 @@ test('retained-race artifact validates the configured inventory directory and re
   const temporary=await mkdtemp(path.join(tmpdir(),'retained-inventory-test-'));
   t.after(()=>rm(temporary,{recursive:true,force:true}));
   const evidence=path.join(temporary,'evidence');
-  const run=async()=>JSON.parse((await promisify(execFile)(process.execPath,['scripts/build-retained-race-test-artifact.mjs'],{
+  const run=async()=>JSON.parse((await promisify(execFile)(process.execPath,['scripts/web/build-retained-race-test-artifact.mjs'],{
     cwd:fileURLToPath(new URL('../..',import.meta.url)),maxBuffer:32*1024*1024,timeout:120_000,
     env:{...process.env,TMPDIR:temporary,RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR:evidence},
   })).stdout);
@@ -50,7 +50,7 @@ test('transitive SDK packages and tooling fail closed on every artifact', () => 
     '/node_modules/@firebase/messaging-compat/dist/index.esm.js',
     '/node_modules/firebase/messaging/dist/esm/index.esm.js',
     '/node_modules/firebase/compat/messaging/dist/esm/index.esm.js',
-  ]) assert.throws(() => assertTargetDependency(target, module), /(?:Jest SDK|Facebook API), not Firebase Cloud Messaging/u);
+  ]) assert.throws(() => assertTargetDependency(target, module), /Firebase Messaging cannot enter the game artifact/u);
   for (const target of ['jest', 'facebook']) for (const product of ['auth', 'firestore', 'database']) {
     assert.doesNotThrow(() => assertTargetDependency(target, `/node_modules/firebase/${product}/dist/esm/index.esm.js`));
     assert.doesNotThrow(() => assertTargetDependency(target, `/node_modules/@firebase/${product}/dist/index.esm.js`));
@@ -267,6 +267,7 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
   for (const relative of [
     'platforms/web/gamesnacks/scripts/package-gamesnacks.mjs',
     'scripts/web/build/webTargetDependencies.ts',
+    'src/notifications/contracts/notificationPolicy.ts',
     'scripts/web/generate-third-party-licenses.mjs',
     'scripts/release/release-registry.mjs',
     'scripts/release/release-targets.json',

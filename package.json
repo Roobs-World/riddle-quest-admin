@@ -121,7 +121,7 @@
     "release:youtube": "node scripts/release/run-platform-release.mjs youtube",
     "release:zoom": "node scripts/release/run-platform-release.mjs zoom",
     "validate:w3c": "node scripts/web/validate-w3c.mjs",
-    "verify:all-targets": "pnpm build:all-targets",
+    "verify:all-targets": "pnpm check:security && pnpm build:all-targets",
     "verify:functions:node22": "pnpm prepare:functions && node firebase-functions/scripts/runtime/run-with-functions-node.js firebase-functions/scripts/runtime/verify-node-runtime.js",
     "verify:production": "pnpm check:braces-security && pnpm audit --prod --audit-level high && pnpm audit --audit-level high && pnpm check:monetization && pnpm check:functions-lock && pnpm check:facebook-secrets && pnpm check:youtube-progress && pnpm check:types && pnpm --dir firebase-functions lint && pnpm verify:functions:node22 && pnpm check:facebook-copy && pnpm build && pnpm check:w3c && pnpm preflight:jest-upload && pnpm preflight:facebook-upload",
     "youtube:evidence": "pnpm evidence:youtube",

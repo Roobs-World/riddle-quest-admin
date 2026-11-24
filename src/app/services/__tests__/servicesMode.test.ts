@@ -1,4 +1,4 @@
-import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../../testing/testHarness";
+import {hasTrustedTestHarnessMarker, shouldUseFakeHostServices} from "../testHarnessPolicy";
 
 describe("host service trust boundary", () => {
   /** Provides original window behavior. */

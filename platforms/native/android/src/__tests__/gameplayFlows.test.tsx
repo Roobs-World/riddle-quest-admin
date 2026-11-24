@@ -225,7 +225,11 @@ describe("progress and preferences", () => {
     expect(screen.getByLabelText("Wins: 3")).toBeTruthy();
     expect(screen.getByLabelText("Games: 4")).toBeTruthy();
     expect(screen.getByLabelText("Level: 2")).toBeTruthy();
-    expect(screen.getByLabelText("Wins: 10")).toBeTruthy();
+    const achievements = screen.getByRole("button", {name: /^Achievements 2 \/ /});
+    expect(achievements.props.accessibilityState.expanded).toBe(false);
+    await fireEvent.press(achievements);
+    expect(screen.getByText("Wins: 10")).toBeTruthy();
+    expect(screen.getByRole("progressbar", {name: "Wins: 10: 10 / 10"}).props.accessibilityValue.now).toBe(100);
     await fireEvent(screen.getByTestId("preference-reduced-motion"), "valueChange", true);
     await waitFor(() => expect(readSave(port.saved()).preferences.reducedMotion).toBe(true));
     expect(screen.queryByTestId("preference-high-contrast")).toBeNull();
@@ -233,12 +237,17 @@ describe("progress and preferences", () => {
     await expectScreen("screen-menu");
   });
 
-  it("lists no achievements for a fresh player", async () => {
+  it("shows locked achievement goals without granting them to a fresh player", async () => {
     await renderApp(createPort());
     await expectScreen("screen-menu");
     await press("show-progress");
     await expectScreen("screen-progress");
-    expect(screen.getByText("No achievements yet")).toBeTruthy();
+    const achievements = screen.getByRole("button", {name: /^Achievements 0 \/ /});
+    expect(achievements.props.accessibilityState.expanded).toBe(false);
+    expect(screen.queryByRole("progressbar", {name: "First Win: 0 / 1"})).toBeNull();
+    await fireEvent.press(achievements);
+    expect(screen.getByRole("progressbar", {name: "First Win: 0 / 1"}).props.accessibilityValue.now).toBe(0);
+    expect(screen.queryByText(/✓ Unlocked/u)).toBeNull();
   });
 
   it("dismisses first-run guidance durably", async () => {

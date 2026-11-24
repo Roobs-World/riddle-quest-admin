@@ -19,7 +19,7 @@ import {
 test("Facebook draft preparation runs the source secret audit before inspecting artifact bytes", async () => {
   const source = await readFile(new URL("./prepare-facebook-draft.mjs", import.meta.url), "utf8");
   const secretAudit = source.indexOf('"platforms/web/facebook/scripts/audit-facebook-secret-boundary.mjs"');
-  const artifactAudit = source.indexOf('"scripts/audit-facebook-artifact.mjs"');
+  const artifactAudit = source.indexOf('"platforms/web/facebook/scripts/audit-facebook-artifact.mjs"');
   assert.ok(secretAudit >= 0, "draft preparation must invoke the source secret audit");
   assert.ok(artifactAudit > secretAudit, "source secret audit must precede artifact inspection");
 });

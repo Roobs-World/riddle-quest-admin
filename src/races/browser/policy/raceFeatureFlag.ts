@@ -1,4 +1,4 @@
-import {hasTrustedTestHarnessMarker} from "../../../app/testing/testHarness";
+import {hasTrustedTestHarnessMarker} from "../../../app/services/testHarnessPolicy";
 
 /** Query-string harness identifier for the standard multiplayer flow. */
 export const RACE_HARNESS_NAME = "race";

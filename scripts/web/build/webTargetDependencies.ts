@@ -49,7 +49,7 @@ export function assertTargetDependency(target: string, id: string): void {
   ) {
     throw new Error(`${target} artifact contains undeclared runtime package ${name}: ${id}`);
   }
-  if (/\/(?:__tests__|test)\/|\.(?:test|spec)\.[cm]?[jt]sx?(?:\?|$)/u.test(portable)) {
+  if (/\/(?:__tests__|test)\/|\/testing\/mocks\/|\.(?:test|spec)\.[cm]?[jt]sx?(?:\?|$)/u.test(portable)) {
     throw new Error(`${target} artifact contains test code: ${id}`);
   }
 }

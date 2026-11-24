@@ -706,7 +706,7 @@ describe("LocalSoloAuthority", () => {
 
   it("blocks startup when a prerelease migration cannot be serialized within budget", async () => {
     /** Provides migrated behavior. */
-    const migrated = createNearBudgetSave(151);
+    const migrated = createNearBudgetSave(152);
     /** Provides {preferences:  preferences, ...legacy} behavior. */
     const {preferences: _preferences, ...legacy} = migrated;
     /** Provides raw behavior. */
@@ -717,6 +717,8 @@ describe("LocalSoloAuthority", () => {
     if (parsed.kind !== "valid") {
       throw new Error(`near-budget-migration-invalid:${parsed.kind === "invalid" ? parsed.reason : parsed.kind}`);
     }
+    expect(JSON.stringify({...parsed.save, revision: parsed.save.revision + 1}).length * 2)
+      .toBeGreaterThanOrEqual(YOUTUBE_SAVE_BUDGET_BYTES);
     /** Saves data. */
     const saveData = jest.fn(async (_data: string) => undefined);
     await expect(
