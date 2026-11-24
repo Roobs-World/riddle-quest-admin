@@ -56,5 +56,62 @@
     "replacementSubtitle": "Browser push registrations",
     "accountCountRemovedFromPanel": true
   },
+  "managementRelease": {
+    "origin": "https://riddle-quest-admin.vercel.app",
+    "deploymentId": "dpl_3JeNGBgnqiQZycGzLcbpWLCzQYLA",
+    "immutableUrl": "https://riddle-quest-admin-b85rqkgk3.vercel.app",
+    "sourceCommit": "43d772ef75b14862bd764562524a8ee882832c4a",
+    "status": "READY",
+    "build": "vercel build --prod",
+    "deployment": "vercel deploy --prebuilt --prod",
+    "verifiedAt": "2026-11-24T11:18:43Z",
+    "checks": {
+      "pageAndJavaScriptHttp200": true,
+      "liveJavaScriptMatchesBuildBytes": true,
+      "globalSummaryLabelsPresent": true,
+      "browserPushRegistrationsSubtitlePresent": true,
+      "firebaseAccountsLabelAbsent": true,
+      "unsignedManagementRoutesHttp401": true,
+      "enrollmentAssetsHttp200": true,
+      "workerManifestAndIconMatchBuildBytes": true,
+      "deploymentErrorLogEntries": 0
+    },
+    "schedulerAfterRelease": {
+      "observedAt": "2026-11-24T11:19:00.030745Z",
+      "httpStatus": 200,
+      "response": {"scanned": 0, "campaigns": 0}
+    },
+    "rollbackDeploymentId": "dpl_HbWQc1xRLbLzDx8ZrEKfodbK9fHp"
+  },
+  "clientVerification": {
+    "deliveryHost": "https://riddle-quest-admin.vercel.app/push/",
+    "jestAndFacebookUseSharedFirebaseEnrollment": true,
+    "facebookArtifactAgeCategory": "13_plus",
+    "facebookArtifactIncludesEnrollmentAndManagerOrigin": true,
+    "browserPermissionAndEnrollmentStillRequired": true,
+    "deviceDisplayVerified": false,
+    "testsAndBrowserHarnessesRun": false
+  },
+  "firebaseRelease": {
+    "project": "riddle-quest-ec2b2",
+    "deployedFunction": "dispatchFirebaseNotification(europe-west1)",
+    "revision": "dispatchfirebasenotification-00002-ces",
+    "updatedAt": "2026-11-24T11:24:00.843688407Z",
+    "status": "ACTIVE",
+    "managerOrigin": "https://riddle-quest-admin.vercel.app",
+    "gameLaunchUrls": {
+      "jest": "https://jest.com/g/riddle-q",
+      "facebook": "https://www.facebook.com/gaming/play/1748953042991569/"
+    },
+    "functionsBuildAndDeploymentAuditsPassed": true,
+    "renewalAlreadyDeployed": {
+      "getNotificationEnrollmentStatus": "00002-vuh",
+      "notificationBrowserBridge": "00002-quq",
+      "downloadedModulesMatchCurrentBuild": true
+    },
+    "livePublicPushConfigurationHttpStatus": 200,
+    "unsignedBridgeAndEnrollmentHttpStatus": 401,
+    "newDevicesEnrolled": 0
+  },
   "verificationLimit": "Zero registered devices means no device display was verified. Future scheduled delivery is queued, not yet completed."
 }

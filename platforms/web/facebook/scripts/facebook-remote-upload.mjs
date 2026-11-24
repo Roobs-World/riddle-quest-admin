@@ -17,20 +17,20 @@ export class FacebookUploadError extends Error {
   }
 }
 
-/** Selects the upload namespace and binds Gaming app tokens to this game's app ID. */
+/** Selects the upload namespace and rejects app credentials before opening a handoff. */
 export function validateFacebookAssetUploadToken(token) {
   if (typeof token !== "string" || token.length < 16 || token.length > 16_384) {
-    throw new FacebookUploadError("A complete Facebook asset-upload token is required.", "validation");
+    throw new FacebookUploadError("A complete Facebook User or System User upload token is required.", "validation");
   }
   const gamingAppToken = /^GG\|([0-9]{5,32})\|[A-Za-z0-9._~+/-]+=*$/u.exec(token);
   if (gamingAppToken) {
     if (gamingAppToken[1] !== FACEBOOK_APP_ID) {
       throw new FacebookUploadError("The Facebook Gaming app token belongs to a different app.", "validation");
     }
-    return "gg_graph_api";
+    throw new FacebookUploadError("Facebook archive uploads require a User or System User access token. The supplied Gaming App Access Token cannot upload archives.", "validation");
   }
   if (!/^(?:GG|EAA)[A-Za-z0-9._~+/-]+=*$/u.test(token)) {
-    throw new FacebookUploadError("A complete Gaming token or Facebook user/System User token is required.", "validation");
+    throw new FacebookUploadError("A complete Gaming User token or Facebook User/System User token is required.", "validation");
   }
   return token.startsWith("GG") ? "gg_graph_api" : "fb_game_bundle";
 }

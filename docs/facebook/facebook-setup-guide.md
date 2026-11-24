@@ -48,12 +48,12 @@ The developer prepares this handoff from clean, reviewed `main` using `pnpm rele
 
 ### Enable remote uploading
 
-1. On the same Web Hosting page, click **Get app access token for uploads**.
-2. Obtain the token using your app admin or developer account.
-3. Keep the complete credential in a private local prompt, secret store, or the ignored root `.env` as `FACEBOOK_APP_ACCESS_TOKEN`. Include the full `GG|app-id|token` value when that is what Meta provides. Do not paste it into this chat, a committed source file or a command argument.
+1. On the same Web Hosting page, click **Get app access token for uploads** to open the token panel.
+2. Obtain the **User Access Token** shown above the App Access Token using your app admin or developer account. If it is missing, use the panel's Graph API Explorer link. A System User access token authorized for this app is also supported.
+3. Keep the complete User or System User credential in a private local prompt, secret store, or the ignored root `.env` as `FACEBOOK_APP_ACCESS_TOKEN`. The setting retains its existing name, but the `GG|app-id|app-access-token` value is an App Access Token and cannot upload the archive. Do not paste any token into this chat, a committed source file or a command argument.
 4. Use the repository's `facebook:draft upload` command after the candidate is prepared and you have explicitly requested the upload. The [operations guide](facebook-instant-games-operations.md#remote-draft-upload-authorization) gives the exact command and private token prompt.
 
-This is a separate credential from the read-only Meta connector. Meta's [upload guide](https://developers.facebook.com/documentation/games/launch/upload-bundle) documents the two-step API and the token button. The repository command verifies the candidate's exact fingerprint, uploads once, and retains a private submission receipt. It still requires a real token and a live upload to establish that it works with this app.
+This is a separate credential from the read-only Meta connector. Meta's [upload guide](https://developers.facebook.com/documentation/games/launch/upload-bundle) documents the two-step API and its User or System User token requirement. On November 24, the App Access Token created an upload session, but Meta rejected the archive transfer with HTTP 403. The repository command now rejects that app-token format before opening an upload handoff. It verifies the candidate's exact fingerprint, uploads once, and retains a private submission receipt. Meta must still accept the selected User or System User credential for the upload.
 
 Use one upload route per candidate. If a request times out or its outcome is unclear, inspect the version list before another transmission. The release command deliberately blocks retries until the existing attempt is reconciled.
 
