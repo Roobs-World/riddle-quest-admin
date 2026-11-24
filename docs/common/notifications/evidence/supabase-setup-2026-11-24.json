@@ -126,5 +126,30 @@
     "signedInWorkspaceAccessVerified": false,
     "deploymentId": "dpl_Ds7AfRFunREatECHMRgZ2QvMMcWR",
     "deploymentUrl": "https://riddle-quest-admin-cgrmxhv4q.vercel.app"
+  },
+  "protectedAliasInvestigation": {
+    "canonicalOrigin": "https://riddle-quest-admin.vercel.app",
+    "teamAlias": "https://riddle-quest-admin-craig-beswethericks-projects-d44935d2.vercel.app",
+    "aliasesShareDeployment": true,
+    "canonicalHomepageStatus": 200,
+    "canonicalUnsignedManagementApiStatus": 401,
+    "canonicalApiJsonError": "operator-authentication-required",
+    "teamAliasUnauthenticatedStatus": 302,
+    "teamAliasRedirectHost": "vercel.com",
+    "apiSameOriginCookiesEnabled": true,
+    "deploymentErrorsDistinguishedFromSessionErrors": true,
+    "zodEvalProbeDisabled": true,
+    "unsafeEvalAllowed": false,
+    "browserTestsRun": false,
+    "signedInWorkspaceAccessVerified": false,
+    "deploymentId": "dpl_AgLVPtaViSu8EJDczNvyZfq7oax4",
+    "deploymentUrl": "https://riddle-quest-admin-2nmv3yko8.vercel.app"
+  },
+  "googleOAuthProject": {
+    "configuredProjectId": "riddle-quest-ec2b2",
+    "configuredProjectNumber": "329028367192",
+    "restrictedProjectFromUserEmail": "qwordly-6ba44",
+    "restrictedProjectNumber": "26666910831",
+    "oauthClientUsesRestrictedProject": false
   }
 }

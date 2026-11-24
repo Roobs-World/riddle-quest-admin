@@ -130,3 +130,11 @@ Postgres persists scheduled work. The service does not rely on a browser tab or 
 Each campaign has a durable lease and one receipt per installation. The dispatcher checks current consent, subscription revision and cancellation immediately before contacting the push vendor. Uncertain sends are recorded without blind retries. Raw subscriptions expire after 30 days without renewal; minimal opt-out revision records persist. Push payloads expire after six hours. Cleanup removes expired subscription material, quotas and terminal delivery records.
 
 The database, environment values and scheduler must be configured before live delivery works. Source builds validate types and packaging. Live sign-in, RLS, uploads and after-close push delivery still need acceptance against an authorized configured deployment.
+
+### Protected Vercel addresses
+
+Use https://riddle-quest-admin.vercel.app for routine management. The longer team alias can require Vercel deployment sign-in before requests reach the application. Management requests include same-origin cookies so that Vercel can validate that session alongside the Supabase bearer token. Non-JSON deployment authentication failures are reported separately from expired Supabase sessions. Application identity and operator membership checks still apply to every management request.
+
+The browser initializes Zod with `jitless: true` before loading application schemas. This prevents its dynamic-code capability probe from producing a CSP warning; `script-src` remains restricted to `self`. The `__cf_bm` cookie belongs to Cloudflare bot management, not the application session.
+
+The public Google OAuth authorization URL identifies Google Cloud project number `329028367192`, which the connected project inventory maps to `riddle-quest-ec2b2`. It does not use project `qwordly-6ba44`, number `26666910831`, named in the restriction email. No Cloud project resources or credentials were changed during this check.

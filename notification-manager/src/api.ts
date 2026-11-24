@@ -18,12 +18,16 @@ const errorMessages: Record<string, string> = {
 class WorkspaceAccessError extends Error {}
 
 async function readResponse(response: Response): Promise<unknown> {
+  const jsonResponse = response.headers.get("Content-Type")?.toLowerCase().startsWith("application/json");
+  if (!jsonResponse) {
+    void response.body?.cancel().catch(() => undefined);
+    throw new Error(response.status === 401 || response.status === 403
+      ? "Vercel blocked access to this deployment. Open the production website or renew your Vercel deployment sign-in."
+      : "The management API is unavailable. Check the service deployment and try again.");
+  }
   if (response.status === 401 || response.status === 403) {
     void response.body?.cancel().catch(() => undefined);
     throw new WorkspaceAccessError(response.status === 401 ? "Your sign-in has expired. Sign in again." : "Your account does not have permission to manage notifications.");
-  }
-  if (!response.headers.get("Content-Type")?.toLowerCase().startsWith("application/json")) {
-    throw new Error("The management API is unavailable. Check the service deployment and try again.");
   }
   const reader = response.body?.getReader();
   if (!reader) throw new Error("The notification service returned an empty response.");
@@ -77,7 +81,7 @@ export function createManagementApi(connection: ManagementConnection, expectedUi
       const headers = await connection.requestHeaders(expectedUid);
       if (!connection.isCurrentUser(expectedUid) || signal.aborted) throw new Error("The signed-in account changed. Please try again.");
       const response = await fetch(url, {
-        method, signal: controller.signal, credentials: "omit", redirect: "error", cache: "no-store",
+        method, signal: controller.signal, credentials: "same-origin", redirect: "error", cache: "no-store",
         headers: {...headers, Accept: "application/json", ...(input ? {"Content-Type": "application/json"} : {})},
         ...(input ? {body: JSON.stringify(input)} : {}),
       });
