@@ -216,6 +216,8 @@ The [remote upload evidence](evidence/facebook-remote-upload-2026-11-24.json) re
 
 The later [explicit live-build attempt](evidence/facebook-live-build-attempt-2026-11-24.json) used clean source `373502637` after restoring the token format and adding safe error diagnostics. Meta again accepted the session with HTTP 200 and rejected the archive with HTTP 403. Full inventories before, after and on confirmation still contained only versions 1–6. The attempt was reconciled absent without a retry. No new bundle, production assignment, game publication or review submission resulted. The subsequent [controlled diagnosis](evidence/facebook-upload-diagnosis-2026-11-24.json) exposed the nested role error: Meta requires the uploading user to be an admin or developer. Node, curl and the curl-compatible Content-Type produce the identical response. Save a User or System User credential carrying that role, following the [upload credential walkthrough](facebook-approval-walkthrough.md#restore-programmatic-uploads).
 
+The owner saved a Gaming User token that evening. [Version 7 acceptance evidence](evidence/facebook-user-token-upload-2026-11-24.json) records the successful upload of clean source `fb70fd4f8`, archive SHA-256 `933a472ab0fff3857f02e05e0485266426e524b5e557406d2e7ae83130ac6ba7`, new bundle `28869213636089676`, full before/after inventories, and Meta's `success: true` production response after processing time. The exact-archive handoff is accepted. The production API result is recorded separately from a downloaded-production hash, which was not obtained. The app remains in Development mode; public availability and an authenticated dashboard production check are not claimed.
+
 With the token saved in the root `.env`:
 
 ```sh

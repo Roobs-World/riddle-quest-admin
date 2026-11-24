@@ -1,0 +1,144 @@
+{
+  "date": "2026-11-24",
+  "appId": "1748953042991569",
+  "sourceCommit": "fb70fd4f8a9a4b564dd4796f07a17ef6f14914ea",
+  "authorization": "User requested upload until Meta accepts a new bundle, then asked to try pushing a build live; user subsequently saved a User token.",
+  "build": {
+    "archiveSha256": "933a472ab0fff3857f02e05e0485266426e524b5e557406d2e7ae83130ac6ba7",
+    "archiveBytes": 2897859,
+    "archiveEntries": 417,
+    "sourceClean": true,
+    "artifactAuditPassed": true,
+    "testsRun": false
+  },
+  "upload": {
+    "submittedAt": "2026-11-24T22:55:26.909Z",
+    "stages": [
+      {
+        "stage": "session",
+        "httpStatus": 200,
+        "responseMediaType": "application/json",
+        "responseBytes": 288,
+        "responseSha256": "6ee9ecbe0670ab8e7260548e0182e474fc43785635f8a6dbdd779e8696726013",
+        "responseBodyFormat": "json-object"
+      },
+      {
+        "stage": "archive",
+        "httpStatus": 200,
+        "responseMediaType": "application/json",
+        "responseBytes": 1053,
+        "responseSha256": "33ace8d9d76d3b12673ce93a029f9f00ec02482ba86d7e3110fe7d43b19a77af",
+        "responseBodyFormat": "json-object"
+      }
+    ],
+    "binaryAttempts": 1,
+    "newVersion": 7,
+    "bundleInstanceId": "28869213636089676",
+    "credentialSource": "ignored root .env",
+    "credentialKind": "opaque Gaming user token",
+    "namespace": "gg_graph_api"
+  },
+  "inventory": {
+    "before": {
+      "checkedAt": "2026-11-24T22:55:09.108Z",
+      "complete": true,
+      "versions": [
+        {
+          "bundleInstanceId": "26805848032447156",
+          "version": 6
+        },
+        {
+          "bundleInstanceId": "27778256935185834",
+          "version": 5
+        },
+        {
+          "bundleInstanceId": "28232737223063645",
+          "version": 4
+        },
+        {
+          "bundleInstanceId": "28625402820405523",
+          "version": 3
+        },
+        {
+          "bundleInstanceId": "28534304219568921",
+          "version": 2
+        },
+        {
+          "bundleInstanceId": "29649806651275216",
+          "version": 1
+        }
+      ]
+    },
+    "after": {
+      "checkedAt": "2026-11-24T22:55:41.044Z",
+      "complete": true,
+      "versions": [
+        {
+          "bundleInstanceId": "28869213636089676",
+          "version": 7
+        },
+        {
+          "bundleInstanceId": "26805848032447156",
+          "version": 6
+        },
+        {
+          "bundleInstanceId": "27778256935185834",
+          "version": 5
+        },
+        {
+          "bundleInstanceId": "28232737223063645",
+          "version": 4
+        },
+        {
+          "bundleInstanceId": "28625402820405523",
+          "version": 3
+        },
+        {
+          "bundleInstanceId": "28534304219568921",
+          "version": 2
+        },
+        {
+          "bundleInstanceId": "29649806651275216",
+          "version": 1
+        }
+      ]
+    }
+  },
+  "production": {
+    "provider": "facebook",
+    "appId": "1748953042991569",
+    "archiveSha256": "933a472ab0fff3857f02e05e0485266426e524b5e557406d2e7ae83130ac6ba7",
+    "bundleInstanceId": "28869213636089676",
+    "version": 7,
+    "attemptedAt": "2026-11-24T22:58:55.543Z",
+    "recordedAt": "2026-11-24T22:58:56.119Z",
+    "httpStatus": 200,
+    "responseSha256": "c955e57777ec0d73639dca6748560d00aa5eb8e12f13ebb2ed9656add3908f97",
+    "responseBytes": 16,
+    "providerReportedSuccess": true,
+    "providerReportedFailure": false,
+    "reason": "unclassified"
+  },
+  "acceptance": {
+    "barrierStatus": "accepted",
+    "processingConfirmed": true,
+    "confirmationMethod": "Meta production API reported success for the exact new bundle; the documented operation requires completed processing"
+  },
+  "app": {
+    "mode": "development",
+    "isLive": false,
+    "checkedVia": "Meta devtools_app basic_settings"
+  },
+  "browser": {
+    "dashboardAuthenticated": false,
+    "firefoxReachedLogin": true,
+    "cuaConnectedBrowsers": 0
+  },
+  "secretsExposed": false,
+  "rawResponsesRetained": false,
+  "reviewSubmitted": false,
+  "references": [
+    "https://developers.facebook.com/documentation/games/launch/upload-bundle",
+    "https://developers.facebook.com/documentation/games/launch/game-launch"
+  ]
+}

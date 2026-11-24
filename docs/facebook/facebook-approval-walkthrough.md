@@ -4,7 +4,9 @@ App: Riddle Quest (`1748953042991569`). Owner-approved boundary: prepare and ver
 
 ## Restore programmatic uploads
 
-On 24 November 2026, both Node and curl binary uploads received HTTP 403. Meta's nested error says the user must be an admin or developer of the app. The MCP confirms the signed-in owner is an admin, but the saved `GG|app-id|…` credential is an App Access Token and carries no user role. Meta accepts it for session creation; that does not authorize the binary transfer. See the [diagnosis evidence](evidence/facebook-upload-diagnosis-2026-11-24.json).
+Resolved on 24 November 2026: replacing the App Access Token with the owner's Gaming User token allowed version 7, bundle `28869213636089676`, to upload. Meta's production API subsequently returned `success: true` for that bundle. The app remains in Development mode, and no authenticated dashboard confirmation or production ZIP download was available. See the [accepted upload evidence](evidence/facebook-user-token-upload-2026-11-24.json).
+
+The earlier Node and curl binary uploads received HTTP 403. Meta's nested error required an admin or developer user. The MCP confirmed the signed-in owner was an admin, but the saved `GG|app-id|…` credential was an App Access Token and carried no user role. Meta accepted it for session creation; that did not authorize the binary transfer. See the [diagnosis evidence](evidence/facebook-upload-diagnosis-2026-11-24.json). Use these steps when renewing the working credential:
 
 1. Open [Access Token Tool](https://developers.facebook.com/tools/accesstoken/) while signed in as an admin or developer of Riddle Quest.
 2. Locate the **User Token** above the **App Access Token**. If the User Token is absent, follow the request link to [Graph API Explorer](https://developers.facebook.com/tools/explorer/), select **Riddle Quest**, and obtain a **User Access Token** through the account's consent flow.
