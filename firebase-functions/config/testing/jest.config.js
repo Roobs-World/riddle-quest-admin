@@ -1,4 +1,6 @@
 /* eslint-env node */
+const repositoryRoot = require("node:path").resolve(__dirname, "../../..").replaceAll("\\", "/");
+const sharedSourcePattern = `${repositoryRoot.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(?:src|platforms/web/[^/]+/src)/.+\\.ts$`;
 module.exports = {
   rootDir: "../..",
   roots: ["<rootDir>/src", "<rootDir>/../platforms/native/android/server", "<rootDir>/../platforms/web/jest/server", "<rootDir>/../platforms/web/facebook/server", "<rootDir>/../platforms/web/reddit/server", "<rootDir>/../platforms/web/yahoo/server"],
@@ -9,7 +11,7 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
     // Shared contract checks use the root feature source.
-    "/src/.+\\.ts$": "<rootDir>/config/testing/shared-source-transform.cjs",
+    [sharedSourcePattern]: "<rootDir>/config/testing/shared-source-transform.cjs",
     "^.+\\.ts$": [
       "ts-jest",
       {
@@ -51,6 +53,7 @@ module.exports = {
   moduleNameMapper: {
     "^jose$": "<rootDir>/__mocks__/jose.js",
     "^jwks-rsa$": "<rootDir>/__mocks__/jwks-rsa.js",
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   transformIgnorePatterns: ["/node_modules/(?!(?:@firebase|firebase)/)"],
   setupFiles: ["<rootDir>/config/testing/emulator-environment.cjs"],

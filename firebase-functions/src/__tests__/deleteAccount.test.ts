@@ -8,6 +8,7 @@ const mockRecursiveDelete = jest.fn();
 const mockReferralVerificationDelete = jest.fn();
 /** Direct deletion mock for legacy document-ID-owned records. */
 const mockDirectDocumentDelete = jest.fn();
+const mockNotificationPairingLimitDelete = jest.fn();
 /** Native raw subscription receipts must disappear with their owning account. */
 const mockAndroidCommerceDelete = jest.fn();
 /** Direct deletion mock for the provider-neutral Reddit player snapshot. */
@@ -164,6 +165,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
   admin: {
     firestore: Object.assign(
       () => ({
+        doc: (path: string) => ({path, delete: () => mockNotificationPairingLimitDelete(path)}),
         collection: (collection: string) => ({
           orderBy: () => mockCreateQuery(collection, "__name__", "*"),
           doc: (id = "user-1") =>
@@ -536,6 +538,7 @@ describe("deleteAccount", () => {
       },
     );
     expect(mockRecursiveDelete).toHaveBeenCalledWith({path: "users/user-1"});
+    expect(mockNotificationPairingLimitDelete).toHaveBeenCalledWith("notificationPairingLimits/user-1");
     expect(mockTransactionDelete).toHaveBeenCalledWith({path: "users/user-1"});
     expect(mockTransactionDelete).toHaveBeenCalledWith({path: "leaderboard/user-1"});
     expect(mockTransactionDelete).toHaveBeenCalledWith({

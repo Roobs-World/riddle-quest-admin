@@ -12,7 +12,7 @@ begin
   select decrypted_secret into strict service_url from vault.decrypted_secrets where name = 'notification_service_url';
   select decrypted_secret into strict cron_secret from vault.decrypted_secrets where name = 'notification_cron_secret';
   if service_url !~ '^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?/?$'
-      or cron_secret !~ '^[A-Za-z0-9_-]{32,256}$' then
+      or length(cron_secret) not between 32 and 256 or cron_secret !~ '^[A-Za-z0-9_-]+$' then
     raise exception 'Notification scheduler Vault configuration is invalid';
   end if;
 
@@ -25,7 +25,7 @@ begin
       select decrypted_secret into strict service_url from vault.decrypted_secrets where name = 'notification_service_url';
       select decrypted_secret into strict cron_secret from vault.decrypted_secrets where name = 'notification_cron_secret';
       if service_url !~ '^https://[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?/?$'
-          or cron_secret !~ '^[A-Za-z0-9_-]{32,256}$' then
+          or length(cron_secret) not between 32 and 256 or cron_secret !~ '^[A-Za-z0-9_-]+$' then
         raise exception 'Notification scheduler Vault configuration is invalid';
       end if;
       perform net.http_post(url := rtrim(service_url, '/') || '/api/cron/notifications',

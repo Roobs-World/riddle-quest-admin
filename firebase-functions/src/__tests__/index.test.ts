@@ -1,5 +1,7 @@
 import {describe, test, expect, jest, afterAll} from "@jest/globals";
 
+jest.mock("web-push", () => ({__esModule: true, default: {sendNotification: jest.fn()}}));
+
 // Define types for Firebase Functions v2 mocking
 /** Describes callable options. */
 type CallableOptions = {
