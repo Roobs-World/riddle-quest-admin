@@ -1,4 +1,4 @@
-import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RaceOutcomeSchema, type RaceOutcome} from "../../../../src/races/contracts/index.js";
+import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RACE_RULES, RaceOutcomeSchema, type RaceOutcome} from "../../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
 import {raceRewardAwardsAgree} from "./raceAchievements";
@@ -8,6 +8,7 @@ import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "../privacy/raceOp
 import {persistRaceAchievementEvent, readRaceCoinBalance, stripUndefined, type Firestore} from "../raceSetupService";
 import {readRaceMatchOffer, recordRaceMatchTerminal} from "../matchmaking/raceMatchOffer";
 import {assertRaceStoredRecord} from "../runs/raceStoredRecords";
+import {recordRaceBotWin} from "./raceBotLeaderboard";
 
 /** Maps a canonical challenger outcome into the recording creator's result. */
 export function creatorRaceResult(result: RaceOutcome["result"]): "win" | "loss" | "tie" {
@@ -79,6 +80,10 @@ export async function settleRaceRun(
     recordRaceMatchTerminal(transaction, offer, settled, nowMs);
     return settled;
   }
+  if (run.opponent?.kind === "bot" && nowMs >= run.startedAtMs &&
+    (outcome.result === "ghost_win" || outcome.result === "timed_out" &&
+      run.opponent.adjustedFinishMs <= (run.rulesSnapshot ?? RACE_RULES).maxAdjustedTimeMs))
+    recordRaceBotWin(transaction, db, run.opponent.displayName, nowMs);
   /** Provides award behavior. */
   const award = run.achievementProgressRecordedAtMs === undefined
     ? persistRaceAchievementEvent(transaction, ownerRef, owner.data() ?? {}, {

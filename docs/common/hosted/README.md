@@ -2,6 +2,7 @@
 
 - [Evidence](evidence/)
 - [Multiplayer architecture implementation](multiplayer-architecture-implementation.md)
+- [Multiplayer AI opponent names and leaderboard wins](multiplayer-ai-opponents.md)
 - [Reconcile existing presence permissions before hosted review testing](presence-visibility-reconciliation.md)
 - [Recorded-race architecture rollout](race-architecture-rollout.md)
 - [Matchmaking calibration](race-match-calibration.md)

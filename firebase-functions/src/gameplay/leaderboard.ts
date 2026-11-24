@@ -5,7 +5,7 @@
  * userId). Documents are written server-side only after a win in submitGuess.
  * Clients call `getLeaderboard` to retrieve the top players for a given stat.
  *
- * Multiplayer rankings query canonical account totals through their dedicated index.
+ * Multiplayer rankings combine canonical account totals with server-owned AI win totals.
  *
  * Leaderboard types:
  *  - "xp"          — highest cumulative XP across all modes
@@ -29,6 +29,7 @@ import {
   LeaderboardType,
 } from "../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
+import {listRaceBotLeaderboardEntries} from "../race/settlement/raceBotLeaderboard";
 
 /** Defines the level weight value. */
 const LEVEL_WEIGHT = 1_000_000_000;
@@ -343,14 +344,16 @@ export const getLeaderboard = onCallWithSentry("getLeaderboard", browserCallable
   }
 
   try {
-    // Query canonical accounts directly so historical wins need no projection backfill.
-    // This bounded single-field index is explicitly enabled beneath the unindexed stats map.
     if (type === "multiplayerWins") {
-      /** Accounts ranked directly by their committed multiplayer victories. */
-      const snapshot = await admin.firestore().collection("users")
-        .where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc").select(...LEADERBOARD_ACCOUNT_FIELDS).limit(limit).get();
-      /** Public rows derived from canonical account documents. */
-      const entries = snapshot.docs.map(doc => toLeaderboardEntryFromUserDoc(doc.id, doc.data() as UserDocForLeaderboard));
+      /** Each bounded source contributes enough rows to determine the combined top scores. */
+      const db = admin.firestore();
+      const [snapshot, opponents] = await Promise.all([
+        db.collection("users").where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc")
+          .select(...LEADERBOARD_ACCOUNT_FIELDS).limit(limit).get(),
+        listRaceBotLeaderboardEntries(db, limit),
+      ]);
+      const entries = [...snapshot.docs.map(doc => toLeaderboardEntryFromUserDoc(doc.id, doc.data() as UserDocForLeaderboard)), ...opponents]
+        .sort((a, b) => (b.multiplayerWins ?? 0) - (a.multiplayerWins ?? 0) || a.userId.localeCompare(b.userId)).slice(0, limit);
       return validateCallableResponse(GetLeaderboardResponseSchema, {entries, requestingUserId}, "getLeaderboard");
     }
     /** Provides base ref behavior. */

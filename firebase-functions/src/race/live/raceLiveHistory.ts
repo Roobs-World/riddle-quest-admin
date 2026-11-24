@@ -66,7 +66,10 @@ export async function listLiveRaceHistoryForUser(userId: string, request: ListLi
       const bot = match.tickets[rivalSeat] === null && match.players[rivalSeat]?.bot === true;
       /** Default projection retains no copied human name, image or level. */
       let opponent = {displayName: "Riddle Quest player", avatarUrl: null as string | null, bot, correctCount: 0, level: 1};
-      if (bot) opponent.correctCount = match.runs[rivalSeat]?.correctCount;
+      if (bot) {
+        opponent.displayName = match.players[rivalSeat].displayName;
+        opponent.correctCount = match.runs[rivalSeat]?.correctCount;
+      }
       else {
         /** Existing safety authority rejects corrupt, foreign, cancelled, deleted and expired human bindings. */
         let rivalId: string | undefined;

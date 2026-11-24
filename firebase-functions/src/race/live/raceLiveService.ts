@@ -26,6 +26,8 @@ import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebook
 import {assertLiveRaceDeckCompatible} from "../runs/raceDeckCompatibility";
 import {isLiveRaceRetained, prepareLiveRaceQueue} from "./raceLiveQueue";
 import {readLiveJoinIntent, claimLiveJoinIntent} from "../invitations/raceLiveJoinIntent";
+import {generateRaceBotName} from "../matchmaking/raceBotName";
+import {recordRaceBotWin} from "../settlement/raceBotLeaderboard";
 
 /** Server persistence and time seams support transaction concurrency tests. */
 type Options = {
@@ -386,7 +388,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     assertLiveRaceDeckCompatible(ticket.run);
     ticket.matchId = input.ticketId;
     match = createLiveMatch({tickets: [input.ticketId, null], participantIds: [userId], nowMs, readySeats: [!ticket.requiresReady, true],
-      players: [ticket.player, {displayName: `Guest_${input.ticketId.slice(0, 6).toUpperCase()}`, avatarUrl: null, bot: true, correctCount: 0}],
+      players: [ticket.player, {displayName: generateRaceBotName(input.ticketId), avatarUrl: null, bot: true, correctCount: 0}],
       runs: [liveRun(ticket.run, userId, input.ticketId), liveRun(ticket.run, "bot", `${input.ticketId}-bot`)]});
     matchChanged = true;
   }
@@ -500,6 +502,10 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
       transaction.get(db.doc(`liveRaceTickets/${winnerTicket}`)).then(source => source.data() as LiveTicket | undefined) : undefined;
     /** Every read completes before balances, statistics, receipts or delivery outboxes can change. */
     const [participants, winnerSource] = await Promise.all([participantsRead, winnerSourceRead]);
+    if (match.winner === 1 && match.tickets[1] === null && match.players[1].bot &&
+      match.startsAtMs !== null && nowMs >= match.startsAtMs && participants[0]) {
+      recordRaceBotWin(transaction, db, match.players[1].displayName, nowMs);
+    }
     /** Both seats share the one-time terminal receipt, including losses and draws. */
     const profileUpdates = new Map<FirebaseFirestore.DocumentSnapshot, Record<string, unknown>>();
     if (match.startsAtMs !== null && nowMs >= match.startsAtMs) for (const [seat, profile] of participants.entries()) {

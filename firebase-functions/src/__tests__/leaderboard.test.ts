@@ -104,6 +104,16 @@ const mockUsersQuery = {
   get: mockUsersGet,
 };
 
+/** Dedicated bot rankings remain empty unless a case supplies confirmed wins. */
+const mockRaceBotGet = jest.fn();
+/** The real bot projection parses these query results before the callable merges them. */
+const mockRaceBotQuery = {
+  where: jest.fn(),
+  orderBy: jest.fn(),
+  limit: jest.fn(),
+  get: mockRaceBotGet,
+};
+
 mockOrderBy.mockReturnValue(mockLeaderboardQuery);
 mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
 mockUsersLimit.mockReturnValue(mockUsersQuery);
@@ -126,6 +136,7 @@ const mockCollection = jest.fn((collectionName: string) => {
       doc: mockUsersDoc,
     };
   }
+  if (collectionName === "raceBotLeaderboard") return mockRaceBotQuery;
   return {};
 });
 
@@ -166,6 +177,7 @@ jest.mock("firebase-functions/v2/https", () => ({
 
 // â”€â”€ Import under test (after mocks) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+import {createHash} from "node:crypto";
 import {updateLeaderboardEntry, getLeaderboard, LeaderboardEntry} from "../gameplay/leaderboard";
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -300,6 +312,7 @@ describe("getLeaderboard callable", () => {
     jest.clearAllMocks();
     mockLeaderboardGet.mockReset();
     mockUsersGet.mockReset();
+    mockRaceBotGet.mockReset().mockResolvedValue({docs: []});
     mockUsersDocGet.mockReset();
     mockGetAll.mockReset();
     mockProfileDocs.clear();
@@ -310,6 +323,9 @@ describe("getLeaderboard callable", () => {
     mockUsersSelect.mockReturnValue(mockUsersQuery);
     mockUsersWhere.mockReturnValue(mockUsersQuery);
     mockUsersOrderBy.mockReturnValue(mockUsersQuery);
+    mockRaceBotQuery.where.mockReturnValue(mockRaceBotQuery);
+    mockRaceBotQuery.orderBy.mockReturnValue(mockRaceBotQuery);
+    mockRaceBotQuery.limit.mockReturnValue(mockRaceBotQuery);
     mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
     mockGetAll.mockImplementation(mockReadProfiles);
     mockUsersDocGet.mockResolvedValue({
@@ -432,6 +448,29 @@ describe("getLeaderboard callable", () => {
     expect(await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins"})).toEqual({entries: [], requestingUserId: "viewer"});
     expect(mockUsersLimit).toHaveBeenCalledWith(50);
     expect(mockLeaderboardGet).not.toHaveBeenCalled();
+  });
+
+  it("ranks bot wins together with human wins and applies one combined limit", async () => {
+    mockUsersGet.mockResolvedValue({docs: [
+      {id: "alice", data: () => ({username: "Alice", stats: {multiplayerWins: 12}})},
+      {id: "bob", data: () => ({username: "Bob", stats: {multiplayerWins: 7}})},
+    ]});
+    mockRaceBotGet.mockResolvedValue({docs: [
+      {username: "DashFox", multiplayerWins: 15, updatedAt: 1_800_000_000_000},
+      {username: "HopOwl", multiplayerWins: 9, updatedAt: 1_800_000_000_000},
+      {username: "JumpCat", multiplayerWins: 1, updatedAt: 1_800_000_000_000},
+    ].map(record => ({
+      id: `race-bot-${createHash("sha256").update(record.username).digest("hex")}`,
+      data: () => record,
+    }))});
+
+    const result = await callGetLeaderboard({uid: "viewer"}, {type: "multiplayerWins", limit: 3});
+    expect(result.requestingUserId).toBe("viewer");
+    expect(result.entries.map((entry: LeaderboardEntry) => ({username: entry.username, wins: entry.multiplayerWins}))).toEqual([
+      {username: "DashFox", wins: 15},
+      {username: "Alice", wins: 12},
+      {username: "HopOwl", wins: 9},
+    ]);
   });
 
   it("returns entries sorted by totalWins", async () => {

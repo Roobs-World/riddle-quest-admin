@@ -9,6 +9,7 @@ import {racePerformanceExpectation, type RaceMatchProfile} from "./raceMatchPerf
 import type {RaceMatchContext} from "./raceMatchPolicy";
 import type {RaceOpponentRecord, RaceRiddleSnapshot, RaceRunRecord} from "../runs/raceEngine";
 import {assertRaceMatchReadBudget, withMeteredRaceTransaction, type RaceMatchReadMeter} from "./raceMatchReadMeter";
+import {generateRaceBotName} from "./raceBotName";
 
 /** Internal receipts keep retry pacing and ownership immutable without creating fake accounts. */
 const BotOffer = z.object({version: z.literal(1), userId: z.string().min(1), requestId: z.string().min(8),
@@ -22,8 +23,6 @@ const BotOffer = z.object({version: z.literal(1), userId: z.string().min(1), req
 export type RaceBotOffer = z.infer<typeof BotOffer>;
 /** Short selection window; accepted runs retain their own lifecycle and countdown. */
 const OFFER_MS = 60_000;
-/** Fictional rival names never refer to a real provider account. */
-const NAMES = ["Nova", "RiddleRider", "ClueFox", "Luna", "PuzzlePilot", "Echo", "WordWanderer", "Atlas"];
 
 /** Validates the canonical receipt before any bot preparation or concurrent acceptance. */
 export function parseRaceBotOffer(value: unknown, userId: string, input: Pick<StartRaceRunRequest, "locale" | "categoryId">, expectedId?: string): RaceBotOffer {
@@ -152,5 +151,5 @@ export function buildRaceBotOpponent(offer: RaceBotOffer, seed: string, riddles:
       penaltyAddedMs: skipped ? RACE_RULES.skipPenaltyMs : 0, totalPenaltyMs: penalty,
       adjustedElapsedMs: wallElapsedMs + penalty, correctCount: correct});
   }
-  return {kind: "bot", displayName: NAMES[Math.floor(random("name") * NAMES.length)], adjustedFinishMs, events};
+  return {kind: "bot", displayName: generateRaceBotName(seed), adjustedFinishMs, events};
 }

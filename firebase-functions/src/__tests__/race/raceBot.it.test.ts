@@ -7,6 +7,7 @@ import {logger} from "firebase-functions";
 import {findRecordedRaceMatch} from "../../race/matchmaking/raceMatchmaking";
 import {startRaceRunForUser, readyRaceRunForUser, resumeRaceRunForUser, submitRaceGuessForUser,
   getRaceOutcomeForUser, publishRaceChallengeForUser} from "../../race/raceService";
+import {listRaceBotLeaderboardEntries} from "../../race/settlement/raceBotLeaderboard";
 
 /** Isolated provider owners used only in the local Firestore emulator. */
 const PLAYER = `jest_${"1".repeat(40)}`, CREATOR = `jest_${"2".repeat(40)}`;
@@ -16,7 +17,7 @@ const NOW = 1800000000000;
 let db: FirebaseFirestore.Firestore;
 /** Collections owned by the emulator fixtures. */
 const collections = ["raceBotOffers", "raceMatchOffers", "raceMatchCandidates", "raceChallenges", "raceRuns", "raceDecks",
-  "raceStartRequests", "raceAttempts", "racePerformanceOutbox", "raceSettlementOutbox", "users", "localizedRiddles/en/riddles"];
+  "raceStartRequests", "raceAttempts", "racePerformanceOutbox", "raceSettlementOutbox", "raceBotLeaderboard", "users", "localizedRiddles/en/riddles"];
 
 /** Clears emulator fixtures between independent full-service scenarios. */
 async function clear() {
@@ -99,6 +100,7 @@ it("starts one rival under concurrent acceptance, resumes its countdown and comp
   /** Settled server result reused across retries. */
   const outcome = await getRaceOutcomeForUser(PLAYER, run.runId, {db, nowMs: NOW + 15000});
   expect(outcome).toMatchObject({result: "player_win", correctCount: 10, publishable: false});
+  expect(await listRaceBotLeaderboardEntries(db, 100)).toEqual([]);
   expect((await getRaceOutcomeForUser(PLAYER, run.runId, {db, nowMs: NOW + 16000})).adjustedFinishMs).toBe(outcome.adjustedFinishMs);
   expect((await db.collection("raceSettlementOutbox").get()).empty).toBe(true);
   await expect(publishRaceChallengeForUser(PLAYER, {runId: run.runId, requestId: "fallback-publish-0001"}, {db, nowMs: NOW + 17000})).rejects.toThrow();
@@ -124,12 +126,24 @@ it("settles an unattended fallback exactly at its immutable finish", async () =>
   /** Immutable finish attached to the selected opponent. */
   const finish = first.run.opponent!.adjustedFinishMs;
   /** Settled server result reused across retries. */
-  const outcome = await getRaceOutcomeForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 1});
-  expect(outcome).toMatchObject({result: "ghost_win", wallFinishMs: finish, opponentAdjustedFinishMs: finish});
+  const outcomes = await Promise.all([
+    getRaceOutcomeForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 1}),
+    getRaceOutcomeForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 1}),
+  ]);
+  expect(outcomes).toEqual([
+    expect.objectContaining({result: "ghost_win", wallFinishMs: finish, opponentAdjustedFinishMs: finish}),
+    expect.objectContaining({result: "ghost_win", wallFinishMs: finish, opponentAdjustedFinishMs: finish}),
+  ]);
   /** A fresh read retains the selected rival and countdown. */
   const resumed = await resumeRaceRunForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 1000});
   expect(resumed.run.status).toBe("completed");
   expect(resumed.run.opponent).toEqual(first.run.opponent);
+  expect(first.run.opponent?.displayName).toMatch(/^[A-Z][a-z]+[A-Z][a-z]+$/);
+  expect(first.run.opponent!.displayName.length).toBeLessThanOrEqual(10);
+  await getRaceOutcomeForUser(PLAYER, first.run.runId, {db, nowMs: NOW + finish + 2000});
+  expect(await listRaceBotLeaderboardEntries(db, 100)).toEqual([
+    expect.objectContaining({username: first.run.opponent!.displayName, multiplayerWins: 1}),
+  ]);
 });
 
 it("prefers a published human recording and creates no fallback offer for that search", async () => {

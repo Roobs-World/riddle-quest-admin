@@ -4,6 +4,7 @@ import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, type Liv
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
+import {generateRaceBotName} from "../../race/matchmaking/raceBotName";
 
 /** Distinct deterministic Jest accounts used for public pairing and ownership checks. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
@@ -189,14 +190,14 @@ it("recovers a pruned queue seat without a new join or replacement deck", async 
   expect((await ticketRef.get()).data()?.run).toEqual(before.run);
 });
 
-it("starts one guest-named bot at the public deadline and resumes the same match", async () => {
+it("starts one verb-noun named bot at the public deadline and resumes the same match", async () => {
   /** No human joins this resumable public seat during its six-second search. */
   const first = await join(A, "fallback-public-wait");
   expect(await update(A, first, NOW + 5999)).toMatchObject({phase: "searching", opponent: null});
-  /** Exact deadline starts a server-owned bot with a guest display name. */
+  /** Exact deadline starts a server-owned bot with its seeded display name. */
   const fallback = await update(A, first, NOW + 6000);
   expect(fallback).toMatchObject({phase: "countdown", waitForPlayer: true,
-    opponent: {displayName: expect.stringMatching(/^Guest_[A-F0-9]{6}$/), bot: true}});
+    opponent: {displayName: generateRaceBotName(first.ticketId), bot: true}});
   /** A retry or reload must retain the bot match and its original countdown. */
   const recovered = await resume(A, first, "fallback-public-resume", NOW + 6001);
   expect(recovered).toMatchObject({ticketId: first.ticketId, startsAtMs: fallback.startsAtMs, opponent: fallback.opponent});

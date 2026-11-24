@@ -4,6 +4,7 @@ import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLi
 import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS, RACE_RULES, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import type {LiveMatch} from "../../race/live/raceLiveState";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {listRaceBotLeaderboardEntries} from "../../race/settlement/raceBotLeaderboard";
 
 /** Renders the a interface. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
@@ -15,7 +16,7 @@ const BOT_AT = NOW + LIVE_RACE_WAIT_MS;
 let db: FirebaseFirestore.Firestore;
 /** Provides clear behavior. */
 async function clear() {
-  for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles", "localizedRiddles/fr/riddles"])
+  for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "raceBotLeaderboard", "users", "localizedRiddles/en/riddles", "localizedRiddles/fr/riddles"])
     await db.recursiveDelete(db.collection(path));
   await Promise.all([A, B, C].map(user => getJestAccountDeletionRef(db, user).delete()));
 }
@@ -235,12 +236,36 @@ it("seats a bot within seconds of an unanswered search and then starts a five-se
   /** Shared start boundary follows the bot selection by exactly one countdown. */
   const startsAtMs = NOW + LIVE_RACE_WAIT_MS + LIVE_RACE_COUNTDOWN_MS;
   expect(bot).toMatchObject({phase: "countdown", startsAtMs, opponent: {bot: true, correctCount: 0}});
+  expect(bot.opponent?.displayName).toMatch(/^[A-Z][a-z]+[A-Z][a-z]+$/);
+  expect(bot.opponent!.displayName.length).toBeLessThanOrEqual(10);
   expect((await update(A, a, startsAtMs + 12000)).opponent?.correctCount).toBe(1);
-  expect((await update(A, a, startsAtMs + 120000))).toMatchObject({phase: "result", result: "loss", rewardCoins: 0});
+  expect(await Promise.all([update(A, a, startsAtMs + 120000), update(A, a, startsAtMs + 120000)])).toEqual([
+    expect.objectContaining({phase: "result", result: "loss", rewardCoins: 0}),
+    expect.objectContaining({phase: "result", result: "loss", rewardCoins: 0}),
+  ]);
   expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
   await Promise.all([update(A, a, startsAtMs + 121000), update(A, a, startsAtMs + 121000)]);
   expect((await db.doc(`users/${A}`).get()).data()!.stats?.multiplayerGamesPlayed ?? 0).toBe(0);
   expect((await db.doc("users/bot").get()).exists).toBe(false);
+  expect(await listRaceBotLeaderboardEntries(db, 100)).toEqual([
+    expect.objectContaining({username: bot.opponent!.displayName, multiplayerWins: 1}),
+  ]);
+});
+
+it.each([
+  {phase: "countdown", leaveAfterMs: 1000, result: "tie", expectedWins: 0},
+  {phase: "started", leaveAfterMs: 5001, result: "loss", expectedWins: 1},
+])("ranks a bot for a $phase departure only after the match has started", async ({leaveAfterMs, result, expectedWins}) => {
+  const ticket = await join(A, "bot-forfeit-ranking");
+  const bot = await update(A, ticket, BOT_AT);
+  expect(bot).toMatchObject({phase: "countdown", opponent: {bot: true, correctCount: 0}});
+  expect(await update(A, ticket, BOT_AT + leaveAfterMs, "leave", "bot-forfeit-ranking-leave"))
+    .toMatchObject({phase: "result", result, rewardCoins: 0, opponent: {correctCount: 0}});
+  await Promise.all([update(A, ticket, BOT_AT + 130000), update(A, ticket, BOT_AT + 130000)]);
+  expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(100);
+  expect(await listRaceBotLeaderboardEntries(db, 100)).toEqual(expectedWins === 0 ? [] : [
+    expect.objectContaining({username: bot.opponent!.displayName, multiplayerWins: 1}),
+  ]);
 });
 
 it("replays queue joins and final guesses without duplicate seats or rewards", async () => {
@@ -495,6 +520,7 @@ it("recovers an expired search on reload and grants a bot victory once", async (
   expect(current).toMatchObject({phase: "result", result: "win", rewardCoins: 50});
   await answer(A, current, BOT_AT + 18000, "bot-win-answer-9");
   expect((await db.doc(`users/${A}`).get()).data()!.coins).toBe(225);
+  expect(await listRaceBotLeaderboardEntries(db, 100)).toEqual([]);
 });
 
 it("keeps human matching and a simultaneous deadline poll exclusive", async () => {
