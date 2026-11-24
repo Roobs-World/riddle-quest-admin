@@ -218,6 +218,8 @@ The later [explicit live-build attempt](evidence/facebook-live-build-attempt-202
 
 The owner saved a Gaming User token that evening. [Version 7 acceptance evidence](evidence/facebook-user-token-upload-2026-11-24.json) records the successful upload of clean source `fb70fd4f8`, archive SHA-256 `933a472ab0fff3857f02e05e0485266426e524b5e557406d2e7ae83130ac6ba7`, new bundle `28869213636089676`, full before/after inventories, and Meta's `success: true` production response after processing time. The exact-archive handoff is accepted. The production API result is recorded separately from a downloaded-production hash, which was not obtained. The app remains in Development mode; public availability and an authenticated dashboard production check are not claimed.
 
+The later [notification signup fix upload](evidence/facebook-notification-signup-upload-2026-11-24.json) submitted clean source `304a1b925` once and created version 8, bundle `40318677164443644`. The archive request returned HTTP 200 and the complete inventory includes versions 1 through 8. Processing readiness remains unconfirmed, and the exact-artifact barrier is retained pending acceptance. No Testing assignment, production assignment, publication or review action was requested for that upload.
+
 With the token saved in the root `.env`:
 
 ```sh

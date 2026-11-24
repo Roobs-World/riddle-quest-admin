@@ -36,7 +36,16 @@
     "permissionPopupReservedBeforeFirstAwait": true,
     "signupFailurePreviouslyHidWelcomeAction": true,
     "signupFailureNowRetainsTranslatedErrorAndRetry": true,
-    "signupFailureFixRelease": "Source prepared; game client release pending",
+    "signupFailureFixRelease": "Jest build passed without upload. Facebook version 8 uploaded; processing readiness and activation remain unconfirmed.",
+    "signupFailureFixSource": "304a1b925a69c93ef49b0dd083a35e870a176739",
+    "facebookReleaseEvidence": "../../../facebook/evidence/facebook-notification-signup-upload-2026-11-24.json",
+    "compiledEnrollmentConfiguration": {
+      "currentJestAndFacebookAndAcceptedFacebook7Match": true,
+      "firebaseProject": "riddle-quest-ec2b2",
+      "functionsRegion": "europe-west1",
+      "managerOrigin": "https://riddle-quest-admin.vercel.app",
+      "projectRegionOrOriginMismatchFound": false
+    },
     "newTranslatedStrings": 0
   },
   "deliveryConstraints": {

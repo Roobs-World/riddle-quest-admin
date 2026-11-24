@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-24",
+  "appId": "1748953042991569",
+  "sourceCommit": "304a1b925a69c93ef49b0dd083a35e870a176739",
+  "change": "Keep notification signup errors visible on the welcome screen and retain the translated retry action.",
+  "build": {
+    "facebookPreflightPassed": true,
+    "jestBuildPassed": true,
+    "jestFiles": 99,
+    "jestUploaded": false,
+    "archiveSha256": "262621f7a15de0c5a7250c2a876b7c724810e1ef4b457df6c9996d51bb17eeb7",
+    "archiveBytes": 2897880,
+    "archiveEntries": 417,
+    "sourceClean": true,
+    "testsAndBrowserHarnessesRun": false
+  },
+  "upload": {
+    "command": "pnpm facebook:draft upload --archive-hash 262621f7a15de0c5a7250c2a876b7c724810e1ef4b457df6c9996d51bb17eeb7",
+    "submittedAt": "2026-11-24T23:39:52.201Z",
+    "binaryAttempts": 1,
+    "version": 8,
+    "bundleInstanceId": "40318677164443644",
+    "sessionHttpStatus": 200,
+    "archiveHttpStatus": 200,
+    "sessionResponseSha256": "cd1d6d733b6a9664ea4415674baddbb2c91ec6ae65c924f0f30faf0168c5f47b",
+    "archiveResponseSha256": "26064f0998c2f2917a86c6c266e03cebc4207113dc7a0fb3741108a3d63ba056"
+  },
+  "inventory": {
+    "checkedAt": "2026-11-24T23:40:47.519Z",
+    "httpStatus": 200,
+    "complete": true,
+    "versions": [8, 7, 6, 5, 4, 3, 2, 1],
+    "exactlyOneNewVersion": true,
+    "priorAcceptedVersionPreserved": true
+  },
+  "acceptance": {
+    "processingReadinessConfirmed": false,
+    "remoteReceiptStatus": "submitted-awaiting-provider-acceptance",
+    "retainedBarrierStatus": "ambiguous",
+    "immutableArchiveVerified": true,
+    "retransmitted": false,
+    "limitation": "Documented read APIs expose bundle inventory and rollout, not processing readiness. No authenticated dashboard is available."
+  },
+  "testingAssignmentRequested": false,
+  "productionAssignmentRequested": false,
+  "currentProductionAssignmentIndependentlyVerified": false,
+  "publicationRequested": false,
+  "reviewSubmitted": false,
+  "deviceDisplayVerified": false,
+  "secretsExposed": false,
+  "nextAction": "Confirm processing and the exact version 8 artifact in Meta Web Hosting before recording acceptance."
+}
