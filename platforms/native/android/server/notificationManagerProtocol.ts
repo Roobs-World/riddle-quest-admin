@@ -3,7 +3,7 @@ import {z} from "zod";
 const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
 const Revision = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const ImageUrl = z.string().max(2048).refine(value => {
-  if (/[\u0000-\u001f\u007f]/u.test(value)) return false;
+  if ([...value].some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)) return false;
   try {const url = new URL(value); return url.protocol === "https:" && !url.username && !url.password && !url.hash;} catch {return false;}
 });
 
